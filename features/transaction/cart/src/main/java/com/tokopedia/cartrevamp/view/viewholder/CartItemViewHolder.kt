@@ -2,6 +2,7 @@ package com.tokopedia.cartrevamp.view.viewholder
 
 import android.annotation.SuppressLint
 import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -13,6 +14,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -608,7 +611,7 @@ class CartItemViewHolder constructor(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(data.bundlePrice, false)
                     .removeDecimalSuffix()
 
-            if (data.bundleSlashPriceLabel.isNotBlank()) {
+            if (!data.isError && data.bundleSlashPriceLabel.isNotBlank()) {
                 labelBundleSlashPricePercentage.text = String.format(
                     itemView.context.getString(R.string.cart_label_discount_percentage),
                     data.bundleSlashPriceLabel
@@ -618,7 +621,7 @@ class CartItemViewHolder constructor(
                 labelBundleSlashPricePercentage.gone()
             }
 
-            if (data.bundleOriginalPrice > 0) {
+            if (!data.isError && data.bundleOriginalPrice > 0) {
                 textBundleSlashPrice.text =
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(data.bundleOriginalPrice, false)
                         .removeDecimalSuffix()
@@ -676,14 +679,37 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderImage(data: CartItemHolderData) {
+        val frameBackground = ResourcesCompat.getDrawable(
+            binding.root.resources,
+            R.drawable.bg_cart_product_image,
+            null
+        )
         val flImageProductLayoutParams = binding.flImageProduct.layoutParams as MarginLayoutParams
         if (data.isError) {
+            val nn900Color = ResourcesCompat.getColor(
+                binding.root.resources,
+                unifyprinciplesR.color.Unify_NN900,
+                null
+            )
+            val nn900ColorAlpha = ColorUtils.setAlphaComponent(nn900Color, 127)
+            val loadingDrawable = frameBackground as? GradientDrawable
+            loadingDrawable?.mutate()
+            loadingDrawable?.setColor(nn900ColorAlpha)
+            binding.flImageProduct.foreground = frameBackground
             flImageProductLayoutParams.leftMargin = 0
         } else {
+            val transparentColor = ResourcesCompat.getColor(
+                binding.root.resources,
+                android.R.color.transparent,
+                null
+            )
+            val loadingDrawable = frameBackground as? GradientDrawable
+            loadingDrawable?.mutate()
+            loadingDrawable?.setColor(transparentColor)
+            binding.flImageProduct.foreground = frameBackground
             flImageProductLayoutParams.leftMargin =
                 IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
         }
-
         data.productImage.let {
             binding.iuImageProduct.loadImage(it)
         }
@@ -784,7 +810,7 @@ class CartItemViewHolder constructor(
         val hasWholesalePrice = data.wholesalePrice > 0
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
             data.productInitialPriceBeforeDrop > data.productPrice
-        if ((hasPriceOriginal || hasWholesalePrice || hasPriceDrop) && !data.isBundlingItem) {
+        if (!data.isError && (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) && !data.isBundlingItem) {
             if (data.productSlashPriceLabel.isNotBlank()) {
                 // Slash price
                 renderSlashPriceFromCampaign(data)
@@ -851,7 +877,7 @@ class CartItemViewHolder constructor(
         var paddingRight = 0
         val paddingTop = itemView.resources.getDimensionPixelOffset(R.dimen.dp_2)
         val textProductVariant = binding.textProductVariant
-        if (data.variant.isNotBlank()) {
+        if (!data.isError && data.variant.isNotBlank()) {
             textProductVariant.text = data.variant
             textProductVariant.show()
             paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
