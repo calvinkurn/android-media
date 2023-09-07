@@ -128,8 +128,7 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun onVariantClicked(
-        isTokoNow: Boolean,
-        showQtyEditor: Boolean,
+        showQtyEditorOrTokoNow: Boolean,
         selectedOptionKey: String,
         selectedOptionId: String,
         variantImage: String, // only use when user click partially to update the image
@@ -153,7 +152,7 @@ class AtcVariantViewModel @Inject constructor(
                 selectedVariantChild,
                 aggregatorData?.cardRedirection,
                 isShopOwner,
-                (showQtyEditor || isTokoNow) && selectedMiniCart != null,
+                showQtyEditorOrTokoNow && selectedMiniCart != null,
                 aggregatorData?.alternateCopy
             )
 
@@ -170,7 +169,7 @@ class AtcVariantViewModel @Inject constructor(
                 selectedVariantChild = selectedVariantChild,
                 variantImage = variantImage,
                 selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
-                showQtyEditor = showQtyEditor,
+                showQtyEditor = showQtyEditorOrTokoNow,
                 selectedQuantity = selectedQuantity,
                 shouldShowDeleteButton = shouldShowDeleteButton,
                 aggregatorUiData = aggregatorData
@@ -264,8 +263,7 @@ class AtcVariantViewModel @Inject constructor(
                 selectedChild = selectedChild,
                 cartTypeData = aggregatorData?.cardRedirection,
                 isShopOwner = isShopOwner,
-                shouldUseAlternateTokoNow = (aggregatorParams.showQtyEditor
-                        || aggregatorParams.isTokoNow) &&
+                shouldUseAlternateTokoNow = aggregatorParams.showQtyEditorOrTokoNow() &&
                         selectedMiniCart != null,
                 alternateCopy = aggregatorData?.alternateCopy
             )
