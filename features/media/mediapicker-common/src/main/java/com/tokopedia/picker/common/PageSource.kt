@@ -28,6 +28,8 @@ enum class PageSource(val value: String) {
     WebView("WebView"),
     Unknown("");
 
+    fun isUnknown() = this == Unknown
+
     companion object {
         private val map = values().associateBy(PageSource::value)
 

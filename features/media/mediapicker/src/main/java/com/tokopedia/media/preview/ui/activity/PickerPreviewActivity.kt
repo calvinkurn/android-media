@@ -205,7 +205,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
                 .distinctUntilChanged()
                 .filter { it.originalPaths.isNotEmpty() }
                 .collectLatest {
-                    val withEditor = param.get().isEditorEnabled()
+                    val withEditor = param.get().isEditorEnabled() || param.get().isImmersiveEditorEnabled()
 
                     val buttonState = if (withEditor) {
                         PREVIEW_PAGE_LANJUT
@@ -270,7 +270,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
         param.get().apply {
-            if (!isEditorEnabled()) {
+            if (!isEditorEnabled() || !isImmersiveEditorEnabled()) {
                 navToolbar.setContinueTitle(
                     if (previewActionText().isNotEmpty()) {
                         previewActionText()

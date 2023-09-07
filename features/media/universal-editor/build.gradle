@@ -81,6 +81,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.arthenica:mobile-ffmpeg-full:4.4'
+
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
 

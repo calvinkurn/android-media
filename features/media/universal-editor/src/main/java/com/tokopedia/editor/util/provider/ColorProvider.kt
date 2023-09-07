@@ -1,4 +1,4 @@
-package com.tokopedia.editor.util
+package com.tokopedia.editor.util.provider
 
 import android.content.Context
 import androidx.core.content.ContextCompat
@@ -12,7 +12,7 @@ interface ColorProvider {
     fun findColorName(colorInt: Int): String
 }
 
-class ColorProviderImp @Inject constructor(
+class ColorProviderImpl @Inject constructor(
     @ApplicationContext context: Context
 ): ColorProvider {
 

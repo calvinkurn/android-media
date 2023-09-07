@@ -8,11 +8,20 @@ import com.tokopedia.editor.ui.model.InputTextModel
  * Global State Changes, Navigate with Intent, Network Changes, etc.
  */
 sealed class MainEditorEffect {
+    // Intent
     data class OpenInputText(val model: InputTextModel) : MainEditorEffect()
-
-    data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()
-
+    data class FinishEditorPage(val filePath: String) : MainEditorEffect()
     data class OpenPlacementPage(val sourcePath: String, val model: ImagePlacementModel?) : MainEditorEffect()
 
-    data class UpdatePagerSourcePath(val newSourcePath: String, val pagerTag: String) : MainEditorEffect()
+    // Visibility handler
+    data class ShowToastErrorMessage(val message: String) : MainEditorEffect()
+    data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()
+
+    // Global loader
+    object ShowLoading : MainEditorEffect()
+    object HideLoading : MainEditorEffect()
+
+    // Common
+    object UpdateTextAddedState : MainEditorEffect()
+    data class UpdatePagerSourcePath(val newSourcePath: String) : MainEditorEffect()
 }
