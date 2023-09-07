@@ -57,3 +57,28 @@ const val GQL_GET_WIDGET_DETAIL_V2 =
     }
   }
 }"""
+
+const val GQL_GET_WIDGET_DETAIL_V3 =
+    """query PaylaterGetPDPWidgetV3(${'$'}request: PaylaterGetPDPWidgetV3Request!) {
+  paylater_getPDPWidgetV3(request: ${'$'}request) {
+    data {
+      list {
+        icon_url_light
+        icon_url_dark
+        web_url
+        android_url
+        ios_url
+        messages
+        price
+        product_id
+        usecase_rank
+        installment_amt
+        linking_status
+        user_state
+        widget_type
+        product_code
+      }
+    }
+  }
+}"""
+
