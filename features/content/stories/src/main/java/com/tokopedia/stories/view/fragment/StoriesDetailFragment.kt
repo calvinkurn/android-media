@@ -24,8 +24,8 @@ import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemCont
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesUiModel
-import com.tokopedia.stories.view.utils.FRAGMENT_DETAIL_TAG
 import com.tokopedia.stories.view.utils.STORY_GROUP_ID
+import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.utils.onTouchEventStories
@@ -71,7 +71,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
         get() = groupId == viewModel.mGroupId
 
     override fun getScreenName(): String {
-        return FRAGMENT_DETAIL_TAG
+        return TAG_FRAGMENT_STORIES_DETAIL
     }
 
     override fun onCreateView(
@@ -188,16 +188,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
                         currentPosition = state.selectedDetailPosition,
                         itemCount = state.detailItems.size,
                         data = state.detailItems[state.selectedDetailPosition],
-                    ) {
-                        /** TODO
-                         * all state already updated using the new groupId
-                         * but the oldest data that we left (ui action swipe) still there
-                         * need other way to stop the oldest data if the position is invalid
-                         * it also causing broken timer experience when (ui action swipe)
-                         * invalid -> groupId != viewModel.mGroupId
-                         **/
-                        if (isEligiblePage) viewModelAction(NextDetail)
-                    }
+                    ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }
         }
@@ -296,7 +287,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): StoriesDetailFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(FRAGMENT_DETAIL_TAG) as? StoriesDetailFragment
+            val oldInstance = fragmentManager.findFragmentByTag(TAG_FRAGMENT_STORIES_DETAIL) as? StoriesDetailFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 StoriesDetailFragment::class.java.name

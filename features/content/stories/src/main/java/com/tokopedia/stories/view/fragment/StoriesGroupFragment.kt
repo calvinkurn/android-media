@@ -18,8 +18,8 @@ import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
 import com.tokopedia.stories.view.model.StoriesUiModel
-import com.tokopedia.stories.view.utils.FRAGMENT_GROUP_TAG
 import com.tokopedia.stories.view.utils.SHOP_ID
+import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
@@ -64,7 +64,7 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     override fun getScreenName(): String {
-        return FRAGMENT_GROUP_TAG
+        return TAG_FRAGMENT_STORIES_GROUP
     }
 
     override fun onCreateView(
@@ -209,7 +209,7 @@ class StoriesGroupFragment @Inject constructor(
             classLoader: ClassLoader,
             bundle: Bundle
         ): StoriesGroupFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(FRAGMENT_GROUP_TAG) as? StoriesGroupFragment
+            val oldInstance = fragmentManager.findFragmentByTag(TAG_FRAGMENT_STORIES_GROUP) as? StoriesGroupFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 StoriesGroupFragment::class.java.name

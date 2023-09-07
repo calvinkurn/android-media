@@ -9,9 +9,9 @@ import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
-import com.tokopedia.stories.view.utils.FRAGMENT_GROUP_TAG
 import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.SHOP_ID_INDEX_APP_LINK
+import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
 import javax.inject.Inject
 
 class StoriesActivity : BaseActivity() {
@@ -65,13 +65,13 @@ class StoriesActivity : BaseActivity() {
     private fun openFragment() {
         supportFragmentManager.apply {
             executePendingTransactions()
-            val existingFragment = findFragmentByTag(FRAGMENT_GROUP_TAG)
+            val existingFragment = findFragmentByTag(TAG_FRAGMENT_STORIES_GROUP)
             if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
             beginTransaction().apply {
                 replace(
                     binding.fragmentContainer.id,
                     getStoriesFragment(),
-                    FRAGMENT_GROUP_TAG,
+                    TAG_FRAGMENT_STORIES_GROUP,
                 )
             }.commit()
         }

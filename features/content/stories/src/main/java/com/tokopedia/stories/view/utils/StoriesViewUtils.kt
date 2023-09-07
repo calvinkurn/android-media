@@ -31,12 +31,12 @@ internal fun Int.getRandomNumber(): Int {
     return if (oldValue == newValue) newValue.plus(1) else newValue
 }
 
-enum class TouchEventStories {
+internal enum class TouchEventStories {
     PAUSE, RESUME, NEXT_PREV
 }
 
-const val SHOP_ID = "shop_id"
-const val SHOP_ID_INDEX_APP_LINK = 1
-const val STORY_GROUP_ID = "stories_group_id"
-const val FRAGMENT_GROUP_TAG = "stories_group_fragment"
-const val FRAGMENT_DETAIL_TAG = "stories_detail_fragment"
+internal const val SHOP_ID = "shop_id"
+internal const val SHOP_ID_INDEX_APP_LINK = 1
+internal const val STORY_GROUP_ID = "stories_group_id"
+internal const val TAG_FRAGMENT_STORIES_GROUP = "fragment_stories_group"
+internal const val TAG_FRAGMENT_STORIES_DETAIL = "fragment_stories_detail"
