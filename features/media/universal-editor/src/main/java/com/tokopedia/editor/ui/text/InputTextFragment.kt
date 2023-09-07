@@ -2,6 +2,7 @@ package com.tokopedia.editor.ui.text
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -19,7 +20,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 import com.tokopedia.editor.R as resourceR
-import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 
 class InputTextFragment @Inject constructor(
     private val colorProvider: ColorProvider,
@@ -87,9 +87,10 @@ class InputTextFragment @Inject constructor(
     private fun initFontStyleObserver() {
         viewModel.selectedFontStyle.observe(viewLifecycleOwner) {
             viewBinding?.addTextInput?.apply {
-                unifyTypeFaceGetter(context, it.fontName)?.let { loadedTypeFace ->
-                    setTypeface(loadedTypeFace, it.fontStyle)
-                }
+                try {
+                    val typeFace = Typeface.createFromAsset(context.assets, it.fontName)
+                    setTypeface(typeFace, it.fontStyle)
+                } catch (_: Exception) {}
             }
         }
     }

@@ -90,6 +90,7 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
     }
 
     override fun onRemoveView(view: View) {
+        models.remove(view.id)
         removeView(view)
         listener?.onTextRemoved()
     }

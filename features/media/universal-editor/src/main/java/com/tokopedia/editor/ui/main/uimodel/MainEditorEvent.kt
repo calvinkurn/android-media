@@ -29,4 +29,6 @@ sealed class MainEditorEvent {
     object PlacementImagePage : MainEditorEvent()
 
     data class PlacementImageResult(val model: ImagePlacementModel?) : MainEditorEvent()
+
+    data class ClickHeaderCloseButton(val isSkipConfirmation: Boolean = false) : MainEditorEvent()
 }

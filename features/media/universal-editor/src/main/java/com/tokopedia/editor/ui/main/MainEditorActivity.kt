@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editor.R
 import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
@@ -112,7 +113,7 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     override fun onCloseClicked() {
-        finish()
+        viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton())
     }
 
     override fun onContinueClicked() {
@@ -129,6 +130,11 @@ open class MainEditorActivity : AppCompatActivity()
     override fun onTextRemoved() {
         val hasTextAdded = binding.container.hasTextAdded()
         viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton())
     }
 
     @Suppress("DEPRECATION")
@@ -160,15 +166,23 @@ open class MainEditorActivity : AppCompatActivity()
                     is MainEditorEffect.OpenInputText -> {
                         navigateToInputTextTool(it.model)
                     }
+
                     is MainEditorEffect.ParentToolbarVisibility -> {
                         toolbar.setVisibility(it.visible)
                         navigationTool.setVisibility(it.visible)
                     }
+
                     is MainEditorEffect.OpenPlacementPage -> {
                         navigateToPlacementImagePage(it.sourcePath, it.model)
                     }
                     is MainEditorEffect.UpdatePagerSourcePath -> {
                         pagerContainer.updateView(it.newSourcePath)
+                    }
+                    is MainEditorEffect.CloseMainEditorPage -> {
+                        finish()
+                    }
+                    is MainEditorEffect.ShowCloseDialogConfirmation -> {
+                        showConfirmationBackDialog()
                     }
                     is MainEditorEffect.FinishEditorPage -> {
                         navigateBackToPickerAndFinishIntent(it.filePath)
@@ -210,7 +224,7 @@ open class MainEditorActivity : AppCompatActivity()
     private fun navigateToInputTextTool(model: InputTextModel) {
         val intent = InputTextActivity.create(this, model)
         inputTextIntent.launch(intent)
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
     }
 
     private fun navigateToPlacementImagePage(sourcePath: String, model: ImagePlacementModel?) {
@@ -269,6 +283,29 @@ open class MainEditorActivity : AppCompatActivity()
     private fun defaultActionButtonText(param: UniversalEditorParam): String {
         if (param.proceedButtonText.isNotEmpty()) return param.proceedButtonText
         return getString(R.string.universal_editor_toolbar_action_button)
+    }
+
+    private fun showConfirmationBackDialog() {
+        DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply dialog@{
+            setTitle(getString(R.string.universal_editor_main_confirmation_title))
+            setDescription(getString(R.string.universal_editor_main_confirmation_desc))
+
+            dialogPrimaryCTA.apply {
+                text = getString(R.string.universal_editor_main_confirmation_primary_cta)
+                setOnClickListener {
+                    viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(isSkipConfirmation = true))
+                }
+            }
+
+            dialogSecondaryLongCTA.apply {
+                text = getString(R.string.universal_editor_main_confirmation_secondary_cta)
+                setOnClickListener {
+                    dismiss()
+                }
+            }
+
+            show()
+        }
     }
 
     private fun onShowLoading() {

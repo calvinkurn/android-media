@@ -55,7 +55,7 @@ internal fun defaultToolList() = mapOf(
     ),
     MediaType.Video to listOf(
         ToolType.TEXT,
-        ToolType.AUDIO_MUTE
+        // ToolType.AUDIO_MUTE TODO: temporary disabled
     ),
 )
 
