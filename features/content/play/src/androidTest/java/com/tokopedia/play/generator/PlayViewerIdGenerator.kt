@@ -174,7 +174,8 @@ class PlayViewerIdGenerator {
                     analytic = mockk(relaxed = true),
                     pipSessionStorage = mockk(relaxed = true),
                     playLog = mockk(relaxed = true),
-                    router = mockk(relaxed = true)
+                    router = mockk(relaxed = true),
+                    queryParamStorage = mockk(relaxed = true),
                 )
             }
         )
