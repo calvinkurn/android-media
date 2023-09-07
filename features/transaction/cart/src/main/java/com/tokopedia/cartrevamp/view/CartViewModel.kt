@@ -110,7 +110,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -2783,9 +2782,10 @@ class CartViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun useNewPromoPage(): Boolean {
+    fun isPromoRevamp(): Boolean {
         cartModel.cartListData?.let { data ->
-            promoUsageRollenceManager.isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
+            return promoUsageRollenceManager
+                .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
         }
         return false
     }

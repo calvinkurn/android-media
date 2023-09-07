@@ -3898,7 +3898,7 @@ class CartRevampFragment :
 
     private fun routeToPromoCheckoutMarketplacePage() {
         activity?.let {
-            if (viewModel.useNewPromoPage()) {
+            if (viewModel.isPromoRevamp()) {
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CART_PAGE,
                     promoRequest = generateParamsCouponList(),
