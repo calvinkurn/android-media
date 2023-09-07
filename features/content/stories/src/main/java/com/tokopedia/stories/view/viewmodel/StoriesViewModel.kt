@@ -1,5 +1,6 @@
 package com.tokopedia.stories.view.viewmodel
 
+import android.annotation.SuppressLint
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
@@ -111,6 +112,7 @@ class StoriesViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("DeprecatedMethod")
     private fun handleGetSavedInstanceStateData(bundle: Bundle?) {
         if (bundle == null) return
 

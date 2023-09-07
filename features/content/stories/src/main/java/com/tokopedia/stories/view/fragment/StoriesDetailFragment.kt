@@ -21,6 +21,8 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.utils.TouchEventStories
@@ -159,10 +161,15 @@ class StoriesDetailFragment @Inject constructor(
 
         showPageLoading(false)
 
-        binding.layoutStoriesContent.ivStoriesDetailContent.apply {
-            setImageUrl(currContent.imageContent)
-            onUrlLoaded = {
-                contentIsLoaded()
+        when (currContent.content.type) {
+            IMAGE -> {
+                binding.layoutStoriesContent.ivStoriesDetailContent.apply {
+                    setImageUrl(currContent.content.data)
+                    onUrlLoaded = { contentIsLoaded() }
+                }
+            }
+            VIDEO -> {
+                // TODO handle video content here
             }
         }
     }

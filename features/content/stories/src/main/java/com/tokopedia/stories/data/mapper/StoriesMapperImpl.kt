@@ -4,6 +4,9 @@ import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContent
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesGroupItemUiModel
@@ -40,7 +43,13 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                                 StoriesDetailItemUiModel(
                                     id = stories.id,
                                     event = StoriesDetailItemUiEvent.PAUSE,
-                                    imageContent = stories.media.link,
+                                    content = StoriesItemContent(
+                                        type = if (stories.media.type == IMAGE.value) IMAGE else VIDEO,
+                                        data = stories.media.link,
+                                    ),
+                                    resetValue = -1,
+                                    isSameContent = false,
+                                    timerDuration = 7 * 1000,
                                 )
                             }
                         )
@@ -59,9 +68,13 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                 StoriesDetailItemUiModel(
                     id = stories.id,
                     event = StoriesDetailItemUiEvent.PAUSE,
-                    imageContent = stories.media.link,
+                    content = StoriesItemContent(
+                        type = if (stories.media.type == IMAGE.value) IMAGE else VIDEO,
+                        data = stories.media.link,
+                    ),
                     resetValue = -1,
                     isSameContent = false,
+                    timerDuration = 7 * 1000,
                 )
             }
         )

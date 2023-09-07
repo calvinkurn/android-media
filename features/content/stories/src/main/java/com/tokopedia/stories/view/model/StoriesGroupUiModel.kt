@@ -1,6 +1,7 @@
 package com.tokopedia.stories.view.model
 
 import android.os.Parcelable
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -38,10 +39,21 @@ data class StoriesDetailUiModel(
 data class StoriesDetailItemUiModel(
     val id: String = "",
     val event: StoriesDetailItemUiEvent = StoriesDetailItemUiEvent.PAUSE,
-    val imageContent: String = "",
+    val content: StoriesItemContent = StoriesItemContent(),
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
+    val timerDuration: Int = -1,
 ): Parcelable {
+
+    @Parcelize
+    data class StoriesItemContent(
+        val type: StoriesItemContentType = IMAGE,
+        val data: String = "",
+    ): Parcelable
+
+    enum class StoriesItemContentType(val value: String) {
+        IMAGE("image"), VIDEO("video")
+    }
 
     enum class StoriesDetailItemUiEvent {
         PAUSE, RESUME,

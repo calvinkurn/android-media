@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
 import kotlinx.coroutines.delay
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @Composable
 fun StoriesDetailTimer(
@@ -48,7 +49,7 @@ fun StoriesDetailTimer(
                 anim.animateTo(
                     targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
-                        durationMillis = (TIMER_DURATION * (TARGET_ANIMATION - anim.value)).toInt(),
+                        durationMillis = (data.timerDuration * (TARGET_ANIMATION - anim.value)).toInt(),
                         easing = LinearEasing,
                     )
                 )
@@ -84,11 +85,11 @@ private fun StoriesDetailTimerContent(
                     .height(4.dp)
                     .clip(RoundedCornerShape(60))
                     .weight(1f)
-                    .background(colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_Static_White).copy(alpha = 0.4f))
+                    .background(colorResource(id = unifyprinciplesR.color.Unify_Static_White).copy(alpha = 0.4f))
             ) {
                 Box(
                     modifier = Modifier
-                        .background(colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                        .background(colorResource(id = unifyprinciplesR.color.Unify_Static_White))
                         .fillMaxHeight().let {
                             when (index) {
                                 currentPosition -> it.fillMaxWidth(progress)
@@ -115,4 +116,3 @@ internal fun StoriesDetailTimerPreview() {
 
 private const val TARGET_ANIMATION = 1F
 private const val INITIAL_ANIMATION = 0F
-private const val TIMER_DURATION = 7 * 1000
