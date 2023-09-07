@@ -27,7 +27,6 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-const val RPC_FILTER_KEY = "rpc_"
 const val DEFAULT_SORT_ID = "23"
 const val SORT_KEY = "ob"
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
@@ -309,11 +308,16 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             val targetList = targetID.split(",")
             if (targetList.isNotEmpty()) {
                 launchCatchError(block = {
+                    val originalSearchParameter = components.searchParameter.getSearchParameterMap().keys
+                    val formattedParameters = FilterKeyFormatter.format(
+                        selectedFilterMapParameter, originalSearchParameter
+                    )
+
                     productCountMutableLiveData.value = quickFilterGQLRepository
                         ?.getQuickFilterProductCountData(
                             targetList.first(),
                             components.pageEndPoint,
-                            appendRPCInKey(selectedFilterMapParameter),
+                            formattedParameters,
                             getUserId()
                         )?.component?.compAdditionalInfo?.totalProductData
                         ?.productCountWording ?: ""
@@ -322,15 +326,5 @@ class QuickFilterViewModel(val application: Application, val components: Compone
                     })
             }
         }
-    }
-
-    private fun appendRPCInKey(selectedFilterMapParameter: Map<String, String>): MutableMap<String, String> {
-        val filtersQueryParameterMap = mutableMapOf<String, String>()
-        selectedFilterMapParameter.forEach { (key, value) ->
-            if (value.isNotEmpty()) {
-                filtersQueryParameterMap[RPC_FILTER_KEY + key] = value
-            }
-        }
-        return filtersQueryParameterMap
     }
 }
