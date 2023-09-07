@@ -77,28 +77,22 @@ class MainEditorViewModel @Inject constructor(
                 setAction(MainEditorEffect.ParentToolbarVisibility(false))
                 updateViewIdOnUiParam(event.viewId)
             }
-            is MainEditorEvent.InputTextResult -> {
-                updateModelOnUiParam(event.model)
-                setAction(MainEditorEffect.UpdateTextAddedState)
-                setAction(MainEditorEffect.ParentToolbarVisibility(true))
-            }
             is MainEditorEvent.ExportMedia -> {
                 setAction(MainEditorEffect.ShowLoading)
                 exportFinalMedia(filePath, event.canvasTextBitmap)
             }
-            is MainEditorEvent.ResetActiveInputText -> {
-                _inputTextState.value = InputTextParam.reset()
-            }
             is MainEditorEvent.PlacementImagePage -> {
-                val currentPlacementModel = mainEditorState.value.imagePlacementModel
-                setAction(MainEditorEffect.OpenPlacementPage(filePath, currentPlacementModel))
+                navigateToPlacementPage()
             }
             is MainEditorEvent.PlacementImageResult -> {
                 val model = event.model ?: return
-
-                setActiveEditableFilePath(model.path)
-                updateCurrentPlacementModel(event.model)
-                setAction(MainEditorEffect.UpdatePagerSourcePath(model.path))
+                getPlacementResult(model)
+            }
+            is MainEditorEvent.InputTextResult -> {
+                getInputTextResult(event.model)
+            }
+            is MainEditorEvent.ResetActiveInputText -> {
+                _inputTextState.value = InputTextParam.reset()
             }
         }
     }
@@ -136,6 +130,25 @@ class MainEditorViewModel @Inject constructor(
 
     private fun flattenImageFileWithTextCanvas(imagePath: String, canvasText: Bitmap) {
         // TODO: Will be handled by @calvin.
+    }
+
+    private fun navigateToPlacementPage() {
+        val sourceFilePath = paramFetcher.get().firstFile.path ?: return
+        val currentPlacementModel = mainEditorState.value.imagePlacementModel
+
+        setAction(MainEditorEffect.OpenPlacementPage(sourceFilePath, currentPlacementModel))
+    }
+
+    private fun getPlacementResult(model: ImagePlacementModel) {
+        updateCurrentPlacementModel(model)
+        setActiveEditableFilePath(model.path)
+        setAction(MainEditorEffect.UpdatePagerSourcePath(model.path))
+    }
+
+    private fun getInputTextResult(model: InputTextModel) {
+        updateModelOnUiParam(model)
+        setAction(MainEditorEffect.UpdateTextAddedState)
+        setAction(MainEditorEffect.ParentToolbarVisibility(true))
     }
 
     private fun updateCurrentPlacementModel(model: ImagePlacementModel?) {
