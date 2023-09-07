@@ -51,7 +51,6 @@ import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetList
 import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
@@ -61,7 +60,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -211,6 +209,18 @@ class UniversalInboxFragment @Inject constructor(
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeProductRecommendation()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeError()
+            }
+        }
+
 //        viewLifecycleOwner.lifecycleScope.launch {
 //            repeatOnLifecycle(Lifecycle.State.STARTED) {
 //                viewModel.inboxMenu.collectLatest {
@@ -245,15 +255,6 @@ class UniversalInboxFragment @Inject constructor(
 //            observeDriverCounter() // Observe only after widget loaded
 //        }
 
-//        viewModel.firstPageRecommendation.observe(viewLifecycleOwner) {
-//            removeLoadMoreLoading()
-//            when (it) {
-//                is Success -> onSuccessGetFirstRecommendationData(it.data)
-//                is Fail -> {
-//                    // no-op
-//                }
-//            }
-//        }
 //
 //        viewModel.morePageRecommendation.observe(viewLifecycleOwner) {
 //            removeLoadMoreLoading()
@@ -294,8 +295,10 @@ class UniversalInboxFragment @Inject constructor(
             // Update counters
             updateNotificationCounter(it.notificationCounter)
 
-            // Log Error and Show Toaster
-            logErrorAndShowToaster(it.error)
+            // Load recommendation
+            if (it.shouldLoadRecommendation) {
+                viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
+            }
         }
     }
 
@@ -335,6 +338,48 @@ class UniversalInboxFragment @Inject constructor(
                     notifUnread
                 )
             )
+        }
+    }
+
+    private suspend fun observeProductRecommendation() {
+        viewModel.productRecommendationUiState.collectLatest {
+            // Toggle Loading
+            toggleLoadingProductRecommendation(it.isLoading)
+
+            // Set title & update product recommendation
+            updateProductRecommendation(
+                shouldRemoveAllProductRecommendation = it.shouldRemoveAllProduct,
+                title = it.title,
+                newList = it.productList
+            )
+        }
+    }
+
+    private fun toggleLoadingProductRecommendation(isLoading: Boolean) {
+        if (isLoading) {
+            adapter.addProductRecommendationLoader()
+        } else {
+            adapter.removeProductRecommendationLoader()
+        }
+    }
+
+    private fun updateProductRecommendation(
+        shouldRemoveAllProductRecommendation: Boolean,
+        title: String,
+        newList: List<RecommendationItem>
+    ) {
+        if (shouldRemoveAllProductRecommendation) {
+            adapter.removeAllProductRecommendation()
+        }
+        adapter.tryUpdateProductRecommendations(title, newList)
+//        setHeadlineAndBannerExperiment()
+//        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+    }
+
+    private suspend fun observeError() {
+        viewModel.errorUiState.collectLatest {
+            // Log Error and Show Toaster
+            logErrorAndShowToaster(it.error)
         }
     }
 
@@ -467,23 +512,6 @@ class UniversalInboxFragment @Inject constructor(
             userSession.deviceId.orEmpty(),
             ::onErrorGetDriverChat.name
         )
-    }
-
-    private fun onSuccessGetFirstRecommendationData(
-        recommendation: RecommendationWidget
-    ) {
-        adapter.addItem(UniversalInboxRecommendationTitleUiModel(recommendation.title))
-        addRecommendationItem(recommendation.recommendationItemList)
-    }
-
-    private fun addRecommendationItem(list: List<RecommendationItem>) {
-        val itemCountBefore = adapter.itemCount
-        adapter.addItems(list)
-        binding?.inboxRv?.post {
-            adapter.notifyItemRangeInserted(itemCountBefore, itemCountBefore + list.size)
-        }
-        setHeadlineAndBannerExperiment()
-        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
     private fun setHeadlineAndBannerExperiment() {
@@ -727,7 +755,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        showLoadMoreLoading()
+//        showLoadMoreLoading()
 //        viewModel.loadMoreRecommendation(page)
     }
 

@@ -55,6 +55,7 @@ class UniversalInboxAdapter(
 
     private var recommendationViewType: Int? = null
     private var recommendationFirstPosition: Int? = null
+    private var recommendationTitlePosition: Int? = null
 
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
@@ -96,16 +97,16 @@ class UniversalInboxAdapter(
     }
 
     fun getProductRecommendationViewType(): Int? {
-        if (recommendationViewType != null) {
-            return recommendationViewType
-        } else {
-            itemList.forEachIndexed { index, item ->
-                if (item is RecommendationItem) {
-                    recommendationViewType = getItemViewType(index)
-                    return recommendationViewType
-                }
+        recommendationViewType?.let { return it }
+        // get first index or -1
+        return itemList.indexOfFirst {
+            it is RecommendationItem
+        }.takeIf {
+            it >= 0 // get result when it not -1 (found)
+        }?.let { index ->
+            getItemViewType(index).also {
+                recommendationViewType = it
             }
-            return null
         }
     }
 
@@ -116,7 +117,7 @@ class UniversalInboxAdapter(
             // get first index or -1
             itemList.indexOfFirst {
                 it is RecommendationItem
-            }.takeIf { it != -1 }?.also { // get result when it not -1 (found)
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
                 recommendationFirstPosition = it
             }
         }
@@ -133,16 +134,47 @@ class UniversalInboxAdapter(
     }
 
     fun getFirstLoadingPosition(): Int? {
-        if (isRecommendationLoader(itemList.lastIndex)) {
-            return itemList.lastIndex
+        return if (itemList.isEmpty()) {
+            null
+        } else if (isRecommendationLoader(itemList.lastIndex)) {
+            itemList.lastIndex
         } else {
-            itemList.forEachIndexed { index, item ->
-                if (item is UniversalInboxRecommendationLoaderUiModel) {
-                    return index
-                }
+            // get first index or -1
+            itemList.indexOfFirst {
+                it is UniversalInboxRecommendationLoaderUiModel
+            }.takeIf { it >= 0 } // get result when it not -1 (found)
+        }
+    }
+
+    fun addProductRecommendationLoader() {
+        if (getFirstLoadingPosition() != null) return
+        addItemAndAnimateChanges(UniversalInboxRecommendationLoaderUiModel())
+    }
+
+    fun removeProductRecommendationLoader() {
+        getFirstLoadingPosition()?.let {
+            removeItemAt(it)
+            notifyItemRemoved(it)
+        }
+    }
+
+    private fun getRecommendationTitlePosition(): Int? {
+        return if (checkCachedRecommendationTitlePosition()) {
+            recommendationTitlePosition
+        } else {
+            // get first index or -1
+            itemList.indexOfFirst {
+                it is UniversalInboxRecommendationTitleUiModel
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
+                recommendationTitlePosition = it
             }
         }
-        return null
+    }
+
+    private fun checkCachedRecommendationTitlePosition(): Boolean {
+        return recommendationTitlePosition?.let {
+            it < itemList.size && itemList[it] is UniversalInboxRecommendationTitleUiModel
+        } ?: false
     }
 
     fun getFirstTopAdsBannerPositionPair(): Pair<Int, UniversalInboxTopAdsBannerUiModel>? {
@@ -237,10 +269,42 @@ class UniversalInboxAdapter(
             val editedList = itemList
             editedList.subList(
                 fromIndex = 0, // fromIndex start with 0 and toIndex matched with item count
-                toIndex = getProductRecommendationFirstPosition() ?: itemCount
+                toIndex = getPositionBeforeProductRecommendation()
             ).apply {
                 clear()
                 addAll(newList) // replace the sublist
+            }
+            val diffCallback = BaseDiffUtilCallback(itemList, editedList)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+            diffResult.dispatchUpdatesTo(this)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    private fun getPositionBeforeProductRecommendation(): Int {
+        val calculatedPosition = getRecommendationTitlePosition() ?: // Get title product recom position
+            getProductRecommendationFirstPosition() ?: // Get product recom first position
+            getFirstLoadingPosition() // Get first loading position
+        return calculatedPosition ?: itemCount
+    }
+
+    fun tryUpdateProductRecommendations(title: String, newList: List<Any>) {
+        try {
+            val editedList = itemList
+            if (getRecommendationTitlePosition() == null && title.isNotBlank()) {
+                editedList.add(UniversalInboxRecommendationTitleUiModel(title))
+            }
+            if (getProductRecommendationFirstPosition() != null) {
+                editedList.subList(
+                    fromIndex = getProductRecommendationFirstPosition() ?: lastIndex, // First recom or last index
+                    toIndex = itemCount
+                ).apply {
+                    clear()
+                    addAll(newList) // replace the sublist
+                }
+            } else {
+                editedList.addAll(newList)
             }
             val diffCallback = BaseDiffUtilCallback(itemList, editedList)
             val diffResult = DiffUtil.calculateDiff(diffCallback)

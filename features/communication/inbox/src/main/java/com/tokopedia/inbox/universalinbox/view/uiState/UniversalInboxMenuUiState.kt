@@ -9,5 +9,5 @@ data class UniversalInboxMenuUiState(
     val menuList: List<UniversalInboxMenuUiModel> = listOf(),
     val miscList: List<Any> = listOf(),
     val notificationCounter: String = "0",
-    val error: Pair<Throwable, String>? = null
+    val shouldLoadRecommendation: Boolean = false
 )

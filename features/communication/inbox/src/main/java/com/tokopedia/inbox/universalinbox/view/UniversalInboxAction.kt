@@ -18,4 +18,6 @@ sealed class UniversalInboxAction {
     // TopAds Actions
 
     // Recommendation Actions
+    object RefreshRecommendation : UniversalInboxAction()
+    data class LoadNextPage(val page: Int) : UniversalInboxAction()
 }
