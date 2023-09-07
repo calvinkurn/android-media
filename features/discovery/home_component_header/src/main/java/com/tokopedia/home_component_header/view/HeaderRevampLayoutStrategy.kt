@@ -23,6 +23,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.home_component_header.R as home_component_headerR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     companion object {
@@ -110,6 +112,7 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         channelHeader: ChannelHeader,
         stubChannelIconSubtitle: View?
     ) {
+        stubChannelIconSubtitle?.gone()
         val subtitleIcon: ImageView
         if (hasIconSubtitle(channelHeader)) {
             if (stubChannelIconSubtitle is ViewStub &&
@@ -143,16 +146,16 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_channel_header_cta))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900),
-                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    newLightEnable = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900),
+                    newDarkEnable = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
                 )
             }
             HomeChannelHeaderView.COLOR_MODE_INVERTED -> {
                 ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_channel_header_cta_inverted))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = com.tokopedia.home_component_header.R.color.dms_header_cta_inverted_icon,
-                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.home_component_header.R.color.dms_header_cta_inverted_icon)
+                    newLightEnable = home_component_headerR.color.dms_header_cta_inverted_icon,
+                    newDarkEnable = ContextCompat.getColor(context, home_component_headerR.color.dms_header_cta_inverted_icon)
                 )
             }
         }
@@ -166,11 +169,11 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     ) {
         channelTitle?.setTextColor(
             if (headerColorMode == HomeChannelHeaderView.COLOR_MODE_INVERTED) {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
             } else if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
             } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
             }
         )
     }
@@ -183,11 +186,11 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     ) {
         channelSubtitle?.setTextColor(
             if (headerColorMode == HomeChannelHeaderView.COLOR_MODE_INVERTED) {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
             } else if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
             } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
             }
         )
     }
@@ -248,7 +251,7 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     }
 
     private fun renderIcon(channelIconSubtitle: ImageView, channelHeader: ChannelHeader) {
-        if (channelHeader.subtitle.isEmpty()) {
+        if (channelHeader.subtitle.isNotEmpty() && channelHeader.iconSubtitleUrl.isNotEmpty()) {
             channelIconSubtitle.loadImage(channelHeader.iconSubtitleUrl)
             channelIconSubtitle.visible()
         } else {
