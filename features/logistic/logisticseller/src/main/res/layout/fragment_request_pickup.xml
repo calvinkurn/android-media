@@ -430,7 +430,7 @@ Cek Gerai"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:paddingVertical="8dp"
-                                    android:textColor="@color/Green_G600"
+                                    android:textColor="@color/Unify_GN600"
                                     tools:text="Cek Gerai Terdekat"
                                     app:typographyType="body_3"
                                     app:typographyWeight="bold" />
