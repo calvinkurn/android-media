@@ -1,6 +1,7 @@
 package com.tokopedia.shop.analytic
 
 import android.os.Bundle
+import android.os.Parcelable
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -115,6 +116,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGIN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_BANNER_CAROUSEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_BANNER_HOTSPOT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FESTIVITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
@@ -247,6 +249,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_CAROUSEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_HOTSPOT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION
@@ -275,6 +278,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_DIGITAL_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_ADD_ONS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_BUY_AGAIN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_CAROUSELL
@@ -3846,9 +3851,9 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String
     ) {
-        val eventLabelValue = joinDash(bannerId, ratio)
+        var eventLabelValue = joinDash(bannerId, ratio)
         if(!isSingleBannerImage){
-            joinDash(eventLabelValue, imageBannerPosition.toString())
+            eventLabelValue = joinDash(eventLabelValue, imageBannerPosition.toString())
         }
         val eventBundle = Bundle().apply {
             putString(EVENT, VIEW_ITEM)
@@ -3897,9 +3902,9 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String
     ) {
-        val eventLabelValue = joinDash(bannerId, ratio)
+        var eventLabelValue = joinDash(bannerId, ratio)
         if(!singleBannerImage){
-            joinDash(eventLabelValue, imageBannerPosition.toString())
+            eventLabelValue = joinDash(eventLabelValue, imageBannerPosition.toString())
         }
         val eventBundle = Bundle().apply {
             putString(EVENT, SELECT_CONTENT)
@@ -3943,6 +3948,56 @@ class ShopPageHomeTracking(
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, "")
             putDouble(PRICE, formatPrice(productPrice).toDoubleOrZero())
+        }
+    }
+
+    fun impressionDirectPurchaseByEtalaseWidget(
+        totalEtalaseGroup: Int,
+        etalaseId: String,
+        position: Int,
+        widgetId: String,
+        shopId: String,
+        userId: String
+    ) {
+        var eventLabelValue: String = if(totalEtalaseGroup == Int.ONE){
+            WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT
+        } else {
+            WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT
+        }
+        eventLabelValue = joinDash(eventLabelValue, etalaseId)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM)
+            putString(EVENT_ACTION, REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    createDirectPurchaseByEtalasePromotions(
+                        position,
+                        widgetId
+                    )
+                )
+            )
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
+    }
+
+    private fun createDirectPurchaseByEtalasePromotions(
+        position: Int,
+        widgetId: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(CREATIVE_NAME, "")
+            putInt(CREATIVE_SLOT, position)
+            putString(ITEM_ID, widgetId)
+            putString(ITEM_NAME, "")
         }
     }
 }

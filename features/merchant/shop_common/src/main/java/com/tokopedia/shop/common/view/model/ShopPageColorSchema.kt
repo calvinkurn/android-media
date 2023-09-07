@@ -36,6 +36,7 @@ data class ShopPageColorSchema(
         return try {
             Color.parseColor(listColorSchema.firstOrNull { it.name == colorSchemaName.value }?.value.orEmpty())
         } catch (e: Exception) {
+            //TODO need to add default color from unify, but need to pass context on param
             Int.ZERO
         }
     }

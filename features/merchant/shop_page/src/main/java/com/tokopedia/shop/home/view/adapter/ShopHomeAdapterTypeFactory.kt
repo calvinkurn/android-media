@@ -87,6 +87,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.S
 import com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group.ShopHomeBannerProductGroupViewPagerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group.horizontal.ShopHomeBannerProductGroupViewPagerHorizontalPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group.vertical.ShopHomeBannerProductGroupViewPagerVerticalPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchaseByEtalaseWidgetListener
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.carousel.ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.carousel.ShopHomeShowCaseNavigationCarouselViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.left.ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder
@@ -143,7 +144,8 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeV4TerlarisViewHolderListener: ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     private val shopBannerProductGroupListener: ShopBannerProductGroupListener,
     private val shopBannerProductGroupWidgetTabDependencyProvider: ShopBannerProductGroupWidgetTabDependencyProvider,
-    private val shopHomeDisplayAdvanceCarouselBannerWidgetListener: ShopHomeDisplayAdvanceCarouselBannerWidgetListener
+    private val shopHomeDisplayAdvanceCarouselBannerWidgetListener: ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
+    private val shopHomeDirectPurchaseByEtalaseWidgetListener: ShopHomeDirectPurchaseByEtalaseWidgetListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
@@ -504,7 +506,11 @@ open class ShopHomeAdapterTypeFactory(
             // ========= Shop Home Revamp V4 - New widgets ========= //
             ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT -> ShopHomeV4TerlarisPlaceholderViewHolder(parent)
             ShopHomeV4TerlarisViewHolder.LAYOUT -> ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
-            ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT -> ShopHomeDirectPurchasedByEtalaseViewHolder(parent, shopHomeListener)
+            ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT -> ShopHomeDirectPurchasedByEtalaseViewHolder(
+                parent,
+                shopHomeListener,
+                shopHomeDirectPurchaseByEtalaseWidgetListener
+            )
             else -> return super.createViewHolder(parent, type)
         }
         return viewHolder

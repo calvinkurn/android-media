@@ -396,6 +396,8 @@ object ShopPageTrackingConstant {
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME = "share"
     const val SHOP_PRODUCT_ATC_QUANTITY_INCREASE = "increase"
     const val SHOP_PRODUCT_ATC_QUANTITY_DECREASE = "decrease"
+    const val WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT = "with etalase group"
+    const val WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT = "without etalase group"
     object Event {
         const val DIRECT_PURCHASE_ADD_TO_CART = "add_to_cart"
         const val VIEW_PG_IRIS = "viewPGIris"
@@ -456,6 +458,7 @@ object ShopPageTrackingConstant {
         const val REIMAGINED_CLICK_BANNER_CAROUSEL = "reimagined - click banner carousel"
         const val REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "reimagined - impression banner hotspot"
         const val REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "reimagined - click product hotspot"
+        const val REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET = "reimagined - impression direct purchase widget"
 
 
         //Showcase Navigation Widget - Without tab
@@ -569,6 +572,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_REIMAGINED_CLICK_BANNER_CAROUSEL = "45921"
         const val TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "45922"
         const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "45923"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET = "45955"
     }
 
     object Key {

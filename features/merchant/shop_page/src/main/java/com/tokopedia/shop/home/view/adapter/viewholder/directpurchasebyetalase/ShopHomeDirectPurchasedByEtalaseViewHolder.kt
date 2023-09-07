@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.ColorPallete
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -20,6 +21,7 @@ import com.tokopedia.viewallcard.ViewAllCard
 class ShopHomeDirectPurchasedByEtalaseViewHolder(
     itemView: View,
     private val shopHomeListener: ShopHomeListener,
+    private val widgetListener: ShopHomeDirectPurchaseByEtalaseWidgetListener
 ) : AbstractViewHolder<ShopDirectPurchaseByEtalaseUiModel>(itemView) {
 
     companion object {
@@ -39,8 +41,18 @@ class ShopHomeDirectPurchasedByEtalaseViewHolder(
             showPlaceholderView()
         } else {
             setDirectPurchaseWidgetData(element)
+            addWidgetImpressionListener(element)
         }
 
+    }
+
+    private fun addWidgetImpressionListener(element: ShopDirectPurchaseByEtalaseUiModel) {
+        itemView.addOnImpressionListener(element.impressHolder) {
+            widgetListener.onImpressionDirectPurchaseByEtalaseWidget(
+                element,
+                bindingAdapterPosition
+            )
+        }
     }
 
     private fun showPlaceholderView() {
