@@ -157,6 +157,7 @@ object ShopUtil {
         return try {
             Color.parseColor(colorHex)
         } catch (e: Exception) {
+            //TODO need to add default color from unify, but need to pass context on param
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO
         }

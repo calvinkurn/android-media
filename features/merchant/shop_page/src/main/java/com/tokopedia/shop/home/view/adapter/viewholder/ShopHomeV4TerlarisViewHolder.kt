@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
@@ -80,6 +81,7 @@ class ShopHomeV4TerlarisViewHolder(
             val isOverrideTheme = it.header.isOverrideTheme
             val colorSchema = it.header.colorSchema
             val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            setHeaderSection(element)
             terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(listener, isOverrideTheme ,colorSchema)
             rvProductCarousel?.apply {
                 isNestedScrollingEnabled = false
@@ -103,6 +105,17 @@ class ShopHomeV4TerlarisViewHolder(
                     hideTheWidget()
                 }
             }
+        }
+    }
+
+    private fun setHeaderSection(element: ShopHomeCarousellProductUiModel) {
+        val title = element.header.title
+        val subTitle = element.header.subtitle
+        widgetTitle?.shouldShowWithAction(title.isNotEmpty()){
+            widgetTitle?.text = title
+        }
+        widgetSubtitle?.shouldShowWithAction(subTitle.isNotEmpty()) {
+            widgetSubtitle?.text = subTitle
         }
     }
 
