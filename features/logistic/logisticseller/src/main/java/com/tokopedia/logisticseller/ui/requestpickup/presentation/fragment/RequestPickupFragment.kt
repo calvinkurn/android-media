@@ -120,6 +120,8 @@ class RequestPickupFragment :
         super.onViewCreated(view, savedInstanceState)
         setupHeader()
         observingConfirmReqPickup()
+        loadingFullPage(true)
+
     }
 
     override fun onResume() {
@@ -156,6 +158,7 @@ class RequestPickupFragment :
 
     private fun observingConfirmReqPickup() {
         somConfirmRequestPickupViewModel.confirmReqPickupResult.observe(viewLifecycleOwner) {
+            loadingFullPage(false)
             when (it) {
                 is Success -> {
                     confirmReqPickupResponse = it.data.mpLogisticPreShipInfo
@@ -268,7 +271,7 @@ class RequestPickupFragment :
                 dropoffInfoButton.apply {
                     text = dropOffNotes.urlText
                     setOnClickListener {
-                        openWebview(dropOffNotes.urlDetail)
+                        openWebView(dropOffNotes.urlDetail)
                     }
                 }
             } else {
@@ -448,7 +451,22 @@ class RequestPickupFragment :
         Toaster.build(requireView(), getString(R.string.success_invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
     }
 
-    private fun openWebview(url: String) {
+    private fun openWebView(url: String) {
         RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
+
+    private fun loadingFullPage(isLoading: Boolean){
+        if(isLoading){
+            binding?.viewgroupParentFullView?.visibility = View.GONE
+            binding?.llBtn?.visibility = View.GONE
+            binding?.loadingRequestPickupLoading?.visibility = View.VISIBLE
+        }else{
+            binding?.viewgroupParentFullView?.visibility = View.VISIBLE
+            binding?.llBtn?.visibility = View.VISIBLE
+            binding?.loadingRequestPickupLoading?.visibility = View.GONE
+
+        }
+
+    }
+
 }
