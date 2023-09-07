@@ -420,7 +420,7 @@ object ApplinkConstInternalUserPlatform {
      *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
      *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
      **/
-    const val GOTO_KYC_WEBVIEW = "$NEW_INTERNAL_USER/webviewkyc"
+    const val GOTO_KYC_WEBVIEW = "$NEW_INTERNAL_USER/webview-kyc"
 
     /**
      * ## KYC Param | type

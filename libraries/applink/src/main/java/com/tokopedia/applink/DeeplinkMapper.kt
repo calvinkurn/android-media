@@ -271,14 +271,6 @@ object DeeplinkMapper {
         return ""
     }
 
-    fun getWebviewApplink(deeplink: String): String {
-        return if (deeplink.contains("landing-dana-instant")) {
-            ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
-        } else {
-            ApplinkConstInternalGlobal.WEBVIEW_BASE
-        }
-    }
-
     fun getTokopediaSchemeList(): Map<String, MutableList<DLP>> {
         return DeeplinkMainApp.deeplinkPatternTokopediaSchemeListv2
     }

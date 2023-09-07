@@ -1266,10 +1266,13 @@ object DeeplinkMainApp {
                 DeeplinkMapperUser.getRegisteredUserNavigation(deeplink)
             }
         ),
-        "webview" to mutableListOf(
+        "webview-kyc" to mutableListOf(
             DLP.goTo { deeplink: String ->
-                DeeplinkMapper.getWebviewApplink(deeplink)
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
+        ),
+        "webview" to mutableListOf(
+            DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BASE }
         ),
         "webviewbackhome" to mutableListOf(
             DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME }
