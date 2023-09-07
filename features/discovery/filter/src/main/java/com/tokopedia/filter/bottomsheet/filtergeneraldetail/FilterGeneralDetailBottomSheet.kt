@@ -22,6 +22,7 @@ import com.tokopedia.filter.common.helper.setMargin
 import com.tokopedia.filter.common.helper.uniqueId
 import com.tokopedia.filter.databinding.FilterGeneralDetailBottomSheetBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -43,9 +44,9 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     private var buttonApplyFilterDetailText: String? = null
 
     private var filterGeneralDetailBottomSheetView: View? = null
-    private val filterGeneralDetailAdapter = FilterGeneralDetailAdapter(this)
+    private var filterGeneralDetailAdapter: FilterGeneralDetailAdapter? = null
     private val optionSearchFilter = OptionSearchFilter {
-        filterGeneralDetailAdapter.setOptionList(it)
+        filterGeneralDetailAdapter?.setOptionList(it)
     }
 
     private var enableResetButton = true
@@ -60,6 +61,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         optionCallback: OptionCallback? = null,
         buttonApplyFilterDetailText: String? = null,
         enableResetButton: Boolean = true,
+        isReimagine: Boolean = false
     ) {
         this.optionHolder = filter?.copy()
         this.isLoading = filter != null
@@ -68,7 +70,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         this.optionCallback = optionCallback
         this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
         this.enableResetButton = enableResetButton
-
+        filterGeneralDetailAdapter= FilterGeneralDetailAdapter(this, isReimagine)
         show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
     }
 
@@ -77,7 +79,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         this.isLoading = optionHolder != null
         this.originalSelectedOptionList.addAll(optionHolder.getSelectedOptions())
 
-        filterGeneralDetailAdapter.setOptionList(this.optionHolder?.options ?: listOf())
+        filterGeneralDetailAdapter?.setOptionList(this.optionHolder?.options ?: listOf())
 
         setTitle(optionHolder?.title ?: "")
 
@@ -158,7 +160,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     private fun onResetFilter(view: View) {
         optionHolder?.options?.forEach { it.inputState = "" }
 
-        filterGeneralDetailAdapter.notifyDataSetChanged()
+        filterGeneralDetailAdapter?.notifyDataSetChanged()
 
         applyFilterViewInteractions(false)
     }
@@ -235,7 +237,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private fun initRecyclerView() {
         binding?.recyclerViewFilterDetailBottomSheet?.let {
-            filterGeneralDetailAdapter.setOptionList(optionHolder?.options ?: listOf())
+            filterGeneralDetailAdapter?.setOptionList(optionHolder?.options ?: listOf())
 
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             val itemDecorationLeftMargin = getFilterDividerItemDecorationLeftMargin(optionHolder?.isColorFilter ?: false)
@@ -321,9 +323,9 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private fun notifyAdapterChanges(option: IOption, position: Int) {
         if (option.isTypeRadio)
-            filterGeneralDetailAdapter.notifyItemRangeChanged(0, filterGeneralDetailAdapter.itemCount, FilterGeneralDetailAdapter.Payload.BIND_INPUT_STATE_ONLY)
+            filterGeneralDetailAdapter?.notifyItemRangeChanged(0, filterGeneralDetailAdapter?.itemCount.orZero(), FilterGeneralDetailAdapter.Payload.BIND_INPUT_STATE_ONLY)
         else
-            filterGeneralDetailAdapter.notifyItemChanged(position, FilterGeneralDetailAdapter.Payload.BIND_INPUT_STATE_ONLY)
+            filterGeneralDetailAdapter?.notifyItemChanged(position, FilterGeneralDetailAdapter.Payload.BIND_INPUT_STATE_ONLY)
     }
 
     private fun getButtonResetVisibility(isChecked: Boolean) = isChecked || optionHolder.hasActiveOptions()

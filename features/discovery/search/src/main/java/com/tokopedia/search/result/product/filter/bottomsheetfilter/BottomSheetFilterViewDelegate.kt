@@ -97,6 +97,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 filter = createSortModel(dynamicFilterModel),
                 optionCallback = createSortListener(),
                 enableResetButton = false,
+                isReimagine = true
             )
         }
 
