@@ -258,6 +258,10 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsHolder.tabLayout.removeOnTabSelectedListener(this)
         tabsViewModel?.getColorTabComponentLiveData()?.removeObservers(fragment.viewLifecycleOwner)
         tabsHandler.removeCallbacks(tabsRunnable)
+        scrollToCurrentTabPositionRunnable?.apply {
+            scrollToCurrentTabPositionHandler.removeCallbacks(this)
+            scrollToCurrentTabPositionRunnable = null
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
