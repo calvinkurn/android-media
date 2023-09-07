@@ -407,13 +407,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_error_shipping_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN950"
+            android:textColor="@color/Unify_NN400"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -421,17 +421,16 @@
             app:typographyWeight="bold"
             tools:text="Pengiriman tidak tersedia." />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_error_shipping_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_NN600"
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_chevron_error_shipping"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_color_light_enable="@color/Unify_NN400"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_error_shipping_title"
-            app:typographyType="display_3"
-            tools:text="Atur kembali barang belanjaanmu di Keranjang ya." />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -35,7 +35,10 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.min
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CartGroupViewHolder(
     private val binding: ItemGroupRevampBinding,
@@ -62,12 +65,18 @@ class CartGroupViewHolder(
     }
 
     private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
-        if (cartGroupHolderData.isError) {
+        if (cartGroupHolderData.isError || (cartGroupHolderData.isFirstItem && !cartGroupHolderData.isPreviousHasSelectedAmountWidget)) {
             binding.headerDivider.gone()
         } else {
             binding.headerDivider.visible()
-            binding.headerDivider.layoutParams.height =
-                AVAILABLE_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
+            val dividerHeight = (
+                if (cartGroupHolderData.isPreviousHasSelectedAmountWidget) {
+                    SELECTED_AMOUNT_DIVIDER_HEIGHT
+                } else {
+                    AVAILABLE_DIVIDER_HEIGHT
+                }
+                ).dpToPx(itemView.resources.displayMetrics)
+            binding.headerDivider.layoutParams.height = dividerHeight
         }
     }
 
@@ -86,7 +95,7 @@ class CartGroupViewHolder(
                 setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        unifyprinciplesR.color.Unify_NN600
                     )
                 )
                 weightType = Typography.REGULAR
@@ -96,7 +105,7 @@ class CartGroupViewHolder(
                 setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                        unifyprinciplesR.color.Unify_NN950
                     )
                 )
                 weightType = Typography.BOLD
@@ -138,7 +147,7 @@ class CartGroupViewHolder(
                     )?.shopHolderData?.shopTypeInfo?.title
                 }
             binding.imageShopBadge.contentDescription = itemView.context.getString(
-                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                purchase_platformcommonR.string.pp_cd_image_shop_badge_with_shop_type,
                 contentDescription
             )
             binding.imageShopBadge.show()
@@ -199,17 +208,17 @@ class CartGroupViewHolder(
         binding.cbSelectShop.let {
             compositeSubscription.add(
                 rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object :
-                    Subscriber<Boolean>() {
-                    override fun onNext(isChecked: Boolean) {
-                        cbSelectShopClickListener(cartGroupHolderData)
-                    }
+                        Subscriber<Boolean>() {
+                        override fun onNext(isChecked: Boolean) {
+                            cbSelectShopClickListener(cartGroupHolderData)
+                        }
 
-                    override fun onCompleted() {
-                    }
+                        override fun onCompleted() {
+                        }
 
-                    override fun onError(e: Throwable?) {
-                    }
-                })
+                        override fun onError(e: Throwable?) {
+                        }
+                    })
             )
         }
     }
@@ -283,9 +292,9 @@ class CartGroupViewHolder(
             if (cartGroupHolderData.freeShippingBadgeUrl.isNotBlank()) {
                 imgFreeShipping.loadImageWithoutPlaceholder(cartGroupHolderData.freeShippingBadgeUrl)
                 val contentDescriptionStringResource = if (cartGroupHolderData.isFreeShippingPlus) {
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
+                    purchase_platformcommonR.string.pp_cd_image_badge_plus
                 } else {
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
+                    purchase_platformcommonR.string.pp_cd_image_badge_bo
                 }
                 imgFreeShipping.contentDescription =
                     itemView.context.getString(contentDescriptionStringResource)
@@ -332,7 +341,8 @@ class CartGroupViewHolder(
 
     private fun setOverweightText(extraWeight: Double) {
         val text = itemView.resources.getString(R.string.cart_text_overweight).replace(
-            "%s", NumberFormat.getNumberInstance(
+            "%s",
+            NumberFormat.getNumberInstance(
                 Locale("in", "id")
             ).format(extraWeight)
         )
@@ -342,7 +352,7 @@ class CartGroupViewHolder(
             ForegroundColorSpan(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                    unifyprinciplesR.color.Unify_YN500
                 )
             ),
             0,
@@ -353,7 +363,7 @@ class CartGroupViewHolder(
             ForegroundColorSpan(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 )
             ),
             firstSentenceIndex + 2,
@@ -411,7 +421,7 @@ class CartGroupViewHolder(
 //                            }
                             val color = ContextCompat.getColor(
                                 itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                                unifyprinciplesR.color.Unify_NN500
                             )
                             iuTickerRightIcon.setImage(
                                 IconUnify.CHEVRON_RIGHT,
@@ -443,7 +453,7 @@ class CartGroupViewHolder(
                         icBmgmTicker.gone()
                         val iconColor = MethodChecker.getColor(
                             root.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                            unifyprinciplesR.color.Unify_NN900
                         )
                         val reloadIcon =
                             getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
@@ -480,6 +490,7 @@ class CartGroupViewHolder(
 
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
 
+        private const val SELECTED_AMOUNT_DIVIDER_HEIGHT = 1
         private const val AVAILABLE_DIVIDER_HEIGHT = 8
 
         private const val ITEM_DECORATION_PADDING_LEFT = 48

@@ -49,7 +49,9 @@ data class CartGroupHolderData(
     var isPo: Boolean = false,
     var boCode: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
-    var enablerLabel: String = ""
+    var enablerLabel: String = "",
+    var isFirstItem: Boolean = false,
+    var isPreviousHasSelectedAmountWidget: Boolean = false
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
