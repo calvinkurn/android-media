@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">scp_rewards_widgets</string>
     <string name="progress_percent">%1$d\%%</string>
+    <string name="medal_locked_bonus_warning">Kupon belum aktif. Cek &amp; selesaiin progresmu biar bisa pakai kupon ini, yuk.</string>
 </resources>

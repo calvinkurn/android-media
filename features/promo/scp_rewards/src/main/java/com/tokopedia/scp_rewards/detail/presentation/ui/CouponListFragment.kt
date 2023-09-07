@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.FragmentCouponListBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
@@ -92,6 +93,9 @@ class CouponListFragment : BaseDaggerFragment() {
                     is CouponListViewModel.CouponState.Success -> {
                         couponListCallBack?.onReceiveCoupons(couponListViewModel.couponPageStatus.orEmpty(), safeState.list?.size.orZero())
                         listAdapter.setVisitables(safeState.list)
+                        if (safeState.isLocked) {
+                            binding.lockedWarning.visible()
+                        }
                     }
                 }
             }

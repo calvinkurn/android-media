@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.loadImageOrFallback
 import com.tokopedia.scp_rewards_common.parseColor
-import com.tokopedia.scp_rewards_widgets.constants.CouponState
+import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetCouponViewBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitSectionModel
@@ -62,14 +62,14 @@ class WidgetCouponView @JvmOverloads constructor(
     ) {
         val benefit = benefitList.first()
         when (benefit.status) {
-            CouponState.EMPTY -> {
+            CouponStatus.EMPTY -> {
                 binding.ivErrorState.hide()
                 binding.stackCoupon.hide()
                 binding.cardEmptyCoupon.visible()
                 binding.cardEmptyCoupon.setData(benefit, onCtaClick)
             }
 
-            CouponState.ERROR -> {
+            CouponStatus.ERROR -> {
                 binding.cardEmptyCoupon.hide()
                 binding.stackCoupon.hide()
                 binding.ivErrorState.visible()

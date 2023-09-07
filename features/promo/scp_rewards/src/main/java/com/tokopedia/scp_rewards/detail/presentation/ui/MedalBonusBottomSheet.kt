@@ -6,10 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.scp_rewards.databinding.FragmentMedalBonusBottomSheetBinding
 import com.tokopedia.scp_rewards.detail.domain.model.TabData
-import com.tokopedia.scp_rewards_widgets.constants.CouponState
+import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setCounter
@@ -19,6 +20,7 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
 
     private var binding: FragmentMedalBonusBottomSheetBinding? = null
     private var listOfTabs: List<TabData>? = null
+    private var isLocked: Boolean = false
 
     @SuppressLint("DeprecatedMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,20 +28,32 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
         val couponList = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
         val medaliSlug = arguments?.getString(MEDALI_SLUG).orEmpty()
 
-        listOfTabs = listOf(
-            TabData(
-                title = getString(scp_rewardsR.string.title_active),
-                status = CouponState.ACTIVE,
-                list = couponList,
-                medaliSlug = medaliSlug
-            ),
-            TabData(
-                title = getString(scp_rewardsR.string.title_history),
-                status = CouponState.INACTIVE,
-                list = null,
-                medaliSlug = medaliSlug
+        isLocked = couponList?.firstOrNull()?.status == CouponStatus.INACTIVE
+        listOfTabs = if (isLocked) {
+            listOf(
+                TabData(
+                    title = "",
+                    status = CouponStatus.INACTIVE,
+                    list = couponList,
+                    medaliSlug = medaliSlug
+                )
             )
-        )
+        } else {
+            listOf(
+                TabData(
+                    title = getString(scp_rewardsR.string.title_active),
+                    status = CouponStatus.ACTIVE,
+                    list = couponList,
+                    medaliSlug = medaliSlug
+                ),
+                TabData(
+                    title = getString(scp_rewardsR.string.title_history),
+                    status = CouponStatus.INACTIVE,
+                    list = null,
+                    medaliSlug = medaliSlug
+                )
+            )
+        }
     }
 
     override fun onCreateView(
@@ -63,6 +77,9 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
                 viewPager.adapter =
                     BonusPagerAdapter(safeList, childFragmentManager, this@MedalBonusBottomSheet)
                 tabs.setupWithViewPager(viewPager)
+            }
+            if (isLocked) {
+                tabs.hide()
             }
         }
     }

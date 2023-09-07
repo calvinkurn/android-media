@@ -13,8 +13,8 @@
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout_height="60dp" />
+            android:layout_height="@dimen/dp_48"
+            android:paddingBottom="0dp"/>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"

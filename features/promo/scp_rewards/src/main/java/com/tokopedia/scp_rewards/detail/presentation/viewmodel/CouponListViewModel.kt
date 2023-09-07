@@ -10,6 +10,7 @@ import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.GetMedalBenefitUseCase
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
 import com.tokopedia.scp_rewards.detail.mappers.MedalBenefitMapper
+import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import javax.inject.Inject
 
@@ -39,7 +40,12 @@ class CouponListViewModel @Inject constructor(
                     when (val responseCode = response.scpRewardsMedaliBenefitList?.resultStatus?.code) {
                         SUCCESS_CODE -> {
                             val list = MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(response.scpRewardsMedaliBenefitList.medaliBenefitList?.benefitList)
-                            _couponListLiveData.postValue(CouponState.Success(list))
+                            val benefitStatus = list?.firstOrNull()?.status
+                            if (benefitStatus == CouponStatus.EMPTY || benefitStatus == CouponStatus.ERROR) {
+                                _couponListLiveData.postValue(CouponState.Error(Throwable()))
+                            } else {
+                                _couponListLiveData.postValue(CouponState.Success(list))
+                            }
                         }
 
                         else -> {
@@ -75,12 +81,13 @@ class CouponListViewModel @Inject constructor(
     }
 
     fun setCouponsList(list: List<MedalBenefitModel>?) {
-        _couponListLiveData.postValue(CouponState.Success(list))
+        val isLocked = couponPageStatus == CouponStatus.INACTIVE
+        _couponListLiveData.postValue(CouponState.Success(list, isLocked))
     }
 
 
     sealed class CouponState {
-        class Success(val list: List<MedalBenefitModel>?) : CouponState()
+        class Success(val list: List<MedalBenefitModel>?, val isLocked: Boolean = false) : CouponState()
         class Error(val error: Throwable, val errorCode: String = "") : CouponState()
         object Loading : CouponState()
     }
