@@ -126,6 +126,11 @@ open class MainEditorActivity : AppCompatActivity()
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
+    override fun onTextRemoved() {
+        val hasTextAdded = binding.container.hasTextAdded()
+        viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
+    }
+
     @Suppress("DEPRECATION")
     private fun setDataParam() {
         val param = intent?.getParcelableExtra<UniversalEditorParam>(
