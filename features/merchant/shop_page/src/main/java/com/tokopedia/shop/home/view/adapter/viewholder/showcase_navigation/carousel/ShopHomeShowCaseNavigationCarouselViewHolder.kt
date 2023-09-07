@@ -28,7 +28,6 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_carousel_banner
-        private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 12
     }
 
     private val viewBinding: ItemShopHomeShowcaseNavigationCarouselBannerBinding? by viewBinding()
@@ -76,7 +75,7 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
                 showcases.firstOrNull()?.id.orEmpty()
             )
         }
-        viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD && viewAllCtaAppLink.isNotEmpty() && title.isNotEmpty()
+        viewBinding?.iconChevron?.isVisible = viewAllCtaAppLink.isNotEmpty() && title.isNotEmpty()
     }
 
     private fun setupShowCaseRecyclerView(
