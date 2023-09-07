@@ -128,6 +128,7 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun onVariantClicked(
+        isTokoNow: Boolean,
         showQtyEditor: Boolean,
         selectedOptionKey: String,
         selectedOptionId: String,
@@ -152,7 +153,7 @@ class AtcVariantViewModel @Inject constructor(
                 selectedVariantChild,
                 aggregatorData?.cardRedirection,
                 isShopOwner,
-                selectedMiniCart != null,
+                (showQtyEditor || isTokoNow) && selectedMiniCart != null,
                 aggregatorData?.alternateCopy
             )
 
@@ -259,7 +260,15 @@ class AtcVariantViewModel @Inject constructor(
 
             // Get cart redirection , and warehouse by selected product id to render button and toko cabang
             val selectedMiniCart = minicartData?.get(selectedChild?.productId ?: "")
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorData?.cardRedirection, isShopOwner, selectedMiniCart != null, aggregatorData?.alternateCopy)
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(
+                selectedChild = selectedChild,
+                cartTypeData = aggregatorData?.cardRedirection,
+                isShopOwner = isShopOwner,
+                shouldUseAlternateTokoNow = (aggregatorParams.showQtyEditor
+                        || aggregatorParams.isTokoNow) &&
+                        selectedMiniCart != null,
+                alternateCopy = aggregatorData?.alternateCopy
+            )
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
 
             // generate variant component and data, initial render need to determine selected option
