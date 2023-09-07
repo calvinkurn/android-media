@@ -32,7 +32,6 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYP
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PDP_EXTRA_UPDATED_POSITION
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.SHIFTING_INDEX
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.VALUE_X
@@ -74,6 +73,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -110,16 +110,17 @@ class UniversalInboxFragment @Inject constructor(
         this
     )
 
+    // Recomm
+    private var shouldTopAdsAndLoadRecommendation = true
+
     // TopAds Banner
     private var topAdsBannerInProductCards: List<TopAdsImageViewModel>? = null
     private var topAdsBannerExperimentPosition: Int = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
-    private var isTopAdsBannerAdded = false
 
     // TopAds Headline
     private var headlineData: CpmModel? = null
     private var headlineIndexList: ArrayList<Int>? = null
     private var headlineExperimentPosition: Int = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
-    private var isAdded = false
 
     private var trackingQueue: TrackingQueue? = null
 
@@ -190,6 +191,7 @@ class UniversalInboxFragment @Inject constructor(
                     this@UniversalInboxFragment
                 )
             }
+            binding?.inboxLayoutSwipeRefresh?.isRefreshing = true // prevent direct load more
         }
         endlessRecyclerViewScrollListener?.let {
             binding?.inboxRv?.addOnScrollListener(it)
@@ -220,22 +222,6 @@ class UniversalInboxFragment @Inject constructor(
                 observeError()
             }
         }
-
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                viewModel.inboxMenu.collectLatest {
-//                    binding?.inboxLayoutSwipeRefresh?.isRefreshing = false
-//                    if (!it.isNullOrEmpty()) {
-//                        adapter.addItems(it)
-//                        binding?.inboxRv?.post {
-//                            adapter.notifyItemRangeChanged(Int.ZERO, it.size - Int.ONE)
-//                            loadTopAdsAndRecommendation()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-        //            loadWidgetMetaAndCounter()
 
 //        viewModel.widget.observe(viewLifecycleOwner) { (widget, counter) ->
 //            if (adapter.isWidgetMetaAdded()) {
@@ -283,8 +269,9 @@ class UniversalInboxFragment @Inject constructor(
             updateNotificationCounter(it.notificationCounter)
 
             // Load recommendation
-            if (it.shouldLoadRecommendation) {
-                viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
+            if (shouldTopAdsAndLoadRecommendation) {
+                shouldTopAdsAndLoadRecommendation = false // do not load again
+                loadTopAdsAndRecommendation()
             }
         }
     }
@@ -359,7 +346,7 @@ class UniversalInboxFragment @Inject constructor(
             adapter.removeAllProductRecommendation()
         }
         adapter.tryUpdateProductRecommendations(title, newList)
-//        setHeadlineAndBannerExperiment()
+        setHeadlineAndBannerExperiment()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
@@ -515,13 +502,15 @@ class UniversalInboxFragment @Inject constructor(
     private fun setTopAdsHeadlineExperiment() {
         var index = Int.ZERO
         if (headlineIndexList != null && headlineIndexList?.isNotEmpty() == true) {
-            val pageNum = endlessRecyclerViewScrollListener?.currentPage ?: Int.ZERO
-            if (pageNum == Int.ZERO) { // Get headline position for first page recommendation
+            val pageNum = viewModel.getRecommendationPage()
+            // Get headline position for first page recommendation
+            // 2 is the first, because after we get the data, page is added by 1
+            if (pageNum == 2) {
                 headlineExperimentPosition =
                     headlineIndexList?.get(Int.ZERO) ?: HEADLINE_POS_NOT_TO_BE_ADDED
-                // If the headline index size is 2 and page number is 1 (second page)
+                // If the headline index size is 2 and page number is 3 (second page)
             } else if (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT &&
-                pageNum < HEADLINE_ADS_BANNER_COUNT
+                pageNum == 3
             ) {
                 headlineExperimentPosition =
                     headlineIndexList?.get(Int.ONE) ?: HEADLINE_POS_NOT_TO_BE_ADDED // Get the second index
@@ -535,8 +524,7 @@ class UniversalInboxFragment @Inject constructor(
                                 pageNum < HEADLINE_ADS_BANNER_COUNT
                             ) // If the headline index size is 2 and page number is 1 (second page)
                     ) &&
-                headlineExperimentPosition <= adapter.itemCount && // Prevent out of bound exception
-                !isAdded // Only 1 headline allowed
+                headlineExperimentPosition <= adapter.itemCount // Prevent out of bound exception
             ) {
                 addTopAdsHeadlineUiModel(index)
             }
@@ -544,8 +532,8 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun addTopAdsHeadlineUiModel(index: Int) {
-        val position = if (isTopAdsBannerAdded) {
-            headlineExperimentPosition + SHIFTING_INDEX
+        val position = if (adapter.getTopAdsHeadlineCount() % 2 != 0) {
+            headlineExperimentPosition + 1 // Shift to even the number of products
         } else {
             headlineExperimentPosition
         }
@@ -554,18 +542,16 @@ class UniversalInboxFragment @Inject constructor(
             UniversalInboxTopadsHeadlineUiModel(headlineData, Int.ZERO, index)
         )
         binding?.inboxRv?.post {
-            adapter.notifyItemInserted(position)
+            adapter.notifyItemInserted(headlineExperimentPosition)
         }
-        isAdded = true
     }
 
     private fun setTopAdsBannerExperiment() {
         if (topAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED &&
-            topAdsBannerExperimentPosition <= adapter.itemCount && // Prevent out of bound
-            !isTopAdsBannerAdded // Only one banner experiment allowed
+            topAdsBannerExperimentPosition <= adapter.itemCount // Prevent out of bound
         ) {
-            val position = if (isAdded) {
-                topAdsBannerExperimentPosition + SHIFTING_INDEX
+            val position = if (adapter.getTopAdsHeadlineCount() % 2 != 0) {
+                topAdsBannerExperimentPosition + 1 // Shift to even the number of products
             } else {
                 topAdsBannerExperimentPosition
             }
@@ -574,9 +560,8 @@ class UniversalInboxFragment @Inject constructor(
                 UniversalInboxTopAdsBannerUiModel(topAdsBannerInProductCards)
             )
             binding?.inboxRv?.post {
-                adapter.notifyItemInserted(position)
+                adapter.notifyItemInserted(topAdsBannerExperimentPosition)
             }
-            isTopAdsBannerAdded = true
         }
     }
 
@@ -585,7 +570,6 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun loadTopAdsAndRecommendation() {
-        showLoadMoreLoading()
         topAdsHeadlineViewModel.getTopAdsHeadlineData(
             getHeadlineAdsParam(Int.ZERO, userSession.userId),
             { data ->
@@ -594,10 +578,11 @@ class UniversalInboxFragment @Inject constructor(
                     return@getTopAdsHeadlineData
                 }
                 setHeadlineIndexList(data)
-//                viewModel.loadFirstPageRecommendation()
+                endlessRecyclerViewScrollListener
+                viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
             },
             {
-//                viewModel.loadFirstPageRecommendation()
+                viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
             }
         )
     }
@@ -615,8 +600,7 @@ class UniversalInboxFragment @Inject constructor(
             unifyprinciplesR.color.Unify_GN500
         )
         binding?.inboxLayoutSwipeRefresh?.setOnRefreshListener {
-            isAdded = false
-            isTopAdsBannerAdded = false
+            shouldTopAdsAndLoadRecommendation = true
             endlessRecyclerViewScrollListener?.resetState()
             adapter.clearAllItemsAndAnimateChanges()
             loadWidgetMetaAndCounter()
@@ -753,17 +737,6 @@ class UniversalInboxFragment @Inject constructor(
         }
     }
 
-    private fun removeLoadMoreLoading() {
-        if (adapter.getItems().isNotEmpty()) {
-            adapter.getFirstLoadingPosition()?.let { index ->
-                adapter.removeItemAt(index)
-                binding?.inboxRv?.post {
-                    adapter.notifyItemRemoved(index)
-                }
-            }
-        }
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {
         if (categoriesList.isEmpty()) return
@@ -882,50 +855,50 @@ class UniversalInboxFragment @Inject constructor(
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if (isAddWishlist) {
             // Anonymous used because we need RecommendationItem
-//            viewModel.addWishlistV2(
-//                item,
-//                object : WishlistV2ActionListener {
-//                    override fun onSuccessAddWishlist(
-//                        result: AddToWishlistV2Response.Data.WishlistAddV2,
-//                        productId: String
-//                    ) {
-//                        showSuccessAddWishlistV2(wishlistAddResult = result)
-//                        if (item.isTopAds) {
-//                            onClickTopAdsWishlistItem(item)
-//                        }
-//                    }
-//                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-//                        showErrorAddRemoveWishlistV2(throwable = throwable)
-//                    }
-//
-//                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-//                    override fun onSuccessRemoveWishlist(
-//                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-//                        productId: String
-//                    ) {}
-//                }
-//            )
+            viewModel.addWishlistV2(
+                item,
+                object : WishlistV2ActionListener {
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        showSuccessAddWishlistV2(wishlistAddResult = result)
+                        if (item.isTopAds) {
+                            onClickTopAdsWishlistItem(item)
+                        }
+                    }
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        showErrorAddRemoveWishlistV2(throwable = throwable)
+                    }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                    override fun onSuccessRemoveWishlist(
+                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                        productId: String
+                    ) {}
+                }
+            )
         } else {
-//            viewModel.removeWishlistV2(
-//                item,
-//                object : WishlistV2ActionListener {
-//                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-//                        showErrorAddRemoveWishlistV2(throwable = throwable)
-//                    }
-//                    override fun onSuccessRemoveWishlist(
-//                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-//                        productId: String
-//                    ) {
-//                        showSuccessRemoveWishlistV2(wishListRemoveResult = result)
-//                    }
-//
-//                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
-//                    override fun onSuccessAddWishlist(
-//                        result: AddToWishlistV2Response.Data.WishlistAddV2,
-//                        productId: String
-//                    ) {}
-//                }
-//            )
+            viewModel.removeWishlistV2(
+                item,
+                object : WishlistV2ActionListener {
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                        showErrorAddRemoveWishlistV2(throwable = throwable)
+                    }
+                    override fun onSuccessRemoveWishlist(
+                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                        productId: String
+                    ) {
+                        showSuccessRemoveWishlistV2(wishListRemoveResult = result)
+                    }
+
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {}
+                }
+            )
         }
     }
 

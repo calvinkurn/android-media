@@ -18,6 +18,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -184,6 +185,18 @@ class UniversalInboxAdapter(
             }
         }
         return null
+    }
+
+    fun getTopAdsHeadlineCount(): Int {
+        return itemList.count {
+            it is UniversalInboxTopadsHeadlineUiModel
+        }
+    }
+
+    fun getTopAdsBannerExperimentCount(): Int {
+        return itemList.count {
+            it is UniversalInboxTopAdsBannerUiModel
+        }
     }
 
     fun isWidgetMetaAdded(): Boolean {
