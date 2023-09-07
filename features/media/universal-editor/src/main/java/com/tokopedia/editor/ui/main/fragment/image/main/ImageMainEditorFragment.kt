@@ -36,5 +36,4 @@ class ImageMainEditorFragment @Inject constructor(
             }
         }
     }
-
 }

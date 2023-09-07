@@ -13,6 +13,10 @@ sealed class MainEditorEffect {
     data class FinishEditorPage(val filePath: String) : MainEditorEffect()
     data class OpenPlacementPage(val sourcePath: String, val model: ImagePlacementModel?) : MainEditorEffect()
 
+    object ShowCloseDialogConfirmation : MainEditorEffect()
+
+    object CloseMainEditorPage : MainEditorEffect()
+
     // Visibility handler
     data class ShowToastErrorMessage(val message: String) : MainEditorEffect()
     data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()

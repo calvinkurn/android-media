@@ -1,6 +1,7 @@
 package com.tokopedia.editor.ui.widget
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.LinearLayout
@@ -57,7 +58,8 @@ class InputTextStyleItemView(context: Context, attributeSet: AttributeSet?): Car
     }
 
     fun setFont(font: FontDetail) {
-        textContent?.setTypeface(null, font.fontStyle)
+        val typeFace = Typeface.createFromAsset(context.assets, font.fontName)
+        textContent?.setTypeface(typeFace, font.fontStyle)
     }
 
     fun isActive(): Boolean {

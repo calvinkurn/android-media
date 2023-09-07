@@ -94,6 +94,18 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextParam.reset()
             }
+            is MainEditorEvent.ClickHeaderCloseButton -> {
+                val currentState = mainEditorState.value
+
+                val isPlacementEdited = currentState.imagePlacementModel?.path != null
+                val isTextAdded = currentState.hasTextAdded
+
+                if ((isPlacementEdited || isTextAdded) && !event.isSkipConfirmation) {
+                    setAction(MainEditorEffect.ShowCloseDialogConfirmation)
+                } else {
+                    setAction(MainEditorEffect.CloseMainEditorPage)
+                }
+            }
         }
     }
 
