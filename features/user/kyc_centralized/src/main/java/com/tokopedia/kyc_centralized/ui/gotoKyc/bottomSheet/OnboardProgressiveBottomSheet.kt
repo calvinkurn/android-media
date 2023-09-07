@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -134,6 +135,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun initView() {
         setTokopediaCareView()
         binding?.apply {
@@ -228,6 +230,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun setTokopediaCareView() {
         val message = getString(R.string.goto_kyc_question_ktp_issue)
         val spannable = SpannableString(message)

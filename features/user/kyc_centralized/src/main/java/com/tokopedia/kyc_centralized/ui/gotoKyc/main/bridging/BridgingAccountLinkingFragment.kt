@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -227,6 +228,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         binding?.btnConfirm?.isLoading = isLoading
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun handleProgressiveFlow(encryptedName: String) {
         binding?.apply {
             loader.hide()
@@ -258,6 +260,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun handleNonProgressiveFlow() {
         binding?.apply {
             loader.hide()
@@ -319,6 +322,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun initSpannable() {
         val message = getString(R.string.goto_kyc_question_ktp_issue)
         val indexStar = message.indexOf(getString(R.string.goto_kyc_contact_tokopedia_care))

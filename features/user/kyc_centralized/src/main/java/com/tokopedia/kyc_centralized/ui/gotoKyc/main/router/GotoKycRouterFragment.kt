@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main.router
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
@@ -47,6 +48,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         return binding?.root
     }
 
+    @SuppressLint("PII Data Exposure")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

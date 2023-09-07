@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -189,6 +190,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun setUpViewKtp() {
         binding?.layoutKtp?.apply {
             imgItemOnboard.loadImageWithoutPlaceholder(
