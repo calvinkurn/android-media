@@ -34,6 +34,7 @@ class BuyerOrderDetailTypeFactoryStub(
     pofRefundInfoListener: PofRefundInfoViewHolder.Listener,
     owocInfoListener: OwocInfoViewHolder.Listener,
     productViewListener: PartialProductItemViewHolder.ProductViewListener,
+    bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
     navigator: BuyerOrderDetailNavigator,
     buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener
@@ -48,6 +49,7 @@ class BuyerOrderDetailTypeFactoryStub(
     scpRewardsMedalTouchPointWidgetListener,
     owocInfoListener,
     productViewListener,
+    bottomSheetListener,
     navigator,
     buyerOrderDetailBindRecomWidgetListener,
     orderResolutionListener
@@ -55,7 +57,7 @@ class BuyerOrderDetailTypeFactoryStub(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolderStub(parent, navigator)
-            ProductViewHolder.LAYOUT -> ProductViewHolderStub(parent, productViewListener, navigator)
+            ProductViewHolder.LAYOUT -> ProductViewHolderStub(parent, productViewListener, bottomSheetListener, navigator)
             PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolderStub(parent, buyerOrderDetailBindRecomWidgetListener)
             else -> super.createViewHolder(parent, type)
         }
