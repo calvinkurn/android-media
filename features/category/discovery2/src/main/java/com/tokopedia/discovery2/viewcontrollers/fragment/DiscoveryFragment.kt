@@ -1139,7 +1139,7 @@ open class DiscoveryFragment :
         setCartAndNavIcon()
         setSearchBar(null)
         mProgressBar.hide()
-        mSwipeRefreshLayout.isRefreshing = false
+        mSwipeRefreshLayout?.isRefreshing = false
     }
 
     private fun settingUpNavBar(data: PageInfo?) {
@@ -1415,28 +1415,6 @@ open class DiscoveryFragment :
 
     override fun screenShotTaken(path: String) {
         showUniversalShareBottomSheet(pageInfoHolder, path)
-    }
-
-    private fun setToolBarPageInfoOnFail() {
-        if (showOldToolbar) {
-            typographyHeader.text = getString(R.string.discovery_tokopedia)
-            ivSearch.hide()
-            ivShare.hide()
-        } else {
-            setCartAndNavIcon()
-            setupSearchBar(null)
-        }
-        mProgressBar.hide()
-        mSwipeRefreshLayout?.isRefreshing = false
-    }
-
-    private fun setCartAndNavIcon() {
-        navToolbar.setIcon(
-            IconBuilder(getNavIconBuilderFlag())
-                .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
-                .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
-        )
-        navToolbar.updateNotification()
     }
 
     private fun setupSearchBar(data: PageInfo?) {
