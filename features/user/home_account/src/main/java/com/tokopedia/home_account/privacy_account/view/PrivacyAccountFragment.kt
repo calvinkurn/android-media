@@ -335,6 +335,13 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
                 data.groups.sortedBy { it.priority }
                 privacyAccountAdapter.setItems(data.groups)
             }
+
+            if (data.ticker.isNotEmpty()) {
+                consentGroupTicker.visibility = View.VISIBLE
+                consentGroupTicker.setTextDescription(data.ticker)
+            } else {
+                consentGroupTicker.visibility = View.GONE
+            }
         }
     }
 

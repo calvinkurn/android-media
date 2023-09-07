@@ -34,7 +34,9 @@ import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowModelBase
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowedData
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowedDataVal
+import com.tokopedia.feedcomponent.people.model.ProfileDoUnFollowModelBase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.R
@@ -42,6 +44,8 @@ import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
+import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
+import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
@@ -50,6 +54,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCommentModel
 import com.tokopedia.feedplus.presentation.model.FeedFollowModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
@@ -84,6 +89,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 /**
  * Created By : Muhammad Furqan on 22/05/23
@@ -107,6 +113,7 @@ class FeedPostViewModelTest {
     private val userSession: UserSessionInterface = mockk()
     private val shopFollowUseCase: ShopFollowUseCase = mockk()
     private val userFollowUseCase: ProfileFollowUseCase = mockk()
+    private val userUnfollowUseCase: ProfileUnfollowedUseCase = mockk()
     private val campaignReminderUseCase: FeedCampaignReminderUseCase = mockk()
     private val checkCampaignReminderUseCase: FeedCampaignCheckReminderUseCase = mockk()
     private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase = mockk()
@@ -117,6 +124,7 @@ class FeedPostViewModelTest {
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
     private val getReportListUseCase: GetUserReportListUseCase = mockk()
     private val postReportUseCase: PostUserReportUseCase = mockk()
+    private val feedXRecomWidgetUseCase: FeedXRecomWidgetUseCase = mockk()
     private val affiliateCookieHelper: AffiliateCookieHelper = mockk()
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
     private val uiEventManager = UiEventManager<FeedPostEvent>()
@@ -134,6 +142,7 @@ class FeedPostViewModelTest {
             userSession = userSession,
             shopFollowUseCase = shopFollowUseCase,
             userFollowUseCase = userFollowUseCase,
+            userUnfollowUseCase = userUnfollowUseCase,
             setCampaignReminderUseCase = campaignReminderUseCase,
             checkCampaignReminderUseCase = checkCampaignReminderUseCase,
             topAdsHeadlineUseCase = topAdsHeadlineUseCase,
@@ -146,6 +155,7 @@ class FeedPostViewModelTest {
             submitReportUseCase = submitReportUseCase,
             getReportUseCase = getReportListUseCase,
             postReportUseCase = postReportUseCase,
+            feedXRecomWidgetUseCase = feedXRecomWidgetUseCase,
             uiEventManager = uiEventManager,
             feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             dispatchers = testDispatcher
@@ -258,15 +268,9 @@ class FeedPostViewModelTest {
     fun onDoFollowShop_whenSuccess() {
         // given
         provideDefaultFeedPostMockData()
-        val dummyData = ShopFollowModel(
-            followShop = FollowShop(
-                success = true,
-                isFollowing = true
-            )
-        )
 
         coEvery { shopFollowUseCase.createParams(any()) } returns mapOf()
-        coEvery { shopFollowUseCase(any()) } returns dummyData
+        coEvery { shopFollowUseCase(any()) } returns getDummyShopFollowResponseData()
 
         // when
         viewModel.doFollow("authorId", "", true)
@@ -634,12 +638,37 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } throws MessageErrorException("Failed")
 
         // when
-        viewModel.fetchFeedPosts("", true, null)
+        viewModel.fetchFeedPosts("", postSource = null)
 
         // then
         assert(viewModel.feedHome.value is Fail)
         assert((viewModel.feedHome.value as Fail).throwable is MessageErrorException)
         assert((viewModel.feedHome.value as Fail).throwable.message == "Failed")
+    }
+
+    @Test
+    fun onFetchFeedPosts_whenSuccessWithoutRelevantPostInCDP() {
+        // given
+        val dummyData = getDummyFeedModel()
+        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
+        coEvery { feedXHomeUseCase(any()) } returns dummyData
+
+        // when
+        viewModel.fetchFeedPosts("", true, postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
+
+        // then
+        assert(!viewModel.shouldShowNoMoreContent)
+        assert(viewModel.feedHome.value is Success)
+        val data = (viewModel.feedHome.value as Success).data
+        assert(data.items.size == dummyData.items.size)
+        assert(data.items[0] is FeedCardImageContentModel)
+        assert(data.items[1] is FeedCardVideoContentModel)
+        assert(data.items[2] is FeedCardLivePreviewContentModel)
+        assert(data.items[3] is FeedCardImageContentModel)
+        assert(data.items[4] is FeedCardVideoContentModel)
+        assert(data.items[5] is FeedCardLivePreviewContentModel)
+        assert(data.items[6] is FeedFollowRecommendationModel)
+        assert(data.items[7] is FeedNoContentModel)
     }
 
     @Test
@@ -649,20 +678,22 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
 
         // when
-        viewModel.fetchFeedPosts("")
+        viewModel.fetchFeedPosts("", postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
 
         // then
         assert(!viewModel.shouldShowNoMoreContent)
         assert(viewModel.feedHome.value is Success)
         val data = (viewModel.feedHome.value as Success).data
-        assert(data.items.size == 7)
+        assert(data.items.size == 8)
         assert(data.items[0] is FeedCardImageContentModel)
         assert(data.items[1] is FeedCardVideoContentModel)
         assert(data.items[2] is FeedCardLivePreviewContentModel)
         assert(data.items[3] is FeedCardImageContentModel)
         assert(data.items[4] is FeedCardVideoContentModel)
         assert(data.items[5] is FeedCardLivePreviewContentModel)
-        assert(data.items[6] is FeedNoContentModel)
+        assert(data.items[6] is FeedFollowRecommendationModel)
+        assert(data.items[7] is FeedNoContentModel)
+        assert(viewModel.hasNext)
     }
 
     @Test
@@ -680,21 +711,23 @@ class FeedPostViewModelTest {
         assert(!viewModel.shouldShowNoMoreContent)
         assert(viewModel.feedHome.value is Success)
         val data = (viewModel.feedHome.value as Success).data
-        assert(data.items.size == 14)
+        assert(data.items.size == 16)
         assert(data.items[0] is FeedCardImageContentModel)
         assert(data.items[1] is FeedCardVideoContentModel)
         assert(data.items[2] is FeedCardLivePreviewContentModel)
         assert(data.items[3] is FeedCardImageContentModel)
         assert(data.items[4] is FeedCardVideoContentModel)
         assert(data.items[5] is FeedCardLivePreviewContentModel)
-        assert(data.items[6] is FeedNoContentModel)
-        assert(data.items[7] is FeedCardImageContentModel)
-        assert(data.items[8] is FeedCardVideoContentModel)
-        assert(data.items[9] is FeedCardLivePreviewContentModel)
-        assert(data.items[10] is FeedCardImageContentModel)
-        assert(data.items[11] is FeedCardVideoContentModel)
-        assert(data.items[12] is FeedCardLivePreviewContentModel)
-        assert(data.items[13] is FeedNoContentModel)
+        assert(data.items[6] is FeedFollowRecommendationModel)
+        assert(data.items[7] is FeedNoContentModel)
+        assert(data.items[8] is FeedCardImageContentModel)
+        assert(data.items[9] is FeedCardVideoContentModel)
+        assert(data.items[10] is FeedCardLivePreviewContentModel)
+        assert(data.items[11] is FeedCardImageContentModel)
+        assert(data.items[12] is FeedCardVideoContentModel)
+        assert(data.items[13] is FeedCardLivePreviewContentModel)
+        assert(data.items[14] is FeedFollowRecommendationModel)
+        assert(data.items[15] is FeedNoContentModel)
     }
 
     @Test
@@ -848,7 +881,8 @@ class FeedPostViewModelTest {
         assert(!(feedData.items[4] as FeedCardVideoContentModel).campaign.isReminderActive)
         assert(feedData.items[5] is FeedCardLivePreviewContentModel)
         assert(!(feedData.items[5] as FeedCardLivePreviewContentModel).campaign.isReminderActive)
-        assert(feedData.items[6] is FeedNoContentModel)
+        assert(feedData.items[6] is FeedFollowRecommendationModel)
+        assert(feedData.items[7] is FeedNoContentModel)
     }
 
     @Test
@@ -1327,11 +1361,563 @@ class FeedPostViewModelTest {
         )
     )
 
+    /** Follow Recommendation */
+    @Test
+    fun onInitialFetchFollowRecommendation_Success() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        // test
+        provideMockForFollowRecommendation()
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel) == mockFollowRecommendationData)
+    }
+
+    @Test
+    fun onInitialFetchBulkFollowRecommendation_Error() {
+        // prepare
+        val mockFollowRecommendationData = Exception("Network Error")
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } throws mockFollowRecommendationData
+
+        // test
+        provideMockForFollowRecommendation()
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).isError)
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_LoadMore_Success() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        provideMockForFollowRecommendation()
+
+        // test
+        viewModel.fetchFollowRecommendation(6)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).data == mockFollowRecommendationData.data + mockFollowRecommendationData.data)
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_LoadMore_WidgetNotFound() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        provideMockForFollowRecommendation()
+
+        // test
+        viewModel.fetchFollowRecommendation(5)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).data == mockFollowRecommendationData.data)
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_InitialFetchError_RetrySuccess() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val mockInitialFollowRecommendationData = Exception()
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } throws mockInitialFollowRecommendationData
+
+        provideMockForFollowRecommendation()
+
+        // test
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+        viewModel.fetchFollowRecommendation(6)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert(followRecomModel == mockFollowRecommendationData)
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_InitialFetchError_RetryError() {
+        // prepare
+        val mockInitialFollowRecommendationData = Exception()
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } throws mockInitialFollowRecommendationData
+
+        provideMockForFollowRecommendation()
+
+        // test
+        viewModel.fetchFollowRecommendation(6)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).isError)
+        assert(followRecomModel.data.isEmpty())
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_LoadMore_Error() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val mockErrorFollowRecommendationData = Exception()
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        provideMockForFollowRecommendation()
+
+        // test
+        coEvery { feedXRecomWidgetUseCase(any()) } throws mockErrorFollowRecommendationData
+        viewModel.fetchFollowRecommendation(6)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).status == FeedFollowRecommendationModel.Status.Success)
+        assert(followRecomModel.data == mockFollowRecommendationData.data)
+        assert(viewModel.followRecommendationResult.value is Fail)
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_NoMorePage_LoadMore() {
+        // prepare
+        val mockFollowRecommendationDataWithoutCursor = getDummyProfileRecommendationList(cursor = "")
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationDataWithoutCursor
+
+        provideMockForFollowRecommendation()
+
+        // test
+        viewModel.fetchFollowRecommendation(6)
+        viewModel.fetchFollowRecommendation(6)
+        viewModel.fetchFollowRecommendation(6)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert(followRecomModel == mockFollowRecommendationDataWithoutCursor)
+    }
+
+    /** Follow UnFollow Profile Recommendation */
+    @Test
+    fun onFollowProfileRecommendation_Shop_Success() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedProfileIndex = 0
+        val selectedProfile = mockFollowRecommendationData.data[selectedProfileIndex]
+
+        val mockFollowed = getDummyShopFollowResponseData(isFollowing = true)
+        val mockNotFollowed = getDummyShopFollowResponseData(isFollowing = false)
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+        coEvery { shopFollowUseCase.createParams(any()) } returns mapOf()
+        coEvery { shopFollowUseCase.createParams(any(), any()) } returns mapOf()
+
+        provideMockForFollowRecommendation()
+
+        // test
+        coEvery { shopFollowUseCase(any()) } returns mockFollowed
+        viewModel.doFollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed)
+        assert(viewModel.followResult.value is Success)
+
+        // double test
+        coEvery { shopFollowUseCase(any()) } returns mockNotFollowed
+        viewModel.doUnfollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel2 = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel2 is FeedFollowRecommendationModel)
+        assert((followRecomModel2 as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed.not())
+        assert(viewModel.unfollowResult.value is Success)
+    }
+
+    @Test
+    fun onFollowProfileRecommendation_Shop_NotSuccess() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedProfileIndex = 0
+        val selectedProfile = mockFollowRecommendationData.data[selectedProfileIndex]
+
+        val mockShopFollowNotSuccess = getDummyShopFollowResponseData(success = false)
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+        coEvery { shopFollowUseCase.createParams(any()) } returns mapOf()
+        coEvery { shopFollowUseCase.createParams(any(), any()) } returns mapOf()
+
+        provideMockForFollowRecommendation()
+
+        // test
+        coEvery { shopFollowUseCase(any()) } returns mockShopFollowNotSuccess
+        viewModel.doFollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert(
+            (followRecomModel as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed == mockFollowRecommendationData.data[selectedProfileIndex].isFollowed
+        )
+        assert(viewModel.followResult.value is Fail)
+    }
+
+    @Test
+    fun onUnFollowProfileRecommendation_Shop_NotSuccess() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedProfileIndex = 0
+        val selectedProfile = mockFollowRecommendationData.data[selectedProfileIndex]
+
+        val mockShopFollowSuccess = getDummyShopFollowResponseData()
+        val mockShopUnfollowNotSuccess = getDummyShopFollowResponseData(success = false)
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+        coEvery { shopFollowUseCase.createParams(any()) } returns mapOf()
+        coEvery { shopFollowUseCase.createParams(any(), any()) } returns mapOf()
+
+        provideMockForFollowRecommendation()
+
+        // follow first
+        coEvery { shopFollowUseCase(any()) } returns mockShopFollowSuccess
+        viewModel.doFollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed)
+
+        // test
+        coEvery { shopFollowUseCase(any()) } returns mockShopUnfollowNotSuccess
+        viewModel.doUnfollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel2 = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel2 is FeedFollowRecommendationModel)
+        assert((followRecomModel2 as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed)
+        assert(viewModel.unfollowResult.value is Fail)
+    }
+
+    @Test
+    fun onFollowProfileRecommendation_Shop_Error() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedProfileIndex = 0
+        val selectedProfile = mockFollowRecommendationData.data[selectedProfileIndex]
+
+        val mockException = Exception()
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+        coEvery { shopFollowUseCase.createParams(any()) } returns mapOf()
+        coEvery { shopFollowUseCase.createParams(any(), any()) } returns mapOf()
+
+        provideMockForFollowRecommendation()
+
+        // test
+        coEvery { shopFollowUseCase(any()) } throws mockException
+        viewModel.doFollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert(
+            (followRecomModel as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed == mockFollowRecommendationData.data[selectedProfileIndex].isFollowed
+        )
+        assert(viewModel.followResult.value is Fail)
+    }
+
+    @Test
+    fun onFollowProfileRecommendation_Ugc_Success() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedProfileIndex = 1
+        val selectedProfile = mockFollowRecommendationData.data[selectedProfileIndex]
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        coEvery { userFollowUseCase.executeOnBackground(any()) } returns getDummyUserFollowResponseData()
+        coEvery { userUnfollowUseCase.executeOnBackground(any()) } returns getDummyUserUnfollowResponseData()
+
+        provideMockForFollowRecommendation()
+
+        // test
+        viewModel.doFollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed)
+        assert(viewModel.followResult.value is Success)
+
+        // double test
+        viewModel.doUnfollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel2 = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel2 is FeedFollowRecommendationModel)
+        assert((followRecomModel2 as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed.not())
+        assert(viewModel.unfollowResult.value is Success)
+    }
+
+    @Test
+    fun onUnFollowProfileRecommendation_Ugc_NotSuccess() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedProfileIndex = 1
+        val selectedProfile = mockFollowRecommendationData.data[selectedProfileIndex]
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        coEvery { userFollowUseCase.executeOnBackground(any()) } returns getDummyUserFollowResponseData()
+        coEvery { userUnfollowUseCase.executeOnBackground(any()) } returns getDummyUserUnfollowResponseData(isError = true)
+
+        provideMockForFollowRecommendation()
+
+        // follow first
+        viewModel.doFollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed)
+        assert(viewModel.followResult.value is Success)
+
+        // test
+        viewModel.doUnfollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel2 = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel2 is FeedFollowRecommendationModel)
+        assert((followRecomModel2 as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed)
+        assert(viewModel.unfollowResult.value is Fail)
+    }
+
+    @Test
+    fun onUnFollowProfileRecommendation_Ugc_Error() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedProfileIndex = 1
+        val selectedProfile = mockFollowRecommendationData.data[selectedProfileIndex]
+
+        val mockException = Exception()
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        coEvery { userFollowUseCase.executeOnBackground(any()) } returns getDummyUserFollowResponseData()
+        coEvery { userUnfollowUseCase.executeOnBackground(any()) } throws mockException
+
+        provideMockForFollowRecommendation()
+
+        // follow first
+        viewModel.doFollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed)
+        assert(viewModel.followResult.value is Success)
+
+        // test
+        viewModel.doUnfollowProfileRecommendation(selectedProfile.id, selectedProfile.encryptedId, selectedProfile.isShop)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel2 = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel2 is FeedFollowRecommendationModel)
+        assert((followRecomModel2 as FeedFollowRecommendationModel).data[selectedProfileIndex].isFollowed)
+        assert(viewModel.unfollowResult.value is Fail)
+    }
+
+    /** Remove Profile Recommendation */
+    @Test
+    fun RemoveProfileRecommendation_Success() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedRemovedProfile = mockFollowRecommendationData.data[2]
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        provideMockForFollowRecommendation()
+
+        // test
+        viewModel.removeProfileRecommendation(selectedRemovedProfile)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).data.size == mockFollowRecommendationData.data.size - 1)
+        assert((followRecomModel as FeedFollowRecommendationModel).data.indexOf(selectedRemovedProfile) == -1)
+    }
+
+    @Test
+    fun RemoveProfileRecommendation_NotFound() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedRemovedProfile = mockFollowRecommendationData.data[1].copy(
+            id = "asdfasdf",
+            encryptedId = "asdfasdf"
+        )
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        provideMockForFollowRecommendation()
+
+        // test
+        viewModel.removeProfileRecommendation(selectedRemovedProfile)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        println("JOE LOG ${(followRecomModel as FeedFollowRecommendationModel).data.size}")
+        println("JOE LOG ${mockFollowRecommendationData.data.size}")
+        assert((followRecomModel as FeedFollowRecommendationModel).data.size == mockFollowRecommendationData.data.size)
+    }
+
+    @Test
+    fun RemoveProfileRecommendation_NoRecommendation_TryToRemove() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedRemovedProfile = mockFollowRecommendationData.data[1]
+
+        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
+        coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
+        coEvery { feedXHomeUseCase(any()) } throws MessageErrorException("Failed")
+
+        viewModel.fetchFeedPosts("", true, null)
+
+        // test
+        viewModel.removeProfileRecommendation(selectedRemovedProfile)
+
+        // verify
+        assert(viewModel.feedHome.value is Fail)
+    }
+
     private fun provideDefaultFeedPostMockData() {
         coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
         coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
         viewModel.fetchFeedPosts("")
+    }
+
+    private fun provideMockForFollowRecommendation() {
+        coEvery { userSession.userId } returns ""
+        coEvery { topAdsAddressHelper.getAddressData() } returns mapOf()
+        coEvery { topAdsHeadlineUseCase.setParams(any(), any()) } coAnswers {}
+        coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
+            displayAds = CpmModel(
+                data = mutableListOf(
+                    CpmData(
+                        id = "",
+                        adRefKey = "",
+                        redirect = "",
+                        adClickUrl = "",
+                        cpm = Cpm(
+                            cpmShop = CpmShop(
+                                domain = "domain.com",
+                                id = "shopId"
+                            )
+                        ),
+                        applinks = ""
+                    )
+                )
+            )
+        )
+
+        provideDefaultFeedPostMockData()
     }
 
     private fun getAuthorModelDefault() =
@@ -1370,6 +1956,7 @@ class FeedPostViewModelTest {
                 "",
                 0,
                 "0",
+                "",
                 "",
                 "",
                 false,
@@ -1456,6 +2043,7 @@ class FeedPostViewModelTest {
                 "0",
                 "",
                 "",
+                "",
                 false,
                 ""
             ),
@@ -1507,12 +2095,82 @@ class FeedPostViewModelTest {
                 FeedCardCampaignModel(),
                 emptyList()
             ),
+            FeedFollowRecommendationModel.Empty.copy(id = "follow-recommendation"),
             FeedNoContentModel(0, "", "", "")
         ),
         pagination = FeedPaginationModel(
             "",
             true,
             10
+        )
+    )
+
+    private fun getDummyProfileRecommendationList(
+        profileSize: Int = 5,
+        cursor: String = "asdf"
+    ): FeedFollowRecommendationModel {
+        return FeedFollowRecommendationModel(
+            id = "follow-recommendation",
+            title = "Kayaknya joe bakal suka kreator ini~",
+            description = "Yuk, follow mereka buat dapetin update & konten yang pas banget buat joe!",
+            data = List(profileSize) {
+                FeedFollowRecommendationModel.Profile(
+                    id = it.toString(),
+                    encryptedId = it.toString(),
+                    name = "Profile $it",
+                    badge = "",
+                    type = if (it % 2 == 0) FeedFollowRecommendationModel.ProfileType.Seller else FeedFollowRecommendationModel.ProfileType.Ugc,
+                    thumbnailUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg?b=UaM%25G%23Rjn4WYVBx%5DjFWX%3D~t6bbWB0PkWkqoL",
+                    imageUrl = "https://images.tokopedia.net/img/seller_no_logo_1.png",
+                    videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
+                    applink = "applink",
+                    isFollowed = false
+                )
+            },
+            cursor = cursor,
+            status = FeedFollowRecommendationModel.Status.Success
+        )
+    }
+
+    private fun getDummyShopFollowResponseData(
+        success: Boolean = true,
+        isFollowing: Boolean = true
+    ): ShopFollowModel {
+        return ShopFollowModel(
+            followShop = FollowShop(
+                success = success,
+                isFollowing = isFollowing
+            )
+        )
+    }
+
+    private fun getDummyUserFollowResponseData(
+        isError: Boolean = false
+    ) = ProfileDoFollowModelBase(
+        profileFollowers = ProfileDoFollowedData(
+            messages = if (isError) listOf("Error") else emptyList(),
+            errorCode = if (isError) "123" else "",
+            data = ProfileDoFollowedDataVal(
+                userIdSource = "",
+                userIdTarget = "",
+                relation = "",
+                isSuccess = ""
+            )
+        )
+    )
+
+    private fun getDummyUserUnfollowResponseData(
+        isError: Boolean = false
+    ) = ProfileDoUnFollowModelBase(
+        profileFollowers = ProfileDoFollowedData(
+            messages = if (isError) listOf("Error") else emptyList(),
+            errorCode = if (isError) "123" else "",
+            data = ProfileDoFollowedDataVal(
+                userIdSource = "",
+                userIdTarget = "",
+                relation = "",
+                isSuccess = ""
+            )
         )
     )
 }

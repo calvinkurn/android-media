@@ -6,6 +6,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,6 +26,7 @@ class FeedProductTagView(
     private var hasVoucher: Boolean = false
     private var totalProducts: Int = 0
     private var trackerData: FeedTrackerDataModel? = null
+    private var topAdsTrackerData: FeedTopAdsTrackerDataModel? = null
     private var products: List<FeedCardProductModel> = emptyList()
     private var positionInFeed: Int = -1
 
@@ -37,6 +39,7 @@ class FeedProductTagView(
         products: List<FeedCardProductModel>,
         totalProducts: Int,
         trackerData: FeedTrackerDataModel?,
+        topAdsTrackerData: FeedTopAdsTrackerDataModel?,
         positionInFeed: Int
     ) {
         this.postId = postId
@@ -45,6 +48,7 @@ class FeedProductTagView(
         this.isFollowing = isFollowing
         this.campaign = campaign
         this.trackerData = trackerData
+        this.topAdsTrackerData = topAdsTrackerData
         this.totalProducts = totalProducts
         this.products = products
         this.positionInFeed = positionInFeed
@@ -81,6 +85,10 @@ class FeedProductTagView(
             }
 
             root.setOnClickListener {
+                topAdsTrackerData?.let {
+                    listener.onTopAdsClick(it)
+                }
+
                 author?.let { mAuthor ->
                     campaign?.let { mCampaign ->
                         listener.onProductTagViewClicked(
@@ -114,5 +122,4 @@ class FeedProductTagView(
         const val PRODUCT_COUNT_ONE = 1
         const val PRODUCT_COUNT_NINETY_NINE = 99
     }
-
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.manageaddress.ui.shoplocation
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,13 +13,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.constant.EditShopAddressConstant.EXTRA_EDITED_WAREHOUSE_NAME
 import com.tokopedia.logisticCommon.data.entity.shoplocation.GeneralTickerModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
@@ -29,7 +27,6 @@ import com.tokopedia.manageaddress.databinding.BottomsheetMainAddressInformation
 import com.tokopedia.manageaddress.databinding.FragmentShopLocationBinding
 import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
-import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingsAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_LAT
@@ -37,7 +34,6 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_LONG
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_WAREHOUSE_DATA
 import com.tokopedia.manageaddress.util.ShopLocationConstant.EDIT_WAREHOUSE_REQUEST_CODE
 import com.tokopedia.manageaddress.util.ShopLocationConstant.ERROR_CODE_NO_ACCESS
-import com.tokopedia.manageaddress.util.ShopLocationConstant.INTENT_SHOP_SETTING_ADDRESS_OLD
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -52,6 +48,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -82,20 +79,28 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkWhitelistedUser()
         initViews()
         initViewModel()
+        fetchData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EDIT_WAREHOUSE_REQUEST_CODE ) {
-            viewModel.getShopLocationList(userSession.shopId.toLong())
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == EDIT_WAREHOUSE_REQUEST_CODE) {
+                val warehouseName =
+                    data?.extras?.getString(EXTRA_EDITED_WAREHOUSE_NAME, "").orEmpty()
+                view?.let { view ->
+                    Toaster.build(
+                        view,
+                        getString(R.string.text_edit_shop_address_success, warehouseName),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_NORMAL
+                    ).show()
+                }
+                viewModel.getShopLocationList(userSession.shopId.toLong())
+            }
         }
-    }
-
-    private fun checkWhitelistedUser() {
-        viewModel.getWhitelistData(userSession.shopId.toLong())
     }
 
     private fun initViews() {
@@ -104,78 +109,56 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun initViewModel() {
-        viewModel.shopWhitelist.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShopLocationState.Success -> {
-                    if (it.data.data.eligibilityState == ELIGIBLE_USER_WHITELIST_STATE) {
+        viewModel.shopLocation.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShopLocationState.Success -> {
                         binding?.swipeRefresh?.isRefreshing = false
-                        fetchData()
-                    } else {
-                        activity?.finish()
-                        context?.let { ctx ->
-                            val intent = getSellerSettingsIntent(ctx)
-                            startActivityForResult(intent, INTENT_SHOP_SETTING_ADDRESS_OLD)
+                        binding?.globalError?.gone()
+                        updateData(it.data.listWarehouse)
+                        setGeneralTicker(it.data.generalTicker)
+                    }
+
+                    is ShopLocationState.Fail -> {
+                        binding?.swipeRefresh?.isRefreshing = false
+                        if (it.throwable != null) {
+                            handleError(it.throwable)
                         }
                     }
-                }
 
-                is ShopLocationState.Fail -> {
-                    binding?.swipeRefresh?.isRefreshing = false
-                    if (it.throwable != null) {
-                        handleError(it.throwable)
+                    else -> {
+                        binding?.swipeRefresh?.isRefreshing = true
                     }
                 }
-
-                else -> {
-                    binding?.swipeRefresh?.isRefreshing = true
-                }
             }
-        })
+        )
 
-        viewModel.shopLocation.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShopLocationState.Success -> {
-                    binding?.swipeRefresh?.isRefreshing = false
-                    binding?.globalError?.gone()
-                    updateData(it.data.listWarehouse)
-                    setGeneralTicker(it.data.generalTicker)
-                }
+        viewModel.result.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShopLocationState.Success -> {
+                        binding?.swipeRefresh?.isRefreshing = false
+                        if (warehouseStatus == STATE_WAREHOUSE_ACTIVE) {
+                            view?.let { view -> Toaster.build(view, getString(R.string.text_deactivate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+                        } else {
+                            view?.let { view -> Toaster.build(view, getString(R.string.text_activate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+                        }
+                        viewModel.getShopLocationList(userSession.shopId.toLong())
+                    }
 
-                is ShopLocationState.Fail -> {
-                    binding?.swipeRefresh?.isRefreshing = false
-                    if (it.throwable != null) {
-                        handleError(it.throwable)
+                    is ShopLocationState.Fail -> {
+                        binding?.swipeRefresh?.isRefreshing = false
+                        view?.let { view -> Toaster.build(view, ManageAddressConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
+                    }
+
+                    else -> {
+                        binding?.swipeRefresh?.isRefreshing = true
                     }
                 }
-
-                else -> {
-                    binding?.swipeRefresh?.isRefreshing = true
-                }
             }
-        })
-
-        viewModel.result.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShopLocationState.Success -> {
-                    binding?.swipeRefresh?.isRefreshing = false
-                    if (warehouseStatus == STATE_WAREHOUSE_ACTIVE) {
-                        view?.let { view -> Toaster.build(view, getString(R.string.text_deactivate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
-                    } else {
-                        view?.let { view -> Toaster.build(view, getString(R.string.text_activate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
-                    }
-                    viewModel.getShopLocationList(userSession.shopId.toLong())
-                }
-
-                is ShopLocationState.Fail -> {
-                    binding?.swipeRefresh?.isRefreshing = false
-                    view?.let { view -> Toaster.build(view, ManageAddressConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
-                }
-
-                else -> {
-                    binding?.swipeRefresh?.isRefreshing = true
-                }
-            }
-        })
+        )
     }
 
     private fun fetchData() {
@@ -187,30 +170,20 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         adapter.addList(data)
     }
 
-    private fun getSellerSettingsIntent(context: Context) : Intent {
-        return if (GlobalConfig.isSellerApp()) {
-                RouteManager.getIntent(context, ApplinkConstInternalSellerapp.MENU_SETTING)
-            } else {
-                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, userSession.shopId)
-            }
-
-    }
-
     private fun setGeneralTicker(data: GeneralTickerModel) {
         if (data.header.isNotEmpty()) {
             binding?.tickerShopLocation?.apply {
                 tickerTitle = data.header
                 visibility = View.VISIBLE
                 setHtmlDescription(data.body + getString(R.string.general_ticker_link))
-                setDescriptionClickEvent(object: TickerCallback {
+                setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         startActivity(RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, data.bodyLinkUrl)))
                     }
 
                     override fun onDismiss() {
-                        //no-op
+                        // no-op
                     }
-
                 })
             }
         } else {
@@ -238,7 +211,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private fun setupChild(data: Warehouse, child: BottomsheetActionShopAddressBinding) {
         if (data.status == STATE_WAREHOUSE_ACTIVE) {
             child.btnSetLocationStatus.text = getString(R.string.deactivate_location)
-        } else if (data.status == STATE_WAREHOUSE_INACTIVE)   {
+        } else if (data.status == STATE_WAREHOUSE_INACTIVE) {
             child.btnSetLocationStatus.text = getString(R.string.activate_location)
         }
 
@@ -307,8 +280,13 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                     if (throwable.message?.contains(ERROR_CODE_NO_ACCESS) == true) {
                         Toaster.build(it, getString(R.string.txt_error_no_access), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
                     } else {
-                        Toaster.build(it, throwable.message
-                                ?: ManageAddressConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(
+                            it,
+                            throwable.message
+                                ?: ManageAddressConstant.DEFAULT_ERROR_MESSAGE,
+                            Toaster.LENGTH_SHORT,
+                            type = Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
             }
@@ -366,7 +344,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun String?.checkLatlon(latLon: (latitude: Double, longitude: Double) -> Unit) {
-        this?.takeIf { isNotEmpty() } ?.apply {
+        this?.takeIf { isNotEmpty() }?.apply {
             val latitude = substringBefore(",").toDoubleOrNull()
             val longitude = substringAfter(",").toDoubleOrNull()
 
@@ -377,10 +355,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     companion object {
-        const val ELIGIBLE_USER_WHITELIST_STATE = 1
-
         const val STATE_WAREHOUSE_ACTIVE = 1
         const val STATE_WAREHOUSE_INACTIVE = 2
     }
-
 }

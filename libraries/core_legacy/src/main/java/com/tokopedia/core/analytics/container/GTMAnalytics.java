@@ -1082,12 +1082,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         campaign.setScreenName(screenName);
 
-        // V5
         sendCampaign(campaign.getCampaign());
-
-        // v4
-        pushEvent("campaignTrack", campaign.getCampaign());
-        sendGeneralEvent(campaign.getNullCampaignMap());
 
         sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.CAMPAIGN,
@@ -1145,7 +1140,13 @@ public class GTMAnalytics extends ContextAnalytics {
             bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
         }
 
-        pushEventV5("campaignTrack", wrapWithSessionIris(bundle), context);
+        bundle = wrapWithSessionIris(bundle);
+
+        //v5
+        pushEventV5("campaignTrack", bundle, context);
+
+        //v4
+        pushEvent("campaignTrack", bundleToMap(bundle));
     }
 
     private Boolean sameCampaignWithPrevCampaignSent(Map<String, Object> param) {

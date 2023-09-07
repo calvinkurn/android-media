@@ -14,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabelsBullet
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -110,7 +111,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
         hasNext = pagination.hasNext,
         pageName = pageName,
         recommendationBanner = campaign.mapToBannerData(),
-        isTokonow = isTokonow()
+        isTokonow = isTokonow(),
+        endDate = campaign.endDate,
     )
 }
 
@@ -126,9 +128,12 @@ fun RecommendationItem.toProductCardModel(
     hasAddToCartButton: Boolean = false,
     addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
     hasThreeDots: Boolean = false,
-    cardInteraction: Boolean = false,
+    cardInteraction: Boolean? = null,
     productCardListType: ProductListType = ProductListType.CONTROL,
+    cardType: Int = CardUnify2.TYPE_SHADOW,
+    animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
 ): ProductCardModel {
+    val productCardAnimate = if(cardInteraction == true) CardUnify2.ANIMATE_OVERLAY_BOUNCE else animateOnPress
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
     var hasThreeDotsFinalValue = hasThreeDots
@@ -161,11 +166,16 @@ fun RecommendationItem.toProductCardModel(
         labelGroupList = labelGroupList.map {
             ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
         },
-        hasAddToCartButton = if (addToCartType == RecommendationItem.AddToCartType.None) hasAddToCartButton else true,
+        hasAddToCartButton = when (addToCartType) {
+            RecommendationItem.AddToCartType.None -> hasAddToCartButton
+            RecommendationItem.AddToCartType.DirectAtc -> true
+            RecommendationItem.AddToCartType.QuantityEditor -> false
+        },
         addToCartButtonType = addToCartButtonType,
         variant = if (isProductHasParentID()) variant else null,
         nonVariant = if (isProductHasParentID()) null else nonVariant,
-        cardInteraction = cardInteraction,
+        cardType = cardType,
+        animateOnPress = productCardAnimate,
         productListType = productCardListType,
     )
 }
@@ -200,7 +210,7 @@ private fun RecommendationEntity.RecommendationData.isTokonow(): Boolean {
 }
 
 private fun RecommendationEntity.RecommendationData.getItemQuantityBasedOnLayoutType(): Int {
-    return if (this.isTokonow()) DEFAULT_QTY_0 else DEFAULT_QTY_1
+    return if (this.hasQuantityEditor()) DEFAULT_QTY_0 else DEFAULT_QTY_1
 }
 
 fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
@@ -208,14 +218,12 @@ fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
 }
 
 private fun RecommendationEntity.RecommendationData.getAtcType(): RecommendationItem.AddToCartType {
-    return if (layoutType == LAYOUTTYPE_HORIZONTAL_ATC || layoutType == LAYOUTTYPE_INFINITE_ATC) {
-        RecommendationItem.AddToCartType.QuantityEditor
-    } else if (pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)) {
-        RecommendationItem.AddToCartType.DirectAtc
-    } else {
-        RecommendationItem.AddToCartType.None
-    }
+    return if (hasQuantityEditor()) RecommendationItem.AddToCartType.QuantityEditor
+    else RecommendationItem.AddToCartType.None
 }
+
+private fun RecommendationEntity.RecommendationData.hasQuantityEditor() =
+    isTokonow() || pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)
 
 fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): RecommendationBanner? {
     assets?.banner?.let {

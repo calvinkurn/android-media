@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@color/Unify_GN500">
+
+    <View
+        android:id="@+id/view_top_spacing"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="48dp" />
+
+    <View
+        android:id="@+id/view_background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:minHeight="176dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_header_supergraphic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:tileMode="repeat"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_animation_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/view_bottom_rounded"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false" />
+
+    <View
+        android:id="@+id/view_bottom_rounded"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@drawable/tokopedianow_header_bottom_rounded"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/header_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:minHeight="176dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+        android:id="@+id/choose_address_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/view_top_spacing"
+        tools:layout_height="5dp" />
+
+    <com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+        android:id="@+id/layout_icon_pull_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:color_type="white"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_icon"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/view_bottom_rounded"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_icon_pull_refresh"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toTopOf="@id/text_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/image_icon"
+        app:layout_constraintTop_toTopOf="@id/image_icon"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Tokopedia NOW!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/image_icon"
+        app:layout_constraintEnd_toStartOf="@id/image_chevron_down"
+        app:layout_constraintStart_toEndOf="@id/image_icon"
+        app:layout_constraintTop_toBottomOf="@id/text_title"
+        app:typographyType="display_3"
+        tools:text="Bisa 2 jam tiba (+1 opsi lain)" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/image_chevron_down"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="3dp"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="@id/text_subtitle"
+        app:layout_constraintStart_toEndOf="@id/text_subtitle"
+        app:layout_constraintTop_toTopOf="@id/text_subtitle" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/shimmer_icon"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_bottom_rounded"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_icon_pull_refresh"
+        app:unify_image_placeholder="@color/Unify_Static_White"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/shimmer_title"
+        android:layout_width="135dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@id/text_subtitle"
+        app:layout_constraintStart_toEndOf="@id/shimmer_icon"
+        app:layout_constraintTop_toTopOf="@id/shimmer_icon"
+        app:unify_image_corner_radius="8"
+        app:unify_image_placeholder="@color/Unify_Static_White"
+        app:unify_image_type="rect"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/shimmer_subtitle"
+        android:layout_width="83dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/shimmer_icon"
+        app:layout_constraintStart_toEndOf="@id/shimmer_icon"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_title"
+        app:unify_image_corner_radius="8"
+        app:unify_image_placeholder="@color/Unify_Static_White"
+        app:unify_image_type="rect"
+        tools:visibility="gone" />
+</androidx.constraintlayout.widget.ConstraintLayout>
