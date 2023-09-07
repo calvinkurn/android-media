@@ -3,6 +3,7 @@ package com.tkpd.atcvariant
 import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
 import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.util.AtcVariantJsonHelper.generateParamsVariantFulfilled
+import com.tkpd.atcvariant.util.AtcVariantJsonHelper.generateParamsVariantFulfilledWithMiniCartData
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -156,6 +157,73 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         )
         assertStockCopy("")
         assertButton(expectedCartText = "Simpan Perubahan")
+        assertRestrictionData(assertSuccess = false)
+    }
+
+    /**
+     * There is a case when pdp give mini cart data
+     * but tokonow false and showQtyEditor false
+     * expected to be like non tokonow and normal product
+     */
+    @Test
+    fun `render initial variant with given parent id with minicart data but !isTokoNow && !showQtyEditor and non hit gql tokonow tokocabang campaign`() {
+        val aggregatorParams = generateParamsVariantFulfilledWithMiniCartData("2147818569", false)
+
+        coEvery {
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                true,
+                any(),
+                any()
+            )
+        } returns AggregatorMiniCartUiModel()
+
+        viewModel.decideInitialValue(aggregatorParams, true)
+
+        coVerify(inverse = true) {
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                true,
+                any(),
+                any()
+            )
+        }
+
+        val visitablesData = (viewModel.initialData.value as Success).data
+
+        assertVisitables(
+            visitablesData,
+            showQuantityEditor = false,
+            expectedSelectedProductId = "2147818576",
+            expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
+            expectedSelectedStockFmt = "Stock : 10",
+            expectedSelectedOptionIdsLevelOne = "254080",
+            expectedSelectedOptionIdsLevelTwo = "254085",
+            expectedVariantName = listOf("Merah", "M"),
+            expectedQuantity = 23,
+            expectedMinOrder = 3, // use min order campaign
+            cashBackPercentage = 102,
+            uspImageUrl = "icon usp",
+            isTokoCabang = true
+        )
+
+        assertCampaign(
+            visitablesData,
+            expectedCampaignActive = true,
+            expectedDiscountedPrice = 208000.getCurrencyFormatted()
+        )
+        assertStockCopy("")
+        assertButton(expectedCartText = "+ Keranjang", expectedIsBuyable = true)
         assertRestrictionData(assertSuccess = false)
     }
     //endregion
@@ -462,7 +530,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val warnaId = "121018"
         val hijauId = "254082"
 
-        viewModel.onVariantClicked(false, false, warnaId, hijauId, "image variant", 1)
+        viewModel.onVariantClicked(false, warnaId, hijauId, "image variant", 1)
 
         val visitablesData = (viewModel.initialData.value as Success).data
         assertVisitables(
@@ -523,7 +591,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val warnaId = "121018"
         val merahId = "254080"
 
-        viewModel.onVariantClicked(true, false, warnaId, merahId, "image variant", 1)
+        viewModel.onVariantClicked(true, warnaId, merahId, "image variant", 1)
 
         val visitablesData = (viewModel.initialData.value as Success).data
         val expectedLevelOneVariantIdChanged = merahId
@@ -559,7 +627,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val warnaId = "121018"
         val unguId = "254083"
 
-        viewModel.onVariantClicked(true, false, warnaId, unguId, "image variant", 1)
+        viewModel.onVariantClicked(true, warnaId, unguId, "image variant", 1)
 
         assertRestrictionData(assertSuccess = false)
     }
@@ -578,8 +646,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         `render initial variant with given parent id and hit gql non tokonow`()
 
         viewModel.onVariantClicked(
-            showQtyEditor = false,
-            isTokoNow = false,
+            showQtyEditorOrTokoNow = false,
             selectedOptionKey = optionKey,
             selectedOptionId = optionId,
             variantImage = "image variant",
