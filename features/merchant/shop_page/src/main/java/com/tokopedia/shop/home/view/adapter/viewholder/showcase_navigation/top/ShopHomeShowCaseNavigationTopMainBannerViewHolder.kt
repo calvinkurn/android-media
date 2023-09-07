@@ -34,6 +34,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         private const val SECOND_SHOWCASE_INDEX = 1
         private const val TWELVE_SHOWCASE_INDEX = 12
         private const val FIVE_SHOWCASE = 5
+        private const val MINIMAL_SHOWCASE_COUNT_TO_RENDER_WIDGET = 5
     }
 
     private val viewBinding: ItemShopHomeShowcaseNavigationTopMainBannerBinding? by viewBinding()
@@ -41,29 +42,34 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
 
     override fun bind(model: ShowcaseNavigationUiModel) {
         if (model.appearance is TopMainBannerAppearance) {
-            viewBinding?.tpgTitle?.text = model.appearance.title
-            viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty()
-
             val showcases = model.appearance.showcases
+            val shouldRenderWidget = showcases.size >= MINIMAL_SHOWCASE_COUNT_TO_RENDER_WIDGET
 
-            setupMainBanner(showcases, model)
-            setupShowCaseRecyclerView(
-                model.header.isOverrideTheme,
-                model.header.colorSchema,
-                model.appearance,
-                model,
-                showcases
-            )
-            setupColors(model.header.isOverrideTheme, model.header.colorSchema)
-            listener.onNavigationBannerImpression(
-                uiModel = model,
-                tabCount = Int.ZERO,
-                tabName = "",
-                showcaseId = ""
-            )
-            setupViewAllIcon(model.appearance)
+            if (shouldRenderWidget) {
+                setupTitle(model)
+                setupMainBanner(showcases, model)
+                setupShowCaseRecyclerView(
+                    model.header.isOverrideTheme,
+                    model.header.colorSchema,
+                    model.appearance,
+                    model,
+                    showcases
+                )
+                setupColors(model.header.isOverrideTheme, model.header.colorSchema)
+                listener.onNavigationBannerImpression(
+                    uiModel = model,
+                    tabCount = Int.ZERO,
+                    tabName = "",
+                    showcaseId = ""
+                )
+                setupViewAllIcon(model.appearance)
+            }
         }
+    }
 
+    private fun setupTitle(model: ShowcaseNavigationUiModel) {
+        viewBinding?.tpgTitle?.text = model.appearance.title
+        viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty()
     }
 
     private fun setupViewAllIcon(appearance: TopMainBannerAppearance) {
@@ -86,8 +92,10 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         firstShowcase?.let {
             viewBinding?.imgMainBanner?.loadImage(firstShowcase.imageUrl)
             viewBinding?.tpgMainBannerTitle?.text = firstShowcase.name
+
             viewBinding?.imgMainBanner?.visible()
             viewBinding?.tpgMainBannerTitle?.visible()
+            viewBinding?.imgBackgroundGradient?.visible()
 
             viewBinding?.imgMainBanner?.setOnClickListener {
                 listener.onNavigationBannerShowcaseClick(
@@ -121,6 +129,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, uiModel, listener, overrideTheme, colorSchema)
 
         val recyclerView = viewBinding?.recyclerView
+        recyclerView?.visible()
         recyclerView?.apply {
             layoutManager =
                 LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
