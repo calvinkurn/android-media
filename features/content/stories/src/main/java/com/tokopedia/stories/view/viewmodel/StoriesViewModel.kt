@@ -88,7 +88,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
-            is StoriesUiAction.SetArgumentsData -> handleSetInitialData(action.bundle)
+            is StoriesUiAction.SetInitialData -> handleSetInitialData(action.bundle)
             is StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData(action.bundle)
             is StoriesUiAction.GetSavedInstanceStateData -> handleGetSavedInstanceStateData(action.bundle)
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
