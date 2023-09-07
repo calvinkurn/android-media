@@ -7,17 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.editshipping.data.repository.ShippingEditorRepository
 import com.tokopedia.editshipping.data.usecase.GetShipperInfoUseCase
 import com.tokopedia.editshipping.domain.mapper.ShipperDetailMapper
-import com.tokopedia.editshipping.domain.mapper.ShippingEditorMapper
 import com.tokopedia.editshipping.domain.mapper.ValidateShippingNewMapper
-import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperListModel
-import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperModel
-import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductTickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
 import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
-import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -25,7 +20,6 @@ import javax.inject.Inject
 
 class ShippingEditorViewModel @Inject constructor(
     private val shippingEditorRepo: ShippingEditorRepository,
-    private val mapper: ShippingEditorMapper,
     private val validateShippingMapper: ValidateShippingNewMapper,
     private val detailMapper: ShipperDetailMapper,
     private val getShipperInfoUseCase: GetShipperInfoUseCase
@@ -60,17 +54,6 @@ class ShippingEditorViewModel @Inject constructor(
         }
     }
 
-    fun getShipperTickerList(shopId: Long, shipperList: ShipperListModel) {
-        _shipperTickerList.value = ShippingEditorState.Loading
-        viewModelScope.launch(getOnErrorGetShipperTicker(shipperList)) {
-            val getShipperTickerData = shippingEditorRepo.getShippingEditorShipperTicker(shopId)
-            val data = mapper.mapShipperTickerList(getShipperTickerData)
-            _shipperList.value =
-                ShippingEditorState.Success(combineTickerAndShipperList(shipperList, data))
-            _shipperTickerList.value = ShippingEditorState.Success(data)
-        }
-    }
-
     fun getShipperDetail() {
         _shipperDetail.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorGetShipperDetails) {
@@ -99,58 +82,6 @@ class ShippingEditorViewModel @Inject constructor(
             _saveShippingData.value =
                 ShippingEditorState.Success(saveShippingEditor.saveShippingEditor)
         }
-    }
-
-    private fun combineTickerAndShipperList(
-        shipperList: ShipperListModel,
-        tickerModel: ShipperTickerModel
-    ): ShipperListModel {
-        tickerModel.courierTicker.forEach { tickerShipper ->
-            shipperList.findShipperById(tickerShipper.shipperId)?.run {
-                setTickerDataToShipper(tickerShipper)
-            }
-        }
-        return shipperList
-    }
-
-    private fun ShipperListModel.findShipperById(shipperId: Long): ShipperModel? {
-        return shippers.conventional.find { shipper -> shipperId == shipper.shipperId }
-            ?: shippers.onDemand.find { shipper -> shipperId == shipper.shipperId }
-    }
-
-    private fun ShipperModel.setTickerDataToShipper(tickerShipper: CourierTickerModel) {
-        tickerState = tickerShipper.tickerState
-        isAvailable = tickerState != EditShippingConstant.TICKER_STATE_UNAVAILABLE
-        warehouseModel = tickerShipper.warehouses
-        if (!isAvailable) {
-            isActive = false
-        }
-        setTickerDataToShipperProduct(tickerShipper.shipperProduct)
-    }
-
-    private fun ShipperModel.setTickerDataToShipperProduct(
-        tickerShipperProducts: List<ShipperProductTickerModel>
-    ) {
-        var shouldReCheckActiveState = false
-        shipperProduct.forEach { productModel ->
-            val tickerShipperProductData =
-                tickerShipperProducts.find { tickerShipperProduct -> tickerShipperProduct.shipperProductId.toString() == productModel.shipperProductId }
-            val shipperProductAvailable =
-                tickerShipperProductData?.isAvailable ?: isAvailable
-            productModel.isAvailable = shipperProductAvailable
-            if (shipperProductAvailable.not()) {
-                productModel.isActive = false
-                shouldReCheckActiveState = true
-            }
-        }
-
-        if (shouldReCheckActiveState) {
-            setActiveState()
-        }
-    }
-
-    private fun ShipperModel.setActiveState() {
-        isActive = shipperProduct.any { shipperProductModel -> shipperProductModel.isActive }
     }
 
     private val onErrorGetShipperData = CoroutineExceptionHandler { _, e ->
