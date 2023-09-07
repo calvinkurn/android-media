@@ -7,11 +7,11 @@ import androidx.activity.viewModels
 import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -33,6 +33,7 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
+import com.tokopedia.stories.creation.view.screen.StoriesCreationInfoLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -102,7 +103,21 @@ class StoriesCreationActivity : BaseActivity() {
                         showCloseIcon = true,
                         isHideable = true,
                         bottomSheetContent = {
-                            Text("Testing")
+                            StoriesCreationInfoLayout(
+                                imageUrl = stringResource(id = R.string.img_content_too_much),
+                                title = stringResource(id = R.string.stories_creation_too_much_title),
+                                subtitle = stringResource(id = R.string.stories_creation_too_much_subtitle),
+                                primaryText = stringResource(id = R.string.stories_creation_create_stories),
+                                secondaryText = stringResource(id = R.string.stories_creation_back),
+                                onPrimaryButtonClicked = {
+
+                                },
+                                onSecondaryButtonClicked = {
+                                    scope.launch {
+                                        sheetState.bottomSheetState.collapse()
+                                    }
+                                },
+                            )
                         }
                     ) {
                         StoriesCreationScreen(
@@ -120,7 +135,7 @@ class StoriesCreationActivity : BaseActivity() {
 
                             },
                             onClickUpload = {
-
+                                showTooManyStoriesReminder(scope, sheetState)
                             }
                         )
                     }
