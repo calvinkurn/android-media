@@ -102,13 +102,33 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                true,
+                any(),
+                any()
+            )
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                true,
+                any(),
+                any()
+            )
         }
 
         val visitablesData = (viewModel.initialData.value as Success).data
@@ -146,13 +166,33 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", false)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                true,
+                any(),
+                any()
+            )
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                true,
+                any(),
+                any()
+            )
         }
     }
 
@@ -161,13 +201,33 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true, true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                true,
+                any(),
+                any()
+            )
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                true,
+                any(),
+                any()
+            )
         }
 
         Assert.assertEquals(viewModel.getActivityResultData().shouldRefreshPreviousPage, true)
@@ -184,13 +244,33 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         aggregatorParams.showQtyEditor = true
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), any(), any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), any(), any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         }
 
         Assert.assertEquals(viewModel.getActivityResultData().shouldRefreshPreviousPage, true)
@@ -382,7 +462,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val warnaId = "121018"
         val hijauId = "254082"
 
-        viewModel.onVariantClicked(false, warnaId, hijauId, "image variant", 1)
+        viewModel.onVariantClicked(false, false, warnaId, hijauId, "image variant", 1)
 
         val visitablesData = (viewModel.initialData.value as Success).data
         assertVisitables(
@@ -409,7 +489,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val updateResultData = viewModel.getActivityResultData()
         val variantDataVisitable = visitablesData[1] as VariantComponentDataModel
         Assert.assertTrue(
-            updateResultData.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
+            updateResultData.mapOfSelectedVariantOption?.values?.toList()
+                ?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
                 ?: false
         )
         Assert.assertEquals(updateResultData.selectedProductId, "2147818586")
@@ -442,7 +523,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val warnaId = "121018"
         val merahId = "254080"
 
-        viewModel.onVariantClicked(true, warnaId, merahId, "image variant", 1)
+        viewModel.onVariantClicked(true, false, warnaId, merahId, "image variant", 1)
 
         val visitablesData = (viewModel.initialData.value as Success).data
         val expectedLevelOneVariantIdChanged = merahId
@@ -478,7 +559,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val warnaId = "121018"
         val unguId = "254083"
 
-        viewModel.onVariantClicked(true, warnaId, unguId, "image variant", 1)
+        viewModel.onVariantClicked(true, false, warnaId, unguId, "image variant", 1)
 
         assertRestrictionData(assertSuccess = false)
     }
@@ -498,6 +579,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         viewModel.onVariantClicked(
             showQtyEditor = false,
+            isTokoNow = false,
             selectedOptionKey = optionKey,
             selectedOptionId = optionId,
             variantImage = "image variant",
@@ -514,12 +596,18 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val variantLevelOne = "121018"
         val variantMerahID = "254080"
 
-        `select variant oos by new logic`(optionKey = variantLevelOne, optionId = variantMerahID, selectedLevel = 1) {
+        `select variant oos by new logic`(
+            optionKey = variantLevelOne,
+            optionId = variantMerahID,
+            selectedLevel = 1
+        ) {
             // get variant level one
             val variantComponentLevelOne = it.firstOrNull { component ->
                 component is VariantComponentDataModel
             } as VariantComponentDataModel
-            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.firstOrNull()?.variantOptions ?: emptyList()
+            val optionLevelOne =
+                variantComponentLevelOne.listOfVariantCategory?.firstOrNull()?.variantOptions
+                    ?: emptyList()
 
             assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_EMPTY) // 254079
             assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_SELECTED) // 254080
@@ -541,12 +629,18 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val variantLevelOne = "121018"
         val variantUnguID = "254083"
 
-        `select variant oos by new logic`(optionKey = variantLevelOne, optionId = variantUnguID, selectedLevel = 1) {
+        `select variant oos by new logic`(
+            optionKey = variantLevelOne,
+            optionId = variantUnguID,
+            selectedLevel = 1
+        ) {
             // get variant level one
             val variantComponentLevelTwo = it.lastOrNull { component ->
                 component is VariantComponentDataModel
             } as VariantComponentDataModel
-            val optionLevelTwo = variantComponentLevelTwo.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
+            val optionLevelTwo =
+                variantComponentLevelTwo.listOfVariantCategory?.lastOrNull()?.variantOptions
+                    ?: emptyList()
 
             assertTrue(optionLevelTwo[0].currentState == VariantConstant.STATE_UNSELECTED) // 254084
             assertTrue(optionLevelTwo[1].currentState == VariantConstant.STATE_SELECTED) // 254085
@@ -568,12 +662,18 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val variantLevelTwo = "121019"
         val variantXXLID = "254088"
 
-        `select variant oos by new logic`(optionKey = variantLevelTwo, optionId = variantXXLID, selectedLevel = 2) {
+        `select variant oos by new logic`(
+            optionKey = variantLevelTwo,
+            optionId = variantXXLID,
+            selectedLevel = 2
+        ) {
             // get variant level one
             val variantComponentLevelOne = it.firstOrNull { component ->
                 component is VariantComponentDataModel
             } as VariantComponentDataModel
-            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.firstOrNull()?.variantOptions ?: emptyList()
+            val optionLevelOne =
+                variantComponentLevelOne.listOfVariantCategory?.firstOrNull()?.variantOptions
+                    ?: emptyList()
 
             assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_EMPTY) // 254079
             assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_SELECTED) // 254080
@@ -595,12 +695,18 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val variantLevelTwo = "121019"
         val variantXXLID = "254088"
 
-        `select variant oos by new logic`(optionKey = variantLevelTwo, optionId = variantXXLID, selectedLevel = 1) {
+        `select variant oos by new logic`(
+            optionKey = variantLevelTwo,
+            optionId = variantXXLID,
+            selectedLevel = 1
+        ) {
             // get variant level one
             val variantComponentLevelTwo = it.lastOrNull { component ->
                 component is VariantComponentDataModel
             } as VariantComponentDataModel
-            val optionLevelTwo = variantComponentLevelTwo.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
+            val optionLevelTwo =
+                variantComponentLevelTwo.listOfVariantCategory?.lastOrNull()?.variantOptions
+                    ?: emptyList()
 
             assertTrue(optionLevelTwo[0].currentState == VariantConstant.STATE_EMPTY) // 254084
             assertTrue(optionLevelTwo[1].currentState == VariantConstant.STATE_UNSELECTED) // 254085
@@ -622,12 +728,18 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val variantLevelOne = "121018"
         val variantBiruID = "254079"
 
-        `select variant oos by new logic`(optionKey = variantLevelOne, optionId = variantBiruID, selectedLevel = 1) {
+        `select variant oos by new logic`(
+            optionKey = variantLevelOne,
+            optionId = variantBiruID,
+            selectedLevel = 1
+        ) {
             // get variant level one
             val variantComponentLevelOne = it.firstOrNull { component ->
                 component is VariantComponentDataModel
             } as VariantComponentDataModel
-            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.firstOrNull()?.variantOptions ?: emptyList()
+            val optionLevelOne =
+                variantComponentLevelOne.listOfVariantCategory?.firstOrNull()?.variantOptions
+                    ?: emptyList()
 
             assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_SELECTED_EMPTY) // 254079
             assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_UNSELECTED) // 254080
@@ -643,12 +755,18 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val variantLevelTwo = "121019"
         val variantLID = "254086"
 
-        `select variant oos by new logic`(optionKey = variantLevelTwo, optionId = variantLID, selectedLevel = 1) {
+        `select variant oos by new logic`(
+            optionKey = variantLevelTwo,
+            optionId = variantLID,
+            selectedLevel = 1
+        ) {
             // get variant level one
             val variantComponentLevelTwo = it.lastOrNull { component ->
                 component is VariantComponentDataModel
             } as VariantComponentDataModel
-            val optionLevelTwo = variantComponentLevelTwo.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
+            val optionLevelTwo =
+                variantComponentLevelTwo.listOfVariantCategory?.lastOrNull()?.variantOptions
+                    ?: emptyList()
 
             assertTrue(optionLevelTwo[0].currentState == VariantConstant.STATE_EMPTY) // 254084
             assertTrue(optionLevelTwo[1].currentState == VariantConstant.STATE_UNSELECTED) // 254085
@@ -665,7 +783,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         `on success atc tokonow`()
 
-        val mockData = RemoveFromCartData(data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart")))
+        val mockData = RemoveFromCartData(
+            data = com.tokopedia.cartcommon.data.response.deletecart.Data(
+                message = listOf("sukses delete cart")
+            )
+        )
         coEvery {
             deleteCartUseCase.executeOnBackground()
         } returns mockData
@@ -683,7 +805,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         Assert.assertNotNull(viewModel.deleteCartLiveData.value)
         Assert.assertTrue(viewModel.deleteCartLiveData.value is Success)
-        Assert.assertNotNull((viewModel.deleteCartLiveData.value as Success).data, "sukses delete cart")
+        Assert.assertNotNull(
+            (viewModel.deleteCartLiveData.value as Success).data,
+            "sukses delete cart"
+        )
 
         // after delete cart, delete icon must not visible
         val quantityDataModel = (viewModel.initialData.value as Success).data.first {
@@ -718,7 +843,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         Assert.assertNotNull(viewModel.deleteCartLiveData.value)
         Assert.assertTrue(viewModel.deleteCartLiveData.value is Fail)
-        Assert.assertNotNull((viewModel.deleteCartLiveData.value as Fail).throwable.message, "gagal delete cart")
+        Assert.assertNotNull(
+            (viewModel.deleteCartLiveData.value as Fail).throwable.message,
+            "gagal delete cart"
+        )
 
         val quantityDataModel = (viewModel.initialData.value as Success).data.first {
             it is VariantQuantityDataModel
@@ -734,7 +862,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 2
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818593", cartId = "2147818593"), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(
+                success = 1,
+                productId = "2147818593",
+                cartId = "2147818593"
+            ), status = "OK"
+        )
         val slotRequest = slot<RequestParams>()
         coEvery {
             addToCartUseCase.createObservable(capture(slotRequest)).toBlocking().single()
@@ -743,7 +877,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyAtc = true)
 
-        val request = slotRequest.captured.getObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
+        val request =
+            slotRequest.captured.getObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
         Assert.assertEquals(request.quantity, 2)
         assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
@@ -755,7 +890,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val actionButtonAtc = 2
         val slot = slot<RequestParams>()
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818576"), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(success = 1, productId = "2147818576"),
+            status = "OK"
+        )
 
         coEvery {
             addToCartUseCase.createObservable(capture(slot)).toBlocking().single()
@@ -764,7 +902,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "attribution", "trackerlist", false)
         verifyAtcUsecase(verifyAtc = true)
 
-        val requestParams = slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartRequestParams
+        val requestParams =
+            slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartRequestParams
         Assert.assertEquals(requestParams.listTracker, "trackerlist")
         Assert.assertEquals(requestParams.attribution, "attribution")
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -775,7 +914,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     fun `on fail atc`() {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 2
-        val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
+        val atcResponseError = AddToCartDataModel(
+            data = DataModel(success = 0),
+            status = "",
+            errorMessage = arrayListOf("gagal ya")
+        )
 
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
@@ -868,7 +1011,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val actionButtonAtc = 3
         val slot = slot<RequestParams>()
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818593"), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(success = 1, productId = "2147818593"),
+            status = "OK"
+        )
 
         coEvery {
             addToCartOcsUseCase.createObservable(capture(slot)).toBlocking().single()
@@ -877,7 +1023,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 30000.0, "", "", true)
         verifyAtcUsecase(verifyOcs = true)
 
-        val requestParams = slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartOcsRequestParams
+        val requestParams =
+            slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartOcsRequestParams
         Assert.assertEquals(requestParams.shippingPrice, 30000.0, 0.0)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -889,7 +1036,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 3
 
-        val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
+        val atcResponseError = AddToCartDataModel(
+            data = DataModel(success = 0),
+            status = "",
+            errorMessage = arrayListOf("gagal ya")
+        )
 
         coEvery {
             addToCartOcsUseCase.createObservable(any()).toBlocking().single()
@@ -906,7 +1057,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     fun `on success occ`() {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 4
-        val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
+        val atcResponseError = AddToCartDataModel(
+            data = DataModel(success = 0),
+            status = "",
+            errorMessage = arrayListOf("gagal ya")
+        )
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
@@ -924,7 +1079,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 4
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818593"), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(success = 1, productId = "2147818593"),
+            status = "OK"
+        )
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
@@ -942,7 +1100,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         decideFailValueHitGqlAggregator()
         val actionButtonAtc = 4
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818593"), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(success = 1, productId = "2147818593"),
+            status = "OK"
+        )
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
@@ -1047,7 +1208,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         val optionIds = listOf("254079", "254080", "254081", "254082", "254083")
         val tags = listOf("Biru", "Merah", "Kuning", "Hijau", "Ungu")
-        val expectedUrl = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
+        val expectedUrl =
+            "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
 
         val items = optionIds.mapIndexed { index, optionId ->
             ProductDetailGallery.Item(
@@ -1101,7 +1263,12 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     //endregion
 
-    private fun verifyAtcUsecase(verifyAtc: Boolean = false, verifyOcs: Boolean = false, verifyOcc: Boolean = false, verifyUpdateAtc: Boolean = false) {
+    private fun verifyAtcUsecase(
+        verifyAtc: Boolean = false,
+        verifyOcs: Boolean = false,
+        verifyOcc: Boolean = false,
+        verifyUpdateAtc: Boolean = false
+    ) {
         val inverseAtc = !verifyAtc
         val inverseOcs = !verifyOcs
         val inverseOcc = !verifyOcc
