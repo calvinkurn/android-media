@@ -2745,6 +2745,21 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    fun getAllBmGmGroupProductTicker(params: BmGmGetGroupProductTickerParams) {
+        viewModelScope.launch(dispatchers.io) {
+            try {
+                val result = getGroupProductTickerUseCase(params)
+                withContext(dispatchers.main) {
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(params.carts[0].cartDetails[0].offer.offerId, result))
+                }
+            } catch (t: Throwable) {
+                withContext(dispatchers.main) {
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(params.carts[0].cartDetails[0].offer.offerId, t))
+                }
+            }
+        }
+    }
+
     override fun onCleared() {
         cartShopGroupTickerJob?.cancel()
         cartBmGmGroupTickerJob?.cancel()

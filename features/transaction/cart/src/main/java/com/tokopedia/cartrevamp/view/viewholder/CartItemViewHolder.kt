@@ -259,7 +259,7 @@ class CartItemViewHolder constructor(
         checkboxProduct.skipAnimation()
 
         var prevIsChecked: Boolean = checkboxProduct.isChecked
-        checkboxProduct.setOnCheckedChangeListener { _, isChecked ->
+        checkboxProduct.setOnCheckedChangeListener { compoundButton, isChecked ->
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
@@ -276,6 +276,14 @@ class CartItemViewHolder constructor(
                                 )
                             }
                         }
+                    }
+                }
+            }
+
+            if (compoundButton.isPressed) {
+                if (!data.isError) {
+                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                        actionListener?.onCartItemCheckboxClickChanged(bindingAdapterPosition, data)
                     }
                 }
             }
@@ -1287,7 +1295,7 @@ class CartItemViewHolder constructor(
                         }
                     }
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
-                    binding.itemCartBmgm.bmgmWidgetView.title = Utils.getHtmlFormat(offerMessage)
+                    binding.itemCartBmgm.bmgmWidgetView.title = offerMessage
                     binding.itemCartBmgm.bmgmWidgetView.offerId = data.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
                         actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId)
