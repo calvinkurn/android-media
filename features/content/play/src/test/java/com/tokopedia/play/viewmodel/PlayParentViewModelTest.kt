@@ -1,5 +1,6 @@
 package com.tokopedia.play.viewmodel
 
+import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
@@ -9,6 +10,7 @@ import com.tokopedia.play.robot.parent.givenParentViewModelRobot
 import com.tokopedia.play.robot.parent.thenVerify
 import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
+import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -147,6 +149,23 @@ class PlayParentViewModelTest {
             repo = repo,
         ) andWhen {
             viewModel.refreshChannel()
+
+            coVerify(exactly = 2) { repo.getChannels(any(), any()) }
+        }
+    }
+
+    @Test
+    fun `when app wants to set new channel param, it should load new channels if its not from pip and channelId is not empty`() {
+
+        val mockBundle = mockk<Bundle>(relaxed = true)
+
+        coEvery { mockBundle.get("channelId") } returns "123"
+        coEvery { mockBundle.get("is_from_pip") } returns false
+
+        givenParentViewModelRobot(
+            repo = repo,
+        ) andWhen {
+            viewModel.setNewChannelParams(mockBundle)
 
             coVerify(exactly = 2) { repo.getChannels(any(), any()) }
         }
