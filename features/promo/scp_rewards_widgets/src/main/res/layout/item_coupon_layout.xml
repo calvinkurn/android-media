@@ -114,7 +114,7 @@
                 app:typographyType="paragraph_3"
                 tools:text="* Min. transaction Rp10k\n* Skin Care only" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/divider"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="2dp"

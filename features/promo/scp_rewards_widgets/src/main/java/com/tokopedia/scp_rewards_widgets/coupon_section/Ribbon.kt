@@ -9,7 +9,7 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.scp_rewards_common.dpToPx
 import com.tokopedia.scp_rewards_common.parseColorOrFallback
 import com.tokopedia.scp_rewards_widgets.databinding.LayoutRibbonBinding
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class Ribbon @JvmOverloads constructor(
     context: Context,
@@ -35,7 +35,7 @@ class Ribbon @JvmOverloads constructor(
 
         val shapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
         shapeDrawable.setTint(
-            context.parseColorOrFallback(color, unifyPrinciplesR.color.Unify_NN1000_32)
+            context.parseColorOrFallback(color, unifyprinciplesR.color.Unify_NN1000_32)
         )
 
         background = shapeDrawable

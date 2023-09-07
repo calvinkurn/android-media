@@ -25,13 +25,13 @@ data class MedaliBenefitList(
 )
 
 data class Category(
-    @SerializedName("id") val id: Int? = null,
+    @SerializedName("id") val id: Long? = null,
     @SerializedName("text") val text: String? = null,
     @SerializedName("iconImageURL") val iconImageURL: String? = null
 )
 
 data class MedaliBenefit(
-    @SerializedName("categoryID") val categoryIdList: List<Int>? = null,
+    @SerializedName("categoryID") val categoryIdList: List<Long>? = null,
     @SerializedName("backgroundImageURL") val backgroundImageURL: String? = null,
     @SerializedName("podiumImageURL") val podiumImageURL: String? = null,
     @SerializedName("medaliImageURL") val medaliImageURL: String? = null,

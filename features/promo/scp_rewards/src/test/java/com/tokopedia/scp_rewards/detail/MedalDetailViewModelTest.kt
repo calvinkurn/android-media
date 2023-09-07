@@ -11,7 +11,7 @@ import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.RewardsGetMedaliDetail
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
-import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
+import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -43,7 +43,7 @@ class MedalDetailViewModelTest {
     private val sourceName = "HOME"
     private val shopID = null
     private val couponCode = "123"
-    private val footerData = FooterData(couponCode = couponCode, id = 123, text = "Hello")
+    private val ctaButton = CtaButton(couponCode = couponCode, appLink = "applink", url = "url")
     private val pageName = MEDALI_DETAIL_PAGE
 
     @Before
@@ -85,11 +85,10 @@ class MedalDetailViewModelTest {
             val response = getCouponApply(isSuccess = true)
             coEvery { couponApplyUseCase.applyCoupon(shopID, couponCode) } returns response
 
-            viewModel.applyCoupon(footerData, shopID, couponCode)
+            viewModel.applyCoupon(ctaButton, shopID, couponCode)
 
-            assertEquals(couponAutoApplyViewStates[0], MedalDetailViewModel.AutoApplyState.Loading(footerData))
-            assertEquals(couponAutoApplyViewStates[1], MedalDetailViewModel.AutoApplyState.SuccessCouponApplied(footerData, response.data))
-            assertEquals((couponAutoApplyViewStates[1] as MedalDetailViewModel.AutoApplyState.SuccessCouponApplied).footerData.id, footerData.id)
+            assertEquals(couponAutoApplyViewStates[0], MedalDetailViewModel.AutoApplyState.Loading)
+            assertEquals(couponAutoApplyViewStates[1], MedalDetailViewModel.AutoApplyState.SuccessCouponApplied(ctaButton, response.data))
             assertEquals((couponAutoApplyViewStates[1] as MedalDetailViewModel.AutoApplyState.SuccessCouponApplied).data?.couponAutoApply?.isSuccess, response.data?.couponAutoApply?.isSuccess)
         }
     }
@@ -100,10 +99,10 @@ class MedalDetailViewModelTest {
             val response = getCouponApply(isSuccess = false)
             coEvery { couponApplyUseCase.applyCoupon(shopID, couponCode) } returns response
 
-            viewModel.applyCoupon(footerData, shopID, couponCode)
+            viewModel.applyCoupon(ctaButton, shopID, couponCode)
 
-            assertEquals(couponAutoApplyViewStates[0], MedalDetailViewModel.AutoApplyState.Loading(footerData))
-            assertEquals(couponAutoApplyViewStates[1], MedalDetailViewModel.AutoApplyState.SuccessCouponFailed(footerData, response.data))
+            assertEquals(couponAutoApplyViewStates[0], MedalDetailViewModel.AutoApplyState.Loading)
+            assertEquals(couponAutoApplyViewStates[1], MedalDetailViewModel.AutoApplyState.SuccessCouponFailed(ctaButton, response.data))
         }
     }
 
@@ -113,9 +112,9 @@ class MedalDetailViewModelTest {
             val response = getCouponApply(code = "400")
             coEvery { couponApplyUseCase.applyCoupon(shopID, couponCode) } returns response
 
-            viewModel.applyCoupon(footerData, shopID, couponCode)
+            viewModel.applyCoupon(ctaButton, shopID, couponCode)
 
-            assertEquals(couponAutoApplyViewStates[0], MedalDetailViewModel.AutoApplyState.Loading(footerData))
+            assertEquals(couponAutoApplyViewStates[0], MedalDetailViewModel.AutoApplyState.Loading)
             assertEquals(couponAutoApplyViewStates[1] is MedalDetailViewModel.AutoApplyState.Error, true)
         }
     }

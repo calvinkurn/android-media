@@ -69,7 +69,7 @@ data class Task(
 )
 
 data class MdpSection(
-    @SerializedName("id") val id:  Int? = null,
+    @SerializedName("id") val id:  Long? = null,
     @SerializedName("layout") val type: String? = null,
     @SerializedName("medaliSectionTitle") val medaliSectionTitle: MedaliSectionTitle? = null,
     @SerializedName("backgroundColor") val backgroundColor: String? = null,

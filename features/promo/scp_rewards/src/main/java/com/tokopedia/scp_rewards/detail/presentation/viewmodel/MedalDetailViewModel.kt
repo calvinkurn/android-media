@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.scp_rewards.common.constants.SUCCESS_CODE
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
@@ -80,6 +81,7 @@ class MedalDetailViewModel @Inject constructor(
 
                 response.scpRewardsMedaliBenefitList?.medaliBenefitList
             } catch (exp: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(exp)
                 MedaliBenefitList(emptyList())
             }
         } else {
