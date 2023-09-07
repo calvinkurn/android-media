@@ -16,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
@@ -302,6 +303,11 @@ class FeedBrowseFragment @Inject constructor(
     }
 
     private fun renderContent(widgets: List<FeedBrowseUiModel>) {
+        if (binding.feedBrowseList.isComputingLayout ||
+            binding.feedBrowseList.scrollState != RecyclerView.SCROLL_STATE_IDLE
+        ) {
+            return
+        }
         adapter.setItemsAndAnimateChanges(widgets)
     }
 

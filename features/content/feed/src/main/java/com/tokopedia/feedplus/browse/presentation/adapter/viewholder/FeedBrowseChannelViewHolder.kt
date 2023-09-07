@@ -5,6 +5,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.presentation.adapter.CenterScrollLayoutManager
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseCardAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
@@ -36,11 +37,15 @@ class FeedBrowseChannelViewHolder(
     coroutineDispatchers: CoroutineDispatchers
 ) : RecyclerView.ViewHolder(binding.root), PlayWidgetAutoRefreshCoordinator.Listener {
 
+    private val dp12 = binding.root.context.resources.getDimensionPixelOffset(R.dimen.feed_space_12)
+
     private val errorView: FeedBrowseErrorView = FeedBrowseErrorView(binding.root.context).apply {
         layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        ).apply {
+            topMargin = dp12
+        }
     }
 
     private val placeholderView: FeedBrowsePlaceholderView = FeedBrowsePlaceholderView(binding.root.context).apply {
@@ -134,9 +139,13 @@ class FeedBrowseChannelViewHolder(
 
     fun bindChannelUiState(channelUiState: ChannelUiState, item: FeedBrowseUiModel.Channel) {
         when (channelUiState) {
-            ChannelUiState.Placeholder -> showPlaceholderView()
+            ChannelUiState.Placeholder -> {
+                recyclerViewCard.hide()
+                showPlaceholderView()
+            }
             is ChannelUiState.Data -> {
                 clearPlaceholderView()
+                recyclerViewCard.show()
                 setupCards(channelUiState)
             }
             is ChannelUiState.Error -> {
