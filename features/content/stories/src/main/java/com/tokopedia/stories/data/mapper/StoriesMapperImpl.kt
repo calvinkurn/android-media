@@ -46,10 +46,10 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                                     content = StoriesItemContent(
                                         type = if (stories.media.type == IMAGE.value) IMAGE else VIDEO,
                                         data = stories.media.link,
+                                        duration = 7 * 1000,
                                     ),
                                     resetValue = -1,
                                     isSameContent = false,
-                                    timerDuration = 7 * 1000,
                                 )
                             }
                         )
@@ -71,10 +71,10 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                     content = StoriesItemContent(
                         type = if (stories.media.type == IMAGE.value) IMAGE else VIDEO,
                         data = stories.media.link,
+                        duration = 7 * 1000,
                     ),
                     resetValue = -1,
                     isSameContent = false,
-                    timerDuration = 7 * 1000,
                 )
             }
         )

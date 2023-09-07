@@ -42,13 +42,13 @@ data class StoriesDetailItemUiModel(
     val content: StoriesItemContent = StoriesItemContent(),
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
-    val timerDuration: Int = -1,
 ): Parcelable {
 
     @Parcelize
     data class StoriesItemContent(
         val type: StoriesItemContentType = IMAGE,
         val data: String = "",
+        val duration: Int = -1,
     ): Parcelable
 
     enum class StoriesItemContentType(val value: String) {

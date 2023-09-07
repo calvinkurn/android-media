@@ -49,7 +49,7 @@ fun StoriesDetailTimer(
                 anim.animateTo(
                     targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
-                        durationMillis = (data.timerDuration * (TARGET_ANIMATION - anim.value)).toInt(),
+                        durationMillis = (data.content.duration * (TARGET_ANIMATION - anim.value)).toInt(),
                         easing = LinearEasing,
                     )
                 )
