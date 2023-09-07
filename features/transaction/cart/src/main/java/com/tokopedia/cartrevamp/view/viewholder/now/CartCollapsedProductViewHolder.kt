@@ -1,6 +1,9 @@
 package com.tokopedia.cartrevamp.view.viewholder.now
 
+import android.graphics.drawable.GradientDrawable
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartCollapsedProductRevampBinding
@@ -13,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedProductRevampBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
 
@@ -60,14 +64,40 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
     }
 
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
+        val frameBackground = ResourcesCompat.getDrawable(
+            viewBinding.root.resources,
+            R.drawable.bg_cart_product_image,
+            null
+        )
+        if (cartItemHolderData.isError) {
+            val nn900Color = ResourcesCompat.getColor(
+                viewBinding.root.resources,
+                unifyprinciplesR.color.Unify_NN900,
+                null
+            )
+            val nn900ColorAlpha = ColorUtils.setAlphaComponent(nn900Color, 127)
+            val loadingDrawable = frameBackground as? GradientDrawable
+            loadingDrawable?.mutate()
+            loadingDrawable?.setColor(nn900ColorAlpha)
+            viewBinding.flImageProduct.foreground = frameBackground
+        } else {
+            val transparentColor = ResourcesCompat.getColor(
+                viewBinding.root.resources,
+                android.R.color.transparent,
+                null
+            )
+            val loadingDrawable = frameBackground as? GradientDrawable
+            loadingDrawable?.mutate()
+            loadingDrawable?.setColor(transparentColor)
+            viewBinding.flImageProduct.foreground = frameBackground
+        }
         viewBinding.imageProduct.loadImage(cartItemHolderData.productImage)
         viewBinding.imageProduct.setOnClickListener {
             val position = absoluteAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 if (cartItemHolderData.isError) {
                     actionListener.onToggleUnavailableItemAccordion()
-                }
-                else {
+                } else {
                     actionListener.onCollapsedProductClicked(position, cartItemHolderData)
                 }
             }
