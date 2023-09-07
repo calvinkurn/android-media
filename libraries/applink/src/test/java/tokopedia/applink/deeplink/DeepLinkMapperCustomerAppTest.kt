@@ -1848,6 +1848,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check goto kyc webview global appLink then should return tokopedia internal goto kyc webview in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/webview-kyc?url=www.tokopedia.com"
+        val appLink = "tokopedia://webview-kyc?url=www.tokopedia.com"
+
+        assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check goto kyc param global appLink when rollence activated then should return tokopedia internal goto kyc in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://user/goto-kyc?projectId=7&source=Account&callback=url"
