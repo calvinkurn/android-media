@@ -52,7 +52,7 @@ fun mapDiscoveryResponseToPageData(
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
     val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, discoveryResponse.queryParamMapWithRpc, discoveryResponse.queryParamMapWithoutRpc, userAddressData, isLoggedIn, shouldHideSingleProdCard)
-    if (!discoveryResponse.components.isNullOrEmpty()) {
+    if (discoveryResponse.components.isNotEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(
             discoveryResponse.components.filter {
                 pageInfo.identifier?.let { identifier ->
@@ -209,12 +209,10 @@ class DiscoveryPageDataMapper(
     }
 
     private fun getFiltersFromQuery(component: ComponentsItem) {
-        for ((key, v) in queryParameterMapWithRpc) {
-            v?.let { value ->
-                val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
-                if (adjustedValue.isNotEmpty()) {
-                    component.searchParameter.set(key, adjustedValue)
-                }
+        for ((key, value) in queryParameterMapWithRpc) {
+            val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
+            if (adjustedValue.isNotEmpty()) {
+                component.searchParameter.set(key, adjustedValue)
             }
         }
     }
@@ -229,9 +227,7 @@ class DiscoveryPageDataMapper(
         if (getSectionPositionMap(pageEndPoint) == null) {
             setSectionPositionMap(mutableMapOf(), pageEndPoint)
         }
-        getSectionPositionMap(pageEndPoint)?.let {
-            it.put(sectionId, position)
-        }
+        getSectionPositionMap(pageEndPoint)?.put(sectionId, position)
     }
 
     private fun addAutoPlayController(component: ComponentsItem) {
@@ -334,7 +330,7 @@ class DiscoveryPageDataMapper(
                             }
                             if (!targetComponentIdList.isNullOrEmpty()) {
                                 val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
-                                targetComponentIdList.forEachIndexed { compIndex, componentId ->
+                                targetComponentIdList.forEachIndexed { _, componentId ->
                                     if (isDynamicTabs) {
                                         handleDynamicTabsComponents(componentId, index, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
@@ -545,8 +541,10 @@ class DiscoveryPageDataMapper(
     }
 
     private fun updateWithCart(list: List<ComponentsItem>, map: Map<MiniCartItemKey, MiniCartItem>?): Boolean {
+        if (map == null) return false
+
         var shouldRefresh = false
-        if (map == null) return shouldRefresh
+
         list.forEach { item ->
             item.data?.firstOrNull()?.let { dataItem ->
                 if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.parentProductId ?: "", type = MiniCartItemType.PARENT))) {
@@ -607,22 +605,24 @@ class DiscoveryPageDataMapper(
 
     private fun handleQuickFilter(component: ComponentsItem){
         component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
-        if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
+        if (!component.isSelectedFiltersFromQueryApplied && queryParameterMapWithRpc.isNotEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
                 component
             )
         }
+
         Utils.getTargetComponentOfFilter(component)?.let {
-            if (it.selectedFilters.isNullOrEmpty() &&
-                component.searchParameter.getSearchParameterHashMap().isNotEmpty()
-            ) {
-                it.selectedFilters = component.searchParameter.getSearchParameterHashMap()
+            val parameterMap = component.searchParameter.getSearchParameterHashMap()
+
+            if (it.selectedFilters.isNullOrEmpty() && parameterMap.isNotEmpty()) {
+                it.selectedFilters = parameterMap
             }
         }
+
         component.properties?.targetId?.let {
-            getComponent(it, component.pageEndPoint).apply {
-                this?.parentFilterComponentId = component.id
+            getComponent(it, component.pageEndPoint)?.apply {
+                parentFilterComponentId = component.id
             }
         }
     }
