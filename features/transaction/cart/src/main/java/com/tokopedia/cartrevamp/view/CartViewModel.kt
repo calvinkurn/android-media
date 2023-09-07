@@ -214,8 +214,8 @@ class CartViewModel @Inject constructor(
     val updateCartAndGetLastApplyEvent: LiveData<UpdateCartAndGetLastApplyEvent> =
         _updateCartAndGetLastApplyEvent
 
-    private val _selectedAmountState: CartMutableLiveData<Int> = CartMutableLiveData(0)
-    val selectedAmountState: CartMutableLiveData<Int> = _selectedAmountState
+    private val _selectedAmountState: CartMutableLiveData<Pair<Int, Int>> = CartMutableLiveData(Pair(-1, 0))
+    val selectedAmountState: CartMutableLiveData<Pair<Int, Int>> = _selectedAmountState
 
     private val _cartTrackerEvent: MutableLiveData<CartTrackerEvent> = MutableLiveData()
     val cartTrackerEvent: LiveData<CartTrackerEvent> = _cartTrackerEvent
@@ -982,7 +982,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun checkForShipmentForm() {
-        if (_selectedAmountState.value > 0) {
+        if (_selectedAmountState.value.second > 0) {
             _cartCheckoutButtonState.value = CartCheckoutButtonState.ENABLE
         } else {
             _cartCheckoutButtonState.value = CartCheckoutButtonState.DISABLE
@@ -1215,7 +1215,6 @@ class CartViewModel @Inject constructor(
     fun resetData() {
         cartModel = cartModel.copy(firstCartSectionHeaderPosition = -1)
         cartDataList.value = arrayListOf()
-        cartDataList.notifyObserver()
         checkForShipmentForm()
     }
 
@@ -1817,11 +1816,12 @@ class CartViewModel @Inject constructor(
         val allSelectedAvailableCartItems =
             CartDataHelper.getSelectedAvailableCartItemData(cartDataList.value)
         val totalSelected = allSelectedAvailableCartItems.count { it.isSelected }
-        val selectedAmountHolderData = cartDataList.value.first()
+        val selectedAmountHolderDataIndex = cartDataList.value.indexOfFirst { it is CartSelectedAmountHolderData }
+        val selectedAmountHolderData = cartDataList.value.getOrNull(selectedAmountHolderDataIndex)
         if (selectedAmountHolderData is CartSelectedAmountHolderData) {
             selectedAmountHolderData.selectedAmount = totalSelected
+            _selectedAmountState.value = Pair(selectedAmountHolderDataIndex, totalSelected)
         }
-        _selectedAmountState.value = totalSelected
     }
 
     fun generateRecentViewProductClickEmptyCartDataLayer(

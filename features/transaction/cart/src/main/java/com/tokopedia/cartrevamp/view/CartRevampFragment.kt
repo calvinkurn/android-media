@@ -176,6 +176,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @Keep
 class CartRevampFragment :
@@ -333,7 +335,7 @@ class CartRevampFragment :
                 refreshHandler = RefreshHandler(it, swipeRefreshLayout, this)
             }
             progressDialog = AlertDialog.Builder(it)
-                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
+                .setView(purchase_platformcommonR.layout.purchase_platform_progress_dialog_view)
                 .setCancelable(false).create()
         }
 
@@ -498,7 +500,7 @@ class CartRevampFragment :
         setCheckboxGlobalState()
         setSelectedAmountVisibility()
 
-        if (viewModel.selectedAmountState.value > 0 && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(
+        if (viewModel.selectedAmountState.value.second > 0 && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(
                 requireContext(),
                 CART_BULK_ACTION_COACH_MARK
             )
@@ -914,7 +916,7 @@ class CartRevampFragment :
                 if (layoutManager is LinearLayoutManager) {
                     layoutManager.scrollToPositionWithOffset(
                         shopIndex + 1 + index,
-                        60.dpToPx(resources.displayMetrics)
+                        60.dpToPx(requireContext().resources.displayMetrics)
                     )
                 }
             }
@@ -1949,7 +1951,7 @@ class CartRevampFragment :
                         rlTopLayout.animate().y(initialPosition)
                             .setDuration(SELECTED_AMOUNT_ANIMATION_DURATION).start()
                     }
-                    if (hasShowBulkActionCoachMark && viewModel.selectedAmountState.value > 0) {
+                    if (hasShowBulkActionCoachMark && viewModel.selectedAmountState.value.second > 0) {
                         Handler(Looper.getMainLooper()).postDelayed({
                             showBulkActionCoachMark()
                         }, COACHMARK_VISIBLE_DELAY_DURATION)
@@ -2076,7 +2078,7 @@ class CartRevampFragment :
                 val promoHeight = binding?.llPromoCheckout?.height.toZeroIfNull()
                 Toaster.toasterCustomBottomHeight = bottomLayoutHeight + promoHeight
             } else {
-                Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_210)
+                Toaster.toasterCustomBottomHeight = requireContext().resources.getDimensionPixelSize(R.dimen.dp_210)
             }
         }
     }
@@ -2540,19 +2542,24 @@ class CartRevampFragment :
     }
 
     private fun observeSelectedAmount() {
-        viewModel.selectedAmountState.observe(viewLifecycleOwner) { selectedAmount ->
-            if (selectedAmount != 0) {
-                binding?.topLayout?.textSelectedAmount?.text = String.format(
-                    getString(R.string.cart_label_selected_amount),
-                    selectedAmount
-                )
-            }
-            onNeedToUpdateViewItem(0)
+        viewModel.selectedAmountState.observe(viewLifecycleOwner) { selectedAmountPair ->
+            val selectedAmountIdx = selectedAmountPair.first
 
-            viewModel.cartDataList.value.getOrNull(1)?.let { data ->
-                if (data is CartGroupHolderData) {
-                    data.isPreviousHasSelectedAmountWidget = selectedAmount > 0
-                    onNeedToUpdateViewItem(1)
+            if (selectedAmountIdx != -1) {
+                val selectedAmount = selectedAmountPair.second
+                if (selectedAmount != 0) {
+                    binding?.topLayout?.textSelectedAmount?.text = String.format(
+                        getString(R.string.cart_label_selected_amount),
+                        selectedAmount
+                    )
+                }
+                onNeedToUpdateViewItem(selectedAmountIdx)
+
+                viewModel.cartDataList.value.getOrNull(selectedAmountIdx + 1)?.let { data ->
+                    if (data is CartGroupHolderData) {
+                        data.isPreviousHasSelectedAmountWidget = selectedAmount > 0
+                        onNeedToUpdateViewItem(selectedAmountIdx + 1)
+                    }
                 }
             }
         }
@@ -2761,7 +2768,7 @@ class CartRevampFragment :
             Handler(Looper.getMainLooper()).postDelayed({
                 val inWishlistColor = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    unifyprinciplesR.color.Unify_RN500
                 )
                 wishlistIcon.setImage(
                     IconUnify.HEART_FILLED,
@@ -2780,7 +2787,7 @@ class CartRevampFragment :
     private fun onRemoveFromWishlistSuccess(wishlistIcon: IconUnify, position: Int) {
         val notInWishlistColor = ContextCompat.getColor(
             requireContext(),
-            com.tokopedia.unifyprinciples.R.color.Unify_NN500
+            unifyprinciplesR.color.Unify_NN500
         )
         wishlistIcon.setImage(
             IconUnify.HEART,
@@ -2836,8 +2843,12 @@ class CartRevampFragment :
 
         setTopLayoutVisibility()
 
+        val availableCartItems = CartDataHelper.getAllAvailableCartItemData(
+            viewModel.cartDataList.value
+        )
+
         when {
-            removeAllItems -> {
+            removeAllItems || availableCartItems.isEmpty() -> {
                 refreshCartWithSwipeToRefresh()
             }
 
@@ -3451,7 +3462,7 @@ class CartRevampFragment :
                 }
 
                 else -> {
-                    getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
+                    getString(purchase_platformcommonR.string.promo_funnel_label)
                 }
             }
 
@@ -3524,7 +3535,7 @@ class CartRevampFragment :
     private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
         binding?.apply {
             promoCheckoutBtnCart.showActive(
-                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label),
+                getString(purchase_platformcommonR.string.promo_funnel_label),
                 IconUnify.CHEVRON_RIGHT,
                 onClickListener = {
                     checkGoToPromo()
@@ -3684,7 +3695,7 @@ class CartRevampFragment :
         }
 
         binding?.tvTotalPrices?.text = totalPriceString
-        binding?.goToCourierPageButton?.text = if (viewModel.selectedAmountState.value <= 0) {
+        binding?.goToCourierPageButton?.text = if (viewModel.selectedAmountState.value.second <= 0) {
             String.format(getString(R.string.cart_text_buy))
         } else {
             val quantityNumber = qty.toIntOrZero()
@@ -3961,7 +3972,7 @@ class CartRevampFragment :
                 binding?.llCartContainer?.setBackgroundColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                        unifyprinciplesR.color.Unify_NN50
                     )
                 )
             }
@@ -3969,7 +3980,7 @@ class CartRevampFragment :
             it.window.decorView.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                    unifyprinciplesR.color.Unify_NN50
                 )
             )
         }
@@ -3992,7 +4003,18 @@ class CartRevampFragment :
     }
 
     private fun setSelectedAmountVisibility() {
-        if (CartDataHelper.hasSelectedCartItem(viewModel.cartDataList.value)) {
+        val topItemPosition = (binding?.rvCart?.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+        if (topItemPosition == RecyclerView.NO_POSITION) return
+
+        val adapterData = viewModel.cartDataList.value
+        if (topItemPosition >= adapterData.size) return
+
+        val firstVisibleItemData = adapterData[topItemPosition]
+
+        if (CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
+            CartDataHelper.hasSelectedCartItem(adapterData) &&
+            firstVisibleItemData !is CartSelectedAmountHolderData
+        ) {
             binding?.rlTopLayout?.visible()
         } else {
             binding?.rlTopLayout?.invisible()
@@ -4358,7 +4380,7 @@ class CartRevampFragment :
                     message,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
-                    v.resources.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok),
+                    v.resources.getString(purchase_platformcommonR.string.checkout_flow_toaster_action_ok),
                     tmpCtaClickListener
                 ).show()
             }
@@ -4398,7 +4420,7 @@ class CartRevampFragment :
                     tmpMessage,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    it.resources.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok),
+                    it.resources.getString(purchase_platformcommonR.string.checkout_flow_toaster_action_ok),
                     tmpCtaClickListener
                 ).show()
             }

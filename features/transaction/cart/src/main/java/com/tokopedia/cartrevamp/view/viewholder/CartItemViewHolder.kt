@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
@@ -52,6 +53,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.*
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @SuppressLint("ClickableViewAccessibility")
@@ -137,7 +139,7 @@ class CartItemViewHolder constructor(
                 checkboxProduct.gone()
                 vBundlingProductSeparator.show()
                 val marginStart = if (data.isError) {
-                    IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
+                    IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
                 } else {
                     BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 }
@@ -164,7 +166,7 @@ class CartItemViewHolder constructor(
                 vBundlingProductSeparator.gone()
                 checkboxProduct.show()
                 val marginStart =
-                    IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
+                    IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
@@ -336,7 +338,7 @@ class CartItemViewHolder constructor(
             if (shopHolderData.shopTypeInfo.shopBadge.isNotBlank()) {
                 binding.imageShopBadge.loadImageWithoutPlaceholder(shopHolderData.shopTypeInfo.shopBadge)
                 binding.imageShopBadge.contentDescription = itemView.context.getString(
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                    purchase_platformcommonR.string.pp_cd_image_shop_badge_with_shop_type,
                     shopHolderData.shopTypeInfo.title
                 )
                 binding.imageShopBadge.show()
@@ -682,6 +684,7 @@ class CartItemViewHolder constructor(
             R.drawable.bg_cart_product_image,
             null
         )
+        val flImageProductLayoutParams = binding.flImageProduct.layoutParams as MarginLayoutParams
         if (data.isError) {
             val nn900Color = ResourcesCompat.getColor(
                 binding.root.resources,
@@ -693,6 +696,7 @@ class CartItemViewHolder constructor(
             loadingDrawable?.mutate()
             loadingDrawable?.setColor(nn900ColorAlpha)
             binding.flImageProduct.foreground = frameBackground
+            flImageProductLayoutParams.leftMargin = 0
         } else {
             val transparentColor = ResourcesCompat.getColor(
                 binding.root.resources,
@@ -703,6 +707,8 @@ class CartItemViewHolder constructor(
             loadingDrawable?.mutate()
             loadingDrawable?.setColor(transparentColor)
             binding.flImageProduct.foreground = frameBackground
+            flImageProductLayoutParams.leftMargin =
+                IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
         }
         data.productImage.let {
             binding.iuImageProduct.loadImage(it)
@@ -772,19 +778,6 @@ class CartItemViewHolder constructor(
         } else {
             binding.textProductInformation.gone()
             binding.textProductInformationSeparator.gone()
-        }
-    }
-
-    private fun createProductInfoText(it: String): Typography {
-        return Typography(itemView.context).apply {
-            setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                )
-            )
-            setType(Typography.DISPLAY_3)
-            text = if (binding.layoutProductInfo.childCount > 0) ", $it" else it
         }
     }
 
@@ -916,12 +909,14 @@ class CartItemViewHolder constructor(
 
     private fun renderProductNotesEmpty() {
         binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note)
-        binding.buttonChangeNote.contentDescription = binding.root.context.getString(R.string.cart_button_notes_empty_content_desc)
+        binding.buttonChangeNote.contentDescription =
+            binding.root.context.getString(R.string.cart_button_notes_empty_content_desc)
     }
 
     private fun renderProductNotesFilled() {
         binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note_completed)
-        binding.buttonChangeNote.contentDescription = binding.root.context.getString(R.string.cart_button_notes_filled_content_desc)
+        binding.buttonChangeNote.contentDescription =
+            binding.root.context.getString(R.string.cart_button_notes_filled_content_desc)
     }
 
     private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
@@ -1103,7 +1098,7 @@ class CartItemViewHolder constructor(
         if (data.isWishlisted) {
             val inWishlistColor = ContextCompat.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                unifyprinciplesR.color.Unify_RN500
             )
             binding.buttonToggleWishlist.setImage(
                 IconUnify.HEART_FILLED,
@@ -1115,7 +1110,7 @@ class CartItemViewHolder constructor(
         } else {
             val notInWishlistColor = ContextCompat.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                unifyprinciplesR.color.Unify_NN500
             )
             binding.buttonToggleWishlist.setImage(
                 IconUnify.HEART,
@@ -1167,7 +1162,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    unifyprinciplesR.color.Unify_N700_68
                 )
             )
             actionListener?.onShowTickerTobacco()
@@ -1199,7 +1194,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
             )
             show()
@@ -1217,7 +1212,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    unifyprinciplesR.color.Unify_N700_68
                 )
             )
             show()
@@ -1246,13 +1241,15 @@ class CartItemViewHolder constructor(
         } else {
             if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct) {
                 if (cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
-                    layoutParamsFlImageProduct.topMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                    layoutParamsFlImageProduct.topMargin =
+                        IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 } else {
                     layoutParamsFlImageProduct.topMargin = 0
                 }
 
                 if (cartItemHolderData.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
-                    layoutParams.bottomMargin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    layoutParams.bottomMargin =
+                        PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
                 } else {
                     layoutParams.bottomMargin = 0
                 }
@@ -1286,14 +1283,14 @@ class CartItemViewHolder constructor(
             typography.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    unifyprinciplesR.color.Unify_NN400
                 )
             )
         } else {
             typography.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 )
             )
         }
@@ -1326,7 +1323,7 @@ class CartItemViewHolder constructor(
         const val ALPHA_FULL = 1.0f
 
         private const val DEFAULT_DIVIDER_HEIGHT = 2
-        private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
+        private const val IMAGE_PRODUCT_MARGIN_START_4 = 4
         private const val MARGIN_VERTICAL_SEPARATOR = 8
         private const val WISHLIST_ANIMATED_MARGIN_TOP = 13
         private const val IMAGE_PRODUCT_MARGIN_START = 12
