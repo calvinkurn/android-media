@@ -177,12 +177,6 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             } else {
                 labelErrorShippingTitle.text = shippingWidgetUiModel.courierErrorTitle
             }
-            if (shippingWidgetUiModel.courierErrorDescription.isEmpty()) {
-                labelErrorShippingDescription.text =
-                    context.getString(logisticcartR.string.checkout_error_shipping_description)
-            } else {
-                labelErrorShippingDescription.text = shippingWidgetUiModel.courierErrorDescription
-            }
             layoutStateHasErrorShipping.visible()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
