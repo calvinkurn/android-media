@@ -32,10 +32,10 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.decoration.Produ
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.TncBottomSheet
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
-import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
-import com.tokopedia.buy_more_get_more.olp.utils.Constant
-import com.tokopedia.buy_more_get_more.olp.utils.setDefaultStatusBar
-import com.tokopedia.buy_more_get_more.olp.utils.setTransparentStatusBar
+import com.tokopedia.buy_more_get_more.olp.utils.constant.BundleConstant
+import com.tokopedia.buy_more_get_more.olp.utils.constant.Constant
+import com.tokopedia.buy_more_get_more.olp.utils.extension.setDefaultStatusBar
+import com.tokopedia.buy_more_get_more.olp.utils.extension.setTransparentStatusBar
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
@@ -55,6 +55,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -653,8 +654,6 @@ class OfferLandingPageFragment :
 
     private fun openShareBottomSheet() {
         UniversalShareBottomSheet.createInstance().apply {
-            setOgImageUrl("")
-
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                 }
@@ -673,6 +672,7 @@ class OfferLandingPageFragment :
                 "",
                 ""
             )
+            enableAffiliateCommission(AffiliateInput())
         }.show(childFragmentManager, "")
     }
 

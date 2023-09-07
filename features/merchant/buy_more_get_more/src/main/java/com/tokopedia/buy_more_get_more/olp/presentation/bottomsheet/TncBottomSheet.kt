@@ -1,7 +1,6 @@
 package com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.buy_more_get_more.databinding.BmgmBottomSheetTncBinding
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.adapter.TncAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.listener.TncListener
-import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
+import com.tokopedia.buy_more_get_more.olp.utils.constant.BundleConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
@@ -77,6 +76,3 @@ class TncBottomSheet : BottomSheetUnify(), TncListener {
         )
     }
 }
-
-
-
