@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -18,6 +19,7 @@ import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.viewholder.BannerViewHolder
+import com.tokopedia.catalogcommon.viewholder.BlankViewHolder
 import com.tokopedia.catalogcommon.viewholder.DoubleBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
@@ -50,6 +52,7 @@ class CatalogAdapterFactoryImpl(
             BannerViewHolder.LAYOUT -> BannerViewHolder(view)
             DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view)
             ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view)
+            BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
@@ -64,6 +67,10 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: DummyUiModel): Int {
         return DummyViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: BlankUiModel): Int {
+        return BlankViewHolder.LAYOUT
     }
 
     override fun type(uiModel: SliderImageTextUiModel): Int {
