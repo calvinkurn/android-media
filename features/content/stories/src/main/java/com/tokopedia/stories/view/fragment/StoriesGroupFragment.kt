@@ -100,7 +100,7 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     private fun initializeData(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
+        if (savedInstanceState == null) viewModelAction(StoriesUiAction.SetInitialData(arguments))
         else viewModelAction(StoriesUiAction.GetSavedInstanceStateData(savedInstanceState))
     }
 
