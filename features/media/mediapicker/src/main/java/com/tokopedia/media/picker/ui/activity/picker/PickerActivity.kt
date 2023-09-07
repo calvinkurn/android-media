@@ -381,7 +381,18 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        viewModel.navigateToEditorPage(data)
+        if (param.get().isImmersiveEditorEnabled()) {
+            // immersive editor
+            val intent = UniversalEditor.intent(this) {
+                setPageSource(param.get().pageSource())
+                filePaths(data.originalPaths)
+            }
+
+            immersiveEditorIntent.launch(intent)
+        } else {
+            // old editor
+            viewModel.navigateToEditorPage(data)
+        }
     }
 
     override fun onPermissionGranted() {
@@ -441,21 +452,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             pickerAnalytics.clickCloseButton()
         }
 
-        if (param.get().isImmersiveEditorEnabled() && medias.isNotEmpty()) {
-            val files = medias.map { it.getSingleFilePath() }
-
-            val intent = UniversalEditor.intent(this) {
-                setPageSource(param.get().pageSource())
-                filePaths(files)
-            }
-
-            immersiveEditorIntent.launch(intent)
-
-            // remove selection state on gallery
-            eventBus.notifyDataOnChangedEvent(emptyList())
-        } else {
-            PickerPreviewActivity.start(this, ArrayList(medias), REQUEST_PREVIEW_PAGE)
-        }
+        PickerPreviewActivity.start(this, ArrayList(medias), REQUEST_PREVIEW_PAGE)
     }
 
     override fun onCameraThumbnailClicked() {

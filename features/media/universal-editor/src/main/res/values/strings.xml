@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Media Editor</string>
 
+    <!-- Common -->
+    <string name="universal_editor_flatten_error">Oops, gagal proses edit. Ulangi lagi, ya.</string>
+
+    <!-- User Action -->
+    <string name="universal_editor_retry">Ulangi</string>
+
     <!-- Toolbar -->
     <string name="universal_editor_toolbar_title">Edit Media</string>
     <string name="universal_editor_toolbar_action_button">Lanjut</string>

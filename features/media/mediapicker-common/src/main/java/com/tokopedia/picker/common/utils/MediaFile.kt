@@ -1,5 +1,7 @@
 package com.tokopedia.picker.common.utils
 
+import java.io.File
+
 @JvmInline
 value class MediaFile(val path: String?) {
 
@@ -10,4 +12,6 @@ value class MediaFile(val path: String?) {
     fun isImage() = path?.let {
         isImageFormat(it)
     } ?: false
+
+    fun exist() = File(path).exists()
 }

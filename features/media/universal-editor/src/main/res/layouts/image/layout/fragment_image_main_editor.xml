@@ -17,13 +17,4 @@
         tools:background="@color/colorPrimary"
         tools:ignore="ContentDescription" />
 
-    <com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
-        android:id="@+id/container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="H,9:16"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
