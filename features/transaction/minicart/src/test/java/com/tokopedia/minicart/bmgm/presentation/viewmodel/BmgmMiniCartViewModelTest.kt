@@ -2,7 +2,7 @@ package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
-import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheUseCase
+import com.tokopedia.minicart.bmgm.domain.usecase.MiniCartLocalCacheUseCases
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import io.mockk.coEvery
@@ -18,6 +18,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyList
+import org.mockito.ArgumentMatchers.anyLong
 import java.lang.reflect.Field
 
 /**
@@ -30,7 +31,7 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
     lateinit var getBmgmMiniCartDataUseCase: GetBmgmMiniCartDataUseCase
 
     @RelaxedMockK
-    lateinit var localCacheUseCase: LocalCacheUseCase
+    lateinit var localCacheUseCase: MiniCartLocalCacheUseCases
 
     private lateinit var param: BmgmParamModel
     private lateinit var privateMiniCartData: Field
@@ -59,10 +60,6 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             getMiniCartSuccessTestSetup(showLoadingState) { sates, data ->
                 assertEquals(BmgmState.Loading, sates[0])
                 assertEquals(BmgmState.Success(data), sates[1])
-
-                coVerify {
-                    localCacheUseCase.saveToLocalCache(data)
-                }
             }
         }
     }
@@ -73,10 +70,6 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             val showLoadingState = false
             getMiniCartSuccessTestSetup(showLoadingState) { _, data ->
                 assertEquals(BmgmState.Success(data), viewModel.cartData.value)
-
-                coVerify {
-                    localCacheUseCase.saveToLocalCache(data)
-                }
             }
         }
     }
@@ -88,10 +81,6 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             getMiniCartFailedTestSetup(showLoadingState) { sates, t ->
                 assertEquals(BmgmState.Loading, sates[0])
                 viewModel.cartData.value.verifyErrorEquals(BmgmState.Error(t))
-
-                coVerify(inverse = true) {
-                    localCacheUseCase.saveToLocalCache(any())
-                }
             }
         }
     }
@@ -102,10 +91,6 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             val showLoadingState = false
             getMiniCartFailedTestSetup(showLoadingState) { _, t ->
                 viewModel.cartData.value.verifyErrorEquals(BmgmState.Error(t))
-
-                coVerify(inverse = true) {
-                    localCacheUseCase.saveToLocalCache(any())
-                }
             }
         }
     }
@@ -126,14 +111,16 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
     fun `when state is success then store cart data to local cache should be saved`() {
         runTest {
             val state = BmgmState.Success(getMiniCartDummyData())
+            val shopId = anyLong()
+            val warehouseId = anyLong()
             val miniCartData =
                 privateMiniCartData.get(viewModel) as MutableStateFlow<BmgmState<BmgmMiniCartDataUiModel>>
             miniCartData.value = state
 
-            viewModel.storeCartDataToLocalCache()
+            viewModel.saveCartDataToLocalStorage(shopId, warehouseId)
 
             coVerify {
-                localCacheUseCase.saveToLocalCache(state.data)
+                localCacheUseCase.saveToLocalCache(state.data, shopId, warehouseId)
             }
         }
     }
@@ -144,14 +131,16 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
         runTest {
             val data = getMiniCartDummyData()
             val state = BmgmState.Loading
+            val shopId = anyLong()
+            val warehouseId = anyLong()
             val miniCartData =
                 privateMiniCartData.get(viewModel) as MutableStateFlow<BmgmState<BmgmMiniCartDataUiModel>>
             miniCartData.value = state
 
-            viewModel.storeCartDataToLocalCache()
+            viewModel.saveCartDataToLocalStorage(shopId, warehouseId)
 
             coVerify(inverse = true) {
-                localCacheUseCase.saveToLocalCache(data)
+                localCacheUseCase.saveToLocalCache(data, shopId, warehouseId)
             }
         }
     }

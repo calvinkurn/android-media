@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.MockKAnnotations
@@ -30,12 +29,6 @@ abstract class BaseViewModelTest {
     }
 
     abstract fun initVariables()
-
-    protected fun <T : Any> LiveData<BmgmState<T>>.verifySuccessEquals(expected: BmgmState.Success<T>) {
-        val expectedResult = expected.data
-        val actualResult = (value as? BmgmState.Success<T>)?.data
-        Assert.assertEquals(expectedResult, actualResult)
-    }
 
     protected fun <T : Any> BmgmState<T>.verifyErrorEquals(expected: BmgmState.Error) {
         val expectedResult = expected.t::class.java

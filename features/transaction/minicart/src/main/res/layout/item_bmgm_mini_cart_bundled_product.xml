@@ -36,7 +36,7 @@
             android:background="@drawable/bg_bmgm_mini_cart_upselling_discount"
             android:gravity="center"
             android:textAllCaps="true"
-            android:textColor="@color/Unify_NN0"
+            android:textColor="@color/Unify_Static_White"
             android:textSize="8sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

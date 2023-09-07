@@ -3,8 +3,8 @@ package com.tokopedia.minicart.bmgm.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.minicart.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
-import com.tokopedia.purchase_platform.common.feature.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch

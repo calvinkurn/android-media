@@ -44,6 +44,7 @@ import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -559,11 +560,14 @@ class OfferLandingPageFragment :
 
     private fun fetchMiniCart() {
         val currentUiState = viewModel.currentState
+        val offeringInfo = viewModel.offeringInfo.value
+        val offerCount = offeringInfo?.offerings?.firstOrNull()?.tierList?.size.orZero()
         binding?.miniCartView?.fetchData(
             shopIds = listOf(currentUiState.shopData.shopId),
             offerIds = currentUiState.offerIds,
             offerJsonData = currentUiState.offeringJsonData,
-            warehouseIds = currentUiState.warehouseIds.map { it.toString() }
+            warehouseIds = currentUiState.warehouseIds,
+            offerCount = offerCount
         )
     }
 
