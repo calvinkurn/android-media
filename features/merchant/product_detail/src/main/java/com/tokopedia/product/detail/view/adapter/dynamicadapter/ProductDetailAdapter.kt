@@ -108,7 +108,7 @@ class ProductDetailAdapter(
             currentPosition < currentList.size &&
             (dataModel as? ViewToViewWidgetDataModel)?.recomWidgetData == null
         ) {
-            val recommData = dataModel as? ProductRecomWidgetDataModel
+            val recommData = dataModel as? ViewToViewWidgetDataModel
             listener?.loadViewToView(
                 pageName = recommData?.name.orEmpty(),
                 queryParam = recommData?.queryParam.orEmpty(),
@@ -127,9 +127,9 @@ class ProductDetailAdapter(
             if (currentPosition < currentList.size &&
                 (dataModel as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null
             ) {
-                val recommData = dataModel as? ProductRecomWidgetDataModel
+                val recommData = dataModel as? ProductRecommendationVerticalPlaceholderDataModel
                 listener?.startVerticalRecommendation(
-                    pageName = recommData?.name.orEmpty(),
+                    pageName = recommData?.name().orEmpty(),
                     queryParam = recommData?.queryParam.orEmpty(),
                     thematicId = recommData?.thematicId.orEmpty()
                 )
