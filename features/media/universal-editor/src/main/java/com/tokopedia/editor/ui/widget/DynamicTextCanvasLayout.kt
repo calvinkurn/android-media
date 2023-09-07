@@ -60,6 +60,8 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         createDeletionButtonView()
     }
 
+    fun hasTextAdded() = models.isNotEmpty()
+
     fun addOrEditText(viewId: Int, model: InputTextModel) {
         if (viewId != -1) {
             editText(viewId, model)
