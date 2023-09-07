@@ -133,7 +133,7 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
 
         private fun renderProductPrice(product: ProductItemType) {
             if (product.showProductInfo) {
-                binding.tpgProductPrice.text = product.price
+                binding.tpgProductPrice.text = product.price.replace(" ", "")
             }
             binding.tpgProductPrice.isVisible = product.showProductInfo
         }
@@ -145,7 +145,7 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
             binding.layoutSlashedPrice.isVisible = showSlashedPrice
 
             if (showSlashedPrice) {
-                binding.tpgSlashedProductPrice.text = product.slashedPrice
+                binding.tpgSlashedProductPrice.text = product.slashedPrice.replace(" ", "")
                 binding.tpgSlashedProductPrice.strikethrough()
 
                 val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
@@ -182,7 +182,8 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
         }
 
         private fun renderProductSoldCount(showProductSoldCount: Boolean, soldCount: String) {
-            binding.layoutRatingAndSoldCount.isVisible = showProductSoldCount
+            binding.tpgProductSoldCount.isVisible = showProductSoldCount
+
             if (showProductSoldCount) {
                 binding.tpgProductSoldCount.text = soldCount
             }
@@ -193,19 +194,19 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
         }
 
         private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
-            val highEmphasizeColor = if (overrideTheme) {
+            val highEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
                 colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
             } else {
                 ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN950)
             }
 
-            val lowEmphasizeColor = if (overrideTheme) {
+            val lowEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
                 colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
             } else {
                 ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN600)
             }
 
-            val disabledTextColor = if (overrideTheme) {
+            val disabledTextColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
                 colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR)
             } else {
                 ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN400)
