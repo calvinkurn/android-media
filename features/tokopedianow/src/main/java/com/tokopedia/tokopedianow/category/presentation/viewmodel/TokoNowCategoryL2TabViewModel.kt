@@ -301,18 +301,24 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun loadFirstPage() {
         launchCatchError(block = {
             page = FIRST_PAGE
+            val getProductResponse = getCategoryProduct()
+            val productList = getProductResponse.searchProduct.data.productList
 
-            visitableList.clear()
-            visitableList.mapToCategoryTabLayout(components)
-            updateVisitableListLiveData()
-
-            visitableList.filterNotLoadedLayout().forEach {
-                when (it) {
-                    is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
-                    is TokoNowAdsCarouselUiModel -> getAdsProductListAsync(it).await()
-                    is CategoryProductListUiModel -> getProductListAsync(it).await()
+            if(productList.isNotEmpty()) {
+                visitableList.clear()
+                visitableList.mapToCategoryTabLayout(components)
+                visitableList.filterNotLoadedLayout().forEach {
+                    when (it) {
+                        is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
+                        is TokoNowAdsCarouselUiModel -> getAdsProductListAsync(it).await()
+                        is CategoryProductListUiModel -> addProductList(it, getProductResponse)
+                    }
                 }
+                hideEmptyState()
+            } else {
+                showEmptyState()
             }
+
             page++
         }) {
         }.let {
@@ -324,7 +330,9 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         if (getProductJob?.isCompleted != false && !isAllProductShown) {
             launchCatchError(block = {
                 showLoadMoreLoading()
-                val productList = getProductList()
+                val getCategoryProductResponse = getCategoryProduct()
+                val productList = getCategoryProductResponse.searchProduct.data.productList
+                addProductCardItems(getCategoryProductResponse)
                 isAllProductShown = productList.isEmpty()
                 hideLoadMoreLoading()
                 page++
@@ -374,18 +382,21 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         filterController.initFilterController(queryParams, filterList)
     }
 
-    private fun getProductListAsync(item: CategoryProductListUiModel): Deferred<Any?> {
-        return asyncCatchError(block = {
-            visitableList.remove(item)
-            val productList = getProductList()
-            val isEmptyState = _emptyStateLiveData.value != null
+    private fun addProductList(
+        item: CategoryProductListUiModel,
+        getProductResponse: AceSearchProductModel
+    ) {
+        visitableList.remove(item)
+        addProductCardItems(getProductResponse)
+    }
 
-            when {
-                productList.isEmpty() -> showEmptyState()
-                isEmptyState -> hideEmptyState()
-            }
-        }) {
-        }
+    private fun addProductCardItems(getProductResponse: AceSearchProductModel) {
+        visitableList.addProductCardItems(
+            response = getProductResponse,
+            miniCartData = miniCartData,
+            hasBlockedAddToCart = hasBlockedAddToCart
+        )
+        updateVisitableListLiveData()
     }
 
     private fun getAdsProductListAsync(item: TokoNowAdsCarouselUiModel): Deferred<Unit?> {
@@ -409,24 +420,13 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getProductList(): List<AceSearchProductModel.Product> {
+    private suspend fun getCategoryProduct(): AceSearchProductModel {
         val queryParams = createRequestQueryParams(
             source = CATEGORY_TOKONOW_DIRECTORY,
             rows = PRODUCT_ROWS,
             page = page
         )
-
-        val response = getCategoryProductUseCase.execute(queryParams)
-
-        visitableList.addProductCardItems(
-            response = response,
-            miniCartData = miniCartData,
-            hasBlockedAddToCart = hasBlockedAddToCart
-        )
-
-        updateVisitableListLiveData()
-
-        return response.searchProduct.data.productList
+        return getCategoryProductUseCase.execute(queryParams)
     }
 
     private suspend fun getCategoryFilter(): DynamicFilterModel {
@@ -589,13 +589,15 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     }
 
     private fun hideEmptyState() {
-        val emptyStateModel = CategoryEmptyStateModel(
-            queryParams,
-            violation,
-            excludedFilter,
-            false
-        )
-        _emptyStateLiveData.postValue(emptyStateModel)
+        if(_emptyStateLiveData.value != null) {
+            val emptyStateModel = CategoryEmptyStateModel(
+                queryParams,
+                violation,
+                excludedFilter,
+                false
+            )
+            _emptyStateLiveData.postValue(emptyStateModel)
+        }
     }
 
     private fun showLoadMoreLoading() {
