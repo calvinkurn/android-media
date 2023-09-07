@@ -4,12 +4,10 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +16,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.nest.components.NestBottomSheetScreen
-import com.tokopedia.nest.components.rememberNestBottomSheetState
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -31,11 +28,11 @@ import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
+import com.tokopedia.stories.creation.view.model.StoriesCreationBottomSheetType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.screen.StoriesCreationInfoLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.tokopedia.stories.creation.view.stateholder.StoriesCreationBottomSheetStateHolder
 import javax.inject.Inject
 
 /**
@@ -51,6 +48,9 @@ class StoriesCreationActivity : BaseActivity() {
 
     @Inject
     lateinit var router: Router
+
+    @Inject
+    lateinit var bottomSheetStateHolder: StoriesCreationBottomSheetStateHolder
 
     private val viewModel by viewModels<StoriesCreationViewModel> { viewModelFactory }
 
@@ -87,11 +87,11 @@ class StoriesCreationActivity : BaseActivity() {
 
                     val context = LocalContext.current
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                    val scope = rememberCoroutineScope()
-                    val sheetState = rememberNestBottomSheetState()
+
+                    bottomSheetStateHolder.initState()
 
                     LaunchedEffect(Unit) {
-                        observeUiEvent(scope, sheetState)
+                        observeUiEvent()
                     }
 
                     LaunchedEffect(Unit) {
@@ -99,25 +99,30 @@ class StoriesCreationActivity : BaseActivity() {
                     }
 
                     NestBottomSheetScreen(
-                        state = sheetState,
+                        state = bottomSheetStateHolder.sheetState,
                         showCloseIcon = true,
                         isHideable = true,
                         bottomSheetContent = {
-                            StoriesCreationInfoLayout(
-                                imageUrl = stringResource(id = R.string.img_content_too_much),
-                                title = stringResource(id = R.string.stories_creation_too_much_title),
-                                subtitle = stringResource(id = R.string.stories_creation_too_much_subtitle),
-                                primaryText = stringResource(id = R.string.stories_creation_create_stories),
-                                secondaryText = stringResource(id = R.string.stories_creation_back),
-                                onPrimaryButtonClicked = {
+                            when (bottomSheetStateHolder.bottomSheetType) {
+                                is StoriesCreationBottomSheetType.TooMuchStories -> {
 
-                                },
-                                onSecondaryButtonClicked = {
-                                    scope.launch {
-                                        sheetState.bottomSheetState.collapse()
-                                    }
-                                },
-                            )
+                                    /** TODO JOE: the content will be coming from BE */
+                                    StoriesCreationInfoLayout(
+                                        imageUrl = stringResource(id = R.string.img_content_too_much),
+                                        title = stringResource(id = R.string.stories_creation_too_much_title),
+                                        subtitle = stringResource(id = R.string.stories_creation_too_much_subtitle),
+                                        primaryText = stringResource(id = R.string.stories_creation_create_stories),
+                                        secondaryText = stringResource(id = R.string.stories_creation_back),
+                                        onPrimaryButtonClicked = {
+
+                                        },
+                                        onSecondaryButtonClicked = {
+                                            bottomSheetStateHolder.dismissBottomSheet()
+                                        },
+                                    )
+                                }
+                                else -> {}
+                            }
                         }
                     ) {
                         StoriesCreationScreen(
@@ -135,7 +140,7 @@ class StoriesCreationActivity : BaseActivity() {
 
                             },
                             onClickUpload = {
-                                showTooManyStoriesReminder(scope, sheetState)
+                                bottomSheetStateHolder.showBottomSheet(StoriesCreationBottomSheetType.TooMuchStories)
                             }
                         )
                     }
@@ -144,16 +149,12 @@ class StoriesCreationActivity : BaseActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
-    private fun observeUiEvent(
-        scope: CoroutineScope,
-        sheetState: BottomSheetScaffoldState
-    ) {
+    private fun observeUiEvent() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
-                        showTooManyStoriesReminder(scope, sheetState)
+                        bottomSheetStateHolder.showBottomSheet(StoriesCreationBottomSheetType.TooMuchStories)
                     }
                 }
             }
@@ -173,15 +174,5 @@ class StoriesCreationActivity : BaseActivity() {
         }
 
         router.route(mediaPickerResult, intent)
-    }
-
-    @OptIn(ExperimentalMaterialApi::class)
-    private fun showTooManyStoriesReminder(
-        scope: CoroutineScope,
-        sheetState: BottomSheetScaffoldState
-    ) {
-        scope.launch {
-            sheetState.bottomSheetState.expand()
-        }
     }
 }
