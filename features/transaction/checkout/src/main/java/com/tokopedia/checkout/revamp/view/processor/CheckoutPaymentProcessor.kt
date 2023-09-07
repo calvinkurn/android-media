@@ -67,8 +67,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                     return cost.copy(dynamicPlatformFee = platformFee)
                 } else {
                     return cost.copy(
-                        dynamicPlatformFee = cost.dynamicPlatformFee.copy(
-                            isLoading = false,
+                        dynamicPlatformFee = ShipmentPaymentFeeModel(
                             isShowTicker = true,
                             ticker = shipmentPlatformFeeData.errorWording
                         )
@@ -79,23 +78,19 @@ class CheckoutPaymentProcessor @Inject constructor(
         return cost.copy(dynamicPlatformFee = cost.dynamicPlatformFee.copy(isLoading = false))
     }
 
-    suspend fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest): PaymentFeeResponse? {
-//        view?.showPaymentFeeSkeletonLoading()
+    private suspend fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest): PaymentFeeResponse? {
         return withContext(dispatchers.io) {
             try {
                 getPaymentFeeCheckoutUseCase.setParams(request)
                 val paymentFeeGqlResponse = getPaymentFeeCheckoutUseCase.executeOnBackground()
                 if (paymentFeeGqlResponse.response.success) {
                     return@withContext paymentFeeGqlResponse.response
-//                    view?.showPaymentFeeData(paymentFeeGqlResponse.response)
                 } else {
                     return@withContext null
-//                    view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
                 }
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
-//                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
             }
         }
     }

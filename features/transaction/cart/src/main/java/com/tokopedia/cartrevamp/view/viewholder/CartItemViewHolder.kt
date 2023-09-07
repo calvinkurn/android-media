@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
@@ -258,7 +259,7 @@ class CartItemViewHolder constructor(
         checkboxProduct.skipAnimation()
 
         var prevIsChecked: Boolean = checkboxProduct.isChecked
-        checkboxProduct.setOnCheckedChangeListener { _, isChecked ->
+        checkboxProduct.setOnCheckedChangeListener { compoundButton, isChecked ->
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
@@ -275,6 +276,14 @@ class CartItemViewHolder constructor(
                                 )
                             }
                         }
+                    }
+                }
+            }
+
+            if (compoundButton.isPressed) {
+                if (!data.isError) {
+                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                        actionListener?.onCartItemCheckboxClickChanged(bindingAdapterPosition, data)
                     }
                 }
             }
@@ -351,12 +360,22 @@ class CartItemViewHolder constructor(
         renderImage(data)
         renderPrice(data)
         renderVariant(data)
+        renderProductPropertiesContainer(data)
         renderQuantityLeft(data)
         renderSlashPrice(data)
         renderProductProperties(data)
         renderProductActionSection(data)
         renderProductAddOns(data)
         sendAnalyticsInformationLabel(data)
+    }
+
+    private fun renderProductPropertiesContainer(data: CartItemHolderData) {
+        if ((data.productQtyLeft.isNotBlank() && !data.isError) || data.productInformation.isNotEmpty()) {
+            binding.containerProductProperties.visible()
+        }
+        else {
+            binding.containerProductProperties.gone()
+        }
     }
 
     private fun renderBundlingInfo(data: CartItemHolderData) {
@@ -737,8 +756,9 @@ class CartItemViewHolder constructor(
 
         val productInformationList = data.productInformation
         if (productInformationList.isNotEmpty()) {
+            val isQuantityLeftShown = data.productQtyLeft.isNotBlank() && !data.isError
             binding.textProductInformation.visible()
-            binding.textProductInformationSeparator.visible()
+            binding.textProductInformationSeparator.showWithCondition(isQuantityLeftShown)
 
             productInformationList.getOrNull(0)?.let {
                 var tmpLabel = it
@@ -747,8 +767,7 @@ class CartItemViewHolder constructor(
                 }
                 informationLabel.add(tmpLabel.lowercase(Locale.ROOT))
 
-                val productInfo = createProductInfoText(it)
-                layoutProductInfo.addView(productInfo)
+                binding.textProductInformation.text = it
             }
         } else {
             binding.textProductInformation.gone()
@@ -1285,7 +1304,7 @@ class CartItemViewHolder constructor(
                 2 -> {
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.INACTIVE
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
-                        actionListener?.onBmGmTickerReloadClicked(data.bmGmCartInfoData.bmGmData.offerId)
+                        actionListener?.onBmGmTickerReloadClicked()
                     }
                 }
             }

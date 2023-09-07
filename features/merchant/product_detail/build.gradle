@@ -14,27 +14,17 @@ android {
             res.srcDirs = [
                     pathSources,
                     pathSources + 'detail',
-                    pathSources + 'detail/a_plus_content'
-            ]
-        }
-    }
-
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
-
-    def pathSources = "src/main/res/"
-    sourceSets {
-        main {
-            res.srcDirs = [
-                    pathSources,
-                    pathSources + 'detail',
-                    pathSources + 'detail/bmgm',
+                    pathSources + 'detail/a_plus_content',
+                    pathSources + 'detail/bmgm'
             ]
         }
         androidTest {
             resources.srcDirs += "$projectDir/src/androidTest/resources"
         }
+    }
+
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
     }
 
     packagingOptions {

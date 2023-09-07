@@ -206,6 +206,9 @@ class CheckoutLogisticProcessor @Inject constructor(
                 } else {
                     orderValue += (it.quantity * it.price).toLong()
                 }
+                if (it.isBMGMItem && it.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
+                    orderValue -= it.bmgmTotalDiscount.toLong()
+                }
                 totalWeight += it.quantity * it.weight
                 totalWeightActual += if (it.weightActual > 0) {
                     it.quantity * it.weightActual
@@ -398,7 +401,6 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                 val courierItemData =
                                                     generateCourierItemData(
                                                         false,
-//                                                        logisticPromo.shipperId,
                                                         selectedSpId,
                                                         orderModel,
                                                         shippingCourierUiModel,
@@ -446,13 +448,11 @@ class CheckoutLogisticProcessor @Inject constructor(
                                         } else {
                                             val courierItemData = generateCourierItemData(
                                                 false,
-//                                                shippingCourierUiModel.productData.shipperId,
                                                 newSelectedSpId,
                                                 orderModel,
                                                 shippingCourierUiModel,
                                                 shippingRecommendationData
                                             )
-//                                            return@withContext courierItemData
                                             if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
                                                 CheckoutLogger.logOnErrorLoadCourierNew(
@@ -493,7 +493,6 @@ class CheckoutLogisticProcessor @Inject constructor(
                                 if (shippingCourier != null) {
                                     val courierItemData = generateCourierItemData(
                                         false,
-//                                        shippingCourier.productData.shipperId,
                                         selectedSpId,
                                         orderModel,
                                         shippingCourier,
@@ -544,7 +543,6 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     private fun generateCourierItemData(
         isForceReloadRates: Boolean,
-//        shipperId: Int,
         spId: Int,
         orderModel: CheckoutOrderModel,
         shippingCourierUiModel: ShippingCourierUiModel,
