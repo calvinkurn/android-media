@@ -1028,6 +1028,14 @@ class ChatbotFragment2 :
                 RouteManager.route(context, applink)
             }
         }
+
+        viewModel.typingBlockedState.observe(viewLifecycleOwner) {
+            if (it) {
+                hideReplyBox()
+            } else {
+                enableTyping()
+            }
+        }
     }
 
     private fun handleAddAttachmentButtonViewState(toShow: Boolean) {
