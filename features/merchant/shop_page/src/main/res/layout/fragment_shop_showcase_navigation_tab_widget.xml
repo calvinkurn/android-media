@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgMainShowcase"
         android:layout_width="0dp"
@@ -21,17 +22,27 @@
         app:unify_image_corner_radius="8"
         tools:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/imgBackgroundGradient"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:elevation="1dp"
+        android:background="@drawable/shop_shape_showcase_gradient_background"
+        app:layout_constraintBottom_toBottomOf="@+id/imgMainShowcase"
+        app:layout_constraintEnd_toEndOf="@+id/imgMainShowcase"
+        app:layout_constraintStart_toStartOf="@+id/imgMainShowcase" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgMainShowcaseTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
+        android:elevation="2dp"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
         android:minLines="1"
+        android:textColor="@color/clr_dms_icon_white"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/imgMainShowcase"
         app:layout_constraintEnd_toEndOf="@+id/imgMainShowcase"

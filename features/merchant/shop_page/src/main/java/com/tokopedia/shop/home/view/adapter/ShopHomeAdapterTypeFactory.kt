@@ -104,7 +104,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.left.
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.top.ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.top.ShopHomeShowCaseNavigationTopMainBannerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchasedByEtalaseViewHolder
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
@@ -306,8 +306,8 @@ open class ShopHomeAdapterTypeFactory(
     }
 
     private fun determineBannerProductGroupWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
-        val uiModel = (model as? ShopWidgetComponentBannerProductGroupUiModel)  ?: ShopWidgetComponentBannerProductGroupUiModel()
-        val isVerticalBanner = uiModel.widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
+        val uiModel = (model as? BannerProductGroupUiModel)  ?: BannerProductGroupUiModel()
+        val isVerticalBanner = uiModel.widgetStyle == BannerProductGroupUiModel.WidgetStyle.VERTICAL.id
         val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
 
         return when {

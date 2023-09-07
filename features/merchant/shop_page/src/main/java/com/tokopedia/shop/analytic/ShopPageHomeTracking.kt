@@ -303,7 +303,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
@@ -315,7 +315,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.WidgetStyle
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 
 /*
@@ -3625,14 +3625,14 @@ class ShopPageHomeTracking(
      // Tracker ID: 45950
      fun sendProductCarouselImpression(
          widgetStyle: String,
-         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
+         widgets: List<BannerProductGroupUiModel.Tab.ComponentList>,
          shopId: String,
          userId: String
      ) {
          val bannerWidget =
-             widgets.firstOrNull { it.componentName == ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName.DISPLAY_SINGLE_COLUMN }
+             widgets.firstOrNull { it.componentName == BannerProductGroupUiModel.Tab.ComponentList.ComponentName.DISPLAY_SINGLE_COLUMN }
          val productWidget =
-             widgets.firstOrNull { it.componentName == ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT }
+             widgets.firstOrNull { it.componentName == BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT }
 
          val hasBanner = bannerWidget != null
          val hasProduct = productWidget != null

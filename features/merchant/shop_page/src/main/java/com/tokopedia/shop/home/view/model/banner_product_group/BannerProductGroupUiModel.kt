@@ -9,7 +9,7 @@ import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import kotlinx.parcelize.Parcelize
 
-data class ShopWidgetComponentBannerProductGroupUiModel(
+data class BannerProductGroupUiModel(
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
     override val name: String = WidgetName.BANNER_PRODUCT_GROUP,
