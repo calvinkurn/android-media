@@ -127,9 +127,10 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private fun setupBottomSheetUiData() {
         binding?.run {
             context?.resources?.let { res ->
-                if(isOnlyConsultation){
+                if (isOnlyConsultation) {
+                    lblPAPTitleBottomsheet.text = res.getString(R.string.epharmacy_mini_consult_chooser_title)
                     chooserUpload.parent.hide()
-                }else {
+                } else {
                     chooserUpload.parent.show()
                     chooserUpload.lblPAPTittleOptionBottomsheet.text = res.getString(R.string.epharmacy_upload_resep_dokter_chooser_title)
                     chooserUpload.lblPAPDescriptionOptionBottomsheet.text = res.getString(R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
@@ -149,10 +150,10 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     bottomImageLogo.hide()
                 }
 
-                if(isOutsideWorkingHours){
+                if (isOutsideWorkingHours) {
                     renderClosingHours()
                     chooserMiniConsultation.parent.setOnClickListener(null)
-                }else {
+                } else {
                     chooserMiniConsultation.parent.setOnClickListener {
                         miniConsultationAction()
                     }
@@ -171,7 +172,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
 
     private fun renderClosingHours() {
         binding?.chooserMiniConsultation?.let {
-            with(it){
+            with(it) {
                 val disableColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
                 lblPAPTittleOptionBottomsheet.setTextColor(disableColor)
                 lblPAPDescriptionOptionBottomsheet.setTextColor(disableColor)
@@ -187,7 +188,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     }
 
     private fun renderNote(note: String) {
-        if(note.isNotBlank()){
+        if (note.isNotBlank()) {
             context?.let {
                 binding?.chooserMiniConsultation?.noteLl?.show()
                 context?.let {
