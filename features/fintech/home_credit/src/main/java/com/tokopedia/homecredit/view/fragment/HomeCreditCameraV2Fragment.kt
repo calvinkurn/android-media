@@ -92,7 +92,6 @@ class HomeCreditCameraV2Fragment(
             }
         }
 
-//        observeViewModel()
         setupViews()
         initCameraListener()
     }
@@ -216,44 +215,47 @@ class HomeCreditCameraV2Fragment(
 
             @SuppressLint("PII Data Exposure")
             override fun onPictureTaken(result: PictureResult) {
-                try {
-                    result.toBitmap { bitmap ->
-                        originalBitmap = bitmap
-                        if (bitmap != null) {
-                            bitmapCropping?.doCropping(
-                                bitmap,
-                                binding?.cameraCutoutKtp!!,
-                                object : BitmapProcessingListener {
-                                    override fun onBitmapReady(croppedBitmap: Bitmap) {
-                                        val byteArray = bitmapToByteArray(croppedBitmap)
+                processPictureTaken(result)
+            }
+        }
+    }
 
-                                        CameraUtils.writeToFile(byteArray, getFileLocationFromDirectory()) {
-                                            finalCameraResultFilePath = it?.path ?: ""
-                                            loadImagePreview()
-                                            showCameraPreviewActionButtons()
-                                            hideCameraProp()
+    private fun processPictureTaken(result: PictureResult) {
+        try {
+            result.toBitmap { bitmap ->
+                originalBitmap = bitmap
+                if (bitmap != null) {
+                    bitmapCropping?.doCropping(
+                        bitmap,
+                        binding?.cameraCutoutKtp!!,
+                        object : BitmapProcessingListener {
+                            override fun onBitmapReady(croppedBitmap: Bitmap) {
+                                val byteArray = bitmapToByteArray(croppedBitmap)
 
-                                            binding?.cameraCaptureButton?.isClickable = true
-                                            reset()
-                                            hideLoading()
-                                        }
+                                CameraUtils.writeToFile(byteArray, getFileLocationFromDirectory()) {
+                                    finalCameraResultFilePath = it?.path ?: ""
+                                    loadImagePreview()
+                                    showCameraPreviewActionButtons()
+                                    hideCameraProp()
 
-//                                        generateImage(byteArray)
-                                    }
+                                    binding?.cameraCaptureButton?.isClickable = true
+                                    reset()
+                                    hideLoading()
+                                }
+                            }
 
-                                    override fun onFailed(
-                                        originalBitmap: Bitmap,
-                                        throwable: Throwable
-                                    ) {
-
-                                    }
-                            })
-                        }
-                    }
-                } catch (e: Exception) {
-                    Timber.e(e)
+                            override fun onFailed(
+                                originalBitmap: Bitmap,
+                                throwable: Throwable
+                            ) {
+                                reset()
+                                hideLoading()
+                            }
+                        })
                 }
             }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
