@@ -272,6 +272,7 @@ class FeedBrowseFragment @Inject constructor(
                 viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
             }
         }
+        binding.feedBrowseError.setType(errorType)
         if (errorType == GlobalError.NO_CONNECTION) {
             binding.feedBrowseError.errorSecondaryAction.show()
             binding.feedBrowseError.errorSecondaryAction.text =
@@ -279,10 +280,7 @@ class FeedBrowseFragment @Inject constructor(
             binding.feedBrowseError.setSecondaryActionClickListener {
                 startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
             }
-        } else {
-            binding.feedBrowseError.errorSecondaryAction.hide()
         }
-        binding.feedBrowseError.setType(errorType)
         binding.feedBrowseError.show()
     }
 
