@@ -8,7 +8,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,12 +20,12 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.model.ConfirmShippingNotes
 import com.tokopedia.sellerorder.databinding.BottomsheetConfirmshippingItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 /**
  * Created by irpan on 30/08/23.
  */
-class SomBottomSheetConfirmShippingAdapter(
-) : RecyclerView.Adapter<SomBottomSheetConfirmShippingAdapter.ViewHolder>() {
+class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomSheetConfirmShippingAdapter.ViewHolder>() {
     private var list: List<ConfirmShippingNotes> = listOf()
 
     @SuppressLint("NotifyDataSetChanged")
@@ -49,7 +48,7 @@ class SomBottomSheetConfirmShippingAdapter(
 
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                RouteManager.route(holder.itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, notes.url))
+                RouteManager.route(holder.itemView.context, "${ApplinkConst.WEBVIEW}?url=${notes.url}")
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -57,17 +56,15 @@ class SomBottomSheetConfirmShippingAdapter(
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     holder.itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyPrinciplesR.color.Unify_GN500
                 )
             }
         }
 
         holder.binding?.apply {
-
             tvInfoNumber.text = "${position.plus(1)}"
 
             if (notes.url.isNotEmpty()) {
-
                 val text = "${notes.noteText} ${notes.urlText}"
                 spannableString = SpannableString(text)
                 val startSpan = notes.noteText.lastIndex + 2
@@ -82,9 +79,7 @@ class SomBottomSheetConfirmShippingAdapter(
                 }
             } else {
                 tvInfo.text = spannableString
-
             }
-
         }
     }
 
