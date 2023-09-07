@@ -103,6 +103,8 @@ data class Coupon(
     val title: String = "",
     @SerializedName("message")
     val message: String = "",
+    @SerializedName("coupon_url")
+    val couponUrl: String = "",
     @SerializedName("coupon_type")
     val couponType: List<String> = emptyList(),
     @SerializedName("expiry_info")

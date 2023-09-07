@@ -74,6 +74,7 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                       promo_id
                       is_bebas_ongkir
                       index
+                      coupon_url
                       coupon_type
                       expiry_info
                       secondary_coupons {

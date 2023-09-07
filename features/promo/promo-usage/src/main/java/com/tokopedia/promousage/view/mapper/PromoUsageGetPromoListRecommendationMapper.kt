@@ -1,7 +1,6 @@
 package com.tokopedia.promousage.view.mapper
 
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.network.constant.TkpdBaseURL.Promo
 import com.tokopedia.promousage.data.response.BenefitDetail
 import com.tokopedia.promousage.data.response.Coupon
 import com.tokopedia.promousage.data.response.CouponCardDetail
@@ -296,6 +295,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 appLink = coupon.cta.applink
             ),
             couponType = coupon.couponType,
+            couponAppLink = coupon.couponUrl,
             secondaryPromo = mapSecondaryCouponToSecondaryPromo(couponSection, secondaryCoupon),
 
             state = state,

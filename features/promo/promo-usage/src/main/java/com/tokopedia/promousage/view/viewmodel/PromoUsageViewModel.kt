@@ -786,15 +786,14 @@ internal class PromoUsageViewModel @Inject constructor(
     private fun addTncPromo(
         items: List<DelegateAdapterItem>
     ) : List<DelegateAdapterItem> {
-        val selectedPromoCodes = items.getSelectedPromoCodes()
-        return if (selectedPromoCodes.isNotEmpty()) {
+        val selectedPromos = items.getSelectedPromo()
+        return if (selectedPromos.isNotEmpty()) {
             val tncItem = items.getTncItem() ?: PromoTncItem()
-            items
-                .filterNot { it is PromoTncItem }
+            val selectedPromoCodes = selectedPromos.map { "${it.couponAppLink}${it.code}" }
+            items.filterNot { it is PromoTncItem }
                 .plus(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
         } else {
-            items
-                .filterNot { it is PromoTncItem }
+            items.filterNot { it is PromoTncItem }
         }
     }
 
@@ -1797,6 +1796,11 @@ internal fun List<DelegateAdapterItem>.getTncItem(): PromoTncItem? {
 
 internal fun List<DelegateAdapterItem>.getAttemptedItems(): List<PromoItem> {
     return filterIsInstance<PromoItem>().filter { it.isAttempted }
+}
+
+internal fun List<DelegateAdapterItem>.getSelectedPromo(): List<PromoItem> {
+    return filterIsInstance<PromoItem>()
+        .filter { it.state is PromoItemState.Selected }
 }
 
 internal fun List<DelegateAdapterItem>.getSelectedPromoCodes(): List<String> {
