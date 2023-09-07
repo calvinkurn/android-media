@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.DEFAULT_QU
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
@@ -56,9 +57,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                TokoNowChooseAddressWidgetUiModel(
-                    id = CHOOSE_ADDRESS_WIDGET_ID
-                ),
+                createHomeHeaderUiModel(),
                 createDynamicLegoBannerDataModel(
                     id = dynamicLegoBannerId,
                     groupId = String.EMPTY,
@@ -81,7 +80,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+        verifyGetHomeLayoutListSuccess(expectedResult)
         verifyBlockAddToCartNull()
     }
 
@@ -150,9 +149,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
         val homeLayoutItems = listOf(
-            TokoNowChooseAddressWidgetUiModel(
-                id = CHOOSE_ADDRESS_WIDGET_ID
-            ),
+            createHomeHeaderUiModel(),
             TokoNowTickerUiModel(
                 id = HomeStaticLayoutId.TICKER_WIDGET_ID,
                 tickers = tickerList
@@ -185,7 +182,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRepurchaseWidgetUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+        verifyGetHomeLayoutListSuccess(expectedResult)
         verifyBlockAddToCartNotNull()
     }
 

@@ -5,17 +5,20 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -44,6 +47,7 @@ import com.tokopedia.review.feature.historydetails.di.DaggerReviewDetailComponen
 import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.mapper.ReviewDetailDataMapper
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -51,6 +55,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -77,7 +82,11 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     @Inject
-    lateinit var viewModel: ReviewDetailViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory)[ReviewDetailViewModel::class.java]
+    }
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var reviewConnectionErrorRetryButton: UnifyButton? = null
@@ -159,6 +168,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         bindViews()
         initHeader()
         initErrorPage()
+        initTicker()
         observeReviewDetails()
         observeReviewMediaThumbnail()
         observeInsertReputationResult()
@@ -195,15 +205,17 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onBackPressed() {
-        if (::viewModel.isInitialized) {
-            (viewModel.reviewDetails.value as? Success)?.let {
-                ReviewDetailTracking.eventClickBack(
-                    it.data.product.productId,
-                    it.data.review.feedbackId,
-                    viewModel.getUserId()
-                )
-            }
+        (viewModel.reviewDetails.value as? Success)?.let {
+            ReviewDetailTracking.eventClickBack(
+                it.data.product.productId,
+                it.data.review.feedbackId,
+                viewModel.getUserId()
+            )
         }
+        val intentResult = Intent()
+        intentResult.putExtra(ReviewCommonConstants.REVIEW_EDITED, viewModel.isReviewEdited())
+        activity?.setResult(Activity.RESULT_OK, intentResult)
+        activity?.finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -249,7 +261,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                             setReview(review, product.productName)
                             setResponse(response)
                             setReputation(reputation, response.shopName)
-                            setTicker(review.editable, review.editDisclaimer)
+                            setTicker(review.editable, review.isRatingEditable, review.editDisclaimer)
                         }
                     } else {
                         with(it.data) {
@@ -342,7 +354,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     show()
                 }
             }
-            addHeaderIcons(editable)
+            addHeaderIcons(editable, isRatingEditable)
             binding?.reviewDetailDate?.setTextAndCheckShow(
                 getString(
                     R.string.review_date,
@@ -438,16 +450,25 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setTicker(isEditable: Boolean, editDisclaimer: String) {
-        if (isEditable) {
+    private fun setTicker(isEditable: Boolean, isRatingEditable: Boolean, editDisclaimer: String) {
+        if (isEditable && isRatingEditable) {
             binding?.reviewDetailTicker?.run {
-                setTextDescription(editDisclaimer)
+                setHtmlDescription(editDisclaimer)
                 show()
             }
             binding?.reviewDetailTips?.gone()
         } else {
             binding?.reviewDetailTips?.run {
-                description = editDisclaimer
+                val formattedEditDisclaimer = HtmlLinkHelper(
+                    context = context,
+                    htmlString = editDisclaimer
+                ).also {
+                    it.urlList.forEach { url ->
+                        url.onClick = { RouteManager.route(context, url.linkUrl) }
+                    }
+                }.spannedString ?: String.EMPTY
+                descriptionView.movementMethod = LinkMovementMethod.getInstance()
+                description = formattedEditDisclaimer
                 show()
             }
             binding?.reviewDetailTicker?.gone()
@@ -474,7 +495,17 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun addHeaderIcons(editable: Boolean) {
+    private fun initTicker() {
+        binding?.reviewDetailTicker?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(context, linkUrl.toString())
+            }
+
+            override fun onDismiss() {}
+        })
+    }
+
+    private fun addHeaderIcons(editable: Boolean, isRatingEditable: Boolean) {
         binding?.reviewDetailHeader?.apply {
             clearIcons()
             addRightIcon(R.drawable.ic_history_details_share)
@@ -488,7 +519,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 }
                 goToSharing()
             }
-            if (!editable) {
+            if (!editable && !isRatingEditable) {
                 return
             }
             addRightIcon(R.drawable.ic_edit_review_history_detail)
@@ -589,9 +620,11 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun clearIcons() {
         binding?.reviewDetailHeader?.rightContentView?.removeAllViews()
+        binding?.reviewDetailHeader?.rightIcons?.clear()
     }
 
     private fun onSuccessEditForm() {
+        viewModel.onReviewEdited()
         retry()
         view?.let {
             Toaster.build(
