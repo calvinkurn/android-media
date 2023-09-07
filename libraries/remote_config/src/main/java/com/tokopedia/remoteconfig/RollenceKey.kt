@@ -110,7 +110,4 @@ object RollenceKey {
     const val SEARCH_3_PRODUCT_CARD_CONTROL = "control"
     const val SEARCH_3_PRODUCT_CARD_PC_VAR = "pc_var"
     const val SEARCH_3_PRODUCT_CARD_PC_NEWLABEL_VAR = "pc_newlabel_var"
-
-    // drop off maps
-    const val DISABLE_DROPOFF_MAPS = "dropoff_maps_logi"
 }
