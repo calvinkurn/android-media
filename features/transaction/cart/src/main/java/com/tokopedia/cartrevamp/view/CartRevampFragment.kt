@@ -586,7 +586,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                            .isNotEmpty()
+                        .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -1999,7 +1999,8 @@ class CartRevampFragment :
         if (dy != 0) {
             if (initialPromoButtonPosition == 0f && promoTranslationLength - dy == 0f) {
                 // Initial position of View if previous initialization attempt failed
-                initialPromoButtonPosition = llPromoCheckout.y
+                val bottomLayoutY = binding?.bottomLayout?.y ?: 0f
+                initialPromoButtonPosition = bottomLayoutY - llPromoCheckout.height
             }
 
             if (promoTranslationLength != 0f) {
@@ -2547,6 +2548,13 @@ class CartRevampFragment :
                 )
             }
             onNeedToUpdateViewItem(0)
+
+            viewModel.cartDataList.value.getOrNull(1)?.let { data ->
+                if (data is CartGroupHolderData) {
+                    data.isPreviousHasSelectedAmountWidget = selectedAmount > 0
+                    onNeedToUpdateViewItem(1)
+                }
+            }
         }
     }
 
@@ -2931,10 +2939,10 @@ class CartRevampFragment :
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording =
                         "${addOnProductDataResult.aggregatedData.title} (${
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                addOnProductDataResult.aggregatedData.price,
-                                false
-                            ).removeDecimalSuffix()
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            addOnProductDataResult.aggregatedData.price,
+                            false
+                        ).removeDecimalSuffix()
                         })"
                 }
 
@@ -3153,6 +3161,7 @@ class CartRevampFragment :
             viewModel.removeAccordionDisabledItem()
         }
 
+        viewModel.updateCartGroupFirstItemStatus(updateListResult)
         viewModel.updateCartDataList(updateListResult)
 
         viewModel.reCalculateSubTotal()
@@ -3385,6 +3394,8 @@ class CartRevampFragment :
         validateShowPopUpMessage(cartData)
         validateRenderPromo(cartData)
 
+        viewModel.updateCartGroupFirstItemStatus(viewModel.cartDataList.value)
+
         renderSelectedAmount()
         setInitialCheckboxGlobalState(cartData)
         setSelectedAmountVisibility()
@@ -3446,7 +3457,7 @@ class CartRevampFragment :
 
             val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3475,7 +3486,7 @@ class CartRevampFragment :
             } else {
                 isApplied = false
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),
@@ -4041,7 +4052,7 @@ class CartRevampFragment :
             llPromoCheckout.show()
             llPromoCheckout.post {
                 if (initialPromoButtonPosition == 0f) {
-                    initialPromoButtonPosition = llPromoCheckout.y
+                    initialPromoButtonPosition = bottomLayout.y - llPromoCheckout.height
                 }
             }
             rlTopLayout.post {
@@ -4143,9 +4154,9 @@ class CartRevampFragment :
         plusCoachMark?.dismissCoachMark()
         mainFlowCoachMark?.dismissCoachMark()
         if ((
-                viewModel.cartModel.cartListData?.onboardingData?.size
-                    ?: 0
-                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+            viewModel.cartModel.cartListData?.onboardingData?.size
+                ?: 0
+            ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
         ) {
             return
         }
@@ -4707,7 +4718,9 @@ class CartRevampFragment :
 
     private fun validateRenderPromo(cartData: CartData) {
         // reset promo position
-        initialPromoButtonPosition = 0f
+        val bottomLayoutY = binding?.bottomLayout?.y ?: 0f
+        val llPromoCheckoutHeight = binding?.llPromoCheckout?.height?.toFloat() ?: 0f
+        initialPromoButtonPosition = bottomLayoutY - llPromoCheckoutHeight
         if (viewModel.cartModel.isLastApplyResponseStillValid) {
             // Render promo from last apply
             validateRenderPromoFromLastApply(cartData)

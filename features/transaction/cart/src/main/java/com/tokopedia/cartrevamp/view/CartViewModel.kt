@@ -2198,6 +2198,13 @@ class CartViewModel @Inject constructor(
         return Pair(null, RecyclerView.NO_POSITION)
     }
 
+    internal fun updateCartGroupFirstItemStatus(cartDataList: ArrayList<Any>) {
+        val allGroupShopDataList = CartDataHelper.getAllShopGroupDataList(cartDataList)
+        allGroupShopDataList.forEachIndexed { idx, group ->
+            group.isFirstItem = idx == 0
+        }
+    }
+
     internal fun updateShopShownByCartGroup(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.isUsingOWOCDesign()) {
             val groupPromoHolderDataMap = hashMapOf<String, MutableList<CartItemHolderData>>()
