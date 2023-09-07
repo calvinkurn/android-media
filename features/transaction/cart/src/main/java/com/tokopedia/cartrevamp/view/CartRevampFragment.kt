@@ -138,7 +138,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -2030,8 +2029,7 @@ class CartRevampFragment :
 
         if (CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
             CartDataHelper.hasSelectedCartItem(adapterData) &&
-            firstVisibleItemData !is CartSelectedAmountHolderData &&
-            firstVisibleItemData !is TickerAnnouncementHolderData
+            firstVisibleItemData !is CartSelectedAmountHolderData
         ) {
             disableSwipeRefresh()
             setTopLayoutVisibility(true)
@@ -3397,6 +3395,8 @@ class CartRevampFragment :
         sendAnalyticsScreenNameCartPage()
         updateStateAfterFinishGetCartList()
 
+        renderTickerAnnouncement(cartData)
+
         activity?.let {
             validateLocalCacheAddress(it, cartData.localizationChooseAddress)
         }
@@ -3408,7 +3408,6 @@ class CartRevampFragment :
         viewModel.updateCartGroupFirstItemStatus(viewModel.cartDataList.value)
 
         renderSelectedAmount()
-        renderTickerAnnouncement(cartData)
         setInitialCheckboxGlobalState(cartData)
         setSelectedAmountVisibility()
 
@@ -3639,7 +3638,7 @@ class CartRevampFragment :
     private fun renderTickerAnnouncement(cartData: CartData) {
         val ticker = cartData.tickers.firstOrNull()
         if (ticker != null && ticker.isValid(CART_PAGE)) {
-            viewModel.addItems(0, listOf(CartUiModelMapper.mapTickerAnnouncementUiModel(ticker)))
+            viewModel.addItem(CartUiModelMapper.mapTickerAnnouncementUiModel(ticker))
         }
     }
 
@@ -4014,8 +4013,7 @@ class CartRevampFragment :
 
         if (CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
             CartDataHelper.hasSelectedCartItem(adapterData) &&
-            firstVisibleItemData !is CartSelectedAmountHolderData &&
-            firstVisibleItemData !is TickerAnnouncementHolderData
+            firstVisibleItemData !is CartSelectedAmountHolderData
         ) {
             binding?.rlTopLayout?.visible()
         } else {
