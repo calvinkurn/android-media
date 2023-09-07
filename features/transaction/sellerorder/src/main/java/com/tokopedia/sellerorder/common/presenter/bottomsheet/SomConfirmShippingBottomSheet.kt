@@ -77,10 +77,10 @@ class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialIn
                         urlText = templateParam.learnMoreText.data
                     ),
                     ConfirmShippingNotes(
-                        noteText = context.resources?.getString(R.string.som_dropoff_template_text_4).orEmpty()
+                        noteText = context.resources?.getString(R.string.som_dropoff_template_text_3).orEmpty()
                     ),
                     ConfirmShippingNotes(
-                        context.resources?.getString(R.string.som_dropoff_template_text_3).orEmpty(),
+                        context.resources?.getString(R.string.som_dropoff_template_text_2).orEmpty(),
                         url = templateParam.dropoffUrl.data,
                         urlText = templateParam.dropoffText.data
                     )
@@ -90,10 +90,10 @@ class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialIn
             SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_2 -> {
                 listNotes = listOf(
                     ConfirmShippingNotes(
-                        noteText = context.resources?.getString(R.string.som_dropoff_template_text_4).orEmpty()
+                        noteText = context.resources?.getString(R.string.som_dropoff_template_text_3).orEmpty()
                     ),
                     ConfirmShippingNotes(
-                        context.resources?.getString(R.string.som_dropoff_template_text_3).orEmpty(),
+                        context.resources?.getString(R.string.som_dropoff_template_text_2).orEmpty(),
                         url = templateParam.dropoffUrl.data,
                         urlText = templateParam.dropoffText.data
                     )
@@ -102,10 +102,10 @@ class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialIn
 
             SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_3 -> {
                 listNotes = listOf(
+                    ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_4).orEmpty()),
                     ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_5).orEmpty()),
                     ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_6).orEmpty()),
-                    ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_7).orEmpty()),
-                    ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_8).orEmpty())
+                    ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_7).orEmpty())
                 )
             }
         }
