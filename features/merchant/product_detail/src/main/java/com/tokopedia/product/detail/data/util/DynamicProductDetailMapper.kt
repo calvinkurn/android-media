@@ -164,13 +164,25 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(productList)
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                    val componentData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    listOfComponent.add(
+                        ViewToViewWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName,
+                            position = index,
+                            queryParam = componentData.queryParam,
+                            thematicId = componentData.thematicId
+                        )
+                    )
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
+                    val componentData = component.componentData.firstOrNull() ?: return@forEachIndexed
                     listOfComponent.add(
                         ProductRecommendationVerticalPlaceholderDataModel(
                             type = component.type,
-                            name = component.componentName
+                            name = component.componentName,
+                            queryParam = componentData.queryParam,
+                            thematicId = componentData.thematicId
                         )
                     )
                     listOfComponent.add(LoadingDataModel())
