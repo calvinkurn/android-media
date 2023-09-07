@@ -1129,7 +1129,9 @@ class CartRevampFragment :
         val selected = !cartItemHolderData.isSelected
         viewModel.setItemSelected(position, cartItemHolderData, selected)
         updateStateAfterCheckChanged(selected)
+    }
 
+    override fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData) {
         if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
             val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
             cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
@@ -2254,8 +2256,14 @@ class CartRevampFragment :
 
     @OptIn(FlowPreview::class)
     private fun initTopLayout() {
-        binding?.checkboxGlobal?.checks()?.debounce(DELAY_CHECK_BOX_GLOBAL)?.onEach {
+        binding?.checkboxGlobal?.checks()?.debounce(DELAY_CHECK_BOX_GLOBAL)?.onEach { pair ->
             handleCheckboxGlobalChangeEvent()
+            if (pair.first) {
+                val listCartGroupHolderDataWithBmGm = CartDataHelper.getListCartGroupHolderDataWithBmgm(viewModel.cartDataList.value)
+                listCartGroupHolderDataWithBmGm.forEach { cartGroupHolderData ->
+                    getGroupProductTicker(cartGroupHolderData, cartGroupHolderData.cartGroupBmGmHolderData.offerId)
+                }
+            }
         }?.launchIn(lifecycleScope)
 
         binding?.topLayout?.textActionDelete?.setOnClickListener {
@@ -4872,9 +4880,9 @@ class CartRevampFragment :
         }
     }
 
-    private fun CompoundButton.checks(): Flow<Boolean> = callbackFlow {
-        setOnCheckedChangeListener { _, isChecked ->
-            trySend(isChecked).isSuccess
+    private fun CompoundButton.checks(): Flow<Pair<Boolean, Boolean>> = callbackFlow {
+        setOnCheckedChangeListener { buttonView, isChecked ->
+            trySend(Pair(buttonView.isPressed, isChecked)).isSuccess
         }
         awaitClose { setOnCheckedChangeListener(null) }
     }

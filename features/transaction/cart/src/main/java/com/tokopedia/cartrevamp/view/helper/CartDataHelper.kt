@@ -381,4 +381,21 @@ object CartDataHelper {
 
         return true
     }
+
+    fun getListCartGroupHolderDataWithBmgm(cartDataList: ArrayList<Any>): List<CartGroupHolderData> {
+        val listCartGroupHolderData = arrayListOf<CartGroupHolderData>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    if (!data.isError) {
+                        if (data.cartGroupBmGmHolderData.hasBmGmOffer) {
+                            listCartGroupHolderData.add(data)
+                        }
+                    }
+                }
+            }
+        }
+
+        return listCartGroupHolderData
+    }
 }

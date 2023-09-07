@@ -100,7 +100,7 @@ class BmGmWidgetView @JvmOverloads constructor(
 
             ivTickerBg.setImageResource(cartR.drawable.bg_cart_bmgm)
             tvBmgmTicker.visible()
-            tvBmgmTicker.text = title
+            tvBmgmTicker.text = MethodChecker.fromHtml(title)
 
             icBmgmTicker.visible()
             icBmgmTicker.loadImage(urlLeftIcon)
