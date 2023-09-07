@@ -259,7 +259,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
                 fragment.categoryL2MainView = this@TokoNowCategoryL2Fragment
                 viewPagerAdapter.addFragment(fragment)
             }
-            viewPager.currentItem = selectedTabPosition
+            viewPager.currentItem = selectedTabPosition + 1
         }
     }
 
