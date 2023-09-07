@@ -40,6 +40,8 @@ class ImageMainEditorFragment @Inject constructor(
     }
 
     override fun getImageBitmap(): Bitmap? {
-        return binding?.imgSample?.toBitmap()
+        return binding?.imgSample?.let {
+            it.toBitmap(it.width, it.height)
+        }
     }
 }
