@@ -23,7 +23,7 @@ class RequestPickupViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val confirmRequestPickupUseCase: ConfirmRequestPickupUseCase,
     private val processRequestPickupUseCase: ProcessRequestPickupUseCase
-) : BaseViewModel(dispatcher.io) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _confirmReqPickupResult = MutableLiveData<Result<SomConfirmReqPickup.Data>>()
     val confirmReqPickupResult: LiveData<Result<SomConfirmReqPickup.Data>>
@@ -37,15 +37,15 @@ class RequestPickupViewModel @Inject constructor(
         launchCatchError(block = {
             _confirmReqPickupResult.postValue(Success(confirmRequestPickupUseCase.execute(reqPickupParam)))
         }, onError = {
-            _confirmReqPickupResult.postValue(Fail(it))
-        })
+                _confirmReqPickupResult.postValue(Fail(it))
+            })
     }
 
     fun processRequestPickup(processReqPickupParam: SomProcessReqPickupParam) {
         launchCatchError(block = {
             _processReqPickupResult.postValue(Success(processRequestPickupUseCase.execute(processReqPickupParam)))
         }, onError = {
-            _processReqPickupResult.postValue(Fail(it))
-        })
+                _processReqPickupResult.postValue(Fail(it))
+            })
     }
 }

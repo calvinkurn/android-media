@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -52,8 +51,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import timber.log.Timber
-import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -67,6 +64,12 @@ class RequestPickupFragment :
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private val somConfirmRequestPickupViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[RequestPickupViewModel::class.java]
+    }
+
+    private val binding by viewBinding(FragmentRequestPickupBinding::bind)
 
     private var currOrderId = ""
     private var currSchedulePickupKey = ""
@@ -86,12 +89,6 @@ class RequestPickupFragment :
     private var isFirstVisit: Boolean? = true
     private val today: String = "Hari ini"
     private val tomorrow: String = "Besok"
-
-    private val somConfirmRequestPickupViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[RequestPickupViewModel::class.java]
-    }
-
-    private val binding by viewBinding(FragmentRequestPickupBinding::bind)
 
     companion object {
         private const val ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA = "Error when get confirm request pickup layout data."
@@ -244,8 +241,6 @@ class RequestPickupFragment :
                     tvCourierNotes.text =
                         getString(R.string.courier_option_schedule, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
                 }
-
-
             }
 
             if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
@@ -260,8 +255,6 @@ class RequestPickupFragment :
                 confirmReqPickupCourierNotesAdapter.listCourierNotes =
                     confirmReqPickupResponse.dataSuccess.notes.listNotes.toMutableList()
                 confirmReqPickupCourierNotesAdapter.notifyDataSetChanged()
-
-
             } else {
                 labelPastikan.visibility = View.GONE
                 rvCourierNotes.visibility = View.GONE
@@ -270,7 +263,6 @@ class RequestPickupFragment :
             val dropOffNotes = confirmReqPickupResponse.dataSuccess.dropOffLocation.dropOffNotes
 
             if (dropOffNotes.text.isNotEmpty() && dropOffNotes.title.isNotEmpty() && dropOffNotes.urlText.isNotEmpty()) {
-
                 dropoffInfoTitle.text = dropOffNotes.title
                 dropoffInfoText.text = dropOffNotes.text
                 dropoffInfoButton.apply {
@@ -279,10 +271,9 @@ class RequestPickupFragment :
                         openWebview(dropOffNotes.urlDetail)
                     }
                 }
-            }else{
+            } else {
                 cardDropOff.visibility = View.GONE
             }
-
 
             if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() || confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {
                 val schedulePickupMapper = SchedulePickupMapper()
@@ -343,7 +334,6 @@ class RequestPickupFragment :
                         openBottomSheetSchedulePickup()
                     }
                 }
-
             } else {
                 rlSchedulePickup.visibility = View.GONE
             }
@@ -366,7 +356,7 @@ class RequestPickupFragment :
                         }
 
                         override fun onDismiss() {
-                            //no-op
+                            // no-op
                         }
                     })
                 }
