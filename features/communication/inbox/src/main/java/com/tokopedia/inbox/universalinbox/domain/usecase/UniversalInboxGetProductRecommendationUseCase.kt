@@ -22,16 +22,37 @@ class UniversalInboxGetProductRecommendationUseCase @Inject constructor(
         Result.Loading
     )
 
+    private var lastSuccessfulRecommendationWidget = RecommendationWidget()
+
     fun observe(): Flow<Result<RecommendationWidget>> = productRecommendationFlow.asStateFlow()
 
     suspend fun fetchProductRecommendation(inputParameter: GetRecommendationRequestParam) {
         productRecommendationFlow.emit(Result.Loading)
         try {
             val response = getData(inputParameter).first() // only need first
-            productRecommendationFlow.emit(Result.Success(response))
+            updateFlowState(inputParameter.pageNumber, response)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
             productRecommendationFlow.emit(Result.Error(throwable))
         }
+    }
+
+    var counter = 1
+
+    private suspend fun updateFlowState(
+        page: Int,
+        response: RecommendationWidget
+    ) {
+        lastSuccessfulRecommendationWidget = if (page <= 1) { // if first page, reset
+            response
+        } else {
+            val updatedList = lastSuccessfulRecommendationWidget.recommendationItemList +
+                response.recommendationItemList
+            lastSuccessfulRecommendationWidget.copy(
+                title = response.title,
+                recommendationItemList = updatedList
+            )
+        }
+        productRecommendationFlow.emit(Result.Success(lastSuccessfulRecommendationWidget))
     }
 }

@@ -77,6 +77,8 @@ class UniversalInboxViewModel @Inject constructor(
     )
     val errorUiState: SharedFlow<UniversalInboxErrorUiState>
         get() = _errorUiState
+
+    private var page = 1
 //
 //    private val _driverChatCounter: MediatorLiveData<Result<Pair<Int, Int>>?> = MediatorLiveData()
 //    val driverChatCounter: LiveData<Result<Pair<Int, Int>>?>
@@ -84,11 +86,6 @@ class UniversalInboxViewModel @Inject constructor(
 //
 //    var driverChatWidgetData: Pair<Int, UniversalInboxWidgetDataResponse>? = null
 //    var driverChatData: Result<Pair<Int, Int>>? = null
-
-    // Error live data for all purpose
-//    private val _error = MutableLiveData<Pair<Throwable, String>>()
-//    val error: LiveData<Pair<Throwable, String>>
-//        get() = _error
 
     init {
         _actionFlow.process().launchIn(viewModelScope)
@@ -129,10 +126,12 @@ class UniversalInboxViewModel @Inject constructor(
             is UniversalInboxAction.RefreshRecommendation -> {
                 toggleLoadProductRecommendation(false) // flag for already load recom
                 toggleRemoveAllProductRecommendation(true)
-                refreshProductRecommendation(1) // Load first page
+                page = 1 // reset page
+                loadProductRecommendation() // Load first page
             }
             is UniversalInboxAction.LoadNextPage -> {
-                refreshProductRecommendation(it.page)
+                val lastPage = _productRecommendationState
+                loadProductRecommendation()
             }
         }
     }
@@ -255,6 +254,7 @@ class UniversalInboxViewModel @Inject constructor(
         when (result) {
             is Result.Success -> {
                 onSuccessGetProductRecommendation(result.data)
+                page++
             }
             is Result.Error -> {
                 setLoadingRecommendation(false)
@@ -342,7 +342,7 @@ class UniversalInboxViewModel @Inject constructor(
         navigateToPage("")
     }
 
-    private fun refreshProductRecommendation(page: Int) {
+    private fun loadProductRecommendation() {
         viewModelScope.launch {
             setLoadingRecommendation(true) // Show loading
             getRecommendationUseCase.fetchProductRecommendation(getRecommendationParam(page))

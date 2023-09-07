@@ -19,5 +19,5 @@ sealed class UniversalInboxAction {
 
     // Recommendation Actions
     object RefreshRecommendation : UniversalInboxAction()
-    data class LoadNextPage(val page: Int) : UniversalInboxAction()
+    object LoadNextPage : UniversalInboxAction()
 }

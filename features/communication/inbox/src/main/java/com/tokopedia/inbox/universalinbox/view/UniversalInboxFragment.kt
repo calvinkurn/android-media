@@ -254,19 +254,6 @@ class UniversalInboxFragment @Inject constructor(
 //            }
 //            observeDriverCounter() // Observe only after widget loaded
 //        }
-
-//
-//        viewModel.morePageRecommendation.observe(viewLifecycleOwner) {
-//            removeLoadMoreLoading()
-//            when (it) {
-//                is Success -> {
-//                    addRecommendationItem(it.data)
-//                }
-//                is Fail -> {
-//                    // no-op
-//                }
-//            }
-//        }
     }
 
 //    private fun observeDriverCounter() {
@@ -373,7 +360,7 @@ class UniversalInboxFragment @Inject constructor(
         }
         adapter.tryUpdateProductRecommendations(title, newList)
 //        setHeadlineAndBannerExperiment()
-//        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
     private suspend fun observeError() {
@@ -755,8 +742,8 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-//        showLoadMoreLoading()
-//        viewModel.loadMoreRecommendation(page)
+        showLoadMoreLoading()
+        viewModel.processAction(UniversalInboxAction.LoadNextPage) // page handled in view model
     }
 
     private fun showLoadMoreLoading() {
