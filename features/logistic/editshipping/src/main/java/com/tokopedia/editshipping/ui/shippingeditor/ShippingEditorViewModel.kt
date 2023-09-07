@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.editshipping.data.repository.ShippingEditorRepository
+import com.tokopedia.editshipping.data.usecase.GetShipperDetailUseCase
 import com.tokopedia.editshipping.data.usecase.GetShipperInfoUseCase
+import com.tokopedia.editshipping.data.usecase.SaveShippingUseCase
+import com.tokopedia.editshipping.data.usecase.ValidateShippingEditorUseCase
 import com.tokopedia.editshipping.domain.mapper.ShipperDetailMapper
 import com.tokopedia.editshipping.domain.mapper.ValidateShippingNewMapper
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailModel
@@ -13,6 +16,8 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperListModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
 import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
+import com.tokopedia.editshipping.domain.param.OngkirShippingEditorPopupInput
+import com.tokopedia.editshipping.domain.param.OngkirShippingEditorSaveInput
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -22,7 +27,10 @@ class ShippingEditorViewModel @Inject constructor(
     private val shippingEditorRepo: ShippingEditorRepository,
     private val validateShippingMapper: ValidateShippingNewMapper,
     private val detailMapper: ShipperDetailMapper,
-    private val getShipperInfoUseCase: GetShipperInfoUseCase
+    private val getShipperInfoUseCase: GetShipperInfoUseCase,
+    private val getShipperDetailUseCase: GetShipperDetailUseCase,
+    private val validateShippingEditorUseCase: ValidateShippingEditorUseCase,
+    private val saveShippingUseCase: SaveShippingUseCase
 ) : ViewModel() {
 
     private val _shipperList = MutableLiveData<ShippingEditorState<ShipperListModel>>()
@@ -57,7 +65,7 @@ class ShippingEditorViewModel @Inject constructor(
     fun getShipperDetail() {
         _shipperDetail.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorGetShipperDetails) {
-            val getShipperDetail = shippingEditorRepo.getShipperDetails()
+            val getShipperDetail = getShipperDetailUseCase(Unit)
             val data =
                 detailMapper.mapShipperDetails(getShipperDetail.ongkirShippingEditorGetShipperDetail.data)
             _shipperDetail.value = ShippingEditorState.Success(data)
@@ -67,7 +75,7 @@ class ShippingEditorViewModel @Inject constructor(
     fun validateShippingEditor(shopId: Long, activatedSpIds: String) {
         _validateDataShipper.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorValidateShippingEditor) {
-            val getValidateData = shippingEditorRepo.validateShippingEditor(shopId, activatedSpIds)
+            val getValidateData = validateShippingEditorUseCase(OngkirShippingEditorPopupInput(shopId, activatedSpIds))
             _validateDataShipper.value = ShippingEditorState.Success(
                 validateShippingMapper.mapShippingEditorData(getValidateData.ongkirShippingEditorPopup.data)
             )
@@ -78,7 +86,13 @@ class ShippingEditorViewModel @Inject constructor(
         _saveShippingData.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorSaveShippingEditor) {
             val saveShippingEditor =
-                shippingEditorRepo.saveShippingEditor(shopId, activatedSpIds, featuresId)
+                saveShippingUseCase(
+                    OngkirShippingEditorSaveInput(
+                        shopId,
+                        activatedSpIds,
+                        featuresId.orEmpty()
+                    )
+                )
             _saveShippingData.value =
                 ShippingEditorState.Success(saveShippingEditor.saveShippingEditor)
         }
