@@ -231,24 +231,6 @@ class ShippingEditorFragment :
             }
         }
 
-        viewModel.shipperTickerList.observe(
-            viewLifecycleOwner
-        ) {
-            when (it) {
-                is ShippingEditorState.Success -> {
-                    binding?.swipeRefresh?.isRefreshing = false
-                    binding?.shippingEditorLayout?.visible()
-                    binding?.btnSaveShipper?.visible()
-                    binding?.globalError?.gone()
-                    updateHeaderTickerData(it.data.headerTicker)
-                }
-
-                else -> {
-                    // no-op
-                }
-            }
-        }
-
         viewModel.shipperDetail.observe(
             viewLifecycleOwner
         ) {
