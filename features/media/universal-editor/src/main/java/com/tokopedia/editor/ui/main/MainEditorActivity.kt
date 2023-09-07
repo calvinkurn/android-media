@@ -113,7 +113,7 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     override fun onCloseClicked() {
-        viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(isTextEmpty = binding.container.hasTextAdded()))
+        viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton())
     }
 
     override fun onContinueClicked() {
@@ -129,7 +129,7 @@ open class MainEditorActivity : AppCompatActivity()
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(isTextEmpty = binding.container.hasTextAdded()))
+        viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton())
     }
 
     @Suppress("DEPRECATION")
