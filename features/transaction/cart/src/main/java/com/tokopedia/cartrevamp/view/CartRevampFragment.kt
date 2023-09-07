@@ -2845,8 +2845,12 @@ class CartRevampFragment :
 
         setTopLayoutVisibility()
 
+        val availableCartItems = CartDataHelper.getAllAvailableCartItemData(
+            viewModel.cartDataList.value
+        )
+
         when {
-            removeAllItems -> {
+            removeAllItems || availableCartItems.isEmpty() -> {
                 refreshCartWithSwipeToRefresh()
             }
 
@@ -3634,7 +3638,7 @@ class CartRevampFragment :
 
     private fun renderTickerAnnouncement(cartData: CartData) {
         val ticker = cartData.tickers.firstOrNull()
-        if (ticker != null && ticker.isValid("marketplace.cart")) {
+        if (ticker != null && ticker.isValid(CART_PAGE)) {
             viewModel.addItems(0, listOf(CartUiModelMapper.mapTickerAnnouncementUiModel(ticker)))
         }
     }

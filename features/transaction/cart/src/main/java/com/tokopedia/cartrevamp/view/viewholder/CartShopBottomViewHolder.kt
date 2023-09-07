@@ -57,7 +57,5 @@ class CartShopBottomViewHolder(
 
         private const val CHEVRON_ROTATION_0 = 0f
         private const val CHEVRON_ROTATION_180 = 180f
-
-        private const val SEPARATOR_MARGIN_TOP = 16
     }
 }

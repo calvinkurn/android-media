@@ -57,8 +57,9 @@
         android:id="@+id/container_product_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:clipToPadding="false"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
@@ -82,7 +83,7 @@
             android:id="@+id/product_bundling_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/checkbox_bundle"
             app:layout_constraintTop_toTopOf="@id/checkbox_bundle">
@@ -210,7 +211,7 @@
             android:id="@+id/fl_image_product"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="4dp"
             android:foreground="@drawable/bg_cart_product_image"
             app:layout_constraintStart_toEndOf="@+id/checkbox_product"
             app:layout_constraintTop_toTopOf="@id/checkbox_product">
