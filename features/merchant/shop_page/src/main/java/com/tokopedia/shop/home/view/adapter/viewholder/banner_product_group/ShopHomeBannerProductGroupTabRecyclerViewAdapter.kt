@@ -128,12 +128,14 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
             if (product.showProductInfo) {
                 binding.tpgProductName.text = product.name
             }
+            binding.tpgProductName.isVisible = product.showProductInfo
         }
 
         private fun renderProductPrice(product: ProductItemType) {
             if (product.showProductInfo) {
                 binding.tpgProductPrice.text = product.price
             }
+            binding.tpgProductPrice.isVisible = product.showProductInfo
         }
 
         private fun renderSlashedProductPrice(product: ProductItemType) {
