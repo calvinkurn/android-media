@@ -31,7 +31,7 @@ object LastApplyUiMapper {
             message = mapMessageUiModel(promoUiModel.messageUiModel),
             defaultEmptyPromoMessage = if (promoUiModel.titleDescription.isNotBlank()) promoUiModel.titleDescription else "",
             benefitSummaryInfo = promoUiModel.benefitSummaryInfoUiModel,
-            userGroupPromoAbTest = promoUiModel.userGroupPromoAbTest
+            userGroupMetadata = promoUiModel.userGroupMetadata
         )
     }
 

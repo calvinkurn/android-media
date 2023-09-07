@@ -9,5 +9,7 @@ data class CheckoutPromoModel(
     val isEnable: Boolean = true,
     val isAnimateWording: Boolean = false,
     val promo: LastApplyUiModel,
-    val entryPointInfo: PromoEntryPointInfo? = null
+    val entryPointInfo: PromoEntryPointInfo? = null,
+
+    val isPromoRevamp: Boolean = false,
 ) : CheckoutItem

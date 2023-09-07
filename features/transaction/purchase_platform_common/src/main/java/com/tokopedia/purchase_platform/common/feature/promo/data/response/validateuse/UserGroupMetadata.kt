@@ -15,8 +15,8 @@ data class UserGroupMetadata(
     companion object {
         const val KEY_PROMO_AB_TEST_USER_GROUP = "promo_revamp_ab_test_user_group"
 
-        const val PROMO_USER_GROUP_A = "group-a"
-        const val PROMO_USER_GROUP_B = "group-b"
-        const val PROMO_USER_GROUP_C = "group-c"
+        const val PROMO_USER_VARIANT_A = "variant_a"
+        const val PROMO_USER_VARIANT_B = "variant_b"
+        const val PROMO_USER_VARIANT_C = "variant_c"
     }
 }

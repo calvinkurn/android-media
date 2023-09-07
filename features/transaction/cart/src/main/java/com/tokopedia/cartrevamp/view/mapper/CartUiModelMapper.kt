@@ -39,14 +39,12 @@ import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryData
 import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
-import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
-import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
@@ -627,11 +625,7 @@ object CartUiModelMapper {
             additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
             message = mapMessageGlobalPromo(lastApplyPromoData.message),
             benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo),
-            // TODO: Get from response when ready
-//            userGroupPromoAbTest = lastApplyPromoData.userGroupMetadata
-//                .firstOrNull { it.key == UserGroupMetadata.KEY_PROMO_AB_TEST_USER_GROUP }?.value
-//                .ifNullOrBlank { "" }
-            userGroupPromoAbTest = UserGroupMetadata.PROMO_USER_GROUP_A
+            userGroupMetadata = lastApplyPromoData.userGroupMetadata
         )
     }
 

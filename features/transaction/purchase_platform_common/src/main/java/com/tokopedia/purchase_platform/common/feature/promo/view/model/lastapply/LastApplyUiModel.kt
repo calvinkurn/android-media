@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
 import kotlinx.parcelize.Parcelize
 
@@ -14,5 +15,5 @@ data class LastApplyUiModel(
     var listAllPromoCodes: List<String> = emptyList(),
     var defaultEmptyPromoMessage: String = "",
     var benefitSummaryInfo: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(),
-    var userGroupPromoAbTest: String = ""
+    var userGroupMetadata: List<UserGroupMetadata> = emptyList()
 ) : Parcelable

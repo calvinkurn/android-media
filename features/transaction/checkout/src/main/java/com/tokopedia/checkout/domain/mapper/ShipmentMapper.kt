@@ -78,7 +78,6 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopU
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
-import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
@@ -836,11 +835,7 @@ class ShipmentMapper @Inject constructor() {
             message = mapLastApplyMessageUiModel(promoData.message)
 //            listRedPromos = mapListRedPromos(promoData)
             listAllPromoCodes = mapListAllPromos(promoData)
-            // TODO: Get from response when ready
-//            userGroupPromoAbTest = promoData.userGroupMetadata
-//                .firstOrNull { it.key == UserGroupMetadata.KEY_PROMO_AB_TEST_USER_GROUP }?.value
-//                .ifNull { "" }
-            userGroupPromoAbTest = UserGroupMetadata.PROMO_USER_GROUP_A
+            userGroupMetadata = promoData.userGroupMetadata
         }
     }
 

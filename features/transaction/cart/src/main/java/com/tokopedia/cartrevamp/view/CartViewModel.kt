@@ -98,6 +98,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
@@ -172,6 +173,7 @@ class CartViewModel @Inject constructor(
     private val followShopUseCase: FollowShopUseCase,
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
     private val cartPromoEntryPointProcessor: CartPromoEntryPointProcessor,
+    private val promoUsageRollenceManager: PromoUsageRollenceManager,
     private val schedulers: ExecutorSchedulers,
     private val dispatchers: CoroutineDispatchers,
     private val cartCalculator: CartCalculator
@@ -2783,10 +2785,7 @@ class CartViewModel @Inject constructor(
 
     fun useNewPromoPage(): Boolean {
         cartModel.cartListData?.let { data ->
-            val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
-            return true
-            return lastApply.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_A
-                || lastApply.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_B
+            promoUsageRollenceManager.isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
         }
         return false
     }

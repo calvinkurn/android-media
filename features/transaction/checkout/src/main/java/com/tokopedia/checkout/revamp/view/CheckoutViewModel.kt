@@ -46,7 +46,6 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
@@ -59,6 +58,7 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
@@ -83,7 +83,6 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
@@ -113,6 +112,7 @@ class CheckoutViewModel @Inject constructor(
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val mTrackerTradeIn: CheckoutTradeInAnalytics,
     private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
+    private val promoUsageRollenceManager: PromoUsageRollenceManager,
     private val helper: CheckoutDataHelper,
     private val userSessionInterface: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
@@ -253,7 +253,8 @@ class CheckoutViewModel @Inject constructor(
 
                     val promo = CheckoutPromoModel(
                         isEnable = !tickerError.isError,
-                        promo = saf.cartShipmentAddressFormData.lastApplyData
+                        promo = saf.cartShipmentAddressFormData.lastApplyData,
+                        isPromoRevamp = promoUsageRollenceManager.isRevamp(saf.cartShipmentAddressFormData.lastApplyData.userGroupMetadata)
                     )
                     if (promo.isEnable && saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
                         PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
@@ -2548,8 +2549,7 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun useNewPromoPage(lastApplyUiModel: LastApplyUiModel) : Boolean {
-        return lastApplyUiModel.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_A ||
-            lastApplyUiModel.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_B
+        return promoUsageRollenceManager.isRevamp(lastApplyUiModel.userGroupMetadata)
     }
 
     companion object {

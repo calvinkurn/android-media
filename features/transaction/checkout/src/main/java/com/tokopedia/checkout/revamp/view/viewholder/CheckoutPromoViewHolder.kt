@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
-import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 
 class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, private val listener: CheckoutAdapterListener) :
@@ -29,8 +28,7 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
         }
 
         val promo = promoModel.promo
-        if (promo.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_A
-            || promo.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_B) {
+        if (promoModel.isPromoRevamp) {
             processNewEntryPointInfo(promo, promoModel.entryPointInfo, promoModel.isAnimateWording)
         } else {
             processOldEntryPointInfo(promo)

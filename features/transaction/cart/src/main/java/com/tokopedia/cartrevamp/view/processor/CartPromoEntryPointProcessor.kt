@@ -10,9 +10,9 @@ import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
+import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import javax.inject.Inject
@@ -20,7 +20,8 @@ import javax.inject.Inject
 class CartPromoEntryPointProcessor @Inject constructor(
     private val getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase,
     private val getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    private val promoUsageRollenceManager: PromoUsageRollenceManager
 ) {
 
     companion object {
@@ -67,30 +68,49 @@ class CartPromoEntryPointProcessor @Inject constructor(
         cartModel: CartModel,
         cartDataList: ArrayList<Any>
     ): EntryPointInfoEvent {
+        val isPromoRevamp = promoUsageRollenceManager.isRevamp(lastApply.userGroupMetadata)
         val hasSelectedItemInCart = CartDataHelper.hasSelectedCartItem(cartDataList)
-        when (lastApply.userGroupPromoAbTest) {
 
-            UserGroupMetadata.PROMO_USER_GROUP_A, UserGroupMetadata.PROMO_USER_GROUP_B -> {
-                if (!hasSelectedItemInCart) {
-                    return EntryPointInfoEvent.InactiveNew(
-                        lastApply = lastApply,
-                        isNoItemSelected = true
-                    )
-                }
-
-                val isUsingPromo = lastApply.additionalInfo.usageSummaries.isNotEmpty()
-                val isUseBebasOngkirOnly = lastApply.additionalInfo
-                    .bebasOngkirInfo.isUseBebasOngkirOnly
-                if (!isUsingPromo || isUseBebasOngkirOnly) {
-                    val param = GetPromoListRecommendationParam.create(
-                        promoRequest = generatePromoRequest(cartModel, cartDataList),
-                        chosenAddress = chosenAddressRequestHelper.getChosenAddress(),
-                        isPromoRevamp = true
-                    )
-                    val response = getPromoListRecommendationEntryPointUseCase(param)
-                    return if (response.promoListRecommendation.data.resultStatus.success) {
+        if (isPromoRevamp) {
+            if (!hasSelectedItemInCart) {
+                return EntryPointInfoEvent.InactiveNew(
+                    lastApply = lastApply,
+                    isNoItemSelected = true
+                )
+            }
+            val isUsingPromo = lastApply.additionalInfo.usageSummaries.isNotEmpty()
+            val isUseBebasOngkirOnly = lastApply.additionalInfo
+                .bebasOngkirInfo.isUseBebasOngkirOnly
+            if (!isUsingPromo || isUseBebasOngkirOnly) {
+                val param = GetPromoListRecommendationParam.create(
+                    promoRequest = generatePromoRequest(cartModel, cartDataList),
+                    chosenAddress = chosenAddressRequestHelper.getChosenAddress(),
+                    isPromoRevamp = true
+                )
+                val response = getPromoListRecommendationEntryPointUseCase(param)
+                return if (response.promoListRecommendation.data.resultStatus.success) {
+                    val entryPointInfo = getPromoListRecommendationMapper
+                        .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+                    if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
+                        EntryPointInfoEvent.ActiveNew(
+                            lastApply = lastApply,
+                            entryPointInfo = entryPointInfo
+                        )
+                    } else {
+                        EntryPointInfoEvent.InactiveNew(
+                            lastApply = lastApply,
+                            entryPointInfo = entryPointInfo
+                        )
+                    }
+                } else {
+                    if (response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_COUPON_LIST_EMPTY
+                        || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_USER_BLACKLISTED
+                        || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_PHONE_NOT_VERIFIED
+                    ) {
                         val entryPointInfo = getPromoListRecommendationMapper
-                            .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+                            .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(
+                                response
+                            )
                         if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
                             EntryPointInfoEvent.ActiveNew(
                                 lastApply = lastApply,
@@ -103,58 +123,10 @@ class CartPromoEntryPointProcessor @Inject constructor(
                             )
                         }
                     } else {
-                        if (response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_COUPON_LIST_EMPTY
-                            || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_USER_BLACKLISTED
-                            || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_PHONE_NOT_VERIFIED
-                        ) {
-                            val entryPointInfo = getPromoListRecommendationMapper
-                                .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(
-                                    response
-                                )
-                            if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
-                                EntryPointInfoEvent.ActiveNew(
-                                    lastApply = lastApply,
-                                    entryPointInfo = entryPointInfo
-                                )
-                            } else {
-                                EntryPointInfoEvent.InactiveNew(
-                                    lastApply = lastApply,
-                                    entryPointInfo = entryPointInfo
-                                )
-                            }
-                        } else {
-                            EntryPointInfoEvent.Error(lastApply)
-                        }
+                        EntryPointInfoEvent.Error(lastApply)
                     }
-                } else {
-                    val message = when {
-                        lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
-                            lastApply.additionalInfo.messageInfo.message
-                        }
-
-                        lastApply.defaultEmptyPromoMessage.isNotBlank() -> {
-                            lastApply.defaultEmptyPromoMessage
-                        }
-
-                        else -> {
-                            ""
-                        }
-                    }
-                    return EntryPointInfoEvent.AppliedNew(
-                        lastApply = lastApply,
-                        leftIconUrl = ICON_URL_ENTRY_POINT_APPLIED,
-                        message = message
-                    )
                 }
-            }
-
-            else -> {
-                if (!hasSelectedItemInCart) {
-                    return EntryPointInfoEvent.Inactive(
-                        isNoItemSelected = true
-                    )
-                }
-
+            } else {
                 val message = when {
                     lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
                         lastApply.additionalInfo.messageInfo.message
@@ -164,26 +136,50 @@ class CartPromoEntryPointProcessor @Inject constructor(
                         lastApply.defaultEmptyPromoMessage
                     }
 
-                    else -> ""
+                    else -> {
+                        ""
+                    }
                 }
-                val detail = lastApply.additionalInfo.messageInfo.detail
-                return if (detail.isNotBlank()) {
-                    EntryPointInfoEvent.Applied(
+                return EntryPointInfoEvent.AppliedNew(
+                    lastApply = lastApply,
+                    leftIconUrl = ICON_URL_ENTRY_POINT_APPLIED,
+                    message = message
+                )
+            }
+        } else {
+            if (!hasSelectedItemInCart) {
+                return EntryPointInfoEvent.Inactive(
+                    isNoItemSelected = true
+                )
+            }
+            val message = when {
+                lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
+                    lastApply.additionalInfo.messageInfo.message
+                }
+
+                lastApply.defaultEmptyPromoMessage.isNotBlank() -> {
+                    lastApply.defaultEmptyPromoMessage
+                }
+
+                else -> ""
+            }
+            val detail = lastApply.additionalInfo.messageInfo.detail
+            return if (detail.isNotBlank()) {
+                EntryPointInfoEvent.Applied(
+                    lastApply = lastApply,
+                    message = message,
+                    detail = detail
+                )
+            } else {
+                if (message.isNotBlank()) {
+                    EntryPointInfoEvent.Active(
                         lastApply = lastApply,
-                        message = message,
-                        detail = detail
+                        message = message
                     )
                 } else {
-                    if (message.isNotBlank()) {
-                        EntryPointInfoEvent.Active(
-                            lastApply = lastApply,
-                            message = message
-                        )
-                    } else {
-                        EntryPointInfoEvent.ActiveDefault(
-                            appliedPromos = emptyList()
-                        )
-                    }
+                    EntryPointInfoEvent.ActiveDefault(
+                        appliedPromos = emptyList()
+                    )
                 }
             }
         }
