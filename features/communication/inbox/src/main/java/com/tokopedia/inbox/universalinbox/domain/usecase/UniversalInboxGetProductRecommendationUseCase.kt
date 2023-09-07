@@ -37,8 +37,6 @@ class UniversalInboxGetProductRecommendationUseCase @Inject constructor(
         }
     }
 
-    var counter = 1
-
     private suspend fun updateFlowState(
         page: Int,
         response: RecommendationWidget
@@ -54,5 +52,9 @@ class UniversalInboxGetProductRecommendationUseCase @Inject constructor(
             )
         }
         productRecommendationFlow.emit(Result.Success(lastSuccessfulRecommendationWidget))
+    }
+
+    fun reset() {
+        lastSuccessfulRecommendationWidget = RecommendationWidget()
     }
 }

@@ -262,16 +262,18 @@ class UniversalInboxFragment @Inject constructor(
             // Set loading
             toggleLoading(it.isLoading)
 
-            // Set menu list
-            updateMenuList(newList = it.menuList + it.miscList)
+            if (!it.isLoading) {
+                // Set menu list
+                updateMenuList(newList = it.menuList + it.miscList)
 
-            // Update counters
-            updateNotificationCounter(it.notificationCounter)
+                // Update counters
+                updateNotificationCounter(it.notificationCounter)
 
-            // Load recommendation
-            if (shouldTopAdsAndLoadRecommendation) {
-                shouldTopAdsAndLoadRecommendation = false // do not load again
-                loadTopAdsAndRecommendation()
+                // Load recommendation only when first load
+                if (shouldTopAdsAndLoadRecommendation) {
+                    shouldTopAdsAndLoadRecommendation = false // do not load again
+                    loadTopAdsAndRecommendation()
+                }
             }
         }
     }
@@ -320,12 +322,14 @@ class UniversalInboxFragment @Inject constructor(
             // Toggle Loading
             toggleLoadingProductRecommendation(it.isLoading)
 
-            // Set title & update product recommendation
-            updateProductRecommendation(
-                shouldRemoveAllProductRecommendation = it.shouldRemoveAllProduct,
-                title = it.title,
-                newList = it.productList
-            )
+            if (!it.isLoading) {
+                // Set title & update product recommendation
+                updateProductRecommendation(
+                    shouldRemoveAllProductRecommendation = it.shouldRemoveAllProduct,
+                    title = it.title,
+                    newList = it.productList
+                )
+            }
         }
     }
 
@@ -532,36 +536,34 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun addTopAdsHeadlineUiModel(index: Int) {
-        val position = if (adapter.getTopAdsHeadlineCount() % 2 != 0) {
+        val position = if (adapter.getTopAdsHeadlineCount() % 2 != 0 ||
+            headlineExperimentPosition % 2 != 0
+        ) {
             headlineExperimentPosition + 1 // Shift to even the number of products
         } else {
             headlineExperimentPosition
         }
-        adapter.addItem(
+        adapter.tryAddItemAtPosition(
             position,
             UniversalInboxTopadsHeadlineUiModel(headlineData, Int.ZERO, index)
         )
-        binding?.inboxRv?.post {
-            adapter.notifyItemInserted(headlineExperimentPosition)
-        }
     }
 
     private fun setTopAdsBannerExperiment() {
         if (topAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED &&
             topAdsBannerExperimentPosition <= adapter.itemCount // Prevent out of bound
         ) {
-            val position = if (adapter.getTopAdsHeadlineCount() % 2 != 0) {
+            val position = if (adapter.getTopAdsHeadlineCount() % 2 != 0 ||
+                topAdsBannerExperimentPosition % 2 != 0
+            ) {
                 topAdsBannerExperimentPosition + 1 // Shift to even the number of products
             } else {
                 topAdsBannerExperimentPosition
             }
-            adapter.addItem(
+            adapter.tryAddItemAtPosition(
                 position,
                 UniversalInboxTopAdsBannerUiModel(topAdsBannerInProductCards)
             )
-            binding?.inboxRv?.post {
-                adapter.notifyItemInserted(topAdsBannerExperimentPosition)
-            }
         }
     }
 
@@ -731,10 +733,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun showLoadMoreLoading() {
-        adapter.addItem(adapter.getItems().size, UniversalInboxRecommendationLoaderUiModel())
-        binding?.inboxRv?.post {
-            adapter.notifyItemInserted(adapter.itemCount)
-        }
+        adapter.addItemAndAnimateChanges(UniversalInboxRecommendationLoaderUiModel())
     }
 
     @SuppressLint("NotifyDataSetChanged")

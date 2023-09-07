@@ -326,4 +326,16 @@ class UniversalInboxAdapter(
             Timber.d(throwable)
         }
     }
+
+    fun tryAddItemAtPosition(position: Int, item: Any) {
+        try {
+            val editedList = itemList
+            editedList.add(position, item)
+            val diffCallback = BaseDiffUtilCallback(itemList, editedList)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+            diffResult.dispatchUpdatesTo(this)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
 }

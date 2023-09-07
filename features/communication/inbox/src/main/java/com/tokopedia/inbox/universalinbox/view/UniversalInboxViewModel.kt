@@ -122,13 +122,13 @@ class UniversalInboxViewModel @Inject constructor(
                 showErrorMessage(it.error)
             }
             is UniversalInboxAction.RefreshPage -> {
-                toggleRemoveAllProductRecommendation(true)
+                removeAllProductRecommendation()
                 loadInboxMenuAndWidgetMeta()
             }
 
             // Recommendation process
             is UniversalInboxAction.RefreshRecommendation -> {
-                toggleRemoveAllProductRecommendation(true)
+                removeAllProductRecommendation()
                 page = 1 // reset page
                 loadProductRecommendation() // Load first page
             }
@@ -252,7 +252,7 @@ class UniversalInboxViewModel @Inject constructor(
     private fun handleResultProductRecommendation(
         result: Result<RecommendationWidget>
     ) {
-        toggleRemoveAllProductRecommendation(false)
+        turnOffRemoveProductRecommendation()
         when (result) {
             is Result.Success -> {
                 onSuccessGetProductRecommendation(result.data)
@@ -354,11 +354,25 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun toggleRemoveAllProductRecommendation(shouldRemove: Boolean) {
+    private fun removeAllProductRecommendation() {
+        viewModelScope.launch {
+            getRecommendationUseCase.reset()
+            _productRecommendationState.update {
+                it.copy(
+                    title = "",
+                    productList = listOf(),
+                    isLoading = false,
+                    shouldRemoveAllProduct = true
+                )
+            }
+        }
+    }
+
+    private fun turnOffRemoveProductRecommendation() {
         viewModelScope.launch {
             _productRecommendationState.update {
                 it.copy(
-                    shouldRemoveAllProduct = shouldRemove
+                    shouldRemoveAllProduct = false
                 )
             }
         }
