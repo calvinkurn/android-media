@@ -21,7 +21,7 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.FragmentShopBannerProductGroupWidgetTabBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
-import com.tokopedia.shop.home.view.adapter.ShopHomeBannerProductGroupTabAdapter
+import com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group.ShopHomeBannerProductGroupTabRecyclerViewAdapter
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
@@ -94,7 +94,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     private var onVerticalBannerClick : (VerticalBannerItemType) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopBannerProductGroupWidgetTabBinding>()
-    private val bannerProductGroupAdapter = ShopHomeBannerProductGroupTabAdapter()
+    private val bannerProductGroupAdapter = ShopHomeBannerProductGroupTabRecyclerViewAdapter()
 
     override fun getScreenName(): String = ShopBannerProductGroupWidgetTabFragment::class.java.canonicalName.orEmpty()
 

@@ -1,131 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="246dp"
-    android:layout_marginEnd="4dp">
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="4dp"
+    android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgProduct"
         android:layout_width="132dp"
-        android:layout_height="132dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="132dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgProductName"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:minLines="1"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="@+id/imgProduct"
-        app:layout_constraintStart_toStartOf="@+id/imgProduct"
-        app:layout_constraintTop_toBottomOf="@+id/imgProduct"
         app:typographyType="display_3"
         tools:text="Samsung Galaxy S23 - 512 GB" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgProductPrice"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        app:layout_constraintEnd_toEndOf="@+id/imgProduct"
-        app:layout_constraintStart_toStartOf="@+id/imgProduct"
-        app:layout_constraintTop_toBottomOf="@+id/tpgProductName"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:minLines="1"
         app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Rp18.849.000" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/labelDiscount"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layoutSlashedPrice"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textSize="11sp"
-        android:padding="4dp"
-        app:layout_constraintStart_toStartOf="@+id/imgProduct"
-        app:layout_constraintTop_toBottomOf="@id/tpgProductPrice"
-        tools:text="20%" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgSlashedProductPrice"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="@color/Unify_NN400"
-        app:layout_constraintBottom_toBottomOf="@+id/labelDiscount"
-        app:layout_constraintEnd_toEndOf="@+id/imgProduct"
-        app:layout_constraintStart_toEndOf="@+id/labelDiscount"
-        app:layout_constraintTop_toTopOf="@+id/labelDiscount"
-        app:typographyType="display_3"
-        tools:text="Rp20.849.000" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tpgSlashedProductPrice, labelDiscount, tpgProductPrice"/>
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imgStar"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tpgRating"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tpgRating"
-        tools:srcCompat="@drawable/ic_shop_home_star_filled" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgRating"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toEndOf="@+id/imgStar"
-        app:layout_constraintTop_toBottomOf="@+id/barrier"
-        app:typographyType="display_3"
-        tools:text="4.8" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgBullet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="4dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="4dp"
         android:visibility="gone"
-        android:paddingBottom="4dp"
-        android:text="@string/shop_page_dot_character"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@+id/tpgRating"
-        app:layout_constraintStart_toEndOf="@id/tpgRating"
-        app:layout_constraintTop_toTopOf="@+id/tpgRating"
-        app:typographyType="display_3" />
+        tools:visibility="visible"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelDiscount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="11sp"
+            tools:text="20%" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgProductSoldCount"
-        android:layout_width="wrap_content"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgSlashedProductPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN400"
+            app:typographyType="display_3"
+            tools:text="Rp20.849.000" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutRatingAndSoldCount"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tpgBullet"
-        app:layout_constraintTop_toBottomOf="@+id/barrier"
-        app:typographyType="display_3"
-        tools:text="Terjual 500" />
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="horizontal">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgStar"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:srcCompat="@drawable/ic_shop_home_star_filled"
+            tools:visibility="visible" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
+            app:typographyType="display_3"
+            tools:text="4.8"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgBullet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="4dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="4dp"
+            android:paddingBottom="4dp"
+            android:text="@string/shop_page_dot_character"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
+            app:typographyType="display_3"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgProductSoldCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:minLines="1"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
+            app:typographyType="display_3"
+            tools:text="Terjual 500"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+</LinearLayout>
 
 
