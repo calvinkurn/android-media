@@ -20,6 +20,7 @@ abstract class SomConfirmReqPickupViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
+    @ActivityScope
     @Binds
     @IntoMap
     @ViewModelKey(RequestPickupViewModel::class)
