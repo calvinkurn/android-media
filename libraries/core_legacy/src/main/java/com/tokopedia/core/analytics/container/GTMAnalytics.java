@@ -6,6 +6,7 @@ import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEMS;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_ID;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_NAME;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.SCREEN_NAME;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 import android.annotation.SuppressLint;
@@ -1097,10 +1098,11 @@ public class GTMAnalytics extends ContextAnalytics {
 
         // this is to prevent double campaign sent
         // we check the campaign hash with param. If the hash is same, we conclude that the campaign is the same campaign.
-        if (sameCampaignWithPrevCampaignSent(param)) {
+        int hashCodeTrack = hashCodeTrack(param);
+        if (sameCampaignWithPrevCampaignSent(hashCodeTrack)) {
             return;
         } else {
-            saveCampaignHash(param);
+            saveCampaignHash(hashCodeTrack);
         }
 
         Bundle bundle = new Bundle();
@@ -1149,12 +1151,23 @@ public class GTMAnalytics extends ContextAnalytics {
         pushEvent("campaignTrack", bundleToMap(bundle));
     }
 
-    private Boolean sameCampaignWithPrevCampaignSent(Map<String, Object> param) {
-        return param.hashCode() == prevCampaignHash;
+    private int hashCodeTrack(Map<String, Object> param) {
+        int hashCode = 0;
+        for (Map.Entry<String, Object> entry : param.entrySet()) {
+            if (SCREEN_NAME.equals(entry.getKey())) {
+                continue;
+            }
+            hashCode += entry.getValue().hashCode();
+        }
+        return hashCode;
     }
 
-    private void saveCampaignHash(Map<String, Object> param) {
-        prevCampaignHash = param.hashCode();
+    private Boolean sameCampaignWithPrevCampaignSent(int hashCodeTrack) {
+        return hashCodeTrack == prevCampaignHash;
+    }
+
+    private void saveCampaignHash(int hashCodeTrack) {
+        prevCampaignHash = hashCodeTrack;
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
