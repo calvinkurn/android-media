@@ -23,15 +23,14 @@ object LogisticSellerErrorHandler {
 
     object SomMessage {
 
-        //Confirm Shipping
+        // Confirm Shipping
         const val CONFIRM_SHIPPING_ERROR = "som confirm shipping error"
         const val CHANGE_COURIER_ERROR = "som change courier error"
         const val GET_COURIER_LIST_ERROR = "som get courier list error"
 
-        //Request pickup
+        // Request pickup
         const val GET_REQUEST_PICKUP_DATA_ERROR = "som get request pickup data error"
         const val REQUEST_PICKUP_ERROR = "som request pickup error"
-
     }
 
     fun logExceptionToCrashlytics(throwable: Throwable, message: String) {
@@ -40,14 +39,15 @@ object LogisticSellerErrorHandler {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
                 FirebaseCrashlytics.getInstance().recordException(
                     LogisticSellerException(
-                        message = exceptionMessage, cause = throwable
+                        message = exceptionMessage,
+                        cause = throwable
                     )
                 )
             } else {
                 throwable.printStackTrace()
             }
         } catch (e: IllegalStateException) {
-            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
@@ -76,7 +76,7 @@ object LogisticSellerErrorHandler {
     private fun getSellerOutageErrorMessageMap(
         throwable: Throwable,
         errorType: String,
-        deviceId: String,
+        deviceId: String
     ): Map<String, String> {
         val mutableMap = mutableMapOf<String, String>()
         with(mutableMap) {
