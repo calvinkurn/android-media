@@ -22,7 +22,7 @@ sealed class MainEditorEvent {
 
     data class InputTextResult(val model: InputTextModel) : MainEditorEvent()
 
-    data class ExportMedia(val canvasTextBitmap: Bitmap) : MainEditorEvent()
+    data class ExportMedia(val canvasTextBitmap: Bitmap, val imageBitmap: Bitmap? = null) : MainEditorEvent()
 
     object ResetActiveInputText : MainEditorEvent()
 

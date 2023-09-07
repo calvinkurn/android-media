@@ -1,6 +1,8 @@
 package com.tokopedia.editor.di.module
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.editor.data.repository.ImageFlattenRepository
+import com.tokopedia.editor.data.repository.ImageFlattenRepositoryImpl
 import com.tokopedia.editor.data.repository.ImageSaveRepository
 import com.tokopedia.editor.data.repository.ImageSaveRepositoryImpl
 import com.tokopedia.editor.data.repository.NavigationToolRepository
@@ -30,4 +32,10 @@ abstract class EditorRepositoryModule {
     internal abstract fun bindVideoFlattenRepository(
         impl: VideoFlattenRepositoryImpl
     ): VideoFlattenRepository
+
+    @Binds
+    @ActivityScope
+    internal abstract fun bindImageFlattenRepository(
+        impl: ImageFlattenRepositoryImpl
+    ): ImageFlattenRepository
 }

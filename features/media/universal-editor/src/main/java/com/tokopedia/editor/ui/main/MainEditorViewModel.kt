@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.data.repository.VideoFlattenRepository
 import com.tokopedia.editor.R
+import com.tokopedia.editor.data.repository.ImageFlattenRepository
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
@@ -30,6 +31,7 @@ import javax.inject.Inject
 class MainEditorViewModel @Inject constructor(
     private val navigationToolRepository: NavigationToolRepository,
     private val videoFlattenRepository: VideoFlattenRepository,
+    private val imageFlattenRepository: ImageFlattenRepository,
     private val resourceProvider: ResourceProvider,
     private val dispatchers: CoroutineDispatchers,
     private val paramFetcher: EditorParamFetcher
@@ -84,7 +86,7 @@ class MainEditorViewModel @Inject constructor(
             }
             is MainEditorEvent.ExportMedia -> {
                 setAction(MainEditorEffect.ShowLoading)
-                exportFinalMedia(filePath, event.canvasTextBitmap)
+                exportFinalMedia(filePath, event.canvasTextBitmap, event.imageBitmap)
             }
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextParam.reset()
@@ -103,14 +105,14 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    private fun exportFinalMedia(filePath: String, canvasText: Bitmap) {
+    private fun exportFinalMedia(filePath: String, canvasText: Bitmap, imageBitmap: Bitmap?) {
         val file = MediaFile(filePath)
 
         if (file.exist().not()) return
         val path = file.path ?: return
 
         if (file.isImage()) {
-            flattenImageFileWithTextCanvas(path, canvasText)
+            flattenImageFileWithTextCanvas(path, canvasText, imageBitmap)
         } else {
             flattenVideoFileWithTextCanvas(path, canvasText)
         }
@@ -134,8 +136,11 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    private fun flattenImageFileWithTextCanvas(imagePath: String, canvasText: Bitmap) {
-        // TODO: Will be handled by @calvin.
+    private fun flattenImageFileWithTextCanvas(imagePath: String, canvasText: Bitmap, imageBitmap: Bitmap?) {
+        if (imageBitmap == null) return
+        imageFlattenRepository.flattenImage(imageBitmap = imageBitmap, textBitmap = canvasText).apply {
+            setAction(MainEditorEffect.FinishEditorPage(this))
+        }
     }
 
     private fun updateCurrentPlacementModel(model: ImagePlacementModel?) {

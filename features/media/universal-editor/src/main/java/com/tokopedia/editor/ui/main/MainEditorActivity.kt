@@ -244,7 +244,9 @@ open class MainEditorActivity : AppCompatActivity()
 
     private fun exportFinalResult() {
         val bitmap = binding.container.exportAsBitmap()
-        viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap))
+        val imageBitmap = pagerContainer.getImageBitmap()
+
+        viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap, imageBitmap = imageBitmap))
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {

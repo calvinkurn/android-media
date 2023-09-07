@@ -1,5 +1,6 @@
 package com.tokopedia.editor.ui.main.component
 
+import android.graphics.Bitmap
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
@@ -40,6 +41,10 @@ class PagerContainerUiComponent constructor(
         if (newPath == null) return
         val fragment = mAdapter?.fragments?.first() ?: return
         fragment.onLoadContent(newPath)
+    }
+
+    fun getImageBitmap(): Bitmap? {
+        return mAdapter?.fragments?.first()?.getImageBitmap()
     }
 
     private fun setFragmentDisplayed(param: UniversalEditorParam) {

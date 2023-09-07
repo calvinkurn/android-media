@@ -1,5 +1,6 @@
 package com.tokopedia.editor.base
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -47,6 +48,8 @@ abstract class BaseEditorFragment(layoutId: Int) : Fragment(layoutId) {
     protected open fun onLoadSavedState(bundle: Bundle?) = Unit
 
     open fun onLoadContent(path: String) = Unit
+
+    open fun getImageBitmap(): Bitmap? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
