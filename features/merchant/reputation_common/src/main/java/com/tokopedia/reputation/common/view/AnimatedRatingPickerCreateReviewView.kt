@@ -65,6 +65,19 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
             AnimCreateReviewModel(false, anim_4_create_review),
             AnimCreateReviewModel(false, anim_5_create_review)
         )
+        setStarClickListener()
+
+        if (shouldShowDesc) {
+            txt_desc_status.visibility = View.VISIBLE
+        } else {
+            txt_desc_status.visibility = View.GONE
+        }
+
+        setStarHeight()
+        setStarWidth()
+    }
+
+    private fun setStarClickListener() {
         listOfStarsView.forEachIndexed { index, animatedStarsView ->
             animatedStarsView.reviewView.setOnClickListener {
                 clickAt = index.inc()
@@ -81,15 +94,6 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
                 listener?.onRatingSelected(clickAt)
             }
         }
-
-        if (shouldShowDesc) {
-            txt_desc_status.visibility = View.VISIBLE
-        } else {
-            txt_desc_status.visibility = View.GONE
-        }
-
-        setStarHeight()
-        setStarWidth()
     }
 
     private fun setStarHeight() {
@@ -223,6 +227,16 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         }
     }
 
+    fun disable() {
+        listOfStarsView.forEach { animatedStarsView ->
+            animatedStarsView.reviewView.setOnClickListener { listener?.onDisabledRatingClicked() }
+        }
+    }
+
+    fun enable() {
+        setStarClickListener()
+    }
+
     private fun cancelPendingAnimations() {
         handle.removeCallbacks(normalAnimated)
         handle.removeCallbacks(normalNonAnimated)
@@ -233,5 +247,6 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     interface AnimatedReputationListener {
         fun onClick(position: Int) {}
         fun onRatingSelected(rating: Int) {}
+        fun onDisabledRatingClicked() {}
     }
 }

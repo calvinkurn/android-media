@@ -718,8 +718,12 @@ data class GetBuyerOrderDetailResponse(
 
                     @Expose
                     @SerializedName("price_text")
-                    val priceText: String = ""
-                )
+                    val priceText: String = "",
+
+                    @Expose
+                    @SerializedName("product_url")
+                    val productUrl: String = ""
+                ) {
 
                 data class PartialFulfillment(
                     @SerializedName("fulfilled")
