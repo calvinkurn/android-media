@@ -184,8 +184,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             selectedCodes = selectedPromoCodes,
             codes = recommendedPromoCodes,
             backgroundUrl = promoRecommendation.backgroundUrl,
-            backgroundColor = "#763BD7",
-            //backgroundColor = promoRecommendation.backgroundColor,
+            backgroundColor = promoRecommendation.backgroundColor,
             animationUrl = promoRecommendation.animationUrl
         )
     }
