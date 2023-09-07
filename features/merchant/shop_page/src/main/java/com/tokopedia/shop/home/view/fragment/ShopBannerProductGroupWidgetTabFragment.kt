@@ -131,30 +131,47 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     }
 
     private fun showMainBanner() {
-        val singleBanners = widgets.firstOrNull { widget -> widget.componentName == ComponentName.DISPLAY_SINGLE_COLUMN }
+        val displaySingleColumnComponent = widgets.firstOrNull { widget -> widget.componentName == ComponentName.DISPLAY_SINGLE_COLUMN }
+        val displaySingleColumnComponentId = displaySingleColumnComponent?.componentId.toString()
+        val displaySingleColumnComponentName = displaySingleColumnComponent?.componentName?.id?.lowercase().toString()
 
-        val hasMainBanner = singleBanners != null
+        val hasMainBanner = displaySingleColumnComponent != null
         if (hasMainBanner) {
-            val mainBanner = singleBanners?.data?.getOrNull(0)
+            binding?.imgMainBanner?.visible()
+
+            val mainBanner = displaySingleColumnComponent?.data?.getOrNull(0)
             val mainBannerImageUrl = mainBanner?.imageUrl.orEmpty()
 
-            if (mainBannerImageUrl.isNotEmpty()) {
-                binding?.imgMainBanner?.visible()
-                binding?.imgMainBanner?.loadImage(mainBannerImageUrl)
-                binding?.imgMainBanner?.setOnClickListener {
-                    tracker.sendProductCarouselBannerClick(
-                        singleBanners?.componentId.toString(),
-                        singleBanners?.componentName?.id?.lowercase().toString(),
-                        BannerProductGroupUiModel.WidgetStyle.HORIZONTAL.id,
-                        shopId,
-                        userSession.userId
-                    )
-                    onMainBannerClick(mainBanner ?: return@setOnClickListener)
-                }
-            }
+            renderMainBannerImage(
+                mainBannerImageUrl,
+                displaySingleColumnComponentId,
+                displaySingleColumnComponentName,
+                mainBanner
+            )
 
         } else {
             binding?.imgMainBanner?.gone()
+        }
+    }
+
+    private fun renderMainBannerImage(
+        imageUrl: String,
+        displaySingleColumnComponentId: String,
+        displaySingleColumnComponentName: String,
+        mainBanner: BannerProductGroupUiModel.Tab.ComponentList.Data?
+    ) {
+        if (imageUrl.isNotEmpty()) {
+            binding?.imgMainBanner?.loadImage(imageUrl)
+            binding?.imgMainBanner?.setOnClickListener {
+                tracker.sendProductCarouselBannerClick(
+                    displaySingleColumnComponentId,
+                    displaySingleColumnComponentName,
+                    BannerProductGroupUiModel.WidgetStyle.HORIZONTAL.id,
+                    shopId,
+                    userSession.userId
+                )
+                onMainBannerClick(mainBanner ?: return@setOnClickListener)
+            }
         }
     }
 
@@ -194,7 +211,8 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
-                    showResult(result.data)
+                    showMainBanner()
+                    showProducts(result.data)
                     onProductSuccessfullyLoaded(true)
                 }
 
@@ -206,12 +224,11 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showResult(carouselItems: List<ShopHomeBannerProductGroupItemType>) {
+    private fun showProducts(carouselItems: List<ShopHomeBannerProductGroupItemType>) {
         if (carouselItems.isEmpty()) {
             removeShimmerFromProductCarousel()
         } else {
             showProductCarousel(carouselItems)
-            showMainBanner()
         }
     }
 
