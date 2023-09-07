@@ -11,7 +11,6 @@ import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
-import com.tokopedia.editor.ui.model.ImageModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.provider.ResourceProvider
 import com.tokopedia.editor.util.setValue
@@ -45,6 +44,11 @@ class MainEditorViewModel @Inject constructor(
      *
      * Whether comes from image placement, video source file, etc.
      * we need to set this [activeFilePath] immediately as of current file.
+     *
+     * every single editing tool needs to update this filePath through
+     * [setActiveEditableFilePath].
+     *
+     * This variable will be deleted if we want to support multi-file with drawer.
      */
     val filePath: String
         get() = _mainEditorState.value.activeFilePath
@@ -82,23 +86,15 @@ class MainEditorViewModel @Inject constructor(
                 _inputTextState.value = InputTextParam.reset()
             }
             is MainEditorEvent.PlacementImagePage -> {
-                mainEditorState.value.let {
-                    setAction(MainEditorEffect.OpenPlacementPage(
-                        sourcePath = it.param.paths.first(),
-                        model = it.imageModel?.placement
-                    ))
-                }
+                val currentPlacementModel = mainEditorState.value.imagePlacementModel
+                setAction(MainEditorEffect.OpenPlacementPage(filePath, currentPlacementModel))
             }
             is MainEditorEvent.PlacementImageResult -> {
-                event.model?.let {
-                    _mainEditorState.setValue {
-                        val newModel = this.imageModel?.apply { placement = it } ?: ImageModel(placement = it)
-                        copy(imageModel = newModel)
-                    }
+                val model = event.model ?: return
 
-                    // Tag will be replace with identifier for pager item
-                    setAction(MainEditorEffect.UpdatePagerSourcePath(it.path, "Tag"))
-                }
+                setActiveEditableFilePath(model.path)
+                updateCurrentPlacementModel(event.model)
+                setAction(MainEditorEffect.UpdatePagerSourcePath(model.path))
             }
         }
     }
@@ -138,6 +134,12 @@ class MainEditorViewModel @Inject constructor(
         // TODO: Will be handled by @calvin.
     }
 
+    private fun updateCurrentPlacementModel(model: ImagePlacementModel?) {
+        _mainEditorState.setValue {
+            copy(imagePlacementModel = model)
+        }
+    }
+
     private fun updateViewIdOnUiParam(id: Int) {
         _inputTextState.setValue {
             copy(viewId = id)
@@ -165,6 +167,7 @@ class MainEditorViewModel @Inject constructor(
             copy(param = param)
         }
 
+        // initial state of file
         param.firstFile.path?.let {
             setActiveEditableFilePath(it)
         }
