@@ -260,7 +260,7 @@ class CheckoutCostViewHolder(
                     binding.llCheckoutCostOthersExpanded,
                     false
                 )
-                itemBinding.tvCheckoutCostItemTitle.text = "Total Asuransi Pengiriman"
+                itemBinding.tvCheckoutCostItemTitle.setText(R.string.checkout_label_total_shipping_insurance)
                 itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     it,
                     false
@@ -342,7 +342,7 @@ class CheckoutCostViewHolder(
                     binding.llCheckoutCostOthers,
                     false
                 )
-                itemBinding.tvCheckoutCostItemTitle.text = "Total Asuransi Pengiriman"
+                itemBinding.tvCheckoutCostItemTitle.setText(R.string.checkout_label_total_shipping_insurance)
                 itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     it,
                     false

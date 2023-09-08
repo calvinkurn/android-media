@@ -1,5 +1,6 @@
 package com.tokopedia.cartrevamp.view.uimodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
@@ -53,7 +54,7 @@ data class CartGroupHolderData(
     var isFirstItem: Boolean = false,
     var isPreviousHasSelectedAmountWidget: Boolean = false,
     var cartGroupBmGmHolderData: CartGroupBmGmHolderData = CartGroupBmGmHolderData()
-) {
+) : ImpressHolder() {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
 

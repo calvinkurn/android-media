@@ -154,10 +154,10 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
 import javax.inject.Inject
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
 
 class CheckoutFragment :
     BaseDaggerFragment(),
@@ -296,9 +296,9 @@ class CheckoutFragment :
                     shipmentCartItemModel.errorTitle
                 )
             } else if (shipmentCartItemModel is CheckoutOrderModel && (
-                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                        shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
-                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
+                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                    shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
+                ) && shipmentCartItemModel.firstProductErrorIndex > 0
             ) {
                 onViewTickerOrderError(
                     shipmentCartItemModel.shopId.toString(),
@@ -1319,8 +1319,6 @@ class CheckoutFragment :
                 )
             }
             if (addOnsDataModel.status == ShipmentFragment.ADD_ON_STATUS_ACTIVE) {
-                val addOnsDataModel = order.addOnsOrderLevelModel
-
                 val addOnWordingData = AddOnWordingData()
                 val addOnWordingModel = order.addOnWordingModel
                 addOnWordingData.onlyGreetingCard = addOnWordingModel.onlyGreetingCard
@@ -1526,9 +1524,9 @@ class CheckoutFragment :
                 (
                     recipientAddressModel!!.latitude == null ||
                         recipientAddressModel.latitude.equals(
-                            "0",
-                            ignoreCase = true
-                        ) || recipientAddressModel.longitude == null ||
+                                "0",
+                                ignoreCase = true
+                            ) || recipientAddressModel.longitude == null ||
                         recipientAddressModel.longitude.equals("0", ignoreCase = true)
                     )
             ) {
@@ -1721,13 +1719,13 @@ class CheckoutFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-                recipientAddressModel!!.latitude == null ||
-                    recipientAddressModel.latitude.equals(
+            recipientAddressModel!!.latitude == null ||
+                recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
-                )
+                recipientAddressModel.longitude.equals("0", ignoreCase = true)
+            )
         ) {
             setPinpoint(cartPosition)
         } else {

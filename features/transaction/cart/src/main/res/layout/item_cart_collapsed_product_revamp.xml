@@ -23,10 +23,10 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_bundle_icon"
-        android:layout_width="23dp"
-        android:layout_height="23dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         android:background="@color/icon_bundling_dms_color"
         app:layout_constraintBottom_toBottomOf="@+id/fl_image_product"
         app:layout_constraintEnd_toEndOf="@+id/fl_image_product"

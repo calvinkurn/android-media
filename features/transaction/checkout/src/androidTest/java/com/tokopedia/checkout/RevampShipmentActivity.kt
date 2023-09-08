@@ -5,7 +5,7 @@ import com.tokopedia.checkout.revamp.view.CheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 
-class RevampShipmentActivity: ShipmentActivity() {
+class RevampShipmentActivity : ShipmentActivity() {
 
     override fun getNewFragment(): Fragment? {
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""

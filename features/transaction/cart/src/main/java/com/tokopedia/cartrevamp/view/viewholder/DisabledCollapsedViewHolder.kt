@@ -7,7 +7,6 @@ import com.tokopedia.cart.databinding.ItemCartDisabledCollapsedBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cartrevamp.view.decorator.CartHorizontalItemDecoration
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import kotlin.math.min

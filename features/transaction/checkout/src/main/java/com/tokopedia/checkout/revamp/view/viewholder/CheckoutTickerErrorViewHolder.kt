@@ -8,7 +8,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 
-class CheckoutTickerErrorViewHolder(private val binding: ItemCheckoutTickerErrorBinding): RecyclerView.ViewHolder(binding.root) {
+class CheckoutTickerErrorViewHolder(private val binding: ItemCheckoutTickerErrorBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(data: CheckoutTickerErrorModel) {
         if (data.isError) {
