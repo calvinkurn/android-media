@@ -95,7 +95,12 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
             val applink = if(binding?.orderPaymentStatus?.text == context.getString(R.string.transaction_item_default_status))
                 ApplinkConst.PMS
             else paymentModel.navPaymentModel.applink
-            mainNavListener.onOrderCardClicked(applink, binding?.orderPaymentStatus?.text.toString())
+            mainNavListener.onOrderCardClicked(
+                applink,
+                binding?.orderPaymentStatus?.text.toString(),
+                paymentModel.navPaymentModel.id,
+                paymentModel.position
+            )
         }
     }
 }
