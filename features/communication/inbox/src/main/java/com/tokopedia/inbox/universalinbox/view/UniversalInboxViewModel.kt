@@ -33,6 +33,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,6 +88,8 @@ class UniversalInboxViewModel @Inject constructor(
     val errorUiState: SharedFlow<UniversalInboxErrorUiState>
         get() = _errorUiState
 
+    private var driverJob: Job? = null
+
     private var page = 1
 
     init {
@@ -134,6 +137,11 @@ class UniversalInboxViewModel @Inject constructor(
             is UniversalInboxAction.LoadNextPage -> {
                 loadProductRecommendation()
             }
+
+            // Widget process
+            is UniversalInboxAction.RefreshDriverWidget -> {
+                resetDriverChannelFlow()
+            }
         }
     }
 
@@ -144,7 +152,7 @@ class UniversalInboxViewModel @Inject constructor(
     }
 
     private fun observeDriverChannelFlow() {
-        viewModelScope.launch {
+        driverJob = viewModelScope.launch {
             getDriverChatCounterUseCase.observeDriverChannelFlow()
         }
     }
@@ -354,6 +362,11 @@ class UniversalInboxViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun resetDriverChannelFlow() {
+        driverJob?.cancel()
+        observeDriverChannelFlow()
     }
 
     private fun navigateWithIntent(intent: Intent) {

@@ -14,8 +14,7 @@ sealed class UniversalInboxAction {
     object ResetNavigation : UniversalInboxAction()
 
     // Widget Actions
-
-    // TopAds Actions
+    object RefreshDriverWidget : UniversalInboxAction()
 
     // Recommendation Actions
     object RefreshRecommendation : UniversalInboxAction()
