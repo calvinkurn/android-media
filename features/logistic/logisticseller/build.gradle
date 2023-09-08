@@ -62,6 +62,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.webview)
 
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
 
