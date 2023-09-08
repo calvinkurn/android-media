@@ -132,7 +132,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                             } else {
                                 coupons.size - 1
                             }
-                            if (hiddenPromoCount > 1) {
+                            if (hiddenPromoCount > 0) {
                                 val isExpanded = !couponSection.isCollapsed
                                 if (isExpanded) {
                                     items.add(
