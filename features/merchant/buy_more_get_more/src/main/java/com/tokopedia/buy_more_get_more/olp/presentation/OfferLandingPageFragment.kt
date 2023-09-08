@@ -36,6 +36,7 @@ import com.tokopedia.buy_more_get_more.olp.utils.constant.BundleConstant
 import com.tokopedia.buy_more_get_more.olp.utils.constant.Constant
 import com.tokopedia.buy_more_get_more.olp.utils.extension.setDefaultStatusBar
 import com.tokopedia.buy_more_get_more.olp.utils.extension.setTransparentStatusBar
+import com.tokopedia.buy_more_get_more.olp.utils.tracker.OlpTracker
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
@@ -47,6 +48,7 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -104,6 +106,9 @@ class OfferLandingPageFragment :
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
 
+    @Inject
+    lateinit var tracker: OlpTracker
+
     private val olpAdapter: OlpAdapter?
         get() = adapter as? OlpAdapter
 
@@ -115,6 +120,9 @@ class OfferLandingPageFragment :
 
     private val isLogin: Boolean
         get() = viewModel.isLogin
+
+    private val currentState: OfferInfoForBuyerUiModel.OlpUiState
+        get() = viewModel.currentState
 
     private val olpAdapterTypeFactory by lazy {
         OlpAdapterTypeFactoryImpl(this, this, this)
@@ -182,6 +190,7 @@ class OfferLandingPageFragment :
             isEnabled = true
             setOnRefreshListener { loadInitialData() }
         }
+        tracker.sendOpenScreenEvent()
     }
 
     private fun initMiniCart() {
@@ -261,7 +270,6 @@ class OfferLandingPageFragment :
     }
 
     private fun setupProductList(offerProductList: OfferProductListUiModel) {
-        val currentState = viewModel.currentState
         olpAdapter?.apply {
             updateProductCount(offerProductList.totalProduct)
             setProductListData(offerProductList.productList)
@@ -273,9 +281,27 @@ class OfferLandingPageFragment :
         binding?.header?.apply {
             title = getString(R.string.bmgm_title)
             subTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName.orEmpty()
-            setNavigationOnClickListener { activity?.finish() }
-            cartButton?.setOnClickListener { redirectToCartPage() }
-            moreMenuButton?.setOnClickListener { redirectToMainMenu() }
+            setNavigationOnClickListener {
+                tracker.sendClickBackButtonEvent(
+                    offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                )
+                activity?.finish()
+            }
+            cartButton?.setOnClickListener {
+                tracker.sendClickKeranjangButtonEvent(
+                    offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                )
+                redirectToCartPage()
+            }
+            moreMenuButton?.setOnClickListener {
+                tracker.sendClickBurgerButtonEvent(
+                    offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                )
+                redirectToMainMenu()
+            }
             showWhiteToolbar = false
         }
     }
@@ -329,6 +355,10 @@ class OfferLandingPageFragment :
         when (requestCode) {
             REQUEST_CODE_SORT -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    tracker.sendClickFilterButtonEvent(
+                        currentState.offerIds.toSafeString(),
+                        currentState.warehouseIds.toSafeString()
+                    )
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     renderSortFilter(sortId, sortName)
@@ -357,7 +387,10 @@ class OfferLandingPageFragment :
     }
 
     override fun onSortChipClicked() {
-        val currentState = viewModel.currentState
+        tracker.sendClickFilterDropdownButtonEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         context?.run {
             val intent = ShopProductSortActivity.createIntent(activity, currentState.sortId)
             startActivityForResult(intent, REQUEST_CODE_SORT)
@@ -391,7 +424,7 @@ class OfferLandingPageFragment :
     }
 
     private fun setupTncBottomSheet() {
-        tncBottomSheet = TncBottomSheet.newInstance(viewModel.currentState.tnc)
+        tncBottomSheet = TncBottomSheet.newInstance(currentState.tnc)
     }
 
     private fun setViewState(viewState: Int, status: Status = Status.SUCCESS) {
@@ -415,7 +448,6 @@ class OfferLandingPageFragment :
             VIEW_ERROR -> {
                 activity?.setDefaultStatusBar()
                 viewModel.processEvent(OlpEvent.GetNotification)
-                val currentState = viewModel.currentState
                 when (status) {
                     Status.INVALID_OFFER_ID -> {
                         setErrorPage(
@@ -564,17 +596,25 @@ class OfferLandingPageFragment :
     }
 
     override fun onProductCardClicked(productId: Long, productUrl: String) {
+        tracker.sendClickProductCardEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         redirectToPDP(productId, productUrl)
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
+        tracker.sendClickAtcEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         viewModel.processEvent(OlpEvent.AddToCart(product))
     }
 
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {
-        val stringOfferIds = viewModel.currentState.offerIds.joinToString(",")
-        val stringWarehouseIds = viewModel.currentState.warehouseIds.joinToString(",")
-        val shopId = viewModel.currentState.shopData.shopId
+        val stringOfferIds = currentState.offerIds.joinToString(",")
+        val stringWarehouseIds = currentState.warehouseIds.joinToString(",")
+        val shopId = currentState.shopData.shopId
         context?.let {
             AtcVariantHelper.goToAtcVariant(
                 context = it,
@@ -594,12 +634,11 @@ class OfferLandingPageFragment :
     }
 
     private fun fetchMiniCart() {
-        val currentUiState = viewModel.currentState
         binding?.miniCartView?.fetchData(
-            shopIds = listOf(currentUiState.shopData.shopId),
-            offerIds = currentUiState.offerIds,
-            offerJsonData = currentUiState.offeringJsonData,
-            warehouseIds = currentUiState.warehouseIds.map { it.toString() }
+            shopIds = listOf(currentState.shopData.shopId),
+            offerIds = currentState.offerIds,
+            offerJsonData = currentState.offeringJsonData,
+            warehouseIds = currentState.warehouseIds.map { it.toString() }
         )
     }
 
@@ -610,12 +649,26 @@ class OfferLandingPageFragment :
     }
 
     override fun onTncClicked() {
+        tracker.sendClickSnkButtonEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         tncBottomSheet?.apply {
+            setCloseClickListener {
+                tracker.sendClickCloseSnkButtonEvent(
+                    currentState.offerIds.toSafeString(),
+                    currentState.warehouseIds.toSafeString()
+                )
+            }
             show(this@OfferLandingPageFragment)
         }
     }
 
     override fun onShopNameClicked(shopId: Long) {
+        tracker.sendClickShopCtaButtonEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         redirectToShopPage(shopId)
     }
 
@@ -695,5 +748,9 @@ class OfferLandingPageFragment :
     override fun onRefresh() {
         swipeRefreshLayout?.isRefreshing = true
         swipeRefreshLayout?.isEnabled = false
+    }
+
+    private fun List<Long>.toSafeString(): String {
+        return this.firstOrNull()?.orZero().toString()
     }
 }
