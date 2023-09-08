@@ -17,18 +17,18 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.databinding.TopadsEditFragmentEditAdGroupBinding
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
-import com.tokopedia.topads.edit.view.adapter.edit.EditAdGroupAdapter
-import com.tokopedia.topads.edit.view.adapter.edit.EditAdGroupTypeFactory
-import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemAdsPotentialUiModel
-import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemAdsPotentialWidgetUiModel
-import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemState
-import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemTag
-import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemUiModel
+import com.tokopedia.topads.common.view.adapter.createedit.CreateEditAdGroupAdapter
+import com.tokopedia.topads.common.view.adapter.createedit.CreateEditAdGroupTypeFactory
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialUiModel
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemState
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemTag
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemUiModel
 import com.tokopedia.topads.edit.view.sheet.EditAdGroupDailyBudgetBottomSheet
-import com.tokopedia.topads.edit.view.sheet.EditAdGroupNameBottomSheet
+import com.tokopedia.topads.common.view.sheet.CreateEditAdGroupNameBottomSheet
 import com.tokopedia.topads.edit.view.sheet.EditAdGroupRecommendationBidBottomSheet
 import com.tokopedia.topads.edit.view.sheet.EditAdGroupSettingModeBottomSheet
-import com.tokopedia.topads.edit.view.viewholder.CustomDividerItemDecoration
+import com.tokopedia.topads.common.view.adapter.createedit.decorator.CustomDividerItemDecoration
 import com.tokopedia.topads.edit.viewmodel.EditAdGroupViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.DecimalFormat
@@ -37,8 +37,8 @@ import javax.inject.Inject
 class EditAdGroupFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<TopadsEditFragmentEditAdGroupBinding>()
-    private val editAdGroupAdapter by lazy {
-        EditAdGroupAdapter(EditAdGroupTypeFactory())
+    private val createEditAdGroupAdapter by lazy {
+        CreateEditAdGroupAdapter(CreateEditAdGroupTypeFactory())
     }
 
     @Inject
@@ -60,40 +60,40 @@ class EditAdGroupFragment : BaseDaggerFragment() {
 
     private fun getList(context: Context): MutableList<Visitable<*>> {
         return mutableListOf(
-            EditAdGroupItemUiModel(
-                EditAdGroupItemTag.NAME,
+            CreateEditAdGroupItemUiModel(
+                CreateEditAdGroupItemTag.NAME,
                 requireActivity().getString(R.string.edit_ad_item_title_name),
                 hasDivider = true
             ) { openAdGroupNameBottomSheet() },
-            EditAdGroupItemUiModel(
-                EditAdGroupItemTag.PRODUCT,
+            CreateEditAdGroupItemUiModel(
+                CreateEditAdGroupItemTag.PRODUCT,
                 requireActivity().getString(R.string.edit_ad_item_title_product),
                 hasDivider = true
             ) { },
-            EditAdGroupItemUiModel(
-                EditAdGroupItemTag.SETTING_MODE,
+            CreateEditAdGroupItemUiModel(
+                CreateEditAdGroupItemTag.SETTING_MODE,
                 requireActivity().getString(R.string.edit_ad_item_title_mode)
             ) { openAdGroupSettingModeBottomSheet() },
-            EditAdGroupItemUiModel(
-                EditAdGroupItemTag.ADS_SEARCH,
+            CreateEditAdGroupItemUiModel(
+                CreateEditAdGroupItemTag.ADS_SEARCH,
                 requireActivity().getString(R.string.edit_ad_item_title_ads_search)
             ) { },
-            EditAdGroupItemUiModel(
-                EditAdGroupItemTag.ADS_RECOMMENDATION,
+            CreateEditAdGroupItemUiModel(
+                CreateEditAdGroupItemTag.ADS_RECOMMENDATION,
                 requireActivity().getString(R.string.edit_ad_item_title_ads_recommendation)
             ) { openAdGroupRecommendationBidBottomSheet() },
-            EditAdGroupItemUiModel(
-                EditAdGroupItemTag.DAILY_BUDGET,
+            CreateEditAdGroupItemUiModel(
+                CreateEditAdGroupItemTag.DAILY_BUDGET,
                 requireActivity().getString(R.string.edit_ad_item_title_daily_budget),
                 hasDivider = true
             ) { openAdGroupDailyBudgetBottomSheet() },
-            EditAdGroupItemAdsPotentialUiModel(
-                EditAdGroupItemTag.POTENTIAL_PERFORMANCE,
+            CreateEditAdGroupItemAdsPotentialUiModel(
+                CreateEditAdGroupItemTag.POTENTIAL_PERFORMANCE,
                 requireActivity().getString(R.string.edit_ad_item_title_potential_performance),
                 context.getString(R.string.footer_potential_widget_edit_ad_group_text),
                 "",
                 potentialWidgetList,
-                EditAdGroupItemState.LOADING
+                state = CreateEditAdGroupItemState.LOADING
             )
         )
     }
@@ -118,9 +118,9 @@ class EditAdGroupFragment : BaseDaggerFragment() {
 
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            adapter = editAdGroupAdapter
+            adapter = createEditAdGroupAdapter
             activity?.let {
-                editAdGroupAdapter.updateList(getList(it))
+                createEditAdGroupAdapter.updateList(getList(it))
             }
         }
 
@@ -129,27 +129,27 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         }
 
         viewModel.getGroupInfo(groupId, this::onSuccessGroupInfo)
-        viewModel.getTotalAdsAndKeywordsCount(groupId, this::onSuccessTotalAdsAndKeywordsCount)
+//        viewModel.getTotalAdsAndKeywordsCount(groupId, this::onSuccessTotalAdsAndKeywordsCount)
     }
     //TODO fix onSuccessGroupInfo and onSuccessTotalAdsAndKeywordsCount,
     // since response succession coming in near time, there's possibility it causing IllegalStateException
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         val isBidAutomatic = checkBidIsAutomatic(data.strategies)
         groupInfoResponse = data
-        editAdGroupAdapter.apply {
-            updateValue(EditAdGroupItemTag.NAME, data.groupName)
-            updateValue(EditAdGroupItemTag.SETTING_MODE, getSettingModeText(isBidAutomatic))
+        createEditAdGroupAdapter.apply {
+            updateValue(CreateEditAdGroupItemTag.NAME, data.groupName)
+            updateValue(CreateEditAdGroupItemTag.SETTING_MODE, getSettingModeText(isBidAutomatic))
             if (isBidAutomatic) {
-                removeItem(EditAdGroupItemTag.ADS_SEARCH)
-                removeItem(EditAdGroupItemTag.ADS_RECOMMENDATION)
+                removeItem(CreateEditAdGroupItemTag.ADS_SEARCH)
+                removeItem(CreateEditAdGroupItemTag.ADS_RECOMMENDATION)
             } else {
                 updateAdsSearchItem()
                 updateValue(
-                    EditAdGroupItemTag.ADS_RECOMMENDATION,
+                    CreateEditAdGroupItemTag.ADS_RECOMMENDATION,
                     getPriceBid(data.bidSettings, BID_SETTINGS_TYPE_BROWSE)
                 )
             }
-            updateValue(EditAdGroupItemTag.DAILY_BUDGET, data.dailyBudget.toString())
+            updateValue(CreateEditAdGroupItemTag.DAILY_BUDGET, data.dailyBudget.toString())
         }
 
 
@@ -162,8 +162,8 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             getPriceBid(it, BID_SETTINGS_TYPE_SEARCH)
         }
         if (totalKeywords != null && priceBid != null) {
-            editAdGroupAdapter.updateValue(
-                EditAdGroupItemTag.ADS_SEARCH,
+            createEditAdGroupAdapter.updateValue(
+                CreateEditAdGroupItemTag.ADS_SEARCH,
                 requireActivity().getString(
                     R.string.ads_search_item_template,
                     priceBid,
@@ -177,7 +177,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
     private fun onSuccessTotalAdsAndKeywordsCount(countDataItems: List<CountDataItem>) {
         countDataItemsResponse = countDataItems
         countDataItemsResponse?.get(0)?.totalProducts?.let {
-            editAdGroupAdapter.updateValue(EditAdGroupItemTag.PRODUCT, getProductText(it))
+            createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.PRODUCT, getProductText(it))
         }
 
         updateAdsSearchItem()
@@ -185,9 +185,9 @@ class EditAdGroupFragment : BaseDaggerFragment() {
     }
 
     private fun setDividerOnRecyclerView() {
-        val dividerPositions = editAdGroupAdapter.list
+        val dividerPositions = createEditAdGroupAdapter.list
             .mapIndexedNotNull { index, item ->
-                if (item is EditAdGroupItemUiModel && item.hasDivider) {
+                if (item is CreateEditAdGroupItemUiModel && item.hasDivider) {
                     index
                 } else {
                     null
@@ -226,8 +226,8 @@ class EditAdGroupFragment : BaseDaggerFragment() {
 
     private fun openAdGroupNameBottomSheet() {
         groupInfoResponse?.let {
-            EditAdGroupNameBottomSheet.newInstance(it.groupName, groupId)
-                .show(parentFragmentManager)
+            CreateEditAdGroupNameBottomSheet.newInstance(it.groupName, groupId)
+                .show(parentFragmentManager){}
         }
     }
 
@@ -254,19 +254,19 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             return EditAdGroupFragment()
         }
 
-        private val potentialWidgetList: MutableList<EditAdGroupItemAdsPotentialWidgetUiModel> =
+        private val potentialWidgetList: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel> =
             mutableListOf(
-                EditAdGroupItemAdsPotentialWidgetUiModel(
+                CreateEditAdGroupItemAdsPotentialWidgetUiModel(
                     "Di Pencarian",
                     "400x/minggu",
                     "+12% meningkat"
                 ),
-                EditAdGroupItemAdsPotentialWidgetUiModel(
+                CreateEditAdGroupItemAdsPotentialWidgetUiModel(
                     "Di Rekomendasi",
                     "400x/minggu",
                     "+12% meningkat"
                 ),
-                EditAdGroupItemAdsPotentialWidgetUiModel(
+                CreateEditAdGroupItemAdsPotentialWidgetUiModel(
                     "Total Tampil",
                     "800x/minggu",
                     "+12% meningkat"

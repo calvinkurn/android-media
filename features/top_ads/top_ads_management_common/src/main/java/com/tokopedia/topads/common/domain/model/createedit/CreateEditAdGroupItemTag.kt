@@ -1,6 +1,6 @@
-package com.tokopedia.topads.edit.view.model.edit
+package com.tokopedia.topads.common.domain.model.createedit
 
-enum class EditAdGroupItemTag {
+enum class CreateEditAdGroupItemTag {
     NAME,
     PRODUCT,
     SETTING_MODE,

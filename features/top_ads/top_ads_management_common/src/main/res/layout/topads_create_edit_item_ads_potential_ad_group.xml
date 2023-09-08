@@ -27,17 +27,17 @@
 
     <include
         android:id="@+id/potential_widget_1"
-        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
+        layout="@layout/topads_create_edit_item_ads_potential_widget_ad_group"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/potential_widget_2"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintTop_toBottomOf="@id/space"/>
+        app:layout_constraintTop_toBottomOf="@id/space" />
 
     <include
         android:id="@+id/potential_widget_2"
-        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
+        layout="@layout/topads_create_edit_item_ads_potential_widget_ad_group"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -48,7 +48,7 @@
 
     <include
         android:id="@+id/potential_widget_3"
-        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
+        layout="@layout/topads_create_edit_item_ads_potential_widget_ad_group"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -58,16 +58,16 @@
 
     <include
         android:id="@+id/shimmer1"
-        layout="@layout/topads_edit_shimmer_potential_widget_edit_ad_group"
+        layout="@layout/topads_create_edit_shimmer_potential_widget_ad_group"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/potential_widget_1"/>
+        app:layout_constraintTop_toBottomOf="@id/potential_widget_1" />
 
     <include
         android:id="@+id/shimmer2"
-        layout="@layout/topads_edit_shimmer_potential_widget_edit_ad_group"
+        layout="@layout/topads_create_edit_shimmer_potential_widget_ad_group"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintEnd_toStartOf="@id/shimmer3"
@@ -77,7 +77,7 @@
 
     <include
         android:id="@+id/shimmer3"
-        layout="@layout/topads_edit_shimmer_potential_widget_edit_ad_group"
+        layout="@layout/topads_create_edit_shimmer_potential_widget_ad_group"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,33 +88,34 @@
         android:id="@+id/group_widget"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:constraint_referenced_ids="potential_widget_1, potential_widget_2, potential_widget_3"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:constraint_referenced_ids="potential_widget_1, potential_widget_2, potential_widget_3" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_shimmer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:constraint_referenced_ids="shimmer1, shimmer2, shimmer3"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:constraint_referenced_ids="shimmer1, shimmer2, shimmer3" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_load_more_potential"
         android:layout_width="0dp"
         android:layout_height="32dp"
         android:text="Muat Ulang"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmer1"
         app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost"
-        android:visibility="gone"/>
+        app:unifyButtonVariant="ghost" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/edit_ad_item_ads_potential_footer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:paddingBottom="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_load_more_potential"

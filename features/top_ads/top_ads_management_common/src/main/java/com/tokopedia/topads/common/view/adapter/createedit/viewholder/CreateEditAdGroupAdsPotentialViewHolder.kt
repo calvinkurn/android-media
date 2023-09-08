@@ -1,31 +1,31 @@
-package com.tokopedia.topads.edit.view.viewholder
+package com.tokopedia.topads.common.view.adapter.createedit.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.databinding.TopadsEditItemAdsPotentialEditAdGroupBinding
-import com.tokopedia.topads.edit.databinding.TopadsEditItemAdsPotentialWidgetEditAdGroupBinding
-import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemAdsPotentialUiModel
-import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemAdsPotentialWidgetUiModel
-import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemState
+import com.tokopedia.topads.common.databinding.TopadsCreateEditItemAdsPotentialAdGroupBinding
+import com.tokopedia.topads.common.databinding.TopadsCreateEditItemAdsPotentialWidgetAdGroupBinding
+import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialUiModel
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemState
 
-class EditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsEditItemAdsPotentialEditAdGroupBinding) : AbstractViewHolder<EditAdGroupItemAdsPotentialUiModel>(viewBinding.root) {
+class CreateEditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsCreateEditItemAdsPotentialAdGroupBinding) : AbstractViewHolder<CreateEditAdGroupItemAdsPotentialUiModel>(viewBinding.root) {
 
-    override fun bind(element: EditAdGroupItemAdsPotentialUiModel) {
+    override fun bind(element: CreateEditAdGroupItemAdsPotentialUiModel) {
         viewBinding.editAdItemAdsPotentialTitle.text = element.title
         viewBinding.editAdItemAdsPotentialFooter.text = element.footer
 
         when(element.state){
-            EditAdGroupItemState.ERROR -> setContentError()
-            EditAdGroupItemState.LOADED -> setContentLoaded(element.listWidget)
-            EditAdGroupItemState.LOADING -> setContentLoading()
+            CreateEditAdGroupItemState.ERROR -> setContentError()
+            CreateEditAdGroupItemState.LOADED -> setContentLoaded(element.listWidget)
+            CreateEditAdGroupItemState.LOADING -> setContentLoading()
             else -> setContentLoading()
         }
 
     }
 
-    private fun setContentLoaded(list: MutableList<EditAdGroupItemAdsPotentialWidgetUiModel>) {
+    private fun setContentLoaded(list: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel>) {
         viewBinding.groupShimmer.hide()
         viewBinding.groupWidget.show()
         viewBinding.btnLoadMorePotential.hide()
@@ -57,17 +57,17 @@ class EditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsEditItemA
     }
 
     private fun setDataPotentialWidget(
-        potentialWidget: TopadsEditItemAdsPotentialWidgetEditAdGroupBinding,
-        model: EditAdGroupItemAdsPotentialWidgetUiModel
+        potentialWidget: TopadsCreateEditItemAdsPotentialWidgetAdGroupBinding,
+        model: CreateEditAdGroupItemAdsPotentialWidgetUiModel
     ) {
         potentialWidget.root.show()
         potentialWidget.editAdItemWidgetAdsPotentialTitle.text = model.title
-        potentialWidget.editAdItemWidgetAdsPotentialRetention.text = model.retention
+        potentialWidget.editAdItemWidgetAdsPotentialRetention.text = String.format("%sx/minggu", model.retention)
         potentialWidget.editAdItemWidgetAdsPotentialPercentage.text = model.percentage
     }
 
     companion object {
-        val LAYOUT = R.layout.topads_edit_item_ads_potential_edit_ad_group
+        val LAYOUT = R.layout.topads_create_edit_item_ads_potential_ad_group
     }
 
 }

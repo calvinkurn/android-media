@@ -259,8 +259,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             e.printStackTrace()
         }
         stepperModel?.suggestedBidPerClick = suggestBidPerClick.toString()
-//        stepperModel?.maxBid = maxBid
-//        stepperModel?.minBid = minBid
+        stepperModel?.maxBid = maxBid
+        stepperModel?.minBid = minBid
         stepperModel?.minSuggestBidKeyword = minSuggestKeyword
         stepperModel?.selectedKeywordStage = getItemSelected()
 //        if (stepperModel?.redirectionToSummary == false) {
@@ -268,7 +268,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 //            stepperListener?.goToNextPage(stepperModel)
 //        } else {
 //            stepperModel?.redirectionToSummary = false
-            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_4, stepperModel)
+        stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_4, stepperModel)
 //        }
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ATUR_BIAYA_IKLAN, "")
     }
@@ -301,7 +301,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         suggestions.add(DataSuggestions("group", dummyId))
         val suggestionsDefault = ArrayList<DataSuggestions>()
         suggestionsDefault.add(DataSuggestions("product", productIds))
-//        viewModel.getBidInfoDefault(suggestionsDefault, this::onDefaultSuccessSuggestion)
+        viewModel.getBidInfoDefault(suggestionsDefault, this::onDefaultSuccessSuggestion)
         productIds?.let { viewModel.getProductBid(it) }
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onEmptySuggestion)
         val list: MutableList<String>? = stepperModel?.selectedProductIds
@@ -408,11 +408,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onDefaultSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
-//        data.firstOrNull()?.let {
+        data.firstOrNull()?.let {
 //            suggestBidPerClick = it.suggestionBid
-//            maxBid = it.maxBid
-//            minBid = it.minBid
-//        }
+            maxBid = it.maxBid
+            minBid = it.minBid
+        }
 
 //        budget.textFieldInput.setText(suggestBidPerClick)
         budget.editText.setText(suggestBidPerClick)
@@ -494,7 +494,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             }
         }
 
-        budget.editText.addTextChangedListener(object : NumberTextWatcher(budget.editText, "0") {
+        budget.editText.addTextChangedListener(object : NumberTextWatcher(budget.editText) {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()

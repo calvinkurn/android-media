@@ -9,7 +9,7 @@
         android:id="@+id/text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:unify_text_field_label="@string/top_ads_edit_ad_group_name_bottom_sheet_label"
+        app:unify_text_field_label="@string/top_ads_create_edit_ad_group_name_bottom_sheet_label"
         app:unify_text_field_label_static="true"
         app:unify_text_field_input_type="text" />
     <View
@@ -20,7 +20,7 @@
         android:id="@+id/edit_ad_group_name_cta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/top_ads_edit_ad_group_name_bottom_sheet_cta"/>
+        android:text="@string/top_ads_create_edit_ad_group_name_bottom_sheet_cta"/>
 
     <View
         android:layout_width="match_parent"

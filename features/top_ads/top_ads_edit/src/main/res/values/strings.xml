@@ -79,8 +79,7 @@
     <string name="top_ads_edit_ad_group_apply_bottom_sheet_cta">Terapkan</string>
 
     <string name="top_ads_edit_ad_group_name_bottom_sheet_title">Ubah nama grup</string>
-    <string name="top_ads_edit_ad_group_name_bottom_sheet_label">Nama grup iklan</string>
-    <string name="top_ads_edit_ad_group_name_bottom_sheet_cta">Ubah Nama</string>
+
 
     <string name="top_ads_edit_ad_group_recommendation_bid_bottom_sheet_title">Iklan di rekomendasi</string>
     <string name="top_ads_edit_ad_group_recommendation_bid_bottom_sheet_desc">Iklanmu akan tampil pada bagian halaman strategis seperti di halaman home, keranjang, inbox dan detail produk. Pelajari</string>

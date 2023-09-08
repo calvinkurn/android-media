@@ -20,6 +20,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.topads.common.R as topadscommonR
 
 private const val AUTO_BID_STATE = "auto_bid"
 private const val MANUAL_BID = 10
@@ -88,21 +89,21 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
             stepperListener?.goToNextPage(stepperModel)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
                 CLICK_SAVE_AUTO_BID,
-                getString(com.tokopedia.topads.common.R.string.autobid_manual_title)
+                getString(topadscommonR.string.autobid_manual_title)
             )
         } else {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_4, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_5, stepperModel)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
                 CLICK_SAVE_AUTO_BID,
-                getString(com.tokopedia.topads.common.R.string.autobid_otomatis_title)
+                getString(topadscommonR.string.autobid_otomatis_title)
             )
         }
     }
 
     private fun prepareView() {
         if (stepperModel?.redirectionToSummary == true) {
-            nextBtn.text = getString(com.tokopedia.topads.common.R.string.topads_common_save_butt)
+            nextBtn.text = getString(topadscommonR.string.topads_common_save_butt)
         }
     }
 

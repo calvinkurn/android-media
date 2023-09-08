@@ -299,4 +299,9 @@
     <string name="topads_common_try_again">Coba Lagi</string>
     <string name="topads_common_the_group_name_is_already_in_use">Nama grup sudah digunakan.</string>
     <string name="topads_common_ad_groups_character_limit_error_msg">Grup iklan maksimal 70 karakter</string>
+    <string name="top_ads_create_text_caption_one"><![CDATA[Iklan Dengan klik Iklankan, kamu menyetujui <strong><span style="color:#00AA5B">Syarat dan Ketentuan .</span></strong>]]></string>
+    <string name="top_ads_create_text_caption_two"><![CDATA[serta <strong><span style="color:#00AA5B">Kebijakan Privasi Tokopedia.</span></strong>]]></string>
+    <string name="top_ads_create_edit_ad_group_name_bottom_sheet_title">Ubah nama grup</string>
+    <string name="top_ads_create_edit_ad_group_name_bottom_sheet_label">Nama grup iklan</string>
+    <string name="top_ads_create_edit_ad_group_name_bottom_sheet_cta">Ubah Nama</string>
 </resources>

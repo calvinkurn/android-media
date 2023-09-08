@@ -36,11 +36,17 @@ class SummaryViewModel @Inject constructor(
 
     fun validateGroup(
         groupName: String,
-        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)
+        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit),
+        onFailure: (() -> Unit)
     ) {
         validGroupUseCase.setParams(groupName, SourceConstant.SOURCE_ANDROID_SUMMARY)
         validGroupUseCase.execute({
-            onSuccess(it.topAdsGroupValidateName)
+            if (it.topAdsGroupValidateName.errors.isEmpty()){
+                onSuccess(it.topAdsGroupValidateName)
+            }else{
+                onFailure.invoke()
+            }
+
         }, { throwable ->
             throwable.printStackTrace()
         })

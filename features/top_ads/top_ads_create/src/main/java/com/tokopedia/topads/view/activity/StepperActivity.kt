@@ -13,6 +13,7 @@ import com.tokopedia.topads.view.fragment.AutoBidSelectionFragment
 import com.tokopedia.topads.view.fragment.BudgetingAdsFragment
 import com.tokopedia.topads.view.fragment.ProductAdsListFragment
 import com.tokopedia.topads.view.fragment.ProductRecommendationBidAdsFragment
+import com.tokopedia.topads.view.fragment.ProductSummaryAdsFragment
 import com.tokopedia.topads.view.fragment.SummaryAdsFragment
 
 /**
@@ -35,7 +36,7 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
                 AutoBidSelectionFragment.createInstance(),
                 BudgetingAdsFragment.createInstance(),
                 ProductRecommendationBidAdsFragment.createInstance(),
-                SummaryAdsFragment.createInstance())
+                ProductSummaryAdsFragment.createInstance())
         return fragmentList!!
     }
 

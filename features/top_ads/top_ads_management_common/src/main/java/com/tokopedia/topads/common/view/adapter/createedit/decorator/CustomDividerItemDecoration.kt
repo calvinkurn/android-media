@@ -1,20 +1,20 @@
-package com.tokopedia.topads.edit.view.viewholder
+package com.tokopedia.topads.common.view.adapter.createedit.decorator
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CustomDividerItemDecoration(private val dividersToShow: List<Int>) : RecyclerView.ItemDecoration() {
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val dividerPaint = Paint()
-        dividerPaint.color = ContextCompat.getColor(parent.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        dividerPaint.color = ContextCompat.getColor(parent.context, unifyprinciplesR.color.Unify_NN50)
 
-        dividerPaint.strokeWidth = 20f
+        dividerPaint.strokeWidth = 30f
 
-        for (i in 0 until parent.childCount - 1) {
+        for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
             val position = parent.getChildAdapterPosition(child)
 

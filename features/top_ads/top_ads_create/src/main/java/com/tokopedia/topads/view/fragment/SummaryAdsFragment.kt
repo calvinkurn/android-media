@@ -308,7 +308,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                         if (activity != null && isAdded) {
                             val text = s.toString().trim()
                             if (text.isNotEmpty()) {
-                                viewModel.validateGroup(text, ::onSuccessGroupName)
+                                viewModel.validateGroup(text, ::onSuccessGroupName){}
                             } else {
                                 onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
                             }

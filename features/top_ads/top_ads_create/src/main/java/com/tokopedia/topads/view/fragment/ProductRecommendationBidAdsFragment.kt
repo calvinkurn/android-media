@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.create.databinding.TopadsCreateFragmentRecommendationBudgetBinding
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -30,6 +31,7 @@ import com.tokopedia.topads.create.R as topadscreateR
 class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private var binding: TopadsCreateFragmentRecommendationBudgetBinding? = null
+    private var finalRecomBid: String = stepperModel?.suggestedBidPerClick ?: "0"
 
     @JvmField
     @Inject
@@ -58,7 +60,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
     }
 
     override fun gotoNextPage() {
-        TODO("Not yet implemented")
+        stepperListener?.goToNextPage(stepperModel)
     }
 
     override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
@@ -117,6 +119,10 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
     }
 
     private fun setClicksOnViews() {
+        binding?.btnNext?.setOnClickListener {
+            stepperModel?.finalRecommendationBidPerClick = finalRecomBid.toIntOrZero()
+            gotoNextPage()
+        }
         binding?.txtInfoRecommendation?.setOnClickListener {
             TopAdsToolTipBottomSheet.newInstance().also {
                 it.setTitle("Iklan di Rekomendasi")
@@ -142,12 +148,13 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
 
     private fun setEditTextListeners() {
 
-        binding?.recommendationBudget?.editText?.addTextChangedListener(object : NumberTextWatcher(binding?.recommendationBudget?.editText!!, "0") {
+        binding?.recommendationBudget?.editText?.addTextChangedListener(object : NumberTextWatcher(binding?.recommendationBudget?.editText!!) {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
                 when {
                     result >= (stepperModel?.finalRecommendationBidPerClick ?: 0) -> {
+                        finalRecomBid = result.toString()
                         binding?.recommendationBudget?.isInputError = false
                         binding?.recommendationBudget?.setMessage(MethodChecker.fromHtml(String.format("Biaya optimal ✔️", "0")))
                         stepperModel?.selectedProductIds?.let {
