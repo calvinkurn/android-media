@@ -27,6 +27,6 @@ class FeedBrowseChipAdapter(
         oldItem: FeedBrowseChipUiModel,
         newItem: FeedBrowseChipUiModel
     ): Boolean {
-        return oldItem.isSelected == newItem.isSelected
+        return oldItem == newItem
     }
 }
