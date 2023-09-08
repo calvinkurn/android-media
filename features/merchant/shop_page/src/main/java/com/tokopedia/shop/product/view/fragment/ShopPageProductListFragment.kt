@@ -72,6 +72,7 @@ import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
@@ -258,14 +259,14 @@ class ShopPageProductListFragment :
                         Toaster.TYPE_NORMAL,
                         ctaText,
                         ctaClickListener
-                    ).show()
+                    ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
                 } ?: Toaster.build(
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     ctaText
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
@@ -1760,14 +1761,24 @@ class ShopPageProductListFragment :
 
     private fun showToasterError(message: String) {
         activity?.let {
-            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(
+                requireView(),
+                message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
     }
 
     private fun onErrorGetMembershipInfo(t: Throwable) {
         shopProductAdapter.clearMembershipData()
         activity?.let {
-            Toaster.make(requireView(), ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(
+                requireView(),
+                ErrorHandler.getErrorMessage(context, t),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
     }
 
@@ -1990,5 +2001,9 @@ class ShopPageProductListFragment :
 
     override fun getPatternColorType(): String {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
+    }
+
+    private fun getShopHeaderBottomViewContainer(): View?{
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBottomViewContainer()
     }
 }

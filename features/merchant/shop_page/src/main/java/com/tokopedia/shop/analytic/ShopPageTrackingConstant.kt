@@ -338,6 +338,7 @@ object ShopPageTrackingConstant {
     const val ITEM_LIST_PERSO_TRENDING_WIDGET = "/shoppage - trending"
     const val ITEM_LIST_PERSO_PRODUCT_COMPARISON = "/shoppage - comparison"
     const val ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET = "/shoppage reimagined - hotspot widget"
+    const val ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET = "/shoppage reimagined - direct purchase"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
     const val SHOP_AFFILIATE = "affiliate"
@@ -459,6 +460,11 @@ object ShopPageTrackingConstant {
         const val REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "reimagined - impression banner hotspot"
         const val REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "reimagined - click product hotspot"
         const val REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET = "reimagined - impression direct purchase widget"
+        const val REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET = "reimagined - click add to cart direct purchase widget"
+        const val REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET = "reimagined - click etalase group direct purchase widget"
+        const val REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET = "reimagined - click etalase direct purchase widget"
+        const val REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET = "reimagined - impression product direct purchase widget"
+        const val REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET = "reimagined - click product direct purchase widget"
 
 
         //Showcase Navigation Widget - Without tab
@@ -573,6 +579,11 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "45922"
         const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "45923"
         const val TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET = "45955"
+        const val TRACKER_ID_REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET = "45956"
+        const val TRACKER_ID_REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET = "459557"
+        const val TRACKER_ID_REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET = "45958"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET = "46620"
+        const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET = "45959"
     }
 
     object Key {

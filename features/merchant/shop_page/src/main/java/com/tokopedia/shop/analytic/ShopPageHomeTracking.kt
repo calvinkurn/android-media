@@ -1,7 +1,6 @@
 package com.tokopedia.shop.analytic
 
 import android.os.Bundle
-import android.os.Parcelable
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -112,11 +111,16 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSI
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_BANNER_CAROUSEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_BANNER_CAROUSEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_BANNER_HOTSPOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FESTIVITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
@@ -145,6 +149,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_PERSO_TRENDING_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
@@ -245,11 +250,16 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_BANNER_CAROUSEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_CAROUSEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_HOTSPOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION
@@ -291,6 +301,7 @@ import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
 import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
+import com.tokopedia.shop.common.data.model.ShopPageProductDirectPurchaseWidgetAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
@@ -3953,6 +3964,7 @@ class ShopPageHomeTracking(
 
     fun impressionDirectPurchaseByEtalaseWidget(
         totalEtalaseGroup: Int,
+        etalaseGroupName: String,
         etalaseId: String,
         position: Int,
         widgetId: String,
@@ -3964,7 +3976,7 @@ class ShopPageHomeTracking(
         } else {
             WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT
         }
-        eventLabelValue = joinDash(eventLabelValue, etalaseId)
+        eventLabelValue = joinDash(eventLabelValue, etalaseGroupName, etalaseId)
         val eventBundle = Bundle().apply {
             putString(EVENT, VIEW_ITEM)
             putString(EVENT_ACTION, REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET)
@@ -3998,6 +4010,253 @@ class ShopPageHomeTracking(
             putInt(CREATIVE_SLOT, position)
             putString(ITEM_ID, widgetId)
             putString(ITEM_NAME, "")
+        }
+    }
+
+    fun onAddToCartProductDirectPurchaseWidget(
+        atcTrackerModel: ShopPageProductDirectPurchaseWidgetAtcTracker,
+        shopId: String,
+        userId: String,
+        shopName: String,
+        shopType: String
+    ) {
+        val totalEtalaseGroup = atcTrackerModel.totalEtalaseGroup
+        val etalaseId = atcTrackerModel.etalaseId
+        var eventLabelValue: String = if(totalEtalaseGroup == Int.ONE){
+            WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT
+        } else {
+            WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT
+        }
+        eventLabelValue = joinDash(eventLabelValue, etalaseId)
+
+
+        val eventBundle = Bundle().apply {
+            putString(EVENT, DIRECT_PURCHASE_ADD_TO_CART)
+            putString(EVENT_ACTION, REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createAtcProductDirectPurchaseWidgetItems(
+                        atcTrackerModel,
+                        shopId,
+                        shopName,
+                        shopType
+                    )
+                )
+            )
+            putString(PRODUCT_ID, atcTrackerModel.productId)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DIRECT_PURCHASE_ADD_TO_CART, eventBundle)
+    }
+
+    private fun createAtcProductDirectPurchaseWidgetItems(
+        atcTrackerModel: ShopPageProductDirectPurchaseWidgetAtcTracker,
+        shopId: String,
+        shopName: String,
+        shopType: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(CATEGORY_ID, "")
+            putString(DIMENSION_40, ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET)
+            putString(DIMENSION_45, atcTrackerModel.cartId)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, atcTrackerModel.cartId)
+            putString(ITEM_NAME, atcTrackerModel.productName)
+            putString(ITEM_VARIANT, atcTrackerModel.isVariant.toString())
+            putDouble(PRICE, formatPrice(atcTrackerModel.productPrice).toDoubleOrZero())
+            putInt(QUANTITY, atcTrackerModel.minOrder)
+            putString(SHOP_ID, shopId)
+            putString(SHOP_NAME, shopName)
+            putString(SHOP_TYPE, shopType)
+        }
+    }
+
+    fun sendClickEtalaseGroupDirectPurchaseWidget(
+        etalaseGroupName: String,
+        etalaseId: String,
+        widgetPosition: Int,
+        widgetId: String,
+        shopId: String,
+        userId: String
+    ) {
+        val eventLabelValue = joinDash(etalaseGroupName, etalaseId)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    createDirectPurchaseByEtalasePromotions(
+                        widgetPosition,
+                        widgetId
+                    )
+                )
+            )
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+    }
+
+    fun clickEtalaseDirectPurchaseWidget(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        widgetId: String,
+        widgetPosition: Int,
+        shopId: String,
+        userId: String,
+    ) {
+        var eventLabelValue = if(totalEtalaseGroup == Int.ONE){
+            WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT
+        } else {
+            WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT
+        }
+        eventLabelValue = joinDash(eventLabelValue, etalaseGroupName, etalaseId)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    createDirectPurchaseByEtalasePromotions(
+                        widgetPosition,
+                        widgetId
+                    )
+                )
+            )
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+    }
+
+    fun impressionProductDirectPurchaseWidget(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        productPosition: Int,
+        productId: String,
+        productName: String,
+        isVariant: Boolean,
+        price: String,
+        shopId: String,
+        userId: String
+    ) {
+        var eventLabelValue: String = if(totalEtalaseGroup == Int.ONE){
+            WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT
+        } else {
+            WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT
+        }
+        eventLabelValue = joinDash(eventLabelValue, etalaseGroupName, etalaseId)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM_LIST)
+            putString(EVENT_ACTION, REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createProductDirectPurchaseWidgetItems(
+                        productPosition,
+                        productId,
+                        productName,
+                        isVariant,
+                        price
+                    )
+                )
+            )
+            putString(PRODUCT_ID, productId)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventBundle)
+    }
+
+    fun clickProductDirectPurchaseWidget(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        productPosition: Int,
+        productId: String,
+        productName: String,
+        isVariant: Boolean,
+        price: String,
+        shopId: String,
+        userId: String
+    ) {
+        var eventLabelValue: String = if(totalEtalaseGroup == Int.ONE){
+            WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT
+        } else {
+            WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT
+        }
+        eventLabelValue = joinDash(eventLabelValue, etalaseGroupName, etalaseId)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createProductDirectPurchaseWidgetItems(
+                        productPosition,
+                        productId,
+                        productName,
+                        isVariant,
+                        price
+                    )
+                )
+            )
+            putString(PRODUCT_ID, productId)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+    }
+
+    private fun createProductDirectPurchaseWidgetItems(
+        productPosition: Int,
+        productId: String,
+        productName: String,
+        isVariant: Boolean,
+        price: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(DIMENSION_40, ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET)
+            putString(INDEX, productPosition.toString())
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, productId)
+            putString(ITEM_NAME, productName)
+            putString(ITEM_VARIANT, isVariant.toString())
+            putDouble(PRICE, formatPrice(price).toDoubleOrZero())
         }
     }
 }

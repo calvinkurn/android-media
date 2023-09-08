@@ -1,5 +1,7 @@
 package com.tokopedia.shop.home.view.customview.directpurchase
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 data class WidgetData(
     val widgetTitle: String,
     val titleList: List<Title>
@@ -19,7 +21,7 @@ data class ProductCardDirectPurchaseDataModel(
     val minimumOrder: Int = 0,
     val stock: Int = 0,
     val label: String = "", // Terjual 3,3 rb
-)
+): ImpressHolder()
 
 data class DirectPurchaseWidgetData(
     val titleList: List<Title>

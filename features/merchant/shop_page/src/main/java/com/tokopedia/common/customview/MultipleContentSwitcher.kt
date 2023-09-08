@@ -14,7 +14,11 @@ import com.tokopedia.unifycomponents.toPx
 class MultipleContentSwitcher : FrameLayout {
 
     interface MultipleContentSwitcherListener {
-        fun onMultipleSwitcherSelected(selectedIndex: Int, selectedItem: String)
+        fun onMultipleSwitcherSelected(
+            selectedIndex: Int,
+            selectedItem: String,
+            isSelectByAction: Boolean
+        )
     }
 
     constructor(context: Context) : super(context)
@@ -49,7 +53,7 @@ class MultipleContentSwitcher : FrameLayout {
             setUpSwitcher()
             requestLayout()
             this.post {
-                doSelectItem(selectedIndex)
+                doSelectItem(selectedIndex, false)
             }
         }
     }
@@ -62,7 +66,7 @@ class MultipleContentSwitcher : FrameLayout {
         if (index < -1 || index > data.size - 1 || selectedIndex == index) {
             return
         }
-        doSelectItem(index)
+        doSelectItem(index, true)
     }
 
     /**
@@ -85,11 +89,11 @@ class MultipleContentSwitcher : FrameLayout {
         return false
     }
 
-    private fun doSelectItem(index: Int){
+    private fun doSelectItem(index: Int, isSelectByAction: Boolean){
         deselectView(selectedIndex)
         selectedIndex = index
         selectView(index)
-        listener?.onMultipleSwitcherSelected(index, data[index])
+        listener?.onMultipleSwitcherSelected(index, data[index], isSelectByAction)
     }
 
     private fun setUpSwitcher() {

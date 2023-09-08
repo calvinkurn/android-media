@@ -1,6 +1,8 @@
 package com.tokopedia.shop.common.util
 
 import android.graphics.drawable.Drawable
+import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifyprinciples.Typography
@@ -44,5 +46,12 @@ object ShopUtilExt {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun Snackbar.setAnchorViewToShopHeaderBottomViewContainer(bottomViewContainer: View?): Snackbar {
+        bottomViewContainer?.let {
+            anchorView = it
+        }
+        return this
     }
 }
