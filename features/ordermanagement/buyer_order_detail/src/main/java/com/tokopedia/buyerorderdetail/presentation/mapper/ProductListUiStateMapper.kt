@@ -345,6 +345,7 @@ object ProductListUiStateMapper {
             details?.bmgms,
             details?.bmgmIcon.orEmpty(),
             orderId,
+            orderStatusId,
             details?.addonLabel.orEmpty(),
             details?.addonIcon.orEmpty(),
             collapseProductList,
@@ -560,6 +561,7 @@ object ProductListUiStateMapper {
         bundleDetail: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bmgm>?,
         bmgmIcon: String,
         orderId: String,
+        orderStatusId: String,
         addOnLabel: String,
         addOnIcon: String,
         collapseProductList: Boolean,
@@ -591,6 +593,7 @@ object ProductListUiStateMapper {
                     mapProductBmgmItem(
                         orderDetail,
                         orderId,
+                        orderStatusId,
                         addOnLabel,
                         addOnIcon
                     )
@@ -807,11 +810,13 @@ object ProductListUiStateMapper {
     private fun mapProductBmgmItem(
         product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bmgm.OrderDetail,
         orderId: String,
+        orderStatusId: String,
         addOnLabel: String,
         addOnIcon: String
     ): ProductBmgmSectionUiModel.ProductUiModel {
         return ProductBmgmSectionUiModel.ProductUiModel(
             orderId = orderId,
+            orderStatusId = orderStatusId,
             orderDetailId = product.orderDetailId,
             productId = product.productId,
             productName = product.productName,

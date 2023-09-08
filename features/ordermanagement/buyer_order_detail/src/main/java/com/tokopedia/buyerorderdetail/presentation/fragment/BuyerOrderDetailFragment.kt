@@ -1059,10 +1059,21 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        navigator.goToProductSnapshotPage(uiModel.orderId, uiModel.orderDetailId)
+        if (uiModel.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
+            navigator.goToProductSnapshotPage(uiModel.orderId, uiModel.orderDetailId)
+            BuyerOrderDetailTracker.eventClickProduct(uiModel.orderStatusId, uiModel.orderId)
+        } else {
+            showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
+        }
     }
 
     override fun onCopyAddOnDescription(label: String, description: CharSequence) {
-        //no op for bmgm add on because there is no function copy
+        // no op for bmgm add on because there is no function copy
+    }
+
+    private fun showToaster(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
     }
 }
