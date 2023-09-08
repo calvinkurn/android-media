@@ -98,6 +98,7 @@ import javax.inject.Inject
 import kotlin.math.max
 import com.tokopedia.promousage.R as promousageR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 
 class PromoUsageBottomSheet : BottomSheetDialogFragment() {
@@ -212,7 +213,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         setupDependencyInjection()
         setStyle(
             DialogFragment.STYLE_NORMAL,
-            com.tokopedia.unifycomponents.R.style.UnifyBottomSheetOverlapStyle
+            unifycomponentsR.style.UnifyBottomSheetOverlapStyle
         )
     }
 
