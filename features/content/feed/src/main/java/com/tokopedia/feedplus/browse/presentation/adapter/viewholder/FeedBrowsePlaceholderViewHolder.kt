@@ -9,7 +9,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowsePlaceholderBinding
  */
 class FeedBrowsePlaceholderViewHolder(
     binding: ItemFeedBrowsePlaceholderBinding
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     private val placeholderView = binding.root
 

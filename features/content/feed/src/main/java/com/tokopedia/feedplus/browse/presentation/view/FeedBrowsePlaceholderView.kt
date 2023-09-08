@@ -34,7 +34,6 @@ class FeedBrowsePlaceholderView : LinearLayout {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-
     init {
         ViewFeedBrowsePlaceholderBinding.inflate(
             LayoutInflater.from(context),
@@ -49,7 +48,7 @@ class FeedBrowsePlaceholderView : LinearLayout {
     fun show(type: Type) {
         removeCurrentView()
         val defaultLayoutParams = getDefaultLayoutParams()
-        val placeholderView = when(type) {
+        val placeholderView = when (type) {
             Type.Title -> {
                 getView(R.layout.view_feed_browse_title_placeholder).apply {
                     layoutParams = defaultLayoutParams.apply {
