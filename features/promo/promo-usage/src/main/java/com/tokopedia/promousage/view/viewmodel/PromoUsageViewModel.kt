@@ -1715,8 +1715,6 @@ internal class PromoUsageViewModel @Inject constructor(
         return false
     }
 
-    // region Analytics
-
     private fun getPageSourceForAnalytics(entryPoint: PromoPageEntryPoint): Int {
         return when (entryPoint) {
             PromoPageEntryPoint.CART_PAGE -> PromoUsageAnalytics.SOURCE_CART_PAGE
@@ -1799,8 +1797,6 @@ internal class PromoUsageViewModel @Inject constructor(
             }
         }
     }
-
-    // region Helper
 
     fun getCurrentItems(): List<DelegateAdapterItem> {
         return when (val currentState = _promoPageUiState.value) {
