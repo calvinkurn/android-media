@@ -6,15 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
-    android:background="@drawable/bg_pp_rounded_grey"
-    android:paddingVertical="12dp">
+    android:background="@drawable/bg_pp_rounded_grey" >
 
     <include
         android:id="@+id/ll_shipping_experience_state_loading"
         layout="@layout/purchase_platform_partial_shimmering_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
+        android:layout_margin="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone"
         tools:visibility="gone" />
 
@@ -22,6 +23,12 @@
     <include
         android:id="@+id/trade_in_view"
         layout="@layout/item_shipment_trade_in_pickup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
         tools:visibility="gone" />
 
@@ -29,10 +36,11 @@
         android:id="@+id/layout_state_no_selected_shipping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
+        android:layout_margin="12dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -41,13 +49,14 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/content_desc_label_choose_shipping"
             android:text="@string/label_choose_shipping"
+            tools:text="Pilih Pengiriman"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"
             app:typographyWeight="bold"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron_selected_no_shipping"
@@ -58,7 +67,7 @@
             app:layout_constraintBottom_toBottomOf="@id/label_choose_shipping"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/label_choose_shipping"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -66,10 +75,11 @@
         android:id="@+id/layout_state_has_selected_normal_shipping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
+        android:layout_margin="12dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -164,11 +174,12 @@
         android:id="@+id/layout_state_has_selected_free_shipping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
+        android:layout_margin="12dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="gone">
 
         <ImageView
             android:id="@+id/img_logo_free_shipping"
@@ -243,10 +254,11 @@
         android:id="@+id/layout_state_has_selected_whitelabel_shipping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
+        android:layout_margin="12dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -300,8 +312,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_marginVertical="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -379,24 +393,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_marginVertical="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_state_has_error_shipping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
+        android:layout_margin="12dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_error_shipping_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN950"
+            android:textColor="@color/Unify_NN400"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -404,17 +421,16 @@
             app:typographyWeight="bold"
             tools:text="Pengiriman tidak tersedia." />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_error_shipping_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_NN600"
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_chevron_error_shipping"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_color_light_enable="@color/Unify_NN400"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_error_shipping_title"
-            app:typographyType="display_3"
-            tools:text="Atur kembali barang belanjaanmu di Keranjang ya." />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -422,61 +438,37 @@
         android:id="@+id/layout_state_failed_shipping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:paddingHorizontal="12dp"
+        android:background="@drawable/shipping_widget_error_background"
         tools:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_failed_shipping_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/checkout_shipping"
+            android:text="@string/checkout_revamp_label_failed_get_shipping"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toStartOf="@+id/icon_reload_shipping"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="display_3"
             app:typographyWeight="bold" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_failed_shipping_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/checkout_label_failed_get_shipping"
-            android:textColor="@color/Unify_RN600"
-            app:layout_constraintEnd_toStartOf="@+id/icon_reload_shipping"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_failed_shipping_title"
-            app:typographyType="display_3"
-            app:typographyWeight="reguler" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/icon_reload_shipping"
-            android:layout_width="24dp"
-            android:layout_height="16dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            app:icon_color_light_enable="@color/Unify_GN500"
-            app:icon_color_night_enable="@color/Unify_GN500"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:layout_marginVertical="8dp"
+            app:icon_color_light_enable="@color/Unify_NN900"
+            app:icon_color_night_enable="@color/Unify_NN900"
             app:icon_name="RELOAD"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_reload_shipping"
-            app:layout_constraintEnd_toStartOf="@+id/btn_reload_shipping"
-            app:layout_constraintTop_toTopOf="@+id/btn_reload_shipping" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/btn_reload_shipping"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/checkout_label_reload_shipping"
-            android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            app:typographyWeight="bold" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -497,7 +489,10 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier_layout_shipping"
-        tools:visibility="gone">
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="12dp"
+        tools:layout_constraintTop_toBottomOf="@id/layout_state_has_selected_normal_shipping"
+        tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider_insurance"
@@ -517,7 +512,8 @@
             app:icon_color_light_enable="@color/Unify_NN500"
             app:icon_name="PROTECTION_CHECK"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_insurance" />
+            app:layout_constraintTop_toBottomOf="@id/divider_insurance"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_insurance_title"

@@ -155,6 +155,9 @@ import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
 import javax.inject.Inject
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.logisticcart.R as logisticcartR
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 class CheckoutFragment :
     BaseDaggerFragment(),
@@ -293,9 +296,9 @@ class CheckoutFragment :
                     shipmentCartItemModel.errorTitle
                 )
             } else if (shipmentCartItemModel is CheckoutOrderModel && (
-                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                    shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
-                ) && shipmentCartItemModel.firstProductErrorIndex > 0
+                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                        shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
+                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
             ) {
                 onViewTickerOrderError(
                     shipmentCartItemModel.shopId.toString(),
@@ -344,7 +347,7 @@ class CheckoutFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        activity?.findViewById<View>(com.tokopedia.abstraction.R.id.toolbar)?.isVisible = false
+        activity?.findViewById<View>(abstractionR.id.toolbar)?.isVisible = false
         binding = FragmentCheckoutBinding.inflate(inflater)
         return binding.root
     }
@@ -444,7 +447,7 @@ class CheckoutFragment :
                     }
                     if (errorMessage.isEmpty()) {
                         errorMessage =
-                            getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message)
+                            getString(purchase_platformcommonR.string.checkout_flow_error_global_message)
                     }
                     if (binding.rvCheckout.isVisible) {
                         Toaster.build(binding.root, errorMessage, type = Toaster.TYPE_ERROR).show()
@@ -561,7 +564,7 @@ class CheckoutFragment :
                     }
                     if (message.isEmpty()) {
                         message =
-                            getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message)
+                            getString(purchase_platformcommonR.string.checkout_flow_error_global_message)
                     }
                 }
                 Toaster.build(binding.root, message, type = it.toasterType).show()
@@ -593,7 +596,7 @@ class CheckoutFragment :
     private fun showToastNormal(message: String) {
         view?.let { v ->
             val actionText =
-                v.context.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+                v.context.getString(purchase_platformcommonR.string.checkout_flow_toaster_action_ok)
             val listener = View.OnClickListener { }
             Toaster.build(
                 v,
@@ -625,7 +628,7 @@ class CheckoutFragment :
         view?.let { v ->
             if (toasterErrorAkamai == null) {
                 val actionText =
-                    v.context.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+                    v.context.getString(purchase_platformcommonR.string.checkout_flow_toaster_action_ok)
                 toasterErrorAkamai = Toaster.build(
                     v,
                     message,
@@ -1084,8 +1087,9 @@ class CheckoutFragment :
         )
     }
 
-    override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
-        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$addOnDataInfoLink")
+    override fun onClickAddonProductInfoIcon(addOn: AddOnProductDataItemModel) {
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addOn.infoLink}")
+        checkoutAnalyticsCourierSelection.sendClicksInfoButtonOfAddonsEvent(addOn.type)
     }
 
     override fun onClickSeeAllAddOnProductService(product: CheckoutProductModel) {
@@ -1430,7 +1434,7 @@ class CheckoutFragment :
         cartPosition: Int
     ) {
         if (order.shopShipmentList.isEmpty()) {
-            onNoCourierAvailable(getString(com.tokopedia.logisticcart.R.string.label_no_courier_bottomsheet_message))
+            onNoCourierAvailable(getString(logisticcartR.string.label_no_courier_bottomsheet_message))
         } else {
             val activity: Activity? = activity
             if (activity != null) {
@@ -1522,9 +1526,9 @@ class CheckoutFragment :
                 (
                     recipientAddressModel!!.latitude == null ||
                         recipientAddressModel.latitude.equals(
-                                "0",
-                                ignoreCase = true
-                            ) || recipientAddressModel.longitude == null ||
+                            "0",
+                            ignoreCase = true
+                        ) || recipientAddressModel.longitude == null ||
                         recipientAddressModel.longitude.equals("0", ignoreCase = true)
                     )
             ) {
@@ -1646,7 +1650,10 @@ class CheckoutFragment :
         checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahKurir(label)
     }
 
-    private fun onChangeShippingCourier(position: Int, shippingCourierUiModels: List<ShippingCourierUiModel>) {
+    private fun onChangeShippingCourier(
+        position: Int,
+        shippingCourierUiModels: List<ShippingCourierUiModel>
+    ) {
         if (!viewModel.isLoading()) {
             if (activity != null) {
                 ShippingCourierBottomsheet.show(
@@ -1714,13 +1721,13 @@ class CheckoutFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-            recipientAddressModel!!.latitude == null ||
-                recipientAddressModel.latitude.equals(
+                recipientAddressModel!!.latitude == null ||
+                    recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                recipientAddressModel.longitude.equals("0", ignoreCase = true)
-            )
+                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
+                )
         ) {
             setPinpoint(cartPosition)
         } else {
@@ -1995,6 +2002,7 @@ class CheckoutFragment :
                 getString(R.string.title_activity_checkout_tnc_webview)
             )
             startActivity(intent)
+            checkoutAnalyticsCourierSelection.sendClickSnkAsuransiDanProteksiEvent()
         }
     }
 
@@ -2196,7 +2204,7 @@ class CheckoutFragment :
                     viewModel.setPrescriptionIds(prescriptions!!)
                 }
                 if (!isApi) {
-                    showToastNormal(requireActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text))
+                    showToastNormal(requireActivity().getString(purchase_platformcommonR.string.pp_epharmacy_upload_success_text))
                 }
                 updateUploadPrescription()
             }
@@ -2267,7 +2275,7 @@ class CheckoutFragment :
                     epharmacyItem.epharmacy.epharmacyGroupIds,
                     false,
                     if (showErrorToaster) {
-                        activity?.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found)
+                        activity?.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found)
                             ?: ""
                     } else {
                         "success"

@@ -51,6 +51,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 class CheckoutProductViewHolder(
     private val binding: ItemCheckoutProductBinding,
@@ -101,7 +102,7 @@ class CheckoutProductViewHolder(
                                 ImageSpan(
                                     bundleBinding.root.context,
                                     it,
-                                    DynamicDrawableSpan.ALIGN_CENTER
+                                    DynamicDrawableSpan.ALIGN_BASELINE
                                 ),
                                 0,
                                 1,
@@ -189,7 +190,7 @@ class CheckoutProductViewHolder(
                                 ImageSpan(
                                     productBinding.root.context,
                                     it,
-                                    DynamicDrawableSpan.ALIGN_CENTER
+                                    DynamicDrawableSpan.ALIGN_BASELINE
                                 ),
                                 0,
                                 1,
@@ -378,7 +379,7 @@ class CheckoutProductViewHolder(
                 binding.ivCheckoutOrderBadge.setImageUrl(product.groupInfoBadgeUrl)
                 if (product.uiGroupType == GroupShop.UI_GROUP_TYPE_NORMAL) {
                     binding.ivCheckoutOrderBadge.contentDescription = itemView.context.getString(
-                        com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                        purchase_platformcommonR.string.pp_cd_image_shop_badge_with_shop_type,
                         product.groupInfoName.lowercase(
                             Locale.getDefault()
                         )
@@ -395,10 +396,10 @@ class CheckoutProductViewHolder(
                 binding.ivCheckoutFreeShipping.setImageUrl(freeShippingBadgeUrl)
                 if (product.isFreeShippingPlus) {
                     binding.ivCheckoutFreeShipping.contentDescription =
-                        itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus)
+                        itemView.context.getString(purchase_platformcommonR.string.pp_cd_image_badge_plus)
                 } else {
                     binding.ivCheckoutFreeShipping.contentDescription =
-                        itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo)
+                        itemView.context.getString(purchase_platformcommonR.string.pp_cd_image_badge_bo)
                 }
                 binding.ivCheckoutFreeShipping.isVisible = true
                 if (!product.hasSeenFreeShippingBadge && product.isFreeShippingPlus) {
@@ -466,7 +467,7 @@ class CheckoutProductViewHolder(
                 binding.ivCheckoutShopBadge.setImageUrl(product.shopTypeInfoData.shopBadge)
                 binding.ivCheckoutShopBadge.visible()
                 binding.ivCheckoutShopBadge.contentDescription = itemView.context.getString(
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                    purchase_platformcommonR.string.pp_cd_image_shop_badge_with_shop_type,
                     product.shopTypeInfoData.title.lowercase(
                         Locale.getDefault()
                     )
@@ -565,7 +566,7 @@ class CheckoutProductViewHolder(
                             }
                         }
                         tvCheckoutAddOnsItemName.setOnClickListener {
-                            listener.onClickAddonProductInfoIcon(addon.infoLink)
+                            listener.onClickAddonProductInfoIcon(addon)
                         }
                     }
                     productBinding.llAddonProductItems.addView(addOnView.root)
@@ -654,7 +655,7 @@ class CheckoutProductViewHolder(
                             }
                         }
                         tvCheckoutAddOnsItemName.setOnClickListener {
-                            listener.onClickAddonProductInfoIcon(addon.infoLink)
+                            listener.onClickAddonProductInfoIcon(addon)
                         }
                     }
                     bundleBinding.llAddonProductItemsBundle.addView(addOnView.root)
@@ -899,7 +900,7 @@ class CheckoutProductViewHolder(
             ) {
                 val errorMessage = order.unblockingErrorMessage
                 checkoutTickerShopError.setHtmlDescription(
-                    errorMessage + " " + itemView.context.getString(
+                    "$errorMessage " + itemView.context.getString(
                         R.string.checkout_ticker_lihat_cta_suffix
                     )
                 )

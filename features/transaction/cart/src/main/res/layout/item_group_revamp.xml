@@ -15,14 +15,6 @@
         android:visibility="gone"
         android:background="@color/Unify_NN50" />
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_warning"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_shop_header"
         android:layout_width="match_parent"
@@ -68,6 +60,7 @@
             app:layout_constraintTop_toTopOf="@id/image_shop_badge"
             app:layout_constraintBottom_toBottomOf="@id/image_shop_badge"
             app:layout_constraintWidth_default="wrap"
+            app:layout_constraintHorizontal_bias="0"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Loaa Store df" />
@@ -83,22 +76,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!--        <com.tokopedia.iconunify.IconUnify-->
-        <!--            android:id="@+id/icon_pin"-->
-        <!--            android:layout_width="16dp"-->
-        <!--            android:layout_height="16dp"-->
-        <!--            android:layout_gravity="center_vertical"-->
-        <!--            android:layout_marginEnd="12dp"-->
-        <!--            app:icon_color_light_enable="@color/Unify_N700_96"-->
-        <!--            app:icon_name="PUSH_PIN"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintTop_toTopOf="parent" />-->
-
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/ll"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            app:constraint_referenced_ids="image_shop_badge,tv_shop_name,img_free_shipping"
+            app:constraint_referenced_ids="image_shop_badge,tv_shop_name"
             app:barrierDirection="bottom"
             tools:visibility="invisible" />
 
@@ -109,7 +91,7 @@
             app:layout_constraintTop_toBottomOf="@id/ll"
             android:layout_marginTop="2dp"
             app:layout_constraintStart_toEndOf="@id/cb_select_shop"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/img_free_shipping"
             android:foregroundGravity="center_vertical"
             app:flexWrap="wrap">
 
@@ -133,6 +115,19 @@
                 app:typographyType="display_3"
                 app:typographyWeight="reguler"
                 tools:text="Tangerang Selatan" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_overweight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:lines="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="Kelebihan 5 kg. Kurangi barang dulu, ya." />
 
         </com.google.android.flexbox.FlexboxLayout>
 

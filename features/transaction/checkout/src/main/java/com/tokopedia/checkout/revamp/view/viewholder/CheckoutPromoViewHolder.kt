@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, private val listener: CheckoutAdapterListener) :
     RecyclerView.ViewHolder(binding.root) {
@@ -42,7 +43,7 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                 isApplied = false
             }
             else -> {
-                titleValue = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
+                titleValue = itemView.context.getString(purchase_platformcommonR.string.promo_funnel_label)
                 isApplied = false
             }
         }

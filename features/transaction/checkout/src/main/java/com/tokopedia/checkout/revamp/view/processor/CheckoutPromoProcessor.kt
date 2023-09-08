@@ -313,44 +313,32 @@ class CheckoutPromoProcessor @Inject constructor(
 //                    ordersItem.validationMetadata = ""
 //                }
 //            } else {
-            if (shipmentCartItemModel.shipment.courierItemData != null) {
-                ordersItem.shippingId =
-                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperId
-                ordersItem.spId =
-                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperProductId
-                if (!shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
-                    ordersItem.freeShippingMetadata =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.freeShippingMetadata
-                    ordersItem.benefitClass =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.benefitClass
-                    ordersItem.shippingSubsidy =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.shippingSubsidy
-                    ordersItem.shippingPrice =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.shippingRate.toDouble()
-                    ordersItem.etaText =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.etaText.toEmptyStringIfNull()
-                    ordersItem.boCampaignId =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.boCampaignId
-                } else {
-                    ordersItem.freeShippingMetadata = ""
-                    ordersItem.boCampaignId = 0
-                    ordersItem.benefitClass = ""
-                    ordersItem.shippingSubsidy = 0
-                    ordersItem.shippingPrice = 0.0
-                    ordersItem.etaText = ""
-                }
-                ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
+            ordersItem.shippingId =
+                shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperId
+            ordersItem.spId =
+                shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperProductId
+            if (!shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
+                ordersItem.freeShippingMetadata =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.freeShippingMetadata
+                ordersItem.benefitClass =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.benefitClass
+                ordersItem.shippingSubsidy =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.shippingSubsidy
+                ordersItem.shippingPrice =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.shippingRate.toDouble()
+                ordersItem.etaText =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.etaText.toEmptyStringIfNull()
+                ordersItem.boCampaignId =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.boCampaignId
             } else {
-                ordersItem.shippingId = 0
-                ordersItem.spId = 0
                 ordersItem.freeShippingMetadata = ""
                 ordersItem.boCampaignId = 0
                 ordersItem.benefitClass = ""
                 ordersItem.shippingSubsidy = 0
                 ordersItem.shippingPrice = 0.0
                 ordersItem.etaText = ""
-                ordersItem.validationMetadata = ""
             }
+            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
         }
     }
 
@@ -996,15 +984,16 @@ class CheckoutPromoProcessor @Inject constructor(
     suspend fun finalValidateUse(
         validateUsePromoRequest: ValidateUsePromoRequest
     ): ValidateUsePromoRevampUiModel? {
-        try {
+        return try {
             val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
                 setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
                 validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
                     .executeOnBackground()
             }
-            return validateUsePromoRevampUiModel
+            validateUsePromoRevampUiModel
         } catch (t: Throwable) {
-            return null
+            Timber.d(t)
+            null
         }
     }
 

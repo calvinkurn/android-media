@@ -21,6 +21,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CheckoutEpharmacyViewHolder(
     private val binding: ItemCheckoutEpharmacyBinding,
@@ -50,14 +52,14 @@ class CheckoutEpharmacyViewHolder(
             )
         }
         if (uploadPrescriptionUiModel.uploadedImageCount <= 0) {
-            binding.uploadIcon.loadImage(getIconUnifyDrawable(binding.root.context, IconUnify.DOCTOR_RECEIPT, MethodChecker.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+            binding.uploadIcon.loadImage(getIconUnifyDrawable(binding.root.context, IconUnify.DOCTOR_RECEIPT, MethodChecker.getColor(binding.root.context, unifyprinciplesR.color.Unify_GN500)))
             if (uploadPrescriptionUiModel.hasInvalidPrescription) {
                 binding.uploadPrescriptionText.text =
-                    itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_invalid_title_text)
+                    itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_upload_invalid_title_text)
                 binding.uploadPrescriptionText.setWeight(Typography.BOLD)
                 binding.uploadDescriptionText.text =
-                    itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_invalid_description_text)
-                binding.uploadDescriptionText.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_upload_invalid_description_text)
+                binding.uploadDescriptionText.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
                 binding.uploadDescriptionText.show()
             } else {
                 binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
@@ -74,13 +76,13 @@ class CheckoutEpharmacyViewHolder(
                 binding.uploadIcon.loadImage(R.drawable.checkout_module_epharmacy_icon_checked)
             }
             binding.uploadPrescriptionText.text =
-                itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_attached_title_text)
+                itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_upload_prescription_attached_title_text)
             binding.uploadPrescriptionText.setWeight(Typography.BOLD)
             binding.uploadDescriptionText.text = itemView.resources.getString(
-                com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_count_text,
+                purchase_platformcommonR.string.pp_epharmacy_upload_prescription_count_text,
                 uploadPrescriptionUiModel.uploadedImageCount
             )
-            binding.uploadDescriptionText.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+            binding.uploadDescriptionText.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
             binding.uploadDescriptionText.show()
         }
         binding.uploadPrescriptionLayout.setOnClickListener {
@@ -113,8 +115,8 @@ class CheckoutEpharmacyViewHolder(
                 })
                 .start()
             binding.uploadDescriptionText.text =
-                itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found)
-            binding.uploadDescriptionText.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found)
+            binding.uploadDescriptionText.setTextColorCompat(unifyprinciplesR.color.Unify_RN500)
             binding.uploadDescriptionText.show()
         }
     }

@@ -44,7 +44,7 @@
         app:typographyType="display_3"
         tools:text="Varian: 12 pro max" />
 
-    <com.tokopedia.unifycomponents.TextAreaUnify2
+    <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/text_area_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

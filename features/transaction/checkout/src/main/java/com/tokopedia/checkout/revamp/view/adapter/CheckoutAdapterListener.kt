@@ -39,7 +39,7 @@ interface CheckoutAdapterListener {
         bindingAdapterPosition: Int
     )
 
-    fun onClickAddonProductInfoIcon(addOnDataInfoLink: String)
+    fun onClickAddonProductInfoIcon(addOn: AddOnProductDataItemModel)
 
     fun onClickSeeAllAddOnProductService(product: CheckoutProductModel)
 

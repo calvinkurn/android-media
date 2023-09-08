@@ -152,7 +152,7 @@ class CheckoutViewModel @Inject constructor(
 
     private var isUsingDdp = false
 
-    private var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
+    internal var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
 
     private var cartDataForRates = ""
 

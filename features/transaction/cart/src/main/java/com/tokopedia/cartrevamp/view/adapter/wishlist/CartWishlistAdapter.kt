@@ -8,6 +8,7 @@ import com.tokopedia.cart.databinding.ItemProductWishlistBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cartrevamp.view.viewholder.CartWishlistItemViewHolder
+import com.tokopedia.design.R as designR
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
@@ -23,7 +24,7 @@ class CartWishlistAdapter(val actionListener: ActionListener?) : RecyclerView.Ad
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = ItemProductWishlistBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CartWishlistItemViewHolder(binding, actionListener, parent.context.resources.getDimension(com.tokopedia.design.R.dimen.dp_120).toInt())
+        return CartWishlistItemViewHolder(binding, actionListener, parent.context.resources.getDimension(designR.dimen.dp_120).toInt())
     }
 
     override fun getItemCount(): Int {
