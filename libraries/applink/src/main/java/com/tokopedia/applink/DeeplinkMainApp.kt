@@ -281,6 +281,9 @@ object DeeplinkMainApp {
             }
         ),
         "feed" to mutableListOf(
+            DLP.matchPattern("browse") { _: Context, deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            },
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperContent.getNavContentFromAppLink(deeplink)
             }

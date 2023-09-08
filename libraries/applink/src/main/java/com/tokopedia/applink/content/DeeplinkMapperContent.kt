@@ -55,8 +55,6 @@ object DeeplinkMapperContent {
         val pathSegments = uri.pathSegments.joinToString("/")
         return if (pathSegments.startsWith("detail/", false)) {
             goToAppLinkFeedDetailInternal(uri)
-        } else if (pathSegments.startsWith("browse", false)) {
-            "${ApplinkConstInternalContent.INTERNAL_CONTENT}/browse"
         } else if (pathSegments.startsWith("creation-product-search", false)) {
             INTERNAL_FEED_CREATION_PRODUCT_SEARCH
         } else if (pathSegments.startsWith("creation-shop-search", false)) {

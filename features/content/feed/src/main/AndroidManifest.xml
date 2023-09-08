@@ -51,7 +51,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_unified_feed_page"
+                    android:host="@string/host_content"
                     android:pathPattern="@string/path_content_detail_page"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -67,7 +67,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_content"
+                    android:host="@string/host_feed"
                     android:pathPattern="@string/path_content_browse"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
