@@ -21,7 +21,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tf_description"
         app:layout_constraintStart_toEndOf="@+id/cu_addon"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3" />
+        app:typographyType="display_2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tf_description"
