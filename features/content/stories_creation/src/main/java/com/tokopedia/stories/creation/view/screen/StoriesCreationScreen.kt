@@ -2,6 +2,7 @@ package com.tokopedia.stories.creation.view.screen
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -67,9 +68,13 @@ fun StoriesCreationScreen(
         val (
             header,
             headerDivider,
+
             mediaCover,
             mediaCoverDivider,
-            addProduct,
+
+            addProductSection,
+            showDurationSection,
+
             uploadButtonDivider,
             uploadButton,
         ) = createRefs()
@@ -121,11 +126,20 @@ fun StoriesCreationScreen(
                 }
         )
 
-        StoriesCreationAddProductSettings(
+        StoriesCreationAddProductSection(
             selectedProductSize = 0, /** TODO JOE: will handle it later */
             onClickAddProduct = onClickAddProduct,
-            modifier = Modifier.constrainAs(addProduct) {
-                top.linkTo(mediaCoverDivider.bottom)
+            modifier = Modifier.constrainAs(addProductSection) {
+                top.linkTo(mediaCoverDivider.bottom, 16.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        )
+
+        StoriesCreationShowDurationSection(
+            showDuration = "24 Jam", /** TODO JOE: will handle it later */
+            modifier = Modifier.constrainAs(showDurationSection) {
+                top.linkTo(addProductSection.bottom, 20.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             }
@@ -228,7 +242,7 @@ private fun StoriesCreationMediaCover(
 }
 
 @Composable
-private fun StoriesCreationAddProductSettings(
+private fun StoriesCreationAddProductSection(
     selectedProductSize: Int,
     onClickAddProduct: () -> Unit,
     modifier: Modifier = Modifier,
@@ -236,8 +250,12 @@ private fun StoriesCreationAddProductSettings(
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClickAddProduct() }
-            .padding(16.dp)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null,
+            ) {
+                onClickAddProduct()
+            }
     ) {
         val (
             icon,
@@ -252,7 +270,7 @@ private fun StoriesCreationAddProductSettings(
                 .size(28.dp)
                 .constrainAs(icon) {
                     top.linkTo(parent.top)
-                    start.linkTo(parent.start)
+                    start.linkTo(parent.start, 16.dp)
                     bottom.linkTo(parent.bottom)
                 }
         )
@@ -287,7 +305,58 @@ private fun StoriesCreationAddProductSettings(
                 .size(28.dp)
                 .constrainAs(chevronRight) {
                     top.linkTo(parent.top)
-                    end.linkTo(parent.end)
+                    end.linkTo(parent.end, 16.dp)
+                    bottom.linkTo(parent.bottom)
+                }
+        )
+    }
+}
+
+@Composable
+private fun StoriesCreationShowDurationSection(
+    showDuration: String,
+    modifier: Modifier = Modifier,
+) {
+    ConstraintLayout(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        val (
+            icon,
+            label,
+            tvShowDuration,
+        ) = createRefs()
+
+        NestIcon(
+            iconId = IconUnify.CALENDAR_TIME,
+            modifier = Modifier
+                .size(28.dp)
+                .constrainAs(icon) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start, 16.dp)
+                    bottom.linkTo(parent.bottom)
+                }
+        )
+
+        NestTypography(
+            text = stringResource(id = R.string.stories_creation_show_duration),
+            textStyle = NestTheme.typography.display2,
+            modifier = Modifier.constrainAs(label) {
+                top.linkTo(icon.top)
+                bottom.linkTo(icon.bottom)
+                start.linkTo(icon.end, 8.dp)
+            }
+        )
+
+        NestTypography(
+            text = showDuration,
+            textStyle = NestTheme.typography.display2.copy(
+                color = colorResource(id = unifycomponentsR.color.Unify_NN600)
+            ),
+            modifier = Modifier
+                .constrainAs(tvShowDuration) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end, 16.dp)
                     bottom.linkTo(parent.bottom)
                 }
         )
