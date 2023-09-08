@@ -3,6 +3,7 @@ package com.tokopedia.inbox.universalinbox.view
 import android.content.Intent
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.viewModelScope
+import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
@@ -86,13 +87,6 @@ class UniversalInboxViewModel @Inject constructor(
         get() = _errorUiState
 
     private var page = 1
-//
-//    private val _driverChatCounter: MediatorLiveData<Result<Pair<Int, Int>>?> = MediatorLiveData()
-//    val driverChatCounter: LiveData<Result<Pair<Int, Int>>?>
-//        get() = _driverChatCounter.distinctUntilChanged()
-//
-//    var driverChatWidgetData: Pair<Int, UniversalInboxWidgetDataResponse>? = null
-//    var driverChatData: Result<Pair<Int, Int>>? = null
 
     init {
         _actionFlow.process().launchIn(viewModelScope)
@@ -142,18 +136,20 @@ class UniversalInboxViewModel @Inject constructor(
 
     private fun observeInboxMenuAndWidgetMetaFlow() {
         viewModelScope.launch {
-            getInboxMenuAndWidgetMetaUseCase.observe()
-                .combine(getAllCounterUseCase.observe()) { menu, counter ->
-                    if (menu != null) {
-                        combineMenuAndCounter(menu, counter)
-                    } else {
-                        // If cache is null, it means new user or error
-                        // create the default menu first
-                        setFallbackInboxMenu()
-                        null // Set null to get filtered out
-                    }
+            combine(
+                getInboxMenuAndWidgetMetaUseCase.observe(),
+                getAllCounterUseCase.observe(),
+                getDriverChatCounterUseCase.observe()
+            ) { menu, counter, driverChannel ->
+                if (menu != null) {
+                    combineMenuAndCounter(menu, counter, driverChannel)
+                } else {
+                    // If cache is null, it means new user or error
+                    // create the default menu first
+                    setFallbackInboxMenu()
+                    null // Set null to get filtered out
                 }
-                .filterNotNull()
+            }.filterNotNull()
                 .catch {
                     Timber.d(it)
                     Result.Error(it)
@@ -166,28 +162,38 @@ class UniversalInboxViewModel @Inject constructor(
 
     private fun combineMenuAndCounter(
         menu: UniversalInboxWrapperResponse,
-        counter: Result<UniversalInboxAllCounterResponse>
-    ): Result<Pair<UniversalInboxWrapperResponse, UniversalInboxAllCounterResponse>> {
-        return when (counter) {
-            is Result.Success -> {
-                Result.Success(Pair(menu, counter.data))
+        counter: Result<UniversalInboxAllCounterResponse>,
+        driverChannel: Result<List<ConversationsChannel>>
+    ): Result<
+        Pair<UniversalInboxWrapperResponse,
+            Pair<UniversalInboxAllCounterResponse, List<ConversationsChannel>>>> {
+        return when {
+            (counter is Result.Success && driverChannel is Result.Success) -> {
+                Result.Success(Pair(menu, Pair(counter.data, driverChannel.data)))
+            }
+            (counter is Result.Success && driverChannel is Result.Error) -> {
+                // default driver 0
+                Result.Success(Pair(menu, Pair(counter.data, listOf())))
             }
             else -> {
                 Result.Success(
-                    Pair(menu, UniversalInboxAllCounterResponse()) // default counter 0
+                    // default all counter 0
+                    Pair(menu, Pair(UniversalInboxAllCounterResponse(), listOf()))
                 )
             }
         }
     }
 
     private fun handleGetMenuAndCounterResult(
-        result: Result<Pair<UniversalInboxWrapperResponse, UniversalInboxAllCounterResponse>>
+        result: Result<Pair<UniversalInboxWrapperResponse,
+                Pair<UniversalInboxAllCounterResponse, List<ConversationsChannel>>>>
     ) {
         when (result) {
             is Result.Success -> {
                 onSuccessGetMenuAndCounter(
                     result.data.first,
-                    result.data.second
+                    result.data.second.first,
+                    result.data.second.second
                 )
             }
             is Result.Error -> {
@@ -203,14 +209,16 @@ class UniversalInboxViewModel @Inject constructor(
 
     private fun onSuccessGetMenuAndCounter(
         inboxResponse: UniversalInboxWrapperResponse,
-        counterResponse: UniversalInboxAllCounterResponse
+        counterResponse: UniversalInboxAllCounterResponse,
+        driverResponse: List<ConversationsChannel>
     ) {
         try {
             setLoadingInboxMenu(false)
+            val driverCounter = onSuccessGetDriverChannelList(driverResponse)
             val widgetMeta = widgetMetaMapper.mapWidgetMetaToUiModel(
                 widgetMetaResponse = inboxResponse.chatInboxMenu.widgetMenu,
                 counterResponse = counterResponse,
-                driverCounter = Success(Pair(1, 5))
+                driverCounter = Success(driverCounter)
             )
             val menuList = inboxMenuMapper.mapToInboxMenu(
                 userSession = userSession,
@@ -229,6 +237,29 @@ class UniversalInboxViewModel @Inject constructor(
         } catch (throwable: Throwable) {
             setFallbackInboxMenu()
             showErrorMessage(Pair(throwable, ::onSuccessGetMenuAndCounter.name))
+        }
+    }
+
+    private fun onSuccessGetDriverChannelList(
+        channelList: List<ConversationsChannel>
+    ): Pair<Int, Int> {
+        return try {
+            var activeChannel = 0
+            var unreadTotal = 0
+            channelList.forEach { channel ->
+                if (channel.expiresAt > System.currentTimeMillis()) {
+                    activeChannel++
+                    unreadTotal += channel.unreadCount
+                }
+            }
+            if (unreadTotal >= 0) {
+                Pair(activeChannel, unreadTotal)
+            } else {
+                throw IllegalArgumentException()
+            }
+        } catch (throwable: Throwable) {
+            showErrorMessage(Pair(throwable, ::onSuccessGetDriverChannelList.name))
+            Pair(0, 0) // Default
         }
     }
 
@@ -300,6 +331,8 @@ class UniversalInboxViewModel @Inject constructor(
                 setLoadingInboxMenu(true)
                 // Refresh counter
                 getAllCounterUseCase.refreshCounter(userSession.shopId)
+                // Get driver channel list
+                getDriverChatCounterUseCase.getAllChannels()
                 // Fetch inbox menu & widget from remote
                 getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta(Unit)
             } catch (throwable: Throwable) {
@@ -418,53 +451,6 @@ class UniversalInboxViewModel @Inject constructor(
             xDevice = DEFAULT_VALUE_X_DEVICE
         )
     }
-
-//    fun setAllDriverChannels() {
-//        try {
-//            val allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
-//            allChannelsLiveData?.run {
-//                val liveData = switchMap {
-//                    getDriverUnreadCount(it)
-//                }
-//                _driverChatCounter.addSource(liveData) {
-//                    _driverChatCounter.value = it
-//                }
-//            }
-//        } catch (throwable: Throwable) {
-//            _error.value = Pair(throwable, ::setAllDriverChannels.name)
-//            _driverChatCounter.value = Fail(throwable)
-//        }
-//    }
-
-//    @VisibleForTesting
-//    fun getDriverUnreadCount(
-//        channelList: List<ConversationsChannel>
-//    ): LiveData<Result<Pair<Int, Int>>> {
-//        val unreadDriverChatCount = MutableLiveData<Result<Pair<Int, Int>>>()
-//        viewModelScope.launch {
-//            try {
-//                var activeChannel = Int.ZERO
-//                var unreadTotal = Int.ZERO
-//                channelList.forEach { channel ->
-//                    if (channel.expiresAt > System.currentTimeMillis()) {
-//                        activeChannel++
-//                        unreadTotal += channel.unreadCount
-//                    }
-//                }
-//                if (unreadTotal >= Int.ZERO) {
-//                    unreadDriverChatCount.value = Success(
-//                        Pair(activeChannel, unreadTotal)
-//                    )
-//                } else {
-//                    throw IllegalArgumentException()
-//                }
-//            } catch (throwable: Throwable) {
-//                _error.value = Pair(throwable, ::getDriverUnreadCount.name)
-//                unreadDriverChatCount.value = Fail(throwable)
-//            }
-//        }
-//        return unreadDriverChatCount
-//    }
 
     fun addWishlistV2(
         model: RecommendationItem,

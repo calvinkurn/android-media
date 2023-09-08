@@ -8,7 +8,6 @@ import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterRe
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxCounterWrapperResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -42,7 +41,7 @@ class UniversalInboxGetAllCounterUseCase @Inject constructor(
         }
     """.trimIndent()
 
-    fun observe(): Flow<Result<UniversalInboxAllCounterResponse>> = counterFlow.asStateFlow()
+    fun observe(): Flow<Result<UniversalInboxAllCounterResponse>> = counterFlow
 
     suspend fun refreshCounter(param: String) {
         withContext(dispatcher.io) {
