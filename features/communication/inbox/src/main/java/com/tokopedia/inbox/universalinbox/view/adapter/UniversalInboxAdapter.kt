@@ -17,8 +17,8 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -68,10 +68,16 @@ class UniversalInboxAdapter(
                     oldItem is UniversalInboxMenuSeparatorUiModel
                 ) -> true
 
-            // Only one banner should exist
+            // TopAds banner won't change without refresh
             (
                 newItem is UniversalInboxTopAdsBannerUiModel &&
                     oldItem is UniversalInboxTopAdsBannerUiModel
+                ) -> true
+
+            // TopAds headline won't change without refresh
+            (
+                newItem is UniversalInboxTopadsHeadlineUiModel &&
+                    oldItem is UniversalInboxTopadsHeadlineUiModel
                 ) -> true
 
             // Only one recommendation widget should exist
@@ -84,6 +90,24 @@ class UniversalInboxAdapter(
                 newItem is UniversalInboxWidgetMetaUiModel &&
                     oldItem is UniversalInboxWidgetMetaUiModel
                 ) -> true
+
+            // Loader is always the same
+            (
+                newItem is UniversalInboxRecommendationLoaderUiModel &&
+                    oldItem is UniversalInboxRecommendationLoaderUiModel
+                ) -> true
+
+            // Recommendation title is always the same
+            (
+                newItem is UniversalInboxRecommendationTitleUiModel &&
+                    oldItem is UniversalInboxRecommendationTitleUiModel
+                ) -> UniversalInboxRecommendationTitleUiModel.areItemsTheSame(oldItem, newItem)
+
+            // Recommendation Item has product id
+            (
+                newItem is RecommendationItem &&
+                    oldItem is RecommendationItem
+                ) -> newItem.productId == oldItem.productId
 
             else -> newItem == oldItem
         }
@@ -159,13 +183,12 @@ class UniversalInboxAdapter(
 
     fun addProductRecommendationLoader() {
         if (getFirstLoadingPosition() != null) return
-        addItemAndAnimateChanges(UniversalInboxRecommendationLoaderUiModel())
+        tryAddItemAtPosition(itemCount, UniversalInboxRecommendationLoaderUiModel())
     }
 
     fun removeProductRecommendationLoader() {
         getFirstLoadingPosition()?.let {
-            removeItemAt(it)
-            notifyItemRemoved(it)
+            tryRemoveItemAtPosition(it)
         }
     }
 
@@ -216,26 +239,6 @@ class UniversalInboxAdapter(
             Timber.d(throwable)
         }
         return position
-    }
-
-    fun updateWidgetCounter(
-        position: Int,
-        counter: Int,
-        additionalAction: (UniversalInboxWidgetUiModel) -> Unit = {}
-    ) {
-        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)?.let {
-            it.widgetList.getOrNull(position)?.let { uiModel ->
-                uiModel.counter = counter
-                additionalAction(uiModel)
-            }
-            notifyItemChanged(Int.ZERO)
-        }
-    }
-
-    fun removeWidget(position: Int) {
-        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)
-            ?.widgetList?.removeAt(position)
-        notifyItemChanged(Int.ZERO) // notify item changed in page rv, first item
     }
 
     fun removeAllProductRecommendation() {
@@ -334,9 +337,9 @@ class UniversalInboxAdapter(
 
     fun tryRemoveItemAtPosition(position: Int) {
         try {
-            // Remove from the list
+            if (itemList.isEmpty()) return
             val editedList = itemList.toMutableList()
-            editedList.remove(position)
+            editedList.removeAt(position)
             setItemsAndAnimateChanges(editedList)
         } catch (throwable: Throwable) {
             Timber.d(throwable)

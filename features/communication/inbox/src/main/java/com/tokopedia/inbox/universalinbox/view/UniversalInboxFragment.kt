@@ -48,7 +48,6 @@ import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListen
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
@@ -589,12 +588,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        showLoadMoreLoading()
         viewModel.processAction(UniversalInboxAction.LoadNextPage) // page handled in view model
-    }
-
-    private fun showLoadMoreLoading() {
-        adapter.addItemAndAnimateChanges(UniversalInboxRecommendationLoaderUiModel())
     }
 
     @SuppressLint("NotifyDataSetChanged")

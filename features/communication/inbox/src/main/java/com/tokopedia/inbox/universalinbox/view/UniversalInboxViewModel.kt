@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -93,56 +94,64 @@ class UniversalInboxViewModel @Inject constructor(
     private var page = 1
 
     init {
-        _actionFlow.process().launchIn(viewModelScope)
+        _actionFlow.process()
         observeInboxMenuWidgetMetaAndCounterFlow()
         observeInboxMenuLocalFlow()
         observeDriverChannelFlow()
         observeProductRecommendationFlow()
     }
 
-    fun processAction(action: UniversalInboxAction) = _actionFlow.tryEmit(action)
+    fun processAction(action: UniversalInboxAction) {
+        viewModelScope.launch {
+            _actionFlow.tryEmit(action)
+        }
+    }
 
     /**
      * Flow Observe
      */
 
-    private fun Flow<UniversalInboxAction>.process() = onEach {
-        when (it) {
-            // Navigation process
-            is UniversalInboxAction.NavigateWithIntent -> {
-                navigateWithIntent(it.intent)
-            }
-            is UniversalInboxAction.NavigateToPage -> {
-                navigateToPage(it.applink)
-            }
-            is UniversalInboxAction.ResetNavigation -> {
-                resetNavigation()
-            }
+    private fun Flow<UniversalInboxAction>.process() {
+        onEach {
+            when (it) {
+                // Navigation process
+                is UniversalInboxAction.NavigateWithIntent -> {
+                    navigateWithIntent(it.intent)
+                }
+                is UniversalInboxAction.NavigateToPage -> {
+                    navigateToPage(it.applink)
+                }
+                is UniversalInboxAction.ResetNavigation -> {
+                    resetNavigation()
+                }
 
-            // General process
-            is UniversalInboxAction.ShowErrorMessage -> {
-                showErrorMessage(it.error)
-            }
-            is UniversalInboxAction.RefreshPage -> {
-                removeAllProductRecommendation()
-                loadInboxMenuAndWidgetMeta()
-            }
+                // General process
+                is UniversalInboxAction.ShowErrorMessage -> {
+                    showErrorMessage(it.error)
+                }
+                is UniversalInboxAction.RefreshPage -> {
+                    removeAllProductRecommendation()
+                    loadInboxMenuAndWidgetMeta()
+                }
 
-            // Recommendation process
-            is UniversalInboxAction.RefreshRecommendation -> {
-                removeAllProductRecommendation()
-                page = 1 // reset page
-                loadProductRecommendation() // Load first page
-            }
-            is UniversalInboxAction.LoadNextPage -> {
-                loadProductRecommendation()
-            }
+                // Recommendation process
+                is UniversalInboxAction.RefreshRecommendation -> {
+                    removeAllProductRecommendation()
+                    page = 1 // reset page
+                    loadProductRecommendation() // Load first page
+                }
+                is UniversalInboxAction.LoadNextPage -> {
+                    loadProductRecommendation()
+                }
 
-            // Widget process
-            is UniversalInboxAction.RefreshDriverWidget -> {
-                resetDriverChannelFlow()
+                // Widget process
+                is UniversalInboxAction.RefreshDriverWidget -> {
+                    resetDriverChannelFlow()
+                }
             }
         }
+            .flowOn(dispatcher.io)
+            .launchIn(viewModelScope)
     }
 
     private fun observeInboxMenuLocalFlow() {
@@ -172,7 +181,9 @@ class UniversalInboxViewModel @Inject constructor(
                     showErrorMessage(Pair(it, ::observeInboxMenuWidgetMetaAndCounterFlow.name))
                 }
                 .collectLatest {
-                    handleGetMenuAndCounterResult(it)
+                    withContext(dispatcher.default) {
+                        handleGetMenuAndCounterResult(it)
+                    }
                 }
         }
     }
@@ -280,7 +291,9 @@ class UniversalInboxViewModel @Inject constructor(
                     Result.Error(it)
                 }
                 .collectLatest {
-                    handleResultProductRecommendation(it)
+                    withContext(dispatcher.default) {
+                        handleResultProductRecommendation(it)
+                    }
                 }
         }
     }
@@ -323,8 +336,6 @@ class UniversalInboxViewModel @Inject constructor(
     private fun loadInboxMenuAndWidgetMeta() {
         viewModelScope.launch {
             try {
-                // Show loading first
-                setLoadingInboxMenu(true)
                 // Fetch inbox menu & widget from remote
                 getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta(Unit)
                 // Refresh counter
@@ -391,7 +402,6 @@ class UniversalInboxViewModel @Inject constructor(
 
     private fun loadProductRecommendation() {
         viewModelScope.launch {
-            setLoadingRecommendation(true) // Show loading
             getRecommendationUseCase.fetchProductRecommendation(getRecommendationParam(page))
         }
     }
