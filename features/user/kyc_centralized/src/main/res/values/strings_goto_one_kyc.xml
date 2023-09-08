@@ -158,7 +158,7 @@
     <string name="onekyc_userdetails_nik">NIK</string>
     <string name="onekyc_userdetails_address">Alamat lengkap</string>
     <string name="onekyc_userdetails_ojk_title">Data verifikasi diperlukan oleh OJK</string>
-    <string name="onekyc_userdetails_ojk_description">PT Multifinance Anak Bangsa akan melindungi kerahasiaan dan keamanan data kamu.</string>
+    <string name="onekyc_userdetails_ojk_description_cashloan">PT Multifinance Anak Bangsa akan melindungi kerahasiaan dan keamanan data kamu.</string>
     <string name="onekyc_userdetails_confirm">Konfirmasi data e-KTP kamu</string>
     <string name="onekyc_userdetails_help">Bukan data e-KTP kamu? Masukin Data Kamu</string>
     <string name="onekyc_userdetails_help_link">Masukin Data Kamu</string>
