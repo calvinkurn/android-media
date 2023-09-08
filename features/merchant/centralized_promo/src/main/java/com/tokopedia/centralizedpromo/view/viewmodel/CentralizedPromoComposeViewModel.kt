@@ -118,8 +118,9 @@ class CentralizedPromoComposeViewModel @Inject constructor(
 
     private fun loadOnGoingPromo() {
         _layoutList.update {
+            if (it.onGoingData as? Fail == null) return@update it
             it.copy(
-                onGoingData = (it.onGoingData as Fail).copy(isLoading = true)
+                onGoingData = (it.onGoingData).copy(isLoading = true)
             )
         }
 
@@ -131,8 +132,9 @@ class CentralizedPromoComposeViewModel @Inject constructor(
 
     private fun loadPromoCreation() {
         _layoutList.update {
+            if (it.promoCreationData as? Fail == null) return@update it
             it.copy(
-                promoCreationData = (it.promoCreationData as Fail).copy(isLoading = true)
+                promoCreationData = (it.promoCreationData).copy(isLoading = true)
             )
         }
 
