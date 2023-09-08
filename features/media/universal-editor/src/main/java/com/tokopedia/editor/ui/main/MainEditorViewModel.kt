@@ -144,8 +144,15 @@ class MainEditorViewModel @Inject constructor(
 
     private fun flattenImageFileWithTextCanvas(imagePath: String, canvasText: Bitmap, imageBitmap: Bitmap?) {
         if (imageBitmap == null) return
-        imageFlattenRepository.flattenImage(imageBitmap = imageBitmap, textBitmap = canvasText).apply {
-            setAction(MainEditorEffect.FinishEditorPage(this))
+
+        viewModelScope.launch {
+            imageFlattenRepository.flattenImage(imageBitmap = imageBitmap, textBitmap = canvasText)
+                .flowOn(dispatchers.computation)
+                .onCompletion { setAction(MainEditorEffect.HideLoading) }
+                .onEach {
+                    setAction(MainEditorEffect.FinishEditorPage(it))
+                }
+                .collect()
         }
     }
 
