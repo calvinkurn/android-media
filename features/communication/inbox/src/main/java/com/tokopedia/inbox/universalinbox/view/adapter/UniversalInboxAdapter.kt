@@ -331,4 +331,15 @@ class UniversalInboxAdapter(
             Timber.d(throwable)
         }
     }
+
+    fun tryRemoveItemAtPosition(position: Int) {
+        try {
+            // Remove from the list
+            val editedList = itemList.toMutableList()
+            editedList.remove(position)
+            setItemsAndAnimateChanges(editedList)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
 }

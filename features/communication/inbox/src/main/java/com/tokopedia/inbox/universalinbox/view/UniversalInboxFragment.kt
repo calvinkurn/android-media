@@ -274,7 +274,12 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun updateWidgetMeta(widget: UniversalInboxWidgetMetaUiModel) {
-        adapter.tryUpdateWidgetMeta(widget)
+        // Widget has meaning to be shown
+        if (widget.widgetList.isNotEmpty() || widget.isError) {
+            adapter.tryUpdateWidgetMeta(widget)
+        } else {
+            adapter.tryRemoveItemAtPosition(0)
+        }
     }
 
     private fun updateMenuList(newList: List<Any>) {
