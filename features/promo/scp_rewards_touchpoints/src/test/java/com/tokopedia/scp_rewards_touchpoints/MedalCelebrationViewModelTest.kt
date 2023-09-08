@@ -1,7 +1,6 @@
 package com.tokopedia.scp_rewards_touchpoints
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.domain.RewardsGetMedaliCelebrationPageUseCase
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.CouponAutoApply
@@ -11,6 +10,7 @@ import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.ScpRewardsCouponA
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.Success
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -18,7 +18,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
@@ -36,7 +35,6 @@ class MedalCelebrationViewModelTest {
 
     private val medaliSlug = "INJECT_BADGE_1"
     private val source = "homepage"
-    private val successCode = "200"
 
     @Before
     fun setup() {
@@ -46,26 +44,23 @@ class MedalCelebrationViewModelTest {
     @Test
     fun `get rewards api success 200`() {
         val response = getCelebrationResponse()
+        val actualResult = Success(response)
         coEvery {
             getRewardsUseCase.getRewards(medaliSlug, source)
         } returns response
         celebrationViewModel?.getRewards(medaliSlug, source)
-        assertEquals(
-            (celebrationViewModel?.badgeLiveData?.value as? Success<ScpRewardsCelebrationModel>)?.data?.scpRewardsCelebrationPage?.resultStatus?.code,
-            successCode
-        )
+        celebrationViewModel?.badgeLiveData?.verifyValueEquals(actualResult)
     }
 
     @Test
     fun `get Rewards api failure`() {
+        val error = Throwable()
+        val actualResult = Error(error)
         coEvery {
             getRewardsUseCase.getRewards(medaliSlug, source)
-        } throws Throwable()
+        } throws error
         celebrationViewModel?.getRewards(medaliSlug, source)
-        assertEquals(
-            celebrationViewModel?.badgeLiveData?.value is Error,
-            true
-        )
+        celebrationViewModel?.badgeLiveData?.verifyValueEquals(actualResult)
     }
 
     @Test
@@ -75,9 +70,7 @@ class MedalCelebrationViewModelTest {
             getRewardsUseCase.getRewards(medaliSlug, source)
         } returns response
         celebrationViewModel?.getRewards(medaliSlug, source)
-        assertTrue {
-            celebrationViewModel?.badgeLiveData?.value is Error
-        }
+        assertTrue { celebrationViewModel?.badgeLiveData?.value is Error }
     }
 
     @Test
@@ -85,17 +78,12 @@ class MedalCelebrationViewModelTest {
         val response = getAutoApplyResponse()
         val benefitData =
             ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton()
+        val actualResult = MedalCelebrationViewModel.AutoApplyState.SuccessCoupon(benefitData = benefitData, autoApplyData = response)
         coEvery {
             autoApplyUseCase.applyCoupon(any(), any())
         } returns response
         celebrationViewModel?.autoApplyCoupon(benefitData = benefitData, couponCode = "")
-        assertTrue {
-            celebrationViewModel?.autoApplyLiveData?.value?.let {
-                with(it) {
-                    this is MedalCelebrationViewModel.AutoApplyState.SuccessCoupon && autoApplyData == response && autoApplyData.data?.couponAutoApply?.isSuccess.orFalse()
-                }
-            } ?: false
-        }
+        celebrationViewModel?.autoApplyLiveData?.verifyValueEquals(actualResult)
     }
 
     @Test
@@ -106,13 +94,7 @@ class MedalCelebrationViewModelTest {
             autoApplyUseCase.applyCoupon(any(), any())
         } returns CouponAutoApplyResponseModel()
         celebrationViewModel?.autoApplyCoupon(benefitData = benefitData, couponCode = "")
-        assertTrue {
-            celebrationViewModel?.autoApplyLiveData?.value?.let {
-                with(it) {
-                    this is MedalCelebrationViewModel.AutoApplyState.Error
-                }
-            } ?: false
-        }
+        assertTrue { celebrationViewModel?.autoApplyLiveData?.value is MedalCelebrationViewModel.AutoApplyState.Error }
     }
 
     private fun getCelebrationResponse(code: String = "200") = ScpRewardsCelebrationModel(
