@@ -255,5 +255,14 @@ object ApplinkConstInternalGlobal {
     //LoginHelperActivity
     const val LOGIN_HELPER = "$INTERNAL_GLOBAL/login-helper"
 
+    //LoginHelperAccountSettingsActivity
+    const val LOGIN_HELPER_ACCOUNTS_SETTINGS = "$INTERNAL_GLOBAL/login-helper-accounts-settings"
+
+    //LoginHelperAddEditAccountActivity
+    const val LOGIN_HELPER_ADD_EDIT_ACCOUNT = "$INTERNAL_GLOBAL/login-helper-add-edit-account"
+
+    //LoginHelperSearchActivity
+    const val LOGIN_HELPER_SEARCH_ACCOUNT = "$INTERNAL_GLOBAL/login-helper-search-account"
+
     const val BMGM_MINI_CART = "$INTERNAL_GLOBAL/bmgm-mini-cart"
 }
