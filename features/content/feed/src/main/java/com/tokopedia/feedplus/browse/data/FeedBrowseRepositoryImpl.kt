@@ -37,7 +37,7 @@ class FeedBrowseRepositoryImpl @Inject constructor(
                 )
                 val response = feedXHeaderUseCase.executeOnBackground()
                 mapper.mapTitle(response)
-            } catch (err: Throwable) {
+            } catch (_: Throwable) {
                 ""
             }
         }

@@ -30,7 +30,7 @@ class FeedDetailRepositoryImpl @Inject constructor(
                 )
                 val response = feedXHeaderUseCase.executeOnBackground()
                 response.feedXHeaderData.data.detail.title
-            } catch (err: Throwable) {
+            } catch (_: Throwable) {
                 ""
             }
         }
