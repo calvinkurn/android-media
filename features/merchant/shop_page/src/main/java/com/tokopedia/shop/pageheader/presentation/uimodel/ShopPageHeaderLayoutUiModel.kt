@@ -16,9 +16,8 @@ data class ShopPageHeaderLayoutUiModel(
     }
 
     enum class BgObjectType(val value: String) {
-        IMAGE_JPG("image/jpeg"),
-        IMAGE_PNG("image/png"),
-        VIDEO("video/m3u8"),
+        IMAGE("image"),
+        VIDEO("video"),
     }
 
     enum class ColorType(val value: String){
@@ -40,7 +39,7 @@ data class ShopPageHeaderLayoutUiModel(
     ) {
 
         fun getBackgroundObject(bgObjectType: BgObjectType): BackgroundObject? {
-            return listBackgroundObject.firstOrNull { it.type == bgObjectType.value }
+            return listBackgroundObject.firstOrNull { it.type.startsWith(bgObjectType.value) }
         }
 
         data class BackgroundObject(
