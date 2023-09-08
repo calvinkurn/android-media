@@ -1318,8 +1318,6 @@ class CheckoutFragment :
                 )
             }
             if (addOnsDataModel.status == ShipmentFragment.ADD_ON_STATUS_ACTIVE) {
-                val addOnsDataModel = order.addOnsOrderLevelModel
-
                 val addOnWordingData = AddOnWordingData()
                 val addOnWordingModel = order.addOnWordingModel
                 addOnWordingData.onlyGreetingCard = addOnWordingModel.onlyGreetingCard

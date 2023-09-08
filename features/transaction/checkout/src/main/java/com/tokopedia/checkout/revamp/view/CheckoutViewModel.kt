@@ -726,7 +726,7 @@ class CheckoutViewModel @Inject constructor(
         pageState.value = CheckoutPageState.Loading
         val result = addOnProcessor.setMiniConsultationResult(results, listData.value)
         if (result != null) {
-            listData.value = result!!
+            listData.value = result
             pageState.value = CheckoutPageState.Normal
             calculateTotal()
         }

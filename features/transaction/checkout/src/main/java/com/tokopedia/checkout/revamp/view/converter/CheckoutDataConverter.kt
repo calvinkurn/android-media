@@ -475,7 +475,5 @@ class CheckoutDataConverter @Inject constructor() {
     companion object {
         private const val ACTIVE_ADDRESS = 1
         private const val PRIME_ADDRESS = 2
-        private const val MERCHANT_VOUCHER_TYPE = "merchant"
-        private const val LOGISTIC_VOUCHER_TYPE = "logistic"
     }
 }
