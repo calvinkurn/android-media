@@ -38,6 +38,7 @@ data class OfferInfoForBuyerUiModel(
         data class Tier(
             val tierId: Long = 0,
             val level: Int = 0,
+            val tierWording: String = "",
             val rules: List<Rule> = emptyList(),
             val benefits: List<Benefit> = emptyList(),
             val attributes: String = ""

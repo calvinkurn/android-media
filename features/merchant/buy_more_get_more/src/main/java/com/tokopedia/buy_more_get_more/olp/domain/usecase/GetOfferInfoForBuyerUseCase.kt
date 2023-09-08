@@ -53,6 +53,7 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
                           tier_list{
                             tier_id
                             level
+                            tier_wording
                             rule{
                               type_id
                               operation
