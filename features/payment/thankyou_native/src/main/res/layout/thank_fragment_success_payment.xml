@@ -40,10 +40,11 @@
 
                 <ImageView
                     android:id="@+id/ivIllustrationView"
-                    android:layout_width="@dimen/thank_success_img_width"
+                    android:layout_width="192dp"
                     android:layout_height="@dimen/thank_success_img_height"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
+                    android:maxHeight="144dp"
                     android:contentDescription="@string/thank_you_page_success_illustration"
                     android:scaleType="centerCrop"
                     android:visibility="visible" />
