@@ -137,7 +137,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationShowDurationSection(
-            showDuration = "24 Jam", /** TODO JOE: will handle it later */
+            showDuration = uiState.config.showDuration, /** TODO JOE: will handle it later */
             modifier = Modifier.constrainAs(showDurationSection) {
                 top.linkTo(addProductSection.bottom, 20.dp)
                 start.linkTo(parent.start)

@@ -9,11 +9,11 @@ data class StoriesCreationUiState(
     val mediaFilePath: String,
     val accountList: List<ContentAccountUiModel>,
     val selectedAccount: ContentAccountUiModel,
+    val config: StoriesManualConfiguration,
 ) {
     companion object {
         val Empty: StoriesCreationUiState
             get() = StoriesCreationUiState(
-//                mediaFilePath = "/storage/emulated/0/Movies/VID_20230905_113525.mp4",
                 mediaFilePath = "",
                 accountList = listOf(
                     ContentAccountUiModel(
@@ -36,7 +36,22 @@ data class StoriesCreationUiState(
                     hasAcceptTnc = true,
                     badge = "",
                     enable = true,
-                )
+                ),
+                config = StoriesManualConfiguration.Empty,
+            )
+    }
+}
+
+
+data class StoriesManualConfiguration(
+    val maxProductTag: Int,
+    val showDuration: String,
+) {
+    companion object {
+        val Empty: StoriesManualConfiguration
+            get() = StoriesManualConfiguration(
+                maxProductTag = 0,
+                showDuration = "24 Jam",
             )
     }
 }
