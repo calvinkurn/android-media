@@ -22,7 +22,6 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="6dp"
-        app:srcCompat="@drawable/ic_bmgm_ticker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
         app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>
