@@ -175,7 +175,8 @@
       "channel": ".*",
       "productId": ".*",
       "productName": ".*",
-      "productUrl": ".*"
+      "productUrl": ".*",
+      "trackerId": "16347"
     },
     {
       "eventAction": "click atc in bottom sheet with varian",
@@ -214,7 +215,8 @@
       "channel": ".*",
       "productId": ".*",
       "productName": ".*",
-      "productUrl": ".*"
+      "productUrl": ".*",
+      "trackerId": "13888"
     },
     {
       "eventAction": "view product",
@@ -225,6 +227,7 @@
       "event": "view_item_list",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
+      "trackerId": "35078",
       "sessionIris": ".*",
       "items": [
         {
@@ -264,7 +267,8 @@
       "item_list": "/groupchat - bottom sheet",
       "currentSite": ".*",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "27571"
     },
     {
       "eventAction": "impression - product in upcoming section",
@@ -318,7 +322,8 @@
       "channel": ".*",
       "productId": ".*",
       "productName": ".*",
-      "productUrl": ".*"
+      "productUrl": ".*",
+      "trackerId": "16356"
     },
     {
       "eventAction": "click - product in ongoing section",
@@ -343,7 +348,8 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "27572"
     },
     {
       "eventAction": "click - product in upcoming section",
@@ -395,7 +401,8 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "27573"
     },
     {
       "eventAction": "click atc in varian page",
@@ -485,7 +492,8 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "27574"
     },
     {
       "eventAction": "click lihat in message ticker",
