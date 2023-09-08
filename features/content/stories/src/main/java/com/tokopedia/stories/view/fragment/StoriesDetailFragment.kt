@@ -96,7 +96,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+            viewModel.storiesMainData.withCache().collectLatest { (prevState, state) ->
                 renderStoriesGroupHeader(prevState, state)
                 renderStoriesDetail(
                     prevState?.groupItems?.get(prevState.selectedGroupPosition)?.detail,
@@ -108,7 +108,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun setupUiEventObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiEvent.collect { event ->
+            viewModel.storiesEvent.collect { event ->
                 when (event) {
                     is StoriesUiEvent.ErrorDetailPage -> {
                         if (!isEligiblePage) return@collect

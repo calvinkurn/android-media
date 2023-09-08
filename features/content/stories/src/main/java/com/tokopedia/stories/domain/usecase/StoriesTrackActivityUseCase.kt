@@ -28,13 +28,11 @@ class StoriesTrackActivityUseCase @Inject constructor(
 
     override fun graphqlQuery(): String {
         return """
-            query contentStoryDetails(${"$${PARAM_REQUEST}"}: ContentTrackActivityRequest!) {
-              mutation {
-                contentTrackActivity(${PARAM_REQUEST}: ${"$${PARAM_REQUEST}"}){
-                  success
-                }
-              }
-            }
+        mutation contentTrackActivity(${"$${PARAM_REQUEST}"}: ContentTrackActivityRequest!) {
+          contentTrackActivity(${PARAM_REQUEST}: ${"$${PARAM_REQUEST}"}){
+            success
+          }
+        }
         """
     }
 }

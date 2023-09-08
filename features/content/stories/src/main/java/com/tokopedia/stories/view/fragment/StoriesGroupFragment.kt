@@ -135,7 +135,7 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+            viewModel.storiesMainData.withCache().collectLatest { (prevState, state) ->
                 renderStoriesGroup(prevState, state)
             }
         }
@@ -143,7 +143,7 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun setupUiEventObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiEvent.collect { event ->
+            viewModel.storiesEvent.collect { event ->
                 when (event) {
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()

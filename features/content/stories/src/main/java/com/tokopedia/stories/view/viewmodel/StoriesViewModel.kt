@@ -43,6 +43,13 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private val _storiesMainData = MutableStateFlow(StoriesUiModel())
+    val storiesMainData: Flow<StoriesUiModel>
+        get() = _storiesMainData
+
+    private val _storiesEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
+    val storiesEvent: Flow<StoriesUiEvent>
+        get() = _storiesEvent
+
     private val _groupPos = MutableStateFlow(-1)
     private val _detailPos = MutableStateFlow(-1)
     private val _resetValue = MutableStateFlow(-1)
@@ -82,11 +89,7 @@ class StoriesViewModel @AssistedInject constructor(
     private val mResetValue: Int
         get() = _resetValue.value
 
-    private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
-    val uiEvent: Flow<StoriesUiEvent>
-        get() = _uiEvent
-
-    val uiState = _storiesMainData
+    private var latestTrackStoriesPosition = -1
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
@@ -138,18 +141,19 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleMainData(selectedGroup: Int) {
+        latestTrackStoriesPosition = -1
         _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
             setInitialData()
             setCachingData()
         }) { exception ->
-            _uiEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
+            _storiesEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
         }
     }
 
     private fun handleSelectGroup(position: Int, showAnimation: Boolean) {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.SelectGroup(position, showAnimation))
+            _storiesEvent.emit(StoriesUiEvent.SelectGroup(position, showAnimation))
         }
     }
 
@@ -160,7 +164,7 @@ class StoriesViewModel @AssistedInject constructor(
         when {
             newDetailPosition < mDetailSize -> updateDetailData(position = newDetailPosition)
             newGroupPosition < mGroupSize -> handleSelectGroup(position = newGroupPosition, true)
-            else -> viewModelScope.launch { _uiEvent.emit(StoriesUiEvent.FinishedAllStories) }
+            else -> viewModelScope.launch { _storiesEvent.emit(StoriesUiEvent.FinishedAllStories) }
         }
     }
 
@@ -300,13 +304,16 @@ class StoriesViewModel @AssistedInject constructor(
             _storiesMainData.value = requestStoriesInitialData()
             _groupPos.value = mStoriesMainData.selectedGroupPosition
         }) { exception ->
-            _uiEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
+            _storiesEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
         }
     }
 
     private fun checkAndHitTrackActivity() {
         viewModelScope.launchCatchError(block = {
-            val trackerId = mGroupItem.detail.detailItems[mDetailPos].meta.activityTracker
+            val detailItem = mGroupItem.detail
+            if (mDetailPos <= latestTrackStoriesPosition) return@launchCatchError
+            latestTrackStoriesPosition = mDetailPos
+            val trackerId = detailItem.detailItems[mDetailPos].meta.activityTracker
             requestSetStoriesTrackActivity(trackerId)
         }) {}
     }
