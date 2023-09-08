@@ -484,7 +484,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                         // corner case auto selection if BE default duration failed
                         if (orderModel.isAutoCourierSelection) {
                             val shippingDuration =
-                                shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                                shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error.errorId.isEmpty() && it.serviceData.error.errorMessage.isEmpty() }
                             if (shippingDuration != null) {
                                 val shippingCourier =
                                     shippingDuration.shippingCourierViewModelList.firstOrNull {
@@ -776,7 +776,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                         // corner case auto selection if BE default duration failed
                         if (orderModel.isAutoCourierSelection || orderModel.isDisableChangeCourier) {
                             val shippingDuration =
-                                shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                                shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error.errorId.isEmpty() && it.serviceData.error.errorMessage.isEmpty() }
                             if (shippingDuration != null) {
                                 val shippingCourier =
                                     shippingDuration.shippingCourierViewModelList.firstOrNull {

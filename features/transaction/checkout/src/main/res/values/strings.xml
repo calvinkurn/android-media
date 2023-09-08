@@ -140,4 +140,6 @@
     <string name="platform_fee_title_info">Tentang %s</string>
     <string name="platform_fee_diskon_label">Diskon %s</string>
     <string name="platform_fee_diskon_format" formatted="false">-%s</string>
+
+    <string name="checkout_label_total_shipping_insurance">Total Asuransi Pengiriman</string>
 </resources>

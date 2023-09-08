@@ -33,6 +33,8 @@ data class CartModel(
     var toBeDeletedBundleGroupId: String = "",
     var lastCartBmGmGroupTickerCartString: String = "",
 
+    var availableCartItemImpressionList: MutableSet<CartItemHolderData> = mutableSetOf(),
+
     // adapter
     var tmpCollapsedUnavailableShop: DisabledCollapsedHolderData? = null,
     var firstCartSectionHeaderPosition: Int = -1,

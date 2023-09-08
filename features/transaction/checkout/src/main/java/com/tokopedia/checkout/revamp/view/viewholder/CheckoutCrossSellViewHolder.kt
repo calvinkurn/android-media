@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
+import android.annotation.SuppressLint
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -55,6 +56,7 @@ class CheckoutCrossSellViewHolder(
         binding.itemCheckoutCrossSellItem.root.isVisible = true
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun renderCrossSellItems(checkoutCrossSellGroupModel: CheckoutCrossSellGroupModel) {
         var parentWidth = binding.root.width
         if (parentWidth <= 0) {

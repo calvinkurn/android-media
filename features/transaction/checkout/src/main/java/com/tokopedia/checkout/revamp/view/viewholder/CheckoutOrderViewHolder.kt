@@ -25,7 +25,7 @@ class CheckoutOrderViewHolder(
 ) : RecyclerView.ViewHolder(binding.root),
     ShippingCheckoutRevampWidget.ShippingWidgetListener {
 
-    private lateinit var order: CheckoutOrderModel
+    private var order: CheckoutOrderModel? = null
 
     private val plusCoachmarkPrefs: PlusCoachmarkPrefs by lazy {
         PlusCoachmarkPrefs(itemView.context)
@@ -420,11 +420,15 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onChangeDurationClickListener(currentAddress: RecipientAddressModel) {
-        listener.onChangeShippingDuration(order, bindingAdapterPosition)
+        order?.let {
+            listener.onChangeShippingDuration(it, bindingAdapterPosition)
+        }
     }
 
     override fun onChangeCourierClickListener(currentAddress: RecipientAddressModel) {
-        listener.onChangeShippingCourier(order, bindingAdapterPosition)
+        order?.let {
+            listener.onChangeShippingCourier(it, bindingAdapterPosition)
+        }
     }
 
     override fun onOnTimeDeliveryClicked(url: String) {
@@ -436,8 +440,10 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onClickLayoutFailedShipping(recipientAddressModel: RecipientAddressModel) {
-        listener.onLoadShippingState(order, bindingAdapterPosition)
-        listener.onClickRefreshErrorLoadCourier()
+        order?.let {
+            listener.onLoadShippingState(it, bindingAdapterPosition)
+            listener.onClickRefreshErrorLoadCourier()
+        }
     }
 
     override fun onViewErrorInCourierSection(logPromoDesc: String) {
@@ -445,7 +451,9 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
-        listener.onChangeScheduleDelivery(scheduleDeliveryUiModel, order, bindingAdapterPosition)
+        order?.let {
+            listener.onChangeScheduleDelivery(scheduleDeliveryUiModel, it, bindingAdapterPosition)
+        }
     }
 
     override fun getHostFragmentManager(): FragmentManager {
@@ -457,7 +465,9 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onInsuranceChecked(shippingWidgetUiModel: ShippingWidgetUiModel) {
-        listener.onInsuranceChecked(shippingWidgetUiModel.insuranceData!!.useInsurance!!, order, bindingAdapterPosition)
+        order?.let {
+            listener.onInsuranceChecked(shippingWidgetUiModel.insuranceData!!.useInsurance!!, it, bindingAdapterPosition)
+        }
     }
 
     override fun onInsuranceInfoTooltipClickedTrackingAnalytics() {

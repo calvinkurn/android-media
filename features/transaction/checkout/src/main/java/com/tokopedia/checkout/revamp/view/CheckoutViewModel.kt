@@ -533,6 +533,9 @@ class CheckoutViewModel @Inject constructor(
                     enhancedECommerceCheckout.addProduct(
                         enhancedECommerceProductCartMapData.getProduct()
                     )
+                    enhancedECommerceProductCartMapData.setDimension136(
+                        cartItemModel.bmgmOfferId.toString()
+                    )
                 }
             }
         }

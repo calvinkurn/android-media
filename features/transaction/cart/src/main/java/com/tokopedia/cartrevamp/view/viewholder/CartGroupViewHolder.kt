@@ -21,6 +21,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -53,6 +54,12 @@ class CartGroupViewHolder(
     }
 
     fun bindData(cartGroupHolderData: CartGroupHolderData) {
+        itemView.addOnImpressionListener(cartGroupHolderData, onView = {
+            if (!cartGroupHolderData.isError && cartGroupHolderData.isCollapsed) {
+                actionListener.onAvailableCartItemImpression(cartGroupHolderData.productUiModelList)
+            }
+        })
+
         renderDivider(cartGroupHolderData)
         renderGroupName(cartGroupHolderData)
         renderGroupBadge(cartGroupHolderData)
@@ -259,8 +266,7 @@ class CartGroupViewHolder(
                         ConstraintSet.END,
                         0
                     )
-                }
-                else {
+                } else {
                     constraintSet.connect(
                         R.id.image_shop_badge,
                         ConstraintSet.START,
@@ -285,8 +291,7 @@ class CartGroupViewHolder(
                         ConstraintSet.END,
                         0
                     )
-                }
-                else {
+                } else {
                     constraintSet.connect(
                         R.id.tv_shop_name,
                         ConstraintSet.START,
@@ -320,17 +325,14 @@ class CartGroupViewHolder(
             val iuImageFulfillLayoutParams = binding.iuImageFulfill.layoutParams as MarginLayoutParams
             if (cartGroupHolderData.isError) {
                 iuImageFulfillLayoutParams.marginStart = 0
-            }
-            else {
+            } else {
                 iuImageFulfillLayoutParams.marginStart = GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
             }
-        }
-        else if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
+        } else if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
             val tvFulfillLayoutParams = binding.tvFulfillDistrict.layoutParams as MarginLayoutParams
             if (cartGroupHolderData.isError) {
                 tvFulfillLayoutParams.marginStart = 0
-            }
-            else {
+            } else {
                 tvFulfillLayoutParams.marginStart = GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
             }
         }

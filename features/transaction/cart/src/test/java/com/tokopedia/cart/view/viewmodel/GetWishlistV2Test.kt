@@ -13,7 +13,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.Test
 
 class GetWishlistV2Test : BaseCartViewModelTest() {
@@ -41,7 +40,8 @@ class GetWishlistV2Test : BaseCartViewModelTest() {
             getWishlistV2UseCase.executeOnBackground()
             wishlistV2StateObserver.onChanged(
                 LoadWishlistV2State.Success(
-                    wishlistData.items, true
+                    wishlistData.items,
+                    true
                 )
             )
         }
@@ -63,7 +63,8 @@ class GetWishlistV2Test : BaseCartViewModelTest() {
             getWishlistV2UseCase.executeOnBackground()
             wishlistV2StateObserver.onChanged(
                 LoadWishlistV2State.Success(
-                    wishlistData.items, true
+                    wishlistData.items,
+                    true
                 )
             )
         }
