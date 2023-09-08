@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.content.common.di.ContentFragmentFactoryModule
 import com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity
 import dagger.Component
 
@@ -14,7 +15,7 @@ import dagger.Component
         FeedBrowseModule::class,
         FeedBrowseViewModelModule::class,
         FeedBrowseBindModule::class,
-        FeedBrowseFragmentModule::class
+        ContentFragmentFactoryModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )
