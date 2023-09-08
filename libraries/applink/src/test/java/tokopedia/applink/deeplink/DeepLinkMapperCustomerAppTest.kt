@@ -29,8 +29,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 157
-        const val SIZE_PATH = 260
+        const val SIZE_HOST = 158
+        const val SIZE_PATH = 261
     }
 
     override fun setup() {
@@ -2012,6 +2012,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check deals appLink then should return tokopedia internal deals in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://deals/home-new"
         assertEqualsDeepLinkMapper(ApplinkConst.DEALS_HOME, expectedDeepLink)
+    }
+
+    @Test
+    fun `check notification setting appLink then should return device notification setting in customerapp`() {
+        assertEqualsDeepLinkMapper(ApplinkConst.DEVICE_NOTIFICATION_SETTINGS, "")
     }
 
     @Test
