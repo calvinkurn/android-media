@@ -40,7 +40,6 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val parameterListener: ProductListParameterListener,
     private val lastFilterListener: LastFilterListener,
     private val screenNameProvider: ScreenNameProvider,
-    private val reimagineRollence: ReimagineRollence,
     private val userSessionInterface: UserSessionInterface,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
@@ -60,8 +59,6 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         Dimension90Utils.getDimension90(getSearchParameter()?.getSearchParameterMap().orEmpty())
     }
 
-    private fun isReimagineQuickFilter() = reimagineRollence.search2Component() == Search2Component.QF_VAR
-
     override fun sendTrackingOpenFilterPage() {
         SearchSortFilterTracking.eventOpenFilterPage()
     }
@@ -79,7 +76,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 mapParameter = getSearchParameter()?.getSearchParameterHashMap(),
                 dynamicFilterModel = dynamicFilterModel,
                 callback = this,
-                isReimagine = isReimagineQuickFilter(),
+                isReimagine = true,
             )
         }
         sortFilterBottomSheet?.setOnDismissListener {
@@ -102,7 +99,6 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 filter = createSortModel(dynamicFilterModel),
                 optionCallback = createSortListener(),
                 enableResetButton = false,
-                isReimagine = isReimagineQuickFilter(),
             )
         }
 

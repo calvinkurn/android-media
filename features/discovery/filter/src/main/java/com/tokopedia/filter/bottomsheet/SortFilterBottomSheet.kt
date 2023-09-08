@@ -124,7 +124,6 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             fragmentManager = parentFragmentManager,
             filter = filterViewModel.filter,
             optionCallback = filterDetailCallback,
-            isReimagine = isReimagine,
         )
     }
 

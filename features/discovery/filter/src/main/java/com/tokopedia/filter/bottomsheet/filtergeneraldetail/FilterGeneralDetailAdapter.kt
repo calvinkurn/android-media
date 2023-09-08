@@ -16,7 +16,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 internal class FilterGeneralDetailAdapter(
         private val callback: Callback,
-        private val isReimagine: Boolean = false
 ): RecyclerView.Adapter<FilterGeneralDetailAdapter.FilterGeneralDetailViewHolder>() {
 
     private val optionList = mutableListOf<IOption>()
@@ -91,22 +90,7 @@ internal class FilterGeneralDetailAdapter(
 
         private fun bindTitle(option: IOption) {
             binding?.filterDetailTitle?.text = option.name
-
-            if(isReimagine) {
-                applyTitleFontTypeRevamp()
-            } else {
-                applyTitleFontTypeControl()
-            }
         }
-
-        private fun applyTitleFontTypeRevamp(){
-            binding?.filterDetailTitle?.setType(FONT_TYPE_DISPLAY_ONE)
-        }
-
-        private fun applyTitleFontTypeControl(){
-            binding?.filterDetailTitle?.setType(FONT_TYPE_HEADING_5)
-        }
-
 
         private fun bindDescription(option: IOption) {
             val filterDetailDescription = binding?.filterDetailDescription ?: return
@@ -148,9 +132,5 @@ internal class FilterGeneralDetailAdapter(
 
     enum class Payload {
         BIND_INPUT_STATE_ONLY
-    }
-    companion object {
-        const val FONT_TYPE_DISPLAY_ONE = 14
-        const val FONT_TYPE_HEADING_5 = 5
     }
 }

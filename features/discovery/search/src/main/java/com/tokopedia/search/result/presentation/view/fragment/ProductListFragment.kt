@@ -1409,7 +1409,6 @@ class ProductListFragment: BaseDaggerFragment(),
             filter = filter,
             optionCallback = filterDetailCallback,
             buttonApplyFilterDetailText = getString(R.string.search_quick_filter_dropdown_apply_button_text),
-            isReimagine = isReimagineQuickFilter(),
         )
     }
 
