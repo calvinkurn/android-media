@@ -62,7 +62,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.webview)
 
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
-    implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
 
@@ -82,13 +81,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.scannerZxing
+
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 
-    implementation rootProject.ext.miscDependencies.scannerZxing
-    implementation projectOrAar(rootProject.ext.libraries.logger)
 
 
 
