@@ -1984,6 +1984,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     override fun refreshData() {
+        isAlreadyGetShopPageP2Data = false
         hideShopPageFab()
         val shopProductListFragment: Fragment? = viewPagerAdapterHeader?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (shopProductListFragment is ShopPageProductListFragment) {

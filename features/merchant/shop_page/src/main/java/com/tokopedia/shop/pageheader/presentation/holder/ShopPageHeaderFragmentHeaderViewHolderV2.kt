@@ -484,13 +484,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun getBackgroundImage(shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?): ShopPageHeaderLayoutUiModel.Config.BackgroundObject? {
-        val imageJpg = shopHeaderConfig?.getBackgroundObject(
-            ShopPageHeaderLayoutUiModel.BgObjectType.IMAGE_JPG
-        )
-        val imagePng = shopHeaderConfig?.getBackgroundObject(
-            ShopPageHeaderLayoutUiModel.BgObjectType.IMAGE_PNG
-        )
-        return imageJpg.takeIf { it != null } ?: imagePng
+        return shopHeaderConfig?.getBackgroundObject(ShopPageHeaderLayoutUiModel.BgObjectType.IMAGE)
     }
 
     private fun setHeaderBackgroundColor(backgroundColor: String) {
