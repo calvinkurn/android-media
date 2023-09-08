@@ -38,6 +38,7 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
+      "trackerId": "32244",
       "item_list": "/groupchat - featured product",
       "item_list_name": "/groupchat - featured product",
       "items": [
@@ -83,7 +84,8 @@
       "channel": ".*",
       "productId": ".*",
       "productName": ".*",
-      "productUrl": ".*"
+      "productUrl": ".*",
+      "trackerId": "32245"
     },
     {
       "event": "view_item_list",
@@ -93,6 +95,7 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
+      "trackerId": "32246",
       "item_list": "/groupchat - bottom sheet",
       "items": [
         {
@@ -117,6 +120,7 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
+      "trackerId": "32247",
       "item_list": "/groupchat - bottom sheet now",
       "items": [
         {
@@ -141,6 +145,7 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
+      "trackerId": "32248",
       "items": [
         {
           "shop_id": ".*",
@@ -169,6 +174,7 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
+      "trackerId": "32249",
       "items": [
         {
           "shop_id": ".*",
