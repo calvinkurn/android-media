@@ -80,6 +80,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.abs
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class UniversalInboxFragment @Inject constructor(
@@ -338,13 +339,14 @@ class UniversalInboxFragment @Inject constructor(
     private fun updateProductRecommendation(
         shouldRemoveAllProductRecommendation: Boolean,
         title: String,
-        newList: List<RecommendationItem>
+        newList: List<Any>
     ) {
         if (shouldRemoveAllProductRecommendation) {
             adapter.removeAllProductRecommendation()
         }
-        adapter.tryUpdateProductRecommendations(title, newList)
-        setHeadlineAndBannerExperiment()
+        val editedNewList = newList.toMutableList()
+        setHeadlineAndBannerExperiment(editedNewList)
+        adapter.tryUpdateProductRecommendations(title, editedNewList)
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
@@ -486,10 +488,10 @@ class UniversalInboxFragment @Inject constructor(
         )
     }
 
-    private fun setHeadlineAndBannerExperiment() {
+    private fun setHeadlineAndBannerExperiment(newList: MutableList<Any>) {
         try {
-            setTopAdsHeadlineExperiment()
-            setTopAdsBannerExperiment()
+            setTopAdsHeadlineExperiment(newList)
+            setTopAdsBannerExperiment(newList)
         } catch (throwable: Throwable) {
             context?.let {
                 ErrorHandler.getErrorMessage(it, throwable)
@@ -497,7 +499,7 @@ class UniversalInboxFragment @Inject constructor(
         }
     }
 
-    private fun setTopAdsHeadlineExperiment() {
+    private fun setTopAdsHeadlineExperiment(newList: MutableList<Any>) {
         var index = Int.ZERO
         if (headlineIndexList != null && headlineIndexList?.isNotEmpty() == true) {
             val pageNum = viewModel.getRecommendationPage()
@@ -524,37 +526,27 @@ class UniversalInboxFragment @Inject constructor(
                     ) &&
                 headlineExperimentPosition <= adapter.itemCount // Prevent out of bound exception
             ) {
-                addTopAdsHeadlineUiModel(index)
+                newList.add(
+                    headlineExperimentPosition,
+                    UniversalInboxTopadsHeadlineUiModel(headlineData, Int.ZERO, index)
+                )
             }
         }
     }
 
-    private fun addTopAdsHeadlineUiModel(index: Int) {
-        val position = if (adapter.getTopAdsHeadlineCount() % 2 != 0 ||
-            headlineExperimentPosition % 2 != 0
-        ) {
-            headlineExperimentPosition + 1 // Shift to even the number of products
-        } else {
-            headlineExperimentPosition
-        }
-        adapter.tryAddItemAtPosition(
-            position,
-            UniversalInboxTopadsHeadlineUiModel(headlineData, Int.ZERO, index)
-        )
-    }
-
-    private fun setTopAdsBannerExperiment() {
+    private fun setTopAdsBannerExperiment(newList: MutableList<Any>) {
         if (topAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED &&
             topAdsBannerExperimentPosition <= adapter.itemCount // Prevent out of bound
         ) {
-            val position = if (adapter.getTopAdsHeadlineCount() % 2 != 0 ||
-                topAdsBannerExperimentPosition % 2 != 0
+            val position = if (
+                // Ex. headline pos 30 and banner pos 35 -> 5 % 2 = 1 -> odd number of products
+                abs(headlineExperimentPosition - topAdsBannerExperimentPosition) % 2 == 0
             ) {
                 topAdsBannerExperimentPosition + 1 // Shift to even the number of products
             } else {
                 topAdsBannerExperimentPosition
             }
-            adapter.tryAddItemAtPosition(
+            newList.add(
                 position,
                 UniversalInboxTopAdsBannerUiModel(topAdsBannerInProductCards)
             )
