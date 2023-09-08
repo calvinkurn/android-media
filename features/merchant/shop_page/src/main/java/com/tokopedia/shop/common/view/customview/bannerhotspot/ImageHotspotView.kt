@@ -88,10 +88,20 @@ class ImageHotspotView @JvmOverloads constructor(
         listHotspot: List<ImageHotspotData.HotspotData>,
         listenerBubbleView: Listener
     ) {
+        clearDynamicView()
         this.listHotspot = listHotspot
         imageBanner.doOnLayout {
-            addHotspotTagView(listHotspot, listenerBubbleView)
-            addBubbleView(listHotspot)
+            post {
+                addHotspotTagView(listHotspot, listenerBubbleView)
+                addBubbleView(listHotspot)
+            }
+        }
+    }
+
+    private fun clearDynamicView() {
+        listHotspot.forEach {
+            removeView(it.hotspotTagView)
+            removeView(it.bubbleView)
         }
     }
 
