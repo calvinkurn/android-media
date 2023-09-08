@@ -138,7 +138,7 @@ class HomeCreditCameraV2Fragment(
     }
 
     private fun setCutout(@DrawableRes res: Int?) {
-        context?.let {context ->
+        context?.let { context ->
             binding?.cameraCutoutSelfie?.shouldShowWithAction(res != null) {
                 res?.let {
                     binding?.cameraCutoutSelfie?.setImageDrawable(
@@ -146,6 +146,8 @@ class HomeCreditCameraV2Fragment(
                     )
                 }
             }
+
+            binding?.cameraCutoutKtp?.setBackgroundResource(R.drawable.cutout_ktp)
         }
     }
 
