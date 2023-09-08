@@ -755,8 +755,9 @@ class ShopPageProductListResultFragment :
                     it.location = result.data.location
                     it.tagline = result.data.shopCore.tagLine
                     it.shopStatus = result.data.statusInfo.shopStatus
+
+                    showUniversalShareBottomSheet()
                 }
-                showUniversalShareBottomSheet()
             }
         }
 
