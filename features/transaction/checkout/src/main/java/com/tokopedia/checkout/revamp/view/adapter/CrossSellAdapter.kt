@@ -7,7 +7,7 @@ import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellItemBinding
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellItem
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCrossSellItemViewHolder
 
-class CrossSellAdapter(private val listener: CheckoutAdapterListener): RecyclerView.Adapter<CheckoutCrossSellItemViewHolder>() {
+class CrossSellAdapter(private val listener: CheckoutAdapterListener) : RecyclerView.Adapter<CheckoutCrossSellItemViewHolder>() {
 
     var list: List<CheckoutCrossSellItem> = emptyList()
 
@@ -16,7 +16,9 @@ class CrossSellAdapter(private val listener: CheckoutAdapterListener): RecyclerV
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckoutCrossSellItemViewHolder {
         return CheckoutCrossSellItemViewHolder(
             ItemCheckoutCrossSellItemBinding.inflate(
-                LayoutInflater.from(parent.context), parent, false
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             ),
             listener
         )

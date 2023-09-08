@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.databinding.ItemGiftingViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ButtonGiftingView @JvmOverloads constructor(
     context: Context,
@@ -25,14 +26,14 @@ class ButtonGiftingView @JvmOverloads constructor(
             descInactiveAddon.gone()
             titleAddon.visible()
             titleAddon.text = title
-            titleAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            titleAddon.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950))
 
             if (desc.isEmpty()) {
                 descAddon.gone()
             } else {
                 descAddon.visible()
                 descAddon.text = desc
-                titleAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+                titleAddon.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600))
             }
             iconRight.setImage(IconUnify.CHEVRON_RIGHT)
         }
@@ -61,14 +62,14 @@ class ButtonGiftingView @JvmOverloads constructor(
             descInactiveAddon.gone()
             titleAddon.visible()
             titleAddon.text = title
-            titleAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+            titleAddon.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN400))
 
             if (desc.isEmpty()) {
                 descAddon.gone()
             } else {
                 descAddon.visible()
                 descAddon.text = desc
-                descAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+                descAddon.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN400))
             }
             iconRight.setImage(IconUnify.INFORMATION)
         }

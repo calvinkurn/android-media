@@ -60,6 +60,7 @@
             app:layout_constraintTop_toTopOf="@id/image_shop_badge"
             app:layout_constraintBottom_toBottomOf="@id/image_shop_badge"
             app:layout_constraintWidth_default="wrap"
+            app:layout_constraintHorizontal_bias="0"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Loaa Store df" />
@@ -75,22 +76,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!--        <com.tokopedia.iconunify.IconUnify-->
-        <!--            android:id="@+id/icon_pin"-->
-        <!--            android:layout_width="16dp"-->
-        <!--            android:layout_height="16dp"-->
-        <!--            android:layout_gravity="center_vertical"-->
-        <!--            android:layout_marginEnd="12dp"-->
-        <!--            app:icon_color_light_enable="@color/Unify_N700_96"-->
-        <!--            app:icon_name="PUSH_PIN"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintTop_toTopOf="parent" />-->
-
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/ll"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            app:constraint_referenced_ids="image_shop_badge,tv_shop_name,img_free_shipping"
+            app:constraint_referenced_ids="image_shop_badge,tv_shop_name"
             app:barrierDirection="bottom"
             tools:visibility="invisible" />
 
@@ -101,7 +91,7 @@
             app:layout_constraintTop_toBottomOf="@id/ll"
             android:layout_marginTop="2dp"
             app:layout_constraintStart_toEndOf="@id/cb_select_shop"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/img_free_shipping"
             android:foregroundGravity="center_vertical"
             app:flexWrap="wrap">
 

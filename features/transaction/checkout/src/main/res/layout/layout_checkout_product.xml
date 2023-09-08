@@ -20,7 +20,7 @@
             android:layout_width="66dp"
             android:layout_height="66dp"
             tools:ignore="ContentDescription"
-            tools:src="@color/Unify_G400" />
+            tools:src="@color/Unify_GN400" />
 
     </FrameLayout>
 

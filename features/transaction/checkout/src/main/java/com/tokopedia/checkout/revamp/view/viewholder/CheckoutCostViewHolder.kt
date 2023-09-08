@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CheckoutCostViewHolder(
     private val binding: ItemCheckoutCostBinding,
@@ -60,7 +61,7 @@ class CheckoutCostViewHolder(
             binding.tvCheckoutCostShippingSlashedValue.paintFlags =
                 binding.tvCheckoutCostShippingSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             binding.tvCheckoutCostShippingSlashedValue.isVisible = true
-            binding.tvCheckoutCostShippingValue.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_TN500)
+            binding.tvCheckoutCostShippingValue.setTextColorCompat(unifyprinciplesR.color.Unify_TN500)
             binding.tvCheckoutCostShippingValue.setTextAndContentDescription(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     cost.finalShippingFee,
@@ -70,7 +71,7 @@ class CheckoutCostViewHolder(
             )
         } else {
             binding.tvCheckoutCostShippingSlashedValue.isVisible = false
-            binding.tvCheckoutCostShippingValue.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            binding.tvCheckoutCostShippingValue.setTextColorCompat(unifyprinciplesR.color.Unify_NN950)
             binding.tvCheckoutCostShippingValue.setTextAndContentDescription(
                 if (cost.originalShippingFee == 0.0 && !cost.hasSelectAllShipping) {
                     "-"
@@ -97,7 +98,7 @@ class CheckoutCostViewHolder(
             binding.tvCheckoutCostItemPriceSlashedValue.paintFlags =
                 binding.tvCheckoutCostItemPriceSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             binding.tvCheckoutCostItemPriceSlashedValue.isVisible = true
-            binding.tvCheckoutCostItemPriceValue.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_TN500)
+            binding.tvCheckoutCostItemPriceValue.setTextColorCompat(unifyprinciplesR.color.Unify_TN500)
             binding.tvCheckoutCostItemPriceValue.setTextAndContentDescription(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     cost.finalItemPrice,
@@ -107,7 +108,7 @@ class CheckoutCostViewHolder(
             )
         } else {
             binding.tvCheckoutCostItemPriceSlashedValue.isVisible = false
-            binding.tvCheckoutCostItemPriceValue.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            binding.tvCheckoutCostItemPriceValue.setTextColorCompat(unifyprinciplesR.color.Unify_NN950)
             binding.tvCheckoutCostItemPriceValue.setTextAndContentDescription(
                 if (cost.originalItemPrice == 0.0) {
                     "-"
@@ -200,7 +201,7 @@ class CheckoutCostViewHolder(
                     binding.tvCheckoutCostPlatformFeeValue.setTextColor(
                         ContextCompat.getColor(
                             binding.tvCheckoutCostPlatformFeeValue.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_TN500
+                            unifyprinciplesR.color.Unify_TN500
                         )
                     )
                 } else {
@@ -213,7 +214,7 @@ class CheckoutCostViewHolder(
                     binding.tvCheckoutCostPlatformFeeValue.setTextColor(
                         ContextCompat.getColor(
                             binding.tvCheckoutCostPlatformFeeValue.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                            unifyprinciplesR.color.Unify_NN950
                         )
                     )
                 }

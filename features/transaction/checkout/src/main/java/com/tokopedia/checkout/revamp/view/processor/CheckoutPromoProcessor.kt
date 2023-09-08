@@ -1000,15 +1000,16 @@ class CheckoutPromoProcessor @Inject constructor(
     suspend fun finalValidateUse(
         validateUsePromoRequest: ValidateUsePromoRequest
     ): ValidateUsePromoRevampUiModel? {
-        try {
+        return try {
             val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
                 setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
                 validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
                     .executeOnBackground()
             }
-            return validateUsePromoRevampUiModel
+            validateUsePromoRevampUiModel
         } catch (t: Throwable) {
-            return null
+            Timber.d(t)
+            null
         }
     }
 

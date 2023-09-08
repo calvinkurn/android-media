@@ -3,6 +3,7 @@ package com.tokopedia.cartrevamp.view.viewholder
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -58,10 +59,11 @@ class CartGroupViewHolder(
         renderCartItems(cartGroupHolderData)
         renderCheckBox(cartGroupHolderData)
         renderFulfillment(cartGroupHolderData)
-        validateProductPoliciesLayout(cartGroupHolderData)
         renderFreeShipping(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
         renderCartShopGroupTicker(cartGroupHolderData)
+        validateGroupConstraintLayout(cartGroupHolderData)
+        validateProductPoliciesMargin(cartGroupHolderData)
     }
 
     private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
@@ -243,10 +245,56 @@ class CartGroupViewHolder(
         }
     }
 
-    private fun validateProductPoliciesLayout(cartGroupHolderData: CartGroupHolderData) {
+    private fun validateGroupConstraintLayout(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
             val constraintSet = ConstraintSet()
             constraintSet.clone(clShopHeader)
+
+            if (cartGroupHolderData.groupBadge.isNotBlank()) {
+                if (cartGroupHolderData.isError) {
+                    constraintSet.connect(
+                        R.id.image_shop_badge,
+                        ConstraintSet.START,
+                        R.id.cb_select_shop,
+                        ConstraintSet.END,
+                        0
+                    )
+                } else {
+                    constraintSet.connect(
+                        R.id.image_shop_badge,
+                        ConstraintSet.START,
+                        R.id.cb_select_shop,
+                        ConstraintSet.END,
+                        GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    )
+                }
+                constraintSet.connect(
+                    R.id.tv_shop_name,
+                    ConstraintSet.START,
+                    R.id.image_shop_badge,
+                    ConstraintSet.END,
+                    4
+                )
+            } else {
+                if (cartGroupHolderData.isError) {
+                    constraintSet.connect(
+                        R.id.tv_shop_name,
+                        ConstraintSet.START,
+                        R.id.cb_select_shop,
+                        ConstraintSet.END,
+                        0
+                    )
+                } else {
+                    constraintSet.connect(
+                        R.id.tv_shop_name,
+                        ConstraintSet.START,
+                        R.id.cb_select_shop,
+                        ConstraintSet.END,
+                        GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    )
+                }
+            }
+
             if (cartGroupHolderData.fulfillmentName.isNotBlank() || (cartGroupHolderData.shouldValidateWeight && cartGroupHolderData.extraWeight > 0)) {
                 constraintSet.apply {
                     clear(R.id.image_shop_badge, ConstraintSet.BOTTOM)
@@ -262,6 +310,24 @@ class CartGroupViewHolder(
                 }
             }
             constraintSet.applyTo(clShopHeader)
+        }
+    }
+
+    private fun validateProductPoliciesMargin(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.fulfillmentName.isNotBlank() && cartGroupHolderData.fulfillmentBadgeUrl.isNotEmpty()) {
+            val iuImageFulfillLayoutParams = binding.iuImageFulfill.layoutParams as MarginLayoutParams
+            if (cartGroupHolderData.isError) {
+                iuImageFulfillLayoutParams.marginStart = 0
+            } else {
+                iuImageFulfillLayoutParams.marginStart = GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            }
+        } else if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
+            val tvFulfillLayoutParams = binding.tvFulfillDistrict.layoutParams as MarginLayoutParams
+            if (cartGroupHolderData.isError) {
+                tvFulfillLayoutParams.marginStart = 0
+            } else {
+                tvFulfillLayoutParams.marginStart = GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            }
         }
     }
 
@@ -484,7 +550,7 @@ class CartGroupViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_group
+        val LAYOUT = R.layout.item_group_revamp
 
         private const val COLLAPSED_PRODUCTS_LIMIT = 10
 
@@ -493,7 +559,9 @@ class CartGroupViewHolder(
         private const val SELECTED_AMOUNT_DIVIDER_HEIGHT = 1
         private const val AVAILABLE_DIVIDER_HEIGHT = 8
 
-        private const val ITEM_DECORATION_PADDING_LEFT = 48
+        private const val GROUP_DEFAULT_MARGIN = 4
+
+        private const val ITEM_DECORATION_PADDING_LEFT = 50
         private const val SHOP_HEADER_PADDING_12 = 12
     }
 }

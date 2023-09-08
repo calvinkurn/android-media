@@ -2097,7 +2097,6 @@ class CartViewModelTest : BaseCartViewModelTest() {
         )
     }
 
-
     @Test
     fun `WHEN setItemSelected true to one item in multiple item shop THEN partial checked should true`() {
         // GIVEN

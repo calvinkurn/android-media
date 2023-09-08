@@ -27,6 +27,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import com.tokopedia.logisticcart.R as logisticcartR
+import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 
 fun checkoutPageRevamp(func: CheckoutPageRevampRobot.() -> Unit) = CheckoutPageRevampRobot().apply(func)
 
@@ -133,7 +135,7 @@ class CheckoutPageRevampRobot {
                 .perform(
                     RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                         position,
-                        clickOnViewChild(com.tokopedia.logisticcart.R.id.layout_state_no_selected_shipping)
+                        clickOnViewChild(logisticcartR.id.layout_state_no_selected_shipping)
                     )
                 )
         }
@@ -150,7 +152,7 @@ class CheckoutPageRevampRobot {
                 .perform(
                     RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                         position,
-                        clickOnViewChild(com.tokopedia.promocheckout.common.R.id.active_promo_checkout_view)
+                        clickOnViewChild(promocheckoutcommonR.id.active_promo_checkout_view)
                     )
                 )
         }
@@ -202,20 +204,20 @@ class CheckoutPageRevampRobot {
                             override fun getDescription(): String = "Assert Single Shipment Selected UI"
 
                             override fun perform(uiController: UiController?, view: View) {
-                                assertEquals(View.VISIBLE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.layout_state_has_selected_single_shipping).visibility)
-                                assertEquals(title, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_selected_single_shipping_title).text.toString())
+                                assertEquals(View.VISIBLE, view.findViewById<View>(logisticcartR.id.layout_state_has_selected_single_shipping).visibility)
+                                assertEquals(title, view.findViewById<Typography>(logisticcartR.id.label_selected_single_shipping_title).text.toString())
                                 if (originalPrice != null) {
-                                    Assert.assertTrue((view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_selected_single_shipping_title).text).contains(originalPrice))
+                                    Assert.assertTrue((view.findViewById<Typography>(logisticcartR.id.label_selected_single_shipping_title).text).contains(originalPrice))
                                 }
                                 if (discountedPrice != null) {
-                                    Assert.assertTrue((view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_selected_single_shipping_title).text).contains(discountedPrice))
+                                    Assert.assertTrue((view.findViewById<Typography>(logisticcartR.id.label_selected_single_shipping_title).text).contains(discountedPrice))
                                 }
-                                assertEquals(eta, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_single_shipping_eta).text)
+                                assertEquals(eta, view.findViewById<Typography>(logisticcartR.id.label_single_shipping_eta).text)
                                 if (message != null) {
-                                    assertEquals(message, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_single_shipping_message).text.toString())
-                                    assertEquals(View.VISIBLE, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_single_shipping_message).visibility)
+                                    assertEquals(message, view.findViewById<Typography>(logisticcartR.id.label_single_shipping_message).text.toString())
+                                    assertEquals(View.VISIBLE, view.findViewById<Typography>(logisticcartR.id.label_single_shipping_message).visibility)
                                 } else {
-                                    assertEquals(View.GONE, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_single_shipping_message).visibility)
+                                    assertEquals(View.GONE, view.findViewById<Typography>(logisticcartR.id.label_single_shipping_message).visibility)
                                 }
                             }
                         }

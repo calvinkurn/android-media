@@ -17,6 +17,7 @@ import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 class CheckoutOrderViewHolder(
     private val binding: ItemCheckoutOrderBinding,
@@ -468,7 +469,7 @@ class CheckoutOrderViewHolder(
             val insuranceBottomSheet = InsuranceBottomSheet()
             insuranceBottomSheet.setDesc(description)
             insuranceBottomSheet.show(
-                binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
+                binding.root.context.getString(purchase_platformcommonR.string.title_bottomsheet_insurance),
                 binding.root.context,
                 listener.getHostFragmentManager()
             )

@@ -22,6 +22,7 @@ import dagger.Module
 import dagger.Provides
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Named
+import com.tokopedia.atc_common.R as atc_commonR
 
 @Module(
     includes = [
@@ -90,7 +91,7 @@ class CartRevampModule {
     @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
+        return GraphqlHelper.loadRawString(context.resources, atc_commonR.raw.gql_update_cart_counter)
     }
 
     @ActivityScope
