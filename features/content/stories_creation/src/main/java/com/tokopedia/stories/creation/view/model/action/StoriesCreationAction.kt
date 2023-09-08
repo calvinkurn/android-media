@@ -8,4 +8,8 @@ sealed interface StoriesCreationAction {
     data class SetMedia(
         val mediaFilePath: String,
     ) : StoriesCreationAction
+
+    object ClickAddProduct : StoriesCreationAction
+
+    object ClickUpload : StoriesCreationAction
 }

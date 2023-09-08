@@ -134,13 +134,13 @@ class StoriesCreationActivity : BaseActivity() {
 
                             },
                             onClickChangeAccount = {
-
+                                /** Won't handle for now since UGC is not supported yet */
                             },
                             onClickAddProduct = {
-
+                                viewModel.submitAction(StoriesCreationAction.ClickAddProduct)
                             },
                             onClickUpload = {
-                                bottomSheetStateHolder.showBottomSheet(StoriesCreationBottomSheetType.TooMuchStories)
+                                viewModel.submitAction(StoriesCreationAction.ClickUpload)
                             }
                         )
                     }

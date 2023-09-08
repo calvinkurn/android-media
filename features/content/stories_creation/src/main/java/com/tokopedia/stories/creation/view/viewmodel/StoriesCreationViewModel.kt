@@ -27,6 +27,8 @@ class StoriesCreationViewModel @Inject constructor(
     fun submitAction(action: StoriesCreationAction) {
         when (action) {
             is StoriesCreationAction.SetMedia -> handleSetMedia(action.mediaFilePath)
+            is StoriesCreationAction.ClickAddProduct -> handleClickAddProduct()
+            is StoriesCreationAction.ClickUpload -> handleClickUpload()
         }
     }
 
@@ -36,5 +38,13 @@ class StoriesCreationViewModel @Inject constructor(
                 mediaFilePath = mediaFilePath
             )
         }
+    }
+
+    private fun handleClickAddProduct() {
+
+    }
+
+    private fun handleClickUpload() {
+
     }
 }
