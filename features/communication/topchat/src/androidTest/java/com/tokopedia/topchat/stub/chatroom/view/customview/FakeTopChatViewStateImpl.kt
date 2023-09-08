@@ -7,7 +7,6 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
-import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
@@ -23,7 +22,6 @@ class FakeTopChatViewStateImpl(
     attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
     stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
     headerMenuListener: HeaderMenuListener,
-    chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
     toolbar: Toolbar,
     analytics: TopChatAnalytics,
     userSession: UserSessionInterface
@@ -35,7 +33,6 @@ class FakeTopChatViewStateImpl(
     attachmentMenuListener,
     stickerMenuListener,
     headerMenuListener,
-    chatTextAreaTabLayoutListener,
     toolbar,
     analytics, userSession
 ) {

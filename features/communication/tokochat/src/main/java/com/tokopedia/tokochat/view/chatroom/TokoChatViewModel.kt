@@ -127,9 +127,9 @@ class TokoChatViewModel @Inject constructor(
     val imageUploadError: LiveData<Pair<String, Throwable>>
         get() = _imageUploadError
 
-    private val _isTkpdOrderStatusFailed = MutableStateFlow(false)
-    val isTkpdOrderStatusFailed: StateFlow<Boolean>
-        get() = _isTkpdOrderStatusFailed
+    private val _isTkpdOrderStatus = MutableStateFlow<Boolean?>(null)
+    val isTkpdOrderStatus: StateFlow<Boolean?>
+        get() = _isTkpdOrderStatus
 
     private val _error = MutableLiveData<Pair<Throwable, String>>()
     val error: LiveData<Pair<Throwable, String>>
@@ -646,12 +646,13 @@ class TokoChatViewModel @Inject constructor(
     fun translateGojekOrderId(gojekOrderId: String) {
         viewModelScope.launch {
             try {
+                _isTkpdOrderStatus.value = null // reset value
                 getTkpdOrderIdUseCase(gojekOrderId).collectLatest {
                     tkpdOrderId = it
-                    loadOrderCompletedStatus(tkpdOrderId, source)
+                    _isTkpdOrderStatus.value = true
                 }
             } catch (throwable: Throwable) {
-                _isTkpdOrderStatusFailed.value = true
+                _isTkpdOrderStatus.value = false
                 _error.value = Pair(throwable, ::translateGojekOrderId.name)
             }
         }

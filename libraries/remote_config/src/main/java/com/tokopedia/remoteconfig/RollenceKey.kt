@@ -20,6 +20,11 @@ object RollenceKey {
     const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
     // end of home component rollence section
 
+    // navigation rollence section
+    const val ME_PAGE_EXP = "GlobalMenuRV"
+    const val ME_PAGE_VARIANT = "Varian1"
+    // end of navigation rollence section
+
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 

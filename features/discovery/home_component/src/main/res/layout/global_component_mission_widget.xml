@@ -67,8 +67,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            app:unify_local_load_title="@string/mission_widget_failed_title"
-            app:unify_local_load_description="@string/mission_widget_failed_description"
+            app:unify_local_load_title="@string/home_default_error_title"
+            app:unify_local_load_description="@string/home_default_error_desc"
             android:visibility="gone"
             tools:visibility="visible"/>
 
