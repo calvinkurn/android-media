@@ -147,7 +147,7 @@ ext {
     unifyEmptyStateVersion = '1.0.14'
     unifyGlobalErrorVersion = '1.0.19'
     unifyHeaderVersion = '1.2.0'
-    unifySortFilterVersion = '1.3.0'
+    unifySortFilterVersion = '1.3.3'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.10.2'
     unifyListVersion = '1.0.12'
@@ -157,7 +157,7 @@ ext {
     unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.12'
     nestPrinciplesVersion = '1.0.4-beta3'
-    nestComponentsVersion = '1.0.4'
+    nestComponentsVersion = '1.0.7'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",

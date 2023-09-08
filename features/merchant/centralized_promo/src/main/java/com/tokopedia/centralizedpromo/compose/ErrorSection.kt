@@ -9,6 +9,7 @@ import com.tokopedia.nest.components.NestLocalLoad
 
 fun LazyGridScope.CentralizedPromoError(
     throwable: Throwable,
+    isLoading: Boolean,
     onRefreshButtonClicked: () -> Unit
 ) =
     item(span = { GridItemSpan(2) }) {
@@ -23,9 +24,12 @@ fun LazyGridScope.CentralizedPromoError(
         }
         NestLocalLoad(
             title = title,
+            isLoading = isLoading,
             description = description.toString(),
             onRefreshButtonClicked = {
-                onRefreshButtonClicked.invoke()
+                if (!isLoading) {
+                    onRefreshButtonClicked.invoke()
+                }
             }
         )
     }

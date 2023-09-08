@@ -295,6 +295,7 @@ private fun LazyGridScope.BodySection(
         is CentralizedPromoResult.Fail -> {
             CentralizedPromoError(
                 promoCreationData.throwable ?: Throwable(),
+                promoCreationData.isLoading,
                 onLocalLoadRefreshClicked
             )
         }
@@ -355,6 +356,7 @@ private fun LazyGridScope.HeaderSection(
         is CentralizedPromoResult.Fail -> {
             CentralizedPromoError(
                 onGoingResult.throwable ?: Throwable(),
+                onGoingResult.isLoading,
                 onLocalLoadRefreshClicked
             )
         }
@@ -392,7 +394,7 @@ private fun LazyGridScope.PromoCreationSection(
         modifier = Modifier.padding(top = 12.dp).addImpression(
             uniqueIdentifier = data.pageId + data.title,
             impressionState = data.impressHolderCompose,
-            listState = state.lazyGridState,
+            state = state.lazyGridState,
             onItemViewed = {
                 promoCreationImpressed.invoke(it)
             },
@@ -430,7 +432,7 @@ private fun LazyGridScope.OnGoingPromoSection(
                 modifier = Modifier.addImpression(
                     uniqueIdentifier = onGoingData.title,
                     impressionState = onGoingData.impressHolderCompose,
-                    lazyListState = state.lazyListState,
+                    state = state.lazyListState,
                     onItemViewed = {
                         onGoingPromoImpressed.invoke(it)
                     },

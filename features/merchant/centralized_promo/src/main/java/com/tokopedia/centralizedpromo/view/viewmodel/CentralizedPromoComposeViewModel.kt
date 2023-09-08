@@ -23,6 +23,7 @@ import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.LoadOnGoi
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.LoadPromoCreation
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.UpdateRbacBottomSheet
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoResult
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoResult.Fail
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoResult.Loading
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoUiState
 import com.tokopedia.user.session.UserSessionInterface
@@ -118,7 +119,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
     private fun loadOnGoingPromo() {
         _layoutList.update {
             it.copy(
-                onGoingData = Loading
+                onGoingData = (it.onGoingData as Fail).copy(isLoading = true)
             )
         }
 
@@ -131,7 +132,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
     private fun loadPromoCreation() {
         _layoutList.update {
             it.copy(
-                promoCreationData = Loading
+                promoCreationData = (it.promoCreationData as Fail).copy(isLoading = true)
             )
         }
 
@@ -174,8 +175,8 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                     }
                 }
 
-                if (updatedState.onGoingData is CentralizedPromoResult.Fail
-                    || updatedState.promoCreationData is CentralizedPromoResult.Fail
+                if (updatedState.onGoingData is Fail
+                    || updatedState.promoCreationData is Fail
                 ) {
                     showToasterState()
                 }
@@ -211,7 +212,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                 e,
                 String.format(CentralizedPromoFragment.ERROR_GET_LAYOUT_DATA, ON_GOING_PROMO)
             )
-            CentralizedPromoResult.Fail(e, e.message.toString())
+            Fail(e, e.message.toString(), false)
         }
     }
 
@@ -238,7 +239,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                 e,
                 String.format(CentralizedPromoFragment.ERROR_GET_LAYOUT_DATA, PROMO_CREATION)
             )
-            CentralizedPromoResult.Fail(e, e.message.toString())
+            Fail(e, e.message.toString(), false)
         }
 
     }
