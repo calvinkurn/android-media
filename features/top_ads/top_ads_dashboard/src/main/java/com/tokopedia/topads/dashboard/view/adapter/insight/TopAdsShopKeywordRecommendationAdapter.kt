@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail

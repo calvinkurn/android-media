@@ -69,7 +69,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
 import java.net.URLEncoder
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * @author by milhamj on 28/11/18.
@@ -111,7 +111,6 @@ open class DynamicPostViewHolder(
         const val SOURCE_PROFILE = "profile"
         const val SOURCE_SHOP = "shop"
         const val SOURCE_DETAIL = "detail"
-
 
         const val POSTTAG_PRODUCT = "product"
         const val POSTTAG_BUTTONCTA = "buttoncta"
@@ -234,17 +233,17 @@ open class DynamicPostViewHolder(
                 itemView.authorBadge.show()
                 itemView.authorBadge.loadImage(header.avatarBadgeImage)
                 itemView.authorTitle.setMargin(
-                    itemView.getDimens(contentCommonR.dimen.content_common_dp_4),
+                    itemView.getDimens(contentcommonR.dimen.content_common_dp_4),
                     0,
-                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
+                    itemView.getDimens(contentcommonR.dimen.content_common_space_8),
                     0
                 )
             } else {
                 itemView.authorBadge.hide()
                 itemView.authorTitle.setMargin(
-                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
+                    itemView.getDimens(contentcommonR.dimen.content_common_space_8),
                     0,
-                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
+                    itemView.getDimens(contentcommonR.dimen.content_common_space_8),
                     0
                 )
             }
@@ -268,7 +267,7 @@ open class DynamicPostViewHolder(
                     if (header.cardSummary.isNotEmpty()) {
                         SpannableString(
                             String.format(
-                                getString(com.tokopedia.content.common.R.string.feed_header_time_format),
+                                getString(contentcommonR.string.feed_header_time_format),
                                 header.avatarDate,
                                 header.cardSummary
                             )
@@ -289,8 +288,8 @@ open class DynamicPostViewHolder(
             }
 
             itemView.headerAction.shouldShowWithAction(
-                template.followCta
-                    && header.followCta.authorID != userSession.userId
+                template.followCta &&
+                    header.followCta.authorID != userSession.userId
             ) {
                 bindFollow(header.followCta)
             }
@@ -309,7 +308,7 @@ open class DynamicPostViewHolder(
                             header.followCta.authorType,
                             "",
                             "",
-                            caption,
+                            caption
                         )
                     }
                 } else {
@@ -328,7 +327,7 @@ open class DynamicPostViewHolder(
         activityId: String,
         activityName: String,
         followCta: FollowCta,
-        shopId: String,
+        shopId: String
     ) {
         listener.onAvatarClick(
             adapterPosition,
@@ -365,15 +364,14 @@ open class DynamicPostViewHolder(
     private fun animateFooter() {
         Handler().postDelayed({
             itemView.footerBackground.animation =
-                AnimationUtils.loadAnimation(itemView.context, contentCommonR.anim.anim_fade_in)
+                AnimationUtils.loadAnimation(itemView.context, contentcommonR.anim.anim_fade_in)
             itemView.footerBackground.visibility = View.VISIBLE
         }, ANIMATION_DURATION)
     }
 
-
     private fun shouldShowHeader(template: TemplateHeader): Boolean {
-        return template.avatar || template.avatarBadge || template.avatarDate
-            || template.avatarTitle || template.followCta || template.report
+        return template.avatar || template.avatarBadge || template.avatarDate ||
+            template.avatarTitle || template.followCta || template.report
     }
 
     @SuppressLint("PII Data Exposure")
@@ -395,8 +393,7 @@ open class DynamicPostViewHolder(
 
             val captionBody = FeedCaption.Builder(caption.text)
                 .withTag(tagCaption)
-                .build(
-                        )
+                .build()
 
             val readMoreCaption = FeedCaption.ReadMore(
                 maxTrimChar = MAX_CHAR,
@@ -429,11 +426,13 @@ open class DynamicPostViewHolder(
         listener.onHashtagClicked(hashtag, trackingPostModel)
     }
 
-    private fun bindContentList(postId: String,
-                                contentList: MutableList<BasePostModel>,
-                                template: TemplateBody,
-                                feedType: String) {
-        itemView.contentLayout.shouldShowWithAction(template.media && contentList.size !=0) {
+    private fun bindContentList(
+        postId: String,
+        contentList: MutableList<BasePostModel>,
+        template: TemplateBody,
+        feedType: String
+    ) {
+        itemView.contentLayout.shouldShowWithAction(template.media && contentList.size != 0) {
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
@@ -519,7 +518,8 @@ open class DynamicPostViewHolder(
                 itemView.commentText.setOnClickListener {
                     listener.onCommentClick(
                         adapterPosition,
-                        id, "",
+                        id,
+                        "",
                         "",
                         isFollowed = false,
                         mediaType = ""
@@ -555,7 +555,6 @@ open class DynamicPostViewHolder(
                         mediaType = ""
                     )
                 }
-
             } else {
                 itemView.shareGroup.hide()
             }
@@ -572,7 +571,9 @@ open class DynamicPostViewHolder(
                         )
                     }
                 }
-            } else itemView.statsIcon.hide()
+            } else {
+                itemView.statsIcon.hide()
+            }
         }
     }
 
@@ -606,8 +607,11 @@ open class DynamicPostViewHolder(
             else -> {
                 updateLikeButton(false)
                 val text: String =
-                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt
-                    else getString(com.tokopedia.content.common.R.string.kol_action_like)
+                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) {
+                        like.fmt
+                    } else {
+                        getString(contentcommonR.string.kol_action_like)
+                    }
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
@@ -618,7 +622,7 @@ open class DynamicPostViewHolder(
             }
         }
     }
-    
+
     private fun updateLikeButton(isLiked: Boolean) {
         val likedColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val dislikeColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
@@ -628,7 +632,7 @@ open class DynamicPostViewHolder(
                 newLightEnable = likedColor,
                 newLightDisable = dislikeColor,
                 newDarkEnable = likedColor,
-                newDarkDisable = dislikeColor,
+                newDarkDisable = dislikeColor
             )
         } else {
             itemView.likeIcon.setImage(
@@ -636,7 +640,7 @@ open class DynamicPostViewHolder(
                 newLightEnable = dislikeColor,
                 newLightDisable = likedColor,
                 newDarkEnable = dislikeColor,
-                newDarkDisable = likedColor,
+                newDarkDisable = likedColor
             )
         }
     }
@@ -644,10 +648,12 @@ open class DynamicPostViewHolder(
     private fun bindComment(comment: Comment) {
         itemView.commentText.text =
             if (comment.value == 0) {
-                if (comment.fmt.isNotEmpty()) comment.fmt
-                else getString(com.tokopedia.content.common.R.string.kol_action_comment)
-            }
-            else {
+                if (comment.fmt.isNotEmpty()) {
+                    comment.fmt
+                } else {
+                    getString(contentcommonR.string.kol_action_comment)
+                }
+            } else {
                 if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
             }
     }
@@ -714,6 +720,7 @@ open class DynamicPostViewHolder(
         for (postTagItem in postTagItemList) {
             when (postTagItem.type) {
                 POSTTAG_PRODUCT -> {
+                    val shouldHideActionButton = postTagItem.shop.firstOrNull()?.shopId == userSession.shopId
                     val item = ProductPostTagModel(
                         postTagItem.id,
                         postTagItem.text,
@@ -730,7 +737,8 @@ open class DynamicPostViewHolder(
                         postTagItem,
                         postTagItem.rating,
                         needToRezise,
-                        authorType
+                        authorType,
+                        shouldHideActionButton = shouldHideActionButton
                     )
                     item.feedType = feedType
                     item.postId = postId
@@ -927,7 +935,6 @@ open class DynamicPostViewHolder(
             positionInFeed: Int
         )
 
-
         fun muteUnmuteVideo(
             card: FeedXCard,
             mute: Boolean,
@@ -950,6 +957,5 @@ open class DynamicPostViewHolder(
             positionInFeed: Int,
             feedXCard: FeedXCard
         )
-
     }
 }

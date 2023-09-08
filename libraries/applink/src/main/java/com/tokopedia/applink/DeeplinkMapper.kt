@@ -6,7 +6,6 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
 import com.tokopedia.applink.centralizedpromo.DeeplinkMapperCentralizedPromo.getRegisteredNavigationCentralizedPromo
 import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
-import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
@@ -14,14 +13,11 @@ import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals
 import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment
 import com.tokopedia.applink.find.DeepLinkMapperFind
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getShopPageInternalAppLink
@@ -30,9 +26,7 @@ import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.model.DLP
 import com.tokopedia.applink.model.DLPLogic
 import com.tokopedia.applink.order.DeeplinkMapperOrder
-import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
-import com.tokopedia.applink.promo.DeeplinkMapperPromo.getDynamicDeeplinkForTokomember
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getRegisteredNavigationPromoFromHttp
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.recommendation.DeeplinkMapperRecommendation.getRegisteredNavigationRecommendationFromHttp
@@ -45,9 +39,6 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.shouldRedirectToSellerApp
-import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
-import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
-import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
 import com.tokopedia.applink.teleporter.Teleporter
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowSearch
 import com.tokopedia.applink.user.DeeplinkMapperUser
@@ -95,7 +86,7 @@ object DeeplinkMapper {
 
             DeeplinkConstant.SCHEME_SELLERAPP -> {
                 val query = getQuery(deeplink, uri)
-                val tempDeeplink = getRegisteredNavigationFromSellerapp(context, uri, deeplink)
+                val tempDeeplink = getRegisteredNavigation(context, getSellerappSchemeList(), uri, deeplink)
                 UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
 
@@ -285,6 +276,10 @@ object DeeplinkMapper {
         return DeeplinkMainApp.deeplinkPatternTokopediaSchemeListv2
     }
 
+    fun getSellerappSchemeList(): Map<String, MutableList<DLP>> {
+        return DeeplinkSellerApp.deeplinkPatternTokopediaSchemeListv2
+    }
+
     /**
      * Mapping tokopedia link to registered deplink in manifest if necessary
      * eg: tokopedia://product/add to tokopedia-android-internal://marketplace/product-add-item
@@ -385,7 +380,6 @@ object DeeplinkMapper {
             deeplink.startsWith(ApplinkConsInternalHome.HOME_WISHLIST) -> DeeplinkMapperWishlist.getRegisteredNavigationWishlist()
 
             deeplink.startsWith(ApplinkConstInternalMarketplace.ADD_ON_GIFTING) -> getRegisteredNavigationMarketplace(
-                context,
                 deeplink
             )
 
@@ -400,155 +394,6 @@ object DeeplinkMapper {
             deeplink.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO) -> getRegisteredNavigationCentralizedPromo(context)
 
             else -> return ""
-        }
-    }
-
-    private fun matchWithHostAndHasPath(uri: Uri, host: String): Boolean {
-        return uri.host == host && uri.pathSegments.size > 0
-    }
-
-    /**
-     * Mapping sellerapp link to registered deplink in manifest if necessary
-     * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item
-     * If not found, return current deeplink, means it registered
-     */
-    private fun getRegisteredNavigationFromSellerapp(
-        context: Context,
-        uri: Uri,
-        deeplink: String
-    ): String {
-        return when (val trimmedDeeplink = UriUtil.trimDeeplink(uri, deeplink)) {
-            ApplinkConst.SellerApp.WEBVIEW -> ApplinkConstInternalGlobal.WEBVIEW_BASE
-            ApplinkConst.SellerApp.BROWSER -> ApplinkConstInternalGlobal.BROWSER
-            ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
-            ApplinkConst.SellerApp.TOPADS_DASH_BOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
-            ApplinkConst.SellerApp.SHOP_DISCOUNT -> ApplinkConstInternalSellerapp.SHOP_DISCOUNT
-            ApplinkConst.SellerApp.TOPADS_CREDIT_HISTORY -> ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT
-            ApplinkConst.SellerApp.TOPADS_CREDIT -> ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
-            ApplinkConst.SellerApp.TOPADS_ADD_CREDIT -> ApplinkConstInternalTopAds.TOP_ADS_ADD_CREDIT
-            ApplinkConst.SellerApp.TOPADS_CREATE_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE
-            ApplinkConst.SellerApp.TOPADS_CREATE_ADS -> ApplinkConstInternalTopAds.TOPADS_CREATE_ADS
-            ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING -> ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD
-            ApplinkConst.SellerApp.TOPADS_ONBOARDING -> ApplinkConstInternalTopAds.TOPADS_ONBOARDING
-            ApplinkConst.SellerApp.TOPADS_HEADLINE_CREATE -> ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
-            ApplinkConst.SellerApp.TOPADS_HEADLINE_DETAIL -> ApplinkConstInternalTopAds.TOPADS_HEADLINE_DETAIL
-            ApplinkConst.SellerApp.TOPADS_EDIT_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS
-            ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP -> ApplinkConstInternalTopAds.TOPADS_AUTO_TOPUP
-            ApplinkConst.SellerApp.TOPADS_CREATE_CHOOSER -> ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER
-            ApplinkConst.SellerApp.SELLER_ONBOARDING -> ApplinkConstInternalSellerapp.WELCOME
-            ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
-            ApplinkConst.SellerApp.SELLER_SEARCH -> ApplinkConstInternalSellerapp.SELLER_SEARCH
-            ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
-            ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(
-                context,
-                uri
-            )
-
-            ApplinkConst.SellerApp.PM_BENEFIT_PACKAGE -> ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE
-            ApplinkConst.SellerApp.VOUCHER_LIST -> ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
-            ApplinkConst.SellerApp.VOUCHER_ACTIVE -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
-            ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY
-            ApplinkConst.SellerApp.CAMPAIGN_LIST -> ApplinkConstInternalSellerapp.CAMPAIGN_LIST
-            ApplinkConst.SellerApp.CENTRALIZED_PROMO -> getRegisteredNavigationCentralizedPromo(context)
-            ApplinkConst.SellerApp.PLAY_BROADCASTER -> ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
-            ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR -> ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING
-            ApplinkConst.SellerApp.REVIEW_REMINDER -> ApplinkConstInternalSellerapp.REVIEW_REMINDER
-            ApplinkConst.SellerApp.STATISTIC_DASHBOARD -> DeepLinkMapperStatistic.getStatisticAppLink(
-                uri
-            )
-
-            ApplinkConst.SellerApp.SHOP_SCORE_DETAIL -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(
-                uri
-            )
-
-            ApplinkConst.SellerApp.TOKOMEMBER -> ApplinkConstInternalSellerapp.TOKOMEMBER
-            ApplinkConst.SellerApp.TOKOMEMBER_PROGRAM_LIST -> ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_LIST
-            ApplinkConst.SellerApp.TOKOMEMBER_COUPON_LIST -> ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_LIST
-            ApplinkConst.SellerApp.TOKOMEMBER_PROGRAM_CREATION -> ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_CREATION
-            ApplinkConst.SellerApp.TOKOMEMBER_COUPON_CREATION -> ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_CREATION
-            ApplinkConst.SellerApp.ADMIN_INVITATION -> ApplinkConstInternalMarketplace.ADMIN_INVITATION
-            ApplinkConst.SellerApp.ADMIN_ACCEPTED -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(
-                uri
-            )
-
-            ApplinkConst.SellerApp.ADMIN_REDIRECTION -> ApplinkConstInternalMarketplace.ADMIN_REDIRECTION
-            ApplinkConst.SellerApp.PRODUCT_MANAGE -> DeepLinkMapperProductManage.getProductListInternalAppLink(
-                deeplink
-            )
-
-            ApplinkConst.SellerApp.TOPCHAT_BUBBLE_ACTIVATION -> DeeplinkMapperCommunication.getRegisteredNavigationBubbleActivation(
-                deeplink
-            )
-
-            ApplinkConst.SellerApp.SELLER_MVC_LIST -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST
-            ApplinkConst.SellerApp.SELLER_MVC_LIST_ACTIVE -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
-            ApplinkConst.SellerApp.SELLER_MVC_LIST_HISTORY -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY
-            ApplinkConst.SellerApp.SELLER_MVC_LIST_UPCOMING -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_UPCOMING
-            ApplinkConst.SellerApp.SELLER_MVC_LIST_ONGOING -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ONGOING
-            ApplinkConst.SellerApp.SELLER_MVC_REDIRECTION_PAGE -> ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
-            ApplinkConst.SellerApp.SELLER_PERSONA -> ApplinkConstInternalSellerapp.SELLER_PERSONA
-            ApplinkConst.SellerApp.SELLER_SHOP_HOUR -> ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS
-            else -> when {
-                DeepLinkMapperProductManage.isStockReminderPattern(deeplink) -> DeepLinkMapperProductManage.getStockReminderInternalAppLink(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isShopPageSettingSellerApp(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopPageSettingSellerApp(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isCreateShowcaseApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateShowcase(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isCreateVoucherProductApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateVoucherProduct()
-                DeeplinkMapperMerchant.isCreateShopVoucherApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateShopVoucher()
-                DeeplinkMapperMerchant.isVoucherProductListApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductList(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isShopVoucherDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForShopVoucherDetail(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isVoucherProductDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductDetail(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isSellerShopFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopFlashSale(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isSellerTokopediaUpcomingFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleUpcoming()
-                DeeplinkMapperMerchant.isSellerTokopediaRegisteredFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleRegistered()
-                DeeplinkMapperMerchant.isSellerTokopediaOngoingFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleOngoing()
-                DeeplinkMapperMerchant.isSellerTokopediaFinishedFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleFinished()
-                DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale()
-                DeeplinkMapperMerchant.isSellerMvcIntroAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcIntro()
-                DeeplinkMapperMerchant.isSellerMvcCreate(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcCreate(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isSellerMvcDetailAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcDetail(
-                    deeplink
-                )
-
-                DeeplinkMapperMerchant.isSellerShopNibAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopNib()
-                // For Tokomember applinks with params
-                trimmedDeeplink.startsWith(ApplinkConst.Tokomember.MAIN_PATH) -> getDynamicDeeplinkForTokomember(
-                    trimmedDeeplink
-                )
-
-                else -> ""
-            }
         }
     }
 }
