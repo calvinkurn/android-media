@@ -286,6 +286,7 @@ class UniversalInboxAdapter(
 
     fun tryUpdateProductRecommendations(title: String, newList: List<Any>) {
         try {
+            if (newList == itemList) return
             val editedList = itemList.toMutableList()
             if (getRecommendationTitlePosition() == null && title.isNotBlank()) {
                 editedList.add(UniversalInboxRecommendationTitleUiModel(title))
