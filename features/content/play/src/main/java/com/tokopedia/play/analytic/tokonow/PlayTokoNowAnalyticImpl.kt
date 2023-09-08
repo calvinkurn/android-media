@@ -186,7 +186,9 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                     )
                 )
             ),
-            generateBaseTracking()
+            generateBaseTracking(
+                trackerId = "32247"
+            )
         )
     }
 
@@ -223,7 +225,8 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_PRODUCT_ID to featuredProduct.id,
                 KEY_PRODUCT_NAME to featuredProduct.title,
                 KEY_PRODUCT_URL to featuredProduct.applink.toString(),
-                KEY_CHANNEL to channelName
+                KEY_CHANNEL to channelName,
+                Key.trackerId to "32245"
             )
         )
     }
@@ -257,6 +260,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             putString(Key.businessUnit, BusinessUnit.play)
             putParcelableArrayList("items", items)
             putString(KEY_ITEM_LIST, "/groupchat - bottom sheet")
+            putString(Key.trackerId, "32246")
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -298,7 +302,8 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 Key.currentSite to CurrentSite.tokopediaMarketplace,
                 Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
                 Key.userId to userId,
-                Key.businessUnit to BusinessUnit.play
+                Key.businessUnit to BusinessUnit.play,
+                Key.trackerId to "32244"
             )
         )
     }
@@ -331,7 +336,9 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                     )
                 )
             ),
-            generateBaseTracking()
+            generateBaseTracking(
+                trackerId = "32249"
+            )
         )
     }
 
@@ -363,7 +370,9 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                     )
                 )
             ),
-            generateBaseTracking()
+            generateBaseTracking(
+                trackerId = "32248"
+            )
         )
     }
 
@@ -380,12 +389,13 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    private fun generateBaseTracking(): HashMap<String, Any> {
+    private fun generateBaseTracking(trackerId: String): HashMap<String, Any> {
         return hashMapOf(
             Key.businessUnit to BusinessUnit.play,
             Key.currentSite to CurrentSite.tokopediaMarketplace,
             Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
-            Key.userId to userId
+            Key.userId to userId,
+            Key.trackerId to trackerId
         )
     }
 
