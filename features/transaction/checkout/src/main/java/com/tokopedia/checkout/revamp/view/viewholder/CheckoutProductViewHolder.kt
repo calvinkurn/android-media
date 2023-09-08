@@ -421,7 +421,6 @@ class CheckoutProductViewHolder(
     }
 
     private fun renderBMGMGroupInfo(product: CheckoutProductModel) {
-
         fun renderBmgmGroupTitle() {
             binding.tvCheckoutBmgmTitle.shouldShowWithAction(product.shouldShowBmgmInfo) {
                 val spannedTitle = SpannableStringBuilder()
@@ -448,10 +447,12 @@ class CheckoutProductViewHolder(
             binding.ivCheckoutBmgmDetail.shouldShowWithAction(product.shouldShowBmgmInfo) {
                 binding.ivCheckoutBmgmDetail.setOnClickListener {
                     val bmgmCommonData = CheckoutBmgmMapper.mapBmgmCommonDataModel(
-                        product, product.warehouseId.toLongSafely(), product.shopId
+                        product,
+                        product.warehouseId.toLongSafely(),
+                        product.shopId
                     )
                     PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, bmgmCommonData)
-                    listener.onClickBmgmInfoIcon()
+                    listener.onClickBmgmInfoIcon(product.bmgmOfferId.toString(), product.shopId)
                 }
             }
         }

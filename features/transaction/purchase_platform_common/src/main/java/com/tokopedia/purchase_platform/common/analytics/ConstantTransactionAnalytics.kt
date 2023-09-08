@@ -74,6 +74,7 @@ object ConstantTransactionAnalytics {
         const val VIEW_PP_IRIS = "viewPPIris"
         const val CLICK_CX = "clickCX"
         const val SELECT_CONTENT = "select_content"
+        const val CLICK_PG = "clickPG"
     }
 
     object EventCategory {
@@ -406,6 +407,9 @@ object ConstantTransactionAnalytics {
         const val VIEW_ADD_ONS_PRODUCT_WIDGET = "view addons product widget"
         const val CLICK_ADD_ONS_PRODUCT_WIDGET = "click addons product widget"
         const val CLICK_LIHAT_SEMUA_ON_ADDONS_PRODUCT_WIDGET = "click lihat semua on addons product widget"
+
+        // BMGM Checkout
+        const val CLICK_SNK_BMGM = "click snk bmgm"
     }
 
     object EventLabel {
@@ -500,6 +504,7 @@ object ConstantTransactionAnalytics {
         const val DIMENSION_BUSINESS_UNIT_HOME_BROWSE = "home & browse"
         const val DIMENSION_BUSINESS_UNIT_FINTECH = "fintech"
         const val DIMENSION_BUSINESS_UNIT_PROMO = "promo"
+        const val DIMENSION_SESSION_IRIS = "sessionIris"
     }
 
     object TrackerId {
@@ -548,5 +553,8 @@ object ConstantTransactionAnalytics {
         const val CLICK_ACTIVATED_GOPAY_CICIL = "45453"
         const val IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL = "45454"
         const val IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION = "45456"
+
+        // BMGM
+        const val CLICK_SNK_BMGM = "46781"
     }
 }
