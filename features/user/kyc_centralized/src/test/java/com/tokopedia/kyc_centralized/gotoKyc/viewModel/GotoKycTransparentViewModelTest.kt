@@ -182,7 +182,7 @@ class GotoKycTransparentViewModelTest {
         val expected = AccountLinkingStatusResult.Linked
 
         coEvery { accountLinkingStatusUseCase(projectId) } returns expected
-        viewModel.accountLikingStatus(projectId)
+        viewModel.accountLinkingStatus(projectId)
 
         val result = viewModel.accountLinkingStatus.getOrAwaitValue()
         assertTrue(result is AccountLinkingStatusResult.Linked)
@@ -195,7 +195,7 @@ class GotoKycTransparentViewModelTest {
         val expected = AccountLinkingStatusResult.NotLinked
 
         coEvery { accountLinkingStatusUseCase(projectId) } returns expected
-        viewModel.accountLikingStatus(projectId)
+        viewModel.accountLinkingStatus(projectId)
 
         val result = viewModel.accountLinkingStatus.getOrAwaitValue()
         assertTrue(result is AccountLinkingStatusResult.NotLinked)
@@ -209,7 +209,7 @@ class GotoKycTransparentViewModelTest {
         val throwable = Throwable()
 
         coEvery { accountLinkingStatusUseCase(projectId) } throws throwable
-        viewModel.accountLikingStatus(projectId)
+        viewModel.accountLinkingStatus(projectId)
 
         val result = viewModel.accountLinkingStatus.getOrAwaitValue()
         assertTrue(result is AccountLinkingStatusResult.Failed)

@@ -147,7 +147,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
 
         if (isSuccessSavePreference) {
             if (isReVerify) {
-                viewModel.accountLikingStatus(viewModel.projectId.toIntSafely())
+                viewModel.accountLinkingStatus(viewModel.projectId.toIntSafely())
             } else {
                 // please, make sure project id already set in viewModel
                 viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
