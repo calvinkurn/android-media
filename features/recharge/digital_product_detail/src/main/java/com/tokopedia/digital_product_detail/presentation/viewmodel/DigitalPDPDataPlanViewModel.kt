@@ -57,6 +57,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
     var mccmProductsJob: Job? = null
+    var checkBalanceJob: Job? = null
     var clientNumberThrottleJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
@@ -218,6 +219,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         recommendationJob?.cancel()
     }
 
+    fun cancelCheckBalanceJob() {
+        checkBalanceJob?.cancel()
+    }
+
     fun cancelMCCMProductsJob() {
         mccmProductsJob?.cancel()
     }
@@ -284,7 +289,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         clientNumbers: List<String>,
         dgCategoryIds: List<Int>
     ) {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
+        checkBalanceJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             val persoData = repo.getRechargeCheckBalance(
                 clientNumbers,
                 dgCategoryIds,

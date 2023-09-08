@@ -232,7 +232,7 @@ class DigitalPDPPulsaFragment :
 
     private fun renderProduct() {
         binding?.run {
-            hideCheckBalanceWidget()
+            hideAllCheckBalanceWidget()
             val selectedClientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
             try {
                 /* operator check */
@@ -283,6 +283,7 @@ class DigitalPDPPulsaFragment :
                 viewModel.run {
                     cancelRecommendationJob()
                     cancelCatalogProductJob()
+                    cancelCheckBalanceJob()
                 }
                 rechargePdpPulsaClientNumberWidget.run {
                     setLoading(false)
@@ -492,6 +493,7 @@ class DigitalPDPPulsaFragment :
             val clientNumbers =
                 listOf(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
             viewModel.setRechargeCheckBalanceLoading()
+            viewModel.cancelCheckBalanceJob()
             viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
         }
     }
@@ -633,6 +635,7 @@ class DigitalPDPPulsaFragment :
     private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             hideCheckBalanceWidget()
+            hideCheckBalanceOtpWidget()
             hideCheckBalanceWidgetShimmering()
 
             if (checkBalanceData.widgetType.isEmpty()) {
@@ -695,6 +698,7 @@ class DigitalPDPPulsaFragment :
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             hideCheckBalanceWidgetShimmering()
             hideCheckBalanceOtpWidget()
+            hideCheckBalanceWarning()
             setupDynamicScrollViewPadding()
             showCheckBalanceWidget()
             showCheckBalanceWidgetLocalLoad {
@@ -741,7 +745,7 @@ class DigitalPDPPulsaFragment :
         onLoadingGetCheckBalance()
     }
 
-    private fun hideCheckBalanceWidget() {
+    private fun hideAllCheckBalanceWidget() {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.hideCheckBalanceWidget()
             rechargePdpPulsaClientNumberWidget.hideCheckBalanceOtpWidget()

@@ -15,11 +15,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/check_balance_unit_key"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:gravity="left"
         app:typographyType="small"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toTopOf="@id/check_balance_unit_icon"
         app:layout_constraintStart_toEndOf="@id/check_balance_unit_icon"
         app:layout_constraintEnd_toEndOf="parent"

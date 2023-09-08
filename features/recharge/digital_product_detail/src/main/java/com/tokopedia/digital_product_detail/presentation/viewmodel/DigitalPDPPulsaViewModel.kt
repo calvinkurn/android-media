@@ -53,6 +53,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
     var clientNumberThrottleJob: Job? = null
+    var checkBalanceJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect =
         TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
@@ -199,6 +200,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         recommendationJob?.cancel()
     }
 
+    fun cancelCheckBalanceJob() {
+        checkBalanceJob?.cancel()
+    }
+
     fun cancelValidatorJob() {
         validatorJob?.cancel()
     }
@@ -261,7 +266,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         clientNumbers: List<String>,
         dgCategoryIds: List<Int>
     ) {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
+        checkBalanceJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             val persoData = repo.getRechargeCheckBalance(
                 clientNumbers,
                 dgCategoryIds,

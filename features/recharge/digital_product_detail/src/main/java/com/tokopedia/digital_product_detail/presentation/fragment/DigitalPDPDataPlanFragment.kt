@@ -339,6 +339,7 @@ class DigitalPDPDataPlanFragment :
                     cancelRecommendationJob()
                     cancelMCCMProductsJob()
                     cancelCatalogProductJob()
+                    cancelCheckBalanceJob()
                 }
                 rechargePdpPaketDataClientNumberWidget.run {
                     setLoading(false)
@@ -653,6 +654,7 @@ class DigitalPDPDataPlanFragment :
             val clientNumbers =
                 listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
             viewModel.setRechargeCheckBalanceLoading()
+            viewModel.cancelCheckBalanceJob()
             viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
         }
     }
@@ -790,6 +792,7 @@ class DigitalPDPDataPlanFragment :
     private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             hideCheckBalanceWidget()
+            hideCheckBalanceOtpWidget()
             hideCheckBalanceWidgetShimmering()
 
             if (checkBalanceData.widgetType.isEmpty()) {
@@ -852,6 +855,7 @@ class DigitalPDPDataPlanFragment :
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             hideCheckBalanceWidgetShimmering()
             hideCheckBalanceOtpWidget()
+            hideCheckBalanceWarning()
             setupDynamicScrollViewPadding()
             showCheckBalanceWidget()
             showCheckBalanceWidgetLocalLoad {
