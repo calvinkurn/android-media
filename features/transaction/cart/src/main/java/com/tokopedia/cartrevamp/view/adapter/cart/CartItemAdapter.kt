@@ -37,5 +37,6 @@ class CartItemAdapter {
         fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String)
         fun onBmGmChevronRightClicked(offerId: Long)
         fun onBmGmTickerReloadClicked()
+        fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData)
     }
 }

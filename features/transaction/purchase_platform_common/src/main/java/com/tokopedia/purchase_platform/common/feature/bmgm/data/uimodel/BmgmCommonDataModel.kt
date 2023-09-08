@@ -8,9 +8,9 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class BmgmCommonDataModel(
     val offerId: Long = 0L,
-    val offerName: String = "",
+    val warehouseId: Long = 0L,
+    val shopId: String = "0",
     val hasReachMaxDiscount: Boolean = false,
-    val totalDiscount: Double = 0.0,
     val priceBeforeBenefit: Double = 0.0,
     val finalPrice: Double = 0.0,
     val showMiniCartFooter: Boolean = false,

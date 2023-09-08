@@ -39,7 +39,7 @@ interface CheckoutAdapterListener {
         bindingAdapterPosition: Int
     )
 
-    fun onClickAddonProductInfoIcon(addOnDataInfoLink: String)
+    fun onClickAddonProductInfoIcon(addOn: AddOnProductDataItemModel)
 
     fun onClickSeeAllAddOnProductService(product: CheckoutProductModel)
 
@@ -107,5 +107,8 @@ interface CheckoutAdapterListener {
 
     fun onProcessToPayment()
 
-    fun onClickBmgmInfoIcon()
+    fun onClickBmgmInfoIcon(
+        offerId: String,
+        shopId: String
+    )
 }

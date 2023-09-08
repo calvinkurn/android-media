@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
@@ -26,6 +28,11 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonInt
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentParamKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.MAX_PRODUCT_PRICE_AFFILIATE_LINK_ELIGIBILITY
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.PRODUCT_STATUS_AFFILIATE_LINK_ELIGIBILITY
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.SHOP_STATUS_AFFILIATE_LINK_ELIGIBILITY
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.SITE_ID_AFFILIATE_LINK_ELIGIBILITY
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.VERTICAL_ID_AFFILIATE_LINK_ELIGIBILITY
 import com.tokopedia.buyerorderdetail.common.extension.collectLatestWhenResumed
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.FragmentBuyerOrderDetailBinding
@@ -72,6 +79,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.linker.model.LinkerData.PRODUCT_TYPE
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -94,6 +103,15 @@ import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMed
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.tracker.PageType
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.LinkProperties
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
+import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -101,7 +119,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -114,6 +134,7 @@ open class BuyerOrderDetailFragment :
     OrderResolutionViewHolder.OrderResolutionListener,
     ProductListToggleViewHolder.Listener,
     PofRefundInfoViewHolder.Listener,
+    PartialProductItemViewHolder.ShareProductBottomSheetListener,
     ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     OwocInfoViewHolder.Listener,
     BmgmSectionViewHolder.Listener {
@@ -168,6 +189,7 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -249,9 +271,9 @@ open class BuyerOrderDetailFragment :
                 null
             ) as? BuyerOrderDetailToolbarMenu
             )?.apply {
-                setViewModel(viewModel)
-                setNavigator(navigator)
-            }
+            setViewModel(viewModel)
+            setNavigator(navigator)
+        }
     }
 
     override fun getScreenName() = BuyerOrderDetailFragment::class.java.simpleName
@@ -973,11 +995,85 @@ open class BuyerOrderDetailFragment :
         owocBottomSheet.show(childFragmentManager)
     }
 
+    override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {
+        BuyerOrderDetailTracker.sendClickOnShareButton(element.orderId, element.productId, element.orderStatusId, userSession.userId)
+        val universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
+            init(object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    BuyerOrderDetailTracker.sendClickOnSelectionOfSharingChannels(shareModel.channel ?: "", element.orderId, element.productId, element.orderStatusId, userSession.userId)
+                }
+
+                override fun onCloseOptionClicked() {
+                    BuyerOrderDetailTracker.sendClickOnClosingBottomSheet(element.orderId, element.productId, element.orderStatusId, userSession.userId)
+                    dismiss()
+                }
+            })
+
+            enableDefaultShareIntent()
+            imageSaved(element.productThumbnailUrl)
+            setUtmCampaignData("Order", userSession.userId, listOf(element.productId, element.orderId), "share")
+
+            val shareString = this@BuyerOrderDetailFragment.getString(R.string.buyer_order_detail_share_text, element.priceText)
+            setShareText("$shareString%s")
+
+            setLinkProperties(
+                LinkProperties(
+                    linkerType = PRODUCT_TYPE,
+                    ogTitle = "${element.productName} - ${element.priceText}",
+                    ogImageUrl = element.productThumbnailUrl,
+                    desktopUrl = element.productUrl,
+                    deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, element.productId)).toString(),
+                    id = element.productId
+                )
+            )
+            setMetaData(
+                element.productName,
+                element.productThumbnailUrl,
+                imageList = arrayListOf(element.productThumbnailUrl)
+            )
+            val inputShare = AffiliateInput().apply {
+                pageDetail = PageDetail(
+                    pageId = element.shopId ?: "",
+                    pageType = PageType.PDP.value,
+                    siteId = SITE_ID_AFFILIATE_LINK_ELIGIBILITY,
+                    verticalId = VERTICAL_ID_AFFILIATE_LINK_ELIGIBILITY
+                )
+                pageType = PageType.PDP.value
+                product = Product(
+                    element.productId,
+                    element.categoryId,
+                    productPrice = element.price.toString(),
+                    productStatus = PRODUCT_STATUS_AFFILIATE_LINK_ELIGIBILITY,
+                    maxProductPrice = MAX_PRODUCT_PRICE_AFFILIATE_LINK_ELIGIBILITY
+                )
+                shop = Shop(shopID = element.shopId, shopStatus = SHOP_STATUS_AFFILIATE_LINK_ELIGIBILITY, isOS = false, isPM = false)
+                affiliateLinkType = AffiliateLinkType.PDP
+            }
+            enableAffiliateCommission(AffiliateInput())
+        }
+        universalShareBottomSheet.show(
+            childFragmentManager,
+            this@BuyerOrderDetailFragment
+        )
+        BuyerOrderDetailTracker.eventImpressionShareBottomSheet(element.orderId, element.productId, element.orderStatusId, userSession.userId)
+    }
+
     override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        navigator.goToProductSnapshotPage(uiModel.orderId, uiModel.orderDetailId)
+        if (uiModel.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
+            navigator.goToProductSnapshotPage(uiModel.orderId, uiModel.orderDetailId)
+            BuyerOrderDetailTracker.eventClickProduct(uiModel.orderStatusId, uiModel.orderId)
+        } else {
+            showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
+        }
     }
 
     override fun onCopyAddOnDescription(label: String, description: CharSequence) {
-        //no op for bmgm add on because there is no function copy
+        // no op for bmgm add on because there is no function copy
+    }
+
+    private fun showToaster(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
     }
 }

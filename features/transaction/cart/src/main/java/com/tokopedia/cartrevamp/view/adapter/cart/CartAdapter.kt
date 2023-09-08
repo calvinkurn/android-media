@@ -394,25 +394,6 @@ class CartAdapter constructor(
         }
     }
 
-    fun getCartShopBottomHolderDataFromIndex(shopBottomIndex: Int): CartShopBottomHolderData? {
-        val bottomItem = cartDataList[shopBottomIndex]
-        return if (bottomItem is CartShopBottomHolderData) {
-            bottomItem
-        } else {
-            null
-        }
-    }
-
-    fun getCartGroupHolderDataByCartItemHolderData(cartItemHolderData: CartItemHolderData): CartGroupHolderData? {
-        loop@ for (data in cartDataList) {
-            if (data is CartGroupHolderData && data.cartString == cartItemHolderData.cartString && data.isError == cartItemHolderData.isError) {
-                return data
-            }
-        }
-
-        return null
-    }
-
     fun getCartGroupHolderDataAndIndexByCartString(
         cartString: String,
         isUnavailableGroup: Boolean
@@ -433,21 +414,6 @@ class CartAdapter constructor(
         return Pair(startingIndex, cartGroupList)
     }
 
-    fun getCartShopHolderIndexByCartId(cartId: String): Int {
-        loop@ for ((index, any) in cartDataList.withIndex()) {
-            if (any is CartGroupHolderData) {
-                any.productUiModelList.let { cartItemHolderDataList ->
-                    innerLoop@ for (cartItemHolderData in cartItemHolderDataList) {
-                        if (cartItemHolderData.cartId == cartId) {
-                            return index
-                        }
-                    }
-                }
-            }
-        }
-
-        return RecyclerView.NO_POSITION
-    }
 
     fun getCartItemHolderDataAndIndexByOfferId(
             offerId: Long

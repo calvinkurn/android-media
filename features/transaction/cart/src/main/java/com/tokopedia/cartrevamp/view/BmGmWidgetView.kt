@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartBmgmTickerBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -11,9 +12,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.cart.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.cart.R as cartR
 
 class BmGmWidgetView @JvmOverloads constructor(
     context: Context,
@@ -82,12 +83,12 @@ class BmGmWidgetView @JvmOverloads constructor(
             icBmgmTicker.gone()
             iuTickerRightIcon.gone()
             cartShopTickerLargeLoader.type =
-                    LoaderUnify.TYPE_LINE
+                LoaderUnify.TYPE_LINE
             cartShopTickerLargeLoader.show()
             cartShopTickerSmallLoader.type =
-                    LoaderUnify.TYPE_RECT
+                LoaderUnify.TYPE_RECT
             cartShopTickerSmallLoader.show()
-            ivTickerBg.setImageResource(com.tokopedia.cart.R.drawable.bg_cart_basket_building_loading_ticker)
+            ivTickerBg.setImageResource(cartR.drawable.bg_cart_basket_building_loading_ticker)
         }
     }
 
@@ -97,9 +98,9 @@ class BmGmWidgetView @JvmOverloads constructor(
             cartShopTickerSmallLoader.gone()
             cartShopTickerLargeLoader.gone()
 
-            ivTickerBg.setImageResource(com.tokopedia.cart.R.drawable.bg_cart_bmgm)
+            ivTickerBg.setImageResource(cartR.drawable.bg_cart_bmgm)
             tvBmgmTicker.visible()
-            tvBmgmTicker.text = title
+            tvBmgmTicker.text = MethodChecker.fromHtml(title)
 
             icBmgmTicker.visible()
             icBmgmTicker.loadImage(urlLeftIcon)
@@ -117,8 +118,8 @@ class BmGmWidgetView @JvmOverloads constructor(
             tvBmgmTicker.text = "Info promosi gagal dimuat. Muat ulang, yuk!"
             icBmgmTicker.gone()
             val iconColor = MethodChecker.getColor(
-                    root.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN900
             )
             val reloadIcon = getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
             iuTickerRightIcon.setImageDrawable(reloadIcon)

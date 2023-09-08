@@ -25,4 +25,5 @@ object CartConstant {
     const val QTY_ADDON_REPLACE = "{{qty}}"
     const val RESULT_OK = "OK"
     const val ACTION_RELOAD = "RELOAD"
+    const val BMGM_APPLINK = "tokopedia://buymoresavemore/"
 }

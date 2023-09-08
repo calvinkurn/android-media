@@ -8,6 +8,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartModel
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
@@ -71,7 +72,10 @@ object CartDataHelper {
         return availableShopGroupList
     }
 
-    fun getAllCartItemData(cartDataList: ArrayList<Any>, cartModel: CartModel): List<CartItemHolderData> {
+    fun getAllCartItemData(
+        cartDataList: ArrayList<Any>,
+        cartModel: CartModel
+    ): List<CartItemHolderData> {
         val cartItemDataList = ArrayList<CartItemHolderData>()
         loop@ for (data in cartDataList) {
             when (data) {
@@ -114,7 +118,10 @@ object CartDataHelper {
         return productIdList
     }
 
-    fun getAllDisabledCartItemData(cartDataList: ArrayList<Any>, cartModel: CartModel): List<CartItemHolderData> {
+    fun getAllDisabledCartItemData(
+        cartDataList: ArrayList<Any>,
+        cartModel: CartModel
+    ): List<CartItemHolderData> {
         val cartItemDataList = ArrayList<CartItemHolderData>()
         if (cartModel.tmpAllUnavailableShop?.isNotEmpty() == true) {
             cartItemDataList.addAll(getCollapsedUnavailableCartItemData(cartModel))
@@ -147,6 +154,85 @@ object CartDataHelper {
             }
         }
         return shopGroupList
+    }
+
+    fun getAllShopGroupDataListWithIndex(cartDataList: ArrayList<Any>): List<Pair<Int, CartGroupHolderData>> {
+        val shopGroupList = mutableListOf<Pair<Int, CartGroupHolderData>>()
+        loop@ for ((index, data) in cartDataList.withIndex()) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    shopGroupList.add(Pair(index, data))
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+        return shopGroupList
+    }
+
+    fun getCartGroupHolderDataAndIndexByCartString(
+        cartDataList: ArrayList<Any>,
+        cartString: String,
+        isUnavailableGroup: Boolean
+    ): Pair<Int, List<Any>> {
+        val cartGroupList = arrayListOf<Any>()
+        var startingIndex = RecyclerView.NO_POSITION
+        for ((index, data) in cartDataList.withIndex()) {
+            if (data is CartGroupHolderData && data.cartString == cartString && data.isError == isUnavailableGroup) {
+                startingIndex = index
+                cartGroupList.add(data)
+            } else if (data is CartItemHolderData && startingIndex >= 0 && data.cartString == cartString) {
+                cartGroupList.add(data)
+            } else if (data is CartShopBottomHolderData && startingIndex >= 0 && data.shopData.cartString == cartString) {
+                cartGroupList.add(data)
+                break
+            }
+        }
+        return Pair(startingIndex, cartGroupList)
+    }
+
+    fun getCartGroupHolderDataByCartItemHolderData(
+        cartDataList: ArrayList<Any>,
+        cartItemHolderData: CartItemHolderData
+    ): CartGroupHolderData? {
+        loop@ for (data in cartDataList) {
+            if (data is CartGroupHolderData && data.cartString == cartItemHolderData.cartString && data.isError == cartItemHolderData.isError) {
+                return data
+            }
+        }
+
+        return null
+    }
+
+    fun getCartShopHolderIndexByCartId(
+        cartDataList: ArrayList<Any>,
+        cartId: String
+    ): Int {
+        loop@ for ((index, any) in cartDataList.withIndex()) {
+            if (any is CartGroupHolderData) {
+                any.productUiModelList.let { cartItemHolderDataList ->
+                    innerLoop@ for (cartItemHolderData in cartItemHolderDataList) {
+                        if (cartItemHolderData.cartId == cartId) {
+                            return index
+                        }
+                    }
+                }
+            }
+        }
+
+        return RecyclerView.NO_POSITION
+    }
+
+    fun getCartShopBottomHolderDataFromIndex(
+        cartDataList: ArrayList<Any>,
+        shopBottomIndex: Int
+    ): CartShopBottomHolderData? {
+        val bottomItem = cartDataList[shopBottomIndex]
+        return if (bottomItem is CartShopBottomHolderData) {
+            bottomItem
+        } else {
+            null
+        }
     }
 
     fun getCartWishlistHolderData(cartDataList: ArrayList<Any>): CartWishlistHolderData {
@@ -183,7 +269,10 @@ object CartDataHelper {
         return null
     }
 
-    fun getNearestCartItemHolderDataPosition(startingIndex: Int, cartDataList: ArrayList<Any>): Int {
+    fun getNearestCartItemHolderDataPosition(
+        startingIndex: Int,
+        cartDataList: ArrayList<Any>
+    ): Int {
         if (startingIndex == RecyclerView.NO_POSITION) return RecyclerView.NO_POSITION
         outer@ for (i in startingIndex until cartDataList.size) {
             when (val data = cartDataList[i]) {
@@ -196,10 +285,38 @@ object CartDataHelper {
                     }
                     return i
                 }
+
                 hasReachAllShopItems(data) -> return RecyclerView.NO_POSITION
             }
         }
         return RecyclerView.NO_POSITION
+    }
+
+    fun getNearestShopBottomHolderDataIndex(
+        cartDataList: ArrayList<Any>,
+        startingIndex: Int,
+        cartGroupHolderData: CartGroupHolderData
+    ): Pair<CartShopBottomHolderData?, Int> {
+        loop@ for (index in startingIndex until cartDataList.size) {
+            when (val data = cartDataList[index]) {
+                is CartShopBottomHolderData -> {
+                    if (data.shopData.cartString == cartGroupHolderData.cartString) {
+                        return Pair(data, index)
+                    } else {
+                        break@loop
+                    }
+                }
+
+                is CartGroupHolderData -> {
+                    if (index > startingIndex && data.cartString != cartGroupHolderData.cartString) {
+                        break@loop
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+        return Pair(null, RecyclerView.NO_POSITION)
     }
 
     fun getSelectedAvailableCartItemData(cartDataList: ArrayList<Any>): List<CartItemHolderData> {
@@ -233,7 +350,10 @@ object CartDataHelper {
         return 0
     }
 
-    fun getRecommendationItem(itemCount: Int, cartDataList: ArrayList<Any>): List<CartRecommendationItemHolderData> {
+    fun getRecommendationItem(
+        itemCount: Int,
+        cartDataList: ArrayList<Any>
+    ): List<CartRecommendationItemHolderData> {
         var firstRecommendationItemIndex = 0
         for ((index, item) in cartDataList.withIndex()) {
             if (item is CartRecommendationItemHolderData) {
@@ -380,5 +500,22 @@ object CartDataHelper {
         }
 
         return true
+    }
+
+    fun getListCartGroupHolderDataWithBmgm(cartDataList: ArrayList<Any>): List<CartGroupHolderData> {
+        val listCartGroupHolderData = arrayListOf<CartGroupHolderData>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    if (!data.isError) {
+                        if (data.cartGroupBmGmHolderData.hasBmGmOffer) {
+                            listCartGroupHolderData.add(data)
+                        }
+                    }
+                }
+            }
+        }
+
+        return listCartGroupHolderData
     }
 }

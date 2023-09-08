@@ -716,6 +716,7 @@ class AtcVariantBottomSheet :
             deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             isFulfillment = cartData.isFulfillment,
             selectedAddonsIds = addonsIds[1] ?: emptyList(),
+            warehouseId = cartData.warehouseId,
             quantity = cartData.quantity
         )
 
@@ -731,7 +732,6 @@ class AtcVariantBottomSheet :
             layoutId = postAtcLayout.layoutId,
             pageSource = pageSource.name,
             session = postAtcLayout.postAtcSession,
-            warehouseId = cartData.warehouseId,
             addons = addons
         )
 

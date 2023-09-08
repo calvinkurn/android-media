@@ -16,11 +16,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
@@ -32,6 +36,8 @@ import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartViewModel
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartWidgetBinding
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.flow.collectLatest
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -57,9 +63,13 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var userSession: Lazy<UserSessionInterface>
+
     private var param = BmgmParamModel()
     private var shopIds = listOf<Long>()
     private var messageIndex = Int.ZERO
+    private var offerCount: Int = Int.ZERO
 
     private var binding: ViewBmgmMiniCartWidgetBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
@@ -71,6 +81,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         )[BmgmMiniCartViewModel::class.java]
     }
     private var hasVisited = false
+    private val impressHolder = ImpressHolder()
 
     init {
         binding = ViewBmgmMiniCartWidgetBinding.inflate(
@@ -101,7 +112,8 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     override fun setOnItemClickedListener() {
-        viewModel.storeCartDataToLocalCache()
+        saveCartDataToLocalStorage()
+        sendClickCekKeranjangButton()
         RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
@@ -111,12 +123,18 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     fun fetchData(
-        shopIds: List<Long>, offerIds: List<Long>, offerJsonData: String, warehouseIds: List<String>
+        shopIds: List<Long>,
+        offerIds: List<Long>,
+        offerJsonData: String,
+        warehouseIds: List<Long>,
+        offerCount: Int
     ) {
         this.param = BmgmParamModel(
             offerIds = offerIds, offerJsonData = offerJsonData, warehouseIds = warehouseIds
         )
         this.shopIds = shopIds
+        this.offerCount = offerCount
+
         viewModel.getMiniCartData(shopIds, param, false)
     }
 
@@ -135,6 +153,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                     is BmgmState.Loading -> showMiniCartLoadingState()
                     is BmgmState.Success -> setOnSuccessGetCartData(it.data)
                     is BmgmState.Error -> showErrorState()
+                    else -> {
+                        /* no-op */
+                    }
                 }
             }
         }
@@ -146,6 +167,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 when (it) {
                     is BmgmState.Loading -> showLoadingButton()
                     is BmgmState.Success, is BmgmState.Error -> openCartPage()
+                    else -> {
+                        /* no-op */
+                    }
                 }
             }
         }
@@ -200,6 +224,24 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         dismissErrorState()
         setupTiersApplied(data)
         setupFooterView(data)
+        sendImpressionTracker()
+        saveCartDataToLocalStorage()
+    }
+
+    private fun sendImpressionTracker() {
+        addOnImpressionListener(impressHolder) {
+            val offerId = param.offerIds.firstOrNull().orZero().toString()
+            val warehouseId = param.warehouseIds.firstOrNull().orZero().toString()
+            val shopId = shopIds.firstOrNull().orZero().toString()
+            val userId = userSession.get().userId
+
+            BmgmMiniCartTracker.sendImpressionMinicartEvent(
+                offerId = offerId,
+                warehouseId = warehouseId,
+                userId = userId,
+                shopId = shopId
+            )
+        }
     }
 
     private fun setupTiersApplied(data: BmgmMiniCartDataUiModel) {
@@ -222,23 +264,46 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     private fun setupMessageWithAnimation(messages: List<String>) {
         if (messages.isEmpty()) return
         binding?.run {
-            tvBmgmCartDiscount.visible()
             if (messages.size > Int.ONE) {
-                if (hasVisited) {
-                    hasVisited = true
-                    tvBmgmCartDiscount.setCurrentText(
-                        messages.firstOrNull().orEmpty().parseAsHtml()
-                    )
-                } else {
-                    tvBmgmCartDiscount.setText(
-                        messages.firstOrNull().orEmpty().parseAsHtml()
-                    )
-                }
-                flipTextWithAnimation(messages)
+                showMultipleMessage(messages)
             } else {
-                tvBmgmCartDiscount.setCurrentText(
-                    messages.firstOrNull().orEmpty().parseAsHtml()
-                )
+                val message = messages.firstOrNull().orEmpty()
+                showSingleMessageWithNoAnimation(message)
+            }
+        }
+    }
+
+    private fun saveCartDataToLocalStorage() {
+        val shopId = shopIds.firstOrNull().orZero()
+        val warehouseId = param.warehouseIds.firstOrNull().orZero()
+        viewModel.saveCartDataToLocalStorage(shopId, warehouseId)
+    }
+
+    private fun showMultipleMessage(messages: List<String>) {
+        binding?.run {
+            val firstMessage = messages.firstOrNull().orEmpty()
+            if (!hasVisited) {
+                hasVisited = true
+                showSingleMessageWithNoAnimation(firstMessage)
+            } else {
+                if (firstMessage.isBlank()) {
+                    tvBmgmCartDiscount.gone()
+                } else {
+                    tvBmgmCartDiscount.visible()
+                    tvBmgmCartDiscount.setText(firstMessage.parseAsHtml())
+                }
+            }
+            flipTextWithAnimation(messages)
+        }
+    }
+
+    private fun showSingleMessageWithNoAnimation(message: String) {
+        binding?.run {
+            if (message.isBlank()) {
+                tvBmgmCartDiscount.gone()
+            } else {
+                tvBmgmCartDiscount.visible()
+                tvBmgmCartDiscount.setCurrentText(message.parseAsHtml())
             }
         }
     }
@@ -249,7 +314,13 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 if (messageIndex == messages.size.minus(Int.ONE)) {
                     messageIndex = Int.ZERO
                 } else {
-                    setText(messages.getOrNull(++messageIndex).orEmpty().parseAsHtml())
+                    val message = messages.getOrNull(++messageIndex).orEmpty()
+                    if (message.isBlank()) {
+                        gone()
+                    } else {
+                        visible()
+                        setText(message.parseAsHtml())
+                    }
                     flipTextWithAnimation(messages)
                 }
             }, TimeUnit.SECONDS.toMillis(MESSAGE_SWITCH_INITIAL_DELAY))
@@ -294,7 +365,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private fun getProductList(data: BmgmMiniCartDataUiModel): List<BmgmMiniCartVisitable> {
         val productList = mutableListOf<BmgmMiniCartVisitable>()
-        val hasReachMaxDiscount = data.hasReachMaxDiscount
         data.tiersApplied.forEach { t ->
             if (t.isDiscountTier()) {
                 productList.add(t)
@@ -302,10 +372,12 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 t.products.forEach { p ->
                     productList.add(p)
                 }
-                if (!hasReachMaxDiscount) {
-                    productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
-                }
             }
+        }
+        val numOfDiscountTier = data.tiersApplied.count { it.isDiscountTier() }
+        val hasReachMaxDiscount = numOfDiscountTier == offerCount
+        if (!hasReachMaxDiscount) {
+            productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
         }
         return productList
     }
@@ -318,6 +390,20 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = miniCartAdapter
         }
+    }
+
+    private fun sendClickCekKeranjangButton() {
+        val offerId = param.offerIds.firstOrNull().orZero().toString()
+        val warehouseId = param.warehouseIds.firstOrNull().orZero().toString()
+        val shopId = shopIds.firstOrNull().orZero().toString()
+        val userId = userSession.get().userId
+
+        BmgmMiniCartTracker.sendClickCekKeranjangEvent(
+            offerId = offerId,
+            warehouseId = warehouseId,
+            shopId = shopId,
+            userId = userId
+        )
     }
 
     private fun initInjector() {

@@ -36,8 +36,6 @@ data class TopAdsManageHeadlineInput(
                 var scheduleStart: String = "",
             @SerializedName("shopID")
                 var shopID: String = "",
-            @SerializedName("status")
-                var status: String = ""
         ) {
             @Parcelize
             data class AdOperation(

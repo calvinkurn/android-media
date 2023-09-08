@@ -40,6 +40,7 @@
     <string name="content_desc_icon_chevron_choose_courier">image pilih kurir</string>
     <string name="checkout_shipping">Pengiriman</string>
     <string name="checkout_label_failed_get_shipping">Gagal menampilkan pengiriman</string>
+    <string name="checkout_revamp_label_failed_get_shipping">Pengiriman gagal ditampilkan</string>
     <string name="checkout_label_reload_shipping">Refresh</string>
     <string name="label_trade_in_shipping_price">Pilih lokasi untuk menampilkan harga</string>
     <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman</string>

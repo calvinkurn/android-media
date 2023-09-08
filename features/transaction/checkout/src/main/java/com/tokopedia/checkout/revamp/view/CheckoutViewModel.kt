@@ -152,7 +152,7 @@ class CheckoutViewModel @Inject constructor(
 
     private var isUsingDdp = false
 
-    private var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
+    internal var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
 
     private var cartDataForRates = ""
 
@@ -526,6 +526,9 @@ class CheckoutViewModel @Inject constructor(
                     )
                     enhancedECommerceProductCartMapData.setDimension136(
                         cartItemModel.cartStringGroup
+                    )
+                    enhancedECommerceProductCartMapData.setDimension137(
+                        cartItemModel.bmgmOfferId.toString()
                     )
                     enhancedECommerceCheckout.addProduct(
                         enhancedECommerceProductCartMapData.getProduct()
