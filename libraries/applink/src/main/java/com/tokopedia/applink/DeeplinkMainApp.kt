@@ -1273,6 +1273,11 @@ object DeeplinkMainApp {
         "webview" to mutableListOf(
             DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BASE }
         ),
+        "webview-kyc" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            }
+        ),
         "webviewbackhome" to mutableListOf(
             DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME }
         ),
