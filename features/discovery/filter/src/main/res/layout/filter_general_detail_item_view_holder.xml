@@ -49,7 +49,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:textColor="@color/Unify_NN950_96"
-        app:typographyType="heading_5"
+        app:typographyType="display_1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/iconBarrier"
         app:layout_constraintBottom_toTopOf="@id/filterDetailDescription"

@@ -15,7 +15,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class FilterGeneralDetailAdapter(
-        private val callback: Callback
+        private val callback: Callback,
 ): RecyclerView.Adapter<FilterGeneralDetailAdapter.FilterGeneralDetailViewHolder>() {
 
     private val optionList = mutableListOf<IOption>()

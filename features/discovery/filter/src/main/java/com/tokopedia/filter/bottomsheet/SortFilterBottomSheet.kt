@@ -41,6 +41,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SortFilterBottomSheet: BottomSheetUnify() {
 
@@ -391,9 +392,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private fun getButtonApplyContainerBackground() =
         if (context.isDarkMode())
-            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+            context?.getDrawable(unifyprinciplesR.color.Unify_NN50)
         else
-            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            context?.getDrawable(unifyprinciplesR.color.Unify_NN0)
 
     private fun hideButtonApplyFilter() {
         binding?.buttonApplyContainer?.visibility = View.GONE
