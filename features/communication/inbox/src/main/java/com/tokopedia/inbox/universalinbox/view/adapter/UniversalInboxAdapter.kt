@@ -270,7 +270,8 @@ class UniversalInboxAdapter(
             val fromIndex = if (isWidgetMetaAdded()) 1 else 0
             editedList.subList(
                 fromIndex = fromIndex,
-                toIndex = getPositionBeforeProductRecommendation() // toIndex matched with item count
+                // toIndex matched with item count
+                toIndex = getPositionBeforeProductRecommendation() ?: itemCount
             ).apply {
                 clear()
                 addAll(newList) // replace the sublist
@@ -281,11 +282,10 @@ class UniversalInboxAdapter(
         }
     }
 
-    private fun getPositionBeforeProductRecommendation(): Int {
-        val calculatedPosition = getRecommendationTitlePosition() ?: // Get title product recom position
+    private fun getPositionBeforeProductRecommendation(): Int? {
+        return getRecommendationTitlePosition() ?: // Get title product recom position
             getProductRecommendationFirstPosition() ?: // Get product recom first position
-            getFirstLoadingPosition() // Get first loading position
-        return calculatedPosition ?: itemCount
+            getFirstLoadingPosition()
     }
 
     fun tryUpdateProductRecommendations(title: String, newList: List<Any>) {
@@ -296,7 +296,8 @@ class UniversalInboxAdapter(
             }
             if (getProductRecommendationFirstPosition() != null) {
                 editedList.subList(
-                    fromIndex = getProductRecommendationFirstPosition() ?: lastIndex, // First recom or last index
+                    // First recom or last index
+                    fromIndex = getPositionBeforeProductRecommendation() ?: lastIndex,
                     toIndex = itemCount
                 ).apply {
                     clear()
