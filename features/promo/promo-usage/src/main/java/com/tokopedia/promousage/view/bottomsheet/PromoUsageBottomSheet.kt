@@ -14,6 +14,7 @@ import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -655,9 +656,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             binding?.clTickerInfo?.visible()
         } else {
             val layoutParams =
-                binding?.clBottomSheetContent?.layoutParams as? RelativeLayout.LayoutParams
+                binding?.clBottomSheetContent?.layoutParams as? ConstraintLayout.LayoutParams
             layoutParams?.setMargins(0, 0, 0, 0)
-            binding?.clBottomSheetContent?.layoutParams = layoutParams
+            if (layoutParams != null) {
+                binding?.clBottomSheetContent?.layoutParams = layoutParams
+            }
             binding?.clTickerInfo?.gone()
         }
     }
