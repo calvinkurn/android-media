@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
-import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
@@ -82,6 +81,11 @@ class UniversalInboxAdapter(
                     oldItem is RecommendationWidgetModel
                 ) -> true
 
+            (
+                newItem is UniversalInboxWidgetMetaUiModel &&
+                    oldItem is UniversalInboxWidgetMetaUiModel
+                ) -> true
+
             else -> newItem == oldItem
         }
     }
@@ -91,6 +95,13 @@ class UniversalInboxAdapter(
             // Menu items contents are the same
             (newItem is UniversalInboxMenuUiModel && oldItem is UniversalInboxMenuUiModel) ->
                 UniversalInboxMenuUiModel.areContentsTheSame(oldItem, newItem)
+
+            // Widget items contents are the same
+            (
+                newItem is UniversalInboxWidgetMetaUiModel &&
+                    oldItem is UniversalInboxWidgetMetaUiModel
+                ) ->
+                UniversalInboxWidgetMetaUiModel.areContentsTheSame(oldItem, newItem)
 
             // Put the contents check above, else default true to skip it
             else -> true
@@ -134,7 +145,7 @@ class UniversalInboxAdapter(
         return itemList[position]::class == UniversalInboxRecommendationLoaderUiModel::class
     }
 
-    fun getFirstLoadingPosition(): Int? {
+    private fun getFirstLoadingPosition(): Int? {
         return if (itemList.isEmpty()) {
             null
         } else if (isRecommendationLoader(itemList.lastIndex)) {
@@ -193,13 +204,7 @@ class UniversalInboxAdapter(
         }
     }
 
-    fun getTopAdsBannerExperimentCount(): Int {
-        return itemList.count {
-            it is UniversalInboxTopAdsBannerUiModel
-        }
-    }
-
-    fun isWidgetMetaAdded(): Boolean {
+    private fun isWidgetMetaAdded(): Boolean {
         return itemList.firstOrNull() is UniversalInboxWidgetMetaUiModel
     }
 
@@ -218,24 +223,6 @@ class UniversalInboxAdapter(
             Timber.d(throwable)
         }
         return position
-    }
-
-    fun addWidget(
-        position: Int,
-        uiModel: UniversalInboxWidgetUiModel
-    ) {
-        var widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
-        if (widgetMetaUiModel == null) {
-            // Widget meta rv not added
-            widgetMetaUiModel = UniversalInboxWidgetMetaUiModel()
-            addItem(Int.ZERO, widgetMetaUiModel)
-        }
-        widgetMetaUiModel.widgetList.add(position, uiModel)
-        notifyItemRangeChanged(
-            Int.ZERO,
-            getProductRecommendationFirstPosition() ?: itemList.size
-        ) // notify item ranged changed in page rv
-        // item ranged needed for addition & update meta
     }
 
     fun updateWidgetCounter(
@@ -279,17 +266,16 @@ class UniversalInboxAdapter(
 
     fun tryUpdateMenuItemsAtPosition(newList: List<Any>) {
         try {
-            val editedList = itemList
+            val editedList = itemList.toMutableList()
+            val fromIndex = if (isWidgetMetaAdded()) 1 else 0
             editedList.subList(
-                fromIndex = 0, // fromIndex start with 0 and toIndex matched with item count
-                toIndex = getPositionBeforeProductRecommendation()
+                fromIndex = fromIndex,
+                toIndex = getPositionBeforeProductRecommendation() // toIndex matched with item count
             ).apply {
                 clear()
                 addAll(newList) // replace the sublist
             }
-            val diffCallback = BaseDiffUtilCallback(itemList, editedList)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            diffResult.dispatchUpdatesTo(this)
+            setItemsAndAnimateChanges(editedList)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
@@ -304,7 +290,7 @@ class UniversalInboxAdapter(
 
     fun tryUpdateProductRecommendations(title: String, newList: List<Any>) {
         try {
-            val editedList = itemList
+            val editedList = itemList.toMutableList()
             if (getRecommendationTitlePosition() == null && title.isNotBlank()) {
                 editedList.add(UniversalInboxRecommendationTitleUiModel(title))
             }
@@ -319,9 +305,23 @@ class UniversalInboxAdapter(
             } else {
                 editedList.addAll(newList)
             }
-            val diffCallback = BaseDiffUtilCallback(itemList, editedList)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            diffResult.dispatchUpdatesTo(this)
+            setItemsAndAnimateChanges(editedList)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    fun tryUpdateWidgetMeta(item: UniversalInboxWidgetMetaUiModel) {
+        try {
+            val widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+            if (widgetMetaUiModel == null) {
+                tryAddItemAtPosition(0, item)
+            } else {
+                // Replace item in the list
+                val editedList = itemList.toMutableList()
+                editedList[0] = item
+                setItemsAndAnimateChanges(editedList)
+            }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
@@ -329,11 +329,10 @@ class UniversalInboxAdapter(
 
     fun tryAddItemAtPosition(position: Int, item: Any) {
         try {
-            val editedList = itemList
+            // Add to the list
+            val editedList = itemList.toMutableList()
             editedList.add(position, item)
-            val diffCallback = BaseDiffUtilCallback(itemList, editedList)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            diffResult.dispatchUpdatesTo(this)
+            setItemsAndAnimateChanges(editedList)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }

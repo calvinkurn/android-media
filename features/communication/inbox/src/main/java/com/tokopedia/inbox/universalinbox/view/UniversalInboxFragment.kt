@@ -273,20 +273,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun updateWidgetMeta(widget: UniversalInboxWidgetMetaUiModel) {
-        if (adapter.isWidgetMetaAdded()) {
-            adapter.removeItemAt(Int.ZERO)
-        }
-        // If not empty (if empty then should hide) or Error, show the widget meta
-        if (widget.widgetList.isNotEmpty() || widget.isError) {
-            adapter.addItem(Int.ZERO, widget)
-        }
-        binding?.inboxRv?.post {
-            val rangePosition = adapter.getFirstTopAdsBannerPositionPair()?.first
-            adapter.notifyItemRangeChanged(Int.ZERO, rangePosition ?: adapter.itemCount)
-//            counter?.let {
-//                trackInboxPageImpression(it)
-//            }
-        }
+        adapter.tryUpdateWidgetMeta(widget)
     }
 
     private fun updateMenuList(newList: List<Any>) {

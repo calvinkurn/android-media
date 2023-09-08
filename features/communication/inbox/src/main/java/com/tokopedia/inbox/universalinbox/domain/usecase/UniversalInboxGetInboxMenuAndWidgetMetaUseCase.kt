@@ -54,7 +54,6 @@ class UniversalInboxGetInboxMenuAndWidgetMetaUseCase @Inject constructor(
             .map {
                 return@map try {
                     val resultObj = gson.fromJson(it, UniversalInboxWrapperResponse::class.java)
-                    Timber.d(resultObj.toString())
                     resultObj
                 } catch (throwable: Throwable) {
                     Timber.d(throwable)

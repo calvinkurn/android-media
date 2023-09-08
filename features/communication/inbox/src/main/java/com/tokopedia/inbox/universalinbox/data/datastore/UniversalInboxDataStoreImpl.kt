@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
 
@@ -47,9 +46,7 @@ class UniversalInboxDataStoreImpl @Inject constructor(
                 }
             }
             .map { preferences ->
-                val result = preferences[cacheKey] ?: ""
-                Timber.d(result)
-                result
+                preferences[cacheKey] ?: ""
             }
     }
 }
