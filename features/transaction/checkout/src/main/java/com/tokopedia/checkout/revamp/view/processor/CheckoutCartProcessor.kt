@@ -224,13 +224,13 @@ class CheckoutCartProcessor @Inject constructor(
                         toasterMessage = (
                             setShippingAddressData.messages.firstOrNull()
                                 ?: ""
-                            ).ifEmpty { "Berhasil mengubah alamat" }
+                            ).ifEmpty { "Alamat berhasil diganti" }
                     )
                 } else {
                     return@withContext ChangeAddressResult(
                         isSuccess = false,
                         toasterMessage = if (setShippingAddressData.messages.isEmpty()) {
-                            "Gagal mengubah alamat"
+                            "Alamat gagal diganti"
                         } else {
                             setShippingAddressData.messages.joinToString(
                                 " "
