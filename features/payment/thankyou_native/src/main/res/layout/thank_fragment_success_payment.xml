@@ -44,7 +44,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:maxHeight="144dp"
                     android:contentDescription="@string/thank_you_page_success_illustration"
                     android:scaleType="centerCrop"
                     android:visibility="visible" />
