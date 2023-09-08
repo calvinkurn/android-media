@@ -197,6 +197,7 @@
                                 android:textColor="@color/Unify_NN950"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintEnd_toStartOf="@id/fl_checkout_button"
+                                app:layout_constraintBottom_toTopOf="@id/tv_total_prices"
                                 app:typographyType="display_3" />
 
                             <com.tokopedia.unifyprinciples.Typography
@@ -213,6 +214,7 @@
                                 app:layout_constraintTop_toBottomOf="@id/text_total_payment_label"
                                 app:layout_constraintEnd_toEndOf="@id/text_total_payment_label"
                                 app:layout_constraintStart_toEndOf="@id/text_select_all"
+                                app:layout_constraintBottom_toBottomOf="@id/fl_checkout_button"
                                 app:layout_constraintHorizontal_bias="1"
                                 tools:text="Rp600.000.000.000.000" />
 
