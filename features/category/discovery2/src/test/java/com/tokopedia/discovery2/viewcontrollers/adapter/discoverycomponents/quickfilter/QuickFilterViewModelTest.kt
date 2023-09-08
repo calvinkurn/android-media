@@ -27,6 +27,7 @@ import com.tokopedia.user.session.UserSession
 import io.mockk.MockKAnnotations
 import io.mockk.OfTypeMatcher
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
@@ -113,7 +114,6 @@ class QuickFilterViewModelTest {
         every { parentComponentsItem.getComponentsItem() } returns componentItemList
 
         TestCase.assertEquals(viewModel.getTargetComponent(), parentComponentsItem)
-
     }
 
     @Test
@@ -150,7 +150,6 @@ class QuickFilterViewModelTest {
         viewModel.getTargetComponent()
 
         TestCase.assertEquals(viewModel.getTargetComponent(), parentComponentsItem)
-
     }
 
     @Test
@@ -167,7 +166,6 @@ class QuickFilterViewModelTest {
         viewModel.getTargetComponent()
 
         TestCase.assertEquals(viewModel.getTargetComponent(), null)
-
     }
 
     @Test
@@ -191,7 +189,6 @@ class QuickFilterViewModelTest {
         viewModel.onQuickFilterSelected(option)
 
         assert(viewModel.syncData.value == null)
-
     }
 
     @Test
@@ -216,7 +213,6 @@ class QuickFilterViewModelTest {
         viewModel.onQuickFilterSelected(option)
 
         assert(viewModel.syncData.value == null)
-
     }
 
     @Test
@@ -240,7 +236,6 @@ class QuickFilterViewModelTest {
         viewModel.onQuickFilterSelected(option)
 
         assert(viewModel.syncData.value == null)
-
     }
 
     //    TEST Init Methods
@@ -445,7 +440,6 @@ class QuickFilterViewModelTest {
         assert(componentsItem.shouldRefreshComponent == true)
         viewModel.onAttachToViewHolder()
         assert(componentsItem.shouldRefreshComponent == null)
-
     }
 
     @Test
@@ -632,8 +626,6 @@ class QuickFilterViewModelTest {
         every { totalProductData.productCountWording } returns "1000 products"
         viewModel.filterProductsCount(mapOfSelectedFilters)
         assert(viewModel.productCountLiveData.value == "1000 products")
-
-
     }
 
     @Test
@@ -778,5 +770,96 @@ class QuickFilterViewModelTest {
     }
 
 
+
+    @Test
+    fun `test for filterProductsCount should append prefix on filter's param`() {
+        val componentsItem: ComponentsItem = spyk()
+        val quickFilterGQLRepository: IQuickFilterGqlRepository = mockk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.quickFilterGQLRepository = quickFilterGQLRepository
+        val mapOfSelectedFilters = mutableMapOf<String, String>()
+
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+
+        every { prop.targetId } returns "1,2"
+
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).userId } returns "10234"
+
+        val discoResponse: DiscoveryResponse = mockk()
+        coEvery {
+            quickFilterGQLRepository.getQuickFilterProductCountData(
+                "1",
+                any(),
+                allAny(),
+                "10234"
+            )
+        } returns discoResponse
+
+        val mockTargetResponse: ComponentsItem = mockk()
+        every { discoResponse.component } returns mockTargetResponse
+
+        val compAdditionInfo: ComponentAdditionalInfo = mockk()
+        every { mockTargetResponse.compAdditionalInfo } returns compAdditionInfo
+
+        val totalProductData: TotalProductData = mockk()
+        every { compAdditionInfo.totalProductData } returns totalProductData
+
+        every { totalProductData.productCountWording } returns "1000 products"
+
+        mapOfSelectedFilters["q"] = "kipas"
+        mapOfSelectedFilters["origin_filter"] = "filter"
+
+        every { componentsItem.searchParameter.getSearchParameterMap() } returns mapOf("q" to "kipas")
+
+        viewModel.filterProductsCount(mapOfSelectedFilters)
+
+        coVerify {
+            quickFilterGQLRepository.getQuickFilterProductCountData(
+                eq("1"),
+                any(),
+                eq(mapOf("q" to "kipas", "rpc_origin_filter" to "filter")),
+                eq("10234")
+            )
+        }
+    }
+
+    @Test
+    fun `test for filterProductsCount with error response`() {
+        val componentsItem: ComponentsItem = spyk()
+        val quickFilterGQLRepository: IQuickFilterGqlRepository = mockk()
+        val viewModel: QuickFilterViewModel = spyk(
+            QuickFilterViewModel(
+                application,
+                componentsItem,
+                99
+            )
+        )
+
+        viewModel.quickFilterGQLRepository = quickFilterGQLRepository
+        val mapOfSelectedFilters = mutableMapOf<String, String>()
+
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+
+        every { prop.targetId } returns "1,2"
+
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).userId } returns "10234"
+
+        val throwable = mockk<Throwable>()
+        coEvery {
+            quickFilterGQLRepository.getQuickFilterProductCountData(
+                any(),
+                any(),
+                allAny(),
+                any()
+            )
+        } throws throwable
+
+        viewModel.filterProductsCount(mapOfSelectedFilters)
+
+        verify { throwable.printStackTrace() }
+    }
 
 }
