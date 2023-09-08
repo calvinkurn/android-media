@@ -244,7 +244,6 @@ class UniversalInboxViewModel @Inject constructor(
                 setFallbackInboxMenu()
                 return
             }
-            setLoadingInboxMenu(false)
             val widgetMeta = widgetMetaMapper.mapWidgetMetaToUiModel(
                 widgetMetaResponse = inboxResponse.chatInboxMenu.widgetMenu,
                 counterResponse = counterResponse,
@@ -258,6 +257,7 @@ class UniversalInboxViewModel @Inject constructor(
             val miscList = inboxMiscMapper.generateMiscMenu()
             _inboxMenuUiState.update { uiState ->
                 uiState.copy(
+                    isLoading = false,
                     widgetMeta = widgetMeta,
                     menuList = menuList,
                     miscList = miscList,
@@ -301,7 +301,6 @@ class UniversalInboxViewModel @Inject constructor(
     private fun handleResultProductRecommendation(
         result: Result<RecommendationWidget>
     ) {
-        turnOffRemoveProductRecommendation()
         when (result) {
             is Result.Success -> {
                 onSuccessGetProductRecommendation(result.data)
@@ -321,7 +320,6 @@ class UniversalInboxViewModel @Inject constructor(
         response: RecommendationWidget
     ) {
         try {
-            setLoadingRecommendation(false)
             updateProductRecommendation(response)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
@@ -410,6 +408,7 @@ class UniversalInboxViewModel @Inject constructor(
         viewModelScope.launch {
             _productRecommendationState.update {
                 it.copy(
+                    isLoading = false,
                     title = response.title,
                     productList = response.recommendationItemList
                 )
@@ -424,18 +423,7 @@ class UniversalInboxViewModel @Inject constructor(
                 it.copy(
                     title = "",
                     productList = listOf(),
-                    isLoading = false,
-                    shouldRemoveAllProduct = true
-                )
-            }
-        }
-    }
-
-    private fun turnOffRemoveProductRecommendation() {
-        viewModelScope.launch {
-            _productRecommendationState.update {
-                it.copy(
-                    shouldRemoveAllProduct = false
+                    isLoading = false
                 )
             }
         }

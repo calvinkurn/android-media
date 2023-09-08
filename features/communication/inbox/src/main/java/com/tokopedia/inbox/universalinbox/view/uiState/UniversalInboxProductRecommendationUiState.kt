@@ -5,6 +5,5 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 data class UniversalInboxProductRecommendationUiState(
     val title: String = "",
     val productList: List<RecommendationItem> = listOf(),
-    val isLoading: Boolean = false,
-    val shouldRemoveAllProduct: Boolean = false
+    val isLoading: Boolean = false
 )

@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.universalinbox.view
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -176,10 +176,15 @@ class UniversalInboxFragment @Inject constructor(
         binding?.inboxRv?.layoutManager = StaggeredGridLayoutManager(
             2,
             StaggeredGridLayoutManager.VERTICAL
-        )
+        ).also {
+            it.isItemPrefetchEnabled = true
+            it.gapStrategy = GAP_HANDLING_NONE
+        }
         binding?.inboxRv?.setHasFixedSize(true)
         binding?.inboxRv?.itemAnimator = null
         binding?.inboxRv?.adapter = adapter
+        binding?.inboxRv?.isNestedScrollingEnabled = false
+        binding?.inboxRv?.setItemViewCacheSize(20)
         binding?.inboxRv?.addItemDecoration(UniversalInboxRecommendationDecoration())
     }
 
@@ -264,11 +269,7 @@ class UniversalInboxFragment @Inject constructor(
 
     private fun updateMenuList(newList: List<Any>) {
         if (newList.isEmpty()) return
-        if (adapter.getItems().isEmpty()) {
-            adapter.setItemsAndAnimateChanges(newList)
-        } else {
-            adapter.tryUpdateMenuItemsAtPosition(newList = newList)
-        }
+        adapter.tryUpdateMenuItemsAtPosition(newList = newList)
     }
 
     private suspend fun observeInboxNavigation() {
@@ -305,7 +306,6 @@ class UniversalInboxFragment @Inject constructor(
             if (!it.isLoading) {
                 // Set title & update product recommendation
                 updateProductRecommendation(
-                    shouldRemoveAllProductRecommendation = it.shouldRemoveAllProduct,
                     title = it.title,
                     newList = it.productList
                 )
@@ -316,19 +316,13 @@ class UniversalInboxFragment @Inject constructor(
     private fun toggleLoadingProductRecommendation(isLoading: Boolean) {
         if (isLoading) {
             adapter.addProductRecommendationLoader()
-        } else {
-            adapter.removeProductRecommendationLoader()
         }
     }
 
     private fun updateProductRecommendation(
-        shouldRemoveAllProductRecommendation: Boolean,
         title: String,
         newList: List<Any>
     ) {
-        if (shouldRemoveAllProductRecommendation) {
-            adapter.removeAllProductRecommendation()
-        }
         val editedNewList = newList.toMutableList()
         setHeadlineAndBannerExperiment(editedNewList)
         adapter.tryUpdateProductRecommendations(title, editedNewList)
@@ -430,7 +424,7 @@ class UniversalInboxFragment @Inject constructor(
     override fun loadWidgetMetaAndCounter() {
         shouldTopAdsAndLoadRecommendation = true
         endlessRecyclerViewScrollListener?.resetState()
-        adapter.clearAllItemsAndAnimateChanges()
+        adapter.clearAllItems()
         viewModel.processAction(UniversalInboxAction.RefreshPage)
     }
 
@@ -591,7 +585,6 @@ class UniversalInboxFragment @Inject constructor(
         viewModel.processAction(UniversalInboxAction.LoadNextPage) // page handled in view model
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {
         if (categoriesList.isEmpty()) return
         // If response size is 2, then there are 2 types of banner (carousel & single)
@@ -605,14 +598,7 @@ class UniversalInboxFragment @Inject constructor(
             setTopAdsBannerExperimentPosition()
         }
         // Notify the first banner below static menu
-        adapter.getFirstTopAdsBannerPositionPair()?.let { (_, item) ->
-            item.ads = categoriesList[Int.ZERO]
-            binding?.inboxRv?.post {
-                // Need to use notify data set changed, because need to trigger TDN's onAttachedToWindow
-                // onAttachedToWindow is needed to be recalled after we get TDN response
-                adapter.notifyDataSetChanged()
-            }
-        }
+        adapter.updateFirstTopAdsBanner(categoriesList[Int.ZERO])
     }
 
     private fun setTopAdsBannerExperimentPosition() {
@@ -869,12 +855,7 @@ class UniversalInboxFragment @Inject constructor(
     private fun refreshRecommendations() {
         // Refresh controlled by rollence
         if (shouldRefreshProductRecommendation(abTestPlatform)) {
-            binding?.inboxRv?.post {
-                endlessRecyclerViewScrollListener?.resetState()
-                recommendationWidgetViewModel?.refresh()
-                adapter.removeAllProductRecommendation()
-                loadTopAdsAndRecommendation()
-            }
+            loadWidgetMetaAndCounter()
         }
     }
 

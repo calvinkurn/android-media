@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
+import android.annotation.SuppressLint
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
@@ -19,11 +20,10 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.user.session.UserSessionInterface
@@ -55,6 +55,8 @@ class UniversalInboxAdapter(
     private var recommendationViewType: Int? = null
     private var recommendationFirstPosition: Int? = null
     private var recommendationTitlePosition: Int? = null
+
+    private val loaderUiModel = UniversalInboxRecommendationLoaderUiModel()
 
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
@@ -183,13 +185,7 @@ class UniversalInboxAdapter(
 
     fun addProductRecommendationLoader() {
         if (getFirstLoadingPosition() != null) return
-        tryAddItemAtPosition(itemCount, UniversalInboxRecommendationLoaderUiModel())
-    }
-
-    fun removeProductRecommendationLoader() {
-        getFirstLoadingPosition()?.let {
-            tryRemoveItemAtPosition(it)
-        }
+        tryAddItemAtPosition(itemCount, loaderUiModel)
     }
 
     private fun getRecommendationTitlePosition(): Int? {
@@ -211,13 +207,17 @@ class UniversalInboxAdapter(
         } ?: false
     }
 
-    fun getFirstTopAdsBannerPositionPair(): Pair<Int, UniversalInboxTopAdsBannerUiModel>? {
-        itemList.forEachIndexed { index, item ->
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateFirstTopAdsBanner(listAds: List<TopAdsImageViewModel>) {
+        itemList.forEach loop@ { item ->
             if (item is UniversalInboxTopAdsBannerUiModel) {
-                return Pair(index, item)
+                item.ads = listAds
+                return@loop
             }
         }
-        return null
+        // Need to use notify data set changed, because need to trigger TDN's onAttachedToWindow
+        // onAttachedToWindow is needed to be recalled after we get TDN response
+        notifyDataSetChanged()
     }
 
     private fun isWidgetMetaAdded(): Boolean {
@@ -239,25 +239,6 @@ class UniversalInboxAdapter(
             Timber.d(throwable)
         }
         return position
-    }
-
-    fun removeAllProductRecommendation() {
-        getProductRecommendationFirstPosition()?.let {
-            var itemCountToDrop = itemList.size - it
-            if (it < itemList.size && // out of bound
-                it > Int.ZERO && // not -1
-                isRecommendationTitle(it - Int.ONE)
-            ) {
-                itemCountToDrop++
-            }
-            val result = itemList.dropLast(itemCountToDrop)
-            clearAllItems() // clear all
-            addItemsAndAnimateChanges(result) // add the widget & menu
-        }
-    }
-
-    private fun isRecommendationTitle(position: Int): Boolean {
-        return itemList[position]::class == UniversalInboxRecommendationTitleUiModel::class
     }
 
     fun tryUpdateMenuItemsAtPosition(newList: List<Any>) {
@@ -303,6 +284,7 @@ class UniversalInboxAdapter(
             } else {
                 editedList.addAll(newList)
             }
+            editedList.remove(loaderUiModel) // Remove loader if any
             setItemsAndAnimateChanges(editedList)
         } catch (throwable: Throwable) {
             Timber.d(throwable)

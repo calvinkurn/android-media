@@ -1,11 +1,11 @@
 package com.tokopedia.inbox.universalinbox.view.listener
 
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxFragment
 
 class UniversalInboxEndlessScrollListener(
-    layoutManager: StaggeredGridLayoutManager,
+    layoutManager: RecyclerView.LayoutManager,
     private val listener: UniversalInboxFragment
 ) : EndlessRecyclerViewScrollListener(layoutManager) {
 
