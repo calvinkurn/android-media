@@ -475,7 +475,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             this,
-                            unifyprinciplesR.color.Unify_G500_96
+                            unifyprinciplesR.color.Unify_GN500
                         )
                     ),
                     pinpointErrorMessage.length,

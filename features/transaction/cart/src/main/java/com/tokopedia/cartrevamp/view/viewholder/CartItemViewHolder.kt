@@ -1162,7 +1162,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    unifyprinciplesR.color.Unify_N700_68
+                    unifyprinciplesR.color.Unify_NN600
                 )
             )
             actionListener?.onShowTickerTobacco()
@@ -1212,7 +1212,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    unifyprinciplesR.color.Unify_N700_68
+                    unifyprinciplesR.color.Unify_NN600
                 )
             )
             show()
