@@ -126,11 +126,15 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                     )
                                 )
                             }
-                            val totalPromoInSectionCount = coupons.size
-                            if (totalPromoInSectionCount > 1) {
+                            val selectedPromoInSection = couponSection.coupons.filter { it.isSelected }
+                            val hiddenPromoCount = if (selectedPromoInSection.isNotEmpty()) {
+                                couponSection.coupons.size - selectedPromoInSection.size
+                            } else {
+                                coupons.size - 1
+                            }
+                            if (hiddenPromoCount > 1) {
                                 val isExpanded = !couponSection.isCollapsed
                                 if (isExpanded) {
-                                    val hiddenPromoCount = totalPromoInSectionCount - 1
                                     items.add(
                                         PromoAccordionViewAllItem(
                                             headerId = couponSection.id,
@@ -228,13 +232,18 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         }
 
         val benefitDetail = coupon.benefitDetails.firstOrNull() ?: BenefitDetail()
+        val selectedPromoInSection = couponSection.coupons.filter { it.isSelected }
         val isExpanded = when(couponSection.id) {
             PromoPageSection.SECTION_RECOMMENDATION -> {
                 true
             }
 
             else -> {
-                !couponSection.isCollapsed && index.isZero()
+                if (selectedPromoInSection.isNotEmpty()) {
+                    true
+                } else {
+                    !couponSection.isCollapsed && index.isZero()
+                }
             }
         }
         val isVisible = when (couponSection.id) {
@@ -243,7 +252,11 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             }
 
             else -> {
-                isExpanded && index.isZero()
+                if (selectedPromoInSection.isNotEmpty()) {
+                    isSelected
+                } else {
+                    isExpanded && index.isZero()
+                }
             }
         }
         val secondaryPromo = if (secondaryCoupon != null) {
