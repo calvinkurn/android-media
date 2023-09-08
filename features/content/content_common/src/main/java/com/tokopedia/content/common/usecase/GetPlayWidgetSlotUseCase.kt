@@ -40,12 +40,12 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
     }
 
     companion object {
-        const val KEY_REQ = "req"
+        private const val KEY_REQ = "req"
         private const val KEY_GROUP = "group"
         private const val KEY_CURSOR = "cursor"
         private const val KEY_SOURCE_TYPE = "source_type"
         private const val KEY_SOURCE_ID = "source_id"
-        const val KEY_WIFI = "is_wifi"
+        private const val KEY_WIFI = "is_wifi"
 
         const val QUERY_NAME = "GetPlayWidgetSlotUseCaseQuery"
         const val QUERY = """
