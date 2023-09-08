@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatDelegate
@@ -33,6 +32,7 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -86,6 +86,12 @@ class CartItemViewHolder constructor(
     fun bindData(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, dataSize: Int) {
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
+
+        itemView.addOnImpressionListener(data, onView = {
+            if (!data.isError) {
+                actionListener?.onAvailableCartItemImpression(listOf(data))
+            }
+        })
 
         initCoachMark()
         setNoteAnimationResource()
@@ -656,7 +662,7 @@ class CartItemViewHolder constructor(
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
         if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
             val textProductNameLayoutParams =
-                binding.textProductName.layoutParams as ViewGroup.MarginLayoutParams
+                binding.textProductName.layoutParams as MarginLayoutParams
             textProductNameLayoutParams.topMargin = marginTop
             val labelBundleQuantityText = String.format(
                 itemView.context.getString(R.string.cart_label_product_name_with_quantity),
@@ -666,7 +672,7 @@ class CartItemViewHolder constructor(
             binding.textProductName.text = Utils.getHtmlFormat(labelBundleQuantityText)
         } else {
             val textProductNameLayoutParams =
-                binding.textProductName.layoutParams as ViewGroup.MarginLayoutParams
+                binding.textProductName.layoutParams as MarginLayoutParams
             textProductNameLayoutParams.topMargin = 0
             binding.textProductName.text = Utils.getHtmlFormat(data.productName)
         }
@@ -1001,6 +1007,7 @@ class CartItemViewHolder constructor(
                 if ((currentQuantity == 1 && data.minOrder == 1) || (currentQuantity == data.minOrder && data.isAlreadyShowMinimumQuantityPurchasedError)) {
                     delayChangeQty?.cancel()
                     actionListener?.onCartItemDeleteButtonClicked(data, false)
+                    actionListener?.sendRemoveCartFromSubtractButtonAnalytic(data)
                 }
                 actionListener?.onCartItemQuantityMinusButtonClicked()
             }
@@ -1231,9 +1238,9 @@ class CartItemViewHolder constructor(
 
     private fun renderContainer(cartItemHolderData: CartItemHolderData) {
         val layoutParams =
-            binding.containerProductInformation.layoutParams as ViewGroup.MarginLayoutParams
+            binding.containerProductInformation.layoutParams as MarginLayoutParams
         val layoutParamsFlImageProduct =
-            binding.flImageProduct.layoutParams as ViewGroup.MarginLayoutParams
+            binding.flImageProduct.layoutParams as MarginLayoutParams
         if (cartItemHolderData.isError) {
             layoutParamsFlImageProduct.topMargin = 0
             layoutParams.bottomMargin =
@@ -1265,7 +1272,7 @@ class CartItemViewHolder constructor(
         if (cartItemHolderData.showErrorBottomDivider) {
             binding.bottomDivider.layoutParams.height =
                 DEFAULT_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
-            val layoutParams = binding.bottomDivider.layoutParams as ViewGroup.MarginLayoutParams
+            val layoutParams = binding.bottomDivider.layoutParams as MarginLayoutParams
             if (cartItemHolderData.shouldDivideHalfErrorBottomDivider) {
                 layoutParams.marginStart =
                     BOTTOM_DIVIDER_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
