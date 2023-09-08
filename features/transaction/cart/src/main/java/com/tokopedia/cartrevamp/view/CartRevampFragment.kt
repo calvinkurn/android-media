@@ -452,12 +452,14 @@ class CartRevampFragment :
     }
 
     override fun onCartGroupNameClicked(appLink: String) {
+        sendCartImpressionAnalytic()
         routeToApplink(appLink)
     }
 
     override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+            sendCartImpressionAnalytic()
             if (isTokoNow) {
                 routeToTokoNowHomePage()
             } else {
@@ -1084,6 +1086,7 @@ class CartRevampFragment :
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
         cartPageAnalytics.eventClickAtcCartClickProductName(cartItemHolderData.productName)
+        sendCartImpressionAnalytic()
         routeToProductDetailPage(cartItemHolderData.productId)
     }
 
@@ -1166,6 +1169,7 @@ class CartRevampFragment :
         noteLottieIcon: LottieAnimationView,
         position: Int
     ) {
+        cartPageAnalytics.eventClickNoteIcon()
         val bottomSheet = CartNoteBottomSheet.newInstance(
             CartNoteBottomSheetData(
                 productName = data.productName,
@@ -1175,6 +1179,7 @@ class CartRevampFragment :
             )
         )
         bottomSheet.setListener(listener = { newNote ->
+            cartPageAnalytics.eventClickSaveOnNoteBottomSheet()
             data.notes = newNote
             playNoteAnimation(newNote, noteIcon, noteLottieIcon, position)
         })
@@ -1470,6 +1475,15 @@ class CartRevampFragment :
 
     override fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String) {
         cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
+    }
+
+    override fun sendRemoveCartFromSubtractButtonAnalytic(cartItemHolderData: CartItemHolderData) {
+        val analyticItems = CartPageAnalyticsUtil.generateRemoveCartFromSubtractButtonAnalytics(cartItemHolderData)
+        cartPageAnalytics.sendRemoveCartFromSubtractButtonEvent(analyticItems, userSession.userId)
+    }
+
+    override fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>) {
+        viewModel.addAvailableCartItemImpression(availableCartItems)
     }
 
     private fun addEndlessRecyclerViewScrollListener(
@@ -2094,7 +2108,10 @@ class CartRevampFragment :
                 viewLifecycleOwner.lifecycle.addObserver(this)
                 setOnBackButtonClickListener(
                     disableDefaultGtmTracker = true,
-                    backButtonClickListener = ::onBackPressed
+                    backButtonClickListener = {
+                        onBackPressed()
+                        sendCartImpressionAnalytic()
+                    }
                 )
                 setIcon(
                     IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
@@ -2247,6 +2264,7 @@ class CartRevampFragment :
     private fun navigateToShipmentPage() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = true
+        sendCartImpressionAnalytic()
         routeToCheckoutPage()
     }
 
@@ -3899,6 +3917,13 @@ class CartRevampFragment :
                 imageUrl
             )
         }
+    }
+
+    private fun sendCartImpressionAnalytic() {
+        val cartItems = viewModel.cartModel.availableCartItemImpressionList
+        val analyticData = CartPageAnalyticsUtil.generateCartImpressionAnalytic(cartItems)
+        viewModel.cartModel.availableCartItemImpressionList = mutableSetOf()
+        cartPageAnalytics.sendCartImpressionEvent(analyticData, userSession.userId)
     }
 
     private fun sendATCTrackingURL(recommendationItem: RecommendationItem) {
