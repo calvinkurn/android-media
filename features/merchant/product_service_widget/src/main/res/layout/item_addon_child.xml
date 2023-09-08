@@ -38,14 +38,14 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_edu"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        app:icon_name="INFORMATION"
-        app:icon_color_light_enable="@color/Unify_NN900"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginStart="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tf_name"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@+id/cu_addon"
         app:layout_constraintStart_toEndOf="@+id/tf_name"
-        app:layout_constraintTop_toTopOf="@+id/tf_name" />
+        app:layout_constraintTop_toTopOf="@+id/cu_addon" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tf_price"
