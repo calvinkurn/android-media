@@ -128,6 +128,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
@@ -356,45 +357,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetDismissalStatus()
         observeShopStateInfo()
         showSellerHomeToaster()
-
-//        binding?.testBarChart?.run {
-//            init(
-//                BarChartConfig.create {
-//                    roundedBarEnabled { true }
-//                }
-//            )
-//            setData(
-//                StackedBarChartData(
-//                    yAxis = listOf(
-//                        AxisLabel(
-//                            0.5f, "100"
-//                        )
-//                    ),
-//                    xAxisLabels = listOf(
-//                        AxisLabel(
-//                            0.5f, "100"
-//                        )
-//                    ),
-//                    metrics = listOf(
-//                        StackedBarChartMetric(
-//                            "test",
-//                            values = listOf(
-//                                StackedBarChartMetricValue(
-//                                    listOf(
-//                                        BarChartMetricValue(
-//                                            100, "y", "x"
-//                                        ),
-//                                        BarChartMetricValue(
-//                                            50, "y", "x"
-//                                        )
-//                                    )
-//                                )
-//                            )
-//                        )
-//                    )
-//                )
-//            )
-//        }
 
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
@@ -967,6 +929,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun setOnPostWidgetRemoveItemClicked(element: PostListWidgetUiModel) {
         showFeedbackLoopOption(element)
         SellerHomeTracking.sendClickWidgetPostDeleteEvent(element.dataKey)
+    }
+
+    override fun onTabSelected(tab: MultiComponentTab) {
+        // No - op
     }
 
     fun setNavigationNavigationView(navigationView: View?, otherMenuView: View?) {

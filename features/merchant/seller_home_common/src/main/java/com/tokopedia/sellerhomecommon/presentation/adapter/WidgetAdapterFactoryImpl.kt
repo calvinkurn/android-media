@@ -148,7 +148,7 @@ class WidgetAdapterFactoryImpl(
             CalendarViewHolder.RES_LAYOUT -> CalendarViewHolder(parent, listener)
             UnificationViewHolder.RES_LAYOUT -> UnificationViewHolder(parent, listener)
             RichListViewHolder.RES_LAYOUT -> RichListViewHolder(parent, listener)
-            MultiComponentViewHolder.RES_LAYOUT -> MultiComponentViewHolder(parent)
+            MultiComponentViewHolder.RES_LAYOUT -> MultiComponentViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

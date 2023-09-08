@@ -47,6 +47,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
@@ -231,6 +232,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeWidgetData(mViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeWidgetData(mViewModel.multiComponentWidgetData, WidgetType.MULTI_COMPONENT)
+        observeMultiComponentData()
         observeTickers()
     }
 
@@ -519,6 +521,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         statisticPage?.let {
             StatisticTracker.sendShowTableTableFilterClickEvent(it, element)
+        }
+    }
+
+    override fun onTabSelected(tab: MultiComponentTab) {
+        if (!tab.isLoaded) {
+            mViewModel.getMultiComponentInfoWidgetData(tab)
         }
     }
 
@@ -1041,6 +1049,28 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
+    private fun updateMultiComponentData(
+        widget: MultiComponentWidgetUiModel,
+        tab: MultiComponentTab
+    ) {
+        widget.run {
+            data = widget.data?.let { widgetData ->
+                val widgetTabs = widgetData.tabs.toMutableList()
+                widgetTabs.let { tabs ->
+                    val tabIndex = tabs.indexOfFirst { it.id == tab.id }
+                    if (tabIndex > RecyclerView.NO_POSITION) {
+                        tabs[tabIndex] = tab
+                        tabs.getOrNull(tabIndex)?.isLoaded = true
+                    }
+                }
+                widgetData.copy(
+                    tabs = widgetTabs.toList()
+                )
+            }
+        }
+        notifyWidgetChanged(widget)
+    }
+
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
         recyclerView?.post {
             val widgetPosition = adapter.data.indexOf(widget)
@@ -1088,6 +1118,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
             stopPLTPerformanceMonitoring()
             stopWidgetPerformanceMonitoring(type)
+        }
+    }
+
+    private fun observeMultiComponentData() {
+        mViewModel.multiComponentTabsData.observe(viewLifecycleOwner) { tab ->
+            adapter.data.filterIsInstance<MultiComponentWidgetUiModel>().find { widget ->
+                widget.data?.tabs?.any {
+                    it.id == tab.id
+                } == true
+            }?.let { multiComponentWidget ->
+                updateMultiComponentData(multiComponentWidget, tab)
+            }
         }
     }
 

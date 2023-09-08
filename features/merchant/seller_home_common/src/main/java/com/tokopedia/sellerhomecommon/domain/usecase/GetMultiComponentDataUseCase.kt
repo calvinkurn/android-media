@@ -37,13 +37,13 @@ class GetMultiComponentDataUseCase(
                                 componentType = "pieChart",
                                 dataKey = "plusSelling",
                                 configuration = "",
-                                metricParam = ""
+                                metricParam = "",
+                                data = null
                             )
                         ),
                         isSelected = false,
                         isError = false,
-                        isLoaded = false,
-                        data = listOf()
+                        isLoaded = false
                     ),
                     MultiComponentTab(
                         id = "tab_bebas_ongkir",
@@ -53,13 +53,13 @@ class GetMultiComponentDataUseCase(
                                 componentType = "pieChart",
                                 dataKey = "bebasOngkirSelling",
                                 configuration = "",
-                                metricParam = ""
+                                metricParam = "",
+                                data = null
                             )
                         ),
                         isSelected = false,
                         isError = false,
-                        isLoaded = false,
-                        data = listOf()
+                        isLoaded = false
                     )
                 )
             )

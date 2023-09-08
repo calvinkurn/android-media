@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.domain.mapper.MultiComponentMapper
 import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
@@ -45,11 +46,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.*
-import java.util.concurrent.Flow
 import javax.inject.Inject
 
 /**
@@ -71,6 +72,7 @@ class StatisticViewModel @Inject constructor(
     private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
     private val getAnnouncementDataUseCase: Lazy<GetAnnouncementDataUseCase>,
     private val getMultiComponentDataUseCase: Lazy<GetMultiComponentDataUseCase>,
+    private val multiComponentMapper: Lazy<MultiComponentMapper>,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -104,6 +106,8 @@ class StatisticViewModel @Inject constructor(
         get() = _announcementWidgetData
     val multiComponentWidgetData: LiveData<Result<List<MultiComponentDataUiModel>>>
         get() = _multiComponentWidgetData
+    val multiComponentTabsData: LiveData<MultiComponentTab>
+        get() = _multiComponentTabsData
 
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -120,7 +124,7 @@ class StatisticViewModel @Inject constructor(
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
     private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
     private val _multiComponentWidgetData = MutableLiveData<Result<List<MultiComponentDataUiModel>>>()
-    private val _multiComponentTabsData = MutableSharedFlow<Map<MultiComponentTab, List<BaseDataUiModel>>>()
+    private val _multiComponentTabsData = MutableLiveData<MultiComponentTab>()
 
     private var dynamicParameter = ParamCommonWidgetModel()
 
@@ -307,16 +311,42 @@ class StatisticViewModel @Inject constructor(
         })
     }
 
-    fun getMultiComponentInfoWidgetData(
-        tab: MultiComponentTab,
-        components: List<MultiComponentData>
-    ) {
+    fun getMultiComponentInfoWidgetData(tab: MultiComponentTab) {
         launchCatchError(block = {
-            val 
-            _multiComponentTabsData.emit(
-                mapOf(tab, )
+            val shouldLoadData = tab.components.all { it.data == null }
+            if (shouldLoadData) {
+                val updatedComponents = getLoadedMultiComponents(tab)
+                val updatedTab = tab.copy(
+                    components = updatedComponents,
+                    isLoaded = true,
+                    isError = false
+                )
+                _multiComponentTabsData.postValue(updatedTab)
+            }
+        }, onError = {
+            val updatedTab = tab.copy(
+                isLoaded = true,
+                isError = true
             )
+            _multiComponentTabsData.postValue(updatedTab)
         })
+    }
+
+    private suspend fun getLoadedMultiComponents(tab: MultiComponentTab): List<MultiComponentData> {
+        delay(1000)
+        return withContext(dispatcher.io) {
+            tab.components.map {
+                async {
+                    val componentData = getComponentData(it)
+                    val data = componentData?.mapNotNull {
+                        multiComponentMapper.get().mapToMultiComponentData(it)
+                    }
+                    it.copy(
+                        data = listOf(multiComponentMapper.get().getDummyData())
+                    )
+                }
+            }.awaitAll()
+        }
     }
 
     private suspend fun getComponentData(component: MultiComponentData): List<BaseDataUiModel>? {

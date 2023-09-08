@@ -10,4 +10,15 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderShcMultiComponentView"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginVertical="106dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

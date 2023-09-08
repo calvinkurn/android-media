@@ -7,7 +7,7 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.multicomponent.MultiComponentTabViewHolder
 
-class MultiComponentAdapter(private val items: List<MultiComponentTab>) :
+class MultiComponentAdapter(private val items: MutableList<MultiComponentTab>) :
     RecyclerView.Adapter<MultiComponentTabViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiComponentTabViewHolder {
@@ -22,6 +22,12 @@ class MultiComponentAdapter(private val items: List<MultiComponentTab>) :
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    fun updateTab(tab: MultiComponentTab) {
+        val tabIndex = items.indexOfFirst { it.id == tab.id }
+        items[tabIndex] = tab
+        notifyItemChanged(tabIndex)
     }
 
 }

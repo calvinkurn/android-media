@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.sellerhomecommon.presentation.model.multicomponent.MultiComponentItemUiModel
+
 data class MultiComponentDataUiModel(
     override var dataKey: String = "",
     override var error: String = "",
@@ -18,15 +20,15 @@ data class MultiComponentTab(
     val id: String,
     val title: String,
     val components: List<MultiComponentData>,
-    val isSelected: Boolean,
-    val isLoaded: Boolean,
-    val isError: Boolean,
-    val data: List<BaseDataUiModel>?
+    var isSelected: Boolean,
+    var isLoaded: Boolean,
+    var isError: Boolean,
 )
 
 data class MultiComponentData(
     val componentType: String,
     val dataKey: String,
     val configuration: String,
-    val metricParam: String
+    val metricParam: String,
+    val data: List<MultiComponentItemUiModel>?
 )
