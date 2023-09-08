@@ -2147,7 +2147,6 @@ class CheckoutViewModel @Inject constructor(
                         promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
                             promoUiModel
                         ),
-                        entryPointInfo = null,
                         isLoading = true
                     )
                 }

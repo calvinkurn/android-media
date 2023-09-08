@@ -30,7 +30,8 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
 
         val promo = promoModel.promo
         if (promoModel.isPromoRevamp) {
-            processNewEntryPointInfo(promo, promoModel.entryPointInfo, promoModel.isAnimateWording)
+            processNewEntryPointInfo(promo, promoModel.entryPointInfo,
+                promoModel.isAnimateWording, promoModel.isLoading)
         } else {
             processOldEntryPointInfo(promo)
         }
@@ -42,11 +43,16 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
         isAnimateWording: Boolean = false,
         isLoading: Boolean = false
     ) {
+        if (isLoading) {
+            binding.btnCheckoutPromo.showLoading()
+            return
+        }
+
         val isUsingGlobalPromo = lastApply.codes.isNotEmpty()
         val isUsingBoPromo = lastApply.voucherOrders
             .any { it.code.isNotEmpty() && it.message.state != "red" }
         if (!isUsingGlobalPromo && !isUsingBoPromo) {
-            if (entryPointInfo != null && !isLoading) {
+            if (entryPointInfo != null) {
                 if (!entryPointInfo.isSuccess) {
                     if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED
                         || entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED
