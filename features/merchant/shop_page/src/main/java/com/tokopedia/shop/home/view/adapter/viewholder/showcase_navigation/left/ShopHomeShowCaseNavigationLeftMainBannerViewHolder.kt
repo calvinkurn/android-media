@@ -9,10 +9,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -24,6 +24,7 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMai
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.unifycomponents.TabsUnifyMediator
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -38,17 +39,26 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
         private const val ONE_TAB = 1
-        private const val FIVE_SHOWCASE = 5
+        private const val MARGIN_16_DP = 16f
+        private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
     }
 
+    private var tabTotalWidth = 0
     private val viewBinding: ItemShopHomeShowcaseNavigationLeftMainBannerBinding? by viewBinding()
 
 
     override fun bind(model: ShowcaseNavigationUiModel) {
         val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
-        setupTitle(model, tabs)
-        setupTabs(tabs, model)
-        setupChevronViewAll(model, tabs, model.header.isOverrideTheme, model.header.colorSchema)
+
+        //Render tab only if it has 5 showcase or more than 5 showcase
+        val validatedTabs = tabs.filter {
+            val showcaseCount = it.showcases.size
+            showcaseCount >= MINIMAL_SHOWCASE_COUNT_ON_A_TAB
+        }
+
+        setupTitle(model, validatedTabs)
+        setupTabs(validatedTabs, model)
+        setupChevronViewAll(model, validatedTabs, model.header.isOverrideTheme, model.header.colorSchema)
     }
 
     private fun setupChevronViewAll(
@@ -79,11 +89,11 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
         val hasTab = tabs.size > ONE_TAB
         val showChevronViewAll = if (hasTab) {
+            //Left main banner have more than 1 tab
             model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty() && tabs.isNotEmpty()
         } else {
-            val firstTab = tabs.firstOrNull()
-            val showcaseCountOnFirstTab = firstTab?.showcases?.size.orZero()
-            model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty() && showcaseCountOnFirstTab > FIVE_SHOWCASE
+            //Left main banner have only 1 tab
+            model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty()
         }
 
         viewBinding?.iconChevron?.isVisible = showChevronViewAll
@@ -106,8 +116,10 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
             tabsUnify.tabLayout.isTabIndicatorFullWidth = false
             tabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
+
             tabsUnify.whiteShadeLeft.gone()
             tabsUnify.whiteShadeRight.gone()
+
             tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     listener.onNavigationBannerTabClick(tab?.text?.toString().orEmpty())
@@ -123,24 +135,37 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
             })
 
-            when {
-                tabs.isEmpty() -> tabsUnify.gone()
-                tabs.size == ONE_TAB -> tabsUnify.gone()
-                else -> {
-                    tabsUnify.visible()
-                    tabsUnify.customTabMode = TabLayout.MODE_FIXED
-                    tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
-                }
-            }
-
-
             val centeredTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
             tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
 
-
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
+                tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                val tabWidth = (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
+                tabTotalWidth += tabWidth
             }
+
+            tabsUnify.post {
+
+                when {
+                    tabs.isEmpty() -> tabsUnify.gone()
+                    tabs.size == ONE_TAB -> tabsUnify.gone()
+                    else -> {
+                        tabsUnify.visible()
+
+                        val screenWidth = DeviceScreenInfo.getScreenWidth(tabsUnify.context) - MARGIN_16_DP.dpToPx() - MARGIN_16_DP.dpToPx()
+                        if(tabTotalWidth < screenWidth) {
+                            tabsUnify.customTabMode = TabLayout.MODE_FIXED
+                            tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
+                        } else {
+                            tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+                            tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
+                        }
+                    }
+                }
+
+            }
+
         }
 
     }

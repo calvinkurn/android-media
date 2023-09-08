@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.adapter
+package com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -21,7 +21,7 @@ import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHo
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
-class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = mutableListOf<ShopHomeBannerProductGroupItemType>()
     private var onProductClick: (ProductItemType) -> Unit = {}
@@ -108,64 +108,44 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             val product = item as? ProductItemType
             
             product?.let {
-                binding.imgProduct.loadImage(product.imageUrl)
-
-                if (item.showProductInfo) binding.tpgProductName.text = product.name
-
+                renderProductImage(product)
+                renderProductName(product)
                 renderProductPrice(product)
                 renderSlashedProductPrice(product)
-                renderProductRating(product)
-                renderProductSoldCount(product)
-                renderBulletSeparator(product)
+                renderRatingAndSoldCount(product)
+
                 setupColors(item.overrideTheme, item.colorSchema)
 
                 binding.root.setOnClickListener { onProductClick(product) }
             }
         }
 
-        private fun renderBulletSeparator(product: ProductItemType) {
-            val hasBeenPurchased = product.soldCount.isNotEmpty()
-            val hasRating = product.rating.isNotEmpty()
-
-            val showBulletSeparator = hasBeenPurchased && hasRating && product.showProductInfo
-            binding.tpgBullet.isVisible = showBulletSeparator
+        private fun renderProductImage(product: ProductItemType) {
+            binding.imgProduct.loadImage(product.imageUrl)
         }
 
-        private fun renderProductSoldCount(product: ProductItemType) {
-            val hasBeenPurchased = product.soldCount.isNotEmpty()
-            if (product.showProductInfo && hasBeenPurchased) {
-                binding.tpgProductSoldCount.text = product.soldCount
+        private fun renderProductName(product: ProductItemType) {
+            if (product.showProductInfo) {
+                binding.tpgProductName.text = product.name
             }
-        }
-
-        private fun renderProductRating(product: ProductItemType) {
-            val hasRating = product.rating.isNotEmpty()
-            val showProductRating = product.showProductInfo && hasRating
-
-            binding.tpgRating.isVisible = showProductRating
-            binding.imgStar.isVisible = showProductRating
-
-            if (showProductRating) {
-                binding.tpgRating.text = product.rating
-                binding.imgStar.setBackgroundResource(R.drawable.ic_shop_home_star_filled)
-            }
+            binding.tpgProductName.isVisible = product.showProductInfo
         }
 
         private fun renderProductPrice(product: ProductItemType) {
             if (product.showProductInfo) {
-                binding.tpgProductPrice.text = product.price
+                binding.tpgProductPrice.text = product.price.replace(" ", "")
             }
+            binding.tpgProductPrice.isVisible = product.showProductInfo
         }
 
         private fun renderSlashedProductPrice(product: ProductItemType) {
             val isDiscounted = product.slashedPricePercent.isMoreThanZero()
             val showSlashedPrice = product.showProductInfo && isDiscounted
 
-            binding.tpgSlashedProductPrice.isVisible = showSlashedPrice
-            binding.labelDiscount.isVisible = showSlashedPrice
+            binding.layoutSlashedPrice.isVisible = showSlashedPrice
 
             if (showSlashedPrice) {
-                binding.tpgSlashedProductPrice.text = product.slashedPrice
+                binding.tpgSlashedProductPrice.text = product.slashedPrice.replace(" ", "")
                 binding.tpgSlashedProductPrice.strikethrough()
 
                 val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
@@ -174,20 +154,59 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             }
         }
 
+        private fun renderRatingAndSoldCount(product: ProductItemType) {
+            val hasRating = product.rating.isNotEmpty()
+            val showProductRating = product.showProductInfo && hasRating
+
+            val hasBeenPurchased = product.soldCount.isNotEmpty()
+            val showProductSoldCount = product.showProductInfo && hasBeenPurchased
+
+            val showLayoutRatingAndSoldCount = showProductRating || showProductSoldCount
+            binding.layoutRatingAndSoldCount.isVisible = showLayoutRatingAndSoldCount
+
+            renderProductRating(showProductRating, product.rating)
+            renderProductSoldCount(showProductSoldCount, product.soldCount)
+
+            val showBulletSeparator = hasBeenPurchased && hasRating && product.showProductInfo
+            renderBulletSeparator(showBulletSeparator)
+        }
+
+        private fun renderProductRating(showProductRating: Boolean, rating: String) {
+            binding.tpgRating.isVisible = showProductRating
+            binding.imgStar.isVisible = showProductRating
+
+            if (showProductRating) {
+                binding.tpgRating.text = rating
+                binding.imgStar.setBackgroundResource(R.drawable.ic_shop_home_star_filled)
+            }
+        }
+
+        private fun renderProductSoldCount(showProductSoldCount: Boolean, soldCount: String) {
+            binding.tpgProductSoldCount.isVisible = showProductSoldCount
+
+            if (showProductSoldCount) {
+                binding.tpgProductSoldCount.text = soldCount
+            }
+        }
+
+        private fun renderBulletSeparator(showBulletSeparator: Boolean) {
+            binding.tpgBullet.isVisible = showBulletSeparator
+        }
+
         private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
-            val highEmphasizeColor = if (overrideTheme) {
+            val highEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
                 colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
             } else {
                 ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN950)
             }
 
-            val lowEmphasizeColor = if (overrideTheme) {
+            val lowEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
                 colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
             } else {
                 ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN600)
             }
 
-            val disabledTextColor = if (overrideTheme) {
+            val disabledTextColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
                 colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR)
             } else {
                 ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN400)
