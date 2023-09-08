@@ -1319,7 +1319,7 @@ class CartItemViewHolder constructor(
     }
 
     companion object {
-        val TYPE_VIEW_ITEM_CART = R.layout.item_cart_product
+        val TYPE_VIEW_ITEM_CART = R.layout.item_cart_product_revamp
 
         const val LABEL_CASHBACK = "cashback"
         const val LABEL_DISCOUNT = "label diskon"

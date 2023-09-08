@@ -6,37 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
-    android:orientation="vertical">
+    android:orientation="horizontal"
+    android:paddingHorizontal="50dp"
+    android:paddingVertical="16dp">
 
-    <LinearLayout
-        android:id="@+id/layout_accordion"
-        android:layout_width="match_parent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_accordion"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="50dp"
-        android:paddingVertical="16dp"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view2">
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Lihat Semua" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_accordion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_GN500"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_3"
-            app:typographyWeight="bold"
-            tools:text="Lihat Semua" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/image_chevron"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/unify_chips_ic_chevron_selected" />
-
-    </LinearLayout>
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_chevron"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/unify_chips_ic_chevron_selected" />
 
 </LinearLayout>
