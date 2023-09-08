@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.universalinbox.domain.mapper
 
+import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
@@ -8,17 +9,15 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiMod
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
+import com.tokopedia.inbox.universalinbox.util.Result as Result
 
 class UniversalInboxWidgetMetaMapper @Inject constructor() {
 
     fun mapWidgetMetaToUiModel(
         widgetMetaResponse: List<UniversalInboxWidgetDataResponse>,
         counterResponse: UniversalInboxAllCounterResponse,
-        driverCounter: Result<Pair<Int, Int>>?
+        driverCounter: Result<List<ConversationsChannel>>
     ): UniversalInboxWidgetMetaUiModel {
         val result = UniversalInboxWidgetMetaUiModel()
         widgetMetaResponse.forEach {
@@ -31,7 +30,7 @@ class UniversalInboxWidgetMetaMapper @Inject constructor() {
 
     private fun UniversalInboxWidgetDataResponse.mapToUiModel(
         counterResponse: UniversalInboxAllCounterResponse,
-        driverCounter: Result<Pair<Int, Int>>? = null
+        driverCounter: Result<List<ConversationsChannel>>
     ): UniversalInboxWidgetUiModel? {
         return when (this.type) {
             UniversalInboxValueUtil.CHATBOT_TYPE -> {
@@ -63,44 +62,66 @@ class UniversalInboxWidgetMetaMapper @Inject constructor() {
     }
 
     private fun UniversalInboxWidgetDataResponse.mapToDriverWidget(
-        driverCounter: Result<Pair<Int, Int>>?
+        driverCounter: Result<List<ConversationsChannel>>
     ): UniversalInboxWidgetUiModel? {
-        return if (driverCounter != null) {
-            when (driverCounter) {
-                is Success -> {
-                    if (!this.isDynamic && driverCounter.data.first < Int.ONE) {
-                        null
-                    } else {
-                        // Show when only active channel is not zero or dynamic from BE
-                        UniversalInboxWidgetUiModel(
-                            icon = this.icon.toIntOrZero(),
-                            title = this.title,
-                            subtext = this.subtext.replace(
-                                oldValue = UniversalInboxValueUtil.GOJEK_REPLACE_TEXT,
-                                newValue = "${driverCounter.data.first}",
-                                ignoreCase = true
-                            ),
-                            applink = this.applink,
-                            counter = driverCounter.data.second,
-                            type = this.type
-                        )
-                    }
-                }
-                is Fail -> {
-                    // Return widget error with data
+        return when (driverCounter) {
+            is Result.Success -> {
+                val counterData = onSuccessGetDriverChannelList(driverCounter.data)
+                if (!this.isDynamic && counterData.first < Int.ONE) {
+                    null
+                } else {
+                    // Show when only active channel is not zero or dynamic from BE
                     UniversalInboxWidgetUiModel(
                         icon = this.icon.toIntOrZero(),
                         title = this.title,
-                        subtext = this.subtext,
+                        subtext = this.subtext.replace(
+                            oldValue = UniversalInboxValueUtil.GOJEK_REPLACE_TEXT,
+                            newValue = "${counterData.first}",
+                            ignoreCase = true
+                        ),
                         applink = this.applink,
-                        counter = Int.ZERO,
-                        type = this.type,
-                        isError = true
+                        counter = counterData.second,
+                        type = this.type
                     )
                 }
             }
-        } else {
-            null // Return null if driver counter is null
+            is Result.Error -> {
+                // Return widget error with data
+                UniversalInboxWidgetUiModel(
+                    icon = this.icon.toIntOrZero(),
+                    title = this.title,
+                    subtext = this.subtext,
+                    applink = this.applink,
+                    counter = Int.ZERO,
+                    type = this.type,
+                    isError = true
+                )
+            }
+            is Result.Loading -> {
+                null
+            }
+        }
+    }
+
+    private fun onSuccessGetDriverChannelList(
+        channelList: List<ConversationsChannel>
+    ): Pair<Int, Int> {
+        return try {
+            var activeChannel = 0
+            var unreadTotal = 0
+            channelList.forEach { channel ->
+                if (channel.expiresAt > System.currentTimeMillis()) {
+                    activeChannel++
+                    unreadTotal += channel.unreadCount
+                }
+            }
+            if (unreadTotal >= 0) {
+                Pair(activeChannel, unreadTotal)
+            } else {
+                throw IllegalArgumentException()
+            }
+        } catch (throwable: Throwable) {
+            Pair(0, 0) // Default
         }
     }
 }

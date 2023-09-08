@@ -17,6 +17,7 @@ import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxM
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetProductRecommendationUseCase
 import com.tokopedia.inbox.universalinbox.util.Result
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
+import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxCombineState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxErrorUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxNavigationUiState
@@ -90,7 +91,9 @@ class UniversalInboxViewModel @Inject constructor(
 
     init {
         _actionFlow.process().launchIn(viewModelScope)
-        observeInboxMenuAndWidgetMetaFlow()
+        observeInboxMenuWidgetMetaAndCounterFlow()
+        observeInboxMenuLocalFlow()
+        observeDriverChannelFlow()
         observeProductRecommendationFlow()
     }
 
@@ -134,25 +137,31 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun observeInboxMenuAndWidgetMetaFlow() {
+    private fun observeInboxMenuLocalFlow() {
+        viewModelScope.launch {
+            getInboxMenuAndWidgetMetaUseCase.observeInboxMenuLocalSource()
+        }
+    }
+
+    private fun observeDriverChannelFlow() {
+        viewModelScope.launch {
+            getDriverChatCounterUseCase.observeDriverChannelFlow()
+        }
+    }
+
+    private fun observeInboxMenuWidgetMetaAndCounterFlow() {
         viewModelScope.launch {
             combine(
                 getInboxMenuAndWidgetMetaUseCase.observe(),
                 getAllCounterUseCase.observe(),
                 getDriverChatCounterUseCase.observe()
             ) { menu, counter, driverChannel ->
-                if (menu != null) {
-                    combineMenuAndCounter(menu, counter, driverChannel)
-                } else {
-                    // If cache is null, it means new user or error
-                    // create the default menu first
-                    setFallbackInboxMenu()
-                    null // Set null to get filtered out
-                }
-            }.filterNotNull()
+                UniversalInboxCombineState(menu, counter, driverChannel)
+            }
+                .filterNotNull()
                 .catch {
                     Timber.d(it)
-                    Result.Error(it)
+                    showErrorMessage(Pair(it, ::observeInboxMenuWidgetMetaAndCounterFlow.name))
                 }
                 .collectLatest {
                     handleGetMenuAndCounterResult(it)
@@ -160,65 +169,67 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun combineMenuAndCounter(
-        menu: UniversalInboxWrapperResponse,
-        counter: Result<UniversalInboxAllCounterResponse>,
-        driverChannel: Result<List<ConversationsChannel>>
-    ): Result<
-        Pair<UniversalInboxWrapperResponse,
-            Pair<UniversalInboxAllCounterResponse, List<ConversationsChannel>>>> {
-        return when {
-            (counter is Result.Success && driverChannel is Result.Success) -> {
-                Result.Success(Pair(menu, Pair(counter.data, driverChannel.data)))
-            }
-            (counter is Result.Success && driverChannel is Result.Error) -> {
-                // default driver 0
-                Result.Success(Pair(menu, Pair(counter.data, listOf())))
-            }
-            else -> {
-                Result.Success(
-                    // default all counter 0
-                    Pair(menu, Pair(UniversalInboxAllCounterResponse(), listOf()))
-                )
-            }
-        }
-    }
-
     private fun handleGetMenuAndCounterResult(
-        result: Result<Pair<UniversalInboxWrapperResponse,
-                Pair<UniversalInboxAllCounterResponse, List<ConversationsChannel>>>>
+        result: UniversalInboxCombineState
     ) {
-        when (result) {
-            is Result.Success -> {
+        when {
+            // Handle success case for all
+            (
+                result.menu is Result.Success &&
+                    result.counter is Result.Success
+                ) -> {
                 onSuccessGetMenuAndCounter(
-                    result.data.first,
-                    result.data.second.first,
-                    result.data.second.second
+                    result.menu.data,
+                    result.counter.data,
+                    result.driverChannel
                 )
             }
-            is Result.Error -> {
+
+            // Handle error case for menu
+            (result.menu is Result.Error) -> {
                 setLoadingInboxMenu(false)
                 setErrorWidgetMeta()
-                showErrorMessage(Pair(result.throwable, ::handleGetMenuAndCounterResult.name))
+                showErrorMessage(
+                    Pair(result.menu.throwable, ::handleGetMenuAndCounterResult.name)
+                )
             }
-            is Result.Loading -> {
+
+            // Handle loading or error case for counter
+            (
+                result.menu is Result.Success &&
+                    (result.counter is Result.Error || result.counter is Result.Loading)
+                ) -> {
+                onSuccessGetMenuAndCounter(
+                    result.menu.data,
+                    UniversalInboxAllCounterResponse(), // Default 0 counter
+                    result.driverChannel
+                )
+            }
+
+            // Handle loading case for menu
+            result.menu is Result.Loading -> {
                 setLoadingInboxMenu(true)
             }
         }
     }
 
     private fun onSuccessGetMenuAndCounter(
-        inboxResponse: UniversalInboxWrapperResponse,
+        inboxResponse: UniversalInboxWrapperResponse?,
         counterResponse: UniversalInboxAllCounterResponse,
-        driverResponse: List<ConversationsChannel>
+        driverResponse: Result<List<ConversationsChannel>>
     ) {
         try {
+            if (inboxResponse == null) {
+                // If cache is null, it means new user or error
+                // create the default menu first
+                setFallbackInboxMenu()
+                return
+            }
             setLoadingInboxMenu(false)
-            val driverCounter = onSuccessGetDriverChannelList(driverResponse)
             val widgetMeta = widgetMetaMapper.mapWidgetMetaToUiModel(
                 widgetMetaResponse = inboxResponse.chatInboxMenu.widgetMenu,
                 counterResponse = counterResponse,
-                driverCounter = Success(driverCounter)
+                driverCounter = driverResponse
             )
             val menuList = inboxMenuMapper.mapToInboxMenu(
                 userSession = userSession,
@@ -237,29 +248,6 @@ class UniversalInboxViewModel @Inject constructor(
         } catch (throwable: Throwable) {
             setFallbackInboxMenu()
             showErrorMessage(Pair(throwable, ::onSuccessGetMenuAndCounter.name))
-        }
-    }
-
-    private fun onSuccessGetDriverChannelList(
-        channelList: List<ConversationsChannel>
-    ): Pair<Int, Int> {
-        return try {
-            var activeChannel = 0
-            var unreadTotal = 0
-            channelList.forEach { channel ->
-                if (channel.expiresAt > System.currentTimeMillis()) {
-                    activeChannel++
-                    unreadTotal += channel.unreadCount
-                }
-            }
-            if (unreadTotal >= 0) {
-                Pair(activeChannel, unreadTotal)
-            } else {
-                throw IllegalArgumentException()
-            }
-        } catch (throwable: Throwable) {
-            showErrorMessage(Pair(throwable, ::onSuccessGetDriverChannelList.name))
-            Pair(0, 0) // Default
         }
     }
 
@@ -329,12 +317,10 @@ class UniversalInboxViewModel @Inject constructor(
             try {
                 // Show loading first
                 setLoadingInboxMenu(true)
-                // Refresh counter
-                getAllCounterUseCase.refreshCounter(userSession.shopId)
-                // Get driver channel list
-                getDriverChatCounterUseCase.getAllChannels()
                 // Fetch inbox menu & widget from remote
                 getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta(Unit)
+                // Refresh counter
+                getAllCounterUseCase.refreshCounter(userSession.shopId)
             } catch (throwable: Throwable) {
                 setFallbackInboxMenu()
                 showErrorMessage(Pair(throwable, ::loadInboxMenuAndWidgetMeta.name))

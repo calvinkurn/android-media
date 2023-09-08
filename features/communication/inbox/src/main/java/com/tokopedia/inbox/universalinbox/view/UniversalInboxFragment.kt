@@ -224,25 +224,7 @@ class UniversalInboxFragment @Inject constructor(
                 observeError()
             }
         }
-
-//        viewModel.widget.observe(viewLifecycleOwner) { (widget, counter) ->
-//            observeDriverCounter() // Observe only after widget loaded
-//        }
     }
-
-//    private fun observeDriverCounter() {
-//        viewLifecycleOwner.removeObservers(viewModel.driverChatCounter)
-//        viewModel.driverChatCounter.let { liveData ->
-//            liveData.observe(viewLifecycleOwner) {
-//                viewModel.driverChatData = it // Always save data
-//                when (it) {
-//                    is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
-//                    is Fail -> onErrorGetDriverChat(it.throwable)
-//                    else -> Unit // no op
-//                }
-//            }
-//        }
-//    }
 
     private suspend fun observeInboxMenuAndCounter() {
         // Inbox Menu & Counter

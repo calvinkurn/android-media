@@ -21,7 +21,7 @@ open class UniversalInboxGetAllDriverChannelsUseCase @Inject constructor(
 
     fun observe(): Flow<Result<List<ConversationsChannel>>> = channelFlow
 
-    open suspend fun getAllChannels() {
+    suspend fun observeDriverChannelFlow() {
         try {
             repository.getConversationRepository()?.getAllChannels(
                 listOf(ChannelType.GroupBooking)
