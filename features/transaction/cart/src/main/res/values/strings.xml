@@ -81,4 +81,6 @@
     <string name="cart_button_notes_empty_content_desc">button change note empty</string>
     <string name="cart_button_notes_filled_content_desc">button change note filled</string>
     <string name="cart_text_overweight">Kelebihan %s kg. Kurangi barang dulu, ya.</string>
+    <string name="content_desc_button_change_note">button change note</string>
+    <string name="content_desc_button_wishlist">button wishlist</string>
 </resources>
