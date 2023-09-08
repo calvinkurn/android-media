@@ -40,7 +40,8 @@ import io.mockk.unmockkStatic
 import io.mockk.verify
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -48,6 +49,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class QuickFilterViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -58,7 +60,7 @@ class QuickFilterViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
 
         mockkStatic(::getComponent)
         mockkConstructor(URLParser::class)
