@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.view.interfaces
 
+import android.view.View
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 
 interface InterfaceShopPageHeader {
@@ -16,4 +17,5 @@ interface InterfaceShopPageHeader {
     fun isOverrideTheme(): Boolean = false
     fun getBodyPatternColorType(): String = ""
     fun getBodyBackgroundHexColor(): String = ""
+    fun getBottomViewContainer(): View? = null
 }

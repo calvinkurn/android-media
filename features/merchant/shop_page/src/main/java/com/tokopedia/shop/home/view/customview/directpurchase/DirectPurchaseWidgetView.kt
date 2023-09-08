@@ -87,11 +87,27 @@ class DirectPurchaseWidgetView : LinearLayout,
     interface DirectPurchaseWidgetViewListener {
         fun triggerLoadProductDirectPurchase(etalaseId: String, timestampLastCaptured: Long, selectedSwitcherIndex: Int, selectedEtalaseIndex: Int)
 
-        fun onAddButtonProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel)
+        fun onAddButtonProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel, selectedSwitcherIndex: Int, selectedEtalaseIndex: Int)
 
-        fun onProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel)
+        fun onSeeMoreClick(etalaseId: String, selectedSwitcherIndex: Int, selectedEtalaseIndex: Int)
 
-        fun onSeeMoreClick(etalaseId: String)
+        fun onEtalaseGroupClicked(selectedSwitcherIndex: Int)
+
+        fun onEtalaseClicked(selectedSwitcherIndex: Int, selectedEtalaseIndex: Int)
+
+        fun onProductDirectPurchaseImpression(
+            data: ProductCardDirectPurchaseDataModel,
+            selectedSwitcherIndex: Int,
+            selectedEtalaseIndex: Int,
+            productPosition: Int
+        )
+
+        fun onProductDirectPurchaseClick(
+            data: ProductCardDirectPurchaseDataModel,
+            selectedSwitcherIndex: Int,
+            selectedEtalaseIndex: Int,
+            productPosition: Int
+        )
 
     }
 
@@ -125,11 +141,21 @@ class DirectPurchaseWidgetView : LinearLayout,
         ProductCarouselDirectPurchaseAdapter(object :
             ProductDirectPurchaseViewHolder.ProductDirectPurchaseContentVHListener {
             override fun onAddButtonProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel) {
-                listener?.onAddButtonProductDirectPurchaseClick(data)
+                listener?.onAddButtonProductDirectPurchaseClick(data, getSelectedSwitcherIndex(), getSelectedEtalaseIndex())
             }
 
-            override fun onProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel) {
-                listener?.onProductDirectPurchaseClick(data)
+            override fun onProductDirectPurchaseClick(
+                data: ProductCardDirectPurchaseDataModel,
+                productPosition: Int
+            ) {
+                listener?.onProductDirectPurchaseClick(data, getSelectedSwitcherIndex(), getSelectedEtalaseIndex(), productPosition)
+            }
+
+            override fun onProductDirectPurchaseImpression(
+                data: ProductCardDirectPurchaseDataModel,
+                productPosition: Int
+            ) {
+                listener?.onProductDirectPurchaseImpression(data, getSelectedSwitcherIndex(), getSelectedEtalaseIndex(), productPosition)
             }
         }, object :
             ProductDirectPurchaseViewHolder.ProductDirectPurchaseErrorVHListener {
@@ -145,7 +171,7 @@ class DirectPurchaseWidgetView : LinearLayout,
         }, object : ProductDirectPurchaseViewHolder.ProductDirectPurchaseSeeMoreVHListener {
             override fun onSeeMoreClick() {
                 val currentEtalase = getSelectedEtalase() ?: return
-                listener?.onSeeMoreClick(etalaseId = currentEtalase.etalaseId)
+                listener?.onSeeMoreClick(etalaseId = currentEtalase.etalaseId, getSelectedSwitcherIndex(), getSelectedEtalaseIndex())
             }
 
         }, MAX_PRODUCT_SHOWN)
@@ -279,13 +305,20 @@ class DirectPurchaseWidgetView : LinearLayout,
      * 2. etalase content change
      * 3. product etalase change (see onImageTabSelected)
      */
-    override fun onMultipleSwitcherSelected(selectedIndex: Int, selectedItem: String) {
+    override fun onMultipleSwitcherSelected(
+        selectedIndex: Int,
+        selectedItem: String,
+        isSelectByAction: Boolean
+    ) {
+        if(isSelectByAction){
+            listener?.onEtalaseGroupClicked(selectedIndex)
+        }
         val selectedTitle = widgetData?.titleList?.get(selectedIndex)
         binding.ivTitle.setImageUrl(selectedTitle?.imageUrl ?: "")
         setUpEtalaseList(selectedTitle?.etalaseList)
     }
 
-    override fun onImageTabSelected(index: Int, imageTabData: ImageTabData?) {
+    override fun onImageTabSelected(index: Int, imageTabData: ImageTabData?, isClickByUser: Boolean) {
         val prevEtalaseId = getSelectedEtalase()?.etalaseId
         val currentEtalase = getSelectedEtalase()
         submitProductList(currentEtalase)
@@ -294,6 +327,12 @@ class DirectPurchaseWidgetView : LinearLayout,
             binding.rvProduct.post {
                 binding.rvProduct.layoutManager?.scrollToPosition(0)
             }
+        }
+        if(isClickByUser) {
+            listener?.onEtalaseClicked(
+                getSelectedSwitcherIndex(),
+                index
+            )
         }
     }
 

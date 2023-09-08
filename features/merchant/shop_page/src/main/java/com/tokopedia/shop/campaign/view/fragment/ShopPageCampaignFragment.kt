@@ -69,6 +69,7 @@ import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.databinding.FragmentShopPageCampaignBinding
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
@@ -261,7 +262,7 @@ class ShopPageCampaignFragment :
                 }
 
                 is Fail -> {
-                    showToasterError(view ?: return@observe, it.throwable)
+                    showToasterError(view ?: return@observe, it.throwable, getShopHeaderBottomViewContainer())
                 }
             }
         }
@@ -1039,7 +1040,8 @@ class ShopPageCampaignFragment :
             message = toasterMessage ,
             view = view ?: return,
             ctaText = "",
-            onCtaClicked = {}
+            onCtaClicked = {},
+            anchorView = getShopHeaderBottomViewContainer()
         )
     }
     private fun handleRedeemVoucherSuccess(shopCampaignRedeemPromo: ShopCampaignRedeemPromoVoucherResult) {
@@ -1057,7 +1059,8 @@ class ShopPageCampaignFragment :
                         shopCampaignRedeemPromo.campaignId,
                         shopCampaignRedeemPromo.widgetId
                     )
-                }
+                },
+                getShopHeaderBottomViewContainer()
             )
             getVoucherSliderData()
         }
@@ -1166,7 +1169,7 @@ class ShopPageCampaignFragment :
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
                 getString(R.string.shop_string_ok)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
     }
 
@@ -1178,7 +1181,7 @@ class ShopPageCampaignFragment :
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(R.string.shop_string_ok)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
         viewModelCampaign?.toggleBannerTimerRemindMe(
             shopCampaignTabAdapter.getNewVisitableItems(),
@@ -1350,5 +1353,9 @@ class ShopPageCampaignFragment :
         } else {
             parentFragment
         }
+    }
+
+    private fun getShopHeaderBottomViewContainer(): View?{
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBottomViewContainer()
     }
 }

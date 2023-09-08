@@ -213,6 +213,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
 
+    val shopPageProductDirectPurchaseWidgetAtcTracker: LiveData<ShopPageProductDirectPurchaseWidgetAtcTracker>
+        get() = _shopPageProductDirectPurchaseWidgetAtcTracker
+    private val _shopPageProductDirectPurchaseWidgetAtcTracker = MutableLiveData<ShopPageProductDirectPurchaseWidgetAtcTracker>()
+
     val createAffiliateCookieAtcProduct: LiveData<AffiliateAtcProductModel>
         get() = _createAffiliateCookieAtcProduct
     private val _createAffiliateCookieAtcProduct = MutableLiveData<AffiliateAtcProductModel>()
@@ -1524,28 +1528,60 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun addToCartDirectPurchaseProductWidget(
-        productId: String,
+        productModel: ProductCardDirectPurchaseDataModel,
         shopId: String,
-        quantity: Int,
-        stock: Int
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
     ) {
         val addToCartRequestParams = com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase.getMinimumParams(
-            productId = productId,
+            productId = productModel.productId,
             shopId = shopId,
-            quantity = quantity,
+            quantity = productModel.minimumOrder,
             atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             checkShouldCreateAffiliateCookieAtcProduct(
                 ShopPageAtcTracker.AtcType.ADD,
-                productId,
+                productModel.productId,
                 false,
-                stock
+                productModel.stock
+            )
+            trackAtcProductDirectPurchaseWidget(
+                it,
+                uiModel,
+                productModel,
+                selectedSwitcherIndex,
+                selectedEtalaseIndex
             )
             _directPurchaseProductWidgetAtcResult.postValue(Success(it))
         }, {
             _directPurchaseProductWidgetAtcResult.postValue(Fail(it))
         })
+    }
+
+    private fun trackAtcProductDirectPurchaseWidget(
+        addToCartDataModel: AddToCartDataModel,
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        productModel: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.etalaseList?.getOrNull(selectedEtalaseIndex)?.etalaseId.orEmpty()
+        val cartId = addToCartDataModel.data.cartId
+        _shopPageProductDirectPurchaseWidgetAtcTracker.postValue(
+            ShopPageProductDirectPurchaseWidgetAtcTracker(
+                totalEtalaseGroup,
+                etalaseId,
+                cartId,
+                productModel.productId,
+                productModel.name,
+                productModel.price,
+                productModel.isVariant,
+                productModel.minimumOrder
+            )
+        )
     }
 }

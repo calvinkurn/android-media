@@ -25,9 +25,9 @@ class ImageTabs(val tabsUnify: TabsUnify) {
     private var dataList: List<ImageTabData>? = null
     private var colorPallete: ColorPallete? = null
     private var totalTabViewWidth = 0
-
+    private var isClickByUser = false
     interface ImageTabsListener {
-        fun onImageTabSelected(index: Int, data: ImageTabData?)
+        fun onImageTabSelected(index: Int, data: ImageTabData?, isClickByUser: Boolean)
     }
 
     init {
@@ -47,8 +47,8 @@ class ImageTabs(val tabsUnify: TabsUnify) {
         tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 selectedIndex = tab?.position ?: 0
-                listener?.onImageTabSelected(selectedIndex, getData()?.getOrNull(selectedIndex))
-
+                listener?.onImageTabSelected(selectedIndex, getData()?.getOrNull(selectedIndex), isClickByUser)
+                isClickByUser = false
                 val text = tab?.customView?.findViewById<Typography>(R.id.text1)
                 text?.apply {
                     setWeight(Typography.BOLD)
@@ -113,6 +113,9 @@ class ImageTabs(val tabsUnify: TabsUnify) {
             tv.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
             tabView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
             totalTabViewWidth+= (tabView.measuredWidth + 16f.dpToPx() + 16f.dpToPx()).toInt()
+            tab?.view?.setOnClickListener {
+                isClickByUser = true
+            }
         }
         tabsUnify.post {
             tabsUnify.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)

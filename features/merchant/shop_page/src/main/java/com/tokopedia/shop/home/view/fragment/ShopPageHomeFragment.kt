@@ -118,6 +118,7 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
+import com.tokopedia.shop.common.data.model.ShopPageProductDirectPurchaseWidgetAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -128,6 +129,7 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCra
 import com.tokopedia.shop.common.util.ShopPageRemoteConfigChecker
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
@@ -206,7 +208,6 @@ import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyPro
 import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
 import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchaseByEtalaseWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
-import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
@@ -271,9 +272,9 @@ open class ShopPageHomeFragment :
     ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
-    DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener,
     ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
-    ShopHomeDirectPurchaseByEtalaseWidgetListener {
+    ShopHomeDirectPurchaseByEtalaseWidgetListener
+{
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -604,8 +605,10 @@ open class ShopPageHomeFragment :
                 is Success -> {
                     showToastSuccess(
                         it.data.data.message.joinToString(separator = ", "),
-                        getString(R.string.shop_page_atc_label_cta)
-                    )
+                        getString(R.string.see_label)
+                    ) {
+                        goToCart()
+                    }
                 }
                 is Fail -> {
                     showErrorToast(it.throwable.message.orEmpty())
@@ -666,7 +669,7 @@ open class ShopPageHomeFragment :
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(R.string.shop_string_ok)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
         viewModel?.toggleBannerTimerRemindMe(
             shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
@@ -694,7 +697,7 @@ open class ShopPageHomeFragment :
                 getString(R.string.shop_string_ok)
             ) {
                 shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
-            }.show()
+            }.setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
     }
 
@@ -1346,7 +1349,28 @@ open class ShopPageHomeFragment :
         observeDeleteCartLiveData()
         observeUpdatedShopHomeWidgetQuantityData()
         observeShopAtcTrackerLiveData()
+        observeShopProductDirectPurchaseWidgetAtcLiveData()
         observeIsCreateAffiliateCookieAtcProduct()
+    }
+
+    private fun observeShopProductDirectPurchaseWidgetAtcLiveData() {
+        viewModel?.shopPageProductDirectPurchaseWidgetAtcTracker?.observe(viewLifecycleOwner) {
+            sendClickAddToCartProductDirectPurchaseWidgetTracker(it)
+        }
+    }
+
+    private fun sendClickAddToCartProductDirectPurchaseWidgetTracker(
+        atcTrackerModel: ShopPageProductDirectPurchaseWidgetAtcTracker?
+    ) {
+        atcTrackerModel?.let {
+            shopPageHomeTracking.onAddToCartProductDirectPurchaseWidget(
+                atcTrackerModel,
+                shopId,
+                userId,
+                shopName,
+                customDimensionShopPage.shopType.orEmpty()
+            )
+        }
     }
 
     private fun observeIsCreateAffiliateCookieAtcProduct() {
@@ -1458,7 +1482,7 @@ open class ShopPageHomeFragment :
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(R.string.shop_string_ok)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
         shopHomeAdapter?.updateRemindMeStatusCampaignNplWidgetData(campaignId)
     }
@@ -1495,7 +1519,7 @@ open class ShopPageHomeFragment :
                 View.OnClickListener {
                     shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
                 }
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
         }
     }
@@ -1520,7 +1544,7 @@ open class ShopPageHomeFragment :
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(R.string.shop_page_label_oke)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
         shopHomeAdapter?.updateRemindMeStatusCampaignFlashSaleWidgetData(campaignId)
     }
@@ -1540,7 +1564,7 @@ open class ShopPageHomeFragment :
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
                 getString(R.string.shop_page_label_oke)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
     }
 
@@ -3575,7 +3599,7 @@ open class ShopPageHomeFragment :
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-            view?.let { Toaster.build(it, message).show() }
+            view?.let { Toaster.build(it, message).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show() }
         }
     }
 
@@ -3594,21 +3618,21 @@ open class ShopPageHomeFragment :
                         Toaster.TYPE_NORMAL,
                         ctaText,
                         ctaClickListener
-                    ).show()
+                    ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
                 } ?: Toaster.build(
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     ctaText
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
 
     protected fun showErrorToast(message: String) {
         activity?.run {
-            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show() }
         }
     }
 
@@ -4764,7 +4788,7 @@ open class ShopPageHomeFragment :
                     getString(R.string.shop_page_play_widget_sgc_video_deleted),
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_NORMAL
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
@@ -4785,7 +4809,7 @@ open class ShopPageHomeFragment :
                     clickListener = View.OnClickListener {
                         deleteChannel(channelId)
                     }
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
@@ -4798,7 +4822,7 @@ open class ShopPageHomeFragment :
                     text = getString(R.string.shop_page_play_widget_sgc_video_saved_success),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_NORMAL
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
@@ -4816,7 +4840,7 @@ open class ShopPageHomeFragment :
                     text = getString(R.string.shop_page_play_widget_sgc_link_copied),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_NORMAL
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
@@ -5225,66 +5249,19 @@ open class ShopPageHomeFragment :
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
     }
 
-    override fun triggerLoadProductDirectPurchase(
-        etalaseId: String,
-        timestampLastCaptured: Long,
+    private fun addToCartDirectPurchaseProductWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        productModel: ProductCardDirectPurchaseDataModel,
         selectedSwitcherIndex: Int,
         selectedEtalaseIndex: Int
     ) {
-        viewModel?.getDirectPurchaseWidgetProductData(
-            shopId,
-            etalaseId,
-            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
-            selectedSwitcherIndex,
-            selectedEtalaseIndex,
-            shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList()
-        )
-    }
-
-    override fun onAddButtonProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel) {
-        if(isOwner){
-            val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
-            showErrorToast(sellerViewAtcErrorMessage)
-        } else {
-            if(data.isVariant){
-                AtcVariantHelper.goToAtcVariant(
-                    context = requireContext(),
-                    productId = data.productId,
-                    pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
-                    shopId = shopId,
-                    startActivitResult = this::startActivityForResult,
-                    showQuantityEditor = false
-                )
-            } else {
-                if (isLogin) {
-                    addToCartDirectPurchaseProductWidget(data)
-                } else {
-                    redirectToLoginPage()
-                }
-            }
-        }
-    }
-
-    private fun addToCartDirectPurchaseProductWidget(data: ProductCardDirectPurchaseDataModel) {
         viewModel?.addToCartDirectPurchaseProductWidget(
-            data.productId,
+            productModel,
             shopId,
-            data.minimumOrder,
-            data.stock
+            uiModel,
+            selectedSwitcherIndex,
+            selectedEtalaseIndex
         )
-    }
-
-    override fun onProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel) {
-        goToPDP(
-            UriUtil.buildUri(
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                data.productId
-            )
-        )
-    }
-
-    override fun onSeeMoreClick(etalaseId: String) {
-        redirectToEtalasePage(etalaseId)
     }
 
     private fun redirectToEtalasePage(etalaseId: String) {
@@ -5322,33 +5299,272 @@ open class ShopPageHomeFragment :
         RouteManager.route(context, bannerItemUiModel.appLink)
     }
 
+    override fun onTriggerLoadProductDirectPurchaseWidget(
+        etalaseId: String,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        viewModel?.getDirectPurchaseWidgetProductData(
+            shopId,
+            etalaseId,
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+            selectedSwitcherIndex,
+            selectedEtalaseIndex,
+            shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList()
+        )
+    }
+
     override fun onImpressionDirectPurchaseByEtalaseWidget(
         uiModel: ShopDirectPurchaseByEtalaseUiModel,
         position: Int
     ) {
         val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        val etalaseGroupName = uiModel.widgetData.titleList.firstOrNull()?.title.orEmpty()
         val etalaseId = uiModel.widgetData.titleList.firstOrNull()?.etalaseList?.firstOrNull()?.etalaseId.orEmpty()
         sendImpressionDirectPurchaseByEtalaseWidget(
             totalEtalaseGroup,
+            etalaseGroupName,
             etalaseId,
             position,
             uiModel.widgetId
         )
     }
 
+    override fun onClickEtalaseGroupDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        widgetPosition: Int,
+        selectedSwitcherIndex: Int
+    ) {
+        val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.title.orEmpty()
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.etalaseList?.firstOrNull()?.etalaseId.orEmpty()
+        val widgetId = uiModel.widgetId
+        sendClickEtalaseGroupDirectPurchaseWidgetTracker(
+            etalaseGroupName,
+            etalaseId,
+            ShopUtil.getActualPositionFromIndex(widgetPosition),
+            widgetId
+        )
+    }
+
+    override fun onClickDirectPurchaseWidgetSeeMore(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(
+            selectedSwitcherIndex
+        )?.etalaseList?.getOrNull(selectedEtalaseIndex)?.etalaseId.orEmpty()
+        redirectToEtalasePage(etalaseId)
+    }
+
+    override fun onClickEtalaseDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        widgetPosition: Int,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(
+            selectedSwitcherIndex
+        )?.etalaseList?.getOrNull(selectedEtalaseIndex)?.etalaseId.orEmpty()
+        val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(
+            selectedSwitcherIndex
+        )?.title.orEmpty()
+        val widgetId = uiModel.widgetId
+        val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        sendClickEtalaseDirectPurchaseWidgetTracker(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            widgetId,
+            widgetPosition
+        )
+    }
+
+    private fun sendClickEtalaseDirectPurchaseWidgetTracker(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        widgetId: String,
+        widgetPosition: Int
+    ) {
+        shopPageHomeTracking.clickEtalaseDirectPurchaseWidget(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            widgetId,
+            widgetPosition,
+            shopId,
+            userId
+        )
+    }
+
+    private fun sendClickEtalaseGroupDirectPurchaseWidgetTracker(
+        etalaseGroupName: String,
+        etalaseId: String,
+        widgetPosition: Int,
+        widgetId: String
+    ) {
+        shopPageHomeTracking.sendClickEtalaseGroupDirectPurchaseWidget(
+            etalaseGroupName,
+            etalaseId,
+            widgetPosition,
+            widgetId,
+            shopId,
+            userId
+        )
+    }
+
     private fun sendImpressionDirectPurchaseByEtalaseWidget(
         totalEtalaseGroup: Int,
+        etalaseGroupName: String,
         etalaseId: String,
         position: Int,
         widgetId: String
     ) {
         shopPageHomeTracking.impressionDirectPurchaseByEtalaseWidget(
             totalEtalaseGroup,
+            etalaseGroupName,
             etalaseId,
             position,
             widgetId,
             shopId,
             userId
         )
+    }
+
+    override fun onClickAtcProductDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        productModel: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        if(isOwner){
+            val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
+            showErrorToast(sellerViewAtcErrorMessage)
+        } else {
+            if(productModel.isVariant){
+                AtcVariantHelper.goToAtcVariant(
+                    context = requireContext(),
+                    productId = productModel.productId,
+                    pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
+                    shopId = shopId,
+                    startActivitResult = this::startActivityForResult,
+                    showQuantityEditor = false
+                )
+            } else {
+                if (isLogin) {
+                    addToCartDirectPurchaseProductWidget(
+                        uiModel,
+                        productModel,
+                        selectedSwitcherIndex,
+                        selectedEtalaseIndex
+                    )
+                } else {
+                    redirectToLoginPage()
+                }
+            }
+        }
+    }
+
+    override fun onImpressionProductDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        productModel: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int,
+        productPosition: Int
+    ) {
+        val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.title.orEmpty()
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(selectedEtalaseIndex)?.etalaseList?.firstOrNull()?.etalaseId.orEmpty()
+        sendImpressionProductDirectPurchaseWidgetTracker(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            productPosition,
+            productModel.productId,
+            productModel.name,
+            productModel.isVariant,
+            productModel.price
+        )
+    }
+
+    private fun sendImpressionProductDirectPurchaseWidgetTracker(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        productPosition: Int,
+        productId: String,
+        productName: String,
+        isVariant: Boolean,
+        price: String
+    ) {
+        shopPageHomeTracking.impressionProductDirectPurchaseWidget(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            productPosition,
+            productId,
+            productName,
+            isVariant,
+            price,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onClickProductDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        productModel: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int,
+        productPosition: Int
+    ) {
+        val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.title.orEmpty()
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(selectedEtalaseIndex)?.etalaseList?.firstOrNull()?.etalaseId.orEmpty()
+        sendClickProductDirectPurchaseWidgetTracker(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            productPosition,
+            productModel.productId,
+            productModel.name,
+            productModel.isVariant,
+            productModel.price
+        )
+        goToPDP(
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productModel.productId
+            )
+        )
+    }
+
+    private fun sendClickProductDirectPurchaseWidgetTracker(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        productPosition: Int,
+        productId: String,
+        productName: String,
+        isVariant: Boolean,
+        price: String
+    ) {
+        shopPageHomeTracking.clickProductDirectPurchaseWidget(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            productPosition,
+            productId,
+            productName,
+            isVariant,
+            price,
+            shopId,
+            userId
+        )
+    }
+
+    private fun getShopHeaderBottomViewContainer(): View?{
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBottomViewContainer()
     }
 }

@@ -12,6 +12,7 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.LayoutShopHomeDirectPurchaseByEtalaseBinding
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
+import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
@@ -22,7 +23,8 @@ class ShopHomeDirectPurchasedByEtalaseViewHolder(
     itemView: View,
     private val shopHomeListener: ShopHomeListener,
     private val widgetListener: ShopHomeDirectPurchaseByEtalaseWidgetListener
-) : AbstractViewHolder<ShopDirectPurchaseByEtalaseUiModel>(itemView) {
+) : AbstractViewHolder<ShopDirectPurchaseByEtalaseUiModel>(itemView),
+    DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener {
 
     companion object {
         @LayoutRes
@@ -35,8 +37,10 @@ class ShopHomeDirectPurchasedByEtalaseViewHolder(
         viewBinding?.layoutPlaceholder?.containerPlaceholder
     private val directPurchaseWidget: DirectPurchaseWidgetView? =
         viewBinding?.shopDirectPurchaseWidget
+    private var element: ShopDirectPurchaseByEtalaseUiModel? = null
 
     override fun bind(element: ShopDirectPurchaseByEtalaseUiModel) {
+        this.element = element
         if(element.isWidgetShowPlaceholder()){
             showPlaceholderView()
         } else {
@@ -63,7 +67,7 @@ class ShopHomeDirectPurchasedByEtalaseViewHolder(
     private fun setDirectPurchaseWidgetData(element: ShopDirectPurchaseByEtalaseUiModel) {
         containerPlaceholder?.hide()
         directPurchaseWidget?.apply {
-            setListener(shopHomeListener.getShopPageHomeFragment())
+            setListener(this@ShopHomeDirectPurchasedByEtalaseViewHolder)
             if (element.header.isOverrideTheme) {
                 setColor(
                     ColorPallete(
@@ -97,6 +101,99 @@ class ShopHomeDirectPurchasedByEtalaseViewHolder(
                 setAdaptiveLabelDiscount(true)
             }
             setData(element.widgetData)
+        }
+    }
+
+    override fun triggerLoadProductDirectPurchase(
+        etalaseId: String,
+        timestampLastCaptured: Long,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        widgetListener.onTriggerLoadProductDirectPurchaseWidget(
+            etalaseId,
+            selectedSwitcherIndex,
+            selectedEtalaseIndex
+        )
+    }
+
+    override fun onAddButtonProductDirectPurchaseClick(
+        data: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        element?.let {
+            widgetListener.onClickAtcProductDirectPurchaseWidget(
+                it,
+                data,
+                selectedSwitcherIndex,
+                selectedEtalaseIndex
+            )
+        }
+    }
+
+    override fun onSeeMoreClick(
+        etalaseId: String,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        element?.let {
+            widgetListener.onClickDirectPurchaseWidgetSeeMore(
+                it,
+                selectedSwitcherIndex,
+                selectedEtalaseIndex
+            )
+        }
+    }
+
+    override fun onEtalaseGroupClicked(selectedSwitcherIndex: Int) {
+        element?.let {
+            widgetListener.onClickEtalaseGroupDirectPurchaseWidget(it, bindingAdapterPosition, selectedSwitcherIndex)
+        }
+    }
+
+    override fun onEtalaseClicked(selectedSwitcherIndex: Int, selectedEtalaseIndex: Int) {
+        element?.let {
+            widgetListener.onClickEtalaseDirectPurchaseWidget(
+                it,
+                bindingAdapterPosition,
+                selectedSwitcherIndex,
+                selectedEtalaseIndex
+            )
+        }
+    }
+    override fun onProductDirectPurchaseImpression(
+        data: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int,
+        productPosition: Int
+    ) {
+        element?.let {
+            widgetListener.onImpressionProductDirectPurchaseWidget(
+                it,
+                data,
+                selectedSwitcherIndex,
+                selectedEtalaseIndex,
+                productPosition
+            )
+        }
+    }
+
+
+    override fun onProductDirectPurchaseClick(
+        data: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int,
+        productPosition: Int
+    ) {
+        element?.let {
+            widgetListener.onClickProductDirectPurchaseWidget(
+                it,
+                data,
+                selectedSwitcherIndex,
+                selectedEtalaseIndex,
+                productPosition
+            )
         }
     }
 

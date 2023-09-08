@@ -14,12 +14,12 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.ColorPallete
 import com.tokopedia.common.customview.ColorVariantLinearLayout
-import com.tokopedia.common.setRetainBackgroundColor
 import com.tokopedia.common.setRetainCardBackgroundColor
 import com.tokopedia.common.setRetainColorFilter
 import com.tokopedia.common.setRetainTextColor
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -27,7 +27,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtilExt.setAdaptiveLabelDiscountColor
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -41,7 +40,15 @@ class ProductDirectPurchaseViewHolder private constructor() {
     interface ProductDirectPurchaseContentVHListener {
 
         fun onAddButtonProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel)
-        fun onProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel)
+        fun onProductDirectPurchaseClick(
+            data: ProductCardDirectPurchaseDataModel,
+            productPosition: Int
+        )
+
+        fun onProductDirectPurchaseImpression(
+            data: ProductCardDirectPurchaseDataModel,
+            productPosition: Int
+        )
     }
 
     interface ProductDirectPurchaseErrorVHListener {
@@ -207,7 +214,10 @@ class ProductDirectPurchaseViewHolder private constructor() {
 
             addButtonView.setOnClickListener { listener.onAddButtonProductDirectPurchaseClick(data) }
 
-            itemView.setOnClickListener { listener.onProductDirectPurchaseClick(data) }
+            itemView.setOnClickListener { listener.onProductDirectPurchaseClick(data, bindingAdapterPosition) }
+            itemView.addOnImpressionListener(data){
+                listener.onProductDirectPurchaseImpression(data, bindingAdapterPosition)
+            }
         }
 
 
