@@ -33,7 +33,7 @@
                 android:id="@+id/fl_illustration_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_marginTop="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/topTicker">
@@ -45,7 +45,6 @@
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/thank_you_page_success_illustration"
-                    android:scaleType="centerCrop"
                     android:visibility="visible" />
 
                 <com.airbnb.lottie.LottieAnimationView
