@@ -5,9 +5,5 @@
     <string name="stories_creation_add_product">Tambah Produk</string>
     <string name="stories_creation_upload">Upload</string>
     <string name="stories_creation_selected_product_template">Produk terpilih (%d)</string>
-    <string name="stories_creation_too_much_title">Oops, kamu sudah terlalu banyak upload story</string>
-    <string name="stories_creation_too_much_subtitle">Kamu tetap bisa upload lebih dari 30 Story, tapi yang terlama akan kamu hapus, ya.</string>
-    <string name="stories_creation_create_stories">Buat Story</string>
-    <string name="stories_creation_back">Kembali</string>
     <string name="stories_creation_show_duration">Durasi Tampil</string>
 </resources>

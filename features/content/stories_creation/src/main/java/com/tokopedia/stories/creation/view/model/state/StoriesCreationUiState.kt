@@ -7,14 +7,17 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
  */
 data class StoriesCreationUiState(
     val mediaFilePath: String,
+    val storiesId: String,
+    val config: StoriesManualConfiguration,
     val accountList: List<ContentAccountUiModel>,
     val selectedAccount: ContentAccountUiModel,
-    val config: StoriesManualConfiguration,
 ) {
     companion object {
         val Empty: StoriesCreationUiState
             get() = StoriesCreationUiState(
                 mediaFilePath = "",
+                storiesId = "",
+                config = StoriesManualConfiguration.Empty,
                 accountList = listOf(
                     ContentAccountUiModel(
                         id = "123",
@@ -37,7 +40,6 @@ data class StoriesCreationUiState(
                     badge = "",
                     enable = true,
                 ),
-                config = StoriesManualConfiguration.Empty,
             )
     }
 }
@@ -46,12 +48,36 @@ data class StoriesCreationUiState(
 data class StoriesManualConfiguration(
     val maxProductTag: Int,
     val showDuration: String,
+    val maxStories: MaxStories,
 ) {
+
+    data class MaxStories(
+        val isLimitReached: Boolean,
+        val imageUrl: String,
+        val title: String,
+        val description: String,
+        val primaryText: String,
+        val secondaryText: String,
+    ) {
+        companion object {
+            val Empty: MaxStories
+                get() = MaxStories(
+                    isLimitReached = false,
+                    imageUrl = "",
+                    title = "",
+                    description = "",
+                    primaryText = "",
+                    secondaryText = "",
+                )
+        }
+    }
+
     companion object {
         val Empty: StoriesManualConfiguration
             get() = StoriesManualConfiguration(
                 maxProductTag = 0,
                 showDuration = "24 Jam",
+                maxStories = MaxStories.Empty,
             )
     }
 }
