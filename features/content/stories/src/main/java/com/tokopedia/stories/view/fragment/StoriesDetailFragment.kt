@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.stories.analytic.StoriesAnalytic
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
@@ -40,7 +41,9 @@ import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
+class StoriesDetailFragment @Inject constructor(
+    private val analytic: StoriesAnalytic,
+) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesDetailBinding? = null
     private val binding: FragmentStoriesDetailBinding

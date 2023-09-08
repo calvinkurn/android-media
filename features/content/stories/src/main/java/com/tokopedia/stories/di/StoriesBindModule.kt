@@ -1,5 +1,7 @@
 package com.tokopedia.stories.di
 
+import com.tokopedia.stories.analytic.StoriesAnalytic
+import com.tokopedia.stories.analytic.StoriesAnalyticImpl
 import com.tokopedia.stories.data.mapper.StoriesMapper
 import com.tokopedia.stories.data.mapper.StoriesMapperImpl
 import com.tokopedia.stories.data.repository.StoriesRepository
@@ -17,5 +19,9 @@ abstract class StoriesBindModule {
     @Binds
     @StoriesScope
     abstract fun bindStoriesRepository(repository: StoriesRepositoryImpl): StoriesRepository
+
+    @Binds
+    @StoriesScope
+    abstract fun bindStoriesAnalytic(analytic: StoriesAnalyticImpl): StoriesAnalytic
 
 }

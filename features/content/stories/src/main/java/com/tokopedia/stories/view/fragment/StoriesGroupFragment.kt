@@ -14,6 +14,7 @@ import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.stories.analytic.StoriesAnalytic
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
@@ -34,6 +35,7 @@ import javax.inject.Inject
 
 class StoriesGroupFragment @Inject constructor(
     private val viewModelFactory: StoriesViewModelFactory.Creator,
+    private val analytic: StoriesAnalytic,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesGroupBinding? = null
