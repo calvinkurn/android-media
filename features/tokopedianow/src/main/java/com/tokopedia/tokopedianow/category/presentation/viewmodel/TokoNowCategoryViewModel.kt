@@ -43,13 +43,13 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Compan
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
+import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
-import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -120,7 +120,10 @@ class TokoNowCategoryViewModel @Inject constructor(
      * -- override function section --
      */
 
-    override suspend fun loadFirstPage(tickerList: List<TickerData>) {
+    override val tickerPage: String
+        get() = GetTargetedTickerUseCase.CATEGORY_PAGE
+
+    override suspend fun loadFirstPage(tickerData: GetTickerData) {
         val warehouses = addressData.getWarehousesData()
         val detailResponse = getCategoryDetailUseCase.execute(
             categoryIdL1 = categoryIdL1,
@@ -141,7 +144,7 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
         visitableList.addTicker(
             detailResponse = detailResponse,
-            tickerList = tickerList
+            tickerList = tickerData.tickerList
         )
         visitableList.addCategoryTitle(
             detailResponse = detailResponse

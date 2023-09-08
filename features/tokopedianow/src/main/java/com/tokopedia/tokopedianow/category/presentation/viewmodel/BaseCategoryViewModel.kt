@@ -22,6 +22,7 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreen
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
@@ -30,7 +31,6 @@ import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
-import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
@@ -67,14 +67,13 @@ abstract class BaseCategoryViewModel(
 
     protected val visitableList = mutableListOf<Visitable<*>>()
 
-    protected val _onPageError = MutableLiveData<Throwable>()
-
     private val _openScreenTracker: MutableLiveData<CategoryOpenScreenTrackerModel> = MutableLiveData()
     private val _visitableListLiveData = MutableLiveData<List<Visitable<*>>>()
     private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData()
     private val _refreshState = MutableLiveData<Unit>()
     private val _outOfCoverageState = MutableLiveData<Unit>()
     private val _isPageLoading = MutableLiveData<Boolean>()
+    private val _onPageError = MutableLiveData<Throwable>()
 
     val openScreenTracker: LiveData<CategoryOpenScreenTrackerModel> = _openScreenTracker
     val visitableListLiveData: LiveData<List<Visitable<*>>> = _visitableListLiveData
@@ -93,8 +92,10 @@ abstract class BaseCategoryViewModel(
     var currentCategoryId = String.EMPTY
     var queryParamMap: HashMap<String, String>? = hashMapOf()
 
+    protected abstract val tickerPage: String
+
     protected abstract suspend fun loadFirstPage(
-        tickerList: List<TickerData>
+        tickerData: GetTickerData
     )
 
     protected open suspend fun loadNextPage() {
@@ -257,17 +258,17 @@ abstract class BaseCategoryViewModel(
         getMiniCart()
     }
 
-    private suspend fun getTickerData(): List<TickerData> {
+    private suspend fun getTickerData(): GetTickerData {
         val tickerData = getTickerDataAsync(
             warehouseId = getWarehouseId(),
-            page = GetTargetedTickerUseCase.CATEGORY_PAGE
+            page = tickerPage
         ).await()
 
         return if(tickerData != null) {
-            hasBlockedAddToCart = tickerData.first
-            tickerData.second
+            hasBlockedAddToCart = tickerData.blockAddToCart
+            tickerData
         } else {
-            emptyList()
+            GetTickerData()
         }
     }
 

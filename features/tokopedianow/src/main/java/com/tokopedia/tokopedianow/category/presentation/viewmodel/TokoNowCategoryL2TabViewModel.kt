@@ -28,6 +28,7 @@ import com.tokopedia.productcard.compact.productcard.presentation.uimodel.Produc
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2QuickFilterMapper
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToCategoryTabLayout
@@ -37,10 +38,12 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.upd
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateModel
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
@@ -114,6 +117,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private var page = FIRST_PAGE
     private var categoryIdL1: String = ""
     private var categoryIdL2: String = ""
+    private var tickerData: GetTickerData = GetTickerData()
     private var components: List<Component> = emptyList()
     private var filterBottomSheetOpened: Boolean = false
 
@@ -135,16 +139,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         updateVisitableListLiveData()
     }
 
-    fun onViewCreated(
-        categoryIdL1: String,
-        categoryIdL2: String,
-        components: List<Component>
-    ) {
-        setCategoryData(
-            categoryIdL1 = categoryIdL1,
-            categoryIdL2 = categoryIdL2,
-            components = components
-        )
+    fun onViewCreated(data: CategoryL2TabData, ) {
+        setCategoryData(data)
         initAffiliateCookie()
         loadFirstPage()
         getMiniCart()
@@ -288,14 +284,15 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         applyFilter(option, false)
     }
 
-    private fun setCategoryData(
-        categoryIdL1: String,
-        categoryIdL2: String,
-        components: List<Component>
-    ) {
-        this.categoryIdL1 = categoryIdL1
-        this.categoryIdL2 = categoryIdL2
-        this.components = components
+    private fun setCategoryData(data: CategoryL2TabData) {
+        val tickerData = data.tickerData
+        val blockAddToCart = tickerData.blockAddToCart
+
+        this.categoryIdL1 = data.categoryIdL1
+        this.categoryIdL2 = data.categoryIdL2
+        this.tickerData = tickerData
+        this.components = data.componentList
+        this.hasBlockedAddToCart = blockAddToCart
     }
 
     private fun loadFirstPage() {
@@ -306,6 +303,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
             if(productList.isNotEmpty()) {
                 visitableList.clear()
+                visitableList.addTicker(categoryIdL2, tickerData)
                 visitableList.mapToCategoryTabLayout(components)
                 visitableList.filterNotLoadedLayout().forEach {
                     when (it) {

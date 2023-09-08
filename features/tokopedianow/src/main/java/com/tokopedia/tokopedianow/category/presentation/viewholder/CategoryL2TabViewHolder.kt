@@ -57,9 +57,8 @@ class CategoryL2TabViewHolder(
 
     private fun setupViewPager(data: CategoryL2TabUiModel) {
         binding?.apply {
-            data.categoryL2Ids.forEach {
-                val fragment = TokoNowCategoryL2TabFragment
-                    .newInstance(data.categoryIdL1, it, data.componentList)
+            data.tabList.forEach {
+                val fragment = TokoNowCategoryL2TabFragment.newInstance(it)
                 viewPagerAdapter?.addFragment(fragment)
             }
             viewPager.currentItem = data.selectedTabPosition

@@ -258,9 +258,8 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
     private fun addTabFragments(data: CategoryL2TabUiModel) {
         binding?.apply {
             val selectedTabPosition = data.selectedTabPosition
-            data.categoryL2Ids.forEach {
-                val fragment = TokoNowCategoryL2TabFragment
-                    .newInstance(data.categoryIdL1, it, data.componentList)
+            data.tabList.forEach { tab ->
+                val fragment = TokoNowCategoryL2TabFragment.newInstance(tab)
                 fragment.categoryL2MainView = this@TokoNowCategoryL2Fragment
                 viewPagerAdapter.addFragment(fragment)
             }

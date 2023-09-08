@@ -32,6 +32,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2Shimme
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -42,7 +43,6 @@ import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.mapCategoryMenuData
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFeedbackFieldToggleUseCase
-import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import javax.inject.Inject
@@ -85,11 +85,16 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         private const val CATEGORY_LEVEL_DEPTH = 1
     }
 
+    override val tickerPage: String
+        get() = GetTargetedTickerUseCase.CATEGORY_L2
+
+    val showEmptyState: LiveData<Boolean>
+        get() = _showEmptyState
+    val categoryTab: LiveData<CategoryL2TabUiModel>
+        get() = _categoryTab
+
     private val _showEmptyState = MutableLiveData<Boolean>()
     private val _categoryTab = MutableLiveData<CategoryL2TabUiModel>()
-
-    val showEmptyState: LiveData<Boolean> = _showEmptyState
-    val categoryTab: LiveData<CategoryL2TabUiModel> = _categoryTab
 
     private var lastVisitableList: List<Visitable<*>> = emptyList()
 
@@ -97,7 +102,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         miniCartSource = MiniCartSource.TokonowCategoryPage
     }
 
-    override suspend fun loadFirstPage(tickerList: List<TickerData>) {
+    override suspend fun loadFirstPage(tickerData: GetTickerData) {
         val warehouses = addressData.getWarehousesData()
         val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL2)
         val getCategoryDetailResponse = getCategoryDetailUseCase.execute(warehouses, categoryIdL1)
@@ -112,6 +117,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         val categoryTab = CategoryL2Mapper.mapToCategoryTab(
             categoryIdL1 = categoryIdL1,
             categoryIdL2 = categoryIdL2,
+            tickerData = tickerData,
             getCategoryLayoutResponse = getCategoryLayoutResponse,
             categoryDetailResponse = getCategoryDetailResponse
         )

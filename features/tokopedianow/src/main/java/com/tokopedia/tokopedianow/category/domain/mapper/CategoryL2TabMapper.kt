@@ -1,8 +1,6 @@
 package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -21,8 +19,10 @@ import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.updateProductAdsQuantity
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 
 object CategoryL2TabMapper {
@@ -44,27 +44,19 @@ object CategoryL2TabMapper {
         }
     }
 
-    private fun MutableList<Visitable<*>>.addQuickFilter(response: Component) {
-        add(CategoryQuickFilterUiModel(id = response.id))
-    }
-
-    private fun MutableList<Visitable<*>>.addProductList(response: Component) {
-        add(CategoryProductListUiModel(id = response.id))
-    }
-
-    fun MutableList<Visitable<*>>.mapToQuickFilter(
-        quickFilterUiModel: CategoryQuickFilterUiModel,
-        quickFilterResponse: DynamicFilterModel,
-        categoryFilterResponse: DynamicFilterModel,
-        filterController: FilterController
+    fun MutableList<Visitable<*>>.addTicker(
+        categoryIdL2: String,
+        tickerData: GetTickerData?
     ) {
-        updateItemById(quickFilterUiModel.id) {
-            CategoryL2QuickFilterMapper.mapQuickFilter(
-                quickFilterUiModel = quickFilterUiModel,
-                quickFilterResponse = quickFilterResponse,
-                categoryFilterResponse = categoryFilterResponse,
-                filterController = filterController
-            )
+        if(tickerData == null) return
+        val tickerList = tickerData.tickerList
+        val oosTickerList = tickerData.oosTickerList
+        val oosCategoryIds = tickerData.oosCategoryIds
+
+        if(oosTickerList.isNotEmpty() && oosCategoryIds.contains(categoryIdL2)) {
+            add(TokoNowTickerUiModel(id = CategoryStaticLayoutId.TICKER_WIDGET_ID, tickers = oosTickerList))
+        } else {
+            add(TokoNowTickerUiModel(id = CategoryStaticLayoutId.TICKER_WIDGET_ID, tickers = tickerList))
         }
     }
 
@@ -136,6 +128,14 @@ object CategoryL2TabMapper {
 
     fun List<Component>.filterTabComponents(): List<Component> {
         return filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }
+    }
+
+    private fun MutableList<Visitable<*>>.addQuickFilter(response: Component) {
+        add(CategoryQuickFilterUiModel(id = response.id))
+    }
+
+    private fun MutableList<Visitable<*>>.addProductList(response: Component) {
+        add(CategoryProductListUiModel(id = response.id))
     }
 
     private fun MutableList<Visitable<*>>.getItemIndex(visitableId: String?): Int? {

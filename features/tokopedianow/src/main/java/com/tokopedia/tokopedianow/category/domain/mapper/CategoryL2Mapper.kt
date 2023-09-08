@@ -14,9 +14,11 @@ import com.tokopedia.tokopedianow.category.presentation.constant.CategoryCompone
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateModel
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2HeaderUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -137,6 +139,7 @@ object CategoryL2Mapper {
     fun mapToCategoryTab(
         categoryIdL1: String,
         categoryIdL2: String,
+        tickerData: GetTickerData,
         getCategoryLayoutResponse: CategoryGetDetailModular?,
         categoryDetailResponse: CategoryDetailResponse?
     ): CategoryL2TabUiModel {
@@ -155,12 +158,19 @@ object CategoryL2Mapper {
             DEFAULT_INDEX
         }
 
+        val categoryL2TabList = categoryL2Ids.map {
+            CategoryL2TabData(
+                componentList = tabComponents,
+                categoryIdL1 = categoryIdL1,
+                categoryIdL2 = it,
+                tickerData = tickerData
+            )
+        }
+
         return CategoryL2TabUiModel(
             id = id,
             titleList = categoryNameList,
-            componentList = tabComponents,
-            categoryIdL1 = categoryIdL1,
-            categoryL2Ids = categoryL2Ids,
+            tabList = categoryL2TabList,
             selectedTabPosition = selectedTabPosition,
             state = TokoNowLayoutState.LOADED
         )

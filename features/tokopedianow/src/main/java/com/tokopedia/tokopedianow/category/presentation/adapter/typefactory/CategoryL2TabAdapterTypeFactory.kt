@@ -15,11 +15,14 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuick
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowAdsCarouselTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductItemTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProgressBarTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTickerTypeFactory
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowAdsCarouselViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProgressBarViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
@@ -31,6 +34,7 @@ class CategoryL2TabAdapterTypeFactory(
     private var productCardCompactListener: ProductCardCompactListener?,
     private var similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?,
 ): BaseAdapterTypeFactory(),
+   TokoNowTickerTypeFactory,
    CategoryL2TabAdapterFactory,
    TokoNowAdsCarouselTypeFactory,
    TokoNowProductItemTypeFactory,
@@ -40,6 +44,8 @@ class CategoryL2TabAdapterTypeFactory(
     override fun type(uiModel: TokoNowAdsCarouselUiModel): Int = TokoNowAdsCarouselViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowProgressBarUiModel): Int = TokoNowProgressBarViewHolder.LAYOUT
+
+    override fun type(uiModel: TokoNowTickerUiModel): Int = TokoNowTickerViewHolder.LAYOUT
     // endregion
 
     // region Category Component
@@ -61,6 +67,9 @@ class CategoryL2TabAdapterTypeFactory(
             }
             TokoNowProgressBarViewHolder.LAYOUT -> {
                 TokoNowProgressBarViewHolder(view)
+            }
+            TokoNowTickerViewHolder.LAYOUT -> {
+                TokoNowTickerViewHolder(view)
             }
             // endregion
 

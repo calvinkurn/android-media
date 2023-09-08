@@ -21,6 +21,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.ProductCartItem
@@ -172,7 +173,7 @@ open class BaseTokoNowViewModel(
     suspend fun getTickerDataAsync(
         warehouseId: String,
         page: String
-    ): Deferred<Pair<Boolean, List<TickerData>>?> {
+    ): Deferred<GetTickerData?> {
         return asyncCatchError(block = {
             val tickerList = getTargetedTickerUseCase.execute(
                 warehouseId = warehouseId,

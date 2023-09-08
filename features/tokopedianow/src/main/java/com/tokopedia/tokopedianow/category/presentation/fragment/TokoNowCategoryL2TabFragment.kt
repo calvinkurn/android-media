@@ -33,10 +33,10 @@ import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.Pro
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryL2TabComponent
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
-import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryL2TabAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2TabDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2TabAdapterTypeFactory
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2MainView
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2TabViewModel
@@ -58,15 +58,9 @@ import javax.inject.Inject
 open class TokoNowCategoryL2TabFragment : Fragment() {
 
     companion object {
-        fun newInstance(
-            categoryIdL1: String = "",
-            categoryIdL2: String = "",
-            components: List<Component>
-        ): TokoNowCategoryL2TabFragment {
+        fun newInstance(data: CategoryL2TabData): TokoNowCategoryL2TabFragment {
             return TokoNowCategoryL2TabFragment().apply {
-                this.categoryIdL1 = categoryIdL1
-                this.categoryIdL2 = categoryIdL2
-                this.components = components
+                this.data = data
             }
         }
 
@@ -106,9 +100,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
 
-    private var categoryIdL1: String = ""
-    private var categoryIdL2: String = ""
-    private var components = listOf<Component>()
+    private var data: CategoryL2TabData = CategoryL2TabData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -207,11 +199,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     private fun onViewCreated() {
-        viewModel.onViewCreated(
-            categoryIdL1 = categoryIdL1,
-            categoryIdL2 = categoryIdL2,
-            components = components
-        )
+        viewModel.onViewCreated(data)
     }
 
     private fun registerActivityResults() {
@@ -257,7 +245,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
             pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
             isTokoNow = true,
             shopId = shopId,
-            trackerCdListName = String.format(TOKONOW_CATEGORY_ORGANIC, categoryIdL2),
+            trackerCdListName = String.format(TOKONOW_CATEGORY_ORGANIC, data.categoryIdL2),
             startActivitResult = { intent, _ ->
                 addToCartVariantResult?.launch(intent)
             }
