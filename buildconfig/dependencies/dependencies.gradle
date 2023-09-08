@@ -110,7 +110,7 @@ ext {
     gojekCourierClientVersion = '0.0.8.1@aar'
     profileInstallerVersion = '1.3.0-alpha01'
     desugarJdkVersion= '1.2.2'
-    laku6SdkVersion = '2.5.18'
+    laku6SdkVersion = '2.5.20'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
@@ -317,7 +317,7 @@ ext {
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:$laku6SdkVersion",
+            laku6Sdk              : "com.github.carousell:laku6-tokopedia-android-sdk:$laku6SdkVersion",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.8.2.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
