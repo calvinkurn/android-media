@@ -41,7 +41,7 @@
                 <ImageView
                     android:id="@+id/ivIllustrationView"
                     android:layout_width="192dp"
-                    android:layout_height="@dimen/thank_success_img_height"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
                     android:maxHeight="144dp"
