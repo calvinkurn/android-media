@@ -749,26 +749,16 @@ class ShopPageProductListResultFragment :
             viewLifecycleOwner
         ) { result ->
             if (result is Success) {
-//                if (shopSharingInShowCaseUiModel !== null) {
-//                    shopSharingInShowCaseUiModel?.let {
-//                        it.shopSnippetUrl = result.data.shopSnippetUrl
-//                        it.shopCoreUrl = result.data.shopCore.url
-//                        it.location = result.data.location
-//                        it.tagline = result.data.shopCore.tagLine
-//                        it.shopStatus = result.data.statusInfo.shopStatus
-//                    }
-//                } else {
-                    shopSharingInShowCaseUiModel = ShopSharingInShowCaseUiModel(
-                        shopId = result.data.shopCore.shopID,
-                        shopName = result.data.shopCore.name,
-                        tagline = result.data.shopCore.tagLine,
-                        shopCoreUrl = result.data.shopCore.url,
-                        shopStatus = result.data.statusInfo.shopStatus,
-                        avatar = result.data.shopAssets.avatar,
-                        location = result.data.location,
-                        shopSnippetUrl = result.data.shopSnippetUrl
-                    )
-//                }
+                shopSharingInShowCaseUiModel = ShopSharingInShowCaseUiModel(
+                    shopId = result.data.shopCore.shopID,
+                    shopName = result.data.shopCore.name,
+                    tagline = result.data.shopCore.tagLine,
+                    shopCoreUrl = result.data.shopCore.url,
+                    shopStatus = result.data.statusInfo.shopStatus,
+                    avatar = result.data.shopAssets.avatar,
+                    location = result.data.location,
+                    shopSnippetUrl = result.data.shopSnippetUrl
+                )
                 showUniversalShareBottomSheet()
             }
         }
