@@ -458,7 +458,8 @@ class PlayAnalytic(
                 KEY_PRODUCT_ID to featuredProduct.id,
                 KEY_PRODUCT_NAME to featuredProduct.title,
                 KEY_PRODUCT_URL to featuredProduct.applink.toString(),
-                KEY_CHANNEL to mChannelName
+                KEY_CHANNEL to mChannelName,
+                Key.trackerId to "8075"
             )
         )
     }

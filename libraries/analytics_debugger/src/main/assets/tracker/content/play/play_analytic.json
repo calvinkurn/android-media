@@ -581,7 +581,8 @@
       "channel": ".*",
       "productId": ".*",
       "productName": ".*",
-      "productUrl": ".*"
+      "productUrl": ".*",
+      "trackerId": "8075"
     },
     {
       "eventAction": "click copy on private voucher",
