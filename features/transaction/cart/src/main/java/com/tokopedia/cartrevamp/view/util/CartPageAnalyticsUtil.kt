@@ -97,21 +97,21 @@ object CartPageAnalyticsUtil {
             ConstantTransactionAnalytics.Key.QUANTITY to cartItemHolderData.quantity,
             ConstantTransactionAnalytics.Key.SHOP_ID to cartItemHolderData.shopHolderData.shopId,
             ConstantTransactionAnalytics.Key.SHOP_NAME to cartItemHolderData.shopHolderData.shopName,
-            ConstantTransactionAnalytics.Key.SHOP_TYPE to cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt,
+            ConstantTransactionAnalytics.Key.SHOP_TYPE to cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt
         )
     }
 
-    fun generateCartImpressionAnalytic(mutableSet: MutableSet<CartItemHolderData>): MutableList<Map<String, Any>> {
-        val list = mutableListOf<Map<String, Any>>()
+    fun generateCartImpressionAnalytic(mutableSet: MutableSet<CartItemHolderData>): List<Map<String, Any>> {
+        val data = arrayListOf<Map<String, Any>>()
         mutableSet.forEach {
             val productDataMap = mapOf(
                 ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
                 ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
                 ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
-                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
             )
-            list.add(productDataMap)
+            data.add(productDataMap)
         }
-        return list
+        return data
     }
 }

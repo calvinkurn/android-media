@@ -3901,8 +3901,8 @@ class CartRevampFragment :
     private fun sendCartImpressionAnalytic() {
         val cartItems = viewModel.cartModel.availableCartItemImpressionList
         val analyticData = CartPageAnalyticsUtil.generateCartImpressionAnalytic(cartItems)
-        viewModel.cartModel.availableCartItemImpressionList = mutableSetOf()
         cartPageAnalytics.sendCartImpressionEvent(analyticData, userSession.userId)
+        viewModel.cartModel.availableCartItemImpressionList = mutableSetOf()
     }
 
     private fun sendATCTrackingURL(recommendationItem: RecommendationItem) {

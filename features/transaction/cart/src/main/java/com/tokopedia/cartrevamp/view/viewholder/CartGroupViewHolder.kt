@@ -266,8 +266,7 @@ class CartGroupViewHolder(
                         ConstraintSet.END,
                         0
                     )
-                }
-                else {
+                } else {
                     constraintSet.connect(
                         R.id.image_shop_badge,
                         ConstraintSet.START,
@@ -281,7 +280,7 @@ class CartGroupViewHolder(
                     ConstraintSet.START,
                     R.id.image_shop_badge,
                     ConstraintSet.END,
-                    4
+                    GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
                 )
             } else {
                 if (cartGroupHolderData.isError) {
@@ -292,8 +291,7 @@ class CartGroupViewHolder(
                         ConstraintSet.END,
                         0
                     )
-                }
-                else {
+                } else {
                     constraintSet.connect(
                         R.id.tv_shop_name,
                         ConstraintSet.START,
@@ -327,17 +325,14 @@ class CartGroupViewHolder(
             val iuImageFulfillLayoutParams = binding.iuImageFulfill.layoutParams as MarginLayoutParams
             if (cartGroupHolderData.isError) {
                 iuImageFulfillLayoutParams.marginStart = 0
-            }
-            else {
+            } else {
                 iuImageFulfillLayoutParams.marginStart = GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
             }
-        }
-        else if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
+        } else if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
             val tvFulfillLayoutParams = binding.tvFulfillDistrict.layoutParams as MarginLayoutParams
             if (cartGroupHolderData.isError) {
                 tvFulfillLayoutParams.marginStart = 0
-            }
-            else {
+            } else {
                 tvFulfillLayoutParams.marginStart = GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
             }
         }
