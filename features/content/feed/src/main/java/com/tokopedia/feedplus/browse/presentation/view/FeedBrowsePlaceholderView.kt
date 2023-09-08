@@ -34,7 +34,6 @@ class FeedBrowsePlaceholderView : LinearLayout {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-
     init {
         ViewFeedBrowsePlaceholderBinding.inflate(
             LayoutInflater.from(context),
