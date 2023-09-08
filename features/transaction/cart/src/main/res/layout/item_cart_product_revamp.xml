@@ -315,7 +315,6 @@
                 android:id="@+id/text_product_information"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text_product_name"
                 android:gravity="center_vertical"
                 android:textColor="@color/Unify_YN500"
                 android:visibility="gone"

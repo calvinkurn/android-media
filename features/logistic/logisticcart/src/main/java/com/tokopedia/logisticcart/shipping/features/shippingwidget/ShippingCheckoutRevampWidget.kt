@@ -46,7 +46,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.tokopedia.logisticcart.R as logisticcartR
-import com.tokopedia.purchase_platform.common.R as purchaseplatformcommonR
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShippingCheckoutRevampWidget : ConstraintLayout {
@@ -129,9 +129,9 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     ) {
         binding?.apply {
             if (shippingWidgetUiModel.isShippingBorderRed) {
-                containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_red)
+                containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_red)
             } else {
-                containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_grey)
+                containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_grey)
             }
             if (shippingWidgetUiModel.isTriggerShippingVibrationAnimation) {
                 containerShippingExperience.animate()
@@ -180,7 +180,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateHasErrorShipping.visible()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_grey)
+            containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_grey)
         }
     }
 
@@ -455,7 +455,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.gone()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_grey)
+            containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_grey)
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
@@ -532,7 +532,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             llShippingExperienceStateLoading.root.gone()
             layoutShipmentInsurance.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_grey)
+            containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_grey)
         }
     }
 

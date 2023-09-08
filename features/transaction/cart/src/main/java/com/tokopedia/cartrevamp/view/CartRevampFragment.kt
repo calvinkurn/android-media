@@ -2124,7 +2124,7 @@ class CartRevampFragment :
                 try {
                     super.onLayoutChildren(recycler, state)
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Timber.d(e)
                 }
             }
         }
@@ -4525,7 +4525,7 @@ class CartRevampFragment :
             }
         } catch (e: IllegalStateException) {
             if (GlobalConfig.isAllowDebuggingTools()) {
-                e.printStackTrace()
+                Timber.d(e)
             }
         }
     }
