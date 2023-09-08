@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
 import com.tokopedia.buy_more_get_more.olp.di.component.DaggerBuyMoreGetMoreComponent
+import com.tokopedia.buy_more_get_more.olp.domain.entity.EmptyStateUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
@@ -31,10 +32,11 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.decoration.Produ
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.TncBottomSheet
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
-import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
-import com.tokopedia.buy_more_get_more.olp.utils.Constant
-import com.tokopedia.buy_more_get_more.olp.utils.setDefaultStatusBar
-import com.tokopedia.buy_more_get_more.olp.utils.setTransparentStatusBar
+import com.tokopedia.buy_more_get_more.olp.utils.constant.BundleConstant
+import com.tokopedia.buy_more_get_more.olp.utils.constant.Constant
+import com.tokopedia.buy_more_get_more.olp.utils.extension.setDefaultStatusBar
+import com.tokopedia.buy_more_get_more.olp.utils.extension.setTransparentStatusBar
+import com.tokopedia.buy_more_get_more.olp.utils.tracker.OlpTracker
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
@@ -42,6 +44,8 @@ import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -51,6 +55,10 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -98,6 +106,9 @@ class OfferLandingPageFragment :
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
 
+    @Inject
+    lateinit var tracker: OlpTracker
+
     private val olpAdapter: OlpAdapter?
         get() = adapter as? OlpAdapter
 
@@ -109,6 +120,9 @@ class OfferLandingPageFragment :
 
     private val isLogin: Boolean
         get() = viewModel.isLogin
+
+    private val currentState: OfferInfoForBuyerUiModel.OlpUiState
+        get() = viewModel.currentState
 
     private val olpAdapterTypeFactory by lazy {
         OlpAdapterTypeFactoryImpl(this, this, this)
@@ -166,6 +180,7 @@ class OfferLandingPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         initMiniCart()
         setupObservables()
         setupProductRv()
@@ -175,6 +190,7 @@ class OfferLandingPageFragment :
             isEnabled = true
             setOnRefreshListener { loadInitialData() }
         }
+        tracker.sendOpenScreenEvent()
     }
 
     private fun initMiniCart() {
@@ -254,7 +270,6 @@ class OfferLandingPageFragment :
     }
 
     private fun setupProductList(offerProductList: OfferProductListUiModel) {
-        val currentState = viewModel.currentState
         olpAdapter?.apply {
             updateProductCount(offerProductList.totalProduct)
             setProductListData(offerProductList.productList)
@@ -266,9 +281,27 @@ class OfferLandingPageFragment :
         binding?.header?.apply {
             title = getString(R.string.bmgm_title)
             subTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName.orEmpty()
-            setNavigationOnClickListener { activity?.finish() }
-            cartButton?.setOnClickListener { redirectToCartPage() }
-            moreMenuButton?.setOnClickListener { redirectToMainMenu() }
+            setNavigationOnClickListener {
+                tracker.sendClickBackButtonEvent(
+                    offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                )
+                activity?.finish()
+            }
+            cartButton?.setOnClickListener {
+                tracker.sendClickKeranjangButtonEvent(
+                    offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                )
+                redirectToCartPage()
+            }
+            moreMenuButton?.setOnClickListener {
+                tracker.sendClickBurgerButtonEvent(
+                    offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                )
+                redirectToMainMenu()
+            }
             showWhiteToolbar = false
         }
     }
@@ -322,6 +355,10 @@ class OfferLandingPageFragment :
         when (requestCode) {
             REQUEST_CODE_SORT -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    tracker.sendClickFilterButtonEvent(
+                        currentState.offerIds.toSafeString(),
+                        currentState.warehouseIds.toSafeString()
+                    )
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     renderSortFilter(sortId, sortName)
@@ -350,7 +387,10 @@ class OfferLandingPageFragment :
     }
 
     override fun onSortChipClicked() {
-        val currentState = viewModel.currentState
+        tracker.sendClickFilterDropdownButtonEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         context?.run {
             val intent = ShopProductSortActivity.createIntent(activity, currentState.sortId)
             startActivityForResult(intent, REQUEST_CODE_SORT)
@@ -384,7 +424,7 @@ class OfferLandingPageFragment :
     }
 
     private fun setupTncBottomSheet() {
-        tncBottomSheet = TncBottomSheet.newInstance(viewModel.currentState.tnc)
+        tncBottomSheet = TncBottomSheet.newInstance(currentState.tnc)
     }
 
     private fun setViewState(viewState: Int, status: Status = Status.SUCCESS) {
@@ -392,6 +432,7 @@ class OfferLandingPageFragment :
         swipeRefreshLayout?.isEnabled = true
         when (viewState) {
             VIEW_LOADING -> {
+                activity?.setDefaultStatusBar()
                 binding?.apply {
                     loadingStateOlp.root.visible()
                     statusBar.gone()
@@ -414,27 +455,33 @@ class OfferLandingPageFragment :
                             description = getString(R.string.bmgm_description_error_not_found),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_not_found),
-                            primaryCtaAction = { loadInitialData() }
+                            primaryCtaAction = { loadInitialData() },
+                            imageUrl = TokopediaImageUrl.ILLUSTRATION_SHOP_ETALASE_NOT_FOUND,
+                            isShowProductList = false
                         )
                     }
 
                     Status.OFFER_ALREADY_FINISH -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
-                            description = getString(R.string.bmgm_description_error_ended_promo),
+                            description = getString(R.string.bmgm_description_error_ended_promo, currentState.shopData.shopName),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
-                            primaryCtaAction = { activity?.finish() }
+                            primaryCtaAction = { activity?.finish() },
+                            imageUrl = TokopediaImageUrl.ILLUSTRATION_SHOP_ETALASE_NOT_FOUND,
+                            isShowProductList = true
                         )
                     }
 
                     Status.OOS -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),
-                            description = getString(R.string.bmgm_description_error_out_of_stock),
+                            description = getString(R.string.bmgm_description_error_out_of_stock, currentState.shopData.shopName),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
-                            primaryCtaAction = { activity?.finish() }
+                            primaryCtaAction = { activity?.finish() },
+                            imageUrl = TokopediaImageUrl.ILLUSTRATION_SHOP_ETALASE_NOT_FOUND,
+                            isShowProductList = true
                         )
                     }
 
@@ -444,7 +491,9 @@ class OfferLandingPageFragment :
                             description = getString(R.string.bmgm_description_error_no_internet_connection),
                             errorType = GlobalError.NO_CONNECTION,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_no_internet_connection),
-                            primaryCtaAction = { loadInitialData() }
+                            primaryCtaAction = { loadInitialData() },
+                            imageUrl = TokopediaImageUrl.REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION,
+                            isShowProductList = false
                         )
                     }
 
@@ -454,7 +503,9 @@ class OfferLandingPageFragment :
                             description = getString(R.string.bmgm_description_error_server),
                             errorType = GlobalError.SERVER_ERROR,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_server),
-                            primaryCtaAction = { loadInitialData() }
+                            primaryCtaAction = { loadInitialData() },
+                            imageUrl = TokopediaImageUrl.OLP_SERVER_ERROR_ILLUSTRATION,
+                            isShowProductList = false
                         )
                     }
                 }
@@ -480,21 +531,37 @@ class OfferLandingPageFragment :
         description: String,
         errorType: Int,
         primaryCtaText: String,
-        primaryCtaAction: () -> Unit
+        primaryCtaAction: () -> Unit,
+        imageUrl: String,
+        isShowProductList: Boolean = false
     ) {
         setupToolbarForErrorState()
         binding?.apply {
             loadingStateOlp.root.gone()
             headerBackground.gone()
-            stickyContent.gone()
-            errorPageLarge.apply {
-                visible()
-                setType(errorType)
-                errorTitle.text = title
-                errorDescription.text = description
-                errorAction.text = primaryCtaText
-                setActionClickListener {
-                    primaryCtaAction.invoke()
+            when (isShowProductList) {
+                true -> {
+                    stickyContent.visible()
+                    errorPageLarge.gone()
+                    val emptyStateUiModel = EmptyStateUiModel(
+                        title = title,
+                        description = description,
+                        imageUrl = imageUrl
+                    )
+                    olpAdapter?.submitList(listOf(emptyStateUiModel))
+                }
+                false -> {
+                    stickyContent.gone()
+                    errorPageLarge.apply {
+                        visible()
+                        setType(errorType)
+                        errorTitle.text = title
+                        errorDescription.text = description
+                        errorAction.text = primaryCtaText
+                        setActionClickListener {
+                            primaryCtaAction.invoke()
+                        }
+                    }
                 }
             }
             miniCartView.gone()
@@ -529,17 +596,25 @@ class OfferLandingPageFragment :
     }
 
     override fun onProductCardClicked(productId: Long, productUrl: String) {
+        tracker.sendClickProductCardEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         redirectToPDP(productId, productUrl)
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
+        tracker.sendClickAtcEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         viewModel.processEvent(OlpEvent.AddToCart(product))
     }
 
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {
-        val stringOfferIds = viewModel.currentState.offerIds.joinToString(",")
-        val stringWarehouseIds = viewModel.currentState.warehouseIds.joinToString(",")
-        val shopId = viewModel.currentState.shopData.shopId
+        val stringOfferIds = currentState.offerIds.joinToString(",")
+        val stringWarehouseIds = currentState.warehouseIds.joinToString(",")
+        val shopId = currentState.shopData.shopId
         context?.let {
             AtcVariantHelper.goToAtcVariant(
                 context = it,
@@ -559,14 +634,13 @@ class OfferLandingPageFragment :
     }
 
     private fun fetchMiniCart() {
-        val currentUiState = viewModel.currentState
         val offeringInfo = viewModel.offeringInfo.value
         val offerCount = offeringInfo?.offerings?.firstOrNull()?.tierList?.size.orZero()
         binding?.miniCartView?.fetchData(
-            shopIds = listOf(currentUiState.shopData.shopId),
-            offerIds = currentUiState.offerIds,
-            offerJsonData = currentUiState.offeringJsonData,
-            warehouseIds = currentUiState.warehouseIds,
+            shopIds = listOf(currentState.shopData.shopId),
+            offerIds = currentState.offerIds,
+            offerJsonData = currentState.offeringJsonData,
+            warehouseIds = currentState.warehouseIds,
             offerCount = offerCount
         )
     }
@@ -578,12 +652,26 @@ class OfferLandingPageFragment :
     }
 
     override fun onTncClicked() {
+        tracker.sendClickSnkButtonEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         tncBottomSheet?.apply {
+            setCloseClickListener {
+                tracker.sendClickCloseSnkButtonEvent(
+                    currentState.offerIds.toSafeString(),
+                    currentState.warehouseIds.toSafeString()
+                )
+            }
             show(this@OfferLandingPageFragment)
         }
     }
 
     override fun onShopNameClicked(shopId: Long) {
+        tracker.sendClickShopCtaButtonEvent(
+            currentState.offerIds.toSafeString(),
+            currentState.warehouseIds.toSafeString()
+        )
         redirectToShopPage(shopId)
     }
 
@@ -620,6 +708,30 @@ class OfferLandingPageFragment :
         }
     }
 
+    private fun openShareBottomSheet() {
+        UniversalShareBottomSheet.createInstance().apply {
+            init(object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                }
+
+                override fun onCloseOptionClicked() {
+                }
+            })
+            enableDefaultShareIntent()
+            setMetaData(
+                tnTitle = "",
+                tnImage = ""
+            )
+            setUtmCampaignData(
+                "",
+                "",
+                "",
+                ""
+            )
+            enableAffiliateCommission(AffiliateInput())
+        }.show(childFragmentManager, "")
+    }
+
     private fun setDefaultErrorSelection(throwable: Throwable) {
         when (throwable) {
             is ConnectException, is SocketException, is UnknownHostException -> {
@@ -639,5 +751,9 @@ class OfferLandingPageFragment :
     override fun onRefresh() {
         swipeRefreshLayout?.isRefreshing = true
         swipeRefreshLayout?.isEnabled = false
+    }
+
+    private fun List<Long>.toSafeString(): String {
+        return this.firstOrNull()?.orZero().toString()
     }
 }

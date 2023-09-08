@@ -30,6 +30,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
@@ -43,6 +45,8 @@ class OfferLandingPageViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(OlpUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val mutex = Mutex()
 
     val currentState: OlpUiState
         get() = _uiState.value
@@ -222,13 +226,15 @@ class OfferLandingPageViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val param = AddToCartUseCase.getMinimumParams(
-                    productId = product.productId.toString(),
-                    shopId = currentState.shopData.shopId.orZero().toString()
-                )
-                addToCartUseCase.setParams(param)
-                val result = addToCartUseCase.executeOnBackground()
-                _miniCartAdd.postValue(Success(result))
+                mutex.withLock {
+                    val param = AddToCartUseCase.getMinimumParams(
+                        productId = product.productId.toString(),
+                        shopId = currentState.shopData.shopId.orZero().toString()
+                    )
+                    addToCartUseCase.setParams(param)
+                    val result = addToCartUseCase.executeOnBackground()
+                    _miniCartAdd.postValue(Success(result))
+                }
             },
             onError = {
                 _miniCartAdd.postValue(Fail(it))

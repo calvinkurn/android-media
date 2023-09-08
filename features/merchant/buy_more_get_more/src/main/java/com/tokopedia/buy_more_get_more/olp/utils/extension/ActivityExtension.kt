@@ -1,4 +1,4 @@
-package com.tokopedia.buy_more_get_more.olp.utils
+package com.tokopedia.buy_more_get_more.olp.utils.extension
 
 import android.R.color.transparent
 import android.app.Activity

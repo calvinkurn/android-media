@@ -8,6 +8,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.EmptyStateUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
+import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.EmptyStateViewHolder
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingInfoViewHolder
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductListViewHolder
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductSortingViewHolder
@@ -23,13 +24,14 @@ class OlpAdapterTypeFactoryImpl(
     override fun type(type: OfferInfoForBuyerUiModel) = OfferingInfoViewHolder.LAYOUT
     override fun type(type: OfferProductSortingUiModel) = OfferingProductSortingViewHolder.LAYOUT
     override fun type(type: OfferProductListUiModel.Product) = OfferingProductListViewHolder.LAYOUT
-    override fun type(type: EmptyStateUiModel): Int = 0
+    override fun type(type: EmptyStateUiModel): Int = EmptyStateViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         val viewHolder = when (type) {
             OfferingInfoViewHolder.LAYOUT -> OfferingInfoViewHolder(parent, offeringInfoListener)
             OfferingProductSortingViewHolder.LAYOUT -> OfferingProductSortingViewHolder(parent, sortListener)
             OfferingProductListViewHolder.LAYOUT -> OfferingProductListViewHolder(parent, atcProductListener)
+            EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
         return viewHolder

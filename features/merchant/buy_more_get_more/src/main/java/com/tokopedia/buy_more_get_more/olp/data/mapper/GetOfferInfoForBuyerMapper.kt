@@ -40,7 +40,7 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
                 maxAppliedTier = it.maxAppliedTier,
                 tierList = it.tierList.toTierListUiModel(),
                 shopData = it.shopData.toShopData(),
-                tnc = it.tnc,
+                tnc = it.tnc
             )
         }
     }
@@ -58,6 +58,7 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
             Tier(
                 tierId = it.tierId,
                 level = it.level,
+                tierWording = it.tierWording,
                 rules = it.rules.toRuleListUiModel(),
                 benefits = it.benefits.toBenefitListUiModel(),
                 attributes = it.attributes

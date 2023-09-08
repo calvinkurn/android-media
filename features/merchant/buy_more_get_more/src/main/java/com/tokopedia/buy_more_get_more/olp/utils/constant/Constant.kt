@@ -1,4 +1,4 @@
-package com.tokopedia.buy_more_get_more.olp.utils
+package com.tokopedia.buy_more_get_more.olp.utils.constant
 
 object Constant {
     const val EXT_PARAM_OFFER_ID = "offer_id"

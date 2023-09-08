@@ -41,11 +41,12 @@ class TierListAdapter : RecyclerView.Adapter<TierListAdapter.TierListViewHolder>
             binding?.run {
                 tpgTierInfo.text =
                     MethodChecker.fromHtml(
-                        context.getString(
-                            R.string.bmgm_tier_info_placeholder,
-                            tierInfo.rules.firstOrNull()?.value,
-                            tierInfo.benefits.firstOrNull()?.value
-                        )
+                        tierInfo.tierWording
+//                        context.getString(
+//                            R.string.bmgm_tier_info_placeholder,
+//                            tierInfo.rules.firstOrNull()?.value,
+//                            tierInfo.benefits.firstOrNull()?.value
+//                        )
                     )
                 bulletSymbol.visibleWithCondition(tierList.lastIndex != position)
             }
