@@ -1147,7 +1147,7 @@ class CartRevampFragment :
             cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
             cartAdapter.notifyItemChanged(index)
 
-            val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItemHolderData)
             if (cartGroupHolderData != null) {
                 getGroupProductTicker(cartGroupHolderData, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
             }
@@ -1309,7 +1309,7 @@ class CartRevampFragment :
             cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
             cartAdapter.notifyItemChanged(index)
 
-            val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItemHolderData)
             if (cartGroupHolderData != null) {
                 getGroupProductTicker(cartGroupHolderData, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
             }
@@ -2811,7 +2811,7 @@ class CartRevampFragment :
                         }
                         cartItem.bmGmCartInfoData.bmGmData.offerMessage = listOfferMessage
 
-                        val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItem)
+                        val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItem)
                         cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.discountAmount
                         viewModel.reCalculateSubTotal()
                     }

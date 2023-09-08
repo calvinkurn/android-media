@@ -1325,6 +1325,7 @@ class CartItemViewHolder constructor(
                     }
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
                     binding.itemCartBmgm.bmgmWidgetView.title = offerMessage
+                    binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.bmGmCartInfoData.bmGmData.offerIcon
                     binding.itemCartBmgm.bmgmWidgetView.offerId = data.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
                         actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId)
@@ -1394,6 +1395,7 @@ class CartItemViewHolder constructor(
         private const val PRODUCT_ACTION_MARGIN = 16
         private const val BUNDLING_SEPARATOR_MARGIN_START = 38
         private const val BOTTOM_DIVIDER_MARGIN_START = 114
+        private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
     }

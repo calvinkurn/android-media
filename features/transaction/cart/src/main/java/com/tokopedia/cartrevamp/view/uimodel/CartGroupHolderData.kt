@@ -51,7 +51,7 @@ data class CartGroupHolderData(
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
     var enablerLabel: String = "",
     var isFirstItem: Boolean = false,
-    var isPreviousHasSelectedAmountWidget: Boolean = false
+    var isPreviousHasSelectedAmountWidget: Boolean = false,
     var cartGroupBmGmHolderData: CartGroupBmGmHolderData = CartGroupBmGmHolderData()
 ) {
     val shouldValidateWeight: Boolean
