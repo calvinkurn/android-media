@@ -415,7 +415,7 @@ object ApplinkConstInternalUserPlatform {
      * ### Open Webview with JS that can launch Goto KYC
      *
      * @class       : WebviewWithGotoKycActivity
-     * @Applink     : "tokopedia-android-internal://user/webviewkyc"
+     * @Applink     : "tokopedia-android-internal://user/webview-kyc"
      * @param
      *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
      *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
