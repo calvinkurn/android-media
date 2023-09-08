@@ -161,8 +161,14 @@ class FeedBaseFragment :
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
 
-    private val openFeedBrowseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        // this doesn't work, if the previous `browseAppLink` is empty :(
+    private val swipeFollowingLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        // this doesn't work, bcs the viewmodel doen't survive
+        if (userSession.isLoggedIn) {
+            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+        }
+    }
+    private val openBrowseLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        // this also doesn't work, if the previous `browseAppLink` is empty :(
         if (userSession.isLoggedIn) {
             val metaModel = feedMainViewModel.metaData.value
             RouteManager.route(requireContext(), metaModel.browseApplink)
@@ -317,7 +323,9 @@ class FeedBaseFragment :
                         activeTabSource.tabName == null // not coming from appLink
                     ) {
                         if (position == TAB_SECOND_INDEX) {
-                            openAppLink.launch(ApplinkConst.LOGIN)
+                            swipeFollowingLoginResult.launch(
+                                RouteManager.getIntent(context, ApplinkConst.LOGIN)
+                            )
                         }
                     }
 
@@ -552,7 +560,7 @@ class FeedBaseFragment :
         binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
             feedNavigationAnalytics.sendClickBrowseIconEvent()
             if (!userSession.isLoggedIn) {
-                openFeedBrowseLauncher.launch(
+                openBrowseLoginResult.launch(
                     RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
                 )
             } else {
@@ -611,11 +619,8 @@ class FeedBaseFragment :
             binding.containerFeedTopNav.tyFeedSecondTab.hide()
         }
 
-        if (isJustLoggedIn) {
-            if (userSession.isLoggedIn) {
-                showJustLoggedInToaster()
-            }
-            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+        if (isJustLoggedIn && userSession.isLoggedIn) {
+            showJustLoggedInToaster()
         } else {
             setupActiveTab(tab)
         }
