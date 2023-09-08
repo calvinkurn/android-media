@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.feedplus.detail.FeedDetailViewModel
 import com.tokopedia.feedplus.detail.data.FeedDetailRepository
 import com.tokopedia.feedplus.detail.data.FeedDetailRepositoryImpl
@@ -31,6 +32,7 @@ abstract class FeedDetailBindModule {
     /**
      * Repository
      */
+    @ActivityScope
     @Binds
     abstract fun bindRepository(
         feedDetailRepositoryImpl: FeedDetailRepositoryImpl
