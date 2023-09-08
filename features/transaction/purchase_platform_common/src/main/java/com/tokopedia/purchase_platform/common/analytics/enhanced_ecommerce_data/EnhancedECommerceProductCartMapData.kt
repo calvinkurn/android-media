@@ -166,6 +166,10 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_DIMENSION_57] = if (!shopName.isNullOrBlank()) shopName else ""
     }
 
+    fun setDimension58(isFulfillment: Boolean) {
+        Product[KEY_DIMENSION_58] = isFulfillment.toString()
+    }
+
     fun setDimension59(shopType: String?) {
         Product[KEY_DIMENSION_59] = if (!shopType.isNullOrBlank()) shopType else ""
     }
@@ -206,6 +210,10 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_DIMENSION136] = cartStringGroup
     }
 
+    fun setDimension137(offerId: String) {
+        Product[KEY_DIMENSION137] = offerId
+    }
+
     companion object {
         private const val KEY_NAME = "name"
         private const val KEY_ID = "id"
@@ -231,6 +239,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_DIMENSION_52 = "dimension52"
         private const val KEY_DIMENSION_53 = "dimension53"
         private const val KEY_DIMENSION_57 = "dimension57"
+        private const val KEY_DIMENSION_58 = "dimension58"
         private const val KEY_DIMENSION_59 = "dimension59"
         private const val KEY_DIMENSION_77 = "dimension77"
         private const val KEY_DIMENSION_80 = "dimension80"
@@ -257,6 +266,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_DIMENSION118 = "dimension118"
         private const val KEY_BO_AFFORDABILITY = "dimension119"
         private const val KEY_DIMENSION136 = "dimension136"
+        private const val KEY_DIMENSION137 = "dimension137"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"

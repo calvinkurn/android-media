@@ -47,6 +47,7 @@ object CartPageAnalyticsUtil {
             setDimension45(cartItemHolderData.cartId)
             setDimension54(cartItemHolderData.isFulfillment)
             setDimension53(cartItemHolderData.productOriginalPrice > 0)
+            setDimension58(cartItemHolderData.isFulfillment)
             setProductName(cartItemHolderData.productName)
             setProductID(cartItemHolderData.productId)
             setPrice(cartItemHolderData.productPrice.toString())
@@ -70,6 +71,8 @@ object CartPageAnalyticsUtil {
             setDimension83(cartItemHolderData.freeShippingName)
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
+            setDimension136(cartItemHolderData.cartStringOrder)
+            setDimension137(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId.toString())
             setCampaignId(cartItemHolderData.campaignId)
             if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {
                 val fulfillText =
@@ -97,7 +100,7 @@ object CartPageAnalyticsUtil {
             ConstantTransactionAnalytics.Key.QUANTITY to cartItemHolderData.quantity,
             ConstantTransactionAnalytics.Key.SHOP_ID to cartItemHolderData.shopHolderData.shopId,
             ConstantTransactionAnalytics.Key.SHOP_NAME to cartItemHolderData.shopHolderData.shopName,
-            ConstantTransactionAnalytics.Key.SHOP_TYPE to cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt,
+            ConstantTransactionAnalytics.Key.SHOP_TYPE to cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt
         )
     }
 
@@ -108,7 +111,7 @@ object CartPageAnalyticsUtil {
                 ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
                 ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
                 ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
-                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
             )
             list.add(productDataMap)
         }
