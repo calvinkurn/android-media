@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
+import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
@@ -59,7 +60,7 @@ class FeedBrowseViewModel @Inject constructor(
         when (action) {
             FeedBrowseUiAction.LoadInitialPage -> handleInitialPage()
             is FeedBrowseUiAction.FetchCards -> {
-                handleFetchWidget(action.extraParams, action.widgetId)
+                handleFetchWidget(action.extraParam, action.widgetId)
             }
             is FeedBrowseUiAction.SelectChip -> handleSelectChip(action.model, action.widgetId)
         }
@@ -88,7 +89,7 @@ class FeedBrowseViewModel @Inject constructor(
 
                 slots.forEach { slot ->
                     if (slot is FeedBrowseUiModel.Channel) {
-                        handleFetchWidget(slot.extraParams, slot.id)
+                        handleFetchWidget(slot.extraParam, slot.id)
                     }
                 }
             } catch (err: Throwable) {
@@ -97,9 +98,9 @@ class FeedBrowseViewModel @Inject constructor(
         }
     }
 
-    private fun handleFetchWidget(extraParams: Map<String, Any>, widgetId: String) {
+    private fun handleFetchWidget(extraParam: WidgetRequestModel, widgetId: String) {
         viewModelScope.launch {
-            val response = repository.getWidget(extraParams)
+            val response = repository.getWidget(extraParam)
             updateChannelWidget(widgetId) { prevWidget ->
                 replaceContent(prevWidget, response)
             }
@@ -114,9 +115,11 @@ class FeedBrowseViewModel @Inject constructor(
                         prevWidget.chipUiState.copy(
                             items = prevWidget.chipUiState.items.map {
                                 it.copy(isSelected = it.id == chip.id)
-                            },
+                            }
                         )
-                    } else prevWidget.chipUiState,
+                    } else {
+                        prevWidget.chipUiState
+                    },
                     channelUiState = ChannelUiState.Placeholder
                 )
             }
@@ -125,13 +128,15 @@ class FeedBrowseViewModel @Inject constructor(
 
     private fun updateChannelWidget(
         widgetId: String,
-        onUpdate : (FeedBrowseUiModel.Channel) -> FeedBrowseUiModel // only handle channel for now
+        onUpdate: (FeedBrowseUiModel.Channel) -> FeedBrowseUiModel // only handle channel for now
     ) {
         _widgets.update { existingWidgets ->
             existingWidgets.map { prevWidget ->
                 if (prevWidget is FeedBrowseUiModel.Channel && prevWidget.id == widgetId) {
                     return@map onUpdate(prevWidget)
-                } else prevWidget
+                } else {
+                    prevWidget
+                }
             }
         }
     }
@@ -143,10 +148,14 @@ class FeedBrowseViewModel @Inject constructor(
         return widget.copy(
             chipUiState = if (newContent is ChipUiState) {
                 newContent
-            } else widget.chipUiState,
+            } else {
+                widget.chipUiState
+            },
             channelUiState = if (newContent is ChannelUiState) {
                 newContent
-            } else widget.channelUiState
+            } else {
+                widget.channelUiState
+            }
         )
     }
 }

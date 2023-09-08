@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
+import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.analytic.ImpressionableModel
 
@@ -9,7 +10,7 @@ import com.tokopedia.play.widget.analytic.ImpressionableModel
 data class FeedBrowseChipUiModel(
     val id: String,
     val label: String,
-    val extraParams: Map<String, Any> = emptyMap(),
+    val extraParam: WidgetRequestModel = WidgetRequestModel.Empty,
     val isSelected: Boolean
 ) : ImpressionableModel {
 

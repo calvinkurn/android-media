@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
+import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
@@ -27,6 +28,6 @@ sealed class ChannelUiState : FeedBrowseItemUiModel() {
 
     data class Error(
         val throwable: Throwable,
-        val extraParams: Map<String, Any>? = null
+        val extraParam: WidgetRequestModel? = null
     ) : ChannelUiState()
 }

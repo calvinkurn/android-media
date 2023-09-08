@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
@@ -59,11 +60,11 @@ class FeedBrowseFragment @Inject constructor(
 
     private val channelListener = object : FeedBrowseChannelViewHolder.Listener {
         override fun onRetryClicked(
-            extraParams: Map<String, Any>,
+            extraParam: WidgetRequestModel,
             widgetModel: FeedBrowseUiModel.Channel
         ) {
             viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(extraParams, widgetModel.id)
+                FeedBrowseUiAction.FetchCards(extraParam, widgetModel.id)
             )
         }
 
@@ -134,16 +135,16 @@ class FeedBrowseFragment @Inject constructor(
                 verticalWidgetPosition
             )
             viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(chipModel.extraParams, widgetModel.id)
+                FeedBrowseUiAction.FetchCards(chipModel.extraParam, widgetModel.id)
             )
         }
 
         override fun onWidgetShouldRefresh(
-            extraParams: Map<String, Any>,
+            extraParam: WidgetRequestModel,
             widgetModel: FeedBrowseUiModel.Channel
         ) {
             viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(extraParams, widgetModel.id)
+                FeedBrowseUiAction.FetchCards(extraParam, widgetModel.id)
             )
         }
     }

@@ -5,6 +5,7 @@ import com.tokopedia.content.common.model.ContentItem
 import com.tokopedia.content.common.model.ContentSlotMeta
 import com.tokopedia.content.common.model.FeedXHeaderResponse
 import com.tokopedia.content.common.model.WidgetSlot
+import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
@@ -41,9 +42,7 @@ class FeedBrowseMapper @Inject constructor() {
                 FeedBrowseUiModel.Channel(
                     id = item.id,
                     title = item.title,
-                    extraParams = mapOf(
-                        "group" to item.type
-                    ),
+                    extraParam = WidgetRequestModel(group = item.type),
                     chipUiState = ChipUiState.Placeholder,
                     channelUiState = ChannelUiState.Placeholder
                 )
@@ -75,10 +74,10 @@ class FeedBrowseMapper @Inject constructor() {
             FeedBrowseChipUiModel(
                 id = item.id,
                 label = item.label,
-                extraParams = mapOf(
-                    "group" to item.group,
-                    "source_type" to item.sourceType,
-                    "source_id" to item.sourceId
+                extraParam = WidgetRequestModel(
+                    group = item.group,
+                    sourceType = item.sourceType,
+                    sourceId = item.sourceId
                 ),
                 isSelected = index == 0 // select first chip
             )

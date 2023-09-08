@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.adapter.CenterScrollLayoutManager
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseCardAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
@@ -151,8 +152,8 @@ class FeedBrowseChannelViewHolder(
             is ChannelUiState.Error -> {
                 showErrorView()
                 errorView.setOnClickListener {
-                    val extraParams = channelUiState.extraParams ?: item.extraParams
-                    onRetryClicked(extraParams, item)
+                    val extraParam = channelUiState.extraParam ?: item.extraParam
+                    onRetryClicked(extraParam, item)
                 }
             }
         }
@@ -224,9 +225,9 @@ class FeedBrowseChannelViewHolder(
         binding.feedBrowsePlaceholder.removeAllViews()
     }
 
-    private fun onRetryClicked(extraParams: Map<String, Any>, widgetModel: FeedBrowseUiModel.Channel) {
+    private fun onRetryClicked(extraParam: WidgetRequestModel, widgetModel: FeedBrowseUiModel.Channel) {
         errorView.startAnimating()
-        listener.onRetryClicked(extraParams, widgetModel)
+        listener.onRetryClicked(extraParam, widgetModel)
     }
 
     override fun onWidgetShouldRefresh() {
@@ -234,15 +235,15 @@ class FeedBrowseChannelViewHolder(
         val chipUiState = widgetData.chipUiState
         val extraParams = if (chipUiState is ChipUiState.Data) {
             val selectedChip = chipUiState.items.first { it.isSelected }
-            selectedChip.extraParams
+            selectedChip.extraParam
         } else {
-            widgetData.extraParams
+            widgetData.extraParam
         }
         listener.onWidgetShouldRefresh(extraParams, widgetData)
     }
 
     interface Listener {
-        fun onRetryClicked(extraParams: Map<String, Any>, widgetModel: FeedBrowseUiModel.Channel)
+        fun onRetryClicked(extraParam: WidgetRequestModel, widgetModel: FeedBrowseUiModel.Channel)
 
         fun onCardImpressed(
             channelModel: PlayWidgetChannelUiModel,
@@ -280,7 +281,7 @@ class FeedBrowseChannelViewHolder(
         )
 
         fun onWidgetShouldRefresh(
-            extraParams: Map<String, Any>,
+            extraParam: WidgetRequestModel,
             widgetModel: FeedBrowseUiModel.Channel
         )
     }

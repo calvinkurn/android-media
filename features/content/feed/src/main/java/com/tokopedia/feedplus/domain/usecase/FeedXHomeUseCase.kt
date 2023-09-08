@@ -388,7 +388,7 @@ class FeedXHomeUseCase @Inject constructor(
             PARAMS_SOURCE to source,
             PARAMS_CURSOR to cursor,
             PARAMS_LIMIT to limit,
-            PARAMS_WH_ID to whId,
+            PARAMS_WH_ID to whId
         )
         if (detailId.isNotEmpty()) {
             params[PARAMS_SOURCE_ID] = detailId
@@ -420,6 +420,7 @@ class FeedXHomeUseCase @Inject constructor(
         private const val PARAMS_WH_ID = "warehouseID"
 
         private const val SOURCE_DETAIL = "detail-immersive"
+        const val SOURCE_BROWSE = "browse"
 
         private const val LIMIT_DETAIL = 50 // limit products
     }

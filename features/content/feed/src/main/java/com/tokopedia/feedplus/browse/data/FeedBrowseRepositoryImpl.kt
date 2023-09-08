@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
+import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
@@ -45,7 +46,7 @@ class FeedBrowseRepositoryImpl @Inject constructor(
     override suspend fun getSlots(): List<FeedBrowseUiModel> {
         return withContext(dispatchers.io) {
             val response = feedXHomeUseCase(
-                feedXHomeUseCase.createParams(source = "browse")
+                feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
             )
             mapper.mapSlots(response).ifEmpty {
                 throw IllegalStateException("no slot available")
@@ -53,22 +54,20 @@ class FeedBrowseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getWidget(extraParams: Map<String, Any>): FeedBrowseItemUiModel {
+    override suspend fun getWidget(extraParam: WidgetRequestModel): FeedBrowseItemUiModel {
         val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
-        val finalExtraParams = extraParams.toMutableMap().apply {
-            put(GetPlayWidgetSlotUseCase.KEY_WIFI, isWifi)
-        }
         return withContext(dispatchers.io) {
             try {
-                playWidgetSlotUseCase.setRequestParams(
-                    mapOf(
-                        GetPlayWidgetSlotUseCase.KEY_REQ to finalExtraParams
-                    )
+                val response = playWidgetSlotUseCase.executeOnBackground(
+                    group = extraParam.group,
+                    cursor = "",
+                    sourceId = extraParam.sourceId,
+                    sourceType = extraParam.sourceType,
+                    isWifi = isWifi
                 )
-                val response = playWidgetSlotUseCase.executeOnBackground()
                 mapper.mapWidget(response)
             } catch (err: Throwable) {
-                ChannelUiState.Error(err, extraParams = extraParams)
+                ChannelUiState.Error(err, extraParam = extraParam)
             }
         }
     }

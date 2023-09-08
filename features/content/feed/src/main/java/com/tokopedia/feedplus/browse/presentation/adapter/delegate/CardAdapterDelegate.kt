@@ -7,6 +7,7 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseCardViewHolder
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseCardBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.feedplus.R as feedplusR
 
 /**
  * Created by meyta.taliti on 31/08/23.
@@ -14,7 +15,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 class CardAdapterDelegate(
     private val listener: FeedBrowseCardViewHolder.Listener
 ) : TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetChannelUiModel, FeedBrowseCardViewHolder>(
-    com.tokopedia.feedplus.R.layout.item_feed_browse_card
+    feedplusR.layout.item_feed_browse_card
 ) {
     override fun onBindViewHolder(
         item: PlayWidgetChannelUiModel,
