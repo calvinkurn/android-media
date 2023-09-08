@@ -124,6 +124,8 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.features.atc_common)
     androidTestImplementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     androidTestImplementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    androidTestImplementation projectOrAar(rootProject.ext.features.minicart)
+    androidTestImplementation projectOrAar(rootProject.ext.features.cart_common)
 
     androidTestImplementation rootProject.ext.debugToolsDependencies.chuck
     androidTestImplementation projectOrAar(rootProject.ext.features.shopCommon)
