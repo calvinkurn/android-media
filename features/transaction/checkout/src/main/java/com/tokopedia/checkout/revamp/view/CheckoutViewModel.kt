@@ -527,6 +527,9 @@ class CheckoutViewModel @Inject constructor(
                     enhancedECommerceProductCartMapData.setDimension136(
                         cartItemModel.cartStringGroup
                     )
+                    enhancedECommerceProductCartMapData.setDimension137(
+                        cartItemModel.bmgmOfferId.toString()
+                    )
                     enhancedECommerceCheckout.addProduct(
                         enhancedECommerceProductCartMapData.getProduct()
                     )

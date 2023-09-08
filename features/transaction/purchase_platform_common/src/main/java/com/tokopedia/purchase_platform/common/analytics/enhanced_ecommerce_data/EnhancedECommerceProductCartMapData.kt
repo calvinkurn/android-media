@@ -206,6 +206,10 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_DIMENSION136] = cartStringGroup
     }
 
+    fun setDimension137(offerId: String) {
+        Product[KEY_DIMENSION137] = offerId
+    }
+
     companion object {
         private const val KEY_NAME = "name"
         private const val KEY_ID = "id"
@@ -257,6 +261,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_DIMENSION118 = "dimension118"
         private const val KEY_BO_AFFORDABILITY = "dimension119"
         private const val KEY_DIMENSION136 = "dimension136"
+        private const val KEY_DIMENSION137 = "dimension137"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"

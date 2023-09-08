@@ -77,6 +77,7 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultation
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.util.FingerPrintUtil
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -154,10 +155,10 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
 import javax.inject.Inject
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
 
 class CheckoutFragment :
     BaseDaggerFragment(),
@@ -192,6 +193,9 @@ class CheckoutFragment :
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var irisSession: IrisSession
 
     private val viewModel: CheckoutViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
@@ -296,9 +300,9 @@ class CheckoutFragment :
                     shipmentCartItemModel.errorTitle
                 )
             } else if (shipmentCartItemModel is CheckoutOrderModel && (
-                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                        shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
-                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
+                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                    shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
+                ) && shipmentCartItemModel.firstProductErrorIndex > 0
             ) {
                 onViewTickerOrderError(
                     shipmentCartItemModel.shopId.toString(),
@@ -1526,9 +1530,9 @@ class CheckoutFragment :
                 (
                     recipientAddressModel!!.latitude == null ||
                         recipientAddressModel.latitude.equals(
-                            "0",
-                            ignoreCase = true
-                        ) || recipientAddressModel.longitude == null ||
+                                "0",
+                                ignoreCase = true
+                            ) || recipientAddressModel.longitude == null ||
                         recipientAddressModel.longitude.equals("0", ignoreCase = true)
                     )
             ) {
@@ -1721,13 +1725,13 @@ class CheckoutFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-                recipientAddressModel!!.latitude == null ||
-                    recipientAddressModel.latitude.equals(
+            recipientAddressModel!!.latitude == null ||
+                recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
-                )
+                recipientAddressModel.longitude.equals("0", ignoreCase = true)
+            )
         ) {
             setPinpoint(cartPosition)
         } else {
@@ -2023,7 +2027,13 @@ class CheckoutFragment :
         }
     }
 
-    override fun onClickBmgmInfoIcon() {
+    override fun onClickBmgmInfoIcon(offerId: String, shopId: String) {
+        checkoutAnalyticsCourierSelection.sendClickSnkBmgmEvent(
+            offerId,
+            irisSession.getSessionId(),
+            shopId,
+            userSessionInterface.userId
+        )
         RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
