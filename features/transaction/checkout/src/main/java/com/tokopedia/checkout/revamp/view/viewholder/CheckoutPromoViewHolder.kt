@@ -43,16 +43,11 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
         isAnimateWording: Boolean = false,
         isLoading: Boolean = false
     ) {
-        if (isLoading) {
-            binding.btnCheckoutPromo.showLoading()
-            return
-        }
-
         val isUsingGlobalPromo = lastApply.codes.isNotEmpty()
         val isUsingBoPromo = lastApply.voucherOrders
             .any { it.code.isNotEmpty() && it.message.state != "red" }
         if (!isUsingGlobalPromo && !isUsingBoPromo) {
-            if (entryPointInfo != null) {
+            if (entryPointInfo != null && !isLoading) {
                 if (!entryPointInfo.isSuccess) {
                     if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED
                         || entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED
