@@ -107,5 +107,8 @@ interface CheckoutAdapterListener {
 
     fun onProcessToPayment()
 
-    fun onClickBmgmInfoIcon()
+    fun onClickBmgmInfoIcon(
+        offerId: String,
+        shopId: String
+    )
 }
