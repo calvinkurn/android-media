@@ -96,6 +96,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.max
+import com.tokopedia.promousage.R as promousageR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 
 class PromoUsageBottomSheet : BottomSheetDialogFragment() {
@@ -290,7 +292,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             binding?.clBottomSheetContent?.background = BottomSheetUtil
                 .generateBackgroundDrawableWithColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
         }
         binding?.ivPromoRecommendationBackground?.invisible()
@@ -429,11 +431,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             binding?.clBottomSheetHeader?.background = BottomSheetUtil
                 .generateBackgroundDrawableWithColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
         }
         binding?.tpgBottomSheetHeaderTitle
-            ?.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            ?.setTextColorCompat(unifyprinciplesR.color.Unify_NN950)
         context?.let {
             binding?.btnBottomSheetHeaderClose?.setImageDrawable(
                 if (binding?.root?.context.isDarkMode()) {
@@ -442,7 +444,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         iconId = IconUnify.CLOSE,
                         assetColor = ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                            unifyprinciplesR.color.Unify_Static_White
                         )
                     )
                 } else {
@@ -451,7 +453,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         iconId = IconUnify.CLOSE,
                         assetColor = ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                            unifyprinciplesR.color.Unify_Static_Black
                         )
                     )
                 }
@@ -462,7 +464,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun renderTransparentHeader() {
         binding?.clBottomSheetHeader?.background = null
         binding?.tpgBottomSheetHeaderTitle
-            ?.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            ?.setTextColorCompat(unifyprinciplesR.color.Unify_Static_White)
         context?.let {
             binding?.btnBottomSheetHeaderClose?.setImageDrawable(
                 getIconUnifyDrawable(
@@ -470,7 +472,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     iconId = IconUnify.CLOSE,
                     assetColor = ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                        unifyprinciplesR.color.Unify_Static_White
                     )
                 )
             )
@@ -708,7 +710,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding?.rlBottomSheetWrapper?.background =
                     BottomSheetUtil.generateBackgroundDrawableWithColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Background
+                        unifyprinciplesR.color.Unify_Background
                     )
             }
             binding?.rlBottomSheetWrapper?.outlineProvider = object : ViewOutlineProvider() {
@@ -740,7 +742,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             binding?.rlBottomSheetWrapper?.background =
                 BottomSheetUtil.generateBackgroundDrawableWithColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
         }
         binding?.rlBottomSheetWrapper?.outlineProvider = object : ViewOutlineProvider() {
@@ -790,11 +792,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             }
             binding?.layoutGlobalError?.globalErrorPromoUsage?.setType(errorType)
             binding?.layoutGlobalError?.globalErrorPromoUsage?.errorAction?.text =
-                context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_try_again)
+                context?.getText(promousageR.string.promo_usage_error_try_again)
                     ?: ""
             if (errorType == GlobalError.NO_CONNECTION) {
                 binding?.layoutGlobalError?.globalErrorPromoUsage?.errorSecondaryAction?.text =
-                    context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_to_settings)
+                    context?.getText(promousageR.string.promo_usage_error_to_settings)
                         ?: ""
                 binding?.layoutGlobalError?.globalErrorPromoUsage?.setActionClickListener {
                     resetView()
