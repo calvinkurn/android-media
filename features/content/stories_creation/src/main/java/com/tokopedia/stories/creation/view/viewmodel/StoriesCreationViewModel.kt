@@ -1,6 +1,7 @@
 package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
@@ -15,7 +16,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on September 06, 2023
  */
 class StoriesCreationViewModel @Inject constructor(
-
+    private val repo: StoriesCreationRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StoriesCreationUiState.Empty)
