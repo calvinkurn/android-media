@@ -316,7 +316,7 @@ class ShopPageProductListResultFragment :
         arguments?.let { attribution = it.getString(ShopParamConstant.EXTRA_ATTRIBUTION, "") }
         sourceRedirection =
             arguments?.getString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, "").orEmpty()
-        shopSharingInShowCaseUiModel = arguments?.getParcelable(EXTRA_FOR_SHOP_SHARING)
+        shopSharingInShowCaseUiModel = arguments?.getParcelable(EXTRA_FOR_SHOP_SHARING)     // Potentially null if user comes from search inside shop page
         if (savedInstanceState == null) {
             selectedEtalaseList = ArrayList()
             arguments?.let {
@@ -749,15 +749,27 @@ class ShopPageProductListResultFragment :
             viewLifecycleOwner
         ) { result ->
             if (result is Success) {
-                shopSharingInShowCaseUiModel?.let {
-                    it.shopSnippetUrl = result.data.shopSnippetUrl
-                    it.shopCoreUrl = result.data.shopCore.url
-                    it.location = result.data.location
-                    it.tagline = result.data.shopCore.tagLine
-                    it.shopStatus = result.data.statusInfo.shopStatus
-
-                    showUniversalShareBottomSheet()
-                }
+//                if (shopSharingInShowCaseUiModel !== null) {
+//                    shopSharingInShowCaseUiModel?.let {
+//                        it.shopSnippetUrl = result.data.shopSnippetUrl
+//                        it.shopCoreUrl = result.data.shopCore.url
+//                        it.location = result.data.location
+//                        it.tagline = result.data.shopCore.tagLine
+//                        it.shopStatus = result.data.statusInfo.shopStatus
+//                    }
+//                } else {
+                    shopSharingInShowCaseUiModel = ShopSharingInShowCaseUiModel(
+                        shopId = result.data.shopCore.shopID,
+                        shopName = result.data.shopCore.name,
+                        tagline = result.data.shopCore.tagLine,
+                        shopCoreUrl = result.data.shopCore.url,
+                        shopStatus = result.data.statusInfo.shopStatus,
+                        avatar = result.data.shopAssets.avatar,
+                        location = result.data.location,
+                        shopSnippetUrl = result.data.shopSnippetUrl
+                    )
+//                }
+                showUniversalShareBottomSheet()
             }
         }
 
