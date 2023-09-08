@@ -1,10 +1,12 @@
 package com.tokopedia.editor.ui.main.fragment.image.main
 
+import android.graphics.Bitmap
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentImageMainEditorBinding
 import com.tokopedia.editor.ui.main.EditorParamFetcher
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -34,6 +36,12 @@ class ImageMainEditorFragment @Inject constructor(
             it.loadImage(path) {
                 useCache(false)
             }
+        }
+    }
+
+    override fun getImageBitmap(): Bitmap? {
+        return binding?.imgSample?.let {
+            it.toBitmap(it.width, it.height)
         }
     }
 }

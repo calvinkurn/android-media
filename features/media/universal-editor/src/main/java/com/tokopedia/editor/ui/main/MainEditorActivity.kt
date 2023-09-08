@@ -127,6 +127,11 @@ open class MainEditorActivity : AppCompatActivity()
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
+    override fun onTextRemoved() {
+        val hasTextAdded = binding.container.hasTextAdded()
+        viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton())
@@ -258,7 +263,9 @@ open class MainEditorActivity : AppCompatActivity()
 
     private fun exportFinalResult() {
         val bitmap = binding.container.exportAsBitmap()
-        viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap))
+        val imageBitmap = pagerContainer.getImageBitmap()
+
+        viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap, imageBitmap = imageBitmap))
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {
