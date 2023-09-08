@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.tokopedia.centralizedpromo.compose
 
 import android.content.Context
@@ -8,17 +10,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells.Fixed
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -30,7 +28,6 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -46,6 +43,7 @@ import com.tokopedia.centralizedpromo.view.bottomSheet.DetailPromoBottomSheet
 import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.SwipeRefresh
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoResult
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoUiState
 import com.tokopedia.centralizedpromo.view.model.FilterPromoUiModel
@@ -57,6 +55,7 @@ import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.nest.components.CoachMarkAnchor
 import com.tokopedia.nest.components.coachmarkableOn
 import com.tokopedia.nest.principles.utils.addImpression
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.sortfilter.compose.NestSortFilter
 import com.tokopedia.sortfilter.compose.SortFilter
 import java.util.*
@@ -74,11 +73,13 @@ fun CentralizedPromoScreen(
     coachMarkAnchor: (CoachMarkAnchor, String) -> Unit = { _, _ -> },
     onBackPressed: () -> Unit = {}
 ) {
-
-    val pullRefreshState = rememberPullRefreshState(uiState.isSwipeRefresh, {
-        onEvent.invoke(CentralizedPromoEvent.SwipeRefresh)
-    })
-    val context = LocalContext.current
+    val screenState =
+        rememberScreenState(
+            pullRefreshState = rememberPullRefreshState(uiState.isSwipeRefresh,
+                {
+                    onEvent.invoke(SwipeRefresh)
+                })
+        )
 
     Scaffold(
         topBar = {
@@ -93,22 +94,18 @@ fun CentralizedPromoScreen(
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(it)
-                .pullRefresh(pullRefreshState)
+                .pullRefresh(screenState.pullRefreshState)
         ) {
 
             BackgroundDrawable()
 
-            val rememberLazyGridState = rememberLazyGridState()
-            val rememberLazyListState = rememberLazyListState()
-
             CompositionLocalProvider(
-                LocalGridStateComposition provides rememberLazyGridState,
-                LocalListStateComposition provides rememberLazyListState
+                LocalScreenStateComposition provides screenState
             ) {
                 LazyVerticalGrid(
                     columns = Fixed(2),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    state = rememberLazyGridState,
+                    state = screenState.lazyGridState,
                     contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
                 ) {
 
@@ -116,16 +113,10 @@ fun CentralizedPromoScreen(
                         onGoingResult = uiState.onGoingData,
                         onGoingPromoImpressed = {
                             impressOnGoingPromo(it)
-                        },
-                        routeToUrl = {
-                            RouteManager.route(
-                                context, it
-                            )
-                        },
-                        onLocalLoadRefreshClicked = {
-                            onEvent.invoke(CentralizedPromoEvent.LoadOnGoingPromo)
                         }
-                    )
+                    ) {
+                        onEvent.invoke(CentralizedPromoEvent.LoadOnGoingPromo)
+                    }
 
                     BodySection(
                         promoCreationData = uiState.promoCreationData,
@@ -140,7 +131,7 @@ fun CentralizedPromoScreen(
                         },
                         onPromoClicked = { promoCreationUiModel ->
                             onPromoClicked(
-                                context,
+                                screenState.context,
                                 uiState.selectedTabName(),
                                 promoCreationUiModel,
                                 !checkRbac.invoke(promoCreationUiModel.title)
@@ -170,7 +161,7 @@ fun CentralizedPromoScreen(
 
                 PullRefreshIndicator(
                     uiState.isSwipeRefresh,
-                    pullRefreshState,
+                    screenState.pullRefreshState,
                     Modifier.align(Alignment.TopCenter)
                 )
             }
@@ -297,7 +288,7 @@ private fun LazyGridScope.BodySection(
                     list = promoCreationDataCast.items,
                     onPromoClicked = onPromoClicked,
                     promoCreationImpressed = promoCreationImpressed,
-                    coachMarkListener = coachMarkListener,
+                    coachMarkListener = coachMarkListener
                 )
             }
         }
@@ -340,7 +331,6 @@ private fun LazyGridScope.FilterSection(
 
 private fun LazyGridScope.HeaderSection(
     onGoingResult: CentralizedPromoResult<BaseUiModel>,
-    routeToUrl: (String) -> Unit,
     onGoingPromoImpressed: (String) -> Unit,
     onLocalLoadRefreshClicked: () -> Unit
 ) {
@@ -358,7 +348,6 @@ private fun LazyGridScope.HeaderSection(
             if (onGoingResultCast != null) {
                 OnGoingPromoSection(
                     result = onGoingResultCast,
-                    routeToUrl = routeToUrl,
                     onGoingPromoImpressed = onGoingPromoImpressed
                 )
             }
@@ -376,7 +365,7 @@ private fun LazyGridScope.HeaderSection(
 }
 
 private fun LazyGridScope.TitleHeader() {
-    TitleSection(string.sah_label_promo_and_ads)
+    TitleSection(title = string.sah_label_promo_and_ads, modifier = Modifier.tag("tvOnGoingPromo"))
 }
 
 private fun LazyGridScope.TitleBody() {
@@ -393,7 +382,7 @@ private fun LazyGridScope.PromoCreationSection(
     key = { it.pageId + it.title },
     contentType = { PROMO_CREATION }) { data ->
 
-    val state = LocalGridStateComposition.current
+    val state = LocalScreenStateComposition.current
 
     PromotionCard(
         title = data.title,
@@ -403,7 +392,7 @@ private fun LazyGridScope.PromoCreationSection(
         modifier = Modifier.padding(top = 12.dp).addImpression(
             uniqueIdentifier = data.pageId + data.title,
             impressionState = data.impressHolderCompose,
-            listState = state,
+            listState = state.lazyGridState,
             onItemViewed = {
                 promoCreationImpressed.invoke(it)
             },
@@ -419,11 +408,10 @@ private fun LazyGridScope.PromoCreationSection(
 
 private fun LazyGridScope.OnGoingPromoSection(
     result: OnGoingPromoListUiModel,
-    routeToUrl: (String) -> Unit,
     onGoingPromoImpressed: (String) -> Unit
 ) = item(span = { GridItemSpan(2) }) {
-    val state = LocalListStateComposition.current
-    LazyRow(state = state) {
+    val state = LocalScreenStateComposition.current
+    LazyRow(state = state.lazyListState) {
         this@LazyRow.items(items = result.items,
             key = {
                 it.title
@@ -434,15 +422,15 @@ private fun LazyGridScope.OnGoingPromoSection(
                 counter = onGoingData.status.count,
                 counterTitle = onGoingData.status.text,
                 onTitleClicked = {
-                    routeToUrl.invoke(onGoingData.status.url)
+                    RouteManager.route(state.context, onGoingData.status.url)
                 },
                 onFooterClicked = {
-                    routeToUrl.invoke(onGoingData.status.url)
+                    RouteManager.route(state.context, onGoingData.status.url)
                 },
                 modifier = Modifier.addImpression(
                     uniqueIdentifier = onGoingData.title,
                     impressionState = onGoingData.impressHolderCompose,
-                    lazyListState = state,
+                    lazyListState = state.lazyListState,
                     onItemViewed = {
                         onGoingPromoImpressed.invoke(it)
                     },
@@ -453,11 +441,8 @@ private fun LazyGridScope.OnGoingPromoSection(
     }
 }
 
-private val LocalGridStateComposition =
-    compositionLocalOf<LazyGridState> { error("No Lazy Grid State provided") }
-
-private val LocalListStateComposition =
-    compositionLocalOf<LazyListState> { error("No Lazy List State provided") }
+private val LocalScreenStateComposition =
+    compositionLocalOf<ScreenState> { error("No Screen State provided") }
 
 @Composable
 private fun BackgroundDrawable() {

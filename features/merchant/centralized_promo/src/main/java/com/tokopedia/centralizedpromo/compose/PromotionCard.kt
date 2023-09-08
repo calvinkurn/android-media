@@ -59,6 +59,7 @@ import com.tokopedia.nest.components.loader.NestShimmerType.Rect
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 
 @Composable
@@ -82,6 +83,7 @@ fun PromotionCard(
                 NestTypography(
                     text = title,
                     modifier = Modifier
+                        .tag("tvRecommendedPromoTitle")
                         .padding(start = 12.dp, top = 8.dp, end = 4.dp)
                         .weight(1f)
                         .then(titleModifier),
@@ -108,7 +110,9 @@ fun PromotionCard(
 
             NestTypography(
                 text = desc.toAnnotatedString(),
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 15.dp),
+                modifier = Modifier
+                    .tag("tvRecommendedPromoDescription")
+                    .padding(horizontal = 12.dp, vertical = 15.dp),
                 textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.NN._600),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 3
@@ -130,7 +134,10 @@ private fun ImageWithBackground(imageSource: ImageSource, labelNew: String) {
 
         NestImage(
             source = imageSource,
-            modifier = Modifier.size(22.dp).align(Alignment.Center),
+            modifier = Modifier
+                .tag("ivRecommendedPromo")
+                .size(22.dp)
+                .align(Alignment.Center),
             contentDescription = null
         )
 
@@ -138,7 +145,10 @@ private fun ImageWithBackground(imageSource: ImageSource, labelNew: String) {
             NestLabel(
                 labelText = labelNew,
                 labelType = HIGHLIGHT_DARK_RED,
-                modifier = Modifier.align(Alignment.BottomCenter).offset(y = 10.dp)
+                modifier = Modifier
+                    .tag("tvBadgeNew")
+                    .align(Alignment.BottomCenter)
+                    .offset(y = 10.dp)
             )
         }
     }

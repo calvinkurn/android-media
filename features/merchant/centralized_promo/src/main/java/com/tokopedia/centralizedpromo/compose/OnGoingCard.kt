@@ -34,6 +34,7 @@ import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.tag
 
 
 @Composable
@@ -46,7 +47,7 @@ fun OnGoingCard(
     onFooterClicked: () -> Unit = {}
 ) {
     OnGoingCardContainer(
-        modifier = modifier,
+        modifier = modifier.tag("tvOnGoingPromoTitle"),
         headerContent = {
             NestTypography(
                 text = title.uppercase(),
@@ -72,7 +73,9 @@ fun OnGoingCard(
         footerContent = {
             NestTypography(text = counter.toString(),
                 textStyle = NestTheme.typography.heading4.copy(color = NestTheme.colors.NN._950),
-                modifier = Modifier.clickable {
+                modifier = Modifier
+                    .tag("tvOnGoingPromoCount")
+                    .clickable {
                     onFooterClicked.invoke()
                 })
 
@@ -80,7 +83,11 @@ fun OnGoingCard(
                 text = counterTitle,
                 textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._600),
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth().padding(start = 8.dp).clickable {
+                modifier = Modifier
+                    .tag("tvOnGoingPromoStatus")
+                    .fillMaxWidth()
+                    .padding(start = 8.dp)
+                    .clickable {
                     onFooterClicked.invoke()
                 }
             )
