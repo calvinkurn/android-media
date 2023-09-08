@@ -19,6 +19,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.util.*
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 object CheckoutCrossSellItemView {
 
@@ -91,7 +92,7 @@ object CheckoutCrossSellItemView {
                 MethodChecker.fromHtml(crossSellModel.crossSellModel.bottomSheet.subtitle)
                     .toString()
             )
-            setButtonText(itemBinding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+            setButtonText(itemBinding.root.context.getString(purchase_platformcommonR.string.label_button_bottomsheet_close))
             setButtonOnClickListener { it.dismiss() }
         }.show(itemBinding.root.context, listener.getHostFragmentManager())
     }
@@ -131,7 +132,7 @@ object CheckoutCrossSellItemView {
         GeneralBottomSheet().apply {
             setTitle(shipmentDonationModel.donation.title)
             setDesc(shipmentDonationModel.donation.description)
-            setButtonText(itemBinding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+            setButtonText(itemBinding.root.context.getString(purchase_platformcommonR.string.label_button_bottomsheet_close))
             setIcon(R.drawable.checkout_module_ic_donation)
             setButtonOnClickListener { it.dismiss() }
         }.show(itemBinding.root.context, listener.getHostFragmentManager())
@@ -148,7 +149,7 @@ object CheckoutCrossSellItemView {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 itemBinding.root.foreground = ContextCompat.getDrawable(
                     itemBinding.root.context,
-                    com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item
+                    purchase_platformcommonR.drawable.fg_enabled_item
                 )
             }
         } else {
@@ -156,7 +157,7 @@ object CheckoutCrossSellItemView {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 itemBinding.root.foreground = ContextCompat.getDrawable(
                     itemBinding.root.context,
-                    com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item
+                    purchase_platformcommonR.drawable.fg_disabled_item
                 )
             }
         }
@@ -203,7 +204,7 @@ object CheckoutCrossSellItemView {
         GeneralBottomSheet().apply {
             setTitle(egoldAttributeModel.tooltipTitleText ?: "")
             setDesc(egoldAttributeModel.tooltipText ?: "")
-            setButtonText(itemBinding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+            setButtonText(itemBinding.root.context.getString(purchase_platformcommonR.string.label_button_bottomsheet_close))
             setButtonOnClickListener { it.dismiss() }
         }.show(itemBinding.root.context, listener.getHostFragmentManager())
     }

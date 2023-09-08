@@ -9,7 +9,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.robot.checkoutPageRevamp
-import com.tokopedia.checkout.test.R
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -19,12 +18,14 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.checkout.test.R as checkouttestR
 
 @CassavaTest
 class CheckoutRevampPromoAnalyticsTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<RevampShipmentActivity>(RevampShipmentActivity::class.java, false, false) {
+    var activityRule = object :
+        IntentsTestRule<RevampShipmentActivity>(RevampShipmentActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -39,7 +40,14 @@ class CheckoutRevampPromoAnalyticsTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_bundle_analytics_promo_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                SHIPMENT_ADDRESS_FORM_KEY,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    checkouttestR.raw.saf_bundle_analytics_promo_response
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
     }
 
@@ -64,6 +72,7 @@ class CheckoutRevampPromoAnalyticsTest {
     companion object {
         private const val SHIPMENT_ADDRESS_FORM_KEY = "shipmentAddressFormV4"
 
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout_promo.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME =
+            "tracker/transaction/checkout_promo.json"
     }
 }

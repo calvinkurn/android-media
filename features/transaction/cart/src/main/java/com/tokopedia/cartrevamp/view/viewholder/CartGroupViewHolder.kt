@@ -1,6 +1,10 @@
 package com.tokopedia.cartrevamp.view.viewholder
 
-import android.view.View
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.view.ViewGroup.MarginLayoutParams
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,15 +30,16 @@ import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.min
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CartGroupViewHolder(
     private val binding: ItemGroupRevampBinding,
@@ -54,19 +59,26 @@ class CartGroupViewHolder(
         renderCartItems(cartGroupHolderData)
         renderCheckBox(cartGroupHolderData)
         renderFulfillment(cartGroupHolderData)
-        validateFulfillmentLayout(cartGroupHolderData)
         renderFreeShipping(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
         renderCartShopGroupTicker(cartGroupHolderData)
+        validateGroupConstraintLayout(cartGroupHolderData)
+        validateProductPoliciesMargin(cartGroupHolderData)
     }
 
     private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
-        if (cartGroupHolderData.isError) {
+        if (cartGroupHolderData.isError || (cartGroupHolderData.isFirstItem && !cartGroupHolderData.isPreviousHasSelectedAmountWidget)) {
             binding.headerDivider.gone()
         } else {
             binding.headerDivider.visible()
-            binding.headerDivider.layoutParams.height =
-                AVAILABLE_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
+            val dividerHeight = (
+                if (cartGroupHolderData.isPreviousHasSelectedAmountWidget) {
+                    SELECTED_AMOUNT_DIVIDER_HEIGHT
+                } else {
+                    AVAILABLE_DIVIDER_HEIGHT
+                }
+                ).dpToPx(itemView.resources.displayMetrics)
+            binding.headerDivider.layoutParams.height = dividerHeight
         }
     }
 
@@ -85,7 +97,7 @@ class CartGroupViewHolder(
                 setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        unifyprinciplesR.color.Unify_NN600
                     )
                 )
                 weightType = Typography.REGULAR
@@ -95,7 +107,7 @@ class CartGroupViewHolder(
                 setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                        unifyprinciplesR.color.Unify_NN950
                     )
                 )
                 weightType = Typography.BOLD
@@ -137,7 +149,7 @@ class CartGroupViewHolder(
                     )?.shopHolderData?.shopTypeInfo?.title
                 }
             binding.imageShopBadge.contentDescription = itemView.context.getString(
-                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                purchase_platformcommonR.string.pp_cd_image_shop_badge_with_shop_type,
                 contentDescription
             )
             binding.imageShopBadge.show()
@@ -233,11 +245,59 @@ class CartGroupViewHolder(
         }
     }
 
-    private fun validateFulfillmentLayout(cartGroupHolderData: CartGroupHolderData) {
+    private fun validateGroupConstraintLayout(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
             val constraintSet = ConstraintSet()
             constraintSet.clone(clShopHeader)
-            if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
+
+            if (cartGroupHolderData.groupBadge.isNotBlank()) {
+                if (cartGroupHolderData.isError) {
+                    constraintSet.connect(
+                        R.id.image_shop_badge,
+                        ConstraintSet.START,
+                        R.id.cb_select_shop,
+                        ConstraintSet.END,
+                        0
+                    )
+                }
+                else {
+                    constraintSet.connect(
+                        R.id.image_shop_badge,
+                        ConstraintSet.START,
+                        R.id.cb_select_shop,
+                        ConstraintSet.END,
+                        GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    )
+                }
+                constraintSet.connect(
+                    R.id.tv_shop_name,
+                    ConstraintSet.START,
+                    R.id.image_shop_badge,
+                    ConstraintSet.END,
+                    4
+                )
+            } else {
+                if (cartGroupHolderData.isError) {
+                    constraintSet.connect(
+                        R.id.tv_shop_name,
+                        ConstraintSet.START,
+                        R.id.cb_select_shop,
+                        ConstraintSet.END,
+                        0
+                    )
+                }
+                else {
+                    constraintSet.connect(
+                        R.id.tv_shop_name,
+                        ConstraintSet.START,
+                        R.id.cb_select_shop,
+                        ConstraintSet.END,
+                        GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    )
+                }
+            }
+
+            if (cartGroupHolderData.fulfillmentName.isNotBlank() || (cartGroupHolderData.shouldValidateWeight && cartGroupHolderData.extraWeight > 0)) {
                 constraintSet.apply {
                     clear(R.id.image_shop_badge, ConstraintSet.BOTTOM)
                 }
@@ -252,6 +312,27 @@ class CartGroupViewHolder(
                 }
             }
             constraintSet.applyTo(clShopHeader)
+        }
+    }
+
+    private fun validateProductPoliciesMargin(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.fulfillmentName.isNotBlank() && cartGroupHolderData.fulfillmentBadgeUrl.isNotEmpty()) {
+            val iuImageFulfillLayoutParams = binding.iuImageFulfill.layoutParams as MarginLayoutParams
+            if (cartGroupHolderData.isError) {
+                iuImageFulfillLayoutParams.marginStart = 0
+            }
+            else {
+                iuImageFulfillLayoutParams.marginStart = GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            }
+        }
+        else if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
+            val tvFulfillLayoutParams = binding.tvFulfillDistrict.layoutParams as MarginLayoutParams
+            if (cartGroupHolderData.isError) {
+                tvFulfillLayoutParams.marginStart = 0
+            }
+            else {
+                tvFulfillLayoutParams.marginStart = GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            }
         }
     }
 
@@ -282,9 +363,9 @@ class CartGroupViewHolder(
             if (cartGroupHolderData.freeShippingBadgeUrl.isNotBlank()) {
                 imgFreeShipping.loadImageWithoutPlaceholder(cartGroupHolderData.freeShippingBadgeUrl)
                 val contentDescriptionStringResource = if (cartGroupHolderData.isFreeShippingPlus) {
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
+                    purchase_platformcommonR.string.pp_cd_image_badge_plus
                 } else {
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
+                    purchase_platformcommonR.string.pp_cd_image_badge_bo
                 }
                 imgFreeShipping.contentDescription =
                     itemView.context.getString(contentDescriptionStringResource)
@@ -316,43 +397,51 @@ class CartGroupViewHolder(
 
     private fun renderMaximumWeight(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.shouldValidateWeight) {
-            val currentWeight = cartGroupHolderData.totalWeight
-            val maximumWeight = cartGroupHolderData.maximumShippingWeight
-            val extraWeight = (currentWeight - maximumWeight) / 1000
-            val descriptionText = cartGroupHolderData.maximumWeightWording
-            if (extraWeight > 0 && descriptionText.isNotEmpty()) {
-                with(binding) {
-                    tickerWarning.tickerTitle = null
-                    tickerWarning.setTextDescription(
-                        descriptionText.replace(
-                            CartGroupHolderData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY,
-                            NumberFormat.getNumberInstance(
-                                Locale("in", "id")
-                            ).format(extraWeight)
-                        )
-                    )
-                    tickerWarning.tickerType = TYPE_WARNING
-                    tickerWarning.tickerShape = SHAPE_LOOSE
-                    tickerWarning.closeButtonVisibility = View.GONE
-                    tickerWarning.show()
-                    tickerWarning.post {
-                        binding.tickerWarning.measure(
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                        )
-                        binding.tickerWarning.requestLayout()
-                    }
-                }
+            val extraWeight = cartGroupHolderData.extraWeight
+            if (extraWeight > 0) {
+                binding.rlProductPoliciesLayout.show()
+                setOverweightText(extraWeight)
+                binding.tvOverweight.show()
             } else {
-                with(binding) {
-                    tickerWarning.gone()
-                }
+                binding.tvOverweight.gone()
             }
         } else {
-            with(binding) {
-                tickerWarning.gone()
-            }
+            binding.tvOverweight.gone()
         }
+    }
+
+    private fun setOverweightText(extraWeight: Double) {
+        val text = itemView.resources.getString(R.string.cart_text_overweight).replace(
+            "%s",
+            NumberFormat.getNumberInstance(
+                Locale("in", "id")
+            ).format(extraWeight)
+        )
+        val spannableString = SpannableString(text)
+        val firstSentenceIndex = text.indexOf(".")
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_YN500
+                )
+            ),
+            0,
+            firstSentenceIndex + 1,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN600
+                )
+            ),
+            firstSentenceIndex + 2,
+            text.lastIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        binding.tvOverweight.setText(spannableString, TextView.BufferType.SPANNABLE)
     }
 
     private fun renderCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
@@ -401,8 +490,17 @@ class CartGroupViewHolder(
 //                            } else {
 //                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
 //                            }
-                            val color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
-                            iuTickerRightIcon.setImage(IconUnify.CHEVRON_RIGHT, color, null, color, null)
+                            val color = ContextCompat.getColor(
+                                itemView.context,
+                                unifyprinciplesR.color.Unify_NN500
+                            )
+                            iuTickerRightIcon.setImage(
+                                IconUnify.CHEVRON_RIGHT,
+                                color,
+                                null,
+                                color,
+                                null
+                            )
                             iuTickerRightIcon.show()
                         } else {
                             iuTickerRightIcon.gone()
@@ -426,9 +524,10 @@ class CartGroupViewHolder(
                         icBmgmTicker.gone()
                         val iconColor = MethodChecker.getColor(
                             root.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                            unifyprinciplesR.color.Unify_NN900
                         )
-                        val reloadIcon = getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
+                        val reloadIcon =
+                            getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
                         iuTickerRightIcon.setImageDrawable(reloadIcon)
                         iuTickerRightIcon.show()
                         ivTickerBg.setImageResource(R.drawable.bg_cart_basket_building_error_ticker)
@@ -456,15 +555,18 @@ class CartGroupViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_group
+        val LAYOUT = R.layout.item_group_revamp
 
         private const val COLLAPSED_PRODUCTS_LIMIT = 10
 
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
 
+        private const val SELECTED_AMOUNT_DIVIDER_HEIGHT = 1
         private const val AVAILABLE_DIVIDER_HEIGHT = 8
 
-        private const val ITEM_DECORATION_PADDING_LEFT = 48
+        private const val GROUP_DEFAULT_MARGIN = 4
+
+        private const val ITEM_DECORATION_PADDING_LEFT = 50
         private const val SHOP_HEADER_PADDING_12 = 12
     }
 }

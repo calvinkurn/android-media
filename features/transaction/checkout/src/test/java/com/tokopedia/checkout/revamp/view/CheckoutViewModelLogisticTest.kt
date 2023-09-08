@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
@@ -505,6 +506,81 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         coVerify {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+    }
+
+    @Test
+    fun load_shipping_normal_with_last_applied_bo_found_but_fail_validate_use() {
+        // given
+        val orderModel = CheckoutOrderModel("123", boCode = "boCode", boUniqueId = "12")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+
+        val shippingCourierUiModel = ShippingCourierUiModel()
+        coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
+            shippingDurationUiModels = listOf(
+                ShippingDurationUiModel(
+                    shippingCourierViewModelList = listOf(
+                        shippingCourierUiModel
+                    )
+                )
+            ),
+            listLogisticPromo = listOf(
+                LogisticPromoUiModel("boCode")
+            )
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } throws IOException()
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(
+                match {
+                    it.orderData.orders[0].codes.contains(
+                        "boCode"
+                    )
+                }
+            ).executeOnBackground()
+        } returns ClearPromoUiModel(SuccessDataUiModel(true))
+
+        // when
+        viewModel.loadShipping(orderModel, 5)
+
+        // then
+        assertEquals(
+            CheckoutOrderShipment(
+                courierItemData = null
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment
+        )
+        coVerify {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
     }
 
@@ -1904,5 +1980,132 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             ),
             (viewModel.listData.value[5] as CheckoutOrderModel)
         )
+    }
+
+    @Test
+    fun do_validate_bo_failed() {
+        // given
+        val orderModel = CheckoutOrderModel("123")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+
+        val ioException = IOException("error")
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } throws ioException
+
+        // when
+        viewModel.doValidateUseLogisticPromoNew(
+            5,
+            "123",
+            "boCode",
+            true,
+            CourierItemData(logPromoCode = "boCode", etaText = ""),
+            InsuranceData()
+        )
+
+        // then
+        assertEquals(
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = null
+                )
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel)
+        )
+        assertEquals("error", latestToaster!!.toasterMessage)
+    }
+
+    @Test
+    fun do_validate_bo_failed_akamai() {
+        // given
+        val orderModel = CheckoutOrderModel("123")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+
+        val exception = AkamaiErrorException("error akamai")
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } throws exception
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
+        // when
+        viewModel.doValidateUseLogisticPromoNew(
+            5,
+            "123",
+            "boCode",
+            true,
+            CourierItemData(logPromoCode = "boCode", etaText = ""),
+            InsuranceData()
+        )
+
+        // then
+        assertEquals(
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = null
+                )
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel)
+        )
+        assertEquals(
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            (viewModel.listData.value[7] as CheckoutPromoModel)
+        )
+        assertEquals("error akamai", latestToaster!!.toasterMessage)
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
     }
 }

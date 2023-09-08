@@ -22,6 +22,7 @@ import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class PromoEntryPointWidget @JvmOverloads constructor(
     context: Context,
@@ -74,7 +75,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewRightIcon = activeView?.findViewById(R.id.ic_promo_checkout_right)
         activeViewDivider = activeView?.findViewById(R.id.divider_promo_checkout)
         activeViewSummaryLayout = activeView?.findViewById(R.id.ll_promo_checkout_summary)
-        activeViewConfettiFrame = activeView?.findViewById(R.id.frame_promo_checkout_header_confetti)
+        activeViewConfettiFrame =
+            activeView?.findViewById(R.id.frame_promo_checkout_header_confetti)
         activeViewFrame = activeView?.findViewById(R.id.frame_promo_checkout_header)
 
         inActiveView = switcherView?.get(1)
@@ -103,21 +105,40 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     }
 
     private fun setupViewBackgrounds(attrs: AttributeSet?) {
-        val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.PromoEntryPointWidget)
+        val styledAttributes =
+            context.obtainStyledAttributes(attrs, R.styleable.PromoEntryPointWidget)
         try {
             isRounded =
                 styledAttributes.getBoolean(R.styleable.PromoEntryPointWidget_rounded, false)
             if (isRounded) {
-                loadingView?.background = ResourcesCompat.getDrawable(resources, R.drawable.background_promo_checkout_teal_rounded, null)
-                activeViewFrame?.background = ResourcesCompat.getDrawable(resources, R.drawable.background_promo_checkout_active_teal_rounded, null)
+                loadingView?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_teal_rounded,
+                    null
+                )
+                activeViewFrame?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_active_teal_rounded,
+                    null
+                )
                 val inActiveBackground = ResourcesCompat.getDrawable(
                     resources,
                     R.drawable.background_promo_checkout_teal_rounded,
                     null
                 )
-                (inActiveBackground as? GradientDrawable)?.setColor(ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_NN50, null))
+                (inActiveBackground as? GradientDrawable)?.setColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        unifyprinciplesR.color.Unify_NN50,
+                        null
+                    )
+                )
                 inActiveViewFrame?.background = inActiveBackground
-                errorView?.background = ResourcesCompat.getDrawable(resources, R.drawable.background_promo_checkout_error_yellow_rounded, null)
+                errorView?.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_error_yellow_rounded,
+                    null
+                )
 
                 activeViewRightIcon?.updateLayoutParams<MarginLayoutParams> {
                     marginEnd = 16.dpToPx(context.resources.displayMetrics)
@@ -133,12 +154,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 )
                 val n0Color = ResourcesCompat.getColor(
                     resources,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+                    unifyprinciplesR.color.Unify_NN0,
                     null
                 )
                 val t100Color = ResourcesCompat.getColor(
                     resources,
-                    com.tokopedia.unifyprinciples.R.color.Unify_TN100,
+                    unifyprinciplesR.color.Unify_TN100,
                     null
                 )
                 val t100ColorAlpha = ColorUtils.setAlphaComponent(t100Color, 56)
@@ -155,7 +176,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 gradientDrawable?.mutate()
                 val nn50Color = ResourcesCompat.getColor(
                     resources,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN50,
+                    unifyprinciplesR.color.Unify_NN50,
                     null
                 )
                 val nn50ColorAlpha = ColorUtils.setAlphaComponent(nn50Color, 163)
@@ -173,7 +194,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 (errorBackground as? GradientDrawable)?.setColor(
                     ResourcesCompat.getColor(
                         resources,
-                        com.tokopedia.unifyprinciples.R.color.Unify_YN50,
+                        unifyprinciplesR.color.Unify_YN50,
                         null
                     )
                 )
@@ -220,7 +241,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
         inActiveViewWording?.children?.forEach {
             if (it is Typography) {
-                it.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                it.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
             }
         }
         inActiveViewRightIcon?.visibility = View.GONE
@@ -249,7 +270,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             inActiveViewWording?.children?.forEach {
                 if (it is Typography) {
-                    it.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    it.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
                 }
             }
             inActiveViewRightIcon?.visibility = View.GONE
@@ -265,7 +286,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             inActiveViewWording?.children?.forEach {
                 if (it is Typography) {
-                    it.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    it.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
                 }
             }
             inActiveViewRightIcon?.visibility = View.GONE
@@ -379,12 +400,14 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_value).text =
                         it.value
                     if (it.subValue.isNotEmpty()) {
-                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).apply {
-                            text = it.value
-                            visibility = View.VISIBLE
-                        }
+                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue)
+                            .apply {
+                                text = it.value
+                                visibility = View.VISIBLE
+                            }
                     } else {
-                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).visibility = View.GONE
+                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).visibility =
+                            View.GONE
                     }
                     this.addView(summaryView)
                 }
@@ -397,13 +420,14 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                         summaryView.findViewById<IconUnify>(R.id.ic_promo_checkout_summary_button)
                     secondaryTv.text = HtmlLinkHelper(context, secondaryText).spannedString
                     if (isSecondaryTextEnabled) {
-                        secondaryTv.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                        secondaryTv.setTextColorCompat(unifyprinciplesR.color.Unify_NN950)
                         secondaryIc.visibility = View.VISIBLE
                     } else {
-                        secondaryTv.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                        secondaryTv.setTextColorCompat(unifyprinciplesR.color.Unify_NN400)
                         secondaryIc.visibility = View.GONE
                     }
-                    summaryView.findViewById<View>(R.id.group_promo_checkout_summary).visibility = View.GONE
+                    summaryView.findViewById<View>(R.id.group_promo_checkout_summary).visibility =
+                        View.GONE
                     summaryView.setOnClickListener {
                         onClickListener.invoke()
                     }
@@ -411,8 +435,10 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 } else if (groupedSummary.isNotEmpty()) {
                     val summaryView = LayoutInflater.from(this.context)
                         .inflate(R.layout.layout_promo_checkout_summary_grouping, this, false)
-                    summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_button).visibility = View.GONE
-                    summaryView.findViewById<IconUnify>(R.id.ic_promo_checkout_summary_button).visibility = View.GONE
+                    summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_button).visibility =
+                        View.GONE
+                    summaryView.findViewById<IconUnify>(R.id.ic_promo_checkout_summary_button).visibility =
+                        View.GONE
                     val groupContainer =
                         summaryView.findViewById<View>(R.id.group_promo_checkout_summary)
                     val groupLayout =
@@ -420,18 +446,24 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     this.addView(summaryView)
                     groupedSummary.forEach {
                         val summaryGroupItemView = LayoutInflater.from(this.context)
-                            .inflate(R.layout.layout_item_promo_checkout_summary, groupLayout, false)
+                            .inflate(
+                                R.layout.layout_item_promo_checkout_summary,
+                                groupLayout,
+                                false
+                            )
                         summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_title).text =
                             it.title
                         summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_value).text =
                             it.value
                         if (it.subValue.isNotEmpty()) {
-                            summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).apply {
-                                text = it.value
-                                visibility = View.VISIBLE
-                            }
+                            summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue)
+                                .apply {
+                                    text = it.value
+                                    visibility = View.VISIBLE
+                                }
                         } else {
-                            summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).visibility = View.GONE
+                            summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).visibility =
+                                View.GONE
                         }
                         groupLayout.addView(summaryGroupItemView)
                     }
@@ -588,12 +620,14 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_value).text =
                         it.value
                     if (it.subValue.isNotEmpty()) {
-                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).apply {
-                            text = it.subValue
-                            visibility = View.VISIBLE
-                        }
+                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue)
+                            .apply {
+                                text = it.subValue
+                                visibility = View.VISIBLE
+                            }
                     } else {
-                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).visibility = View.GONE
+                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).visibility =
+                            View.GONE
                     }
                     this.addView(summaryView)
                 }
@@ -609,8 +643,11 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     }
 
     companion object {
-        private const val CHECKMARK_APPLIED_ICON = "https://images.tokopedia.net/img/ios/promo_widget/checklist.png"
-        private const val PROMO_COUPON_ICON = "https://images.tokopedia.net/img/ios/promo_widget/promo_coupon.png"
-        private const val DISABLED_PRODUCTS_ICON = "https://images.tokopedia.net/img/ios/promo_widget/disabled_product.png"
+        private const val CHECKMARK_APPLIED_ICON =
+            "https://images.tokopedia.net/img/ios/promo_widget/checklist.png"
+        private const val PROMO_COUPON_ICON =
+            "https://images.tokopedia.net/img/ios/promo_widget/promo_coupon.png"
+        private const val DISABLED_PRODUCTS_ICON =
+            "https://images.tokopedia.net/img/ios/promo_widget/disabled_product.png"
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.cartrevamp.view.bottomsheet
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.widget.addTextChangedListener
 import com.tokopedia.cart.R
@@ -88,7 +89,7 @@ class CartNoteBottomSheet : BottomSheetUnify() {
     }
 
     private fun renderContent(data: CartNoteBottomSheetData) {
-        setTitle(getString(R.string.cart_label_add_note))
+        setTitle(getString(R.string.cart_label_new_note_bottom_sheet_title))
         binding?.apply {
             iuCartItem.loadImage(data.productImage)
             labelProductName.text = data.productName
@@ -114,10 +115,10 @@ class CartNoteBottomSheet : BottomSheetUnify() {
 
     private fun initTextArea() {
         binding?.textAreaNote?.apply {
-            maxLine = 5
             editText.hint = getString(R.string.cart_text_note_hint)
             editText.setLines(5)
             editText.gravity = Gravity.TOP or Gravity.START
+            editText.imeOptions = EditorInfo.IME_ACTION_DONE
         }
     }
 

@@ -16,6 +16,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CheckoutUpsellViewHolder(
     private val binding: ItemCheckoutUpsellBinding,
@@ -85,7 +86,7 @@ class CheckoutUpsellViewHolder(
                     getIconUnifyDrawable(
                         itemView.context,
                         IconUnify.CHEVRON_RIGHT,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                        unifyprinciplesR.color.Unify_NN500
                     )
                 )
                 checkoutUpsellCardOverlay.setOnClickListener {
