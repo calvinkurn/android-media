@@ -1601,12 +1601,25 @@ internal class PromoUsageViewModel @Inject constructor(
         )
     }
 
-    fun onBackToCheckout(
+    fun onClickBackToCheckout(
         entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>
     ) {
-        onApplyPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
+        _promoPageUiState.ifSuccess { pageState ->
+            val hasSelectedAttemptedCode = pageState.items.getAttemptedItems()
+                .any { it.state is PromoItemState.Selected }
+            if (isChangedFromInitialState() || hasSelectedAttemptedCode) {
+                val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
+                if (hasSelectedPromo) {
+                    onApplyPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
+                } else {
+                    onClearPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
+                }
+            } else {
+                _applyPromoUiAction.postValue(ApplyPromoUiAction.SuccessNoAction)
+            }
+        }
     }
 
     private fun calculatePromoSavingInfo(

@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -351,7 +350,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding?.buttonBackToShipment?.text =
                     context?.getString(R.string.promo_voucher_back_to_shipment)
                 binding?.buttonBackToShipment?.setOnClickListener {
-                    viewModel.onBackToCheckout(
+                    viewModel.onClickBackToCheckout(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
                         boPromoCodes = boPromoCodes
