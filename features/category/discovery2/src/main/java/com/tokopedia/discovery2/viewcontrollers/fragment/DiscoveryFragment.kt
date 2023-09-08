@@ -566,7 +566,7 @@ open class DiscoveryFragment :
     }
 
     private fun enableRefreshWhenFirstItemCompletelyVisible() {
-        if (!mSwipeRefreshLayout?.isRefreshing) {
+        if (mSwipeRefreshLayout?.isRefreshing == false) {
             val firstPosition: Int = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(FIRST_POSITION).orZero()
             mSwipeRefreshLayout?.isEnabled = firstPosition == FIRST_POSITION
         }
