@@ -12,4 +12,5 @@ data class RecommendationWidgetMetadata(
     val pageNumber: Int = 1,
     val device: String = "",
     val isTokonow: Boolean = false,
+    val criteriaThematicIDs: List<String> = listOf(),
 )

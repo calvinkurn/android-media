@@ -33,8 +33,6 @@ import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
-import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationUiModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -165,7 +163,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
 
     private fun observeViewModel() = with(viewModel) {
         layouts.observe(viewLifecycleOwner, layoutsObserver)
-        recommendations.observe(viewLifecycleOwner, recommendationsObserver)
     }
 
     private val layoutsObserver = Observer<Result<List<PostAtcUiModel>>> { result ->
@@ -173,27 +170,14 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             adapter.replaceComponents(it.data)
             updateFooter()
         }, fail = {
-            showError(it)
-        })
+                showError(it)
+            })
         PostAtcTracking.impressionPostAtcBottomSheet(
             trackingQueue,
             userSession.userId,
             viewModel.postAtcInfo
         )
     }
-
-    private val recommendationsObserver =
-        Observer<Pair<Int, Result<RecommendationWidget>>> { result ->
-            val uiModelId = result.first
-            result.second.doSuccessOrFail(success = {
-                val data = it.data
-                adapter.updateComponent<RecommendationUiModel>(uiModelId) {
-                    widget = data
-                }
-            }, fail = {
-                adapter.removeComponent(uiModelId)
-            })
-        }
 
     /**
      * End of Observe ViewModel
