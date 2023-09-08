@@ -9,6 +9,7 @@ import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterRe
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWrapperResponse
 import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMenuMapper
 import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMiscMapper
+import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxWidgetMetaMapper
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllCounterUseCase
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDriverChannelsUseCase
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxMenuAndWidgetMetaUseCase
@@ -38,7 +39,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -56,6 +57,7 @@ class UniversalInboxViewModel @Inject constructor(
     private val getDriverChatCounterUseCase: UniversalInboxGetAllDriverChannelsUseCase,
     private val inboxMenuMapper: UniversalInboxMenuMapper,
     private val inboxMiscMapper: UniversalInboxMiscMapper,
+    private val widgetMetaMapper: UniversalInboxWidgetMetaMapper,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
@@ -141,17 +143,17 @@ class UniversalInboxViewModel @Inject constructor(
     private fun observeInboxMenuAndWidgetMetaFlow() {
         viewModelScope.launch {
             getInboxMenuAndWidgetMetaUseCase.observe()
-                .filter {
-                    val isDataNull = it != null
-                    if (isDataNull) {
-                        // If cache is null, it means new user, create the default menu first
-                        setFallbackInboxMenu()
-                    }
-                    isDataNull
-                }
                 .combine(getAllCounterUseCase.observe()) { menu, counter ->
-                    combineMenuAndCounter(menu!!, counter) // Safe !! because of filter
+                    if (menu != null) {
+                        combineMenuAndCounter(menu, counter)
+                    } else {
+                        // If cache is null, it means new user or error
+                        // create the default menu first
+                        setFallbackInboxMenu()
+                        null // Set null to get filtered out
+                    }
                 }
+                .filterNotNull()
                 .catch {
                     Timber.d(it)
                     Result.Error(it)
@@ -190,6 +192,7 @@ class UniversalInboxViewModel @Inject constructor(
             }
             is Result.Error -> {
                 setLoadingInboxMenu(false)
+                setErrorWidgetMeta()
                 showErrorMessage(Pair(result.throwable, ::handleGetMenuAndCounterResult.name))
             }
             is Result.Loading -> {
@@ -204,6 +207,11 @@ class UniversalInboxViewModel @Inject constructor(
     ) {
         try {
             setLoadingInboxMenu(false)
+            val widgetMeta = widgetMetaMapper.mapWidgetMetaToUiModel(
+                widgetMetaResponse = inboxResponse.chatInboxMenu.widgetMenu,
+                counterResponse = counterResponse,
+                driverCounter = Success(Pair(1, 5))
+            )
             val menuList = inboxMenuMapper.mapToInboxMenu(
                 userSession = userSession,
                 inboxMenuResponse = inboxResponse.chatInboxMenu.inboxMenu,
@@ -212,6 +220,7 @@ class UniversalInboxViewModel @Inject constructor(
             val miscList = inboxMiscMapper.generateMiscMenu()
             _inboxMenuUiState.update { uiState ->
                 uiState.copy(
+                    widgetMeta = widgetMeta,
                     menuList = menuList,
                     miscList = miscList,
                     notificationCounter = counterResponse.notifCenterUnread.notifUnread
@@ -316,6 +325,18 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
+    private fun setErrorWidgetMeta() {
+        viewModelScope.launch {
+            _inboxMenuUiState.update {
+                it.copy(
+                    widgetMeta = it.widgetMeta.copy(
+                        isError = true
+                    )
+                )
+            }
+        }
+    }
+
     private fun navigateWithIntent(intent: Intent) {
         viewModelScope.launch {
             _inboxNavigationState.update {
@@ -398,37 +419,6 @@ class UniversalInboxViewModel @Inject constructor(
         )
     }
 
-//    fun loadWidgetMetaAndCounter() {
-//        viewModelScope.launch {
-//            try {
-//                val widgetMetaResponse = getWidgetMetaAsync().await()
-//                driverChatWidgetData = null // reset driver widget
-//                // Get driver data only when response has driver widget
-//                if (widgetMetaResponse?.widgetMenu != null) {
-//                    widgetMetaResponse.widgetMenu.forEachIndexed { index, response ->
-//                        if (response.type == GOJEK_TYPE) {
-//                            driverChatWidgetData = Pair(index, response)
-//                        }
-//                    }
-//                }
-//                if (driverChatWidgetData != null) {
-//                    setAllDriverChannels()
-//                }
-//                driverChatData = driverChatCounter.value // Set driver chat data
-//                val allCounterResponse = getAllCounterAsync().await()
-//                val result = inboxMenuMapper.mapWidgetMetaToUiModel(
-//                    widgetMetaResponse,
-//                    allCounterResponse,
-//                    driverChatData
-//                )
-//                _widget.value = Pair(result, allCounterResponse)
-//            } catch (throwable: Throwable) {
-//                _error.value = Pair(throwable, ::loadWidgetMetaAndCounter.name)
-//                _widget.value = Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
-//            }
-//        }
-//    }
-
 //    fun setAllDriverChannels() {
 //        try {
 //            val allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
@@ -474,17 +464,6 @@ class UniversalInboxViewModel @Inject constructor(
 //            }
 //        }
 //        return unreadDriverChatCount
-//    }
-
-//    private suspend fun getWidgetMetaAsync(): Deferred<UniversalInboxMenuAndWidgetMetaResponse?> {
-//        return viewModelScope.async {
-//            try {
-//                getWidgetMetaUseCase(Unit).chatInboxMenu
-//            } catch (throwable: Throwable) {
-//                _error.value = Pair(throwable, ::getWidgetMetaAsync.name)
-//                null
-//            }
-//        }
 //    }
 
     fun addWishlistV2(

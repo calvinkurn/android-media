@@ -52,6 +52,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -224,20 +225,6 @@ class UniversalInboxFragment @Inject constructor(
         }
 
 //        viewModel.widget.observe(viewLifecycleOwner) { (widget, counter) ->
-//            if (adapter.isWidgetMetaAdded()) {
-//                adapter.removeItemAt(Int.ZERO)
-//            }
-//            // If not empty (if empty then should hide) or Error, show the widget meta
-//            if (widget.widgetList.isNotEmpty() || widget.isError) {
-//                adapter.addItem(Int.ZERO, widget)
-//            }
-//            binding?.inboxRv?.post {
-//                val rangePosition = adapter.getFirstTopAdsBannerPositionPair()?.first
-//                adapter.notifyItemRangeChanged(Int.ZERO, rangePosition ?: adapter.itemCount)
-//                counter?.let {
-//                    trackInboxPageImpression(it)
-//                }
-//            }
 //            observeDriverCounter() // Observe only after widget loaded
 //        }
     }
@@ -263,6 +250,9 @@ class UniversalInboxFragment @Inject constructor(
             toggleLoading(it.isLoading)
 
             if (!it.isLoading) {
+                // Set widget meta
+                updateWidgetMeta(widget = it.widgetMeta)
+
                 // Set menu list
                 updateMenuList(newList = it.menuList + it.miscList)
 
@@ -280,6 +270,23 @@ class UniversalInboxFragment @Inject constructor(
 
     private fun toggleLoading(isLoading: Boolean) {
         binding?.inboxLayoutSwipeRefresh?.isRefreshing = isLoading
+    }
+
+    private fun updateWidgetMeta(widget: UniversalInboxWidgetMetaUiModel) {
+        if (adapter.isWidgetMetaAdded()) {
+            adapter.removeItemAt(Int.ZERO)
+        }
+        // If not empty (if empty then should hide) or Error, show the widget meta
+        if (widget.widgetList.isNotEmpty() || widget.isError) {
+            adapter.addItem(Int.ZERO, widget)
+        }
+        binding?.inboxRv?.post {
+            val rangePosition = adapter.getFirstTopAdsBannerPositionPair()?.first
+            adapter.notifyItemRangeChanged(Int.ZERO, rangePosition ?: adapter.itemCount)
+//            counter?.let {
+//                trackInboxPageImpression(it)
+//            }
+        }
     }
 
     private fun updateMenuList(newList: List<Any>) {

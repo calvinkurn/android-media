@@ -8,8 +8,9 @@ import javax.inject.Inject
 class UniversalInboxLocalRepository @Inject constructor(
     private val dataStore: UniversalInboxDataStore
 ) {
-    suspend fun getInboxMenuCache(): Flow<UniversalInboxWrapperResponse?> {
-        return dataStore.loadCache(KEY_INBOX_MENU, UniversalInboxWrapperResponse::class.java)
+
+    suspend fun getInboxMenuCacheObserver(): Flow<String> {
+        return dataStore.observeCache(KEY_INBOX_MENU)
     }
 
     suspend fun setInboxMenuCache(value: UniversalInboxWrapperResponse) {

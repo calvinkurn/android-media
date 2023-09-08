@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.universalinbox.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
@@ -8,8 +9,8 @@ import com.tokopedia.inbox.universalinbox.data.UniversalInboxLocalRepository
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWrapperResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -19,6 +20,10 @@ class UniversalInboxGetInboxMenuAndWidgetMetaUseCase @Inject constructor(
     private val localRepository: UniversalInboxLocalRepository,
     private val dispatcher: CoroutineDispatchers
 ) {
+
+    private val gson: Gson by lazy {
+        Gson()
+    }
     private fun graphqlQuery(): String = """
         query GetChatInboxWidgetMeta {
           chatInboxWidgetMeta {
@@ -45,13 +50,22 @@ class UniversalInboxGetInboxMenuAndWidgetMetaUseCase @Inject constructor(
     """.trimIndent()
 
     suspend fun observe(): Flow<UniversalInboxWrapperResponse?> {
-        return localRepository.getInboxMenuCache()
+        return localRepository.getInboxMenuCacheObserver()
+            .map {
+                return@map try {
+                    val resultObj = gson.fromJson(it, UniversalInboxWrapperResponse::class.java)
+                    Timber.d(resultObj.toString())
+                    resultObj
+                } catch (throwable: Throwable) {
+                    Timber.d(throwable)
+                    null
+                }
+            }
             .catch {
                 Timber.d(it)
-                emit(UniversalInboxWrapperResponse())
+                emit(null)
             }
             .flowOn(dispatcher.io)
-            .distinctUntilChanged()
     }
 
     suspend fun fetchInboxMenuAndWidgetMeta(params: Unit) {

@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.universalinbox.domain.mapper
 
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxMenuAndWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
@@ -17,30 +16,26 @@ import javax.inject.Inject
 class UniversalInboxWidgetMetaMapper @Inject constructor() {
 
     fun mapWidgetMetaToUiModel(
-        widgetMeta: UniversalInboxMenuAndWidgetMetaResponse?,
-        allCounter: UniversalInboxAllCounterResponse,
+        widgetMetaResponse: List<UniversalInboxWidgetDataResponse>,
+        counterResponse: UniversalInboxAllCounterResponse,
         driverCounter: Result<Pair<Int, Int>>?
     ): UniversalInboxWidgetMetaUiModel {
         val result = UniversalInboxWidgetMetaUiModel()
-        if (widgetMeta != null) {
-            widgetMeta.widgetMenu.forEach {
-                it.mapToUiModel(allCounter, driverCounter)?.let { uiModel ->
-                    result.widgetList.add(uiModel)
-                }
+        widgetMetaResponse.forEach {
+            it.mapToUiModel(counterResponse, driverCounter)?.let { uiModel ->
+                result.widgetList.add(uiModel)
             }
-        } else {
-            result.isError = true
         }
         return result
     }
 
     private fun UniversalInboxWidgetDataResponse.mapToUiModel(
-        allCounter: UniversalInboxAllCounterResponse,
+        counterResponse: UniversalInboxAllCounterResponse,
         driverCounter: Result<Pair<Int, Int>>? = null
     ): UniversalInboxWidgetUiModel? {
         return when (this.type) {
             UniversalInboxValueUtil.CHATBOT_TYPE -> {
-                this.mapToWidget(allCounter.othersUnread.helpUnread)
+                this.mapToWidget(counterResponse.othersUnread.helpUnread)
             }
             UniversalInboxValueUtil.GOJEK_TYPE -> {
                 this.mapToDriverWidget(driverCounter)

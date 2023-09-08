@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.io.IOException
-import java.lang.reflect.Type
 import javax.inject.Inject
 
 private const val NAME = "inbox"
@@ -35,7 +35,7 @@ class UniversalInboxDataStoreImpl @Inject constructor(
         }
     }
 
-    override suspend fun <T>loadCache(key: String, type: Type): Flow<T?> {
+    override suspend fun observeCache(key: String): Flow<String> {
         val cacheKey = stringPreferencesKey(key)
         return context.dataStore.data
             .catch { exception ->
@@ -47,8 +47,9 @@ class UniversalInboxDataStoreImpl @Inject constructor(
                 }
             }
             .map { preferences ->
-                val cache = preferences[cacheKey] ?: ""
-                gson.fromJson(cache, type)
+                val result = preferences[cacheKey] ?: ""
+                Timber.d(result)
+                result
             }
     }
 }
