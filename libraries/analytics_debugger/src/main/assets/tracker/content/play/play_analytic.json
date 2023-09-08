@@ -552,7 +552,8 @@
       "item_list_name": "/groupchat - featured product",
       "currentSite": ".*",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "8074"
     },
     {
       "eventAction": "click featured product tagging",

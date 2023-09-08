@@ -419,7 +419,8 @@ class PlayAnalytic(
                 Key.currentSite to CurrentSite.tokopediaMarketplace,
                 Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
                 Key.userId to userId,
-                Key.businessUnit to BusinessUnit.play
+                Key.businessUnit to BusinessUnit.play,
+                Key.trackerId to "8074",
             )
         )
     }
