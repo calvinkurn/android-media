@@ -281,7 +281,7 @@ class ProductListTypeFactoryImpl(
                     view,
                     inspirationCarouselListener,
                     recycledViewPool,
-                    reimagineSearch2Component.isReimagineCarousel(),
+                    reimagineSearch2Component,
                 )
             InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
                     view,
@@ -304,7 +304,7 @@ class ProductListTypeFactoryImpl(
                     view,
                     broadMatchListener,
                     recycledViewPool,
-                    reimagineSearch2Component.isReimagineCarousel(),
+                    reimagineSearch2Component,
                 )
             SmallGridInspirationCardViewHolder.LAYOUT ->
                 SmallGridInspirationCardViewHolder(view, inspirationCardListener)

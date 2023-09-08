@@ -9,6 +9,7 @@ import com.tokopedia.carouselproductcard.CarouselViewAllCardData
 import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
 import com.tokopedia.carouselproductcard.reimagine.viewallcard.CarouselProductCardViewAllCardModel
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -27,6 +28,7 @@ import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.utils.SEARCH_PAGE_RESULT_MAX_LINE
 import com.tokopedia.search.utils.convertToChannelHeader
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping as FreeShippingReimagine
@@ -34,10 +36,10 @@ import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelG
 import com.tokopedia.productcard.reimagine.ProductCardModel.ShopBadge as ShopBadgeReimagine
 
 class BroadMatchViewHolder(
-        itemView: View,
-        private val broadMatchListener: BroadMatchListener,
-        private val recycledViewPool: RecyclerView.RecycledViewPool,
-        private val isReimagine: Boolean = false,
+    itemView: View,
+    private val broadMatchListener: BroadMatchListener,
+    private val recycledViewPool: RecyclerView.RecycledViewPool,
+    private val reimagineSearch2Component: Search2Component,
 ) : AbstractViewHolder<BroadMatchDataView>(itemView) {
 
     companion object {
@@ -47,6 +49,8 @@ class BroadMatchViewHolder(
     }
     
     private var binding: SearchResultProductBroadMatchLayoutBinding? by viewBinding()
+    private val isReimagine: Boolean
+        get() = reimagineSearch2Component.isReimagineCarousel()
 
     override fun bind(element: BroadMatchDataView) {
         if (isReimagine) {
@@ -54,7 +58,7 @@ class BroadMatchViewHolder(
             hideOldHeader()
             bindHeaderViewRevamp(element)
             bindReimagineCarousel(element)
-            paddingReimagineVariant()
+            paddingReimagineVariant(element)
         } else {
             hideHeaderRevamp()
             showOldHeader()
@@ -138,6 +142,7 @@ class BroadMatchViewHolder(
                     freeShipping = FreeShippingReimagine(
                         imageUrl = item.freeOngkirDataView.imageUrl,
                     ),
+                    hasMultilineName = reimagineSearch2Component.hasMultilineProductName(),
                 ),
                 impressHolder = { item },
                 onImpressed = { broadMatchListener.onBroadMatchItemImpressed(item) },
@@ -293,8 +298,9 @@ class BroadMatchViewHolder(
         return ProductCardModel.FreeOngkir(isActive, imageUrl)
     }
 
-    private fun paddingReimagineVariant() {
-        binding?.constraintContainerBroadMatchView?.setPadding(0,0,0,0)
+    private fun paddingReimagineVariant(element: BroadMatchDataView) {
+        val paddingBottom = if (element.verticalSeparator.hasBottomSeparator) 12.toPx() else 0
+        binding?.constraintContainerBroadMatchView?.setPadding(0,0,0, paddingBottom)
     }
 
     private fun paddingControlVariant() {

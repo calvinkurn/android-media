@@ -62,8 +62,12 @@ class ProductCardGridCarouselView: ConstraintLayout {
             MATCH_PARENT,
         )
 
-        cardContainer?.layoutParams = cardContainer?.layoutParams?.apply {
-            height = MATCH_PARENT
+        cardContainer?.run {
+            layoutParams = cardContainer?.layoutParams?.apply {
+                height = MATCH_PARENT
+            }
+
+            elevation = 0f
         }
     }
 
@@ -119,6 +123,7 @@ class ProductCardGridCarouselView: ConstraintLayout {
                 R.string.content_desc_textViewSlashedPrice
             )
             it.strikethrough()
+            it.requestLayout()
         }
     }
 
@@ -143,20 +148,24 @@ class ProductCardGridCarouselView: ConstraintLayout {
     private fun renderCredibilitySection(productCardModel: ProductCardModel) {
         val hasRating = productCardModel.rating.isNotEmpty()
         val labelCredibility = productCardModel.labelCredibility()
-        val hasLabelCredibility = labelCredibility != null
-        val hasCredibility = hasRating || hasLabelCredibility
-        credibilitySection?.shouldShowWithAction(hasCredibility) {
+        val hasLabelCredibility = labelCredibility?.hasTitle() == true
+        val hasCredibilitySection = hasRating || hasLabelCredibility
+        credibilitySection?.shouldShowWithAction(hasCredibilitySection) {
             findViewById<IconUnify?>(R.id.productCardRatingIcon)?.showWithCondition(hasRating)
             findViewById<Typography?>(R.id.productCardRating)?.shouldShowWithAction(hasRating) {
                 it.text = productCardModel.rating
             }
 
-            findViewById<Typography?>(R.id.productCardLabelCredibility)?.initLabelGroupText(
-                labelCredibility
-            )
+            findViewById<Typography?>(R.id.productCardLabelCredibility)?.shouldShowWithAction(
+                hasLabelCredibility
+            ) {
+                it.text = labelCredibility?.title ?: ""
+            }
 
-            val dotsVisibility = if (hasRating && hasLabelCredibility) VISIBLE else GONE
-            findViewById<Typography?>(R.id.productCardRatingDots)?.visibility = dotsVisibility
+            val ratingDotsVisibility = hasRating && hasLabelCredibility
+            findViewById<Typography?>(R.id.productCardRatingDots)?.showWithCondition(
+                ratingDotsVisibility
+            )
         }
     }
 
@@ -182,5 +191,10 @@ class ProductCardGridCarouselView: ConstraintLayout {
 
     fun addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
         imageView?.addOnImpressionListener(holder, onView)
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        super.setOnClickListener(l)
+        cardContainer?.setOnClickListener(l)
     }
 }
