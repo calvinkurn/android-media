@@ -72,7 +72,7 @@
             android:id="@+id/tv_bom_detail_bundling_price_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:translationY="-1.97dp"
             app:layout_constraintStart_toStartOf="@id/tv_bom_detail_bundling_price_title"
             app:typographyType="heading_6"
