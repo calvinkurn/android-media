@@ -10,6 +10,7 @@ import com.tokopedia.play.widget.ui.custom.PlayTotalWatchBadgeView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.view.RoundedConstraintLayout
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by meyta.taliti on 18/08/23.
@@ -24,7 +25,7 @@ class PlayWidgetCardView : RoundedConstraintLayout {
 
     private var mListener: Listener? = null
 
-    private val dp4 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+    private val dp4 = context.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.spacing_lvl2)
 
     fun setListener(listener: Listener) {
         mListener = listener
