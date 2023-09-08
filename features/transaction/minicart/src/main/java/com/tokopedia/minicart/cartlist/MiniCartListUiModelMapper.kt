@@ -3,6 +3,7 @@ package com.tokopedia.minicart.cartlist
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.ProductDataModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -108,6 +109,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                         productName = bundleProduct.productName
                         productImageUrl = bundleProduct.imageUrl
                         productAppLink = bundleProduct.appLink
+                        minOrder = bundleProduct.minOrder
                     }
                 }
             }
@@ -128,11 +130,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    fun mapToAddToCartBundleProductDetailParam(productDetails: List<ShopHomeBundleProductUiModel>, quantity: Int, shopId: String, userId: String): List<ProductDetail> {
+    fun mapToAddToCartBundleProductDetailParam(productDetails: List<ShopHomeBundleProductUiModel>, quantity: Int?, shopId: String, userId: String): List<ProductDetail> {
         return productDetails.map {
             ProductDetail(
                 productId = it.productId,
-                quantity = quantity,
+                quantity = quantity ?: it.minOrder,
                 shopId = shopId,
                 customerId = userId
             )
