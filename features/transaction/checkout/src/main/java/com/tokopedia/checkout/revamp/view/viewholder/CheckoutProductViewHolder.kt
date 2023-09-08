@@ -735,7 +735,7 @@ class CheckoutProductViewHolder(
                                 }
                             }
                             tvCheckoutAddOnsItemName.setOnClickListener {
-                                listener.onClickAddonProductInfoIcon(addon.infoLink)
+                                listener.onClickAddonProductInfoIcon(addon)
                             }
                         }
                         llAddonBmgmProductItems.addView(addOnView.root)
