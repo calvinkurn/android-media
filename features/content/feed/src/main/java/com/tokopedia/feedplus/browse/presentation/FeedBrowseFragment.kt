@@ -180,7 +180,6 @@ class FeedBrowseFragment @Inject constructor(
 
         setupView()
         observeUiState()
-        observeUiEvent()
 
         viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
     }
@@ -221,16 +220,6 @@ class FeedBrowseFragment @Inject constructor(
                             showError(state.throwable)
                         }
                     }
-                }
-        }
-    }
-
-    private fun observeUiEvent() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiEvent
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
-                .collect { event ->
-                    if (event == null) return@collect
                 }
         }
     }

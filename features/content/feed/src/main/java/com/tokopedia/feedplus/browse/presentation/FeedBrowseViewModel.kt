@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.browse.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.types.ResultState
-import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
@@ -11,10 +10,8 @@ import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiEvent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,8 +25,7 @@ import javax.inject.Inject
  * Created by meyta.taliti on 11/08/23.
  */
 class FeedBrowseViewModel @Inject constructor(
-    private val repository: FeedBrowseRepository,
-    private val uiEventManager: UiEventManager<FeedBrowseUiEvent>
+    private val repository: FeedBrowseRepository
 ) : ViewModel() {
 
     private val _title = MutableStateFlow("")
@@ -52,9 +48,6 @@ class FeedBrowseViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = FeedBrowseUiState.Placeholder
     )
-
-    val uiEvent: Flow<FeedBrowseUiEvent?>
-        get() = uiEventManager.event
 
     fun submitAction(action: FeedBrowseUiAction) {
         when (action) {
