@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.addCategoryMenu
@@ -92,6 +93,10 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
 
     private var lastVisitableList: List<Visitable<*>> = emptyList()
 
+    init {
+        miniCartSource = MiniCartSource.TokonowCategoryPage
+    }
+
     override suspend fun loadFirstPage(tickerList: List<TickerData>) {
         val warehouses = addressData.getWarehousesData()
         val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL2)
@@ -120,8 +125,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     fun onCartQuantityChanged(
         product: ProductCardCompactUiModel,
         shopId: String,
-        quantity: Int,
-        layoutType: String
+        quantity: Int
     ) {
         val productId = product.productId
         val isVariant = product.isVariant
@@ -169,6 +173,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
 
             getCategoryMenuDataAsync().await()
             getFeedbackToggleAsync().await()
+            getMiniCartAsync().await()
 
             updateVisitableListLiveData()
             updateEmptyState(show = true)
@@ -230,6 +235,14 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
             if(!toggle.isActive) return@asyncCatchError
             visitableList.addFeedbackWidget()
             updateVisitableListLiveData()
+        }) {
+
+        }
+    }
+
+    private fun getMiniCartAsync(): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            getMiniCart()
         }) {
 
         }

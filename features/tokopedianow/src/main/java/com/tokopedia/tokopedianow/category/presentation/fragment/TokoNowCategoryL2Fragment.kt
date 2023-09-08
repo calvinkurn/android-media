@@ -24,6 +24,7 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
@@ -150,6 +151,10 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
             )
             constraintSet.applyTo(container)
         }
+    }
+
+    override fun onGetMiniCartSuccess(data: MiniCartSimplifiedData) {
+        productRecommendationViewModel.updateMiniCartSimplified(data)
     }
 
     override fun showPageLoading(
