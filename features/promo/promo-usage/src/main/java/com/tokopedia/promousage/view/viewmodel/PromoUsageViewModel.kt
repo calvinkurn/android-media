@@ -652,8 +652,14 @@ internal class PromoUsageViewModel @Inject constructor(
                 )
                 isCausingClash = true
             } else {
+                val state = if (resultItem.state is PromoItemState.Disabled) {
+                    PromoItemState.Normal
+                } else {
+                    resultItem.state
+                }
                 resultItem = resultItem.copy(
-                    state = PromoItemState.Normal
+                    currentClashingSecondaryPromoCodes = emptyList(),
+                    state = state
                 )
                 isCausingClash = false
             }
@@ -691,8 +697,14 @@ internal class PromoUsageViewModel @Inject constructor(
                     )
                     isCausingClash = true
                 } else {
+                    val state = if (resultItem.state is PromoItemState.Disabled) {
+                        PromoItemState.Normal
+                    } else {
+                        resultItem.state
+                    }
                     resultItem = resultItem.copy(
-                        currentClashingPromoCodes = clashingPrimaryCodes
+                        currentClashingPromoCodes = clashingPrimaryCodes,
+                        state = state
                     )
                     isCausingClash = false
                 }
