@@ -13,7 +13,6 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -40,7 +39,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
         private const val ONE_TAB = 1
-        private const val FIVE_SHOWCASE = 5
         private const val MARGIN_16_DP = 16f
         private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
     }
@@ -91,11 +89,11 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
         val hasTab = tabs.size > ONE_TAB
         val showChevronViewAll = if (hasTab) {
+            //Left main banner have more than 1 tab
             model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty() && tabs.isNotEmpty()
         } else {
-            val firstTab = tabs.firstOrNull()
-            val showcaseCountOnFirstTab = firstTab?.showcases?.size.orZero()
-            model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty() && showcaseCountOnFirstTab > FIVE_SHOWCASE
+            //Left main banner have only 1 tab
+            model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty()
         }
 
         viewBinding?.iconChevron?.isVisible = showChevronViewAll

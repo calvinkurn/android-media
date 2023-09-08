@@ -33,7 +33,6 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_top_main_banner
         private const val SECOND_SHOWCASE_INDEX = 1
         private const val TWELVE_SHOWCASE_INDEX = 12
-        private const val FIVE_SHOWCASE = 5
         private const val MINIMAL_SHOWCASE_COUNT_TO_RENDER_WIDGET = 5
     }
 
@@ -73,7 +72,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     }
 
     private fun setupViewAllIcon(appearance: TopMainBannerAppearance) {
-        viewBinding?.iconChevron?.isVisible = appearance.title.isNotEmpty() && appearance.viewAllCtaAppLink.isNotEmpty() && appearance.showcases.size > FIVE_SHOWCASE
+        viewBinding?.iconChevron?.isVisible = appearance.title.isNotEmpty() && appearance.viewAllCtaAppLink.isNotEmpty()
         viewBinding?.iconChevron?.setOnClickListener {
             listener.onNavigationBannerViewAllShowcaseClick(
                 appearance.viewAllCtaAppLink,

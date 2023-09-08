@@ -43,12 +43,14 @@
     <ImageView
         android:id="@+id/imgBackgroundGradient"
         android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:elevation="1dp"
+        android:layout_height="168dp"
         android:background="@drawable/shop_shape_showcase_gradient_background"
+        android:elevation="1dp"
         app:layout_constraintBottom_toBottomOf="@+id/imgMainBanner"
         app:layout_constraintEnd_toEndOf="@+id/imgMainBanner"
-        app:layout_constraintStart_toStartOf="@+id/imgMainBanner" />
+        app:layout_constraintStart_toStartOf="@+id/imgMainBanner"
+        app:layout_constraintTop_toTopOf="@+id/imgMainBanner"
+        app:layout_constraintVertical_bias="1.0" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgMainBanner"
