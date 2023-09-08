@@ -738,7 +738,10 @@ class CheckoutViewModel @Inject constructor(
                 val currentListData = listData.value
                 listData.value = currentListData.map { model ->
                     if (model is CheckoutPromoModel) {
-                        return@map checkoutModel.copy(isLoading = true)
+                        return@map checkoutModel.copy(
+                            entryPointInfo = null,
+                            isLoading = true
+                        )
                     } else {
                         return@map model
                     }
@@ -2143,7 +2146,9 @@ class CheckoutViewModel @Inject constructor(
                     checkoutItems[index] = checkoutItem.copy(
                         promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
                             promoUiModel
-                        )
+                        ),
+                        entryPointInfo = null,
+                        isLoading = true
                     )
                 }
             }
