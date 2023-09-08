@@ -9,5 +9,6 @@ data class PromoItemCardDetail(
     companion object {
         const val TYPE_INITIAL = "initial"
         const val TYPE_SELECTED = "selected"
+        const val TYPE_CLASHED = "clash"
     }
 }

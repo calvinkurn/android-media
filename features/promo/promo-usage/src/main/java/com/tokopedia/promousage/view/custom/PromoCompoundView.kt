@@ -33,10 +33,11 @@ import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.util.IconHelper
-import com.tokopedia.promousage.util.extension.isGreyscale
 import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.promousage.R as promousageR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class PromoCompoundView @JvmOverloads constructor(
     context: Context,
@@ -45,9 +46,9 @@ class PromoCompoundView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val ALPHA_20 = 50
-        private const val ALPHA_10 = 25
-        private const val ALPHA_0 = 0
+//        private const val ALPHA_20 = 50
+//        private const val ALPHA_10 = 25
+//        private const val ALPHA_0 = 0
 
         private const val COLOR_STRING_BLUE = "blue"
         private const val COLOR_STRING_GREEN = "green"
@@ -57,8 +58,8 @@ class PromoCompoundView @JvmOverloads constructor(
 
     private var scaleAnimator: ValueAnimator = ValueAnimator.ofFloat()
     private var overlayAnimator: ValueAnimator = ValueAnimator.ofFloat()
-    private var viewOverlay: ViewGroupOverlay? = null
-    private var overlayDrawable: ColorDrawable? = null
+//    private var viewOverlay: ViewGroupOverlay? = null
+//    private var overlayDrawable: ColorDrawable? = null
     private val longPressHandler = Handler()
     private var isLongPress = false
     private var onLongPress = Runnable {
@@ -71,10 +72,10 @@ class PromoCompoundView @JvmOverloads constructor(
     private var binding: PromoUsageItemPromoCompoundViewBinding? = null
 
     init {
-        viewOverlay = this.overlay
-        //overlayDrawable = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)).apply {
-        //    alpha = 0
-        //}
+//        viewOverlay = this.overlay
+//        overlayDrawable =
+//            ColorDrawable(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN300))
+//                .apply { alpha = 0 }
         binding = PromoUsageItemPromoCompoundViewBinding
             .inflate(LayoutInflater.from(context), this, true)
     }
@@ -114,26 +115,26 @@ class PromoCompoundView @JvmOverloads constructor(
         binding?.run {
             when (promo.state) {
                 is PromoItemState.Selected -> {
-                    val selectedResColorId = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    val selectedResColorId = unifyprinciplesR.color.Unify_GN500
                     tpgPromoBenefitType.setTextColorCompat(selectedResColorId)
                 }
 
                 is PromoItemState.Disabled -> {
-                    val disabledResColorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    val disabledResColorId = unifyprinciplesR.color.Unify_NN600
                     tpgPromoBenefitType.setTextColorCompat(disabledResColorId)
                 }
 
                 is PromoItemState.Ineligible -> {
-                    val ineligibleResColorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    val ineligibleResColorId = unifyprinciplesR.color.Unify_NN600
                     tpgPromoBenefitType.setTextColorCompat(ineligibleResColorId)
                 }
 
                 else -> {
                     val defaultTextColor = when (promo.benefitDetail.benefitType) {
-                        PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK -> com.tokopedia.unifyprinciples.R.color.Unify_BN500
-                        PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT -> com.tokopedia.unifyprinciples.R.color.Unify_YN500
-                        PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                        else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                        PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK -> unifyprinciplesR.color.Unify_BN500
+                        PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT -> unifyprinciplesR.color.Unify_YN500
+                        PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING -> unifyprinciplesR.color.Unify_GN500
+                        else -> unifyprinciplesR.color.Unify_NN950
                     }
                     tpgPromoBenefitType.setTextColorCompat(defaultTextColor)
                     val cardDetail = promo.cardDetails
@@ -152,20 +153,20 @@ class PromoCompoundView @JvmOverloads constructor(
 
     private fun getColorRes(colorString: String): Int {
         return when (colorString) {
-            COLOR_STRING_BLUE -> com.tokopedia.unifyprinciples.R.color.Unify_BN500
-            COLOR_STRING_ORANGE -> com.tokopedia.unifyprinciples.R.color.Unify_YN500
-            COLOR_STRING_GREEN -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            COLOR_STRING_RED -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            COLOR_STRING_BLUE -> unifyprinciplesR.color.Unify_BN500
+            COLOR_STRING_ORANGE -> unifyprinciplesR.color.Unify_YN500
+            COLOR_STRING_GREEN -> unifyprinciplesR.color.Unify_GN500
+            COLOR_STRING_RED -> unifyprinciplesR.color.Unify_RN500
+            else -> unifyprinciplesR.color.Unify_NN950
         }
     }
 
     private fun renderPromoBenefitAmount(promo: PromoItem) {
         binding?.run {
             val defaultTextColorResId = when (promo.state) {
-                is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                is PromoItemState.Disabled -> unifyprinciplesR.color.Unify_NN600
+                is PromoItemState.Ineligible -> unifyprinciplesR.color.Unify_NN600
+                else -> unifyprinciplesR.color.Unify_NN950
             }
             tpgPromoBenefitAmount.setTextColorCompat(defaultTextColorResId)
             val benefitAmountStr = if (promo.useSecondaryPromo) {
@@ -191,7 +192,6 @@ class PromoCompoundView @JvmOverloads constructor(
                             type = PromoItemInfo.TYPE_PROMO_INFO,
                             icon = PromoItemInfo.ICON_NONE,
                             title = promo.message
-                                .replace("<a>", "<a href=\"\">")
                         )
                     )
                 }
@@ -225,7 +225,8 @@ class PromoCompoundView @JvmOverloads constructor(
                 llPromoInfo.addView(promoInfoChildView.root)
             }
             if (promo.state !is PromoItemState.Loading
-                && llPromoInfo.childCount.isMoreThanZero()) {
+                && llPromoInfo.childCount.isMoreThanZero()
+            ) {
                 llPromoInfo.visible()
             } else {
                 llPromoInfo.invisible()
@@ -241,28 +242,37 @@ class PromoCompoundView @JvmOverloads constructor(
                         .firstOrNull { it.state == PromoItemCardDetail.TYPE_SELECTED }
                 }
 
+                is PromoItemState.Disabled -> {
+                    promo.cardDetails
+                        .firstOrNull { it.state == PromoItemCardDetail.TYPE_CLASHED }
+                }
+
                 else -> {
                     promo.cardDetails
                         .firstOrNull { it.state == PromoItemCardDetail.TYPE_INITIAL }
                 }
             }
             if (cardDetail != null) {
-                imgPromoIcon.loadImage(cardDetail.iconUrl)
-                imgPromoIcon.isGreyscale = promo.state is PromoItemState.Ineligible
-                    || promo.state is PromoItemState.Disabled
-                imgPromoIcon.visible()
-                imgPromoBackground.loadImage(cardDetail.backgroundUrl)
-                imgPromoBackground.isGreyscale = promo.state is PromoItemState.Ineligible
-                    || promo.state is PromoItemState.Disabled
-                imgPromoBackground.visible()
+                if (cardDetail.iconUrl.isNotBlank()) {
+                    imgPromoIcon.loadImage(cardDetail.iconUrl)
+                    imgPromoIcon.visible()
+                } else {
+                    imgPromoIcon.invisible()
+                }
+                if (cardDetail.backgroundUrl.isNotBlank()) {
+                    imgPromoBackground.loadImage(cardDetail.backgroundUrl)
+                    imgPromoBackground.visible()
+                } else {
+                    imgPromoBackground.invisible()
+                }
                 if (promo.state is PromoItemState.Selected) {
                     cardView.updateToSelectedState()
                 } else {
                     cardView.updateToNormalState()
                 }
             } else {
-                imgPromoIcon.gone()
-                imgPromoBackground.gone()
+                imgPromoIcon.invisible()
+                imgPromoBackground.invisible()
             }
         }
     }
@@ -275,9 +285,18 @@ class PromoCompoundView @JvmOverloads constructor(
 
     private fun renderExpiryInfo(promo: PromoItem) {
         binding?.run {
-            tpgPromoExpiryInfo.text = promo.expiryInfo
-                .toSpannableHtmlString(tpgPromoExpiryInfo.context)
-            tpgPromoExpiryInfo.visible()
+            val expiryText = if (promo.isAttempted) {
+                context?.getString(promousageR.string.promo_usage_promo_code_label)
+            } else {
+                promo.expiryInfo
+                    .toSpannableHtmlString(tpgPromoExpiryInfo.context)
+            }
+            tpgPromoExpiryInfo.text = expiryText
+            if (!expiryText.isNullOrBlank()) {
+                tpgPromoExpiryInfo.visible()
+            } else {
+                tpgPromoExpiryInfo.invisible()
+            }
         }
     }
 
@@ -289,7 +308,7 @@ class PromoCompoundView @JvmOverloads constructor(
                         tpgAdditionalInfoMessage.text = promo.state.message
                             .toSpannableHtmlString(tpgAdditionalInfoMessage.context)
                         tpgAdditionalInfoMessage
-                            .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_YN600)
+                            .setTextColorCompat(unifyprinciplesR.color.Unify_YN600)
                         iuAdditionalInfoIcon.gone()
                         clAdditionalInfo.background = ContextCompat
                             .getDrawable(
@@ -314,7 +333,7 @@ class PromoCompoundView @JvmOverloads constructor(
                         tpgAdditionalInfoMessage.text =
                             promo.cta.text.toSpannableHtmlString(tpgAdditionalInfoMessage.context)
                         tpgAdditionalInfoMessage
-                            .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                            .setTextColorCompat(unifyprinciplesR.color.Unify_NN950)
                         iuAdditionalInfoIcon.visible()
                         clAdditionalInfo.background = ContextCompat
                             .getDrawable(
@@ -398,12 +417,11 @@ class PromoCompoundView @JvmOverloads constructor(
     }
 
     private fun setupOverlay(width: Int, height: Int) {
-        overlayDrawable?.bounds = Rect(0, 0, width, height)
-
-        viewOverlay?.clear()
-        overlayDrawable?.let {
-            viewOverlay?.add(it)
-        }
+        //overlayDrawable?.bounds = Rect(0, 0, width, height)
+        //viewOverlay?.clear()
+        //overlayDrawable?.let {
+        //    viewOverlay?.add(it)
+        //}
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -412,10 +430,10 @@ class PromoCompoundView @JvmOverloads constructor(
                 longPressHandler.removeCallbacks(onLongPress)
                 Handler().postDelayed(
                     {
-                        animateOverlay(
-                            ALPHA_20,
-                            ALPHA_0, UnifyMotion.T2, UnifyMotion.EASE_OUT
-                        )
+//                        animateOverlay(
+//                            ALPHA_20,
+//                            ALPHA_0, UnifyMotion.T2, UnifyMotion.EASE_OUT
+//                        )
                         animateScaling(0.95f, 1.01f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
 
                         scaleAnimator.addListener(object : Animator.AnimatorListener {
@@ -450,10 +468,10 @@ class PromoCompoundView @JvmOverloads constructor(
                             }
 
                             override fun onAnimationEnd(animator: Animator) {
-                                animateOverlay(
-                                    ALPHA_10,
-                                    ALPHA_0, UnifyMotion.T1, UnifyMotion.LINEAR
-                                )
+//                                animateOverlay(
+//                                    ALPHA_10,
+//                                    ALPHA_0, UnifyMotion.T1, UnifyMotion.LINEAR
+//                                )
                             }
                         })
                     },
@@ -478,10 +496,10 @@ class PromoCompoundView @JvmOverloads constructor(
                     onLongPress,
                     ViewConfiguration.getLongPressTimeout().toLong()
                 )
-                animateOverlay(
-                    ALPHA_0,
-                    ALPHA_20, UnifyMotion.T1, UnifyMotion.EASE_OUT
-                )
+//                animateOverlay(
+//                    ALPHA_0,
+//                    ALPHA_20, UnifyMotion.T1, UnifyMotion.EASE_OUT
+//                )
                 animateScaling(1f, 0.95f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
                 return true
             }
@@ -508,21 +526,21 @@ class PromoCompoundView @JvmOverloads constructor(
         scaleAnimator.start()
     }
 
-    private fun animateOverlay(
-        start: Int,
-        end: Int,
-        duration: Long,
-        interpolator: TimeInterpolator
-    ) {
-        overlayAnimator = ValueAnimator.ofFloat()
-        overlayAnimator.setIntValues(start, end)
-        overlayAnimator.removeAllListeners()
-        overlayAnimator.removeAllUpdateListeners()
-        overlayAnimator.addUpdateListener {
-            overlayDrawable?.alpha = it.animatedValue as Int
-        }
-        overlayAnimator.duration = duration
-        overlayAnimator.interpolator = interpolator
-        overlayAnimator.start()
-    }
+//    private fun animateOverlay(
+//        start: Int,
+//        end: Int,
+//        duration: Long,
+//        interpolator: TimeInterpolator
+//    ) {
+//        overlayAnimator = ValueAnimator.ofFloat()
+//        overlayAnimator.setIntValues(start, end)
+//        overlayAnimator.removeAllListeners()
+//        overlayAnimator.removeAllUpdateListeners()
+//        overlayAnimator.addUpdateListener {
+//            overlayDrawable?.alpha = it.animatedValue as Int
+//        }
+//        overlayAnimator.duration = duration
+//        overlayAnimator.interpolator = interpolator
+//        overlayAnimator.start()
+//    }
 }

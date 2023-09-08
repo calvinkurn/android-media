@@ -8,14 +8,10 @@
     <string name="promo_voucher_promo">Promo</string>
     <string name="promo_voucher_use">Pakai</string>
     <string name="promo_voucher_buy">Beli</string>
-    <string name="promo_voucher_pay">Bayar</string>
     <string name="promo_voucher_back_to_shipment">Balik ke Pengiriman</string>
-    <string name="promo_voucher_placeholder_buy">Beli (%d)</string>
     <string name="promo_voucher_placeholder_total_price">Rp%s</string>
     <string name="promo_voucher_placeholder_remaining_quota">Sisa %d</string>
     <string name="promo_voucher_placeholder_view_all_voucher">Lihat %d Promo Lainnya</string>
-    <string name="promo_voucher_placeholder_total_savings">Yay, kamu hemat <![CDATA[<b>Rp%s</b>]]> (1 promo)</string>
-    <string name="promo_voucher_placeholder_total_savings_multi_voucher">Wih, total hemat kamu <![CDATA[<b>Rp%s</b>]]> (%d promo)</string>
     <string name="promo_voucher_total_price">Total Harga</string>
     <string name="promo_voucher_view_tnc_label">Lihat <![CDATA[<a href="">Syarat &amp; Ketentuan Promo</a>]]></string>
     <string name="promo_voucher_input_promo_code_label">Punya kode promo? Masukin di sini &#10024;</string>
@@ -23,4 +19,5 @@
     <string name="promo_usage_global_error_promo">Oops, terjadi kesalahan. Coba pilih promo lagi.</string>
     <string name="promo_usage_error_try_again">Coba Lagi</string>
     <string name="promo_usage_error_to_settings">Ke Pengaturan</string>
+    <string name="promo_usage_promo_code_label">Kode promo</string>
 </resources>

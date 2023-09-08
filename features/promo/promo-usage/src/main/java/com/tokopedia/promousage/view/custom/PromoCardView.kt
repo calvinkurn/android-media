@@ -10,9 +10,8 @@ import android.graphics.Region
 import android.util.AttributeSet
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toPx
-import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class PromoCardView @JvmOverloads constructor(
     context: Context,
@@ -36,23 +35,23 @@ class PromoCardView @JvmOverloads constructor(
     }
 
     private val circleCutStrokeColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+        color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200)
         style = Paint.Style.STROKE
         strokeWidth = 4f
     }
 
     private val voucherBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN100)
+        color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN100)
         style = Paint.Style.FILL
     }
 
     private val voucherExpiredDateBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN50)
         style = Paint.Style.FILL
     }
 
     private val cardViewBorder = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+        color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200)
         strokeWidth = 4f
         style = Paint.Style.STROKE
     }
@@ -139,50 +138,40 @@ class PromoCardView @JvmOverloads constructor(
     }
 
     private fun drawBackground(canvas: Canvas?) {
-        canvas?.drawRoundRect(
-            0f,
-            0f,
-            width.toFloat(),
-            height.toFloat(),
-            16f,
-            0f,
-            voucherBackground
-        )
+        val right = width.toFloat()
+        val bottom = height.toFloat()
+        canvas?.drawRoundRect(0f, 0f, right, bottom, 16f, 0f, voucherBackground)
     }
 
     private fun drawExpiredDateBackground(canvas: Canvas?) {
-        canvas?.drawRoundRect(
-            0f,
-            (height - voucherExpiryDateHeightPx) + (voucherCircleMarginBottomPX / 2) - 4f.toPx(),
-            width.toFloat(),
-            height.toFloat(),
-            16f,
-            0f,
-            voucherExpiredDateBackground
-        )
+        val top =
+            (height - voucherExpiryDateHeightPx) + (voucherCircleMarginBottomPX / 2) - 4f.toPx()
+        val right = width.toFloat()
+        val bottom = height.toFloat()
+        canvas?.drawRoundRect(0f, top, right, bottom, 16f, 0f, voucherExpiredDateBackground)
     }
 
     fun updateToSelectedState() {
         circleCutStrokeColor.color =
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
         voucherBackground.color =
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN50)
         voucherExpiredDateBackground.color =
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN100)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN100)
         cardViewBorder.color =
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
         invalidate()
     }
 
     fun updateToNormalState() {
         circleCutStrokeColor.color =
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200)
         voucherBackground.color =
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
         voucherExpiredDateBackground.color =
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN50)
         cardViewBorder.color =
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200)
         invalidate()
     }
 }
