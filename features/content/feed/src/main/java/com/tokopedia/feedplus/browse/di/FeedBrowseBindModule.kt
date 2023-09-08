@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.di
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepositoryImpl
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseChannelTracker
@@ -20,6 +21,7 @@ abstract class FeedBrowseBindModule {
     /**
      * Repository
      */
+    @ActivityScope
     @Binds
     abstract fun bindRepository(
         feedBrowseRepositoryImpl: FeedBrowseRepositoryImpl
@@ -28,6 +30,7 @@ abstract class FeedBrowseBindModule {
     /**
      * Analytics
      */
+    @ActivityScope
     @Binds
     abstract fun bindChannelTrackerFactory(
         feedBrowseChannelTrackerImpl: FeedBrowseChannelTrackerImpl.Factory
