@@ -12,6 +12,7 @@ import com.tokopedia.catalog.ui.model.WidgetTypes
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -45,18 +46,15 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_CHARACTERISTIC.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> it.mapToBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
-                WidgetTypes.CATALOG_PANEL_IMAGE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation()
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
                 WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
-                WidgetTypes.CATALOG_COLUMN_INFO.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_COMPARISON.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_SIMILAR_PRODUCT.type -> { DummyUiModel(content = it.name)}
-                WidgetTypes.CATALOG_REVIEW_BUYER.type -> { DummyUiModel(content = it.name)}
-                else -> { DummyUiModel(content = it.name) }
+                else -> { BlankUiModel() }
             }.applyGlobalProperies(remoteModel, it)
         }.orEmpty()
     }

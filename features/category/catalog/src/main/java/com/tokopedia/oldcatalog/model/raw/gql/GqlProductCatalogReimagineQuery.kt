@@ -1,7 +1,7 @@
 package com.tokopedia.oldcatalog.model.raw.gql
 
-const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}catalog_id: String!,${'$'}comparison_id: String!,${'$'}user_id: String!, ${'$'}device: String!) {
-  catalogGetDetailModular(catalog_id: ${'$'}catalog_id,comparison_id: ${'$'}comparison_id,user_id: ${'$'}user_id, device: ${'$'}device) {
+const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}catalog_id: String!,${'$'}comparison_id: String!,${'$'}user_id: String!, ${'$'}device: String!, ${'$'}preferVersion: String!) {
+  catalogGetDetailModular(catalog_id: ${'$'}catalog_id,comparison_id: ${'$'}comparison_id,user_id: ${'$'}user_id, device: ${'$'}device, preferVersion: ${'$'}preferVersion) {
     globalStyle {
       darkMode
       presetKey
