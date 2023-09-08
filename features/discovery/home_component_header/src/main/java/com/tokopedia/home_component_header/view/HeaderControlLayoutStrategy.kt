@@ -3,6 +3,7 @@ package com.tokopedia.home_component_header.view
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
@@ -13,10 +14,13 @@ import com.tokopedia.home_component_header.R
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.ViewUtils.invertIfDarkMode
 import com.tokopedia.home_component_header.util.getLink
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
     var seeAllButton: TextView? = null
@@ -78,7 +82,7 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
                 itemView.findViewById(R.id.see_all_button)
             }
 
-            seeAllButton?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            seeAllButton?.setTextColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_GN500))
 
             seeAllButton?.show()
             seeAllButton?.setOnClickListener {
@@ -132,7 +136,7 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
             if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
             } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(context)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950).invertIfDarkMode(context)
             }
         )
     }
@@ -143,13 +147,19 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
         channelSubtitle: Typography?,
         headerColorMode: Int?
     ) {
-        channelSubtitle?.setTextColor(
-            if (channelHeader.textColor.isNotEmpty()) {
-                Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
-            } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(context)
-            }
-        )
+        if (hasSubtitle(channelHeader)) {
+            channelSubtitle?.visible()
+            channelSubtitle?.setTextColor(
+                if (channelHeader.textColor.isNotEmpty()) {
+                    Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
+                } else {
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
+                        .invertIfDarkMode(context)
+                }
+            )
+        } else {
+            channelSubtitle?.gone()
+        }
     }
 
     /**
@@ -199,6 +209,14 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
     ) {
     }
 
+    override fun renderIconSubtitle(
+        itemView: View,
+        channelHeader: ChannelHeader,
+        stubChannelIconSubtitle: View?
+    ) {
+        stubChannelIconSubtitle?.gone()
+    }
+
     override fun setContainerPadding(
         channelHeaderContainer: ConstraintLayout,
         hasExpiredTime: Boolean,
@@ -209,5 +227,9 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
         } else {
             channelHeaderContainer.setPadding(channelHeaderContainer.paddingLeft, channelHeaderContainer.paddingTop, channelHeaderContainer.paddingRight, resources.getDimensionPixelSize(R.dimen.home_channel_header_bottom_padding))
         }
+    }
+
+    private fun hasSubtitle(channelHeader: ChannelHeader): Boolean {
+        return !TextUtils.isEmpty(channelHeader.subtitle)
     }
 }

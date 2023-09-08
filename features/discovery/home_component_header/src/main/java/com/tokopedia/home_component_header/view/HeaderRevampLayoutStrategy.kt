@@ -112,7 +112,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         channelHeader: ChannelHeader,
         stubChannelIconSubtitle: View?
     ) {
-        stubChannelIconSubtitle?.gone()
         val subtitleIcon: ImageView
         if (hasIconSubtitle(channelHeader)) {
             if (stubChannelIconSubtitle is ViewStub &&
@@ -125,6 +124,8 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 subtitleIcon = itemView.findViewById(R.id.channel_subtitle_icon)
             }
             renderIcon(subtitleIcon, channelHeader)
+        } else {
+            stubChannelIconSubtitle?.gone()
         }
     }
 
@@ -184,15 +185,20 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         channelSubtitle: Typography?,
         headerColorMode: Int?
     ) {
-        channelSubtitle?.setTextColor(
-            if (headerColorMode == HomeChannelHeaderView.COLOR_MODE_INVERTED) {
-                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
-            } else if (channelHeader.textColor.isNotEmpty()) {
-                Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
-            } else {
-                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
-            }
-        )
+        if (hasSubtitle(channelHeader)) {
+            channelSubtitle?.visible()
+            channelSubtitle?.setTextColor(
+                if (headerColorMode == HomeChannelHeaderView.COLOR_MODE_INVERTED) {
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
+                } else if (channelHeader.textColor.isNotEmpty()) {
+                    Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
+                } else {
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
+                }
+            )
+        } else {
+            channelSubtitle?.gone()
+        }
     }
 
     /**
@@ -248,6 +254,10 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
 
     private fun hasIconSubtitle(channelHeader: ChannelHeader): Boolean {
         return !TextUtils.isEmpty(channelHeader.iconSubtitleUrl)
+    }
+
+    private fun hasSubtitle(channelHeader: ChannelHeader): Boolean {
+        return !TextUtils.isEmpty(channelHeader.subtitle)
     }
 
     private fun renderIcon(channelIconSubtitle: ImageView, channelHeader: ChannelHeader) {
