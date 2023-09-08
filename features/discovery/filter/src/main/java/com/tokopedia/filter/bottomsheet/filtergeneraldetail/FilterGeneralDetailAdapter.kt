@@ -91,10 +91,22 @@ internal class FilterGeneralDetailAdapter(
 
         private fun bindTitle(option: IOption) {
             binding?.filterDetailTitle?.text = option.name
+
             if(isReimagine) {
-                binding?.filterDetailTitle?.setType(FONT_TYPE_DISPLAY_ONE)
+                applyTitleFontTypeRevamp()
+            } else {
+                applyTitleFontTypeControl()
             }
         }
+
+        private fun applyTitleFontTypeRevamp(){
+            binding?.filterDetailTitle?.setType(FONT_TYPE_DISPLAY_ONE)
+        }
+
+        private fun applyTitleFontTypeControl(){
+            binding?.filterDetailTitle?.setType(FONT_TYPE_HEADING_5)
+        }
+
 
         private fun bindDescription(option: IOption) {
             val filterDetailDescription = binding?.filterDetailDescription ?: return
@@ -139,5 +151,6 @@ internal class FilterGeneralDetailAdapter(
     }
     companion object {
         const val FONT_TYPE_DISPLAY_ONE = 14
+        const val FONT_TYPE_HEADING_5 = 5
     }
 }

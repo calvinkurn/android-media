@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
@@ -38,6 +40,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val parameterListener: ProductListParameterListener,
     private val lastFilterListener: LastFilterListener,
     private val screenNameProvider: ScreenNameProvider,
+    private val reimagineRollence: ReimagineRollence,
     private val userSessionInterface: UserSessionInterface,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
@@ -57,6 +60,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         Dimension90Utils.getDimension90(getSearchParameter()?.getSearchParameterMap().orEmpty())
     }
 
+    private fun isReimagineQuickFilter() = reimagineRollence.search2Component() == Search2Component.QF_VAR
+
     override fun sendTrackingOpenFilterPage() {
         SearchSortFilterTracking.eventOpenFilterPage()
     }
@@ -74,7 +79,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 mapParameter = getSearchParameter()?.getSearchParameterHashMap(),
                 dynamicFilterModel = dynamicFilterModel,
                 callback = this,
-                isReimagine = true,
+                isReimagine = isReimagineQuickFilter(),
             )
         }
         sortFilterBottomSheet?.setOnDismissListener {
@@ -97,7 +102,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 filter = createSortModel(dynamicFilterModel),
                 optionCallback = createSortListener(),
                 enableResetButton = false,
-                isReimagine = true
+                isReimagine = isReimagineQuickFilter(),
             )
         }
 

@@ -44,9 +44,13 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     private var buttonApplyFilterDetailText: String? = null
 
     private var filterGeneralDetailBottomSheetView: View? = null
-    private var filterGeneralDetailAdapter: FilterGeneralDetailAdapter? = null
+    private var isReimagine: Boolean = false
+    private val filterGeneralDetailAdapter by lazy {
+        FilterGeneralDetailAdapter(this, isReimagine)
+    }
+
     private val optionSearchFilter = OptionSearchFilter {
-        filterGeneralDetailAdapter?.setOptionList(it)
+        filterGeneralDetailAdapter.setOptionList(it)
     }
 
     private var enableResetButton = true
@@ -70,7 +74,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         this.optionCallback = optionCallback
         this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
         this.enableResetButton = enableResetButton
-        filterGeneralDetailAdapter= FilterGeneralDetailAdapter(this, isReimagine)
+        this.isReimagine = isReimagine
         show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
     }
 
