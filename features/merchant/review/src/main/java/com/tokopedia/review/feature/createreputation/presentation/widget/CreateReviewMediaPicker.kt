@@ -44,8 +44,6 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     private val adapter = CreateReviewMediaAdapter(typeFactory)
     private val transitionHandler = TransitionHandler()
 
-    private val itemAnimator by lazy(LazyThreadSafetyMode.NONE) { DefaultItemAnimator() }
-
     override val binding = WidgetCreateReviewMediaPickerBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
@@ -100,7 +98,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     ) {
         if (animate) {
             if (binding.layoutMediaPicker.root.itemAnimator == null) {
-                binding.layoutMediaPicker.root.itemAnimator = itemAnimator
+                binding.layoutMediaPicker.root.itemAnimator = DefaultItemAnimator()
             }
         } else {
             binding.layoutMediaPicker.root.itemAnimator = null
