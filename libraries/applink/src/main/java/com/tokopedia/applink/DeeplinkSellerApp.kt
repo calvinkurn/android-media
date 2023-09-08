@@ -1,6 +1,8 @@
 package com.tokopedia.applink
 
+import android.content.Context
 import android.net.Uri
+import com.tokopedia.applink.centralizedpromo.DeeplinkMapperCentralizedPromo
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -26,7 +28,11 @@ object DeeplinkSellerApp {
             DLP.goToLink { ApplinkConstInternalSellerapp.CAMPAIGN_LIST }
         ),
         "centralized-promo" to mutableListOf(
-            DLP.goToLink { ApplinkConstInternalSellerapp.CENTRALIZED_PROMO }
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperCentralizedPromo.getRegisteredNavigationCentralizedPromo(
+                    context
+                )
+            }
         ),
         "chatsettings" to mutableListOf(
             DLP.matchPattern("bubble-activation") { _, _, deeplink, _ ->
