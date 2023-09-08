@@ -25,6 +25,8 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
 import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
+import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_CHANNEL_BLOCK
+import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_TAB_MENU
 import javax.inject.Inject
 
 /**
@@ -56,10 +58,10 @@ class FeedBrowseMapper @Inject constructor() {
         val data = response.playGetContentSlot.data
         val firstWidget = data.first()
         return when (firstWidget.type) {
-            "tabMenu" -> {
+            FEED_TYPE_TAB_MENU -> {
                 ChipUiState.Data(mapChips(firstWidget))
             }
-            "channelBlock" -> {
+            FEED_TYPE_CHANNEL_BLOCK -> {
                 ChannelUiState.Data(
                     mapChannel(firstWidget),
                     mapConfig(response.playGetContentSlot.playGetContentSlot)
@@ -120,7 +122,7 @@ class FeedBrowseMapper @Inject constructor() {
             video = PlayWidgetVideoUiModel.Empty.copy(coverUrl = coverUrl),
             channelType = channelType,
             hasGame = false,
-            share = PlayWidgetShareUiModel("", false),
+            share = PlayWidgetShareUiModel.Empty,
             performanceSummaryLink = "",
             poolType = "",
             recommendationType = item.recommendationType,
