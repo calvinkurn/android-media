@@ -208,6 +208,12 @@ class PlayAnalytic(
             putString(Key.businessUnit, BusinessUnit.play)
             putParcelableArrayList(KEY_EVENT_ITEMS, items)
             putString(KEY_ITEM_LIST, "/groupchat - bottom sheet")
+
+            when (section) {
+                ProductSectionType.Upcoming -> {}
+                ProductSectionType.Active -> putString(Key.trackerId, "27571")
+                else -> putString(Key.trackerId, "35078")
+            }
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -253,7 +259,15 @@ class PlayAnalytic(
                     )
                 )
             ),
-            generateBaseTracking(product = product, sectionInfo.config.type)
+            generateBaseTracking(
+                product = product,
+                type = sectionInfo.config.type,
+                trackerId = when (sectionInfo.config.type) {
+                    ProductSectionType.Upcoming -> ""
+                    ProductSectionType.Active -> "27572"
+                    else -> "16356"
+                }
+            )
         )
     }
 
@@ -302,7 +316,11 @@ class PlayAnalytic(
                     )
                 )
             ),
-            generateBaseTracking(product = product, sectionInfo.config.type)
+            generateBaseTracking(
+                product = product,
+                type = sectionInfo.config.type,
+                trackerId = "",
+            )
         )
     }
 
@@ -667,7 +685,14 @@ class PlayAnalytic(
                     )
                 )
             ),
-            generateBaseTracking(product = product, sectionInfo.config.type)
+            generateBaseTracking(
+                product = product,
+                type = sectionInfo.config.type,
+                trackerId = when (sectionInfo.config.type) {
+                    ProductSectionType.Active -> "27574"
+                    else -> "16347"
+                }
+            )
         )
     }
 
@@ -704,7 +729,14 @@ class PlayAnalytic(
                     )
                 )
             ),
-            generateBaseTracking(product = product, sectionInfo.config.type)
+            generateBaseTracking(
+                product = product,
+                type = sectionInfo.config.type,
+                trackerId = when (sectionInfo.config.type) {
+                    ProductSectionType.Active -> "27573"
+                    else -> "13888"
+                }
+            )
         )
     }
 
@@ -843,7 +875,11 @@ class PlayAnalytic(
         return "$mChannelId - ${product.id} - ${mChannelType.value} - $campaignId - is pinned product ${product.isPinned} - $rankType"
     }
 
-    private fun generateBaseTracking(product: PlayProductUiModel.Product, type: ProductSectionType): HashMap<String, Any> {
+    private fun generateBaseTracking(
+        product: PlayProductUiModel.Product,
+        type: ProductSectionType,
+        trackerId: String,
+    ): HashMap<String, Any> {
         val base: HashMap<String, Any> = hashMapOf(
             Key.businessUnit to BusinessUnit.play,
             Key.currentSite to CurrentSite.tokopediaMarketplace,
@@ -858,6 +894,13 @@ class PlayAnalytic(
                     KEY_PRODUCT_NAME to product.title,
                     KEY_PRODUCT_URL to product.applink.toString(),
                     KEY_CHANNEL to mChannelName
+                )
+            )
+        }
+        if (trackerId.isNotEmpty()) {
+            base.putAll(
+                mapOf(
+                    Key.trackerId to trackerId
                 )
             )
         }
