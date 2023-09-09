@@ -10,8 +10,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -41,7 +41,10 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.shouldRef
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
+import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxDiffUtilItemCallBack
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
+import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
+import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactoryImpl
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
@@ -101,14 +104,20 @@ class UniversalInboxFragment @Inject constructor(
     private var endlessRecyclerViewScrollListener: UniversalInboxEndlessScrollListener? = null
 
     private var binding: UniversalInboxFragmentBinding? by autoClearedNullable()
-    private var adapter: UniversalInboxAdapter = UniversalInboxAdapter(
-        userSession,
-        this,
-        this,
-        this,
-        this,
-        this
-    )
+
+    private val adapter by lazy {
+        UniversalInboxAdapter(
+            UniversalInboxTypeFactoryImpl(
+                userSession,
+                this,
+                this,
+                this,
+                this,
+                this
+            ),
+            UniversalInboxDiffUtilItemCallBack()
+        )
+    }
 
     // Recomm
     private var shouldTopAdsAndLoadRecommendation = true
@@ -178,13 +187,11 @@ class UniversalInboxFragment @Inject constructor(
             StaggeredGridLayoutManager.VERTICAL
         ).also {
             it.isItemPrefetchEnabled = true
-            it.gapStrategy = GAP_HANDLING_NONE
         }
         binding?.inboxRv?.setHasFixedSize(true)
         binding?.inboxRv?.itemAnimator = null
         binding?.inboxRv?.adapter = adapter
         binding?.inboxRv?.isNestedScrollingEnabled = false
-        binding?.inboxRv?.setItemViewCacheSize(20)
         binding?.inboxRv?.addItemDecoration(UniversalInboxRecommendationDecoration())
     }
 
@@ -267,7 +274,7 @@ class UniversalInboxFragment @Inject constructor(
         }
     }
 
-    private fun updateMenuList(newList: List<Any>) {
+    private fun updateMenuList(newList: List<Visitable<in UniversalInboxTypeFactory>>) {
         if (newList.isEmpty()) return
         adapter.tryUpdateMenuItemsAtPosition(newList = newList)
     }
@@ -307,7 +314,7 @@ class UniversalInboxFragment @Inject constructor(
                 // Set title & update product recommendation
                 updateProductRecommendation(
                     title = it.title,
-                    newList = it.productList
+                    newList = it.productRecommendation
                 )
             }
         }
@@ -321,7 +328,7 @@ class UniversalInboxFragment @Inject constructor(
 
     private fun updateProductRecommendation(
         title: String,
-        newList: List<Any>
+        newList: List<Visitable<in UniversalInboxTypeFactory>>
     ) {
         val editedNewList = newList.toMutableList()
         setHeadlineAndBannerExperiment(editedNewList)
@@ -356,7 +363,9 @@ class UniversalInboxFragment @Inject constructor(
         }
     }
 
-    private fun setHeadlineAndBannerExperiment(newList: MutableList<Any>) {
+    private fun setHeadlineAndBannerExperiment(
+        newList: MutableList<Visitable<in UniversalInboxTypeFactory>>
+    ) {
         try {
             setTopAdsHeadlineExperiment(newList)
             setTopAdsBannerExperiment(newList)
@@ -367,7 +376,7 @@ class UniversalInboxFragment @Inject constructor(
         }
     }
 
-    private fun setTopAdsHeadlineExperiment(newList: MutableList<Any>) {
+    private fun setTopAdsHeadlineExperiment(newList: MutableList<Visitable<in UniversalInboxTypeFactory>>) {
         var index = Int.ZERO
         if (headlineIndexList != null && headlineIndexList?.isNotEmpty() == true) {
             val pageNum = viewModel.getRecommendationPage()
@@ -402,7 +411,7 @@ class UniversalInboxFragment @Inject constructor(
         }
     }
 
-    private fun setTopAdsBannerExperiment(newList: MutableList<Any>) {
+    private fun setTopAdsBannerExperiment(newList: MutableList<Visitable<in UniversalInboxTypeFactory>>) {
         if (topAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED &&
             topAdsBannerExperimentPosition <= adapter.itemCount // Prevent out of bound
         ) {
@@ -424,7 +433,7 @@ class UniversalInboxFragment @Inject constructor(
     override fun loadWidgetMetaAndCounter() {
         shouldTopAdsAndLoadRecommendation = true
         endlessRecyclerViewScrollListener?.resetState()
-        adapter.clearAllItems()
+        adapter
         viewModel.processAction(UniversalInboxAction.RefreshPage)
     }
 
@@ -856,6 +865,7 @@ class UniversalInboxFragment @Inject constructor(
         // Refresh controlled by rollence
         if (shouldRefreshProductRecommendation(abTestPlatform)) {
             loadWidgetMetaAndCounter()
+            recommendationWidgetViewModel?.refresh()
         }
     }
 

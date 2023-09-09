@@ -1,3 +1,0 @@
-package com.tokopedia.inbox.universalinbox.view.uimodel
-
-class UniversalInboxRecommendationLoaderUiModel

@@ -1,9 +1,9 @@
 package com.tokopedia.inbox.universalinbox.view.uiState
 
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 
 data class UniversalInboxProductRecommendationUiState(
     val title: String = "",
-    val productList: List<RecommendationItem> = listOf(),
+    val productRecommendation: List<UniversalInboxRecommendationUiModel> = listOf(),
     val isLoading: Boolean = false
 )

@@ -1,5 +1,8 @@
 package com.tokopedia.inbox.universalinbox.view.uimodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
+
 data class UniversalInboxMenuUiModel(
     val type: MenuItemType,
     val title: String,
@@ -8,7 +11,11 @@ data class UniversalInboxMenuUiModel(
     val applink: String,
     val label: UniversalInboxMenuLabel,
     val additionalInfo: Any? = null
-) {
+) : Visitable<UniversalInboxTypeFactory> {
+
+    override fun type(typeFactory: UniversalInboxTypeFactory): Int {
+        return typeFactory.type(this)
+    }
 
     fun getShopInfo(): UniversalInboxShopInfoUiModel? {
         return if (additionalInfo is UniversalInboxShopInfoUiModel) {

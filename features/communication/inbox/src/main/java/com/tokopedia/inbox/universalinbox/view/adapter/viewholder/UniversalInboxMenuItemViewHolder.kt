@@ -2,25 +2,25 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxMenuItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.utils.view.binding.viewBinding
 
 class UniversalInboxMenuItemViewHolder(
     itemView: View,
     private val listener: UniversalInboxMenuListener
-): BaseViewHolder(itemView) {
+) : AbstractViewHolder<UniversalInboxMenuUiModel>(itemView) {
 
     private val binding: UniversalInboxMenuItemBinding? by viewBinding()
 
-    fun bind(uiModel: UniversalInboxMenuUiModel) {
+    override fun bind(uiModel: UniversalInboxMenuUiModel) {
         bindMenu(uiModel)
         bindShopInfo(uiModel)
         bindCounter(uiModel)

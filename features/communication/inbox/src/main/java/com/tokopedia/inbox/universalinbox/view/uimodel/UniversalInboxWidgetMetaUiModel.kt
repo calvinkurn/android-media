@@ -1,9 +1,17 @@
 package com.tokopedia.inbox.universalinbox.view.uimodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
+
 data class UniversalInboxWidgetMetaUiModel(
     val widgetList: ArrayList<UniversalInboxWidgetUiModel> = arrayListOf(),
     var isError: Boolean = false
-) {
+) : Visitable<UniversalInboxTypeFactory> {
+
+    override fun type(typeFactory: UniversalInboxTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
     companion object {
         fun areContentsTheSame(
             oldItem: UniversalInboxWidgetMetaUiModel,

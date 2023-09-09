@@ -22,6 +22,7 @@ import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxErrorUiStat
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxNavigationUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxProductRecommendationUiState
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -410,7 +411,9 @@ class UniversalInboxViewModel @Inject constructor(
                 it.copy(
                     isLoading = false,
                     title = response.title,
-                    productList = response.recommendationItemList
+                    productRecommendation = response.recommendationItemList.map { item ->
+                        UniversalInboxRecommendationUiModel(item)
+                    }
                 )
             }
         }
@@ -422,7 +425,7 @@ class UniversalInboxViewModel @Inject constructor(
             _productRecommendationState.update {
                 it.copy(
                     title = "",
-                    productList = listOf(),
+                    productRecommendation = listOf(),
                     isLoading = false
                 )
             }

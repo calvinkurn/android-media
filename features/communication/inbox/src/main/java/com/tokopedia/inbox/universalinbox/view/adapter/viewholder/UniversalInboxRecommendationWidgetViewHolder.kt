@@ -2,18 +2,20 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxRecommendationWidgetItemBinding
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class UniversalInboxRecommendationWidgetViewHolder(itemView: View): BaseViewHolder(itemView) {
+class UniversalInboxRecommendationWidgetViewHolder(
+    itemView: View
+) : AbstractViewHolder<UniversalInboxRecommendationWidgetUiModel>(itemView) {
 
     private var binding: UniversalInboxRecommendationWidgetItemBinding? by viewBinding()
 
-    fun bind(uiModel: RecommendationWidgetModel) {
-        binding?.inboxRecommendationWidget?.bind(uiModel)
+    override fun bind(uiModel: UniversalInboxRecommendationWidgetUiModel) {
+        binding?.inboxRecommendationWidget?.bind(uiModel.recommendationWidgetModel)
     }
 
     companion object {
