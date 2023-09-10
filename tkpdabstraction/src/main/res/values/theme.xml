@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="Theme.AppCompat.DayNight.Translucent" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:background">@android:color/transparent</item> <!-- Or any transparency or color you need -->
@@ -20,8 +20,6 @@
         <item name="toolbarTheme">@style/Toolbar.White</item>
         <item name="tabTheme">@style/TabBar.White</item>
         <item name="titleTextAppearance">@style/TitleTextAppearance.White</item>
-        <item name="android:statusBarColor">@color/Unify_Background</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
     <style name="Toolbar.White" parent="Base.Toolbar.Theme">
