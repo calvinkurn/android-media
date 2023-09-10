@@ -43,6 +43,10 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
+import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import rx.subscriptions.CompositeSubscription
@@ -57,11 +61,13 @@ class ManageAddressViewModel @Inject constructor(
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
+    private val getUserConsentCollection: GetConsentCollectionUseCase
 ) : ViewModel() {
 
     companion object {
         const val STATUS_SUCCESS = 1
+        private const val DEFAULT_ERROR_CONSENT = "Terjadi kesalahan. Silahkan coba lagi."
     }
 
     var token: Token? = null
@@ -197,15 +203,16 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String, consentJson: String) {
+    fun deletePeopleAddress(id: String) {
         viewModelScope.launchCatchError(
             block = {
+                val userConsentPayload = getUserConsentPayload()
                 val resultDelete =
                     deletePeopleAddressUseCase(
                         DeleteAddressParam(
                             inputAddressId = id.toLong(),
                             isTokonowRequest = true,
-                            consentJson = consentJson
+                            consentJson = userConsentPayload
                         )
                     )
                 if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
@@ -223,6 +230,43 @@ class ManageAddressViewModel @Inject constructor(
                 _resultRemovedAddress.value = ManageAddressState.Fail(it, it.message.orEmpty())
             }
         )
+    }
+
+    private suspend fun getUserConsentPayload(): String {
+        val userConsentParam = ConsentCollectionParam(collectionId = deleteCollectionId)
+        val userConsent = getUserConsentCollection(userConsentParam)
+        val isErrorGetConsent = userConsent.data.collectionPoints.isEmpty()
+        if (isErrorGetConsent) {
+            val message = if (userConsent.data.errorMessages.isNotEmpty()) {
+                userConsent.data.errorMessages.first()
+            } else {
+                DEFAULT_ERROR_CONSENT
+            }
+            throw Throwable(message)
+        }
+        val collection = userConsent.data.collectionPoints.first()
+        val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
+        collection.purposes.forEach {
+            purposes.add(
+                UserConsentPayload.PurposeDataModel(
+                    purposeId = it.id,
+                    version = it.version,
+                    /*
+                    * default value of transactionType is OPT_OUT, because the first time show checkbox always uncheck
+                    * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
+                    */
+                    transactionType = UserConsentConst.CONSENT_OPT_OUT,
+                    dataElementType = it.attribute.dataElementType
+                )
+            )
+        }
+        return UserConsentPayload(
+            identifier = userConsentParam.identifier,
+            collectionId = collection.id,
+            dataElements = mutableMapOf(),
+            default = isErrorGetConsent,
+            purposes = purposes
+        ).toString()
     }
 
     fun setDefaultPeopleAddress(

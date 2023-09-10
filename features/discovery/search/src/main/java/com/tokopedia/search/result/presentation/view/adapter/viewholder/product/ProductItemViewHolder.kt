@@ -49,6 +49,7 @@ abstract class ProductItemViewHolder(
             productListType = productListType,
             hasAddToCartButton = showButtonAtc,
             isPortrait = isPortrait,
+            pageSource = ProductCardModel.PageSource.SEARCH,
         )
     }
 
