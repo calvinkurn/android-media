@@ -43,7 +43,8 @@
         <activity
             android:name="com.tokopedia.feedplus.detail.FeedDetailActivity"
             android:exported="false"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -59,7 +60,7 @@
         <activity
             android:name="com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity"
             android:exported="false"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
