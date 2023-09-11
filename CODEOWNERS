@@ -145,6 +145,7 @@
 /features/content/people/                               @tokopedia/android-minionlance-dev
 /features/content/feed_component/       				@tokopedia/android-minionlance-dev
 /features/content/content_test/                         @tokopedia/android-minionlance-dev
+/features/content/creation_common/                      @tokopedia/android-minionlance-dev
 /features/content/stories_creation/                     @tokopedia/android-minionlance-dev
 
 /features/recharge/common_digital                       @tokopedia/android-minionmark-dev

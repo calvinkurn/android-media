@@ -52,6 +52,7 @@ ext {
             playBroadcaster                 : ":features:content:play_broadcaster",
             contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
+			creationCommon					: ":features:content:creation_common",
 			storiesCreation					: ":features:content:stories_creation",
 
             commonTopupBills                : ":features:recharge:common_topup_bills",
