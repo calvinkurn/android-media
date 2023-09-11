@@ -15,15 +15,17 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_IS_ONLY_CONSULT
 import com.tokopedia.epharmacy.utils.EPHARMACY_IS_OUTSIDE_WORKING_HOURS
 import com.tokopedia.epharmacy.utils.EPHARMACY_NOTE
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 class EPharmacyChooserTransparentActivity : BaseActivity() {
 
-    private var enableImageURL = ""
-    private var groupId = ""
-    private var enablerName = ""
-    private var duration = ""
-    private var price = ""
-    private var note = ""
+    private var enableImageURL = String.EMPTY
+    private var groupId = String.EMPTY
+    private var enablerName = String.EMPTY
+    private var duration = String.EMPTY
+    private var price = String.EMPTY
+    private var note = String.EMPTY
     private var isOutsideWorkingHours = false
     private var isOnlyConsultation = false
 
@@ -40,14 +42,14 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
     }
 
     private fun extractParameters() {
-        enableImageURL = intent.extras?.getString(ENABLER_IMAGE_URL) ?: ""
-        groupId = intent.extras?.getString(EPHARMACY_GROUP_ID) ?: ""
-        enablerName = intent.extras?.getString(EPHARMACY_ENABLER_NAME) ?: ""
-        price = intent.extras?.getString(EPHARMACY_CONS_PRICE) ?: ""
-        duration = intent.extras?.getString(EPHARMACY_CONS_DURATION) ?: ""
-        note = intent.extras?.getString(EPHARMACY_NOTE) ?: ""
-        isOutsideWorkingHours = intent.extras?.getBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS) ?: false
-        isOnlyConsultation = intent.extras?.getBoolean(EPHARMACY_IS_ONLY_CONSULT) ?: false
+        enableImageURL = intent.extras?.getString(ENABLER_IMAGE_URL).orEmpty()
+        groupId = intent.extras?.getString(EPHARMACY_GROUP_ID).orEmpty()
+        enablerName = intent.extras?.getString(EPHARMACY_ENABLER_NAME).orEmpty()
+        price = intent.extras?.getString(EPHARMACY_CONS_PRICE).orEmpty()
+        duration = intent.extras?.getString(EPHARMACY_CONS_DURATION).orEmpty()
+        note = intent.extras?.getString(EPHARMACY_NOTE).orEmpty()
+        isOutsideWorkingHours = intent.extras?.getBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS).orFalse()
+        isOnlyConsultation = intent.extras?.getBoolean(EPHARMACY_IS_ONLY_CONSULT).orFalse()
     }
 
     private fun openBottomSheet() {

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.epharmacy.ui.activity.EPharmacyActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyAttachPrescriptionActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyCheckoutActivity
+import com.tokopedia.epharmacy.ui.activity.EPharmacyComponentActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyLoadingActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyReminderActivity
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyChooserBottomSheet
@@ -33,6 +34,8 @@ interface EPharmacyComponent {
     fun inject(ePharmacyReminderActivity: EPharmacyReminderActivity) {}
 
     fun inject(ePharmacyLoadingActivity: EPharmacyLoadingActivity) {}
+
+    fun inject(ePharmacyComponentActivity: EPharmacyComponentActivity) {}
 
     fun inject(uploadPrescriptionFragment: UploadPrescriptionFragment)
 

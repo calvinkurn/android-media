@@ -12,15 +12,16 @@ import com.tokopedia.epharmacy.ui.fragment.EPharmacyCheckoutFragment
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
-    private var tokoConsultationId = ""
-    private var enablerId = ""
-    private var groupId = ""
+    private var tokoConsultationId = String.EMPTY
+    private var enablerId = String.EMPTY
+    private var groupId = String.EMPTY
 
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -42,9 +43,9 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
 
     private fun extractParameters() {
         intent?.data?.let { uri ->
-            groupId = uri.getQueryParameter(EPHARMACY_GROUP_ID) ?: ""
-            enablerId = uri.getQueryParameter(EPHARMACY_ENABLER_ID) ?: ""
-            tokoConsultationId = uri.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID) ?: ""
+            groupId = uri.getQueryParameter(EPHARMACY_GROUP_ID).orEmpty()
+            enablerId = uri.getQueryParameter(EPHARMACY_ENABLER_ID).orEmpty()
+            tokoConsultationId = uri.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID).orEmpty()
         }
     }
 

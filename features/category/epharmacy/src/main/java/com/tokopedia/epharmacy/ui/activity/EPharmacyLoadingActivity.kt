@@ -10,11 +10,11 @@ import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyLoadingFragment
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
-    private var tConsultationId: String = ""
+    private var tConsultationId = String.EMPTY
 
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -43,7 +43,7 @@ class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyCom
 
     private fun extractArguments() {
         intent?.data?.let {
-            tConsultationId = it.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID) ?: ""
+            tConsultationId = it.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID).orEmpty()
         }
     }
 

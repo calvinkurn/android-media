@@ -27,6 +27,8 @@ import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.utils.MINI_CONS_CHOOSER_IMAGE_URL
 import com.tokopedia.epharmacy.utils.MINI_CONS_CHOOSER_IMAGE_URL_DISABLED
 import com.tokopedia.epharmacy.utils.UPLOAD_CHOOSER_IMAGE_URL
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -37,12 +39,12 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class EPharmacyChooserBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<EpharmacyChooserBottomSheetBinding>()
-    private var enableImageURL = ""
-    private var groupId = ""
-    private var enablerName = ""
-    private var duration = ""
-    private var price = ""
-    private var note = ""
+    private var enableImageURL = String.EMPTY
+    private var groupId = String.EMPTY
+    private var enablerName = String.EMPTY
+    private var duration = String.EMPTY
+    private var price = String.EMPTY
+    private var note = String.EMPTY
     private var isOutsideWorkingHours = false
     private var isOnlyConsultation = false
 
@@ -114,14 +116,14 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     }
 
     private fun extractArguments() {
-        enableImageURL = arguments?.getString(ENABLER_IMAGE_URL) ?: ""
-        groupId = arguments?.getString(EPHARMACY_GROUP_ID) ?: ""
-        enablerName = arguments?.getString(EPHARMACY_ENABLER_NAME) ?: ""
-        price = arguments?.getString(EPHARMACY_CONS_PRICE) ?: ""
-        duration = arguments?.getString(EPHARMACY_CONS_DURATION) ?: ""
-        note = arguments?.getString(EPHARMACY_NOTE) ?: ""
-        isOutsideWorkingHours = arguments?.getBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS) ?: false
-        isOnlyConsultation = arguments?.getBoolean(EPHARMACY_IS_ONLY_CONSULT) ?: false
+        enableImageURL = arguments?.getString(ENABLER_IMAGE_URL).orEmpty()
+        groupId = arguments?.getString(EPHARMACY_GROUP_ID).orEmpty()
+        enablerName = arguments?.getString(EPHARMACY_ENABLER_NAME).orEmpty()
+        price = arguments?.getString(EPHARMACY_CONS_PRICE).orEmpty()
+        duration = arguments?.getString(EPHARMACY_CONS_DURATION).orEmpty()
+        note = arguments?.getString(EPHARMACY_NOTE).orEmpty()
+        isOutsideWorkingHours = arguments?.getBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS).orFalse()
+        isOnlyConsultation = arguments?.getBoolean(EPHARMACY_IS_ONLY_CONSULT).orFalse()
     }
 
     private fun setupBottomSheetUiData() {

@@ -8,11 +8,12 @@ import android.view.LayoutInflater
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.epharmacy.databinding.EpharmacyMiniConsultationTransparentActivityBinding
 import com.tokopedia.epharmacy.ui.bottomsheet.MiniConsultationMasterBottomSheetInfo
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 class EPharmacyMiniConsultationTransparentActivity : BaseActivity() {
 
-    private var enablerName = ""
-    private var dataType = ""
+    private var enablerName = String.EMPTY
+    private var dataType = String.EMPTY
 
     private val binding: EpharmacyMiniConsultationTransparentActivityBinding by lazy {
         EpharmacyMiniConsultationTransparentActivityBinding.inflate(LayoutInflater.from(this))
@@ -27,9 +28,9 @@ class EPharmacyMiniConsultationTransparentActivity : BaseActivity() {
     }
 
     private fun extractParameters() {
-        val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
-        enablerName = if (pathSegments.size > 1) pathSegments[1] ?: "" else ""
-        dataType = if (pathSegments.size > 2) pathSegments[2] ?: "" else ""
+        val pathSegments = Uri.parse(intent.data?.path.orEmpty()).pathSegments
+        enablerName = if (pathSegments.size > 1) pathSegments[1].orEmpty() else String.EMPTY
+        dataType = if (pathSegments.size > 2) pathSegments[2].orEmpty() else String.EMPTY
     }
 
     private fun openBottomSheet() {

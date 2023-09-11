@@ -24,6 +24,7 @@ import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.utils.PRESCRIPTION_ATTACH_SUCCESS
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -46,9 +47,9 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     private var ePharmacyData: Group? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
-    private var tConsultationId = ""
-    private var enablerId = ""
-    private var groupId = ""
+    private var tConsultationId = String.EMPTY
+    private var enablerId = String.EMPTY
+    private var groupId = String.EMPTY
 
     private var ePharmacyCheckoutParams = EPharmacyCheckoutParams(ePharmacyCheckoutCartGroup = null)
 
@@ -86,9 +87,9 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun initArguments() {
-        groupId = arguments?.getString(EPHARMACY_GROUP_ID, "") ?: ""
-        enablerId = arguments?.getString(EPHARMACY_ENABLER_ID, "") ?: ""
-        tConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, "") ?: ""
+        groupId = arguments?.getString(EPHARMACY_GROUP_ID, String.EMPTY).orEmpty()
+        enablerId = arguments?.getString(EPHARMACY_ENABLER_ID, String.EMPTY).orEmpty()
+        tConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, String.EMPTY).orEmpty()
     }
 
     private fun setUpObservers() {
@@ -137,8 +138,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun showToasterError(throwable: Throwable) {
         when (throwable) {
-            is UnknownHostException, is SocketTimeoutException -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
-            else -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail) ?: "")
+            is UnknownHostException, is SocketTimeoutException -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error).orEmpty())
+            else -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail).orEmpty())
         }
     }
 
@@ -191,7 +192,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     private fun setTotalInfo(shoppingSummary: EPharmacyAtcInstantResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.ShoppingSummary?) {
         binding?.qcTotalAmount?.apply {
             setLabelTitle("Total Tagihan")
-            setAmount(shoppingSummary?.product?.totalPriceFmt ?: "")
+            setAmount(shoppingSummary?.product?.totalPriceFmt.orEmpty())
             setCtaText("Pilih Pembayaran")
             amountCtaView.setOnClickListener {
                 onSelectPayment()
@@ -214,7 +215,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setGlobalErrors(errorType: Int, message: String? = "") {
+    private fun setGlobalErrors(errorType: Int, message: String? = String.EMPTY) {
         ePharmacyGlobalError?.apply {
             show()
             setType(errorType)
@@ -252,7 +253,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
         when(result.data.checkout?.data?.success){
-            0 -> showToast(TYPE_ERROR,result.data.checkout?.data?.message ?: "")
+            0 -> showToast(TYPE_ERROR,result.data.checkout?.data?.message.orEmpty())
             1 -> successCheckout(result.data.checkout?.data?.data?.redirectUrl)
         }
     }

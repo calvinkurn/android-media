@@ -19,6 +19,7 @@ import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,7 +34,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private var ePharmacyGlobalError: GlobalError? = null
     private var illustrationImage: DeferredImageView? = null
-    private var tConsultationId = ""
+    private var tConsultationId = String.EMPTY
     private var isFirstFail = false
 
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -76,7 +77,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun extractArguments() {
-        tConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, "") ?: ""
+        tConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, String.EMPTY).orEmpty()
     }
 
     private fun setUpObservers() {
@@ -140,8 +141,8 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
         setErrorData(
             getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_title),
             getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_description),
-            "",
-            ""
+            String.EMPTY,
+            String.EMPTY
         )
     }
 

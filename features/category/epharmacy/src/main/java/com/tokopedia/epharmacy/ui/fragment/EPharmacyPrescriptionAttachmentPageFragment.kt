@@ -202,17 +202,17 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                     if (error.showErrorToast) {
                         EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
                             group?.consultationSource?.id ?: 0L,
-                            group?.consultationSource?.enablerName ?: "",
+                            group?.consultationSource?.enablerName.orEmpty(),
                             FAILED,
-                            group?.epharmacyGroupId ?: ""
+                            group?.epharmacyGroupId.orEmpty()
                         )
                         TYPE_ERROR
                     } else {
                         EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
                             group?.consultationSource?.id ?: 0L,
-                            group?.consultationSource?.enablerName ?: "",
+                            group?.consultationSource?.enablerName.orEmpty(),
                             SUCCESS,
-                            group?.epharmacyGroupId ?: ""
+                            group?.epharmacyGroupId.orEmpty()
                         )
                         Toaster.TYPE_NORMAL
                     },
@@ -295,8 +295,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(
                 userSession.isLoggedIn,
                 userSession.userId,
-                consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.enablerName ?: "",
-                consultationResponse.epharmacyGroupId ?: "",
+                consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.enablerName.orEmpty(),
+                consultationResponse.epharmacyGroupId.orEmpty(),
                 consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString()
             )
             openEPharmacyGeneralCheckoutPage(consultationResponse)
@@ -319,8 +319,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun showToasterError(throwable: Throwable) {
         when (throwable) {
-            is UnknownHostException, is SocketTimeoutException -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
-            else -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail) ?: "")
+            is UnknownHostException, is SocketTimeoutException -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error).orEmpty())
+            else -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail).orEmpty())
         }
     }
 
@@ -413,7 +413,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun onDoneButtonClick(appLink: String?) {
         if (hasAnyError()) {
-            showToast(TYPE_ERROR, context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_local_prescription_not_uploaded_error) ?: "")
+            showToast(TYPE_ERROR, context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_local_prescription_not_uploaded_error).orEmpty())
             updateUi()
             return
         }
@@ -491,7 +491,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             model.note
         )
         EPharmacyMiniConsultationAnalytics.clickAttachPrescriptionButton(
-            model.prescriptionCTA?.title ?: "",
+            model.prescriptionCTA?.title.orEmpty(),
             ePharmacyPrescriptionAttachmentViewModel.getEnablers().toString(),
             adapterPosition.toString(),
             ePharmacyPrescriptionAttachmentViewModel.getShopIds(model.epharmacyGroupId).size.toString(),
@@ -578,7 +578,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun startPhotoUpload(enablerName: String?, groupId: String?, requestCode: Int = EPHARMACY_UPLOAD_REQUEST_CODE) {
-        EPharmacyMiniConsultationAnalytics.clickUploadResepDokter(enablerName, groupId ?: "")
+        EPharmacyMiniConsultationAnalytics.clickUploadResepDokter(enablerName, groupId.orEmpty())
         RouteManager.getIntent(activity, EPHARMACY_APPLINK).apply {
             putExtra(EXTRA_CHECKOUT_ID_STRING, groupId)
             putExtra(EXTRA_SOURCE_STRING, UPLOAD_PAGE_SOURCE_PAP)

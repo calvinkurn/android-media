@@ -2,24 +2,33 @@ package com.tokopedia.epharmacy.ui.bottomsheet
 
 import android.app.Dialog
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.request.EpharmacyUserReminderParam
-import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.epharmacy.utils.CLOSE_TIME
+import com.tokopedia.epharmacy.utils.CONSULTATION_SOURCE_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
+import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
+import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationAnalytics
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.IS_OUTSIDE_WORKING_HOURS
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.IN_WORKING_HOURS
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.OUTSIDE_WORKING_HOURS
+import com.tokopedia.epharmacy.utils.OPEN_TIME
+import com.tokopedia.epharmacy.utils.OUTSIDE_WORKING_HOURS_SOURCE
+import com.tokopedia.epharmacy.utils.REMINDER_ILLUSTRATION_IMAGE
+import com.tokopedia.epharmacy.utils.REMINDER_TYPE
+import com.tokopedia.epharmacy.utils.WORKING_HOURS_SOURCE
 import com.tokopedia.epharmacy.viewmodel.EPharmacyReminderBsViewModel
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.picker.common.basecomponent.utils.rootCurrentView
@@ -36,8 +45,8 @@ import javax.inject.Inject
 class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<EpharmacyReminderScreenBottomSheetBinding>()
-    private var openTime = ""
-    private var closeTime = ""
+    private var openTime = String.EMPTY
+    private var closeTime = String.EMPTY
     private var isOutsideWorkingHours = false
 
     companion object {
@@ -105,15 +114,15 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     }
 
     private fun extractArguments() {
-        openTime = arguments?.getString(OPEN_TIME) ?: ""
-        closeTime = arguments?.getString(CLOSE_TIME) ?: ""
-        isOutsideWorkingHours = arguments?.getBoolean(IS_OUTSIDE_WORKING_HOURS, false) ?: false
+        openTime = arguments?.getString(OPEN_TIME).orEmpty()
+        closeTime = arguments?.getString(CLOSE_TIME).orEmpty()
+        isOutsideWorkingHours = arguments?.getBoolean(IS_OUTSIDE_WORKING_HOURS, false).orFalse()
     }
 
     private fun sendViewEvent() {
         EPharmacyMiniConsultationAnalytics.viewNoDoctorScreen(
-            arguments?.getString(EPHARMACY_GROUP_ID) ?: "",
-            arguments?.getString(EPHARMACY_ENABLER_NAME) ?: "",
+            arguments?.getString(EPHARMACY_GROUP_ID).orEmpty(),
+            arguments?.getString(EPHARMACY_ENABLER_NAME).orEmpty(),
             if (isOutsideWorkingHours) { OUTSIDE_WORKING_HOURS } else IN_WORKING_HOURS
         )
     }
@@ -132,9 +141,9 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                     } else {
                         context?.resources?.let { res ->
                             if (it.data.data?.error.isNullOrBlank()) {
-                                showToast(Toaster.TYPE_ERROR, it.data.data?.error ?: "")
+                                showToast(Toaster.TYPE_ERROR, it.data.data?.error.orEmpty())
                             } else {
-                                showToast(Toaster.TYPE_ERROR, context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail) ?: "")
+                                showToast(Toaster.TYPE_ERROR, context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail).orEmpty())
                             }
                         }
                     }
@@ -143,11 +152,11 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                     when (it.throwable) {
                         is UnknownHostException, is SocketTimeoutException -> showToast(
                             Toaster.TYPE_ERROR,
-                            context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_internet_error) ?: ""
+                            context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_internet_error).orEmpty()
                         )
                         else -> showToast(
                             Toaster.TYPE_ERROR,
-                            context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail) ?: ""
+                            context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail).orEmpty()
                         )
                     }
                 }
@@ -168,8 +177,8 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                     requestParams()?.let { it1 ->
                         viewModel?.setForReminder(it1)
                         EPharmacyMiniConsultationAnalytics.clickIngatkanSaya(
-                            arguments?.getString(EPHARMACY_GROUP_ID) ?: "",
-                            arguments?.getString(EPHARMACY_ENABLER_NAME) ?: "",
+                            arguments?.getString(EPHARMACY_GROUP_ID).orEmpty(),
+                            arguments?.getString(EPHARMACY_ENABLER_NAME).orEmpty(),
                             if (isOutsideWorkingHours) { OUTSIDE_WORKING_HOURS } else IN_WORKING_HOURS
                         )
                     }
@@ -186,8 +195,8 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     }
 
     private fun getMessageString(): String {
-        val openTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(OPEN_TIME) ?: "")
-        val closeTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(CLOSE_TIME) ?: "")
+        val openTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(OPEN_TIME).orEmpty())
+        val closeTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(CLOSE_TIME).orEmpty())
         return getString(
             if (isOutsideWorkingHours) {
                 com.tokopedia.epharmacy.R.string.epharmacy_reminder_description_outside
