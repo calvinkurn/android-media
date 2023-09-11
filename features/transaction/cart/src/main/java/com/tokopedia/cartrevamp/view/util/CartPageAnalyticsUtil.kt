@@ -2,6 +2,7 @@ package com.tokopedia.cartrevamp.view.util
 
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
@@ -93,6 +94,7 @@ object CartPageAnalyticsUtil {
             ConstantTransactionAnalytics.Key.ITEM_ID to cartItemHolderData.productId,
             ConstantTransactionAnalytics.Key.ITEM_NAME to cartItemHolderData.productName,
             ConstantTransactionAnalytics.Key.ITEM_VARIANT to cartItemHolderData.variant,
+            ConstantTransactionAnalytics.Key.ITEM_BRAND to String.EMPTY,
             ConstantTransactionAnalytics.Key.PRICE to cartItemHolderData.productPrice.toString(),
             ConstantTransactionAnalytics.Key.QUANTITY to cartItemHolderData.quantity,
             ConstantTransactionAnalytics.Key.SHOP_ID to cartItemHolderData.shopHolderData.shopId,
