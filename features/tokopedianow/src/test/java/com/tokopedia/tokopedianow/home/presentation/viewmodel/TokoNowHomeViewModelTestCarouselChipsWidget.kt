@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -154,7 +155,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 productCarouselChipsUiModel
             )
 
@@ -315,7 +316,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 productCarouselChipsUiModel
             )
 
@@ -520,7 +521,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 productCarouselChipsUiModel
             )
 

@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.data.createHomeLayoutListForBannerOnly
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
@@ -60,7 +61,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
         viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
 
         val layoutList = listOf(
-            TokoNowChooseAddressWidgetUiModel(id = "0"),
+            createHomeHeaderUiModel(),
             BannerDataModel(
                 channelModel = ChannelModel(
                     id = "2222",

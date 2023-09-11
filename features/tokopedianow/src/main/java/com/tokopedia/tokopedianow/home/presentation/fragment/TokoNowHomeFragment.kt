@@ -11,13 +11,11 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -25,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
@@ -33,10 +32,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -159,6 +156,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherLi
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeHeaderViewHolder.HomeHeaderListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
@@ -181,8 +179,10 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.resources.isDarkMode
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowHomeFragment :
     Fragment(),
@@ -211,6 +211,7 @@ class TokoNowHomeFragment :
         private const val PARAM_AFFILIATE_CHANNEL = "channel"
         private const val REPURCHASE_EXPERIMENT_ENABLED = "experiment_variant"
         private const val REPURCHASE_EXPERIMENT_DISABLED = "control_variant"
+        private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -279,7 +280,8 @@ class TokoNowHomeFragment :
                 claimCouponWidgetListener = createClaimCouponWidgetCallback(),
                 productCarouselChipListener = createProductCarouselChipListener(),
                 productBundleWidgetListener = bundleWidgetCallback,
-                tokoNowBundleWidgetListener = bundleWidgetCallback
+                tokoNowBundleWidgetListener = bundleWidgetCallback,
+                homeHeaderListener = createHomeHeaderListener()
             ),
             differ = HomeListDiffer()
         )
@@ -288,8 +290,6 @@ class TokoNowHomeFragment :
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
     private var localCacheModel: LocalCacheModel? = null
-    private var ivHeaderBackground: ImageView? = null
-    private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
     private var rvHome: RecyclerView? = null
     private var miniCartWidget: MiniCartWidget? = null
@@ -315,13 +315,11 @@ class TokoNowHomeFragment :
             ).orZero()
             val height = (navToolbar?.height ?: defaultHeight)
             val padding = context?.resources?.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
+                unifyprinciplesR.dimen.spacing_lvl3
             ).orZero()
 
             return height + padding
         }
-    private val spaceZero: Int
-        get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).orZero().toIntSafely()
 
     private val loadMoreListener by lazy { createLoadMoreListener() }
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
@@ -725,38 +723,9 @@ class TokoNowHomeFragment :
         stickyLoginTokonow?.hide()
     }
 
-    private fun loadHeaderBackground() {
-        context?.resources?.apply {
-            val background = VectorDrawableCompat.create(
-                this,
-                R.drawable.tokopedianow_ic_header_background_shimmering,
-                context?.theme
-            )
-            ivHeaderBackground?.setImageDrawable(background)
-            ivHeaderBackground?.show()
-        }
-    }
-
-    private fun showHeaderBackground() {
-        context?.resources?.apply {
-            val background = VectorDrawableCompat.create(
-                this,
-                R.drawable.tokopedianow_ic_header_background,
-                context?.theme
-            )
-            ivHeaderBackground?.setImageDrawable(background)
-            ivHeaderBackground?.show()
-        }
-    }
-
-    private fun hideHeaderBackground() {
-        ivHeaderBackground?.hide()
-    }
-
     private fun setupSwipeRefreshLayout() {
-        context?.let {
-            swipeLayout?.setMargin(spaceZero, NavToolbarExt.getFullToolbarHeight(it), spaceZero, spaceZero)
-            swipeLayout?.setOnRefreshListener {
+        binding?.apply {
+            swipeRefreshLayout.setOnRefreshListener {
                 onRefreshLayout()
             }
         }
@@ -785,11 +754,9 @@ class TokoNowHomeFragment :
 
     private fun setupUi() {
         view?.apply {
-            ivHeaderBackground = binding?.viewBackgroundImage
             navToolbar = binding?.navToolbar
             statusBarBackground = binding?.statusBarBg
             rvHome = binding?.rvHome
-            swipeLayout = binding?.swipeRefreshLayout
             miniCartWidget = binding?.miniCartWidget
             stickyLoginTokonow = binding?.stickyLoginTokonow
         }
@@ -865,11 +832,17 @@ class TokoNowHomeFragment :
     }
 
     private fun evaluateHeaderBackgroundOnScroll(recyclerView: RecyclerView, dy: Int) {
-        ivHeaderBackground?.translationY = viewModelTokoNow.getTranslationYHeaderBackground(dy)
-        if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
-            navToolbar?.showShadow(lineShadow = true)
-        } else {
-            navToolbar?.hideShadow(lineShadow = true)
+        binding?.apply {
+            if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
+                navToolbar.showShadow(lineShadow = true)
+            } else {
+                navToolbar.hideShadow(lineShadow = true)
+            }
+            if (recyclerView.computeVerticalScrollOffset() == VERTICAL_SCROLL_FULL_BOTTOM_OFFSET) {
+                swipeRefreshLayout.setCanChildScrollUp(false)
+            } else {
+                swipeRefreshLayout.setCanChildScrollUp(true)
+            }
         }
     }
 
@@ -915,6 +888,7 @@ class TokoNowHomeFragment :
                 adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
+                itemAnimator = null
             }
 
             rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
@@ -933,7 +907,6 @@ class TokoNowHomeFragment :
 
             rvHome?.post {
                 addScrollListener()
-                resetSwipeLayout()
             }
         }
 
@@ -1355,8 +1328,10 @@ class TokoNowHomeFragment :
     }
 
     private fun resetSwipeLayout() {
-        swipeLayout?.isEnabled = true
-        swipeLayout?.isRefreshing = false
+        binding?.apply {
+            swipeRefreshLayout.isEnabled = true
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
@@ -1412,10 +1387,10 @@ class TokoNowHomeFragment :
                 getMiniCartHeight()
             } else {
                 context?.resources?.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+                    unifyprinciplesR.dimen.layout_lvl0
                 ).orZero()
             }
-            swipeLayout?.setPadding(0, 0, 0, paddingBottom)
+            binding?.swipeRefreshLayout?.setPadding(0, 0, 0, paddingBottom)
         }
     }
 
@@ -1429,14 +1404,15 @@ class TokoNowHomeFragment :
     }
 
     private fun onFailedGetHomeLayout(throwable: Throwable) {
+        switchToLightToolbar()
         showFailedToFetchData()
         stickyLoginLoadContent()
         logHomeLayoutError(throwable)
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        hideTopSpacingView()
         showHomeLayout(data)
-        loadHeaderBackground()
         checkAddressDataAndServiceArea()
         showHideChooseAddress()
         hideSwitcherCoachMark()
@@ -1449,8 +1425,8 @@ class TokoNowHomeFragment :
     }
 
     private fun onHideHomeLayout(data: HomeLayoutListUiModel) {
+        showTopSpacingView()
         showHomeLayout(data)
-        hideHeaderBackground()
         stickyLoginLoadContent()
         stopPerformanceMonitoring()
     }
@@ -1458,10 +1434,10 @@ class TokoNowHomeFragment :
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
         startRenderPerformanceMonitoring()
         showHomeLayout(data)
-        showHeaderBackground()
         stickyLoginLoadContent()
         showOnBoarding()
         getLayoutComponentData()
+        resetSwipeLayout()
         stopRenderPerformanceMonitoring()
     }
 
@@ -1469,6 +1445,20 @@ class TokoNowHomeFragment :
         localCacheModel?.let {
             viewModelTokoNow.getLayoutComponentData(it)
         }
+    }
+
+    private fun showTopSpacingView() {
+        binding?.apply {
+            context?.let {
+                viewTopSpacing.layoutParams.height =
+                    NavToolbarExt.getFullToolbarHeight(it)
+                viewTopSpacing.show()
+            }
+        }
+    }
+
+    private fun hideTopSpacingView() {
+        binding?.viewTopSpacing?.hide()
     }
 
     private fun showOnBoarding() {
@@ -1777,19 +1767,54 @@ class TokoNowHomeFragment :
                         override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
                         }
 
-                        override fun onSwitchToLightToolbar() { /* nothing to do */
+                        override fun onSwitchToLightToolbar() {
+                            if (context.isDarkMode()) {
+                                toolbar.setBackButtonColor(
+                                    unifyprinciplesR.color.Unify_Static_White
+                                )
+                            } else {
+                                toolbar.setBackButtonColor(
+                                    unifyprinciplesR.color.Unify_Static_Black
+                                )
+                            }
+                            switchToLightToolbar()
                         }
 
                         override fun onSwitchToDarkToolbar() {
+                            if (viewModelTokoNow.isEmptyState && !context.isDarkMode()) {
+                                toolbar.setBackButtonColor(
+                                    unifyprinciplesR.color.Unify_Static_Black
+                                )
+                                toolbar.switchToLightToolbar()
+                                switchToLightToolbar()
+                            } else {
+                                toolbar.setBackButtonColor(
+                                    unifyprinciplesR.color.Unify_Static_White
+                                )
+                                switchToDarkToolbar()
+                            }
                             navToolbar?.hideShadow()
                         }
 
                         override fun onYposChanged(yOffset: Int) {}
-                    },
-                    fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+                    }
                 )
             }
         }
+    }
+
+    private fun NavToolbar.setBackButtonColor(color: Int) {
+        context?.let {
+            setCustomBackButton(color = ContextCompat.getColor(it, color))
+        }
+    }
+
+    private fun switchToDarkToolbar() {
+        (activity as? TokoNowHomeActivity)?.switchToDarkToolbar()
+    }
+
+    private fun switchToLightToolbar() {
+        (activity as? TokoNowHomeActivity)?.switchToLightToolbar()
     }
 
     private fun createHomeComponentScrollListener(): RecyclerView.OnScrollListener {
@@ -2000,6 +2025,14 @@ class TokoNowHomeFragment :
         )
     }
 
+    private fun createHomeHeaderListener() = object : HomeHeaderListener {
+        override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?) {
+            view?.let {
+                binding?.swipeRefreshLayout?.setContentChildViewPullRefresh(it)
+            }
+        }
+    }
+
     private fun createBundleWidgetCallback(): BundleWidgetCallback {
         return BundleWidgetCallback(viewModelTokoNow, analytics)
     }
@@ -2088,7 +2121,8 @@ class TokoNowHomeFragment :
     }
 
     private fun getMiniCartHeight(): Int {
-        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt().orZero()
+        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(
+            unifyprinciplesR.dimen.unify_space_16)?.toInt().orZero()
     }
 
     override fun permissionAction(action: String, label: String) {

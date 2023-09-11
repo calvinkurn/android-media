@@ -16,6 +16,7 @@ import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.Shop
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
@@ -169,7 +170,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 homeRecomUiModel
             )
 
@@ -350,7 +351,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 homeRecomUiModel
             )
 
@@ -513,7 +514,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 homeRecomUiModel
             )
 
@@ -651,7 +652,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 homeRecomUiModel
             )
 
@@ -837,7 +838,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 homeRecomUiModel
             )
 

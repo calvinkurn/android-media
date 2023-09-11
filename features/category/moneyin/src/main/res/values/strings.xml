@@ -128,4 +128,5 @@
     <string name="money_in_close">Tutup</string>
     <string name="money_in_kembali">Kembali</string>
     <string name="money_in_beri_akses">Beri Akses</string>
+    <string name="money_in_title_ok">OK</string>
 </resources>

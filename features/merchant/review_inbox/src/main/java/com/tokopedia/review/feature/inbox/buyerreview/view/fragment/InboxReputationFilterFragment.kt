@@ -23,7 +23,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.Header
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.OptionUiModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.UnifyButton
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -103,16 +102,19 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     }
 
     private fun prepareView() {
-        list?.apply {
-            layoutManager = LinearLayoutManager(
-                activity,
-                LinearLayoutManager.VERTICAL, false
-            )
-            adapter = InboxReputationFilterAdapter.createInstance(
-                this@InboxReputationFilterFragment,
-                listOption
-            )
-        }
+        prepareRecyclerView()
+        prepareSaveButton()
+    }
+
+    private fun prepareRecyclerView() {
+        list?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        list?.adapter = InboxReputationFilterAdapter.createInstance(
+            this@InboxReputationFilterFragment,
+            listOption
+        ).also { adapter = it }
+    }
+
+    private fun prepareSaveButton() {
         saveButton?.setOnClickListener {
             val data = Intent()
             data.putExtra(SELECTED_TIME_FILTER, timeFilter)

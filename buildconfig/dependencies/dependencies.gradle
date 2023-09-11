@@ -78,6 +78,8 @@ ext {
     playServiceMeasurementApi = '18.0.0'
     playCastVersion = '21.0.1'
     bomVersion = '26.2.0'
+    firebasePerfVersion = '20.3.3'
+    firebaseRemoteConfigVersion = '21.4.0'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.7.2'
@@ -96,19 +98,19 @@ ext {
     robolectricVersion = "4.9"
     orchestratorVersion = '1.4.1'
     leakCanaryVersion = '2.9.1'
-    embraceVersion = '5.22.0'
-    newRelicVersion = '7.0.0'
+    embraceVersion = '4.15.0'
+    newRelicVersion = '6.6.0'
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
     playIntegrityVersion = '1.0.1'
     wearRemoteInteractionVersion = '1.0.0'
-    conversationsVersion = '7.7.1'
+    conversationsVersion = '7.9.1-54af4674'
     gojekCourierVersion = '0.1.5'
     gojekCourierClientVersion = '0.0.8.1@aar'
     profileInstallerVersion = '1.3.0-alpha01'
     desugarJdkVersion= '1.2.2'
-    laku6SdkVersion = '2.5.18'
+    laku6SdkVersion = '2.5.20'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
@@ -234,7 +236,8 @@ ext {
             crashlytics: "com.google.firebase:firebase-crashlytics-ktx",
             analytics  : "com.google.firebase:firebase-analytics-ktx",
             auth       : "com.google.firebase:firebase-auth-ktx",
-            dynamicLink: "com.google.firebase:firebase-dynamic-links-ktx"
+            dynamicLink: "com.google.firebase:firebase-dynamic-links-ktx",
+            remoteConfig: "com.google.firebase:firebase-config-ktx"
     ]
 
     viewDependencies = [
@@ -251,8 +254,8 @@ ext {
     ]
 
     gotoOneKyc = [
-            resource : "com.gojek.android:OneKycResources:1.0.4@aar",
-            oneKycSdk : "com.gojek.android:OneKycSdk:1.0.4@aar",
+            resource : "com.gojek.android:OneKycResources:2.0.0@aar",
+            oneKycSdk : "com.gojek.android:OneKycSdk:2.0.0@aar",
             clickStream : "com.gojek.android:clickstream:2.0.1-alpha",
             protoToko : "com.gojek.clickstream:proto-toko:4.219.0-snapshot-toko-1",
             protoSdk : "com.gojek.clickstream:proto-sdk:1.18.2"
@@ -314,7 +317,7 @@ ext {
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:$laku6SdkVersion",
+            laku6Sdk              : "com.github.carousell:laku6-tokopedia-android-sdk:$laku6SdkVersion",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.8.2.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",

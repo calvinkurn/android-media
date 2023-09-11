@@ -58,6 +58,8 @@ import com.tokopedia.developer_options.presentation.model.ViewIrisLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewJourneyLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
+import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
+import com.tokopedia.developer_options.presentation.model.UserIdUiModel
 import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.AnalyticsLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.AppVersionViewHolder
@@ -113,6 +115,8 @@ import com.tokopedia.developer_options.presentation.viewholder.ViewIrisLogViewHo
 import com.tokopedia.developer_options.presentation.viewholder.ViewJourneyLogViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewNetworkLogViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewTopAdsLogViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 
 /**
  * @author Said Faisal on 24/11/2021
@@ -127,7 +131,9 @@ class DeveloperOptionTypeFactoryImpl(
     private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener,
     private val loginHelperListener: LoginHelperListener,
     private val authorizeListener: DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener,
-    private val branchListener: BranchLinkViewHolder.BranchListener
+    private val branchListener: BranchLinkViewHolder.BranchListener,
+    private val userIdListener: UserIdViewHolder.UserIdListener,
+    private val shopIdListener: ShopIdViewHolder.ShopIdListener
 ) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
@@ -185,6 +191,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: FpiMonitoringUiModel): Int = EnableFpiMonitoringViewHolder.LAYOUT
     override fun type(uiModel: BannerEnvironmentUiModel): Int = BannerEnvironmentViewHolder.LAYOUT
 
+    override fun type(uiModel: UserIdUiModel): Int = UserIdViewHolder.LAYOUT
+    override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             DeveloperOptionsOnNotificationViewHolder.LAYOUT -> DeveloperOptionsOnNotificationViewHolder(view)
@@ -240,6 +248,8 @@ class DeveloperOptionTypeFactoryImpl(
             DeprecatedAPISwitcherToasterViewHolder.LAYOUT -> DeprecatedAPISwitcherToasterViewHolder(view)
             BranchLinkViewHolder.LAYOUT -> BranchLinkViewHolder(branchListener, view)
             EnableFpiMonitoringViewHolder.LAYOUT -> EnableFpiMonitoringViewHolder(view)
+            UserIdViewHolder.LAYOUT -> UserIdViewHolder(view, userIdListener)
+            ShopIdViewHolder.LAYOUT -> ShopIdViewHolder(view, shopIdListener)
             BannerEnvironmentViewHolder.LAYOUT -> BannerEnvironmentViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

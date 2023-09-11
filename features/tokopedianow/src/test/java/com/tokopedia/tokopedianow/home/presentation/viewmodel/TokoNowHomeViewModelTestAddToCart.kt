@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.Shop
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
@@ -91,7 +92,6 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 5, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
-            val chooseAddressWidget = TokoNowChooseAddressWidgetUiModel(id = "0")
             val repurchaseUiModel = TokoNowRepurchaseUiModel(
                 id = "1001",
                 title = "Kamu pernah beli",
@@ -112,7 +112,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             )
 
             val homeLayoutItems = listOf(
-                chooseAddressWidget,
+                createHomeHeaderUiModel(),
                 repurchaseUiModel
             )
 
@@ -212,7 +212,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 repurchaseUiModel
             )
 
@@ -1554,7 +1554,6 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 5, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
-            val chooseAddressWidget = TokoNowChooseAddressWidgetUiModel(id = "0")
             val repurchaseUiModel = TokoNowRepurchaseUiModel(
                 id = "1001",
                 title = "Kamu pernah beli",
@@ -1586,7 +1585,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             )
 
             val homeLayoutItems = listOf(
-                chooseAddressWidget,
+                createHomeHeaderUiModel(),
                 repurchaseUiModel
             )
 
