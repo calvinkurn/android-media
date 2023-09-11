@@ -20,40 +20,12 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
 
     private var binding: FragmentMedalBonusBottomSheetBinding? = null
     private var listOfTabs: List<TabData>? = null
-    private var isLocked: Boolean = false
+    private var activeTabCouponStatus: String? = null
 
     @SuppressLint("DeprecatedMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val couponList = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
-        val medaliSlug = arguments?.getString(MEDALI_SLUG).orEmpty()
-
-        isLocked = couponList?.firstOrNull()?.status == CouponStatus.INACTIVE
-        listOfTabs = if (isLocked) {
-            listOf(
-                TabData(
-                    title = "",
-                    status = CouponStatus.INACTIVE,
-                    list = couponList,
-                    medaliSlug = medaliSlug
-                )
-            )
-        } else {
-            listOf(
-                TabData(
-                    title = getString(scp_rewardsR.string.title_active),
-                    status = CouponStatus.ACTIVE,
-                    list = couponList,
-                    medaliSlug = medaliSlug
-                ),
-                TabData(
-                    title = getString(scp_rewardsR.string.title_history),
-                    status = CouponStatus.INACTIVE,
-                    list = null,
-                    medaliSlug = medaliSlug
-                )
-            )
-        }
+        setupTabs()
     }
 
     override fun onCreateView(
@@ -78,8 +50,64 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
                     BonusPagerAdapter(safeList, childFragmentManager, this@MedalBonusBottomSheet)
                 tabs.setupWithViewPager(viewPager)
             }
-            if (isLocked) {
-                tabs.hide()
+            when (activeTabCouponStatus) {
+                CouponStatus.INACTIVE -> tabs.hide()
+                CouponStatus.EMPTY ->  goToTab(CouponStatus.INACTIVE)
+            }
+        }
+    }
+
+    private fun setupTabs() {
+        val couponList = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
+        val medaliSlug = arguments?.getString(MEDALI_SLUG).orEmpty()
+
+        activeTabCouponStatus = couponList?.firstOrNull()?.status
+        listOfTabs = when (activeTabCouponStatus) {
+            CouponStatus.INACTIVE -> {
+                listOf(
+                    TabData(
+                        title = "",
+                        status = CouponStatus.INACTIVE,
+                        list = couponList,
+                        medaliSlug = medaliSlug
+                    )
+                )
+            }
+            CouponStatus.EMPTY -> {
+                listOf(
+                    TabData(
+                        title = getString(scp_rewardsR.string.title_active),
+                        status = CouponStatus.EMPTY,
+                        list = couponList,
+                        medaliSlug = medaliSlug
+                    ),
+                    TabData(
+                        title = getString(scp_rewardsR.string.title_history),
+                        status = CouponStatus.INACTIVE,
+                        list = null,
+                        medaliSlug = medaliSlug
+                    )
+                )
+            }
+            CouponStatus.ACTIVE -> {
+                listOf(
+                    TabData(
+                        title = getString(scp_rewardsR.string.title_active),
+                        status = CouponStatus.ACTIVE,
+                        list = couponList,
+                        medaliSlug = medaliSlug
+                    ),
+                    TabData(
+                        title = getString(scp_rewardsR.string.title_history),
+                        status = CouponStatus.INACTIVE,
+                        list = null,
+                        medaliSlug = medaliSlug
+                    )
+                )
+            }
+            else -> {
+                dismiss()
+                null
             }
         }
     }
@@ -109,5 +137,10 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
     override fun onReceiveCoupons(couponStatus: String, count: Int) {
         val position = listOfTabs?.indexOfFirst { it.status == couponStatus }.orZero()
         binding?.tabs?.tabLayout?.getTabAt(position)?.setCounter(count)
+    }
+
+    override fun goToTab(couponStatus: String) {
+        val position = listOfTabs?.indexOfFirst { it.status == couponStatus }.orZero()
+        binding?.tabs?.tabLayout?.getTabAt(position)?.select()
     }
 }

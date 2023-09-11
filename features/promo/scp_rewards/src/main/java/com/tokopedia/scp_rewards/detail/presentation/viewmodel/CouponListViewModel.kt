@@ -39,12 +39,18 @@ class CouponListViewModel @Inject constructor(
 
                     when (val responseCode = response.scpRewardsMedaliBenefitList?.resultStatus?.code) {
                         SUCCESS_CODE -> {
-                            val list = MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(response.scpRewardsMedaliBenefitList.medaliBenefitList?.benefitList)
-                            val benefitStatus = list?.firstOrNull()?.status
-                            if (benefitStatus == CouponStatus.EMPTY || benefitStatus == CouponStatus.ERROR) {
-                                _couponListLiveData.postValue(CouponState.Error(Throwable()))
-                            } else {
-                                _couponListLiveData.postValue(CouponState.Success(list))
+                            val list =
+                                MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(response.scpRewardsMedaliBenefitList.medaliBenefitList?.benefitList)
+                            when (list?.firstOrNull()?.status) {
+                                CouponStatus.EMPTY -> {
+                                    _couponListLiveData.postValue(CouponState.HistoryTabEmpty)
+                                }
+                                CouponStatus.ERROR -> {
+                                    _couponListLiveData.postValue(CouponState.Error(Throwable()))
+                                }
+                                else -> {
+                                    _couponListLiveData.postValue(CouponState.Success(list))
+                                }
                             }
                         }
 
@@ -81,14 +87,21 @@ class CouponListViewModel @Inject constructor(
     }
 
     fun setCouponsList(list: List<MedalBenefitModel>?) {
-        val isLocked = couponPageStatus == CouponStatus.INACTIVE
-        _couponListLiveData.postValue(CouponState.Success(list, isLocked))
+        when (couponPageStatus) {
+            CouponStatus.EMPTY -> _couponListLiveData.postValue(CouponState.ActiveTabEmpty)
+            else -> {
+                val isLocked = couponPageStatus == CouponStatus.INACTIVE
+                _couponListLiveData.postValue(CouponState.Success(list, isLocked))
+            }
+        }
     }
 
 
     sealed class CouponState {
         class Success(val list: List<MedalBenefitModel>?, val isLocked: Boolean = false) : CouponState()
         class Error(val error: Throwable, val errorCode: String = "") : CouponState()
+        object ActiveTabEmpty : CouponState()
+        object HistoryTabEmpty : CouponState()
         object Loading : CouponState()
     }
 

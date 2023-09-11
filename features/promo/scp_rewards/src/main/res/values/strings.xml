@@ -12,4 +12,8 @@
     <string name="title_medali_bonus">Bonus Saya</string>
     <string name="title_active">Aktif</string>
     <string name="title_history">Riwayat</string>
+    <string name="coupon_list_active_empty_title">"Belum ada bonus, nih"</string>
+    <string name="coupon_list_active_empty_subtitle">"Tenang, kita bakal isiin lagi kok. Rutin cek notifikasi kamu biar nggak kelewatan, ya."</string>
+    <string name="coupon_list_history_empty_title">"Kamu belum punya bonus dari Medali, nih"</string>
+    <string name="coupon_list_history_empty_subtitle">Lihat Kupon Aktif</string>
 </resources>

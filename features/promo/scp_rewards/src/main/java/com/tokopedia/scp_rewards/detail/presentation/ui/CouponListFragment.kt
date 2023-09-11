@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,10 +23,16 @@ import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.FragmentCouponListBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.CouponListViewModel
+import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
 import com.tokopedia.scp_rewards_widgets.coupon_list.CouponListViewTypeFactory
+import com.tokopedia.scp_rewards_widgets.model.CouponListActiveEmptyModel
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
+import com.tokopedia.scp_rewards_widgets.model.CouponListHistoryEmptyModel
+import com.tokopedia.scp_rewards_widgets.R as scpRewardsWidgetsR
+import com.tokopedia.scp_rewards.R
+import com.tokopedia.scp_rewards_widgets.model.CouponListHistoryErrorModel
 
 class CouponListFragment : BaseDaggerFragment() {
 
@@ -88,7 +95,12 @@ class CouponListFragment : BaseDaggerFragment() {
         couponListViewModel.couponListLiveData.observe(viewLifecycleOwner) {
             it?.let { safeState ->
                 when (safeState) {
-                    is CouponListViewModel.CouponState.Error -> {}
+                    is CouponListViewModel.CouponState.Error -> {
+                        listAdapter.setVisitables(
+                            listOf(CouponListHistoryErrorModel(
+                                context?.let { context -> ContextCompat.getDrawable(context, scpRewardsWidgetsR.drawable.ic_coupon_error) }
+                            )))
+                    }
                     CouponListViewModel.CouponState.Loading -> {}
                     is CouponListViewModel.CouponState.Success -> {
                         couponListCallBack?.onReceiveCoupons(couponListViewModel.couponPageStatus.orEmpty(), safeState.list?.size.orZero())
@@ -96,6 +108,22 @@ class CouponListFragment : BaseDaggerFragment() {
                         if (safeState.isLocked) {
                             binding.lockedWarning.visible()
                         }
+                    }
+                    is CouponListViewModel.CouponState.ActiveTabEmpty -> {
+                        couponListCallBack?.onReceiveCoupons(couponListViewModel.couponPageStatus.orEmpty(), 0)
+                        listAdapter.setVisitables(
+                            listOf(CouponListActiveEmptyModel(
+                                getString(R.string.coupon_list_active_empty_title),
+                                getString(R.string.coupon_list_active_empty_subtitle),
+                                context?.let { context -> ContextCompat.getDrawable(context, scpRewardsWidgetsR.drawable.ic_bonus_active_empty) }
+                            )))
+                    }
+                    is CouponListViewModel.CouponState.HistoryTabEmpty -> {
+                        listAdapter.setVisitables(
+                            listOf(CouponListHistoryEmptyModel(
+                                getString(R.string.coupon_list_history_empty_title),
+                                getString(R.string.coupon_list_history_empty_subtitle),
+                            ) { couponListCallBack?.goToTab(CouponStatus.ACTIVE) }))
                     }
                 }
             }
@@ -222,5 +250,6 @@ class CouponListFragment : BaseDaggerFragment() {
 
     interface OnCouponListCallBack {
         fun onReceiveCoupons(couponStatus: String, count: Int)
+        fun goToTab(couponStatus: String)
     }
 }
