@@ -16,7 +16,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -114,7 +113,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     override fun setOnItemClickedListener() {
         saveCartDataToLocalStorage()
-        sendClickCekKeranjangButton()
         RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
@@ -157,6 +155,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                         sendLogger(it.t)
                         showErrorState()
                     }
+
                     else -> {
                         /* no-op */
                     }
@@ -221,6 +220,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private fun openCartPage() {
         dismissLoadingButton()
+        sendClickCekKeranjangButton()
         RouteManager.route(context, ApplinkConst.CART)
     }
 
@@ -237,24 +237,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         dismissErrorState()
         setupTiersApplied(data)
         setupFooterView(data)
-        sendImpressionTracker()
         saveCartDataToLocalStorage()
-    }
-
-    private fun sendImpressionTracker() {
-        addOnImpressionListener(impressHolder) {
-            val offerId = param.offerIds.firstOrNull().orZero().toString()
-            val warehouseId = param.warehouseIds.firstOrNull().orZero().toString()
-            val shopId = shopIds.firstOrNull().orZero().toString()
-            val userId = userSession.get().userId
-
-            BmgmMiniCartTracker.sendImpressionMinicartEvent(
-                offerId = offerId,
-                warehouseId = warehouseId,
-                userId = userId,
-                shopId = shopId
-            )
-        }
     }
 
     private fun setupTiersApplied(data: BmgmMiniCartDataUiModel) {
