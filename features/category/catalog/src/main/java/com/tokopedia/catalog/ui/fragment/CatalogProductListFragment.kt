@@ -17,7 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.FragmentCatalogProductListBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
-import com.tokopedia.catalog.ui.adapter.CatalogDiffutilAdapter
+import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapter
 import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapterFactoryImpl
 import com.tokopedia.catalog.ui.adapter.EmptyStateFilterListener
 import com.tokopedia.catalog.ui.model.CatalogProductListEmptyModel
@@ -197,7 +197,7 @@ class CatalogProductListFragment :
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CatalogProductListAdapterFactoryImpl> {
-        return CatalogDiffutilAdapter(adapterTypeFactory)
+        return CatalogProductListAdapter(adapterTypeFactory)
     }
 
     override fun getAdapterTypeFactory(): CatalogProductListAdapterFactoryImpl {
