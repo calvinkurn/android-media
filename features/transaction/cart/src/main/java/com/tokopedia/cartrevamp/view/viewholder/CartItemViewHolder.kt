@@ -618,7 +618,7 @@ class CartItemViewHolder constructor(
                         connect(
                             R.id.v_bundling_product_separator,
                             ConstraintSet.TOP,
-                            if (data.isError) R.id.product_bundling_info elseR.id.checkbox_bundle,
+                            if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
                             ConstraintSet.BOTTOM,
                             MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                         )
@@ -627,7 +627,7 @@ class CartItemViewHolder constructor(
                     connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.TOP,
-                        if (data.isError) R.id.product_bundling_info elseR.id.checkbox_bundle,
+                        if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
                         ConstraintSet.BOTTOM,
                         MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )

@@ -1139,9 +1139,11 @@ class CartRevampFragment :
 
     override fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData) {
         if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
-            val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
-            cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
-            cartAdapter.notifyItemChanged(index)
+            val (index, cartItem) = cartAdapter?.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId) ?: (null to null)
+            cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            if (index != null) {
+                cartAdapter?.notifyItemChanged(index)
+            }
 
             val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItemHolderData)
             if (cartGroupHolderData != null) {
@@ -1302,10 +1304,12 @@ class CartRevampFragment :
             }
         }
 
-        if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
-            val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
-            cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
-            cartAdapter.notifyItemChanged(index)
+        if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartAdapter != null) {
+            val (index, cartItem) = cartAdapter?.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId) ?: (null to null)
+            cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            if (index != null) {
+                cartAdapter?.notifyItemChanged(index)
+            }
 
             val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItemHolderData)
             if (cartGroupHolderData != null) {
@@ -2790,28 +2794,32 @@ class CartRevampFragment :
         viewModel.bmGmGroupProductTickerState.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is GetBmGmGroupProductTickerState.Success -> {
-                    val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
+                    val (index, cartItem) = cartAdapter?.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first) ?: (null to null)
                     if (data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.action == BMGM_TICKER_RELOAD_ACTION) {
-                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                        cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
                     } else if (data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.action.isEmpty()) {
-                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
+                        cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
                         val listOfferMessage = arrayListOf<String>()
                         data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.listMessage.forEachIndexed { i, s ->
                             listOfferMessage.add(s.text)
                         }
-                        cartItem.bmGmCartInfoData.bmGmData.offerMessage = listOfferMessage
+                        cartItem?.bmGmCartInfoData?.bmGmData?.offerMessage = listOfferMessage
 
-                        val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItem)
+                        val cartGroupHolderData = cartItem?.let { CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, it) }
                         cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.discountAmount
                         viewModel.reCalculateSubTotal()
                     }
-                    cartAdapter.notifyItemChanged(index)
+                    if (index != null) {
+                        cartAdapter?.notifyItemChanged(index)
+                    }
                 }
 
                 is GetBmGmGroupProductTickerState.Failed -> {
-                    val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdThrowable.first)
-                    cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
-                    cartAdapter.notifyItemChanged(index)
+                    val (index, cartItem) = cartAdapter?.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdThrowable.first) ?: (null to null)
+                    cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                    if (index != null) {
+                        cartAdapter?.notifyItemChanged(index)
+                    }
                 }
 
                 else -> {}
