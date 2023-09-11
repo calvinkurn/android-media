@@ -8,7 +8,6 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 @MePage(MePage.Widget.REVIEW)
 data class ReviewListDataModel(
-    val showViewAll: Boolean = false,
     val reviewList: List<NavReviewModel>
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = "reviewList"

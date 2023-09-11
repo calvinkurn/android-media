@@ -638,9 +638,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     private fun animateBadge() {
         val badgeDrawable = if (isFallbackCase) {
             changeBadgeSize()
-            context?.let {
-                ResourcesCompat.getDrawable(it.resources, scp_rewards_commonR.drawable.fallback_badge, null)
-            }
+            context?.let { ContextCompat.getDrawable(it, scp_rewards_commonR.drawable.fallback_badge) }
         } else {
             badge_image
         }

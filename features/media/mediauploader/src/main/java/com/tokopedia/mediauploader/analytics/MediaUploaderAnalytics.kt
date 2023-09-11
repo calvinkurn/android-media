@@ -26,7 +26,7 @@ class MediaUploaderAnalytics @Inject constructor(
         val compressionTime = timeInSec(data.startCompressedTime, data.endCompressedTime)
         val sizeBefore = File(data.originalVideoPath).length().formattedToMB()
         val sizeAfter = File(data.compressedVideoPath).length().formattedToMB()
-        val bitrate = data.compressedVideoMetadata?.bitrate.orZero() / 1024
+        val bitrate = data.originalVideoMetadata?.bitrate.orZero() / 1024
         val duration = data.originalVideoMetadata?.duration.orZero().fromMillisToSec()
 
         val label = isCompressed.toString()
@@ -38,6 +38,7 @@ class MediaUploaderAnalytics @Inject constructor(
             .label(sizeAfter)
             .label(bitrate)
             .label(duration)
+            .label(sourceId)
 
         val events = mutableMapOf(
             KEY_EVENT_CATEGORY to CATEGORY,

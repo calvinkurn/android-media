@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    app:cardBackgroundColor="@color/coupon_card_background"
+    tools:parentTag="com.google.android.material.card.MaterialCardView">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_background"
+                android:layout_width="74dp"
+                android:layout_height="0dp"
+                android:layout_margin="@dimen/dp_4"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_corner_radius="12" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_medal_icon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="@id/iv_background"
+                app:layout_constraintEnd_toEndOf="@id/iv_background"
+                app:layout_constraintStart_toStartOf="@id/iv_background"
+                app:layout_constraintTop_toTopOf="@id/iv_background"
+                app:layout_constraintVertical_bias="0.4"
+                app:unify_image_placeholder="@drawable/fallback_badge" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_badge_base"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_4"
+                android:scaleType="fitCenter"
+                app:layout_constraintDimensionRatio="W, 60:12"
+                app:layout_constraintEnd_toEndOf="@id/iv_background"
+                app:layout_constraintStart_toStartOf="@id/iv_background"
+                app:layout_constraintTop_toBottomOf="@id/iv_medal_icon" />
+
+            <View
+                android:id="@+id/iv_status_background"
+                android:layout_width="@dimen/dp_28"
+                android:layout_height="@dimen/dp_28"
+                android:layout_margin="@dimen/dp_2"
+                android:background="@drawable/rounded_edge_rectangle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_title"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_status"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toBottomOf="@id/iv_status_background"
+                app:layout_constraintEnd_toEndOf="@id/iv_status_background"
+                app:layout_constraintStart_toStartOf="@id/iv_status_background"
+                app:layout_constraintTop_toTopOf="@id/iv_status_background"
+                app:unify_image_corner_radius="0" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_12"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintEnd_toStartOf="@id/iv_status_background"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/iv_background"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold"
+                tools:text="Diskon Rp50 rb" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintBottom_toTopOf="@id/divider"
+                app:layout_constraintEnd_toEndOf="@id/tv_title"
+                app:layout_constraintStart_toStartOf="@id/tv_title"
+                app:layout_constraintTop_toBottomOf="@id/tv_title"
+                app:layout_constraintVertical_bias="0.0"
+                app:typographyType="paragraph_3"
+                tools:text="* Min. transaction Rp10k\n* Skin Care only" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/divider"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="2dp"
+                android:layout_marginEnd="@dimen/dp_14"
+                android:layout_marginBottom="@dimen/dp_48"
+                android:src="@drawable/dotted_line"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_title" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_expiry_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLength="30"
+                android:maxLines="1"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_apply"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/tv_title"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                app:typographyType="small"
+                tools:text="Valid until 12 Sep 2023" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:minWidth="@dimen/dp_64"
+                android:paddingVertical="@dimen/dp_4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                app:unifyButtonSize="micro"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled"
+                tools:text="Use" />
+
+            <com.tokopedia.scp_rewards_widgets.coupon_section.Ribbon
+                android:id="@+id/ribbon_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@id/iv_background"
+                app:layout_constraintTop_toTopOf="@id/iv_background"
+                tools:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_16"
+            android:layout_marginVertical="@dimen/dp_8"
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_details"
+            app:typographyType="small"
+            tools:text="You can stack this coupon with other promos on Tokopedia " />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

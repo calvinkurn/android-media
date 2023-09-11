@@ -70,6 +70,7 @@ open class BuyerOrderDetailTypeFactory(
     private val scpRewardsMedalTouchPointWidgetListener: ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     private val owocInfoListener: OwocInfoViewHolder.Listener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
+    protected val bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener
@@ -93,7 +94,7 @@ open class BuyerOrderDetailTypeFactory(
             PaymentInfoItemViewHolder.LAYOUT -> PaymentInfoItemViewHolder(parent)
             PlainHeaderViewHolder.LAYOUT -> PlainHeaderViewHolder(parent)
             ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent, navigator)
-            ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, navigator)
+            ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, bottomSheetListener, navigator)
             ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(
                 parent,
                 productBundlingViewListener,
