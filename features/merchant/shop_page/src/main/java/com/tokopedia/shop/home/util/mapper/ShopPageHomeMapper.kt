@@ -43,6 +43,7 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.WidgetType.BUNDLE
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.CARD
@@ -1245,7 +1246,9 @@ object ShopPageHomeMapper {
         return ShopPageLayoutUiModel(
             layoutId = response.layoutId,
             masterLayoutId = response.masterLayoutId.toIntOrZero().toString(),
-            listWidgetLayout = response.widgetIdList.map {
+            listWidgetLayout = response.widgetIdList.filter {
+                checkIfWidgetNameRegistered(it.widgetName)
+            }.map {
                 ShopPageWidgetUiModel(
                     it.widgetId,
                     it.widgetMasterId,
@@ -1273,6 +1276,10 @@ object ShopPageHomeMapper {
                 )
             }
         )
+    }
+
+    private fun checkIfWidgetNameRegistered(widgetName: String): Boolean {
+        return WidgetNameEnum.values().map { it.value }.contains(widgetName)
     }
 
     fun mapShopHomeWidgetLayoutToListShopHomeWidget(
