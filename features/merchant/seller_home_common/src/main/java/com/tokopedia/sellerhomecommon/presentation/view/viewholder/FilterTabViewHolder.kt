@@ -25,7 +25,8 @@ class FilterTabViewHolder(
                 root.setOnClickListener {
                     listener.onFilterClicked(
                         element.filterTabs,
-                        tab.page
+                        tab.page,
+                        tab.tabTitle
                     )
                 }
             }
@@ -35,7 +36,8 @@ class FilterTabViewHolder(
     interface Listener: BaseViewHolderListener {
         fun onFilterClicked(
             tabs: List<TabModel>?,
-            selectedPage: String?
+            selectedPage: String?,
+            title: String
         )
     }
 

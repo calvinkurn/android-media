@@ -931,7 +931,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickWidgetPostDeleteEvent(element.dataKey)
     }
 
-    override fun onFilterClicked(tabs: List<TabModel>?, selectedPage: String?) {
+    override fun onFilterClicked(tabs: List<TabModel>?, selectedPage: String?, title: String) {
         // No-op
     }
 

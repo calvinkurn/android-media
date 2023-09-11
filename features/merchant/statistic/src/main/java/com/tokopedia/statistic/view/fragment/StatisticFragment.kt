@@ -47,6 +47,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.FilterTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
@@ -60,6 +61,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FilterTabBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -521,8 +523,21 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    override fun onFilterClicked(tabs: List<TabModel>?, selectedPage: String?) {
-        TODO("Open bottomsheet")
+    override fun onFilterClicked(tabs: List<TabModel>?, selectedPage: String?, title: String) {
+        FilterTabBottomSheet.createInstance(
+            title = title,
+            uiModels = tabs?.map {
+                FilterTabUiModel(
+                    tabName = it.tabName,
+                    tabKey = it.page,
+                    isSelected = it.page == selectedPage
+                )
+            }.orEmpty()
+        ).apply {
+            setFilterTabSelectListener {
+                // TODO: Refresh page
+            }
+        }.show(childFragmentManager)
     }
 
     fun setSelectedWidget(widget: String) {
