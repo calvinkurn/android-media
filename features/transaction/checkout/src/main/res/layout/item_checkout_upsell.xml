@@ -22,6 +22,7 @@
                 android:id="@+id/checkout_upsell_logo_container"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
+                android:background="@color/Unify_Background"
                 android:padding="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/space"
