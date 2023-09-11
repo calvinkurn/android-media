@@ -7,5 +7,5 @@ data class ShopHomeBundleProductUiModel(
         var productName: String = "",
         var productImageUrl: String = "",
         var productAppLink: String = "",
-        var minOrder: Int = 1
+        var minOrder: Int? = null
 ): ImpressHolder()
