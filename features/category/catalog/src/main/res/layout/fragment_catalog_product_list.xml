@@ -14,36 +14,71 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.sortfilter.SortFilter
-        android:id="@+id/search_product_quick_sort_filter"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-       app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:layout_marginStart="16dp"
-        app:sort_filter_relationship="AND"
-        app:sort_filter_type="advanced"
-        android:background="@color/Unify_NN0"
-        android:visibility="gone" />
-
-    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
-        android:id="@+id/choose_address_widget"
+    <LinearLayout
+        android:id="@+id/shimmerSortFilter"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_32"
-        android:paddingTop="@dimen/unify_space_4"
-        android:paddingStart="@dimen/dp_19"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <include
+            layout="@layout/catalog_sort_filter_product_list_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clFilterAndLCA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <com.tokopedia.sortfilter.SortFilter
+            android:id="@+id/search_product_quick_sort_filter"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginStart="16dp"
+            app:sort_filter_relationship="AND"
+            app:sort_filter_type="advanced"
+            android:background="@color/Unify_NN0"
+            />
+
+        <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+            android:id="@+id/choose_address_widget"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:paddingTop="4dp"
+            android:paddingStart="19dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierSortFilterAndLca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:layout_constraintTop_toBottomOf="@id/clFilterAndLCA"
+        app:constraint_referenced_ids="clFilterAndLCA,shimmerSortFilter"
+        />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        app:layout_constraintTop_toBottomOf="@id/barrierSortFilterAndLca"
         app:layout_constraintBottom_toBottomOf="parent">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/product_recyclerview"
@@ -54,16 +89,21 @@
             app:layout_constraintTop_toBottomOf="@+id/layout_no_data"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-
-    <include
-        android:id="@+id/layouNoData"
-        layout="@layout/catalog_products_no_data_view"
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        app:constraint_referenced_ids="shimmerSortFilter,clFilterAndLCA"/>
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/errorPage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN0"
+        android:gravity="center"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        />
+        app:globalerrors_type="SERVER_ERROR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

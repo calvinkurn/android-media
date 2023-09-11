@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.domain.model.CatalogProductItem
-import com.tokopedia.productcard.ProductCardModel
 
-class CatalogProductListAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogProductListAdapterFactory {
+class CatalogProductListAdapterFactoryImpl(val listener: EmptyStateFilterListener) :
+    BaseAdapterTypeFactory(), CatalogProductListAdapterFactory {
 
     override fun type(uiModel: CatalogProductItem): Int {
         return ProductListViewHolder.LAYOUT
@@ -21,7 +21,7 @@ class CatalogProductListAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogPr
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductListViewHolder.LAYOUT -> ProductListViewHolder(view)
-            EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view)
+            EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view, listener)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

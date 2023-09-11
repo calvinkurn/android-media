@@ -59,12 +59,6 @@ class CatalogProductListViewModel @Inject constructor(
 
     private val _productList = MutableLiveData<Result<List<CatalogProductItem>>>()
 
-    val mProductCount = MutableLiveData<Int>()
-
-    var comparisonCardIsAdded = false
-
-    var pageCount = 0
-
     fun fetchQuickFilters(params: RequestParams) {
 
         quickFilterUseCase.execute(params, object : Subscriber<DynamicFilterModel>() {
@@ -97,7 +91,6 @@ class CatalogProductListViewModel @Inject constructor(
     }
 
     fun fetchProductListing(params: RequestParams) {
-        comparisonCardIsAdded = pageCount != 0
         launchCatchError(
             dispatchers.io,
             block = {
@@ -109,50 +102,5 @@ class CatalogProductListViewModel @Inject constructor(
                 _productList.postValue(Fail(it))
             }
         )
-//        getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
-//            override fun onNext(productListResponse: ProductListResponse?) {
-//                val data = productListResponse?.searchProduct?.data?.catalogProductItemList.orEmpty()
-//                mProductCount.value = data.size.orZero()
-//                _productList.value = Success(data)
-////                productListResponse?.let { productResponse ->
-////                    processProductListResponse(productResponse)
-////                }
-////                addCatalogForYouCard()
-//            }
-//
-//            override fun onCompleted() {
-//
-//            }
-//
-//            override fun onError(e: Throwable) {
-//                addCatalogForYouCard()
-//                _productList.value = Fail(e)
-//            }
-//        })
-    }
-
-    private fun addCatalogForYouCard() {
-//        if (!comparisonCardIsAdded){
-//            comparisonCardIsAdded = true
-//            if(list.size - 1 >= CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX){
-//                list.add(
-//                    CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX,
-//                    CatalogForYouContainerDataModel() as Visitable<CatalogTypeFactory>
-//                )
-//            }else {
-//                list.add(CatalogForYouContainerDataModel() as Visitable<CatalogTypeFactory>)
-//            }
-//        }
-    }
-
-    private fun processProductListResponse(productResponse: ProductListResponse) {
-//        (productResponse.searchProduct)?.let { searchProduct ->
-//            searchProduct.data.catalogProductItemList.let { data ->
-//                productList.value = Success((data) as List<CatalogProductItem>)
-//                list.addAll(data as ArrayList<Visitable<CatalogTypeFactory>>)
-//                pageCount++
-//            }
-//            mProductCount.value = searchProduct.data.totalData
-//        }
     }
 }
