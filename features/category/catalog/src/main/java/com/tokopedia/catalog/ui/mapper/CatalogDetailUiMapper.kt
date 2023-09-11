@@ -1,7 +1,6 @@
 package com.tokopedia.catalog.ui.mapper
 
 import android.content.Context
-import android.graphics.Color
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -9,10 +8,15 @@ import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.WidgetTypes
+import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR
+import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_01
+import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR
+import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_01
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
+import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -44,7 +48,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner()
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
-                WidgetTypes.CATALOG_CHARACTERISTIC.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_CHARACTERISTIC.type -> { it.mapToCharacteristic(isDarkMode)}
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> it.mapToBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation()
@@ -144,7 +148,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     id = it.desc,
                     icon = it.iconUrl,
                     name = it.desc,
-                    backgroundColor = Color.TRANSPARENT,
+                    backgroundColor = colorMapping(isDarkMode, DARK_COLOR, LIGHT_COLOR, 20),
                     textColor = getTextColor(isDarkMode),
                 )
             }.orEmpty()
@@ -172,6 +176,22 @@ class CatalogDetailUiMapper @Inject constructor(
                     subTitle = it.subtitle,
                     textColorTitle = textColor,
                     textColorSubTitle = textColor
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToCharacteristic(
+        isDarkMode: Boolean
+    ): CharacteristicUiModel {
+        val textColor = colorMapping(isDarkMode,DARK_COLOR_01, LIGHT_COLOR_01)
+        return CharacteristicUiModel(
+            items = data?.characteristic.orEmpty().map {
+                CharacteristicUiModel.ItemCharacteristicUiModel(
+                    id = "",
+                    icon = it.iconUrl,
+                    title = it.desc,
+                    textColorTitle = textColor
                 )
             }
         )
