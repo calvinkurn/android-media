@@ -44,6 +44,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private var filterGeneralDetailBottomSheetView: View? = null
     private val filterGeneralDetailAdapter = FilterGeneralDetailAdapter(this)
+
     private val optionSearchFilter = OptionSearchFilter {
         filterGeneralDetailAdapter.setOptionList(it)
     }
@@ -68,7 +69,6 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         this.optionCallback = optionCallback
         this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
         this.enableResetButton = enableResetButton
-
         show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
     }
 
@@ -116,8 +116,8 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun renderLoading(isLoading : Boolean) {
-        binding?.progressBarSortBottomSheet?.showWithCondition(isLoading)
-        binding?.buttonApplyFilterDetailContainer?.showWithCondition(!isLoading)
+        binding?.progressBarSortBottomSheet?.showWithCondition(!isLoading)
+        binding?.buttonApplyFilterDetailContainer?.showWithCondition(isLoading)
     }
 
     private fun initButtonReset() {
