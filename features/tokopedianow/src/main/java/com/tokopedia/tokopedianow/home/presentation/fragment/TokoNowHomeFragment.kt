@@ -1634,7 +1634,7 @@ class TokoNowHomeFragment :
                 HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
                 HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets, isEnableNewRepurchase())
+            viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets)
         }
     }
 
@@ -1644,7 +1644,7 @@ class TokoNowHomeFragment :
                 HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
                 HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.getHomeLayout(it, removeAbleWidgets, isEnableNewRepurchase())
+            viewModelTokoNow.getHomeLayout(it, removeAbleWidgets)
         }
     }
 

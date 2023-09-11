@@ -276,8 +276,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun getHomeLayout(
         localCacheModel: LocalCacheModel,
-        removeAbleWidgets: List<HomeRemoveAbleWidget>,
-        enableNewRepurchase: Boolean
+        removeAbleWidgets: List<HomeRemoveAbleWidget>
     ) {
         getHomeLayoutJob?.cancel()
         launchCatchError(block = {
@@ -299,8 +298,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 localCacheModel = localCacheModel,
                 isLoggedIn = userSession.isLoggedIn,
                 hasBlockedAddToCart = hasBlockedAddToCart,
-                tickerList = tickerData?.second.orEmpty(),
-                enableNewRepurchase = enableNewRepurchase
+                tickerList = tickerData?.second.orEmpty()
             )
 
             val data = HomeLayoutListUiModel(
@@ -326,8 +324,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun onScroll(
         lastVisibleItemIndex: Int,
         localCacheModel: LocalCacheModel,
-        removeAbleWidgets: List<HomeRemoveAbleWidget>,
-        enableNewRepurchase: Boolean
+        removeAbleWidgets: List<HomeRemoveAbleWidget>
     ) {
         if (shouldLoadMore(lastVisibleItemIndex)) {
             showProgressBar()
@@ -345,8 +342,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     removeAbleWidgets = removeAbleWidgets,
                     miniCartData = miniCartData,
                     localCacheModel = localCacheModel,
-                    hasBlockedAddToCart = hasBlockedAddToCart,
-                    enableNewRepurchase = enableNewRepurchase
+                    hasBlockedAddToCart = hasBlockedAddToCart
                 )
 
                 getLayoutComponentData(localCacheModel)

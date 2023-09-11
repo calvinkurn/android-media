@@ -51,8 +51,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -111,8 +110,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScroll(index, LocalCacheModel(), listOf(), true)
@@ -138,8 +136,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -198,8 +195,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -220,8 +216,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 

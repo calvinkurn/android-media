@@ -15,10 +15,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
+class TokoNowHomeViewModelTestBundle : TokoNowHomeViewModelTestFixture() {
     @Test
     fun `when fetching bundle then receiving success result, expected result should return homeLayout with bundle widget`() {
-        //create dummy data
+        // create dummy data
         val bundleWidgetId = "222332"
         val headerName = "Product Bundling"
         val productBundle = ProductBundleRecomResponse(
@@ -47,17 +47,16 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         )
         onGetProductBundleRecom_thenReturn(productBundle)
 
-        //fetch homeLayout
+        // fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
         )
 
-        //prepare model for expectedResult
+        // prepare model for expectedResult
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
                 TokoNowChooseAddressWidgetUiModel(id = "0"),
@@ -80,22 +79,21 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when fetching bundle then receiving success result with empty bundle id list, expected result should return homeLayout without bundle widget`() {
-        //create dummy data
+        // create dummy data
         val productBundle = ProductBundleRecomResponse(ProductBundleRecomResponse.TokonowBundleWidget())
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
         onGetProductBundleRecom_thenReturn(productBundle)
 
-        //fetch homeLayout
+        // fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
         )
 
-        //prepare model for expectedResult
+        // prepare model for expectedResult
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
                 TokoNowChooseAddressWidgetUiModel(id = "0"),
@@ -127,15 +125,15 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when fetching bundle but failed then expected result should return homeLayout without bundle widget`() {
-        //create dummy data
+        // create dummy data
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
         onGetProductBundleRecom_thenReturn(Exception())
 
-        //fetch homeLayout
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf(), enableNewRepurchase = false)
+        // fetch homeLayout
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        //prepare model for expectedResult
+        // prepare model for expectedResult
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
                 TokoNowChooseAddressWidgetUiModel(id = "0"),
