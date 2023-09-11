@@ -25,11 +25,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageTopRightCrop
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.toPx
@@ -723,3 +726,12 @@ internal fun createColorSampleDrawable(context: Context, colorString: String): G
 
     return gradientDrawable
 }
+
+internal fun rollenceRemoteConfig(): Lazy<RemoteConfig?> =
+    lazyThreadSafetyNone {
+        try {
+            RemoteConfigInstance.getInstance().abTestPlatform
+        } catch (_: Throwable) {
+            null
+        }
+    }

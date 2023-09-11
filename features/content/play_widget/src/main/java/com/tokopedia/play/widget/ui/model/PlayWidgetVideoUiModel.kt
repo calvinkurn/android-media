@@ -9,4 +9,13 @@ data class PlayWidgetVideoUiModel(
         val isLive: Boolean,
         val coverUrl: String,
         val videoUrl: String
-)
+) {
+    companion object {
+        val Empty = PlayWidgetVideoUiModel(
+            "",
+            false,
+            "",
+            ""
+        )
+    }
+}
