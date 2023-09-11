@@ -3,6 +3,7 @@ package com.tokopedia.stories.data.mapper
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.Meta
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContent
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
@@ -35,23 +36,9 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                     groupId = group.value,
                     groupName = group.name,
                     detail = if (dataGroup.data.meta.selectedGroupIndex == indexGroupItem) {
-                        StoriesDetailUiModel(
+                        mapStoriesDetailRequest(
                             selectedGroupId = group.value,
-                            selectedDetailPosition = dataDetail.data.meta.selectedStoriesIndex,
-                            selectedDetailPositionCached = dataDetail.data.meta.selectedStoriesIndex,
-                            detailItems = dataDetail.data.stories.map { stories ->
-                                StoriesDetailItemUiModel(
-                                    id = stories.id,
-                                    event = StoriesDetailItemUiEvent.PAUSE,
-                                    content = StoriesItemContent(
-                                        type = if (stories.media.type == IMAGE.value) IMAGE else VIDEO,
-                                        data = stories.media.link,
-                                        duration = 7 * 1000,
-                                    ),
-                                    resetValue = -1,
-                                    isSameContent = false,
-                                )
-                            }
+                            dataDetail = dataDetail,
                         )
                     } else StoriesDetailUiModel()
                 )
@@ -59,9 +46,9 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
         )
     }
 
-    override fun mapStoriesDetailRequest(dataDetail: StoriesDetailsResponseModel): StoriesDetailUiModel {
+    override fun mapStoriesDetailRequest(selectedGroupId: String, dataDetail: StoriesDetailsResponseModel): StoriesDetailUiModel {
         return StoriesDetailUiModel(
-            selectedGroupId = "",
+            selectedGroupId = selectedGroupId,
             selectedDetailPosition = dataDetail.data.meta.selectedStoriesIndex,
             selectedDetailPositionCached = dataDetail.data.meta.selectedStoriesIndex,
             detailItems = dataDetail.data.stories.map { stories ->
@@ -75,6 +62,10 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                     ),
                     resetValue = -1,
                     isSameContent = false,
+                    meta = Meta(
+                        activityTracker = stories.meta.activityTracker,
+                        templateTracker = stories.meta.templateTracker,
+                    ),
                 )
             }
         )

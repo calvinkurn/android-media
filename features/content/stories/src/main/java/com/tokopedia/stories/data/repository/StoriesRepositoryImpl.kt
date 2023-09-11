@@ -28,7 +28,7 @@ class StoriesRepositoryImpl @Inject constructor(
 
     override suspend fun getStoriesDetailData(data: StoriesRequestModel): StoriesDetailUiModel = withContext(dispatchers.io) {
         val storiesDetailData = storiesDetailsUSeCase(data)
-        return@withContext mapper.mapStoriesDetailRequest(storiesDetailData)
+        return@withContext mapper.mapStoriesDetailRequest("", storiesDetailData)
     }
 
     override suspend fun setStoriesTrackActivity(data: StoriesTrackActivityRequestModel): Boolean = withContext(dispatchers.io) {

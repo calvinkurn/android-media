@@ -13,6 +13,7 @@ interface StoriesMapper {
     ): StoriesUiModel
 
     fun mapStoriesDetailRequest(
+        selectedGroupId: String,
         dataDetail: StoriesDetailsResponseModel,
     ): StoriesDetailUiModel
 
