@@ -474,6 +474,12 @@ class CartGroupViewHolder(
                         cartShopTickerLargeLoader.gone()
                         cartShopTickerSmallLoader.gone()
                         tvBmgmTicker.text = MethodChecker.fromHtml(cartShopGroupTicker.tickerText)
+                        tvBmgmTicker.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                unifyprinciplesR.color.Unify_TN600
+                            )
+                        )
                         tvBmgmTicker.show()
                         if (cartShopGroupTicker.leftIcon.isNotBlank() && cartShopGroupTicker.leftIconDark.isNotBlank()) {
                             if (root.context.isDarkMode()) {
@@ -509,6 +515,12 @@ class CartGroupViewHolder(
                         cartShopTickerLargeLoader.gone()
                         cartShopTickerSmallLoader.gone()
                         tvBmgmTicker.text = MethodChecker.fromHtml(cartShopGroupTicker.errorText)
+                        tvBmgmTicker.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                unifyprinciplesR.color.Unify_NN950
+                            )
+                        )
                         tvBmgmTicker.show()
                         icBmgmTicker.gone()
                         val iconColor = MethodChecker.getColor(
