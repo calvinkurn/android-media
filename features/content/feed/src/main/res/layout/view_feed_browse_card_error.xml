@@ -8,8 +8,8 @@
     android:orientation="horizontal">
 
     <com.tokopedia.play_common.view.RoundedFrameLayout
-        android:layout_width="120dp"
-        android:layout_height="213dp"
+        android:layout_width="132dp"
+        android:layout_height="234dp"
         android:layout_marginEnd="8dp"
         android:background="@color/Unify_NN100"
         app:rfl_cornerRadius="8dp">
@@ -24,8 +24,8 @@
     </com.tokopedia.play_common.view.RoundedFrameLayout>
 
     <com.tokopedia.play_common.view.RoundedFrameLayout
-        android:layout_width="120dp"
-        android:layout_height="213dp"
+        android:layout_width="132dp"
+        android:layout_height="234dp"
         android:layout_marginEnd="8dp"
         android:background="@color/Unify_NN100"
         app:rfl_cornerRadius="8dp">
@@ -40,8 +40,8 @@
     </com.tokopedia.play_common.view.RoundedFrameLayout>
 
     <com.tokopedia.play_common.view.RoundedFrameLayout
-        android:layout_width="120dp"
-        android:layout_height="213dp"
+        android:layout_width="132dp"
+        android:layout_height="234dp"
         android:layout_marginEnd="8dp"
         android:background="@color/Unify_NN100"
         app:rfl_cornerRadius="8dp">
