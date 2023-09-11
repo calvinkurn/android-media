@@ -5,7 +5,6 @@ import android.view.View
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -14,6 +13,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
 import com.tokopedia.carouselproductcard.reimagine.viewallcard.CarouselProductCardViewAllCardModel
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -45,7 +45,7 @@ class InspirationCarouselViewHolder(
     itemView: View,
     private val inspirationCarouselListener: InspirationCarouselListener,
     private val recycledViewPool: RecyclerView.RecycledViewPool,
-    private val isReimagine: Boolean = false,
+    private val reimagineSearch2Component: Search2Component,
 ) : AbstractViewHolder<InspirationCarouselDataView>(itemView), CoroutineScope {
 
     companion object {
@@ -61,6 +61,8 @@ class InspirationCarouselViewHolder(
 
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
+    private val isReimagine: Boolean
+        get() = reimagineSearch2Component.isReimagineCarousel()
 
     override fun onViewRecycled() {
         cancelJobs()
@@ -265,6 +267,7 @@ class InspirationCarouselViewHolder(
                         title = shopBadge?.title ?: "",
                         imageUrl = shopBadge?.imageUrl ?: "",
                     ),
+                    hasMultilineName = reimagineSearch2Component.hasMultilineProductName(),
                 ),
                 impressHolder = { product },
                 onImpressed = {
@@ -491,7 +494,7 @@ class InspirationCarouselViewHolder(
     ): RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>> {
         val typeFactory = InspirationCarouselOptionAdapterTypeFactory(
             inspirationCarouselListener,
-            isReimagine,
+            reimagineSearch2Component,
         )
         val inspirationCarouselProductAdapter = InspirationCarouselOptionAdapter(typeFactory)
         inspirationCarouselProductAdapter.clearData()
