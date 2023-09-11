@@ -8,6 +8,8 @@ import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
  */
 interface StoriesCreationRepository {
 
+    suspend fun getCreationAccountList(): List<ContentAccountUiModel>
+
     suspend fun getStoryPreparationInfo(
         account: ContentAccountUiModel
     ): StoriesCreationConfiguration

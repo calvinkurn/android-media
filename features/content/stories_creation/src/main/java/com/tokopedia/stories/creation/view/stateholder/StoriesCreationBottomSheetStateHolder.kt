@@ -11,6 +11,7 @@ import com.tokopedia.nest.components.rememberNestBottomSheetState
 import com.tokopedia.stories.creation.di.StoriesCreationScope
 import com.tokopedia.stories.creation.view.model.StoriesCreationBottomSheetType
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,9 +42,8 @@ class StoriesCreationBottomSheetStateHolder @Inject constructor() {
     }
 
     fun showBottomSheet(bottomSheetType: StoriesCreationBottomSheetType) {
-        _bottomSheetType.value = bottomSheetType
-
         _scope.launch {
+            _bottomSheetType.value = bottomSheetType
             _sheetState.bottomSheetState.expand()
         }
     }

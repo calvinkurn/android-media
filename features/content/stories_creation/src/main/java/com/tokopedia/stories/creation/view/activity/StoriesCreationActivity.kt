@@ -82,31 +82,26 @@ class StoriesCreationActivity : BaseActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     private fun setupContentView() {
         setContent {
+            LaunchedEffect(Unit) {
+                observeUiEvent()
+            }
+
             NestTheme {
                 Surface {
-
                     val context = LocalContext.current
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                     bottomSheetStateHolder.initState()
-
-                    LaunchedEffect(Unit) {
-                        observeUiEvent()
-                    }
-
-                    LaunchedEffect(Unit) {
-                        openMediaPicker()
-                    }
+                    viewModel.submitAction(StoriesCreationAction.Prepare)
 
                     NestBottomSheetScreen(
                         state = bottomSheetStateHolder.sheetState,
                         showCloseIcon = true,
                         isHideable = true,
+                        overlayClickDismiss = false,
                         bottomSheetContent = {
                             when (bottomSheetStateHolder.bottomSheetType) {
                                 is StoriesCreationBottomSheetType.TooMuchStories -> {
-
-                                    /** TODO JOE: the content will be coming from BE */
                                     StoriesCreationInfoLayout(
                                         imageUrl = uiState.config.maxStoriesConfig.imageUrl,
                                         title = uiState.config.maxStoriesConfig.title,
@@ -114,10 +109,12 @@ class StoriesCreationActivity : BaseActivity() {
                                         primaryText = uiState.config.maxStoriesConfig.primaryText,
                                         secondaryText = uiState.config.maxStoriesConfig.secondaryText,
                                         onPrimaryButtonClicked = {
-
+                                            bottomSheetStateHolder.dismissBottomSheet()
+                                            openMediaPicker()
                                         },
                                         onSecondaryButtonClicked = {
                                             bottomSheetStateHolder.dismissBottomSheet()
+                                            finish()
                                         },
                                     )
                                 }
@@ -131,13 +128,14 @@ class StoriesCreationActivity : BaseActivity() {
                                 videoSnapshotHelper.snapVideoBitmap(context, mediaFilePath)
                             },
                             onBackPressed = {
-
+                                finish()
                             },
                             onClickChangeAccount = {
                                 /** Won't handle for now since UGC is not supported yet */
                             },
                             onClickAddProduct = {
-                                viewModel.submitAction(StoriesCreationAction.ClickAddProduct)
+                                /** TODO JOE: handle this later */
+                                viewModel.submitAction(StoriesCreationAction.ClickAddProduct(emptyList()))
                             },
                             onClickUpload = {
                                 viewModel.submitAction(StoriesCreationAction.ClickUpload)
@@ -153,6 +151,9 @@ class StoriesCreationActivity : BaseActivity() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
+                    is StoriesCreationUiEvent.OpenMediaPicker -> {
+                        openMediaPicker()
+                    }
                     is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
                         bottomSheetStateHolder.showBottomSheet(StoriesCreationBottomSheetType.TooMuchStories)
                     }

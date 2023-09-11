@@ -3,10 +3,10 @@ package com.tokopedia.stories.creation.view.screen
 import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
@@ -36,12 +37,12 @@ import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
-import com.tokopedia.play_common.util.VideoSnapshotHelper
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.stories.creation.R
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -58,6 +59,19 @@ fun StoriesCreationScreen(
     onClickAddProduct: () -> Unit,
     onClickUpload: () -> Unit,
 ) {
+    if (uiState == StoriesCreationUiState.Empty) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            NestLoader(
+                modifier = Modifier.align(Alignment.Center),
+                variant = NestLoaderType.Circular(
+                    size = NestLoaderSize.Large
+                ),
+            )
+        }
+
+        return
+    }
+
     if (uiState.mediaFilePath.isEmpty()) {
         return
     }

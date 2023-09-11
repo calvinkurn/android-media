@@ -5,11 +5,15 @@ package com.tokopedia.stories.creation.view.model.action
  */
 sealed interface StoriesCreationAction {
 
+    object Prepare : StoriesCreationAction
+
     data class SetMedia(
         val mediaFilePath: String,
     ) : StoriesCreationAction
 
-    object ClickAddProduct : StoriesCreationAction
+    data class ClickAddProduct(
+        val productTags: List<String>,
+    ) : StoriesCreationAction
 
     object ClickUpload : StoriesCreationAction
 }

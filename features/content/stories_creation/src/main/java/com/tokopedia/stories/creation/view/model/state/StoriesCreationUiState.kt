@@ -18,28 +18,8 @@ data class StoriesCreationUiState(
             get() = StoriesCreationUiState(
                 mediaFilePath = "",
                 config = StoriesCreationConfiguration.Empty,
-                accountList = listOf(
-                    ContentAccountUiModel(
-                        id = "123",
-                        name = "Jonathan Darwin",
-                        iconUrl = "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                        type = "seller",
-                        hasUsername = true,
-                        hasAcceptTnc = true,
-                        badge = "",
-                        enable = true,
-                    )
-                ),
-                selectedAccount = ContentAccountUiModel(
-                    id = "123",
-                    name = "Jonathan Darwin",
-                    iconUrl = "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                    type = "seller",
-                    hasUsername = true,
-                    hasAcceptTnc = true,
-                    badge = "",
-                    enable = true,
-                ),
+                accountList = emptyList(),
+                selectedAccount = ContentAccountUiModel.Empty,
                 productTags = emptyList(),
             )
     }
