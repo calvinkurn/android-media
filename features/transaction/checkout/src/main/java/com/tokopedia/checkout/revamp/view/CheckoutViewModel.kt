@@ -324,12 +324,6 @@ class CheckoutViewModel @Inject constructor(
                     sendEEStep2()
                 }
 
-                is CheckoutPageState.CheckNoAddress -> {
-                    logisticProcessor.checkIsUserEligibleForRevampAna(saf.cartShipmentAddressFormData) { checkoutPageState: CheckoutPageState ->
-                        pageState.value = checkoutPageState
-                    }
-                }
-
                 else -> {
                     withContext(dispatchers.main) {
                         pageState.value = saf
