@@ -25,12 +25,11 @@
         layout="@layout/item_shipment_trade_in_pickup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_state_no_selected_shipping"
@@ -258,7 +257,6 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -316,7 +314,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_selected_single_shipping_title"
@@ -393,7 +391,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_marginVertical="12dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -417,6 +415,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Pengiriman tidak tersedia." />
@@ -492,7 +491,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="12dp"
         tools:layout_constraintTop_toBottomOf="@id/layout_state_has_selected_normal_shipping"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider_insurance"
