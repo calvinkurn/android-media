@@ -23,7 +23,6 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
-import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
@@ -46,6 +45,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcU
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -215,6 +215,7 @@ fun createHomeLayoutData(): HomeLayoutResponse {
 fun createLoadingState(): HomeLayoutListUiModel {
     val mutableList = mutableListOf<Visitable<*>>()
     val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
+    mutableList.add(HomeHeaderUiModel(id = HomeStaticLayoutId.HOME_HEADER))
     mutableList.add(loadingStateUiModel)
     return HomeLayoutListUiModel(
             items = mutableList,

@@ -60,10 +60,12 @@
     <color name="discovery2_dms_white_95">#f2ffffff</color>
     <color name="discovery2_dms_clr_262626">#262626</color>
     <color name="discovery2_dms_clr_2F89FC">#2F89FC</color>
+    <color name="discovery2_dms_clr_FF212121">#FF212121</color>
     <color name="discovery2_dms_clr_black_3_opacity">#08000000</color>
     <color name="discovery2_dms_clr_2E3137B2">@color/Unify_NN900_70</color>
     <color name="discovery2_dms_clr_FFCCD9">#FFCCD9</color>
     <color name="discovery2_dms_clr_C9FDE0">#C9FDE0</color>
+    <color name="discovery2_dms_clr_AAB4C8">#AAB4C8</color>
     <color name="discovery2_dms_shop_card_bg">@color/Unify_NN0</color>
 
 </resources>

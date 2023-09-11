@@ -11,6 +11,7 @@ import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDat
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.jsonToObject
 import com.tokopedia.autocompletecomponent.shouldBe
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
@@ -150,6 +151,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
                 shortcutImage = "https://shortcut"
         )
 
+        `Given rollance is off`()
         `Test Delete Recent Search Data`(initialStateData, item)
         `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
         `Then verify visitable list still have RecentSearchSeeMoreDataView`()
@@ -176,6 +178,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
                 shortcutImage = "https://shortcut"
         )
 
+        `Given rollance is off`()
         `Test Delete Recent Search Data`(initialStateData, item)
         `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
         `Then verify visitable list doesnt have RecentSearchSeeMoreDataView`()

@@ -69,4 +69,7 @@ object ApplinkConstInternalTopAds {
     //See ads performance
     const val TOPADS_SEE_ADS_PERFORMANCE = "${INTERNAL_TOPADS}/see-ads-performance?product_id={id}&current_site={site}"
 
+    //Product Recommendation
+    const val TOPADS_PRODUCT_RECOMMENDATION = "${INTERNAL_TOPADS}/product-recommendation"
+
 }

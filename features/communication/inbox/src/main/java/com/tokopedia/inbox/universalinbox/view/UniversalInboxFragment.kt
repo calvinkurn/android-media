@@ -18,10 +18,12 @@ import com.tokopedia.inbox.databinding.UniversalInboxFragmentBinding
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalytics
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxTopAdsAnalytic
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxErrorLogger
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYPE_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_REPLACE_TEXT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_POS_NOT_TO_BE_ADDED
@@ -51,6 +53,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadl
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -133,13 +136,15 @@ class UniversalInboxFragment @Inject constructor(
         return binding?.root
     }
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        // no-op
+    }
 
     override fun getScreenName(): String = TAG
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view, savedInstanceState)
+        initViews()
         setupTrackingQueue()
     }
 
@@ -156,7 +161,7 @@ class UniversalInboxFragment @Inject constructor(
         trackingQueue?.sendAll()
     }
 
-    private fun initViews(view: View, savedInstanceState: Bundle?) {
+    private fun initViews() {
         setupRecyclerView()
         setupRecyclerViewLoadMore()
         setupObservers()
@@ -217,6 +222,7 @@ class UniversalInboxFragment @Inject constructor(
                     trackInboxPageImpression(it)
                 }
             }
+            observeDriverCounter() // Observe only after widget loaded
         }
 
         viewModel.allCounter.observe(viewLifecycleOwner) {
@@ -239,7 +245,7 @@ class UniversalInboxFragment @Inject constructor(
                     }
                 }
                 is Fail -> {
-                    // Do nothing
+                    // No-op
                 }
             }
         }
@@ -248,7 +254,9 @@ class UniversalInboxFragment @Inject constructor(
             removeLoadMoreLoading()
             when (it) {
                 is Success -> onSuccessGetFirstRecommendationData(it.data)
-                is Fail -> {}
+                is Fail -> {
+                    // no-op
+                }
             }
         }
 
@@ -258,9 +266,145 @@ class UniversalInboxFragment @Inject constructor(
                 is Success -> {
                     addRecommendationItem(it.data)
                 }
-                is Fail -> {}
+                is Fail -> {
+                    // no-op
+                }
             }
         }
+
+        viewModel.error.observe(viewLifecycleOwner) {
+            Timber.d(it.first)
+            UniversalInboxErrorLogger.logExceptionToServerLogger(
+                it.first,
+                userSession.deviceId.orEmpty(),
+                it.second
+            )
+        }
+    }
+
+    private fun observeDriverCounter() {
+        viewLifecycleOwner.removeObservers(viewModel.driverChatCounter)
+        viewModel.driverChatCounter.let { liveData ->
+            liveData.observe(viewLifecycleOwner) {
+                viewModel.driverChatData = it // Always save data
+                when (it) {
+                    is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
+                    is Fail -> onErrorGetDriverChat(it.throwable)
+                    else -> Unit // no op
+                }
+            }
+        }
+    }
+
+    private fun onSuccessGetDriverChat(activeChannel: Int, unreadTotal: Int) {
+        /**
+         * Not added means not dynamic
+         * 1. Not rendered when load
+         * 2. Widget was removed and now it needs to be re-add
+         *
+         * Second time flow
+         * 1.A. Add if not added yet (for non-dynamic)
+         * 1.B. Update counter if already added
+         *
+         * Edge cases
+         * 1. No active channel after update
+         * 2. Remove widget
+         */
+        val driverChatWidgetPosition = adapter.getWidgetPosition(GOJEK_TYPE)
+        when {
+            (driverChatWidgetPosition < Int.ZERO) -> {
+                if (activeChannel > Int.ZERO) {
+                    addDriverWidget(activeChannel, unreadTotal)
+                }
+            }
+            (driverChatWidgetPosition >= Int.ZERO) -> {
+                if (activeChannel > Int.ZERO) {
+                    updateWidgetDriverCounter(driverChatWidgetPosition, activeChannel, unreadTotal)
+                } else {
+                    adapter.removeWidget(driverChatWidgetPosition)
+                }
+            }
+        }
+    }
+
+    private fun addDriverWidget(activeChannel: Int, unreadTotal: Int) {
+        viewModel.driverChatWidgetData?.let { (position, data) ->
+            adapter.addWidget(
+                position,
+                UniversalInboxWidgetUiModel(
+                    icon = data.icon.toIntOrZero(),
+                    title = data.title,
+                    subtext = data.subtext.replace(
+                        oldValue = GOJEK_REPLACE_TEXT,
+                        newValue = "$activeChannel",
+                        ignoreCase = true
+                    ),
+                    applink = data.applink,
+                    counter = unreadTotal,
+                    type = GOJEK_TYPE
+                )
+            )
+        }
+    }
+
+    private fun updateWidgetDriverCounter(
+        driverChatWidgetPosition: Int,
+        activeChannel: Int,
+        unreadTotal: Int
+    ) {
+        adapter.updateWidgetCounter(driverChatWidgetPosition, unreadTotal) {
+            // Replace default
+            if (it.subtext.contains(GOJEK_REPLACE_TEXT, true)) {
+                it.subtext = it.subtext.replace(
+                    oldValue = GOJEK_REPLACE_TEXT,
+                    newValue = "$activeChannel",
+                    ignoreCase = true
+                )
+            } else {
+                // Replace after update
+                it.subtext = activeChannel.toString() + it.subtext.filter { char ->
+                    char.isLetter() || char.isWhitespace()
+                }
+            }
+            it.isError = false
+        }
+    }
+
+    private fun onErrorGetDriverChat(throwable: Throwable) {
+        /**
+         * Ver A, widget not loaded
+         * 1. Save the error in ViewModel as Error<Throwable> & Load widget
+         * 2. Inside load widget, map to Error for driver chat
+         *
+         * Ver B, widget added
+         * Save to viewmodel & Update the widget to error state
+         */
+        val driverChatWidgetPosition = adapter.getWidgetPosition(GOJEK_TYPE)
+        if (driverChatWidgetPosition < Int.ZERO) {
+            viewModel.driverChatWidgetData?.let { (position, data) ->
+                adapter.addWidget(
+                    position,
+                    UniversalInboxWidgetUiModel(
+                        icon = data.icon.toIntOrZero(),
+                        title = data.title,
+                        subtext = data.subtext,
+                        applink = data.applink,
+                        counter = Int.ZERO,
+                        type = GOJEK_TYPE,
+                        isError = true
+                    )
+                )
+            }
+        } else {
+            adapter.updateWidgetCounter(driverChatWidgetPosition, Int.ZERO) {
+                it.isError = true
+            }
+        }
+        UniversalInboxErrorLogger.logExceptionToServerLogger(
+            throwable,
+            userSession.deviceId.orEmpty(),
+            ::onErrorGetDriverChat.name
+        )
     }
 
     private fun onSuccessGetFirstRecommendationData(
@@ -446,7 +590,7 @@ class UniversalInboxFragment @Inject constructor(
                 loadWidgetMetaAndCounter()
             }
             GOJEK_TYPE -> {
-                // Do nothing for phase 1, will be using SDK in phase 2
+                viewModel.setAllDriverChannels()
             }
         }
     }
@@ -458,7 +602,7 @@ class UniversalInboxFragment @Inject constructor(
         } else {
             VALUE_X
         }
-        val helpCounter = if (adapter.isHelpWidgetAdded()) {
+        val helpCounter = if (adapter.getWidgetPosition(CHATBOT_TYPE) >= Int.ZERO) {
             counter.othersUnread.helpUnread.toString()
         } else {
             VALUE_X
@@ -757,7 +901,7 @@ class UniversalInboxFragment @Inject constructor(
     private val inboxMenuResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        loadWidgetMetaAndCounter()
+        onRefreshWidgetMeta()
         refreshRecommendations()
     }
 

@@ -2,7 +2,6 @@ package com.tokopedia.logisticCommon.data.entity.shoplocation
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.util.*
 
 data class ShopLocationModel(
     var generalTicker: GeneralTickerModel = GeneralTickerModel(),
@@ -35,8 +34,7 @@ data class Warehouse(
     var country: String = "",
     var status: Int = 0,
     var isCoveredByCouriers: Boolean = false,
-    var ticker: Ticker = Ticker(),
-    var zipCodes: List<String> = ArrayList()
+    var ticker: Ticker = Ticker()
 ) : Parcelable
 
 @Parcelize
