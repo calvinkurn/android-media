@@ -30,6 +30,7 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView.Companion.setTextColor
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
@@ -100,7 +101,7 @@ class CartGroupViewHolder(
 
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.isError) {
-            binding.tvShopName.apply {
+            binding.tvGroupName.apply {
                 setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
@@ -110,7 +111,7 @@ class CartGroupViewHolder(
                 weightType = Typography.REGULAR
             }
         } else {
-            binding.tvShopName.apply {
+            binding.tvGroupName.apply {
                 setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
@@ -121,12 +122,12 @@ class CartGroupViewHolder(
             }
         }
 
-        binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
+        binding.tvGroupName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
             val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
             val shopName =
                 cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
-            binding.tvShopName.setOnClickListener {
+            binding.tvGroupName.setOnClickListener {
                 actionListener.onCartShopNameClicked(
                     shopId,
                     shopName,
@@ -134,13 +135,13 @@ class CartGroupViewHolder(
                 )
             }
         } else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
-            binding.tvShopName.setOnClickListener {
+            binding.tvGroupName.setOnClickListener {
                 actionListener.onCartGroupNameClicked(
                     cartGroupHolderData.groupAppLink
                 )
             }
         } else {
-            binding.tvShopName.setOnClickListener(null)
+            binding.tvGroupName.setOnClickListener(null)
         }
     }
 

@@ -36,7 +36,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="4dp"
-            app:layout_constraintEnd_toStartOf="@id/tv_shop_name"
+            app:layout_constraintEnd_toStartOf="@id/tv_group_name"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/cb_select_shop"
@@ -46,7 +46,7 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_shop_name"
+            android:id="@+id/tv_group_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -80,7 +80,7 @@
             android:id="@+id/ll"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            app:constraint_referenced_ids="image_shop_badge,tv_shop_name"
+            app:constraint_referenced_ids="image_shop_badge,tv_group_name"
             app:barrierDirection="bottom"
             tools:visibility="invisible" />
 
