@@ -1,6 +1,9 @@
 package com.tokopedia.pdp.fintech.view
 
+import android.animation.Animator
+import android.animation.Keyframe
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Rect
@@ -35,26 +38,44 @@ class SliderView: ScrollView {
     }
 
     fun setItems(firstItem: View, secondItem: View) {
-        binding?.firstItem?.addView(firstItem)
-        binding?.secondItem?.addView(secondItem)
-        secondItem.post {
-            layoutParams.height = secondItem.height
-            requestLayout()
 
-            GlobalScope.launch(Dispatchers.Main) {
-                val va = ValueAnimator.ofInt(0, secondItem.height)
-                va.duration = 3000
-                va.addUpdateListener { animation -> this@SliderView.scrollTo(0, animation.animatedValue as Int) }
-                va.repeatCount = ValueAnimator.INFINITE
-                va.repeatMode = ValueAnimator.REVERSE
-                va.start()
-            }
-        }
     }
 
     fun setItems(views: List<View>) {
-        views.forEach { view ->
-            binding?.container?.addView()
+        val keyframeList = mutableListOf<Keyframe>()
+
+        views.forEachIndexed { index, view ->
+            binding?.container?.addView(view)
+            view.post {
+                keyframeList.add(Keyframe.ofInt((2000f * index + 1) / (views.size * 2000f), index * view.height))
+
+                if (index == views.size - 1) {
+                    layoutParams.height = view.height
+                    requestLayout()
+
+                    val pvh = PropertyValuesHolder.ofKeyframe("scrollTo", *keyframeList.toTypedArray())
+                    val anim = ObjectAnimator.ofPropertyValuesHolder(this@SliderView, pvh)
+                    anim.duration = views.size * 2000L
+                    anim.repeatMode = ValueAnimator.REVERSE
+                    anim.repeatCount = ValueAnimator.INFINITE
+                    anim.start()
+
+//                    GlobalScope.launch(Dispatchers.Main) {
+////                        val va = ValueAnimator.ofInt(0, secondItem.height)
+////                        va.duration = 3000
+////                        va.addUpdateListener { animation -> this@SliderView.scrollTo(0, animation.animatedValue as Int) }
+////                        va.repeatCount = ValueAnimator.INFINITE
+////                        va.repeatMode = ValueAnimator.REVERSE
+////                        va.start()
+//                    }
+                }
+            }
         }
+
+
+
+//        GlobalScope.launch(Dispatchers.Main) {
+//
+//        }
     }
 }
