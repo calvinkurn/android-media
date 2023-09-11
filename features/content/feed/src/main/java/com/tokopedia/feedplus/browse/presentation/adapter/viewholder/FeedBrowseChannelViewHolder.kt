@@ -79,7 +79,7 @@ class FeedBrowseChannelViewHolder(
     private val chipAdapter by lazy { FeedBrowseChipAdapter(chipListener) }
     private val chipItemDecoration = FeedBrowseItemDecoration(
         context = binding.root.context,
-        spacingHorizontal = feedplusR.dimen.feed_space_2,
+        spacingHorizontal = feedplusR.dimen.feed_space_4,
         spacingTop = feedplusR.dimen.feed_space_12
     )
 
