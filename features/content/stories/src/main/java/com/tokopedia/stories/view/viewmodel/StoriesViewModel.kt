@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.tokopedia.stories.R
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 import javax.inject.Inject
 
 class StoriesViewModel @Inject constructor(
@@ -278,7 +279,7 @@ class StoriesViewModel @Inject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(mShopId, storyId)
+            val productList = repository.getStoriesProducts(mShopId, storyId, mGroupItem.groupName)
             products.update { productList }
         }, onError = {
             products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?

@@ -51,12 +51,14 @@ class StoriesRepositoryImpl @Inject constructor(
     override suspend fun getStoriesProducts(
         shopId: String,
         storyId: String,
+        catName: String,
     ): ProductBottomSheetUiState {
         return withContext(dispatchers.io) {
             val response = storiesProductUseCase(
                 storiesProductUseCase.convertToMap(
                     StoriesProductUseCase.Param(
                         id = storyId,
+                        catName = catName,
                     )
                 )
             )
