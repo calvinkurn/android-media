@@ -134,7 +134,9 @@ class CheckoutCartProcessor @Inject constructor(
     ): CheckoutPageState {
         when (cartShipmentAddressFormData.errorCode) {
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS -> {
-                return CheckoutPageState.CheckNoAddress(cartShipmentAddressFormData)
+                return CheckoutPageState.NoAddress(
+                    cartShipmentAddressFormData
+                )
             }
 
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST -> {

@@ -24,8 +24,7 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutToasterProcessor
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -63,10 +62,7 @@ open class BaseCheckoutViewModelTest {
     lateinit var releaseBookingUseCase: Lazy<ReleaseBookingUseCase>
 
     @MockK
-    lateinit var eligibleForAddressUseCase: Lazy<EligibleForAddressUseCase>
-
-    @MockK
-    lateinit var editAddressUseCase: EditAddressUseCase
+    lateinit var pinpointUseCase: UpdatePinpointUseCase
 
     @MockK
     lateinit var ratesUseCase: GetRatesCoroutineUseCase
@@ -153,14 +149,12 @@ open class BaseCheckoutViewModelTest {
                 dispatchers
             ),
             CheckoutLogisticProcessor(
-                eligibleForAddressUseCase,
-                editAddressUseCase,
+                pinpointUseCase,
                 ratesUseCase,
                 ratesApiUseCase,
                 ratesWithScheduleUseCase,
                 ratesResponseStateConverter,
                 shippingCourierConverter,
-                userSessionInterface,
                 dispatchers
             ),
             CheckoutPromoProcessor(

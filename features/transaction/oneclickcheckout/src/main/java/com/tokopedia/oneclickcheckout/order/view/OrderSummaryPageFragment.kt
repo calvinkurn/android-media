@@ -65,7 +65,6 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
@@ -513,8 +512,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
         observeGlobalEvent()
 
-        observeEligibilityForAnaRevamp()
-
         observeOrderShippingDuration()
 
         observeUploadPrescription()
@@ -532,49 +529,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         }
     }
 
-    private fun observeEligibilityForAnaRevamp() {
-        viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner) {
-            when (it) {
-                is OccState.Success -> {
-                    if (it.data.eligibleForAddressFeatureData.eligibleForRevampAna.eligible) {
-                        startActivityForResult(
-                            RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                                putExtra(EXTRA_IS_FULL_FLOW, true)
-                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                                putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
-                                putExtra(PARAM_SOURCE, AddEditAddressSource.OCC.source)
-                            },
-                            REQUEST_CODE_ADD_NEW_ADDRESS
-                        )
-                    } else {
-                        startActivityForResult(
-                            RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                                putExtra(EXTRA_IS_FULL_FLOW, true)
-                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                                putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
-                            },
-                            REQUEST_CODE_ADD_NEW_ADDRESS
-                        )
-                    }
-                }
-
-                is OccState.Failed -> {
-                    view?.let { view ->
-                        Toaster.build(
-                            view,
-                            it.getFailure()?.throwable?.message
-                                ?: getString(R.string.default_osp_error_message),
-                            Toaster.LENGTH_SHORT,
-                            type = Toaster.TYPE_ERROR
-                        ).show()
-                    }
-                }
-
-                else -> {
-                    /* no-op */
-                }
-            }
-        }
+    private fun navigateAddAddress(token: Token? = null) {
+        startActivityForResult(
+            RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                putExtra(EXTRA_IS_FULL_FLOW, true)
+                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                putExtra(CheckoutConstant.KERO_TOKEN, token)
+                putExtra(PARAM_SOURCE, AddEditAddressSource.OCC.source)
+            },
+            REQUEST_CODE_ADD_NEW_ADDRESS
+        )
     }
 
     private fun observeAddressState() {
@@ -868,11 +832,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                         Toaster.build(v, message, type = Toaster.TYPE_ERROR, actionText = it.ctaText).show()
                     }
                 }
+
                 is OccGlobalEvent.PriceChangeError -> {
                     progressDialog?.dismiss()
                     if (activity != null) {
                         val messageData = it.message
-                        val priceValidationDialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                        val priceValidationDialog =
+                            DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
                         priceValidationDialog.setOverlayClose(false)
                         priceValidationDialog.setCancelable(false)
                         priceValidationDialog.setTitle(messageData.title)
@@ -899,7 +865,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                                 }
 
                                 override fun onButtonContinueClicked() {
-                                    viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderDataList, onSuccessCheckout())
+                                    viewModel.cancelIneligiblePromoCheckout(
+                                        it.notEligiblePromoHolderDataList,
+                                        onSuccessCheckout()
+                                    )
                                     orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
                                 }
 
@@ -1079,34 +1048,29 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         binding.layoutNoAddress.iuNoAddress.setImageUrl(NO_ADDRESS_IMAGE)
         binding.layoutNoAddress.descNoAddress.text = getString(R.string.occ_lbl_desc_no_address)
         binding.layoutNoAddress.btnOccAddNewAddress.setOnClickListener {
-            viewModel.checkUserEligibilityForAnaRevamp()
+            navigateAddAddress()
         }
     }
 
-    private fun goToPinpoint(address: OrderProfileAddress?, shouldUpdatePinpointFlag: Boolean = true) {
+    private fun goToPinpoint(
+        address: OrderProfileAddress?,
+        shouldUpdatePinpointFlag: Boolean = true
+    ) {
         address?.let {
             val locationPass = LocationPass()
             locationPass.cityName = it.cityName
             locationPass.districtName = it.districtName
             activity?.let { activity ->
-                if (PinpointRolloutHelper.eligibleForRevamp(activity, true)) {
-                    val bundle = Bundle().apply {
-                        putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
-                        putString(AddressConstant.EXTRA_CITY_NAME, locationPass.cityName)
-                        putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.districtName)
-                    }
-                    RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
-                        putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
-                        startActivityForResult(this, REQUEST_CODE_COURIER_PINPOINT)
-                    }
-                } else {
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-                    val bundle = Bundle()
-                    bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                    bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-                    intent.putExtras(bundle)
-                    startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                    putString(AddressConstant.EXTRA_CITY_NAME, locationPass.cityName)
+                    putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.districtName)
                 }
+                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                    startActivityForResult(this, REQUEST_CODE_COURIER_PINPOINT)
+                }
+
                 if (shouldUpdatePinpointFlag) {
                     viewModel.changePinpoint()
                 }
@@ -1668,7 +1632,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                         }
 
                         override fun onAddAddress(token: Token?) {
-                            viewModel.checkUserEligibilityForAnaRevamp(token)
+                            navigateAddAddress(token)
                         }
 
                         override fun onClickAddressTickerApplink(applink: String) {

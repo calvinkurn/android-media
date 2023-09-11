@@ -31,6 +31,7 @@ object ConstantTransactionAnalytics {
         const val ITEM_ID = "item_id"
         const val ITEM_NAME = "item_name"
         const val ITEM_VARIANT = "item_variant"
+        const val ITEM_BRAND = "item_brand"
     }
 
     object EventName {
