@@ -52,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -258,11 +259,7 @@ class OfferLandingPageFragment :
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         setupToolbar(offerInfoForBuyer)
         binding?.headerBackground?.setBackgroundResource(R.drawable.olp_header)
-        if (activity?.isDarkMode() == true) {
-            binding?.headerOverlay?.visible()
-        } else {
-            binding?.headerOverlay?.gone()
-        }
+        binding?.headerOverlay?.visibleWithCondition(activity?.isDarkMode() == true)
         olpAdapter?.submitList(
             newList = listOf(
                 offerInfoForBuyer,
@@ -291,6 +288,15 @@ class OfferLandingPageFragment :
                     offerInfoForBuyer.nearestWarehouseIds.toSafeString()
                 )
                 activity?.finish()
+            }
+            showShareButton = true
+            shareButton?.setOnClickListener {
+                //get sharing data
+                tracker.sendClickShareButtonEvent(
+                    offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                )
+                openShareBottomSheet()
             }
             cartButton?.setOnClickListener {
                 tracker.sendClickKeranjangButtonEvent(
@@ -583,6 +589,7 @@ class OfferLandingPageFragment :
                 cartButton?.setOnClickListener { redirectToCartPage() }
                 moreMenuButton?.setOnClickListener { redirectToMainMenu() }
                 showWhiteToolbar = true
+                showShareButton = false
             }
         }
     }
