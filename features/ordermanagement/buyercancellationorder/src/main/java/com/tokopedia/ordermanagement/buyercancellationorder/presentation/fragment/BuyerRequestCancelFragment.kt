@@ -23,7 +23,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.ordermanagement.buyercancellationorder.R
 import com.tokopedia.ordermanagement.buyercancellationorder.analytics.BuyerAnalytics
@@ -59,7 +58,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -70,6 +69,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         GetCancelReasonBottomSheetAdapter.ActionListener, GetCancelSubReasonBottomSheetAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private lateinit var reasonBottomSheetAdapter: GetCancelReasonBottomSheetAdapter
     private lateinit var subReasonBottomSheetAdapter: GetCancelSubReasonBottomSheetAdapter
@@ -83,7 +85,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var cancelRequestedTitle = ""
     private var cancelRequestedBody = ""
     private var waitMessage = ""
-    private var shopId = -1
+    private var shopId = "-1"
     private var boughtDate = ""
     private var invoiceUrl = ""
     private var statusId = ""
@@ -101,7 +103,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var arrayListOfReason = arrayListOf<String>()
     private var listOfSubReason = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem>()
     private var currentReasonStr = ""
-    private var userSession: UserSession? = null
 
     private var binding by autoClearedNullable<FragmentBuyerRequestCancelBinding>()
 
@@ -121,7 +122,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, bundle.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED))
                     putString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, bundle.getString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED))
                     putString(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED, bundle.getString(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED))
-                    putInt(BuyerConsts.PARAM_SHOP_ID, bundle.getInt(BuyerConsts.PARAM_SHOP_ID))
+                    putString(BuyerConsts.PARAM_SHOP_ID, bundle.getString(BuyerConsts.PARAM_SHOP_ID))
                     putString(BuyerConsts.PARAM_BOUGHT_DATE, bundle.getString(BuyerConsts.PARAM_BOUGHT_DATE))
                     putString(BuyerConsts.PARAM_INVOICE_URL, bundle.getString(BuyerConsts.PARAM_INVOICE_URL))
                     putString(BuyerConsts.PARAM_STATUS_ID, bundle.getString(BuyerConsts.PARAM_STATUS_ID))
@@ -155,7 +156,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             isCancelAlreadyRequested = arguments?.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED) ?: false
             cancelRequestedTitle = arguments?.getString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED).toString()
             cancelRequestedBody = arguments?.getString(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED).toString()
-            shopId = arguments?.getInt(BuyerConsts.PARAM_SHOP_ID) ?: -1
+            shopId = arguments?.getString(BuyerConsts.PARAM_SHOP_ID) ?: "-1"
             boughtDate = arguments?.getString(BuyerConsts.PARAM_BOUGHT_DATE).toString()
             invoiceUrl = arguments?.getString(BuyerConsts.PARAM_INVOICE_URL).toString()
             statusId = arguments?.getString(BuyerConsts.PARAM_STATUS_ID).toString()
@@ -165,7 +166,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             isFromUoh = arguments?.getBoolean(BuyerConsts.PARAM_SOURCE_UOH) ?: false
             helplinkUrl = arguments?.getString(BuyerConsts.PARAM_HELP_LINK_URL).toString()
         }
-        getCancelReasons()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -183,6 +183,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getCancelReasons()
         setupHeader()
         activity?.let { BuyerAnalytics.sendScreenName(BUYER_CANCEL_REASON_SCREEN_NAME) }
         observingCancelReasons()
@@ -214,7 +215,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun setupHeader() {
-        view?.findViewById<HeaderUnify>(R.id.header_buyer_request_cancel)?.let { header ->
+        binding?.headerBuyerRequestCancel?.let { header ->
             activity?.run {
                 if (this is AppCompatActivity) {
                     supportActionBar?.hide()
@@ -380,14 +381,21 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun getCancelReasons() {
-        userSession = UserSession(context)
-        userSession?.let {
-            buyerCancellationViewModel.getCancelReasons(orderId)
+        showLoader()
+        buyerCancellationViewModel.getCancelReasons(orderId)
+    }
+
+    private fun showLoader() {
+        binding?.run {
+            clCancellationContent.hide()
+            globalErrorCancellation.hide()
+            loaderBuyerRequestCancel.show()
         }
     }
 
     private fun observingCancelReasons() {
         buyerCancellationViewModel.buyerCancellationOrderResult.observe(viewLifecycleOwner) {
+            binding?.loaderBuyerRequestCancel?.hide()
             when (it) {
                 is Success -> {
                     binding?.run {
@@ -762,20 +770,34 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun goToChatSeller() {
-        if (shopId != -1) {
-            val applink = "tokopedia://topchat/askseller/$shopId"
-            val intent = RouteManager.getIntent(context, applink)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_ID, orderId)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceNum)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, listProduct.first().productName)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, boughtDate)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, listProduct.first().picture)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, statusInfo)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, listProduct.first().productPrice)
-            intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
-            startActivity(intent)
+        if (shopId != "-1L") {
+            context?.let {
+                val intent = RouteManager.getIntent(
+                    it, ApplinkConst.TOPCHAT_ROOM_ASKSELLER,
+                    shopId
+                ).apply {
+                    putExtra(ApplinkConst.Chat.INVOICE_ID, orderId)
+                    putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceNum)
+                    putExtra(
+                        ApplinkConst.Chat.INVOICE_TITLE,
+                        listProduct.firstOrNull()?.productName.orEmpty()
+                    )
+                    putExtra(ApplinkConst.Chat.INVOICE_DATE, boughtDate)
+                    putExtra(
+                        ApplinkConst.Chat.INVOICE_IMAGE_URL,
+                        listProduct.firstOrNull()?.picture.orEmpty()
+                    )
+                    putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)
+                    putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId)
+                    putExtra(ApplinkConst.Chat.INVOICE_STATUS, statusInfo)
+                    putExtra(
+                        ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT,
+                        listProduct.firstOrNull()?.productPrice.orEmpty()
+                    )
+                    putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
+                }
+                startActivity(intent)
+            }
         }
     }
 
