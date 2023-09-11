@@ -4,14 +4,11 @@ import android.animation.Animator
 import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewConfiguration
-import android.view.ViewGroupOverlay
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -401,7 +398,7 @@ class PromoCompoundView @JvmOverloads constructor(
             if (remainingPromoCount > 1) {
                 layoutRemainingQuotaRibbon.visible()
                 tpgRemainingQuota.text = context?.getString(
-                    R.string.promo_voucher_placeholder_remaining_quota,
+                    R.string.promo_usage_label_remaining_quota,
                     remainingPromoCount
                 )
                 updatePromoBenefitTypeMargin(16.toPx())

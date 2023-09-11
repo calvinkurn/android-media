@@ -5,16 +5,16 @@
     <string name="promo_voucher_cd_recommended_voucher_background">Rekomendasi voucher background</string>
     <string name="promo_voucher_cd_recommended_voucher_used">Icon voucher rekomendasi berhasil digunakan</string>
 
-    <string name="promo_voucher_promo">Promo</string>
-    <string name="promo_voucher_use">Pakai</string>
-    <string name="promo_voucher_buy">Beli</string>
-    <string name="promo_voucher_back_to_shipment">Balik ke Pengiriman</string>
-    <string name="promo_voucher_placeholder_total_price">Rp%s</string>
-    <string name="promo_voucher_placeholder_remaining_quota">Sisa %d</string>
-    <string name="promo_voucher_placeholder_view_all_voucher">Lihat %d Promo Lainnya</string>
-    <string name="promo_voucher_total_price">Total Harga</string>
-    <string name="promo_voucher_view_tnc_label">Lihat <![CDATA[<a href="">Syarat &amp; Ketentuan Promo</a>]]></string>
-    <string name="promo_voucher_input_promo_code_label">Punya kode promo? Masukin di sini &#10024;</string>
+    <string name="promo_usage_label_promo">Promo</string>
+    <string name="promo_usage_label_use">Pakai</string>
+    <string name="promo_usage_label_buy">Beli</string>
+    <string name="promo_usage_label_back">Balik</string>
+    <string name="promo_usage_label_total_price">Rp%s</string>
+    <string name="promo_usage_label_remaining_quota">Sisa %d</string>
+    <string name="promo_usage_label_view_all_voucher">Lihat %d Promo Lainnya</string>
+    <string name="promo_usage_total_price">Total Harga</string>
+    <string name="promo_usage_label_view_tnc">Lihat <![CDATA[<a href="">Syarat &amp; Ketentuan Promo</a>]]></string>
+    <string name="promo_usage_label_attempt_promo_code">Punya kode promo? Masukin di sini &#10024;</string>
     <string name="promo_usage_tnc_title">Syarat dan Ketentuan Promo</string>
     <string name="promo_usage_global_error_promo">Oops, terjadi kesalahan. Coba pilih promo lagi.</string>
     <string name="promo_usage_error_try_again">Coba Lagi</string>

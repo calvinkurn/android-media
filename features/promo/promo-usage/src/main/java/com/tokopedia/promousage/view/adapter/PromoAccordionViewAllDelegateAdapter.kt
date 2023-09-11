@@ -31,7 +31,7 @@ class PromoAccordionViewAllDelegateAdapter(
 
         fun bind(item: PromoAccordionViewAllItem) {
             binding.tpgViewAll.text = binding.tpgViewAll.context.getString(
-                R.string.promo_voucher_placeholder_view_all_voucher,
+                R.string.promo_usage_label_view_all_voucher,
                 item.hiddenPromoCount
             )
             binding.tpgViewAll.isVisible = item.isExpanded && item.isVisible

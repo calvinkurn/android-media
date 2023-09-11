@@ -29,7 +29,7 @@ internal class PromoTncDelegateAdapter(
 
         fun bind(item: PromoTncItem) {
             with(binding) {
-                val tncLabel = tpgTncLabel.context.getString(R.string.promo_voucher_view_tnc_label)
+                val tncLabel = tpgTncLabel.context.getString(R.string.promo_usage_label_view_tnc)
                 tpgTncLabel.text = tncLabel.toSpannableHtmlString(tpgTncLabel.context)
                 tpgTncLabel.setOnClickListener {
                     onClickPromoTnc(item)

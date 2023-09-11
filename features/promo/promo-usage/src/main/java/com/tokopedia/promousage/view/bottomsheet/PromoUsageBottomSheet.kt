@@ -278,7 +278,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         val boPromoCodes: List<String> = arguments?.getStringArrayList(BUNDLE_KEY_BO_PROMO_CODES)
             ?: emptyList()
 
-        binding?.tpgBottomSheetHeaderTitle?.text = context?.getString(R.string.promo_voucher_promo)
+        binding?.tpgBottomSheetHeaderTitle?.text = context?.getString(R.string.promo_usage_label_promo)
         binding?.btnBottomSheetHeaderClose?.setOnClickListener {
             renderLoadingDialog(true)
             viewModel.onClosePromoPage(
@@ -302,7 +302,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             PromoPageEntryPoint.CART_PAGE -> {
                 binding?.tpgTotalAmountLabel?.visible()
                 binding?.tpgTotalAmount?.text = context?.getString(
-                    R.string.promo_voucher_placeholder_total_price,
+                    R.string.promo_usage_label_total_price,
                     totalAmount.splitByThousand()
                 )
                 binding?.tpgTotalAmount?.visible()
@@ -322,7 +322,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             PromoPageEntryPoint.OCC_PAGE -> {
                 binding?.tpgTotalAmountLabel?.visible()
                 binding?.tpgTotalAmount?.text = context?.getString(
-                    R.string.promo_voucher_placeholder_total_price,
+                    R.string.promo_usage_label_total_price,
                     totalAmount.splitByThousand()
                 )
                 binding?.tpgTotalAmount?.visible()
@@ -348,7 +348,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding?.tpgTotalAmount?.gone()
                 binding?.buttonBuy?.gone()
                 binding?.buttonBackToShipment?.text =
-                    context?.getString(R.string.promo_voucher_back_to_shipment)
+                    context?.getString(R.string.promo_usage_label_back)
                 binding?.buttonBackToShipment?.setOnClickListener {
                     viewModel.onClickBackToCheckout(
                         entryPoint = entryPoint,

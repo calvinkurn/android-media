@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp"
-        android:text="@string/promo_voucher_use"
+        android:text="@string/promo_usage_label_use"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/tpgRecommendationTitle"
         app:layout_constraintEnd_toEndOf="parent"

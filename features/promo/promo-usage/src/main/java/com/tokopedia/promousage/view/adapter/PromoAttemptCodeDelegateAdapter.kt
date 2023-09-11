@@ -118,7 +118,7 @@ internal class PromoAttemptCodeDelegateAdapter(
         private fun showUsePromoCodeCta() {
             val rightDrawable = TextDrawable(
                 binding.tauVoucherCode.context,
-                binding.tauVoucherCode.context.getString(R.string.promo_voucher_use)
+                binding.tauVoucherCode.context.getString(R.string.promo_usage_label_use)
             )
             binding.tauVoucherCode.editText
                 .setCompoundDrawables(null, null, rightDrawable, null)
