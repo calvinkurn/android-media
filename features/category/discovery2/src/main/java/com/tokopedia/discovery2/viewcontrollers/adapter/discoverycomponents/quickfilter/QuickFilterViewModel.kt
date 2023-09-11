@@ -308,10 +308,15 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             val targetList = targetID.split(",")
             if (targetList.isNotEmpty()) {
                 launchCatchError(block = {
-                    val originalSearchParameter = components.searchParameter.getSearchParameterMap().keys
-                    val formattedParameters = FilterKeyFormatter.format(
-                        selectedFilterMapParameter, originalSearchParameter
-                    )
+                    val originalSearchParameter = components.searchParameter
+                        .getSearchParameterMap()
+                        .keys
+
+                    val formattedParameters = FilterKeyFormatter
+                        .format(
+                            selectedFilterMapParameter,
+                            originalSearchParameter
+                        )
 
                     productCountMutableLiveData.value = quickFilterGQLRepository
                         ?.getQuickFilterProductCountData(
@@ -319,8 +324,10 @@ class QuickFilterViewModel(val application: Application, val components: Compone
                             components.pageEndPoint,
                             formattedParameters,
                             getUserId()
-                        )?.component?.compAdditionalInfo?.totalProductData
-                        ?.productCountWording ?: ""
+                        )?.component
+                        ?.compAdditionalInfo
+                        ?.totalProductData
+                        ?.productCountWording.orEmpty()
                 }, onError = {
                         it.printStackTrace()
                     })
