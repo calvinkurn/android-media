@@ -153,7 +153,6 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     private fun openCartPage() {
         dismissLoadingButton()
         dismiss()
-        sendClickCheckCartEvent()
         RouteManager.route(context, ApplinkConst.CART)
     }
 
@@ -247,6 +246,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
                 btnBmgmOpenCart.isEnabled = true
                 btnBmgmOpenCart.setOnClickListener {
                     viewModel.setCartListCheckboxState(getCartIds(model.tiersApplied))
+                    sendClickCheckCartEvent()
                 }
             }
         }

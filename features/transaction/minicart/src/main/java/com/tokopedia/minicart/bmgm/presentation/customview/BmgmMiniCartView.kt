@@ -220,7 +220,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private fun openCartPage() {
         dismissLoadingButton()
-        sendClickCekKeranjangButton()
         RouteManager.route(context, ApplinkConst.CART)
     }
 
@@ -337,6 +336,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 setupCrossedPrice(data)
                 btnBmgmOpenCart.setOnClickListener {
                     viewModel.setCartListCheckboxState(getCartIds(data.tiersApplied))
+                    sendClickCekKeranjangButton()
                 }
             }
         }
