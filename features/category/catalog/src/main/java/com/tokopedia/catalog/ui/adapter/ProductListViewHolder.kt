@@ -9,6 +9,8 @@ import com.tokopedia.catalog.domain.model.CatalogProductItem
 import com.tokopedia.catalog.ui.mapper.ProductListMapper.Companion.mapperToCatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.mapper.ProductListMapper.Companion.mapperToCatalogProductModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.catalog.ui.mapper.ProductListMapper.Companion.mapperToCatalogProductModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductListViewHolder(
     itemView: View,

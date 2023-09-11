@@ -7,9 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.CatalogProductListEmptyStateBinding
+import com.tokopedia.catalog.ui.model.CatalogProductListEmptyModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.utils.view.binding.viewBinding
 
-class EmptyStateViewHolder(itemView: View): AbstractViewHolder<EmptyModel>(itemView) {
+class EmptyStateViewHolder(itemView: View, val listener: EmptyStateFilterListener): AbstractViewHolder<CatalogProductListEmptyModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -18,20 +20,19 @@ class EmptyStateViewHolder(itemView: View): AbstractViewHolder<EmptyModel>(itemV
 
     private val binding by viewBinding<CatalogProductListEmptyStateBinding>()
 
-    override fun bind(data: EmptyModel) {
-        setupEmptyStateContainer(data)
-        //binding?.title?.text = getString(data.contentRes)
+    override fun bind(data: CatalogProductListEmptyModel) {
+        binding?.title?.text = data.title
         binding?.image?.let { iv ->
             ImageHandler.LoadImage(iv, data.urlRes)
         }
+        binding?.desc?.text = data.description
+        binding?.btnResetFilter?.setOnClickListener {
+            listener.resetFilter()
+        }
+        binding?.btnResetFilter?.showWithCondition(data.isFromFilter)
     }
+}
 
-    private fun setupEmptyStateContainer(data: EmptyModel) {
-//        val layoutParams = if(data.contentRes == R.string.product_manage_list_empty_product) {
-//            LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-//        } else {
-//            LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-//        }
-//        binding?.container?.layoutParams = layoutParams
-    }
+interface EmptyStateFilterListener{
+    fun resetFilter()
 }

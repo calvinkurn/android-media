@@ -5,8 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     android:gravity="center">
 
     <ImageView
@@ -22,8 +23,31 @@
         android:layout_width="258dp"
         android:layout_marginTop="16dp"
         android:textColor="@color/Unify_NN950_96"
+        android:text="@string/text_empty_product_list"
         android:gravity="center"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/desc"
+        android:layout_height="wrap_content"
+        android:layout_width="328dp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/Unify_NN950_96"
+        android:gravity="center"
+        app:typographyType="display_2" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnResetFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMessage"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        android:text="@string/text_reset_filter" />
 
 </LinearLayout>

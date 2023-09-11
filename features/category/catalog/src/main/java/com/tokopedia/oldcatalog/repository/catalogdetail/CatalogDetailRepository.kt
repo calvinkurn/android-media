@@ -15,6 +15,8 @@ class CatalogDetailRepository @Inject constructor() : BaseRepository() {
     private val KEY_COMPARISION_ID = "comparison_id"
     private val KEY_DEVICE = "device"
     private val KEY_USER_ID = "user_id"
+    private val KEY_PREFER_VERSION = "preferVersion"
+    private val VALUE_PREFER_VERSION = "4"
 
     suspend fun getCatalogDetail(
         categoryID: String,
@@ -46,6 +48,7 @@ class CatalogDetailRepository @Inject constructor() : BaseRepository() {
             putString(KEY_COMPARISION_ID, comparedCatalogId)
             putString(KEY_USER_ID, userId)
             putString(KEY_DEVICE, device)
+            putString(KEY_PREFER_VERSION, VALUE_PREFER_VERSION)
         }
     }
 }

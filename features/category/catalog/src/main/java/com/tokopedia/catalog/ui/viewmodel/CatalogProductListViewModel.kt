@@ -73,12 +73,11 @@ class CatalogProductListViewModel @Inject constructor(
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
 
-
-
     val productList: LiveData<Result<List<CatalogProductItem>>>
         get() = _productList
 
     private val _productList = MutableLiveData<Result<List<CatalogProductItem>>>()
+
 
     val mProductCount = MutableLiveData<Int>()
 
@@ -130,51 +129,6 @@ class CatalogProductListViewModel @Inject constructor(
                 _productList.postValue(Fail(it))
             }
         )
-//        getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
-//            override fun onNext(productListResponse: ProductListResponse?) {
-//                val data = productListResponse?.searchProduct?.data?.catalogProductItemList.orEmpty()
-//                mProductCount.value = data.size.orZero()
-//                _productList.value = Success(data)
-////                productListResponse?.let { productResponse ->
-////                    processProductListResponse(productResponse)
-////                }
-////                addCatalogForYouCard()
-//            }
-//
-//            override fun onCompleted() {
-//
-//            }
-//
-//            override fun onError(e: Throwable) {
-//                addCatalogForYouCard()
-//                _productList.value = Fail(e)
-//            }
-//        })
-    }
-
-    private fun addCatalogForYouCard() {
-//        if (!comparisonCardIsAdded){
-//            comparisonCardIsAdded = true
-//            if(list.size - 1 >= CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX){
-//                list.add(
-//                    CatalogDetailProductListingFragment.MORE_CATALOG_WIDGET_INDEX,
-//                    CatalogForYouContainerDataModel() as Visitable<CatalogTypeFactory>
-//                )
-//            }else {
-//                list.add(CatalogForYouContainerDataModel() as Visitable<CatalogTypeFactory>)
-//            }
-//        }
-    }
-
-    private fun processProductListResponse(productResponse: ProductListResponse) {
-//        (productResponse.searchProduct)?.let { searchProduct ->
-//            searchProduct.data.catalogProductItemList.let { data ->
-//                productList.value = Success((data) as List<CatalogProductItem>)
-//                list.addAll(data as ArrayList<Visitable<CatalogTypeFactory>>)
-//                pageCount++
-//            }
-//            mProductCount.value = searchProduct.data.totalData
-//        }
     }
 
     fun addProductToCart(atcUiModel: CatalogProductAtcUiModel) {
