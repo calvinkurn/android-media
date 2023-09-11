@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.domain.model.TemplateData
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class BankTNCBottomSheet : BottomSheetUnify() {
@@ -62,6 +63,7 @@ class BankTNCBottomSheet : BottomSheetUnify() {
 
     private fun getHTMLTextFromString(text: String): String {
         val textHexColor = String.format(
+            Locale.getDefault(),
             "#%06x",
             MethodChecker.getColor(
                 context,

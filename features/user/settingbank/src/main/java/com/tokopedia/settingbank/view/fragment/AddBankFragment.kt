@@ -511,8 +511,7 @@ class AddBankFragment : BaseDaggerFragment() {
                         }
                     }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (_: Exception) {
             }
         }
     }
@@ -590,8 +589,7 @@ class AddBankFragment : BaseDaggerFragment() {
         try {
             binding?.progressBar?.visible()
             addAccountViewModel.addBank(builder.build())
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
         }
     }
 
@@ -676,7 +674,9 @@ class AddBankFragment : BaseDaggerFragment() {
                     ds.isFakeBoldText = true
                 }
             },
-            startIndexPrivacy, endIndexPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            startIndexPrivacy,
+            endIndexPrivacy,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         return SpannableStringBuilder.valueOf(spannableStringPrivacyPolicy)
@@ -702,7 +702,9 @@ class AddBankFragment : BaseDaggerFragment() {
                     ds.isFakeBoldText = true
                 }
             },
-            startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            startIndex,
+            endIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return SpannableStringBuilder.valueOf(spannableStringTermAndCondition)
     }
