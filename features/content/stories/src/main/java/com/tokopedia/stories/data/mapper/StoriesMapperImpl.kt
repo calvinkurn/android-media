@@ -3,6 +3,7 @@ package com.tokopedia.stories.data.mapper
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.Meta
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContent
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
@@ -50,6 +51,10 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                                     ),
                                     resetValue = -1,
                                     isSameContent = false,
+                                    meta = Meta(
+                                        activityTracker = stories.meta.activityTracker,
+                                        templateTracker = stories.meta.templateTracker,
+                                    ),
                                 )
                             }
                         )
@@ -75,6 +80,10 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                     ),
                     resetValue = -1,
                     isSameContent = false,
+                    meta = Meta(
+                        activityTracker = stories.meta.activityTracker,
+                        templateTracker = stories.meta.templateTracker,
+                    ),
                 )
             }
         )

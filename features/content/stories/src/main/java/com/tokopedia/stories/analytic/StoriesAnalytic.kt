@@ -2,7 +2,7 @@ package com.tokopedia.stories.analytic
 
 interface StoriesAnalytic {
 
-    fun sendImpressionStoriesContent(storiesId: String)
+    fun sendImpressionStoriesContent(storiesId: String, authorId: String)
     fun sendViewStoryCircleEvent(eventLabel: String, promotions: List<String>)
     fun sendClickShopNameEvent(eventLabel: String)
     fun sendClickThreeDotsEvent(eventLabel: String)

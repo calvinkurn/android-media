@@ -16,14 +16,14 @@ class StoriesAnalyticImpl @Inject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46042
-    override fun sendImpressionStoriesContent(storiesId: String) {
+    override fun sendImpressionStoriesContent(storiesId: String, authorId: String) {
         Tracker.Builder()
             .setEvent("openScreen")
             .setCustomProperty("trackerId", "46042")
             .setBusinessUnit(BUSINESS_UNIT)
             .setCurrentSite(currentSite)
             .setCustomProperty("isLoggedInStatus", isLogin.toString())
-            .setCustomProperty("screenName", "/stories-room/$storiesId/$userId")
+            .setCustomProperty("screenName", "/stories-room/$storiesId/$authorId")
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
             .build()

@@ -42,10 +42,10 @@ class StoriesGroupFragment @Inject constructor(
     private val binding: FragmentStoriesGroupBinding
         get() = _binding!!
 
-    private val shopId: String
+    val authorId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
-    val viewModelProvider get() = viewModelFactory.create(shopId)
+    val viewModelProvider get() = viewModelFactory.create(authorId)
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 

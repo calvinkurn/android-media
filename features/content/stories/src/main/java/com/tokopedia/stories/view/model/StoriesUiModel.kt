@@ -48,6 +48,7 @@ data class StoriesDetailItemUiModel(
     @Parcelize
     data class Meta(
         val activityTracker: String = "",
+        val templateTracker: String = "",
     ): Parcelable
 
     @Parcelize

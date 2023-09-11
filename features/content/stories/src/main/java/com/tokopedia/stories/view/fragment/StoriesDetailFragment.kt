@@ -45,13 +45,14 @@ class StoriesDetailFragment @Inject constructor(
     private val analytic: StoriesAnalytic,
 ) : TkpdBaseV4Fragment() {
 
+    private val mParentPage: StoriesGroupFragment
+        get() = (requireParentFragment() as StoriesGroupFragment)
+
     private var _binding: FragmentStoriesDetailBinding? = null
     private val binding: FragmentStoriesDetailBinding
         get() = _binding!!
 
-    val viewModelProvider by lazyThreadSafetyNone {
-        (requireParentFragment() as StoriesGroupFragment).viewModelProvider
-    }
+    val viewModelProvider by lazyThreadSafetyNone { mParentPage.viewModelProvider }
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
@@ -167,19 +168,22 @@ class StoriesDetailFragment @Inject constructor(
         val currContent = state.detailItems[state.selectedDetailPosition]
         if (currContent.isSameContent) return
 
-        showPageLoading(false)
-
         when (currContent.content.type) {
             IMAGE -> {
                 binding.layoutStoriesContent.ivStoriesDetailContent.apply {
                     setImageUrl(currContent.content.data)
-                    onUrlLoaded = { contentIsLoaded() }
+                    onUrlLoaded = {
+                        contentIsLoaded()
+                        analytic.sendImpressionStoriesContent(currContent.id, mParentPage.authorId)
+                    }
                 }
             }
             VIDEO -> {
                 // TODO handle video content here
             }
         }
+
+        showPageLoading(false)
     }
 
     private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
