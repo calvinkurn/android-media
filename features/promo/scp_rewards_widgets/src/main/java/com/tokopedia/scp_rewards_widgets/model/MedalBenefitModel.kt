@@ -24,7 +24,8 @@ data class MedalBenefitModel(
         val additionalInfoColor: String? = null,
         val typeImageURL: String? = null,
         val typeBackgroundColor: String? = null,
-        val cta: CtaButton? = null
+        val cta: CtaButton? = null,
+        val categoryIds: List<Long>?= null
 ) : Visitable<CouponListViewTypeFactory>, Parcelable {
 
     var statusBadgeEnabled: Boolean = true

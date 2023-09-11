@@ -528,14 +528,23 @@ class MedalDetailFragment : BaseDaggerFragment() {
         if (list == null) {
             binding.couponView.gone()
         } else {
-            val benefitSection = medaliDetailPage?.section?.find { it.type == MDP_SECTION_TYPE_BENEFIT }
+            val benefitSection =
+                medaliDetailPage?.section?.find { it.type == MDP_SECTION_TYPE_BENEFIT }
+
+            val filtersList = MedalBenefitMapper.mapCategoryApiResponseFilter(list.categoryList)
+
+            if (filtersList.isNullOrEmpty().not()) {
+                filtersList?.first()?.isSelected = true
+            }
+
             val benefitSectionModel = MedalBenefitSectionModel(
-                benefitSection?.medaliSectionTitle?.content,
-                benefitSection?.backgroundColor,
-                list.benefitInfo,
-                MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(list.benefitList),
-                benefitSection?.jsonParameter,
-                MedalBenefitMapper.mapBenefitApiResponseCtaToCta(list.cta)
+                title = benefitSection?.medaliSectionTitle?.content,
+                backgroundColor = benefitSection?.backgroundColor,
+                benefitInfo = list.benefitInfo,
+                benefitList = MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(list.benefitList),
+                jsonParameter = benefitSection?.jsonParameter,
+                cta = MedalBenefitMapper.mapBenefitApiResponseCtaToCta(list.cta),
+                filters = filtersList
             )
             binding.couponView.renderCoupons(
                 benefitSectionModel = benefitSectionModel,
@@ -551,13 +560,23 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     }
                 },
                 onCtaClick = { _, _ ->
-                    MedalBonusBottomSheet.show(childFragmentManager, medaliSlug, benefitSectionModel.benefitList)
+                    MedalBonusBottomSheet.show(
+                        childFragmentManager,
+                        medaliSlug,
+                        benefitSectionModel.benefitList,
+                        benefitSectionModel.filters
+                    )
                 },
                 onCardTap = { data, isSingle ->
                     if (isSingle) {
                         context?.launchLink(data.appLink, data.url)
                     } else {
-                        MedalBonusBottomSheet.show(childFragmentManager, medaliSlug, benefitSectionModel.benefitList)
+                        MedalBonusBottomSheet.show(
+                            childFragmentManager,
+                            medaliSlug,
+                            benefitSectionModel.benefitList,
+                            benefitSectionModel.filters
+                        )
                     }
                 },
                 onErrorAction = {

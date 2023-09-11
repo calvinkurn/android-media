@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.scp_rewards_common.dpToPx
 import com.tokopedia.scp_rewards_widgets.databinding.StackCouponLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
@@ -44,11 +44,12 @@ class StackCouponView @JvmOverloads constructor(
                 cardMiddle.gone()
                 cardBack.gone()
             } else {
-                cardMiddle.setData(list.first().copy().apply { statusBadgeEnabled = false })
-                cardBack.setData(list.first().copy().apply { statusBadgeEnabled = false })
+                val duplicate = list.first().copy().apply { statusBadgeEnabled = false }
+                cardMiddle.setData(duplicate)
+                cardBack.setData(duplicate)
 
                 if (benefitInfo.isNullOrEmpty()) {
-                    cardMore.invisible()
+                    cardMore.hide()
                 } else {
                     cardMore.apply {
                         shapeAppearanceModel = ShapeAppearanceModel.Builder()
@@ -61,7 +62,8 @@ class StackCouponView @JvmOverloads constructor(
                             setTint(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0))
                         }
                     }
-                    tvMore.text = benefitInfo
+
+                    tvMore.text = benefitInfo.replace("[number]","${list.size}")
                 }
             }
         }

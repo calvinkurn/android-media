@@ -1,33 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@color/Unify_NN50">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/locked_warning"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
         app:closeButtonVisibility="gone"
         app:descriptionText="@string/medal_locked_bonus_warning"
-        tools:descriptionText="Complete the progress to unlock the bonus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:tickerShapeType="full"
+        app:tickerType="announcement"
+        tools:descriptionText="Complete the progress to unlock the bonus"
+        tools:visibility="gone" />
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/filter_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:tickerType="announcement" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:sort_filter_enable_auto_counter="false"
+        app:sort_filter_relationship="OR"
+        app:sort_filter_size="large"
+        app:sort_filter_type="advanced"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="locked_warning,filter_list" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_coupons"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/locked_warning"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/Unify_NN50"
-        android:paddingBottom="@dimen/dp_24"
         android:clipChildren="false"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/dp_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier" />
 </androidx.constraintlayout.widget.ConstraintLayout>

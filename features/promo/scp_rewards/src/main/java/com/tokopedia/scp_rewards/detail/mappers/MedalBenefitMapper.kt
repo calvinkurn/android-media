@@ -1,8 +1,10 @@
 package com.tokopedia.scp_rewards.detail.mappers
 
+import com.tokopedia.scp_rewards.detail.domain.model.Category
 import com.tokopedia.scp_rewards.detail.domain.model.Cta
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefit
 import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
+import com.tokopedia.scp_rewards_widgets.model.FilterModel
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 
 object MedalBenefitMapper {
@@ -35,7 +37,8 @@ object MedalBenefitMapper {
                     it.benefitCTA?.url,
                     it.benefitCTA?.isAutoApply,
                     it.benefitCTA?.couponCode
-                )
+                ),
+                categoryIds = it.categoryIdList
             )
         }
     }
@@ -47,4 +50,14 @@ object MedalBenefitMapper {
         isShown = true,
         style = cta?.unifiedStyle
     )
+
+    fun mapCategoryApiResponseFilter(list: List<Category>?): List<FilterModel>? {
+        return list?.map {
+            FilterModel(
+                id = it.id,
+                text = it.text,
+                iconImageURL = it.iconImageURL
+            )
+        }
+    }
 }

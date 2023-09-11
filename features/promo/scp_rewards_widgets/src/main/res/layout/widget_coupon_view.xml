@@ -10,9 +10,9 @@
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
         android:paddingHorizontal="@dimen/dp_16"
         android:paddingVertical="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_8"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,24 +21,38 @@
         app:typographyWeight="bold"
         tools:text="Powered by L'Oreal Paris" />
 
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/filter_coupon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:sort_filter_relationship="OR"
+        app:sort_filter_size="large"
+        app:sort_filter_type="quick"
+        tools:visibility="visible" />
+
     <com.tokopedia.scp_rewards_widgets.coupon_section.StackCouponView
         android:id="@+id/stack_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_16"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+        app:layout_constraintTop_toBottomOf="@id/filter_coupon"
+        app:layout_goneMarginTop="@dimen/dp_8"
+        tools:visibility="gone" />
 
     <com.tokopedia.scp_rewards_widgets.coupon_section.CouponEmptyCard
         android:id="@+id/card_empty_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_24"
         android:theme="@style/Theme.MaterialComponents.Light"
         android:visibility="gone"
@@ -46,14 +60,15 @@
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_error_state"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_48"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
@@ -63,6 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_goneMarginTop="@dimen/dp_8"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -90,8 +106,8 @@
         android:id="@+id/space"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_32"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier"
         tools:visibility="visible" />
 

@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.scp_rewards.databinding.FragmentMedalBonusBottomSheetBinding
 import com.tokopedia.scp_rewards.detail.domain.model.TabData
 import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
+import com.tokopedia.scp_rewards_widgets.model.FilterModel
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setCounter
@@ -20,6 +21,7 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
 
     private var binding: FragmentMedalBonusBottomSheetBinding? = null
     private var listOfTabs: List<TabData>? = null
+    private var filtersList: List<FilterModel>? = null
     private var activeTabCouponStatus: String? = null
 
     @SuppressLint("DeprecatedMethod")
@@ -47,18 +49,24 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
             listOfTabs?.let { safeList ->
                 safeList.forEach { tabs.addNewTab(it.title).setCounter(it.list?.size.orZero()) }
                 viewPager.adapter =
-                    BonusPagerAdapter(safeList, childFragmentManager, this@MedalBonusBottomSheet)
+                    BonusPagerAdapter(
+                        safeList,
+                        filtersList,
+                        childFragmentManager,
+                        this@MedalBonusBottomSheet
+                    )
                 tabs.setupWithViewPager(viewPager)
             }
             when (activeTabCouponStatus) {
                 CouponStatus.INACTIVE -> tabs.hide()
-                CouponStatus.EMPTY ->  goToTab(CouponStatus.INACTIVE)
+                CouponStatus.EMPTY -> goToTab(CouponStatus.INACTIVE)
             }
         }
     }
 
     private fun setupTabs() {
         val couponList = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
+        filtersList = arguments?.getParcelableArrayList<FilterModel?>(FILTER_LIST)
         val medaliSlug = arguments?.getString(MEDALI_SLUG).orEmpty()
 
         activeTabCouponStatus = couponList?.firstOrNull()?.status
@@ -117,15 +125,18 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
         private const val TAG = "SCP_MEDAL_BONUS_BOTTOM_SHEET"
         private const val MEDALI_SLUG = "medaliSlug"
         private const val COUPON_LIST = "couponList"
+        private const val FILTER_LIST = "filterList"
 
         fun show(
             fragmentManager: FragmentManager,
             medaliSlug: String,
-            list: List<MedalBenefitModel>?
+            list: List<MedalBenefitModel>?,
+            filterList: List<FilterModel>?,
         ) {
             val bundle = Bundle().apply {
                 putString(MEDALI_SLUG, medaliSlug)
-                putParcelableArrayList(COUPON_LIST, list as ArrayList<MedalBenefitModel>)
+                putParcelableArrayList(COUPON_LIST, list as ArrayList<MedalBenefitModel>?)
+                putParcelableArrayList(FILTER_LIST, filterList as ArrayList<FilterModel>)
             }
             val medalBonusBottomSheet = MedalBonusBottomSheet().apply {
                 arguments = bundle

@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards.detail.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.scp_rewards.common.utils.API_VERSION_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGESIZE_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
@@ -30,7 +31,8 @@ class GetMedalBenefitUseCase @Inject constructor() : GraphqlUseCase<MedalBenefit
             SOURCE_NAME_PARAM to sourceName,
             TYPE_PARAM to type,
             PAGE_PARAM to pageNumber,
-            PAGESIZE_PARAM to pageSize
+            PAGESIZE_PARAM to pageSize,
+            API_VERSION_PARAM to "2.0.0"
         )
 }
 
