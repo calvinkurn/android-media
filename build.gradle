@@ -56,6 +56,7 @@ buildscript {
         classpath "gradle.plugin.org.gradle.android:android-cache-fix-gradle-plugin:2.4.4"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.7.20"
         classpath "org.jetbrains.dokka:dokka-core:1.7.20"
+        classpath rootProject.ext.gradlePlugin.composeCompilerReportGenerator
     }
 }
 
