@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -30,24 +29,27 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
     private var bannerImage: ImageView = itemView.findViewById(R.id.banner_image)
     private lateinit var bannerCarouselItemViewModel: BannerCarouselItemViewModel
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
-    private var compType :String? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         bannerCarouselItemViewModel = discoveryBaseViewModel as BannerCarouselItemViewModel
         parentView.setOnClickListener {
             onClickHandling()
             bannerCarouselItemViewModel.getBannerData()?.let { itemData ->
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerClick(itemData, adapterPosition, compType ?: "")
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerClick(itemData, adapterPosition, bannerCarouselItemViewModel.getCompType())
             }
         }
     }
 
     private fun onClickHandling() {
         bannerCarouselItemViewModel.getBannerData()?.let {
-            if (it.moveAction?.type != null) {
-                Utils.routingBasedOnMoveAction(it.moveAction, fragment)
+            if (bannerCarouselItemViewModel.isCompTypeShopCard()) {
+                RouteManager.route(fragment.context, it.applinks)
             } else {
-                if (!it.imageClickUrl.isNullOrEmpty()) RouteManager.route(fragment.activity, it.imageClickUrl)
+                if (it.moveAction?.type != null) {
+                    Utils.routingBasedOnMoveAction(it.moveAction, fragment)
+                } else {
+                    RouteManager.route(fragment.activity, it.imageClickUrl)
+                }
             }
         }
     }
@@ -61,7 +63,6 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
                         setupImage(it.first(),componentItem)
                     }
                 }
-                compType = componentItem.properties?.compType
             })
         }
     }

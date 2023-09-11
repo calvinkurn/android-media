@@ -7,7 +7,15 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class BannerCarouselItemViewModel(application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class BannerCarouselItemViewModel(
+    application: Application,
+    private val components: ComponentsItem,
+    val position: Int
+) : DiscoveryBaseViewModel() {
+    private companion object {
+        private const val SHOP_CARD_COMPONENT_TYPE = "shop_card"
+    }
+
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
     init {
@@ -22,6 +30,14 @@ class BannerCarouselItemViewModel(application: Application, private val componen
 
     fun getNavigationUrl(): String? {
         return getDataItem()?.imageClickUrl
+    }
+
+    fun getCompType(): String {
+        return components.properties?.compType.orEmpty()
+    }
+
+    fun isCompTypeShopCard(): Boolean {
+        return getCompType() == SHOP_CARD_COMPONENT_TYPE
     }
 
     private fun getDataItem(): DataItem? {
