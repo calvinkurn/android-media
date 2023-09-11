@@ -101,6 +101,7 @@ class TopAdsHeadlineViewHolder(
 
     private fun showHeadlineView(cpmModel: CpmModel) {
         binding.topadsHeadlineView.hideShimmerView()
+        binding.divider.show()
         binding.topadsHeadlineView.show()
         binding.topadsHeadlineView.displayAds(cpmModel)
         topadsHeadlineUiModel?.impressHolder?.let {
