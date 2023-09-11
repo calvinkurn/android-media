@@ -241,15 +241,17 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 findViewById<ImageUnify>(R.id.product_image).loadImage(
                     params?.itemImage ?: bundle.getString(KEY_PRODUCT_IMAGE)
                 )
-
+                findViewById<Typography>(R.id.ssa_message)?.apply {
+                    show()
+                    text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        Html.fromHtml(params?.ssaInfo?.message, Html.FROM_HTML_MODE_LEGACY)
+                    } else {
+                        Html.fromHtml(params?.ssaInfo?.message)
+                    }
+                }
                 if (params?.ssaInfo?.ssaStatus == true) {
                     findViewById<Group>(R.id.ssa_group).isVisible = true
-                    findViewById<Typography>(R.id.ssa_message).text =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            Html.fromHtml(params.ssaInfo.message, Html.FROM_HTML_MODE_LEGACY)
-                        } else {
-                            Html.fromHtml(params.ssaInfo.message)
-                        }
+
                     findViewById<Label>(R.id.ssa_label).apply {
                         isVisible = params.ssaInfo.label.labelText.isNotBlank()
                         text = params.ssaInfo.label.labelText
