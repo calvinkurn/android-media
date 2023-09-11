@@ -160,7 +160,7 @@
             android:maxLines="1"
             android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
-            tools:text="\u2022" />
+            android:text="@string/shop_page_dot_separator" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSoldCount"
