@@ -1328,6 +1328,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
 
         // When
         orderSummaryPageViewModel.chooseDuration(
@@ -1353,7 +1354,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 isShowLogisticPromoTickerMessage = false,
                 logisticPromoViewModel = helper.logisticPromo,
                 isServicePickerEnable = true,
-                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
+                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance),
+                serviceErrorMessage = ""
             ),
             orderSummaryPageViewModel.orderShipment.value
         )
@@ -1374,6 +1376,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         shippingRecommendationData.logisticPromo = null
         orderSummaryPageViewModel.orderShipment.value =
             helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
 
         // When
         orderSummaryPageViewModel.chooseDuration(
@@ -1397,7 +1400,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 shippingRecommendationData = shippingRecommendationData,
                 isShowLogisticPromoTickerMessage = false,
                 isServicePickerEnable = true,
-                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
+                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance),
+                serviceErrorMessage = ""
             ),
             orderSummaryPageViewModel.orderShipment.value
         )
