@@ -86,4 +86,21 @@
     </FrameLayout>
 
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/sharing"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_enable_state="true"
+        app:icon_name="SHARE_MOBILE"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/icon_notif_wrapper"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

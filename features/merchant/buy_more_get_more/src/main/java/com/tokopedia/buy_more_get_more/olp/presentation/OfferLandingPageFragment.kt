@@ -42,6 +42,7 @@ import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
+import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imageassets.TokopediaImageUrl
@@ -51,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -93,15 +95,16 @@ class OfferLandingPageFragment :
             }
         }
 
+        private const val REQUEST_CODE_USER_LOGIN = 101
+        private const val REQUEST_CODE_USER_LOGIN_CART = 102
         private const val REQUEST_CODE_SORT = 308
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
-        private const val REQUEST_CODE_USER_LOGIN_CART = 102
+        private const val FIRST_PAGE = 1
         private const val PAGE_SIZE = 10
         private const val PRODUCT_LIST_SPAN_COUNT = 2
-        private const val FIRST_PAGE = 1
-        private const val REQUEST_CODE_USER_LOGIN = 101
+        private const val MINI_CART_REFRESH_DELAY = 800L
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
@@ -165,8 +168,10 @@ class OfferLandingPageFragment :
 
     override fun onResume() {
         super.onResume()
-        viewModel.processEvent(OlpEvent.GetNotification)
-        fetchMiniCart()
+        doOnDelayFinished(MINI_CART_REFRESH_DELAY) {
+            viewModel.processEvent(OlpEvent.GetNotification)
+            fetchMiniCart()
+        }
     }
 
     override fun onCreateView(
@@ -254,11 +259,7 @@ class OfferLandingPageFragment :
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         setupToolbar(offerInfoForBuyer)
         binding?.headerBackground?.setBackgroundResource(R.drawable.olp_header)
-        if (activity?.isDarkMode() == true) {
-            binding?.headerOverlay?.visible()
-        } else {
-            binding?.headerOverlay?.gone()
-        }
+        binding?.headerOverlay?.visibleWithCondition(activity?.isDarkMode() == true)
         olpAdapter?.submitList(
             newList = listOf(
                 offerInfoForBuyer,
@@ -287,6 +288,15 @@ class OfferLandingPageFragment :
                     offerInfoForBuyer.nearestWarehouseIds.toSafeString()
                 )
                 activity?.finish()
+            }
+            showShareButton = true
+            shareButton?.setOnClickListener {
+                //get sharing data
+                tracker.sendClickShareButtonEvent(
+                    offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                )
+                openShareBottomSheet()
             }
             cartButton?.setOnClickListener {
                 tracker.sendClickKeranjangButtonEvent(
@@ -579,6 +589,7 @@ class OfferLandingPageFragment :
                 cartButton?.setOnClickListener { redirectToCartPage() }
                 moreMenuButton?.setOnClickListener { redirectToMainMenu() }
                 showWhiteToolbar = true
+                showShareButton = false
             }
         }
     }
