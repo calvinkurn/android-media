@@ -1,7 +1,6 @@
 package com.tokopedia.cartrevamp.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -780,7 +779,6 @@ class CartViewModel @Inject constructor(
                 updateCartUseCase.setParams(updateCartRequestList)
                 updateCartUseCase.execute(
                     onSuccess = { updateCartV2Data ->
-                        Log.i("qwertyuiop", "update success")
                         onSuccessUpdateCartForCheckout(
                             updateCartV2Data,
                             cartItemDataList
@@ -898,7 +896,6 @@ class CartViewModel @Inject constructor(
         throwable: Throwable,
         cartItemDataList: List<CartItemHolderData>
     ) {
-        throwable.printStackTrace()
         _updateCartForCheckoutState.value = UpdateCartCheckoutState.Failed(throwable)
         CartLogger.logOnErrorUpdateCartForCheckout(throwable, cartItemDataList)
     }
