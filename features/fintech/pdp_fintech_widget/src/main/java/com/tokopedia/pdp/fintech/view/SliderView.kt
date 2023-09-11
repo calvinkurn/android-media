@@ -51,4 +51,10 @@ class SliderView: ScrollView {
             }
         }
     }
+
+    fun setItems(views: List<View>) {
+        views.forEach { view ->
+            binding?.container?.addView()
+        }
+    }
 }
