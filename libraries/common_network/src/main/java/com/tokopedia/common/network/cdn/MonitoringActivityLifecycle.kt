@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
+import com.google.android.gms.security.ProviderInstaller
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
@@ -15,6 +17,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.net.ssl.SSLContext
 
 class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallbacks {
 
@@ -29,6 +32,16 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        try {
+            // Google Play will install latest OpenSSL
+            ProviderInstaller.installIfNeeded(context)
+            val sslContext: SSLContext
+            sslContext = SSLContext.getInstance("TLSv1.2")
+            sslContext.init(null, null, null)
+            sslContext.createSSLEngine()
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
         val config = remoteConfig.getString(CDN_MONITORING_KEY)
         config?.let {
             try {
