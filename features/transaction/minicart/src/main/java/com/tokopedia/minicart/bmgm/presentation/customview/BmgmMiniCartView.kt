@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
+import com.tokopedia.minicart.bmgm.common.utils.logger.NonFatalIssueLogger
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartItemDecoration
@@ -152,7 +153,10 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 when (it) {
                     is BmgmState.Loading -> showMiniCartLoadingState()
                     is BmgmState.Success -> setOnSuccessGetCartData(it.data)
-                    is BmgmState.Error -> showErrorState()
+                    is BmgmState.Error -> {
+                        sendLogger(it.t)
+                        showErrorState()
+                    }
                     else -> {
                         /* no-op */
                     }
@@ -166,13 +170,22 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             viewModel.setCheckListState.collectLatest {
                 when (it) {
                     is BmgmState.Loading -> showLoadingButton()
-                    is BmgmState.Success, is BmgmState.Error -> openCartPage()
+                    is BmgmState.Success -> openCartPage()
+                    is BmgmState.Error -> {
+                        sendLogger(it.t)
+                        openCartPage()
+                    }
+
                     else -> {
                         /* no-op */
                     }
                 }
             }
         }
+    }
+
+    private fun sendLogger(t: Throwable) {
+        NonFatalIssueLogger.logToCrashlytics(t, this::class.java.canonicalName)
     }
 
     private fun showMiniCartLoadingState() {

@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
+import com.tokopedia.minicart.bmgm.common.utils.logger.NonFatalIssueLogger
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartDetailAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartDetailItemDecoration
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
@@ -102,7 +103,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
             viewModel.cartData.collect {
                 when (it) {
                     is BmgmState.Success -> showProducts(it.data)
-                    is BmgmState.Error -> setOnError()
+                    is BmgmState.Error -> setOnError(it.t)
                     else -> {
                         /* no-op */
                     }
@@ -117,13 +118,22 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
             viewModel.setCheckListState.collectLatest {
                 when (it) {
                     is BmgmState.Loading -> showLoadingButton()
-                    is BmgmState.Success, is BmgmState.Error -> openCartPage()
+                    is BmgmState.Success -> openCartPage()
+                    is BmgmState.Error -> {
+                        sendLogger(it.t)
+                        openCartPage()
+                    }
+
                     else -> {
                         /* no-op */
                     }
                 }
             }
         }
+    }
+
+    private fun sendLogger(t: Throwable) {
+        NonFatalIssueLogger.logToCrashlytics(t, this::class.java.canonicalName)
     }
 
     private fun openCartPage() {
@@ -201,7 +211,8 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setOnError() {
+    private fun setOnError(t: Throwable) {
+        NonFatalIssueLogger.logToCrashlytics(t)
         activity?.finish()
     }
 
