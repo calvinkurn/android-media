@@ -94,7 +94,7 @@ class UniversalInboxViewModel @Inject constructor(
 
     private var page = 1
 
-    init {
+    fun setupViewModelObserver() {
         _actionFlow.process()
         observeInboxMenuWidgetMetaAndCounterFlow()
         observeInboxMenuLocalFlow()
@@ -131,13 +131,13 @@ class UniversalInboxViewModel @Inject constructor(
                     showErrorMessage(it.error)
                 }
                 is UniversalInboxAction.RefreshPage -> {
-                    removeAllProductRecommendation()
+                    removeAllProductRecommendation(false)
                     loadInboxMenuAndWidgetMeta()
                 }
 
                 // Recommendation process
                 is UniversalInboxAction.RefreshRecommendation -> {
-                    removeAllProductRecommendation()
+                    removeAllProductRecommendation(true)
                     page = 1 // reset page
                     loadProductRecommendation() // Load first page
                 }
@@ -419,14 +419,14 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun removeAllProductRecommendation() {
+    private fun removeAllProductRecommendation(shouldShowLoading: Boolean) {
         viewModelScope.launch {
             getRecommendationUseCase.reset()
             _productRecommendationState.update {
                 it.copy(
                     title = "",
                     productRecommendation = listOf(),
-                    isLoading = false
+                    isLoading = shouldShowLoading
                 )
             }
         }

@@ -211,6 +211,9 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun setupObservers() {
+        // Setup flow observer
+        viewModel.setupViewModelObserver()
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 observeInboxMenuAndCounter()
