@@ -33,8 +33,8 @@
     <dimen name="product_card_flashsale_label_discount_margin_bottom">4dp</dimen>
     <dimen name="product_card_flashsale_label_discount_gone_margin_top">0dp</dimen>
 
-    <dimen name="product_card_text_view_slashed_price_margin_top">4dp</dimen>
-    <dimen name="product_card_text_view_slashed_price_height">20dp</dimen>
+    <dimen name="product_card_text_view_slashed_price_margin_top">2dp</dimen>
+    <dimen name="product_card_text_view_slashed_price_height">12dp</dimen>
     <dimen name="product_card_flashsale_text_view_slashed_price_margin_bottom">4dp</dimen>
 
     <dimen name="product_card_label_price_margin_top">2dp</dimen>

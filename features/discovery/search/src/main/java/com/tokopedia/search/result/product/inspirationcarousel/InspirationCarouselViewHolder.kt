@@ -446,6 +446,7 @@ class InspirationCarouselViewHolder(
             shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
             isTopAds = isOrganicAds,
             cardInteraction = true,
+            pageSource = ProductCardModel.PageSource.SEARCH,
         )
     }
 

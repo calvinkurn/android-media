@@ -238,6 +238,7 @@ class BroadMatchViewHolder(
                     stockBarPercentage = it.stockBarDataView.percentageValue,
                     stockBarLabel = it.stockBarDataView.value,
                     stockBarLabelColor = it.stockBarDataView.color,
+                    pageSource = ProductCardModel.PageSource.SEARCH,
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
