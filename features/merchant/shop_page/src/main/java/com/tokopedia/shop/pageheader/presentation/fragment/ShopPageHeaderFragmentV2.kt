@@ -115,6 +115,7 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
+import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -966,7 +967,7 @@ class ShopPageHeaderFragmentV2 :
                                 shopHeaderViewModel?.userId
                             )
                         }
-                    }.show()
+                    }.setAnchorViewToShopHeaderBottomViewContainer(getBottomViewContainer()).show()
                 }
                 trackViewToasterFollowUnfollow(
                     followShop.isFollowing == true,
@@ -986,7 +987,7 @@ class ShopPageHeaderFragmentV2 :
                 getString(R.string.shop_follow_error_toaster_action_text)
             ) {
                 toggleFollowUnfollowButton()
-            }.show()
+            }.setAnchorViewToShopHeaderBottomViewContainer(getBottomViewContainer()).show()
             trackViewToasterFollowUnfollow(
                 isFollowing,
                 isSuccess
@@ -2305,7 +2306,7 @@ class ShopPageHeaderFragmentV2 :
             text = getString(R.string.shop_page_play_widget_sgc_save_video),
             duration = Toaster.LENGTH_LONG,
             type = Toaster.TYPE_NORMAL
-        ).show()
+        ).setAnchorViewToShopHeaderBottomViewContainer(getBottomViewContainer()).show()
     }
 
     private fun showWidgetDeletedToaster() {
@@ -2314,7 +2315,7 @@ class ShopPageHeaderFragmentV2 :
             getString(R.string.shop_page_play_widget_sgc_video_deleted),
             Toaster.LENGTH_SHORT,
             Toaster.TYPE_NORMAL
-        ).show()
+        ).setAnchorViewToShopHeaderBottomViewContainer(getBottomViewContainer()).show()
     }
 
     private fun showToasterShopUnmoderate(message: String, type: Int) {
@@ -2323,7 +2324,7 @@ class ShopPageHeaderFragmentV2 :
             message,
             Toaster.LENGTH_SHORT,
             type
-        ).show()
+        ).setAnchorViewToShopHeaderBottomViewContainer(getBottomViewContainer()).show()
     }
 
     private fun isShopInfoAppLink(appLink: String): Boolean {
@@ -2614,9 +2615,9 @@ class ShopPageHeaderFragmentV2 :
         val isOverrideTextColor = headerLayoutData?.isOverrideTheme.orFalse()
         return if (isOverrideTextColor) {
             if(getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
-                R.color.dms_static_Unify_NN950_light
-            } else {
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            } else {
+                R.color.dms_static_Unify_NN950_light
             }
         } else {
             super.onChangeTextColor()

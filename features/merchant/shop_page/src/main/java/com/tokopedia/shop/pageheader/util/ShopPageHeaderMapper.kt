@@ -100,7 +100,7 @@ object ShopPageHeaderMapper {
             ShopPageHeaderLayoutUiModel.Config(
                 it.name,
                 it.type,
-                it.data.patternColorType,
+                it.data.patternColorType.lowercase(),
                 it.data.listBackgroundColor,
                 mapToListBackgroundObject(it.data.listBackgroundObject),
                 mapToListColorSchema(it.data.listColorSchema),

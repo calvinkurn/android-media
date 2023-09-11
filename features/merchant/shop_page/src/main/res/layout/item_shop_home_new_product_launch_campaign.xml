@@ -228,27 +228,25 @@
             tools:itemCount="10"
             tools:listitem="@layout/item_shop_carousel_product_card" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_exclusive_follower"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_npl_new_follower_description"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
+            android:text="@string/npl_footer_exclusive_for_follower"
+            android:textColor="@color/Unify_NN0"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="reguler"
+            tools:text="@string/npl_footer_exclusive_for_follower"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_exclusive_follower"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_npl_new_follower_description"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
-        android:text="@string/npl_footer_exclusive_for_follower"
-        android:textColor="@color/Unify_NN0"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/container_product_list"
-        app:typographyType="display_3"
-        app:typographyWeight="reguler"
-        tools:text="@string/npl_footer_exclusive_for_follower"
-        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

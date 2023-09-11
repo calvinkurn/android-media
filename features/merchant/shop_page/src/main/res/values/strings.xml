@@ -248,4 +248,5 @@
 
     <string name="shop_page_dot_character">•</string>
     <string name="shop_page_placeholder_discount_percentage">%d%%</string>
+    <string name="shop_page_dot_separator">\u2022</string>
 </resources>
