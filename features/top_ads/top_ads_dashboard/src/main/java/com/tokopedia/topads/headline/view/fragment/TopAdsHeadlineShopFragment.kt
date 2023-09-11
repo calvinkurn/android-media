@@ -24,7 +24,7 @@ import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGro
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsBaseTabFragment

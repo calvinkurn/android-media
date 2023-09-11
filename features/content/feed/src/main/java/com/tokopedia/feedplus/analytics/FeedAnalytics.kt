@@ -923,7 +923,7 @@ class FeedAnalytics @Inject constructor(
             when (tabType) {
                 FeedBaseFragment.TAB_TYPE_FOR_YOU -> TAB_TYPE_FOR_YOU
                 FeedBaseFragment.TAB_TYPE_FOLLOWING -> TAB_TYPE_FOLLOWING
-                FeedBaseFragment.CDP -> TAB_TYPE_CDP
+                FeedBaseFragment.TAB_TYPE_CDP -> TAB_TYPE_CDP
                 else -> ""
             }
 

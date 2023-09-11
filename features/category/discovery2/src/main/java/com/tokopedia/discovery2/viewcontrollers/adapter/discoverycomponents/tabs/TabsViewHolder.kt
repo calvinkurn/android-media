@@ -62,7 +62,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 if (tabsViewModel.isFromCategory()) {
                     tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
                 }
-                tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
+                tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(
+                    tabsHolder.getUnifyTabLayout().tabSelectedIndicator
+                )
                 var selectedPosition = 0
                 it.forEachIndexed { index, tabItem ->
                     if (tabItem.data?.isNotEmpty() == true) {
@@ -99,7 +101,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     isParentUnifyTab = true
                     tabsHolder.tabLayout.apply {
                         layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                        layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
+                        layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(
+                            R.dimen.dp_55
+                        )
                         tabMode = TabLayout.MODE_SCROLLABLE
                         removeAllTabs()
                         setBackgroundResource(0)
@@ -112,7 +116,12 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     it.forEach {
                         val tab = tabsHolder.tabLayout.newTab()
                         ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
-                        tab.customView = CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.TabsItem, it, fragment)
+                        tab.customView = CustomViewCreator.getCustomViewObject(
+                            itemView.context,
+                            ComponentsList.TabsItem,
+                            it,
+                            fragment
+                        )
                         tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
                     }
                 }
@@ -122,7 +131,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
 
     private fun openCategoryBottomSheet() {
         tabsViewModel?.let { tabsViewModel ->
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryTreeDropDownClick(tabsViewModel.isUserLoggedIn())
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryTreeDropDownClick(
+                tabsViewModel.isUserLoggedIn()
+            )
             selectedTab?.position?.let { it ->
                 if (tabsViewModel.isFromCategory()) {
                     CategoryNavBottomSheet.getInstance(
@@ -182,7 +193,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 trackTabsGTMStatus(tab)
             }
             if (tab.customView != null && tab.customView is CustomViewCreator) {
-                ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
+                ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(
+                    true
+                )
             }
         }
     }
@@ -190,7 +203,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onTabUnselected(tab: TabLayout.Tab) {
         tabsViewModel?.setSelectedState(tab.position, false)
         if (tab.customView == null || !(tab.customView is CustomViewCreator)) return
-        ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(false)
+        ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(
+            false
+        )
     }
 
     override fun onTabReselected(tab: TabLayout.Tab) {
@@ -256,11 +271,15 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     override fun onL2Expanded(id: String?, name: String?) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickExpandNavigationAccordion(id)
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickExpandNavigationAccordion(
+            id
+        )
     }
 
     override fun onL2Collapsed(id: String?, name: String?) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCollapseNavigationAccordion(id)
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCollapseNavigationAccordion(
+            id
+        )
     }
 
     override fun onL3Clicked(id: String?, name: String?) {
@@ -272,6 +291,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     override fun onBottomSheetClosed() {
-        tabsViewModel?.isUserLoggedIn()?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryTreeCloseClick(it) }
+        tabsViewModel?.isUserLoggedIn()?.let {
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryTreeCloseClick(it)
+        }
     }
 }
