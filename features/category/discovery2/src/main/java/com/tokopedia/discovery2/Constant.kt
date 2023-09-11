@@ -127,6 +127,10 @@ object Constant {
         const val PROMO = "promo"
     }
 
+    internal object CompType {
+        const val SHOP_CARD = "shop_card"
+    }
+
     const val REDIRECTION = "redirection"
     const val NAVIGATION = "navigation"
     const val TAB_BACKGROUND =
