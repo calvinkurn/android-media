@@ -11,6 +11,7 @@ data class StoriesCreationUiState(
     val config: StoriesManualConfiguration,
     val accountList: List<ContentAccountUiModel>,
     val selectedAccount: ContentAccountUiModel,
+    val productTags: List<String>, /** TODO JOE: data class is not ready, will use proper data class later */
 ) {
     companion object {
         val Empty: StoriesCreationUiState
@@ -40,6 +41,7 @@ data class StoriesCreationUiState(
                     badge = "",
                     enable = true,
                 ),
+                productTags = emptyList(),
             )
     }
 }
@@ -76,7 +78,7 @@ data class StoriesManualConfiguration(
         val Empty: StoriesManualConfiguration
             get() = StoriesManualConfiguration(
                 maxProductTag = 0,
-                showDuration = "24 Jam",
+                showDuration = "24 Jam", /** TODO JOE: for mocking purpose */
                 maxStories = MaxStories.Empty,
             )
     }

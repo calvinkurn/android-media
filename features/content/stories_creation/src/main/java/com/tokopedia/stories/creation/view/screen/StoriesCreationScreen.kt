@@ -127,7 +127,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationAddProductSection(
-            selectedProductSize = 0, /** TODO JOE: will handle it later */
+            selectedProductSize = uiState.productTags.size,
             onClickAddProduct = onClickAddProduct,
             modifier = Modifier.constrainAs(addProductSection) {
                 top.linkTo(mediaCoverDivider.bottom, 16.dp)
@@ -137,7 +137,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationShowDurationSection(
-            showDuration = uiState.config.showDuration, /** TODO JOE: will handle it later */
+            showDuration = uiState.config.showDuration,
             modifier = Modifier.constrainAs(showDurationSection) {
                 top.linkTo(addProductSection.bottom, 20.dp)
                 start.linkTo(parent.start)
