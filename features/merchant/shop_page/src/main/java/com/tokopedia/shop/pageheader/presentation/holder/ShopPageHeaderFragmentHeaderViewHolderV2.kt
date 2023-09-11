@@ -28,6 +28,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.remoteconfig.RollenceKey
@@ -424,7 +425,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private fun setShopLogoImage(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
         val shopBasicData = getShopBasicInfoData(listWidgetShopData)
         val shopLogoImageUrl = getShopBasicDataShopLogoComponent(shopBasicData)?.image.orEmpty()
-        imageShopLogo?.loadImage(shopLogoImageUrl)
+        imageShopLogo?.loadImageCircle(shopLogoImageUrl)
     }
 
     private fun getShopBasicInfoData(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>): ShopPageHeaderWidgetUiModel? {
