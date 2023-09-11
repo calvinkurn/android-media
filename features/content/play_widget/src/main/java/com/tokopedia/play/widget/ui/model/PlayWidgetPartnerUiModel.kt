@@ -11,4 +11,15 @@ data class PlayWidgetPartnerUiModel(
     val avatarUrl: String,
     val badgeUrl: String,
     val appLink: String,
-)
+) {
+    companion object {
+        val Empty = PlayWidgetPartnerUiModel(
+            "",
+            "",
+            PartnerType.Unknown,
+            "",
+            "",
+            ""
+        )
+    }
+}
