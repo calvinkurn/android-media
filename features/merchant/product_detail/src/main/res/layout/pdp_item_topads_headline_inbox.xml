@@ -5,6 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height_component" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_headline"
         android:layout_width="match_parent"
@@ -14,7 +19,7 @@
         app:typographyWeight="bold"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:visibility="gone"
         android:text="@string/pdp_title_topads_headline" />
 
