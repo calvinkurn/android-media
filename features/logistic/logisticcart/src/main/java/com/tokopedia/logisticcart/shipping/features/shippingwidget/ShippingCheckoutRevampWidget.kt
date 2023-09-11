@@ -510,7 +510,6 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             titleNow2H = getSingleShippingTitleForScheduleWidget(
                 shippingWidgetUiModel
             ),
-            descriptionNow2H = getSingleShippingLabelEta(shippingWidgetUiModel),
             labelNow2H = labelNow2H,
             scheduleDeliveryUiModel = shippingWidgetUiModel.scheduleDeliveryUiModel?.copy(),
             listener = object : ShippingScheduleRevampWidget.ShippingScheduleWidgetListener {
