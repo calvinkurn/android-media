@@ -21,7 +21,7 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
     private var isApplied = false
 
     fun bind(promoModel: CheckoutPromoModel) {
-        if (!promoModel.isEnable || promoModel.entryPointInfo.messages.isEmpty()) {
+        if (!promoModel.isEnable) {
             binding.root.gone()
             return
         } else {
@@ -30,24 +30,21 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
 
         val promo = promoModel.promo
         if (promoModel.isPromoRevamp) {
-            processNewEntryPointInfo(promo, promoModel.entryPointInfo,
-                promoModel.isAnimateWording, promoModel.isLoading)
+            processNewEntryPointInfo(promoModel)
         } else {
             processOldEntryPointInfo(promo)
         }
     }
 
-    private fun processNewEntryPointInfo(
-        lastApply: LastApplyUiModel,
-        entryPointInfo: PromoEntryPointInfo,
-        isAnimateWording: Boolean = false,
-        isLoading: Boolean = false
-    ) {
+    private fun processNewEntryPointInfo(model: CheckoutPromoModel) {
+        val lastApply = model.promo
+        val entryPointInfo = model.entryPointInfo
+
         val isUsingGlobalPromo = lastApply.codes.isNotEmpty()
         val isUsingBoPromo = lastApply.voucherOrders
             .any { it.code.isNotEmpty() && it.message.state != "red" }
         if (!isUsingGlobalPromo && !isUsingBoPromo) {
-            if (!isLoading) {
+            if (entryPointInfo != null && !model.isLoading) {
                 if (!entryPointInfo.isSuccess) {
                     if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED
                         || entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED
@@ -155,7 +152,7 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                 secondaryText = secondaryText,
                 isSecondaryTextEnabled = isSecondaryTextEnabled,
                 isExpanded = isExpanded,
-                animateWording = isAnimateWording,
+                animateWording = model.isAnimateWording,
                 onClickListener = {
                     listener.onClickPromoCheckout(lastApply)
                 }
