@@ -24,7 +24,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
@@ -299,22 +298,13 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun gotoPickLocation() {
         activity?.let {
-            if (PinpointRolloutHelper.eligibleForRevamp(it, false)) {
-                // go to pinpoint
-                val bundle = Bundle().apply {
-                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
-                }
-                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
-                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
-                    startActivityForResult(this, REQUEST_CODE_PINPOINT)
-                }
-            } else {
-                val intent = RouteManager.getIntent(
-                    activity,
-                    ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-                )
-                intent.putExtra(EXTRA_IS_FULL_FLOW, false)
-                startActivityForResult(intent, REQUEST_CODE_PINPOINT)
+            // go to pinpoint
+            val bundle = Bundle().apply {
+                putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+            }
+            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                startActivityForResult(this, REQUEST_CODE_PINPOINT)
             }
         }
     }
