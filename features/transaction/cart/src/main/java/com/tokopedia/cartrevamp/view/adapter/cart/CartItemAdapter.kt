@@ -13,7 +13,6 @@ class CartItemAdapter {
         fun onCartItemQuantityMinusButtonClicked()
         fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData)
         fun onCartItemQuantityInputFormClicked(qty: String)
-        fun onCartItemLabelInputRemarkClicked()
         fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData)
         fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData)
         fun onWishlistCheckChanged(cartItemHolderData: CartItemHolderData, wishlistIcon: IconUnify, animatedWishlistImage: ImageView, position: Int)
