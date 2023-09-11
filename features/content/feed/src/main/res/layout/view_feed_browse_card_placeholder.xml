@@ -8,20 +8,20 @@
     tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="132dp"
-        android:layout_height="234dp"
+        android:layout_width="120dp"
+        android:layout_height="213dp"
         android:layout_marginEnd="8dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="132dp"
-        android:layout_height="234dp"
+        android:layout_width="120dp"
+        android:layout_height="213dp"
         android:layout_marginEnd="8dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="132dp"
-        android:layout_height="234dp"
+        android:layout_width="120dp"
+        android:layout_height="213dp"
         app:loader_type="rect" />
 
 
