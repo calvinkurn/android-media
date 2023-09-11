@@ -103,7 +103,7 @@ class OfferLandingPageFragment :
         private const val FIRST_PAGE = 1
         private const val PAGE_SIZE = 10
         private const val PRODUCT_LIST_SPAN_COUNT = 2
-        private const val MINI_CART_REFRESH_DELAY = 1000L
+        private const val MINI_CART_REFRESH_DELAY = 800L
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
