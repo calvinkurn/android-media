@@ -1,0 +1,16 @@
+{
+    "readme": "Stories Open Screen",
+    "mode": "subset",
+    "query": [
+        {
+            "event": "openScreen",
+            "trackerId": "46042",
+            "businessUnit": "content",
+            "currentSite": "tokopediamarketplace",
+            "isLoggedInStatus": "(true|false)",
+            "screenName": ".*",
+            "sessionIris": ".*",
+            "userId": ".*"
+        }
+    ]
+}

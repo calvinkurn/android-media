@@ -3,16 +3,6 @@
     "mode": "exact",
     "query": [
         {
-            "event": "openScreen",
-            "trackerId": "46042",
-            "businessUnit": "content",
-            "currentSite": "tokopediamarketplace",
-            "isLoggedInStatus": "(true|false)",
-            "screenName": "/stories-room/{storyId}/{PartnerId}",
-            "sessionIris": ".*",
-            "userId": ".*"
-        },
-        {
             "event": "view_item",
             "eventAction": "view - story circle",
             "eventCategory": "stories room",

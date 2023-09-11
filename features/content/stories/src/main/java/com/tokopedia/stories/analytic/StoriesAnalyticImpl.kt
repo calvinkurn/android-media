@@ -11,6 +11,25 @@ class StoriesAnalyticImpl @Inject constructor(
     private val userId: String
         get() = userSession.userId.orEmpty()
 
+    private val isLogin: Boolean
+        get() = userSession.isLoggedIn
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
+    // Tracker ID: 46042
+    override fun sendImpressionStoriesContent(storiesId: String) {
+        Tracker.Builder()
+            .setEvent("openScreen")
+            .setCustomProperty("trackerId", "46042")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(currentSite)
+            .setCustomProperty("isLoggedInStatus", isLogin.toString())
+            .setCustomProperty("screenName", "/stories-room/$storiesId/$userId")
+            .setCustomProperty("sessionIris", sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46043
     override fun sendViewStoryCircleEvent(
