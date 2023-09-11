@@ -1,14 +1,14 @@
 package com.tokopedia.stories.creation.view.model.state
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 
 /**
  * Created By : Jonathan Darwin on September 06, 2023
  */
 data class StoriesCreationUiState(
     val mediaFilePath: String,
-    val storiesId: String,
-    val config: StoriesManualConfiguration,
+    val config: StoriesCreationConfiguration,
     val accountList: List<ContentAccountUiModel>,
     val selectedAccount: ContentAccountUiModel,
     val productTags: List<String>, /** TODO JOE: data class is not ready, will use proper data class later */
@@ -17,8 +17,7 @@ data class StoriesCreationUiState(
         val Empty: StoriesCreationUiState
             get() = StoriesCreationUiState(
                 mediaFilePath = "",
-                storiesId = "",
-                config = StoriesManualConfiguration.Empty,
+                config = StoriesCreationConfiguration.Empty,
                 accountList = listOf(
                     ContentAccountUiModel(
                         id = "123",
@@ -42,44 +41,6 @@ data class StoriesCreationUiState(
                     enable = true,
                 ),
                 productTags = emptyList(),
-            )
-    }
-}
-
-
-data class StoriesManualConfiguration(
-    val maxProductTag: Int,
-    val showDuration: String,
-    val maxStories: MaxStories,
-) {
-
-    data class MaxStories(
-        val isLimitReached: Boolean,
-        val imageUrl: String,
-        val title: String,
-        val description: String,
-        val primaryText: String,
-        val secondaryText: String,
-    ) {
-        companion object {
-            val Empty: MaxStories
-                get() = MaxStories(
-                    isLimitReached = false,
-                    imageUrl = "",
-                    title = "",
-                    description = "",
-                    primaryText = "",
-                    secondaryText = "",
-                )
-        }
-    }
-
-    companion object {
-        val Empty: StoriesManualConfiguration
-            get() = StoriesManualConfiguration(
-                maxProductTag = 0,
-                showDuration = "24 Jam", /** TODO JOE: for mocking purpose */
-                maxStories = MaxStories.Empty,
             )
     }
 }

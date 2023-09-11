@@ -108,11 +108,11 @@ class StoriesCreationActivity : BaseActivity() {
 
                                     /** TODO JOE: the content will be coming from BE */
                                     StoriesCreationInfoLayout(
-                                        imageUrl = uiState.config.maxStories.imageUrl,
-                                        title = uiState.config.maxStories.title,
-                                        subtitle = uiState.config.maxStories.description,
-                                        primaryText = uiState.config.maxStories.primaryText,
-                                        secondaryText = uiState.config.maxStories.secondaryText,
+                                        imageUrl = uiState.config.maxStoriesConfig.imageUrl,
+                                        title = uiState.config.maxStoriesConfig.title,
+                                        subtitle = uiState.config.maxStoriesConfig.description,
+                                        primaryText = uiState.config.maxStoriesConfig.primaryText,
+                                        secondaryText = uiState.config.maxStoriesConfig.secondaryText,
                                         onPrimaryButtonClicked = {
 
                                         },
