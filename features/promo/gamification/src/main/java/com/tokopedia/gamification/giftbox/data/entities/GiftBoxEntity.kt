@@ -52,7 +52,8 @@ data class ActionButton(
     @SerializedName("type") val type: String?,
     @SerializedName("url") val url: String,
     @SerializedName("applink") val applink: String?,
-    @SerializedName("backgroundColor") val backgroundColor: String
+    @SerializedName("backgroundColor") val backgroundColor: String,
+    @SerializedName("identifier") val identifier: String = ""
 )
 
 data class PrizeListItem(

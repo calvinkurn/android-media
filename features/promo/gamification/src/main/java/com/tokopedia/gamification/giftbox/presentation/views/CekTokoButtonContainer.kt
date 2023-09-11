@@ -46,6 +46,10 @@ class CekTokoButtonContainer @JvmOverloads constructor(
         }
     }
 
+    fun setSeruButton(url: String?) {
+        btnThird.setIcon(url)
+    }
+
     fun wrapButtons() {
         this.layoutParams.width = LayoutParams.WRAP_CONTENT
     }
