@@ -1,6 +1,7 @@
 package com.tokopedia.cartrevamp.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -42,47 +43,7 @@ import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
-import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
-import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
-import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
-import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
-import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
-import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
-import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartModel
-import com.tokopedia.cartrevamp.view.uimodel.CartMutableLiveData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cartrevamp.view.uimodel.CartState
-import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
-import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
-import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
-import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
-import com.tokopedia.cartrevamp.view.uimodel.FollowShopEvent
-import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
-import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
-import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
-import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
-import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
-import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
-import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
+import com.tokopedia.cartrevamp.view.uimodel.*
 import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -819,6 +780,7 @@ class CartViewModel @Inject constructor(
                 updateCartUseCase.setParams(updateCartRequestList)
                 updateCartUseCase.execute(
                     onSuccess = { updateCartV2Data ->
+                        Log.i("qwertyuiop", "update success")
                         onSuccessUpdateCartForCheckout(
                             updateCartV2Data,
                             cartItemDataList
@@ -936,6 +898,7 @@ class CartViewModel @Inject constructor(
         throwable: Throwable,
         cartItemDataList: List<CartItemHolderData>
     ) {
+        throwable.printStackTrace()
         _updateCartForCheckoutState.value = UpdateCartCheckoutState.Failed(throwable)
         CartLogger.logOnErrorUpdateCartForCheckout(throwable, cartItemDataList)
     }
