@@ -166,6 +166,10 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_DIMENSION_57] = if (!shopName.isNullOrBlank()) shopName else ""
     }
 
+    fun setDimension58(isFulfillment: Boolean) {
+        Product[KEY_DIMENSION_58] = isFulfillment.toString()
+    }
+
     fun setDimension59(shopType: String?) {
         Product[KEY_DIMENSION_59] = if (!shopType.isNullOrBlank()) shopType else ""
     }
@@ -235,6 +239,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_DIMENSION_52 = "dimension52"
         private const val KEY_DIMENSION_53 = "dimension53"
         private const val KEY_DIMENSION_57 = "dimension57"
+        private const val KEY_DIMENSION_58 = "dimension58"
         private const val KEY_DIMENSION_59 = "dimension59"
         private const val KEY_DIMENSION_77 = "dimension77"
         private const val KEY_DIMENSION_80 = "dimension80"

@@ -248,7 +248,11 @@ class CheckoutCalculator @Inject constructor(
             crossSellModel.orderSummary =
                 CrossSellOrderSummaryModel(upsellModel.upsell.summaryInfo, "")
             crossSellModel.price = upsellModel.upsell.price.toDouble()
-            upsellCost = CheckoutCrossSellModel(crossSellModel, true, true, -1)
+            upsellCost = CheckoutCrossSellModel(crossSellModel,
+                isChecked = true,
+                isEnabled = true,
+                index = -1
+            )
         }
         val listCheckedCrossModel = ArrayList<CheckoutCrossSellModel>()
         val crossSellGroup = listData.crossSellGroup() ?: CheckoutCrossSellGroupModel()

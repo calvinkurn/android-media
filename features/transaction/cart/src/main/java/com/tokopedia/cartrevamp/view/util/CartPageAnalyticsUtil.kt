@@ -47,6 +47,7 @@ object CartPageAnalyticsUtil {
             setDimension45(cartItemHolderData.cartId)
             setDimension54(cartItemHolderData.isFulfillment)
             setDimension53(cartItemHolderData.productOriginalPrice > 0)
+            setDimension58(cartItemHolderData.isFulfillment)
             setProductName(cartItemHolderData.productName)
             setProductID(cartItemHolderData.productId)
             setPrice(cartItemHolderData.productPrice.toString())
@@ -70,6 +71,8 @@ object CartPageAnalyticsUtil {
             setDimension83(cartItemHolderData.freeShippingName)
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
+            setDimension136(cartItemHolderData.cartStringOrder)
+            setDimension137(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId.toString())
             setCampaignId(cartItemHolderData.campaignId)
             if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {
                 val fulfillText =
@@ -84,5 +87,34 @@ object CartPageAnalyticsUtil {
             }
         }
         return enhancedECommerceProductCartMapData
+    }
+
+    fun generateRemoveCartFromSubtractButtonAnalytics(cartItemHolderData: CartItemHolderData): Map<String, Any> {
+        return mapOf<String, Any>(
+            ConstantTransactionAnalytics.Key.CATEGORY_ID to cartItemHolderData.categoryId,
+            ConstantTransactionAnalytics.Key.CATEGORY to cartItemHolderData.category,
+            ConstantTransactionAnalytics.Key.ITEM_ID to cartItemHolderData.productId,
+            ConstantTransactionAnalytics.Key.ITEM_NAME to cartItemHolderData.productName,
+            ConstantTransactionAnalytics.Key.ITEM_VARIANT to cartItemHolderData.variant,
+            ConstantTransactionAnalytics.Key.PRICE to cartItemHolderData.productPrice.toString(),
+            ConstantTransactionAnalytics.Key.QUANTITY to cartItemHolderData.quantity,
+            ConstantTransactionAnalytics.Key.SHOP_ID to cartItemHolderData.shopHolderData.shopId,
+            ConstantTransactionAnalytics.Key.SHOP_NAME to cartItemHolderData.shopHolderData.shopName,
+            ConstantTransactionAnalytics.Key.SHOP_TYPE to cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt
+        )
+    }
+
+    fun generateCartImpressionAnalytic(mutableSet: MutableSet<CartItemHolderData>): MutableList<Map<String, Any>> {
+        val list = mutableListOf<Map<String, Any>>()
+        mutableSet.forEach {
+            val productDataMap = mapOf(
+                ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
+                ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
+                ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
+            )
+            list.add(productDataMap)
+        }
+        return list
     }
 }

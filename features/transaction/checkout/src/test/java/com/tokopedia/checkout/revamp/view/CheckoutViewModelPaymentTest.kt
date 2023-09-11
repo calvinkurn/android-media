@@ -29,7 +29,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.IOException
 
-class CheckoutViewModelPaymentTest: BaseCheckoutViewModelTest() {
+class CheckoutViewModelPaymentTest : BaseCheckoutViewModelTest() {
 
     @Test
     fun `GIVEN disabled platform fee WHEN update cost THEN should not hit platform fee`() {

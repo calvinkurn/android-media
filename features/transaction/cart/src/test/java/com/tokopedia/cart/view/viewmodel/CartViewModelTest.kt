@@ -563,7 +563,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         val disabledCollapsedData = DisabledCollapsedHolderData(
             productUiModelList = mutableListOf(cartItemOne, cartItemTwo)
         )
-        val allUnavailableShop = mutableListOf(
+        val allUnavailableShop = mutableListOf<Any>(
             CartGroupHolderData(
                 productUiModelList = mutableListOf(
                     cartItemOne,
@@ -604,7 +604,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
     @Test
     fun `WHEN checkFormShipmentForm and selectedAmount greater than zero THEN checkout button should be enabled`() {
         // GIVEN
-        cartViewModel.selectedAmountState.value = 5
+        cartViewModel.selectedAmountState.value = Pair(0, 1)
 
         // WHEN
         cartViewModel.checkForShipmentForm()
@@ -618,7 +618,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
     @Test
     fun `WHEN checkFormShipmentForm and selectedAmount less or equal than zero THEN checkout button should be disabled`() {
         // GIVEN
-        cartViewModel.selectedAmountState.value = 0
+        cartViewModel.selectedAmountState.value = Pair(0, 0)
 
         // WHEN
         cartViewModel.checkForShipmentForm()
@@ -927,7 +927,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
     @Test
     fun `WHEN addItems to cartDataList THEN cartDataList need to be updated`() {
         // GIVEN
-        val currentList = arrayListOf(CartGroupHolderData(), CartItemHolderData())
+        val currentList = arrayListOf<Any>(CartGroupHolderData(), CartItemHolderData())
         val currentSize = currentList.size
         cartViewModel.cartDataList.value = currentList
         val toBeInsertedList = listOf(
@@ -949,7 +949,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
     @Test
     fun `WHEN addItems with index to cartDataList THEN cartDataList need to be updated`() {
         // GIVEN
-        val currentList = arrayListOf(
+        val currentList = arrayListOf<Any>(
             CartGroupHolderData(
                 cartString = "1"
             ),
@@ -1971,7 +1971,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
             )
         )
 
-        val newCartDataList = arrayListOf(
+        val newCartDataList = arrayListOf<Any>(
             cartGroupHolderData,
             cartItemHolderData,
             cartItemHolderDataTwo
@@ -2087,7 +2087,8 @@ class CartViewModelTest : BaseCartViewModelTest() {
         cartViewModel.setItemSelected(1, cartItemHolderData, true)
 
         // THEN
-        val newCartShopBottomHolderData = cartViewModel.cartDataList.value[2] as CartShopBottomHolderData
+        val newCartShopBottomHolderData =
+            cartViewModel.cartDataList.value[2] as CartShopBottomHolderData
         assertTrue(cartItemHolderData.isSelected)
         assertTrue(cartGroupHolderData.isAllSelected)
         assertFalse(cartGroupHolderData.isPartialSelected)
@@ -2096,7 +2097,6 @@ class CartViewModelTest : BaseCartViewModelTest() {
             newCartShopBottomHolderData.shopData
         )
     }
-
 
     @Test
     fun `WHEN setItemSelected true to one item in multiple item shop THEN partial checked should true`() {
@@ -2198,7 +2198,54 @@ class CartViewModelTest : BaseCartViewModelTest() {
         assertFalse(cartGroupHolderData.isAllSelected)
         assertTrue(cartGroupHolderData.isPartialSelected)
     }
+    // endregion
 
+    // region addAvailableCartItemImpression
+    @Test
+    fun `WHEN updateCartGroupFirstItemStatus THEN should update first group and reset other group isFirstItem data`() {
+        // GIVEN
+        val cartGroupHolderData = CartGroupHolderData(
+            isFirstItem = false
+        )
+        val cartGroupHolderDataTwo = CartGroupHolderData(
+            isFirstItem = true
+        )
+        cartViewModel.cartDataList.value = arrayListOf(
+            cartGroupHolderData,
+            cartGroupHolderDataTwo
+        )
+
+        // WHEN
+        cartViewModel.updateCartGroupFirstItemStatus(cartViewModel.cartDataList.value)
+
+        // THEN
+        assertTrue(cartGroupHolderData.isFirstItem)
+        assertFalse(cartGroupHolderDataTwo.isFirstItem)
+    }
+    // endregion
+
+    // region addAvailableCartItemImpression
+    @Test
+    fun `WHEN addAvailableCartItemImpression THEN should add cart item to cart impression list`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123")
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124")
+        val cartItemHolderDataThree = CartItemHolderData(cartId = "124", isError = true)
+        val cartImpressionSet = mutableSetOf(cartItemHolderData)
+
+        cartViewModel.cartModel.availableCartItemImpressionList = cartImpressionSet
+
+        // WHEN
+        cartViewModel.addAvailableCartItemImpression(
+            listOf(
+                cartItemHolderDataTwo,
+                cartItemHolderDataThree
+            )
+        )
+
+        // THEN
+        assertEquals(2, cartViewModel.cartModel.availableCartItemImpressionList.size)
+    }
     // endregion
 
     override fun tearDown() {

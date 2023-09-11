@@ -17,16 +17,16 @@ data class CheckoutCrossSellModel(
     var isChecked: Boolean = false,
     var isEnabled: Boolean = true,
     var index: Int = -1
-): CheckoutCrossSellItem
+) : CheckoutCrossSellItem
 
 data class CheckoutEgoldModel(
     val egoldAttributeModel: EgoldAttributeModel,
     val isChecked: Boolean = false,
     val buyEgoldValue: Long = 0
-): CheckoutCrossSellItem
+) : CheckoutCrossSellItem
 
 data class CheckoutDonationModel(
     var donation: Donation = Donation(),
     var isChecked: Boolean = false,
     var isEnabled: Boolean = true
-): CheckoutCrossSellItem
+) : CheckoutCrossSellItem

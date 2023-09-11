@@ -353,11 +353,11 @@ class CheckoutProcessor @Inject constructor(
             isTradeIn && isTradeInDropOff,
             if (isTradeIn) deviceId else "",
             0,
-            true,
-            true,
-            false,
-            (fingerprintPublicKey != null).toString(),
-            fingerprintPublicKey ?: ""
+            isThankyouNativeNew = true,
+            isThankyouNative = true,
+            isExpress = false,
+            fingerprintSupport = (fingerprintPublicKey != null).toString(),
+            fingerprintPublickey = fingerprintPublicKey ?: ""
         )
     }
 
