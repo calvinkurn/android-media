@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.text.Spannable
@@ -99,6 +100,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         get() = viewBinding?.backgroundColorShopHeader
     private val textShopName: Typography?
         get() = viewBinding?.textShopName
+    private val chevronIcon: IconUnify?
+        get() = viewBinding?.shopPageChevronShopInfo
     private val imageShopLogo: ImageUnify?
         get() = viewBinding?.imageShopLogo
     private val imageShopBadge: ImageUnify?
@@ -111,7 +114,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         get() = viewBinding?.imageShopRatingIcon
     private val textRatingDescription: Typography?
         get() = viewBinding?.textRatingDescription
-    private val performanceSectionDotSeparator: View?
+    private val performanceSectionDotSeparator: Typography?
         get() = viewBinding?.dotSeparatorShopPerformance
     private val textDynamicUspPerformance: Typography?
         get() = viewBinding?.textDynamicUspPerformance
@@ -121,7 +124,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         get() = viewBinding?.sectionShopStatus
     private val imageOnlineIcon: ImageView?
         get() = viewBinding?.ivOnlineIcon
-    private val shopStatusSectionDotSeparator: View?
+    private val shopStatusSectionDotSeparator: Typography?
         get() = viewBinding?.dotSeparatorShopStatus
     private val imageShopStaticUsp: ImageUnify?
         get() = viewBinding?.imageShopStaticUsp
@@ -355,10 +358,11 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             }
         }
         if(isOverrideTheme){
-            val textColor = shopHeaderConfig?.colorSchema?.getColorSchema(
+            val textColor = shopHeaderConfig?.colorSchema?.getColorIntValue(
                 ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
-            )?.value.orEmpty()
-            textShopOnlineDescription?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
+            ).orZero()
+            textShopOnlineDescription?.setTextColor(textColor)
+            shopStatusSectionDotSeparator?.setTextColor(textColor)
         }
     }
 
@@ -399,11 +403,12 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         }
         configDynamicUsp(listWidgetShopData)
         if(isOverrideTheme) {
-            val textColor = shopHeaderConfig?.colorSchema?.getColorSchema(
+            val textColor = shopHeaderConfig?.colorSchema?.getColorIntValue(
                 ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
-            )?.value.orEmpty()
-            textRatingDescription?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
-            textDynamicUspPerformance?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
+            ).orZero()
+            textRatingDescription?.setTextColor(textColor)
+            textDynamicUspPerformance?.setTextColor(textColor)
+            performanceSectionDotSeparator?.setTextColor(textColor)
         }
     }
 
@@ -448,10 +453,11 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             listenerHeader?.onClickShopBasicInfoSection(appLink)
         }
         if(isOverrideTheme){
-            val textColor = shopHeaderConfig?.colorSchema?.getColorSchema(
+            val highEmphasisColor = shopHeaderConfig?.colorSchema?.getColorIntValue(
                 ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
-            )?.value.orEmpty()
-            textShopName?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
+            ).orZero()
+            textShopName?.setTextColor(highEmphasisColor)
+            chevronIcon?.setColorFilter(highEmphasisColor, PorterDuff.Mode.SRC_ATOP)
         }
     }
 

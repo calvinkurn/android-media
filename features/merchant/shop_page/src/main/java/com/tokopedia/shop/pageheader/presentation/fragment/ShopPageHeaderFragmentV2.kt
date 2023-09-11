@@ -2614,9 +2614,9 @@ class ShopPageHeaderFragmentV2 :
         val isOverrideTextColor = headerLayoutData?.isOverrideTheme.orFalse()
         return if (isOverrideTextColor) {
             if(getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
-                R.color.dms_static_Unify_NN950_light
-            } else {
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            } else {
+                R.color.dms_static_Unify_NN950_light
             }
         } else {
             super.onChangeTextColor()
