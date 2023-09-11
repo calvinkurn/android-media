@@ -65,6 +65,7 @@ class UniversalInboxGetInboxMenuAndWidgetMetaUseCase @Inject constructor(
                     graphqlQuery(),
                     params
                 )
+                menuFlow.emit(Result.Success(result))
                 updateCache(result)
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
