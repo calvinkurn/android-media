@@ -104,8 +104,8 @@ object CartPageAnalyticsUtil {
         )
     }
 
-    fun generateCartImpressionAnalytic(mutableSet: MutableSet<CartItemHolderData>): MutableList<Map<String, Any>> {
-        val list = mutableListOf<Map<String, Any>>()
+    fun generateCartImpressionAnalytic(mutableSet: MutableSet<CartItemHolderData>): List<Map<String, Any>> {
+        val data = arrayListOf<Map<String, Any>>()
         mutableSet.forEach {
             val productDataMap = mapOf(
                 ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
@@ -113,8 +113,8 @@ object CartPageAnalyticsUtil {
                 ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
                 ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
             )
-            list.add(productDataMap)
+            data.add(productDataMap)
         }
-        return list
+        return data
     }
 }

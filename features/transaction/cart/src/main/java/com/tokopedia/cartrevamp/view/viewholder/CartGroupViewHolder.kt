@@ -280,7 +280,7 @@ class CartGroupViewHolder(
                     ConstraintSet.START,
                     R.id.image_shop_badge,
                     ConstraintSet.END,
-                    4
+                    GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
                 )
             } else {
                 if (cartGroupHolderData.isError) {

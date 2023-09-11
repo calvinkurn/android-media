@@ -1,5 +1,6 @@
 package com.tokopedia.cartrevamp.view.viewholder
 
+import android.view.ViewGroup.LayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartShopBottomRevampBinding
@@ -13,15 +14,12 @@ class CartShopBottomViewHolder(
     private val actionListener: ActionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    // variable to hold identifier
-    private var cartString: String = ""
-
     fun bindData(cartShopBottomHolderData: CartShopBottomHolderData) {
         renderAccordion(cartShopBottomHolderData)
-        cartString = cartShopBottomHolderData.shopData.cartString
     }
 
     private fun renderAccordion(cartShopBottomHolderData: CartShopBottomHolderData) {
+        val layoutParams = binding.llShopContainer.layoutParams
         if (!cartShopBottomHolderData.shopData.isError && cartShopBottomHolderData.shopData.isCollapsible) {
             val showMoreWording = itemView.context.getString(R.string.cart_new_default_wording_show_more)
             val showLessWording = itemView.context.getString(R.string.cart_new_default_wording_show_less)
@@ -33,7 +31,7 @@ class CartShopBottomViewHolder(
                 binding.textAccordion.text = showLessWording
             }
 
-            binding.layoutAccordion.setOnClickListener {
+            binding.llShopContainer.setOnClickListener {
                 val position = absoluteAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     if (cartShopBottomHolderData.shopData.isCollapsed) {
@@ -44,9 +42,13 @@ class CartShopBottomViewHolder(
                 }
             }
 
-            binding.layoutAccordion.show()
+            layoutParams.height = LayoutParams.WRAP_CONTENT
+            binding.llShopContainer.layoutParams = layoutParams
+            binding.llShopContainer.show()
         } else {
-            binding.layoutAccordion.gone()
+            layoutParams.height = 0
+            binding.llShopContainer.layoutParams = layoutParams
+            binding.llShopContainer.gone()
         }
     }
 
