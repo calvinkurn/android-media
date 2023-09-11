@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
@@ -17,8 +17,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.FragmentCatalogProductListBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
-import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapter
 import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapterFactoryImpl
+import com.tokopedia.catalog.ui.adapter.ProductListAdapterListener
+import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
+import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapter
 import com.tokopedia.catalog.ui.adapter.EmptyStateFilterListener
 import com.tokopedia.catalog.ui.model.CatalogProductListEmptyModel
 import com.tokopedia.catalog.ui.viewmodel.CatalogProductListViewModel
@@ -36,15 +38,17 @@ import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.imageassets.TokopediaImageUrl.ILLUSTRATION_EMPTY_CATALOG_PRODUCT_LIST
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.oldcatalog.model.util.CatalogConstant
 import com.tokopedia.oldcatalog.model.util.CatalogSearchApiConst
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -58,9 +62,9 @@ import javax.inject.Inject
 
 class CatalogProductListFragment :
     BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
-
     ChooseAddressWidget.ChooseAddressWidgetListener,
-    QuickFilterListener, SortFilterBottomSheet.Callback, EmptyStateFilterListener {
+    QuickFilterListener, SortFilterBottomSheet.Callback, ProductListAdapterListener, 
+    EmptyStateFilterListener {
 
     @Inject
     lateinit var viewModel: CatalogProductListViewModel
@@ -89,7 +93,7 @@ class CatalogProductListFragment :
         arguments?.getString(ARG_EXTRA_PRODUCT_SORTING_STATUS).orEmpty()
     }
 
-    private val emptyModelFilter: CatalogProductListEmptyModel by lazy{
+    private val emptyModelFilter: CatalogProductListEmptyModel by lazy {
         CatalogProductListEmptyModel(isFromFilter = true).apply {
             description = getString(R.string.text_empty_state_desc)
             title = getString(R.string.text_empty_state_title)
@@ -139,11 +143,12 @@ class CatalogProductListFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupObserver()
+        setupObserver(view)
         initToolbar()
         initChooseAddressWidget()
         initSearchQuickSortFilter()
         loadInitialData()
+        viewModel.refreshNotification()
         super.onViewCreated(view, savedInstanceState)
         binding?.errorPage?.run {
             setActionClickListener {
@@ -151,7 +156,6 @@ class CatalogProductListFragment :
             }
         }
     }
-
 
     private fun initToolbar() {
         binding?.apply {
@@ -183,6 +187,7 @@ class CatalogProductListFragment :
         viewModel.fetchQuickFilters(getQuickFilterParams())
         viewModel.fetchDynamicAttribute(getDynamicFilterParams())
     }
+    
     override fun loadData(page: Int) {
         val nextPage = page-1
         if (page == defaultInitialPage){
@@ -201,7 +206,7 @@ class CatalogProductListFragment :
     }
 
     override fun getAdapterTypeFactory(): CatalogProductListAdapterFactoryImpl {
-        return CatalogProductListAdapterFactoryImpl(this)
+        return CatalogProductListAdapterFactoryImpl(this, this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -230,7 +235,7 @@ class CatalogProductListFragment :
         }
     }
 
-    private fun setupObserver() {
+    private fun setupObserver(view: View) {
         viewModel.productList.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
@@ -245,13 +250,12 @@ class CatalogProductListFragment :
             }
         }
 
-        viewModel.quickFilterClicked.observe(
-            viewLifecycleOwner
-        ) {
+        viewModel.quickFilterClicked.observe(viewLifecycleOwner) {
             viewModel.quickFilterModel.value?.let {
                 processQuickFilter(it.data)
             }
         }
+
         viewModel.quickFilterResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
@@ -266,6 +270,7 @@ class CatalogProductListFragment :
                 }
             }
         }
+
         viewModel.dynamicFilterModel.observe(viewLifecycleOwner) {
             it?.let { dm ->
                 setDynamicFilter(dm)
@@ -277,11 +282,23 @@ class CatalogProductListFragment :
                 is Success -> {
                     viewModel.dynamicFilterModel.value = it.data
                 }
-
                 is Fail -> {
                 }
             }
         }
+
+        viewModel.errorsToaster.observe(viewLifecycleOwner) {
+            Toaster.build(view, it.message.orEmpty(), type = Toaster.TYPE_ERROR).show()
+        }
+
+        viewModel.textToaster.observe(viewLifecycleOwner) {
+            Toaster.build(view, it).show()
+        }
+
+        viewModel.totalCartItem.observe(viewLifecycleOwner) {
+            binding?.toolbar?.cartCount = it
+        }
+
         viewModel.selectedSortIndicatorCount.observe(viewLifecycleOwner) {
             binding?.searchProductQuickSortFilter?.indicatorCounter = it
         }
@@ -412,6 +429,10 @@ class CatalogProductListFragment :
             refreshFilterControllers(HashMap(queryParams))
         }
         loadData(defaultInitialPage)
+    }
+
+    override fun onAtcButtonClicked(atcModel: CatalogProductAtcUiModel) {
+        addToCart(atcModel)
     }
 
     private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {
@@ -573,24 +594,28 @@ class CatalogProductListFragment :
 
     override fun getSwipeRefreshLayout(view: View?) = binding?.swipeRefreshLayout
 
-//    private fun showErrorToast(
-//        message: String = getString(com.tokopedia.catalog.R.string.text_message__fail),
-//        actionLabel: String = getString(com.tokopedia.abstraction.R.string.close),
-//        duration: Int = Snackbar.LENGTH_LONG,
-//        listener: () -> Unit = {}
-//    ) {
-//        view?.let {
-//            val onClickActionLabel = View.OnClickListener { listener.invoke() }
-//            Toaster.build(
-//                it,
-//                message,
-//                duration,
-//                Toaster.TYPE_ERROR,
-//                actionLabel,
-//                onClickActionLabel
-//            ).show()
-//        }
-//    }
+    private fun addToCart(atcModel: CatalogProductAtcUiModel) {
+        if (atcModel.isVariant) {
+            openVariantBottomSheet(atcModel)
+        } else {
+            viewModel.addProductToCart(atcModel)
+        }
+    }
+
+    private fun openVariantBottomSheet(atcModel: CatalogProductAtcUiModel) {
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                it,
+                atcModel.productId,
+                VariantPageSource.CATALOG_PAGESOURCE,
+                shopId = atcModel.shopId,
+                dismissAfterTransaction = true,
+                startActivitResult = { intent, reqCode ->
+                    startActivityForResult(intent, reqCode)
+                }
+            )
+        }
+    }
 
     private fun showErrorPage() {
         binding?.errorPage?.show()
@@ -651,6 +676,5 @@ class CatalogProductListFragment :
     override fun callInitialLoadAutomatically(): Boolean {
         return false
     }
-
 
 }

@@ -36,5 +36,3 @@ class EmptyStateViewHolder(itemView: View, val listener: EmptyStateFilterListene
 interface EmptyStateFilterListener{
     fun resetFilter()
 }
-
-

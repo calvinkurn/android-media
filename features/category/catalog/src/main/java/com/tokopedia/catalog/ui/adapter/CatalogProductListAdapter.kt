@@ -4,9 +4,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 
-/**
- * Adapter using diff util
- */
 class CatalogProductListAdapter(
     baseListAdapterTypeFactory: CatalogProductListAdapterFactoryImpl
 ) : BaseListAdapter<Visitable<*>, CatalogProductListAdapterFactoryImpl>(

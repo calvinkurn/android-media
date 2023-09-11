@@ -2,6 +2,7 @@ package com.tokopedia.catalog.ui.mapper
 
 import com.tokopedia.catalog.domain.model.CatalogProductItem
 import com.tokopedia.catalog.domain.model.ProductLabelGroup
+import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.common_category.model.productModel.BadgesItem
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -35,6 +36,16 @@ class ProductListMapper {
                 shopName = item?.shop?.name.orEmpty(),
                 shopImageUrl = item?.shop?.url.orEmpty(),
                 hasAddToCartButton = true,
+            )
+        }
+
+        fun mapperToCatalogProductAtcUiModel(item: CatalogProductItem): CatalogProductAtcUiModel {
+            return CatalogProductAtcUiModel(
+                productId = item.id,
+                shopId = item.shop.id,
+                quantity = item.minOrder,
+                isVariant = item.childs.isNotEmpty(),
+                warehouseId = item.warehouseIdDefault,
             )
         }
 

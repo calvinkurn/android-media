@@ -71,6 +71,7 @@ class GetProductListFromSearchUseCase @Inject constructor(repository: GraphqlRep
                                 source_engine
                                 minOrder
                                 url
+                                childs
                                 labelGroups {
                                     title
                                     position

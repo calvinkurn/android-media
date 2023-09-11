@@ -93,6 +93,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
             viewModel.getProductCatalog(catalogId, "", "", "android")
+            viewModel.refreshNotification()
         }
         binding?.globalerrorsAction?.setOnClickListener {
             val catalogProductList =
@@ -118,6 +119,11 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         // no-op
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshNotification()
+    }
+
     private fun setupObservers() {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
@@ -131,6 +137,9 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                     it.data.priceCtaProperties.bgColor
                 )
             }
+        }
+        viewModel.totalCartItem.observe(viewLifecycleOwner) {
+            binding?.toolbar?.cartCount = it
         }
     }
 
