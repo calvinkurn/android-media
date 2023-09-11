@@ -72,6 +72,9 @@
 
     <!-- Common Dimen -->
     <dimen name="feed_space_1">1dp</dimen>
+    <dimen name="feed_space_2">2dp</dimen>
+    <dimen name="feed_space_8">8dp</dimen>
+    <dimen name="feed_space_12">12dp</dimen>
     <dimen name="feed_space_16">16dp</dimen>
     <dimen name="feed_space_24">24dp</dimen>
 

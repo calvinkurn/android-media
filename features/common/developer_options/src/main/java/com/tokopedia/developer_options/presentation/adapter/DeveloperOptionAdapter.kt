@@ -88,6 +88,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING = "Play - Web Socket and SSE Logging"
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
         const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
+        const val KEYWORD_BANNER_ENVIRONMENT = "Switch banner environment"
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
         const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
@@ -95,6 +96,9 @@ class DeveloperOptionAdapter(
         const val KEYWORD_DEV_OPTS_AUTHORIZE = "Authorize"
         const val KEYWORD_DEPRECATED_API_SWITCHER_TOASTER = "Depcreated API Switcher Toaster"
         const val KEYWORD_EXTRACT_BRANCH_LINK = "Extract Branchlink"
+        const val FPI_MONITORING = "FPI Monitoring"
+        const val KEYWORD_GET_USER_ID = "Get User Id"
+        const val KEYWORD_GET_SHOP_ID = "Get Shop Id"
     }
 
     /**
@@ -117,6 +121,7 @@ class DeveloperOptionAdapter(
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
         TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
+        BannerEnvironmentUiModel(listOf(KEYWORD_BANNER_ENVIRONMENT)),
         ForceDarkModeUiModel(listOf(KEYWORD_FORCE_DARK_MODE)),
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         TranslatorUiModel(
@@ -211,7 +216,10 @@ class DeveloperOptionAdapter(
                 KEYWORD_VIEW_SSE_LOGGING
             )
         ),
-        TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING))
+        TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING)),
+        FpiMonitoringUiModel(listOf(FPI_MONITORING)),
+        UserIdUiModel(listOf(KEYWORD_GET_USER_ID)),
+        ShopIdUiModel(listOf(KEYWORD_GET_SHOP_ID))
     )
 
     /**

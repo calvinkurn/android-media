@@ -1,29 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="info_shipping_unavailable">Pengiriman Tidak Tersedia</string>
-    <string name="choose_this_location">Pilih lokasi ini</string>
-    <string name="error_field_required">Harus diisi</string>
-    <string name="hint_choose_city">Pilih kota/kecamatan</string>
-    <string name="title_edit">Ubah</string>
-    <string name="title_close">Tutup</string>
     <string name="submit_but">Simpan</string>
-    <string name="choose_location">Pilih Lokasi</string>
-    <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
-    <string name="shop_shipping_additional_option">Opsi Tambahan</string>
-    <string name="prompt_phone">Nomor Ponsel</string>
-    <string name="title_delivery_location">Lokasi Pickup</string>
-    <string name="title_activity_shop_address_form">Alamat Toko</string>
-    <string name="title_shop_location">Lokasi Toko</string>
-    <string name="title_city">Kota</string>
-    <string name="title_post_code">Kode Pos</string>
     <string name="shop_shipping_setting">Pengaturan Pengiriman</string>
-    <string name="title_select_shop_location">Pilih Lokasi Toko</string>
-    <string name="dialog_on_process">Sedang diproses</string>
-    <string name="title_action_save_shipping">Simpan Pengiriman</string>
-    <string name="error_shipping_must_choose">Agen kurir harus dipilih</string>
-    <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
-    <string name="btn_send">Kirim</string>
     <string name="title_verification_timeout">Maaf, Telah terjadi masalah koneksi</string>
     <string name="error_shipping_dialog_webview">Terdapat kesalahan dalam pengisian form mohon coba sekali lagi</string>
 
@@ -41,7 +20,6 @@
     <string name="detail_alamat">Detail Alamat</string>
     <string name="detail_alamat_error_helper">Tulis alamat sesuai peta dan tambahkan detail (kompleks/blok/nomor). Lokasi peta: %1$s</string>
     <string name="helper_shop_detail">Min. 20 Karakter. Harap tulis alamatmu lebih lengkap.</string>
-    <string name="save_edit_shop_success">Detail lokasi telah diubah</string>
     <string name="txt_error_no_access">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
     <string name="title_save_dialog">Kurir pilihanmu tidak tersedia di lokasi baru ini</string>
     <string name="desc_save_dialog">Aktifkan kurir lainnya lewat Atur Pengiriman agar lokasi tokomu yang baru dapat melakukan pengiriman.</string>
@@ -82,6 +60,7 @@
     <string name="antar_ke_gerai">Antar ke Gerai</string>
     <string name="antar_ke_gerai_desc">Bawa pesanan ke gerai terdekat dan minta resi dari petugas</string>
     <string name="detail_fitur">Detail Fitur</string>
+    <string name="success_save_shipping">Anda telah sukses memperbaharui informasi pengiriman</string>
 
     <!--Custom Product Logistic-->
     <string name="title_activity_cpl">Pengiriman Per Produk</string>

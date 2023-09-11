@@ -170,7 +170,12 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun viewProductsList(componentsItems: ComponentsItem, isLogin: Boolean) {
+    override fun viewProductsList(
+        componentsItems: ComponentsItem,
+        isLogin: Boolean,
+        isFulFillment: Boolean,
+        warehouseId: Long
+    ) {
         if (!componentsItems.data.isNullOrEmpty()) {
             componentsItems.data?.firstOrNull()?.let {
                 if(getProductName(it.typeProductCard) ==  PRODUCT_CARD_CAROUSEL) {
@@ -367,7 +372,12 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         }
     }
 
-    override fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {
+    override fun trackProductCardClick(
+        componentsItems: ComponentsItem,
+        isLogin: Boolean,
+        isFulFillment: Boolean,
+        warehouseId: Long
+    ) {
         if (componentsItems.parentComponentName == ComponentNames.CLPFeaturedProducts.componentName) {
             trackFeaturedProductCardClick(componentsItems)
             return

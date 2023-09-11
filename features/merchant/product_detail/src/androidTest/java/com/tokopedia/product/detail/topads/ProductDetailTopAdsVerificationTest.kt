@@ -108,7 +108,7 @@ class ProductDetailTopAdsVerificationTest {
 
     private fun RecyclerView.ViewHolder.getChildRecyclerView(): RecyclerView? {
         return itemView
-            .findViewById(R.id.carouselProductCardRecyclerView) ?: itemView
-            .findViewById(R.id.rv_recommendation_vertical)
+            .findViewById(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView) ?: itemView
+            .findViewById(com.tokopedia.recommendation_widget_common.R.id.rv_recommendation_vertical)
     }
 }

@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
@@ -35,21 +36,31 @@ import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
+import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.feedplus.presentation.model.CreateContentType
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedTabModel
+import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -57,9 +68,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -75,9 +85,18 @@ class FeedBaseFragment :
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
+    @Inject lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+    private val feedMainViewModel: FeedMainViewModel by viewModels {
+        FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
+    }
+
+    private val activeTabSource: ActiveTabSource
+        get() {
+            return ActiveTabSource(
+                tabName = arguments?.getString(ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME),
+                index = 0
+            )
+        }
 
     @Inject
     lateinit var uploadReceiverFactory: FeedMultipleSourceUploadReceiver.Factory
@@ -94,7 +113,15 @@ class FeedBaseFragment :
     private var mCoachMarkJob: Job? = null
 
     private val toasterBottomMargin by lazy {
-        resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
+        requireContext().resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
+    }
+
+    private val tabExtraTopOffset24 by lazy {
+        requireContext().resources.getDimensionPixelOffset(R.dimen.feed_space_24)
+    }
+
+    private val tabExtraTopOffset16 by lazy {
+        requireContext().resources.getDimensionPixelOffset(R.dimen.feed_space_16)
     }
 
     private val adapter by lazy {
@@ -126,48 +153,38 @@ class FeedBaseFragment :
             )
         }
 
-    private var appLinkTabPosition: Int
-        get() = arguments?.getString(
-            ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION
-        )?.toIntOrZero() ?: TAB_FIRST_INDEX
-        set(value) {
-            val arguments = getOrCreateArguments()
-            arguments.putString(
-                ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
-                value.toString()
-            )
-        }
-
     private val openCreateShorts =
         registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
             if (!isCreatingNewShorts) return@registerForActivityResult
-            appLinkTabPosition = TAB_SECOND_INDEX
+            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
         }
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
 
-    private val onNonLoginGoToFollowingTab =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (userSession.isLoggedIn) {
-                showNormalToaster(
-                    text = getString(
-                        R.string.feed_report_login_success_toaster_text,
-                        userSession.name
-                    ),
-                    duration = Toaster.LENGTH_LONG
-                )
-
-                feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
-            } else {
-                feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOR_YOU)
-            }
+    private val swipeFollowingLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        // this doesn't work, bcs the viewmodel doen't survive
+        if (userSession.isLoggedIn) {
+            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
         }
+    }
+    private val openBrowseLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        // this also doesn't work, if the previous `browseAppLink` is empty :(
+        if (userSession.isLoggedIn) {
+            val metaModel = feedMainViewModel.metaData.value
+            RouteManager.route(requireContext(), metaModel.browseApplink)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
                 is FeedContentCreationTypeBottomSheet -> {
                     fragment.setListener(this)
+                    fragment.setDataSource(
+                        FeedContentCreationTypeBottomSheet.DataSource(
+                            feedMainViewModel.metaData.value.entryPoints
+                        )
+                    )
                 }
             }
         }
@@ -198,14 +215,19 @@ class FeedBaseFragment :
         feedMainViewModel.fetchFeedTabs()
 
         setupView()
+        setupInsets()
 
         observeFeedTabData()
-        observeCreateContentBottomSheetData()
-        observeCurrentTabPosition()
 
         observeEvent()
 
         observeUpload()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.containerFeedTopNav.vMenuCenter.requestApplyInsetsWhenAttached()
+        binding.loaderFeedTopNav.root.requestApplyInsetsWhenAttached()
     }
 
     override fun onDestroyView() {
@@ -233,13 +255,13 @@ class FeedBaseFragment :
 
     override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
         when (creationTypeItem.type) {
-            CreateContentType.CREATE_LIVE -> {
-                feedNavigationAnalytics.eventClickCreateLive(feedMainViewModel.getCurrentTabType())
+            CreateContentType.Live -> {
+                feedNavigationAnalytics.eventClickCreateLive()
 
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
-            CreateContentType.CREATE_POST -> {
-                feedNavigationAnalytics.eventClickCreatePost(feedMainViewModel.getCurrentTabType())
+            CreateContentType.Post -> {
+                feedNavigationAnalytics.eventClickCreatePost()
 
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2).apply {
                     putExtra(
@@ -256,7 +278,7 @@ class FeedBaseFragment :
                     )
                     putExtra(
                         BundleData.TITLE,
-                        getString(contentCommonR.string.feed_post_sebagai)
+                        getString(contentcommonR.string.feed_post_sebagai)
                     )
                     putExtra(
                         BundleData.APPLINK_FOR_GALLERY_PROCEED,
@@ -267,8 +289,8 @@ class FeedBaseFragment :
                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
             }
 
-            CreateContentType.CREATE_SHORT_VIDEO -> {
-                feedNavigationAnalytics.eventClickCreateVideo(feedMainViewModel.getCurrentTabType())
+            CreateContentType.ShortVideo -> {
+                feedNavigationAnalytics.eventClickCreateVideo()
 
                 openCreateShorts.launch()
             }
@@ -276,7 +298,6 @@ class FeedBaseFragment :
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     fun showSwipeOnboarding() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
@@ -286,13 +307,6 @@ class FeedBaseFragment :
 
     private fun setupView() {
         binding.vpFeedTabItemsContainer.adapter = adapter
-
-        if (isJustLoggedIn) {
-            showJustLoggedInToaster()
-            feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
-        }
-        isJustLoggedIn = false
-
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
                 OnPageChangeCallback() {
@@ -304,13 +318,15 @@ class FeedBaseFragment :
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
-                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                        onNonLoginGoToFollowingTab.launch(
-                            RouteManager.getIntent(
-                                context,
-                                ApplinkConst.LOGIN
+                    handleTabTransition(position)
+                    if (!userSession.isLoggedIn &&
+                        activeTabSource.tabName == null // not coming from appLink
+                    ) {
+                        if (position == TAB_SECOND_INDEX) {
+                            swipeFollowingLoginResult.launch(
+                                RouteManager.getIntent(context, ApplinkConst.LOGIN)
                             )
-                        )
+                        }
                     }
 
                     if (shouldSendSwipeTracker) {
@@ -324,8 +340,7 @@ class FeedBaseFragment :
                 }
 
                 override fun onPageSelected(position: Int) {
-                    feedMainViewModel.changeCurrentTabByIndex(position)
-                    appLinkTabPosition = position
+                    selectActiveTab(position)
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
@@ -338,6 +353,27 @@ class FeedBaseFragment :
         )
     }
 
+    private fun setupInsets() {
+        binding.containerFeedTopNav.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
+
+            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
+
+            getAllMotionScene().forEach {
+                it.setMargin(binding.containerFeedTopNav.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin)
+            }
+        }
+
+        binding.loaderFeedTopNav.root.doOnApplyWindowInsets { v, insets, _, margin ->
+
+            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset16).coerceAtLeast(margin.top)
+
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            marginLayoutParams.updateMargins(top = topInsetsMargin)
+
+            v.parent.requestLayout()
+        }
+    }
+
     private fun checkResume(): Boolean {
         return userVisibleHint && lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
     }
@@ -348,7 +384,7 @@ class FeedBaseFragment :
         feedMainViewModel.resumePage()
 
         val meta = feedMainViewModel.metaData.value
-        if (meta is Success) showOnboarding(meta.data)
+        showOnboarding(meta)
 
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
@@ -369,56 +405,34 @@ class FeedBaseFragment :
 
     private fun observeFeedTabData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                feedMainViewModel.feedTabs.collectLatest {
-                    when (it) {
-                        is Success -> initTabsView(it.data)
-                        is Fail -> Toast.makeText(
-                            requireContext(),
-                            it.throwable.localizedMessage,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        else -> {}
+            feedMainViewModel.feedTabs
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { state ->
+                    if (state == null) return@collectLatest
+                    when (state) {
+                        NetworkResult.Loading -> {
+                            hideErrorView()
+                            showLoading()
+                        }
+                        is NetworkResult.Success -> {
+                            hideErrorView()
+                            hideLoading()
+                            initTabsView(state.data)
+                        }
+                        is NetworkResult.Error -> {
+                            showErrorView(state.error)
+                        }
+                        NetworkResult.Unknown -> {
+                            // ignore
+                        }
                     }
                 }
-            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                feedMainViewModel.metaData.collectLatest {
-                    when (it) {
-                        is Success -> initMetaView(it.data)
-                        is Fail -> Toast.makeText(
-                            requireContext(),
-                            it.throwable.localizedMessage,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        else -> {}
-                    }
-                }
-            }
-        }
-    }
-
-    private fun observeCreateContentBottomSheetData() {
-        feedMainViewModel.feedCreateContentBottomSheetData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                }
-                is Fail -> Toast.makeText(
-                    requireContext(),
-                    it.throwable.localizedMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-
-    private fun observeCurrentTabPosition() {
-        feedMainViewModel.currentTabIndex.observe(viewLifecycleOwner) {
-            binding.vpFeedTabItemsContainer.setCurrentItem(it, true)
-            onChangeTab(it)
+            feedMainViewModel.metaData
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { initMetaView(it) }
         }
     }
 
@@ -434,6 +448,9 @@ class FeedBaseFragment :
                         }
                         FeedMainEvent.ShowSwipeOnboarding -> {
                             showSwipeOnboarding()
+                        }
+                        is FeedMainEvent.SelectTab -> {
+                            handleActiveTab(event.data, event.position)
                         }
                         else -> {}
                     }
@@ -521,27 +538,38 @@ class FeedBaseFragment :
     private fun initMetaView(meta: MetaModel) {
         showOnboarding(meta)
 
-        if (meta.showMyProfile) {
-            if (meta.profilePhotoUrl.isNotEmpty()) {
-                binding.feedUserProfileImage.setImageUrl(meta.profilePhotoUrl)
+        binding.containerFeedTopNav.feedUserProfileImage.show()
+        if (userSession.isLoggedIn) {
+            if (meta.showMyProfile && meta.profilePhotoUrl.isNotEmpty()) {
+                binding.containerFeedTopNav.feedUserProfileImage.setImageUrl(meta.profilePhotoUrl)
+            } else {
+                binding.containerFeedTopNav.feedUserProfileImage.hide()
             }
-            binding.feedUserProfileImage.show()
-        } else {
-            binding.feedUserProfileImage.hide()
         }
 
-        binding.btnFeedCreatePost.setOnClickListener {
-            feedNavigationAnalytics.eventClickCreationButton(feedMainViewModel.getCurrentTabType())
+        binding.containerFeedTopNav.btnFeedCreatePost.setOnClickListener {
+            feedNavigationAnalytics.eventClickCreationButton()
             onCreatePostClicked()
         }
 
-        binding.btnFeedLive.setOnClickListener {
-            feedNavigationAnalytics.eventClickLiveButton(feedMainViewModel.getCurrentTabType())
+        binding.containerFeedTopNav.btnFeedLive.setOnClickListener {
+            feedNavigationAnalytics.eventClickLiveButton()
             openAppLink.launch(meta.liveApplink)
         }
 
-        binding.feedUserProfileImage.setOnClickListener {
-            feedNavigationAnalytics.eventClickProfileButton(feedMainViewModel.getCurrentTabType())
+        binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
+            feedNavigationAnalytics.sendClickBrowseIconEvent()
+            if (!userSession.isLoggedIn) {
+                openBrowseLoginResult.launch(
+                    RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+                )
+            } else {
+                openAppLink.launch(meta.browseApplink)
+            }
+        }
+
+        binding.containerFeedTopNav.feedUserProfileImage.setOnClickListener {
+            feedNavigationAnalytics.eventClickProfileButton()
             if (feedMainViewModel.isLoggedIn) {
                 openAppLink.launch(meta.profileApplink)
             } else {
@@ -549,22 +577,14 @@ class FeedBaseFragment :
             }
         }
 
-        if (meta.isCreationActive && userSession.isLoggedIn) {
-            binding.btnFeedCreatePost.show()
-        } else {
-            binding.btnFeedCreatePost.hide()
-        }
-
-        if (meta.showLive) {
-            binding.btnFeedLive.show()
-            binding.labelFeedLive.show()
-        } else {
-            binding.btnFeedLive.hide()
-            binding.labelFeedLive.hide()
-        }
+        binding.containerFeedTopNav.btnFeedCreatePost.showWithCondition(meta.isCreationActive && userSession.isLoggedIn)
+        binding.containerFeedTopNav.btnFeedLive.showWithCondition(meta.showLive)
+        binding.containerFeedTopNav.labelFeedLive.showWithCondition(meta.showLive)
+        binding.containerFeedTopNav.btnFeedBrowse.showWithCondition(meta.showBrowse)
     }
 
-    private fun initTabsView(data: List<FeedDataModel>) {
+    private fun initTabsView(tab: FeedTabModel) {
+        val data = tab.data
         adapter.setTabsList(data)
 
         var firstTabData: FeedDataModel? = null
@@ -578,28 +598,50 @@ class FeedBaseFragment :
         }
 
         if (firstTabData != null) {
-            binding.tyFeedFirstTab.text = firstTabData.title
-            binding.tyFeedFirstTab.setOnClickListener {
+            binding.containerFeedTopNav.tyFeedFirstTab.text = firstTabData.title
+            binding.containerFeedTopNav.tyFeedFirstTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickForYouTab()
-                feedMainViewModel.changeCurrentTabByIndex(TAB_FIRST_INDEX)
+                selectActiveTab(TAB_FIRST_INDEX)
             }
-            binding.tyFeedFirstTab.show()
+            binding.containerFeedTopNav.tyFeedFirstTab.show()
         } else {
-            binding.tyFeedFirstTab.hide()
+            binding.containerFeedTopNav.tyFeedFirstTab.hide()
         }
 
         if (secondTabData != null) {
-            binding.tyFeedSecondTab.text = secondTabData.title
-            binding.tyFeedSecondTab.setOnClickListener {
+            binding.containerFeedTopNav.tyFeedSecondTab.text = secondTabData.title
+            binding.containerFeedTopNav.tyFeedSecondTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickFollowingTab()
-                feedMainViewModel.changeCurrentTabByIndex(TAB_SECOND_INDEX)
+                selectActiveTab(TAB_SECOND_INDEX)
             }
-            binding.tyFeedSecondTab.show()
+            binding.containerFeedTopNav.tyFeedSecondTab.show()
         } else {
-            binding.tyFeedSecondTab.hide()
+            binding.containerFeedTopNav.tyFeedSecondTab.hide()
         }
 
-        scrollToDefaultTabPosition()
+        if (isJustLoggedIn && userSession.isLoggedIn) {
+            showJustLoggedInToaster()
+        } else {
+            setupActiveTab(tab)
+        }
+        isJustLoggedIn = false
+    }
+
+    private fun setupActiveTab(tab: FeedTabModel) {
+        val source = tab.activeTabSource
+        when {
+            source.tabName != null -> {
+                feedMainViewModel.setActiveTab(source.tabName)
+            }
+            source.index > -1 && source.index < tab.data.size -> {
+                selectActiveTab(source.index)
+            }
+            else -> selectActiveTab(0)
+        }
+    }
+
+    private fun selectActiveTab(position: Int) {
+        feedMainViewModel.setActiveTab(position)
     }
 
     private fun showOnboarding(meta: MetaModel) {
@@ -614,14 +656,21 @@ class FeedBaseFragment :
                         !feedMainViewModel.hasShownCreateContent() &&
                         feedMainViewModel.isShortEntryPointShowed
                     ) {
-                        binding.btnFeedCreatePost
+                        binding.containerFeedTopNav.btnFeedCreatePost
                     } else {
                         null
                     }
                 )
                 .setProfileEntryPointView(
                     if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
-                        binding.feedUserProfileImage
+                        binding.containerFeedTopNav.feedUserProfileImage
+                    } else {
+                        null
+                    }
+                )
+                .setBrowseIconView(
+                    if (meta.showBrowse && userSession.isLoggedIn && !feedMainViewModel.hasShownBrowseEntryPoint()) {
+                        binding.containerFeedTopNav.btnFeedBrowse
                     } else {
                         null
                     }
@@ -638,6 +687,10 @@ class FeedBaseFragment :
                         feedMainViewModel.setHasShownProfileEntryPoint()
                     }
 
+                    override fun onCompleteBrowseEntryPointOnboarding() {
+                        feedMainViewModel.setHasShownBrowseEntryPoint()
+                    }
+
                     override fun onFinished(isForcedDismiss: Boolean) {
                         if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
                     }
@@ -647,33 +700,10 @@ class FeedBaseFragment :
         }
     }
 
-    private fun scrollToDefaultTabPosition() {
-        feedMainViewModel.changeCurrentTabByIndex(appLinkTabPosition)
-    }
-
-    private fun onChangeTab(position: Int) {
-        if (position == TAB_FIRST_INDEX) {
-            binding.root.transitionToStart()
-        } else {
-            binding.root.transitionToEnd()
-        }
-    }
-
     private fun onCreatePostClicked() {
-        activity?.let {
-            val creationBottomSheet = FeedContentCreationTypeBottomSheet
-                .getFragment(childFragmentManager, it.classLoader)
-
-            val feedCreateBottomSheetDataResult =
-                feedMainViewModel.feedCreateContentBottomSheetData.value
-            if (feedCreateBottomSheetDataResult is Success) {
-                val list = feedCreateBottomSheetDataResult.data
-                if (list.isNotEmpty()) {
-                    creationBottomSheet.setData(feedCreateBottomSheetDataResult.data)
-                    creationBottomSheet.show(childFragmentManager)
-                }
-            }
-        }
+        FeedContentCreationTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     private fun showJustLoggedInToaster() {
@@ -717,12 +747,66 @@ class FeedBaseFragment :
         FeedAnalytics.ENTRY_POINT_SHARE_LINK
     }
 
+    /**
+     * to select tab position,
+     * please use:
+     * - selectActiveTab(position); or
+     * - viewModel.setActiveTab(position);
+     * - viewModel.setActiveTab(type);
+     */
+    private fun handleActiveTab(dataModel: FeedDataModel, position: Int) {
+        // keep active tab updated whenever sending tracker
+        feedNavigationAnalytics.setActiveTab(dataModel)
+        binding.vpFeedTabItemsContainer.setCurrentItem(position, true)
+    }
+
+    private fun handleTabTransition(position: Int) {
+        if (position == TAB_FIRST_INDEX) {
+            binding.containerFeedTopNav.root.transitionToStart()
+        } else {
+            binding.containerFeedTopNav.root.transitionToEnd()
+        }
+    }
+
+    private fun showLoading() {
+        binding.containerFeedTopNav.root.invisible()
+        binding.loaderFeedTopNav.root.show()
+    }
+
+    private fun hideLoading() {
+        binding.containerFeedTopNav.root.visible()
+        binding.loaderFeedTopNav.root.hide()
+    }
+
+    private fun showErrorView(error: Throwable) {
+        binding.feedError.visible()
+        binding.feedError.setIcon(IconUnify.RELOAD)
+        binding.feedError.setTitle(getString(R.string.feed_failed_to_load_content))
+        binding.feedError.setDescription("")
+        binding.feedError.setButton(getString(R.string.feed_label_error_fetch_button)) {
+            feedMainViewModel.fetchFeedTabs()
+            feedMainViewModel.fetchFeedMetaData()
+        }
+    }
+
+    private fun hideErrorView() {
+        binding.feedError.hide()
+    }
+
+    private fun getAllMotionScene(): List<ConstraintSet> {
+        return listOf(
+            binding.containerFeedTopNav.root.getConstraintSet(R.id.start),
+            binding.containerFeedTopNav.root.getConstraintSet(R.id.end)
+        )
+    }
+
     companion object {
         const val TAB_FIRST_INDEX = 0
         const val TAB_SECOND_INDEX = 1
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
+        const val TAB_TYPE_CDP = "cdp"
 
         private const val EXTRAS_UTM_MEDIUM = "utm_medium"
         private const val PARAM_PUSH_NOTIFICATION = "push"

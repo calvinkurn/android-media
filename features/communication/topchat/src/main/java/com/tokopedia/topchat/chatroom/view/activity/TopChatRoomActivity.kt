@@ -540,7 +540,7 @@ open class TopChatRoomActivity :
             setDisplayShowHomeEnabled(true)
             setHomeButtonEnabled(true)
 
-            val upArrow = MethodChecker.getDrawable(applicationContext, com.tokopedia.chat_common.R.drawable.ic_action_back)
+            val upArrow = MethodChecker.getDrawable(applicationContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
             if (upArrow != null) {
                 upArrow.setColorFilter(
                     MethodChecker.getColor(this@TopChatRoomActivity, com.tokopedia.unifyprinciples.R.color.Unify_NN600),

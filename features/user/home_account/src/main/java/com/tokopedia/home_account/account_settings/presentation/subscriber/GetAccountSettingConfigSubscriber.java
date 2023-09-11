@@ -43,8 +43,9 @@ public class GetAccountSettingConfigSubscriber extends BaseAccountSubscriber<Gra
         if (accountSettingConfig != null) {
             view.onSuccessGetConfig(accountSettingConfig);
         } else {
-            view.showError(String.format("%s (%s)", context.getString(R.string
-                    .default_request_error_unknown), ERROR_CODE_NULL_MENU));
+            view.showError(String.format("%s (%s)",
+                    context.getString(com.tokopedia.sessioncommon.R.string.default_request_error_unknown),
+                    ERROR_CODE_NULL_MENU));
         }
 
     }

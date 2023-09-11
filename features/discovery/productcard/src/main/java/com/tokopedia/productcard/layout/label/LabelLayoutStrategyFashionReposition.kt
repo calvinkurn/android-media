@@ -3,28 +3,17 @@ package com.tokopedia.productcard.layout.label
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.utils.COLOR_LIMIT_REPOSITION
-import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE_REPOSITION
-import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT_REPOSITION
-import com.tokopedia.productcard.utils.LABEL_VARIANT_TAG
-import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
-import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.applyConstraintSet
-import com.tokopedia.productcard.utils.createColorSampleDrawable
-import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderLabelOverlay
-import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 internal class LabelLayoutStrategyFashionReposition: LabelLayoutStrategy {
@@ -102,63 +91,16 @@ internal class LabelLayoutStrategyFashionReposition: LabelLayoutStrategy {
         productCardModel: ProductCardModel,
     ): Int = 0
 
-    override fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel) {
-        val contentLayout = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
-
-        contentLayout?.applyConstraintSet {
-            it.clear(R.id.labelDiscount, ConstraintSet.START)
-            it.clear(R.id.labelDiscount, ConstraintSet.TOP)
-
-            if (productCardModel.discountPercentage.isNotEmpty()) {
-                it.connect(
-                    R.id.labelDiscount,
-                    ConstraintSet.START,
-                    R.id.textViewPrice,
-                    ConstraintSet.END,
-                )
-
-                it.connect(
-                    R.id.labelDiscount,
-                    ConstraintSet.TOP,
-                    R.id.textViewPrice,
-                    ConstraintSet.TOP,
-                )
-            } else {
-                it.connect(
-                    R.id.labelDiscount,
-                    ConstraintSet.START,
-                    ConstraintSet.PARENT_ID,
-                    ConstraintSet.START,
-                )
-
-                it.connect(
-                    R.id.labelDiscount,
-                    ConstraintSet.TOP,
-                    R.id.textViewPrice,
-                    ConstraintSet.BOTTOM,
-                )
-            }
-        }
-    }
-
-    override fun setDiscountMargin(label: Label) {
-        val margin = 0
-        val marginLeft = label.context.resources.getDimensionPixelSize(
-            R.dimen.product_card_label_discount_margin_left_fashion
-        )
-        label.setMargin(marginLeft, margin, margin, margin)
-    }
-
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
-        val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
         val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
 
-        labelPrice?.initLabelGroup(null)
-
-        if (productCardModel.isShowDiscountOrSlashPrice())
-            labelPriceReposition?.initLabelGroup(null)
-        else
+        if (productCardModel.isShowLabelPrice())
             labelPriceReposition?.initLabelGroup(productCardModel.getLabelPrice())
+        else
+            labelPriceReposition?.initLabelGroup(null)
+
+        val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
+        labelPrice?.initLabelGroup(null)
     }
 
 
@@ -257,5 +199,12 @@ internal class LabelLayoutStrategyFashionReposition: LabelLayoutStrategy {
         productCardModel: ProductCardModel
     ) {
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+    }
+
+    override fun renderSpaceCampaignBestSeller(space: Space?, productCardModel: ProductCardModel) {
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
+        space?.showWithCondition(isShowCampaignOrBestSeller)
     }
 }

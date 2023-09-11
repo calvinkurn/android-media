@@ -42,11 +42,14 @@ interface MainNavListener : HomeNavListener {
 
     fun onErrorReviewClicked()
 
-    fun onOrderCardClicked(applink: String, trackingLabel: String? = null)
+    fun onOrderCardClicked(
+        applink: String,
+        trackingLabel: String? = null,
+        orderId: String,
+        position: Int,
+    )
 
     fun onOrderCardImpressed(trackingLabel: String, orderId: String, position: Int)
 
-    fun onViewAllWishlistClicked()
-
-    fun onViewAllReviewClicked()
+    fun onViewAllCardClicked(sectionId: Int, applink: String)
 }

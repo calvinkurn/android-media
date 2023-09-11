@@ -2,31 +2,18 @@ package com.tokopedia.productcard.layout.label
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE
-import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
-import com.tokopedia.productcard.utils.LABEL_VARIANT_TAG
-import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
-import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.applyConstraintSet
-import com.tokopedia.productcard.utils.createColorSampleDrawable
-import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderLabelOverlay
-import com.tokopedia.productcard.utils.shouldShowWithAction
-import com.tokopedia.productcard.utils.toUnifyLabelType
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
@@ -84,8 +71,7 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
-            context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height) +
-                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_margintop)
+            context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height)
         else 0
     }
 
@@ -96,7 +82,7 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
-            context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
+            0
         else context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
     }
 
@@ -137,57 +123,17 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         else 0
     }
 
-    override fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel) {
-        val constraintLayout = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
-
-        constraintLayout?.applyConstraintSet {
-            it.clear(R.id.labelDiscount, ConstraintSet.START)
-            it.clear(R.id.labelDiscount, ConstraintSet.TOP)
-
-            it.connect(
-                R.id.labelDiscount,
-                ConstraintSet.START,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.START,
-            )
-
-            it.connect(
-                R.id.labelDiscount,
-                ConstraintSet.TOP,
-                R.id.textViewPrice,
-                ConstraintSet.BOTTOM,
-            )
-
-            it.connect(
-                R.id.textViewSlashedPrice,
-                ConstraintSet.TOP,
-                R.id.labelDiscount,
-                ConstraintSet.TOP,
-                0.toPx()
-            )
-            it.setGoneMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 0.toPx())
-            it.setMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 4.toPx())
-        }
-    }
-
-    override fun setDiscountMargin(label: Label) {
-        val margin = 0
-        label.setMargin(margin, margin, margin, margin)
-    }
-
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
-        val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
-        view.moveLabelPriceConstraint(productCardModel)
 
-        if (productCardModel.isShowDiscountOrSlashPrice())
-            labelPrice?.initLabelGroup(null)
-        else
+        if (productCardModel.isShowLabelPrice())
             labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+        else
+            labelPrice?.initLabelGroup(null)
 
+        val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
         labelPriceReposition?.initLabelGroup(null)
     }
-
 
     override fun configContentPosition(view: View) {
         val contentLayout = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
@@ -252,15 +198,6 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         }
     }
 
-    private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
-        val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
-        val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
-
-        view?.applyConstraintSet {
-            it.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 2.toPx())
-        }
-    }
-
     override fun renderCampaignLabel(
         labelCampaignBackground: ImageView?,
         labelCampaign: Typography?,
@@ -294,5 +231,12 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         productCardModel: ProductCardModel
     ) {
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+    }
+
+    override fun renderSpaceCampaignBestSeller(space: Space?, productCardModel: ProductCardModel) {
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
+        space?.showWithCondition(isShowCampaignOrBestSeller)
     }
 }

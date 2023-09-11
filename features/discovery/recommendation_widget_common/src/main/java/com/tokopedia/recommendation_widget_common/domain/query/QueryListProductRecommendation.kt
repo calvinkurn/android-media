@@ -38,6 +38,7 @@ object QueryListProductRecommendation {
         "                            apps\n" +
         "                          }\n" +
         "                        }\n" +
+        "                        endDate\n" +
         "                      }\n" +
         "                      recommendation {\n" +
         "                        id\n" +
@@ -64,6 +65,7 @@ object QueryListProductRecommendation {
         "                          isGold\n" +
         "                          isOfficial\n" +
         "                        }\n" +
+        "                        warehouseID\n" +
         "                        departmentId\n" +
         "                        labels {\n" +
         "                          title\n" +

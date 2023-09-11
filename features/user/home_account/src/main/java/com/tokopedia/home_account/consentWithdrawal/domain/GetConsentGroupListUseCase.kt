@@ -30,6 +30,7 @@ class GetConsentGroupListUseCase @Inject constructor(
               groupImg
               priority
             }
+            ticker
           }
         }
     """.trimIndent()

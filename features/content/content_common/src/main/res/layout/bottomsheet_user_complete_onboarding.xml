@@ -36,7 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             app:layout_constraintTop_toBottomOf="@id/tv_description"
-            app:unify_text_field_append_drawable_icon_1="@drawable/ic_feed_check_green"
             app:unify_text_field_clearable="true"
             app:unify_text_field_counter="20"
             app:unify_text_field_label="@string/ugc_complete_onboarding_username"

@@ -3,11 +3,10 @@ package com.tokopedia.feedplus.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.data.FeedXHomeEntity
-import com.tokopedia.feedplus.domain.mapper.MapperFeedXHome
-import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import javax.inject.Inject
 
 /**
@@ -15,17 +14,17 @@ import javax.inject.Inject
  */
 class FeedXHomeUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
-    private val uiMapper: MapperFeedXHome,
+    private val addressHelper: ChosenAddressRequestHelper,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, Any>, FeedModel>(dispatcher.io) {
+) : CoroutineUseCase<Map<String, Any>, FeedXHomeEntity>(dispatcher.io) {
 
-    override suspend fun execute(params: Map<String, Any>): FeedModel {
+    override suspend fun execute(params: Map<String, Any>): FeedXHomeEntity {
         val response =
             graphqlRepository.request<Map<String, Any>, FeedXHomeEntity.Response>(
                 graphqlQuery(),
                 params
             )
-        return uiMapper.transform(response.feedXHome)
+        return response.feedXHome
     }
 
     override fun graphqlQuery(): String = """
@@ -111,6 +110,7 @@ class FeedXHomeUseCase @Inject constructor(
               editable
               deletable
               reportable
+              hasVoucher
               detailScore {
                 label
                 value
@@ -183,6 +183,7 @@ class FeedXHomeUseCase @Inject constructor(
               editable
               deletable
               reportable
+              hasVoucher
               detailScore {
                 label
                 value
@@ -274,6 +275,7 @@ class FeedXHomeUseCase @Inject constructor(
               }
               hasVoucher
               cta {
+                subtitle
                 texts
                 color
                 colorGradient {
@@ -325,7 +327,7 @@ class FeedXHomeUseCase @Inject constructor(
             fragment FeedXCardPlaceholder on FeedXCardPlaceholder {
               id
               type
-              mods
+              title
             }
             
             fragment FeedXAuthor on FeedXAuthor {
@@ -371,19 +373,22 @@ class FeedXHomeUseCase @Inject constructor(
               shopID
               shopName
               mods
+              isStockAvailable
             }
     """.trimIndent()
 
     fun createParams(
         source: String,
-        cursor: String,
+        cursor: String = "",
         limit: Int = 0,
         detailId: String = ""
     ): Map<String, Any> {
+        val whId = addressHelper.getChosenAddress().tokonow.warehouseId
         val params = mutableMapOf(
             PARAMS_SOURCE to source,
             PARAMS_CURSOR to cursor,
-            PARAMS_LIMIT to limit
+            PARAMS_LIMIT to limit,
+            PARAMS_WH_ID to whId
         )
         if (detailId.isNotEmpty()) {
             params[PARAMS_SOURCE_ID] = detailId
@@ -412,8 +417,10 @@ class FeedXHomeUseCase @Inject constructor(
         private const val PARAMS_SOURCE_ID = "sourceID"
         private const val PARAMS_CURSOR = "cursor"
         private const val PARAMS_LIMIT = "limit"
+        private const val PARAMS_WH_ID = "warehouseID"
 
         private const val SOURCE_DETAIL = "detail-immersive"
+        const val SOURCE_BROWSE = "browse"
 
         private const val LIMIT_DETAIL = 50 // limit products
     }
