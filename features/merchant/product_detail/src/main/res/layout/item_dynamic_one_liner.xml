@@ -53,9 +53,9 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@id/dynamic_one_liner_title"
+            app:layout_constraintTop_toBottomOf="@id/dynamic_one_liner_separator_top"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/dynamic_one_liner_title"
+            app:layout_constraintBottom_toTopOf="@id/dynamic_one_liner_separator_bottom"
             tools:src="@drawable/ic_power_merchant" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -64,7 +64,7 @@
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
             app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/dynamic_one_liner_separator_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/dynamic_one_liner_title"
             app:layout_constraintTop_toBottomOf="@id/dynamic_one_liner_separator_top" />
@@ -78,12 +78,12 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_NN950"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/dynamic_one_liner_separator_bottom"
             app:layout_constraintEnd_toStartOf="@id/dynamic_one_liner_icon_right"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toEndOf="@id/dynamic_one_liner_icon_left"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dynamic_one_liner_separator_top"
             app:layout_constraintWidth_default="wrap"
             app:layout_goneMarginEnd="16dp"
             app:layout_goneMarginStart="16dp"
