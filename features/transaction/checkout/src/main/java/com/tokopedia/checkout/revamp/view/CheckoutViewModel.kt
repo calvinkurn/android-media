@@ -58,6 +58,7 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -739,7 +740,7 @@ class CheckoutViewModel @Inject constructor(
                 listData.value = currentListData.map { model ->
                     if (model is CheckoutPromoModel) {
                         return@map checkoutModel.copy(
-                            entryPointInfo = null,
+                            entryPointInfo = PromoEntryPointInfo(),
                             isLoading = true
                         )
                     } else {
@@ -1605,7 +1606,7 @@ class CheckoutViewModel @Inject constructor(
                 ordersItem.validationMetadata = order.validationMetadata
             }
         }
-        val newItems = promoProcessor.validateUseLogisticPromo(
+        var newItems = promoProcessor.validateUseLogisticPromo(
             validateUsePromoRequest,
             order.cartStringGroup,
             newCourierItemData.selectedShipper.logPromoCode!!,
@@ -1628,9 +1629,7 @@ class CheckoutViewModel @Inject constructor(
                 newOrder.validationMetadata = ""
             }
         }
-        // todo: logic hit coupon list recom
-        // todo: logic auto expand
-        // todo: logic animate wording?
+        newItems = fetchEntryPointInfo(newItems, listData.value)
         listData.value = newItems
         cartProcessor.processSaveShipmentState(
             listData.value,
