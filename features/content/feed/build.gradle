@@ -131,6 +131,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.dynamicAnimation
 
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.features.createpostCommon)
