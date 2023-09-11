@@ -61,7 +61,6 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
 
     fun bind(
         titleNow2H: CharSequence?,
-        descriptionNow2H: String?,
         labelNow2H: CharSequence?,
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?,
         listener: ShippingScheduleWidgetListener
@@ -69,7 +68,6 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
         mListener = listener
         val scheduleUiModel = createWidget(
             titleNow2H = titleNow2H,
-            descriptionNow2H = descriptionNow2H,
             labelNow2H = labelNow2H,
             scheduleDeliveryUiModel = scheduleDeliveryUiModel
         )
@@ -106,7 +104,6 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
 
     private fun createWidget(
         titleNow2H: CharSequence?,
-        descriptionNow2H: String?,
         labelNow2H: CharSequence?,
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?
     ): List<ShippingScheduleWidgetModel> {
@@ -119,7 +116,6 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
         shippingScheduleWidgets.add(
             create2HWidget(
                 titleNow2H = titleNow2H,
-                descriptionNow2H = descriptionNow2H,
                 labelNow2H = labelNow2H,
                 scheduleDeliveryUiModel = scheduleDeliveryUiModel
             )
@@ -130,7 +126,6 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
 
     private fun create2HWidget(
         titleNow2H: CharSequence?,
-        descriptionNow2H: String?,
         labelNow2H: CharSequence?,
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?
     ): ShippingScheduleWidgetModel {
@@ -144,7 +139,6 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
         return ShippingScheduleWidgetModel(
             isEnable = true,
             title = titleNow2H,
-            description = descriptionNow2H,
             label = labelNow2H,
             isSelected = scheduleDeliveryUiModel?.isSelected != true,
             onSelectedWidgetListener = { onClick() },

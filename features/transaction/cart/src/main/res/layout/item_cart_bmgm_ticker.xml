@@ -41,7 +41,7 @@
         app:layout_constraintEnd_toStartOf="@id/iu_ticker_right_icon"
         tools:text="Ongkirmu Rp10.000 Rp30.000 karena Bebas Ongkir!" />
 
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iu_ticker_right_icon"
         android:layout_width="20dp"
         android:layout_height="20dp"

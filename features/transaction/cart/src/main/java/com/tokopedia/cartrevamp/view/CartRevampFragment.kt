@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.CompoundButton
 import android.widget.ImageView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
@@ -289,6 +290,25 @@ class CartRevampFragment :
     private var wishlistIcon: IconUnify? = null
     private var animatedWishlistImage: ImageView? = null
 
+    private var editBundleActivityResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        onResultFromEditBundle(result.resultCode, result.data)
+    }
+    private var shipmentActivityResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        onResultFromShipmentPage(result.resultCode, result.data)
+    }
+    private var pdpActivityResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        onResultFromPdp()
+    }
+    private var promoActivityResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        onResultFromPromoPage(result.resultCode, result.data)
+    }
+    private var activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        refreshCartWithSwipeToRefresh()
+    }
+    private var addonResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        onResultFromAddOnBottomSheet(result.resultCode, result.data)
+    }
+
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
@@ -326,6 +346,7 @@ class CartRevampFragment :
         private const val BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX = 4
 
         private const val TOKONOW_UPDATER_DEBOUNCE = 500L
+        private const val TOKONOW_SEE_OTHERS_OR_ALL_LIMIT = 10
         private const val BMGM_TICKER_RELOAD_ACTION = "RELOAD"
 
         @JvmStatic
@@ -549,9 +570,6 @@ class CartRevampFragment :
         when (cartGroupHolderData.cartShopGroupTicker.action) {
             CartShopGroupTickerData.ACTION_REDIRECT_PAGE -> {
                 if (cartGroupHolderData.cartShopGroupTicker.applink.isNotBlank()) {
-                    val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                        refreshCartWithSwipeToRefresh()
-                    }
                     val intent = RouteManager.getIntent(
                         requireContext(),
                         cartGroupHolderData.cartShopGroupTicker.applink
@@ -912,12 +930,11 @@ class CartRevampFragment :
             index
         )
         if (cartShopBottomHolderData != null) {
-            // TODO: reinsert analytics
-//            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
-//                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
-//            } else {
-//                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
-//            }
+            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
+                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
+            } else {
+                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
+            }
             cartShopBottomHolderData.shopData.isCollapsed = false
             viewModel.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
             onNeedToInsertMultipleViewItem(
@@ -1127,10 +1144,6 @@ class CartRevampFragment :
         cartPageAnalytics.eventClickAtcCartClickInputQuantity(qty)
     }
 
-    override fun onCartItemLabelInputRemarkClicked() {
-        // todo : fix analytics
-    }
-
     override fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData) {
         val selected = !cartItemHolderData.isSelected
         viewModel.setItemSelected(position, cartItemHolderData, selected)
@@ -1328,9 +1341,6 @@ class CartRevampFragment :
 
     override fun onEditBundleClicked(cartItemHolderData: CartItemHolderData) {
         activity?.let {
-            val editBundleActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                onResultFromEditBundle(result.resultCode, result.data)
-            }
             cartPageAnalytics.eventClickUbahInProductBundlingPackageProductCard(
                 cartItemHolderData.bundleId,
                 cartItemHolderData.bundleType
@@ -1431,9 +1441,6 @@ class CartRevampFragment :
         )
 
         activity?.let {
-            val addonResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                onResultFromAddOnBottomSheet(result.resultCode, result.data)
-            }
             val intent = RouteManager.getIntent(it, applink)
             addonResultLauncher.launch(intent)
         }
@@ -2709,28 +2716,26 @@ class CartRevampFragment :
 
     private fun observeUpdateCartEvent() {
         viewModel.updateCartForCheckoutState.observe(viewLifecycleOwner) { data ->
-            data?.let {
-                when (data) {
-                    is UpdateCartCheckoutState.Success -> {
-                        renderToShipmentFormSuccess(
-                            data.eeCheckoutData,
-                            data.checkoutProductEligibleForCashOnDelivery,
-                            data.condition
-                        )
-                    }
+            when (data) {
+                is UpdateCartCheckoutState.Success -> {
+                    renderToShipmentFormSuccess(
+                        data.eeCheckoutData,
+                        data.checkoutProductEligibleForCashOnDelivery,
+                        data.condition
+                    )
+                }
 
-                    is UpdateCartCheckoutState.ErrorOutOfService -> {
-                        renderErrorToShipmentForm(data.outOfService)
-                    }
+                is UpdateCartCheckoutState.ErrorOutOfService -> {
+                    renderErrorToShipmentForm(data.outOfService)
+                }
 
-                    is UpdateCartCheckoutState.UnknownError -> {
-                        renderErrorToShipmentForm(data.message, data.ctaText)
-                    }
+                is UpdateCartCheckoutState.UnknownError -> {
+                    renderErrorToShipmentForm(data.message, data.ctaText)
+                }
 
-                    is UpdateCartCheckoutState.Failed -> {
-                        hideProgressLoading()
-                        renderErrorToShipmentForm(data.throwable)
-                    }
+                is UpdateCartCheckoutState.Failed -> {
+                    hideProgressLoading()
+                    renderErrorToShipmentForm(data.throwable)
                 }
             }
         }
@@ -3865,9 +3870,6 @@ class CartRevampFragment :
 
     private fun routeToCheckoutPage() {
         activity?.let {
-            val shipmentActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                onResultFromShipmentPage(result.resultCode, result.data)
-            }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
             intent.putExtra(
                 CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE,
@@ -3887,9 +3889,6 @@ class CartRevampFragment :
 
     private fun routeToProductDetailPage(productId: String) {
         activity?.let {
-            val pdpActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                onResultFromPdp()
-            }
             val intent = RouteManager.getIntent(
                 it,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -3901,9 +3900,6 @@ class CartRevampFragment :
 
     private fun routeToPromoCheckoutMarketplacePage() {
         activity?.let {
-            val promoActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                onResultFromPromoPage(result.resultCode, result.data)
-            }
             val intent =
                 RouteManager.getIntent(it, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
             val promoRequest = generateParamsCouponList()
@@ -4565,9 +4561,6 @@ class CartRevampFragment :
     }
 
     private fun startActivityWithRefreshHandler(intent: Intent) {
-        val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            refreshCartWithSwipeToRefresh()
-        }
         activityResultLauncher.launch(intent)
     }
 
