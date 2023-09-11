@@ -105,10 +105,11 @@ import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.analytic.model.ShopHomePersoProductComparisonWidgetImpressionTrackerModel
+import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.analytic.model.ShopHomePersoProductComparisonWidgetImpressionTrackerModel
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
@@ -118,8 +119,8 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
-import com.tokopedia.shop.common.data.model.ShopPageProductDirectPurchaseWidgetAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
+import com.tokopedia.shop.common.data.model.ShopPageProductDirectPurchaseWidgetAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
@@ -131,14 +132,16 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.util.getIndicatorCount
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.common.view.viewmodel.ShopBannerTimerSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
-import com.tokopedia.shop.common.view.viewmodel.ShopBannerTimerSharedViewModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
@@ -157,17 +160,22 @@ import com.tokopedia.shop.home.WidgetType.PROMO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
+import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
+import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchaseByEtalaseWidgetListener
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
+import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
+import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
@@ -183,13 +191,11 @@ import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.NotifyMeAction
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
-import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
@@ -198,20 +204,15 @@ import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
-import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
-import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
-import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
-import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
-import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchaseByEtalaseWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
-import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
+import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -273,8 +274,7 @@ open class ShopPageHomeFragment :
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
     ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
-    ShopHomeDirectPurchaseByEtalaseWidgetListener
-{
+    ShopHomeDirectPurchaseByEtalaseWidgetListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -465,7 +465,8 @@ open class ShopPageHomeFragment :
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
-    //TODO need to move this one to viewmodel in the future
+
+    // TODO need to move this one to viewmodel in the future
     var listWidgetLayout = mutableListOf<ShopPageWidgetUiModel>()
     var initialLayoutData = mutableListOf<ShopPageWidgetUiModel>()
     val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
@@ -588,7 +589,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun configStickyHeaderView() {
-        if(isOverrideTheme()) {
+        if (isOverrideTheme()) {
             stickyHeaderView?.setShapeBackgroundColorIntValue(
                 ShopUtil.parseColorFromHexString(getBodyBackgroundHexColor())
             )
@@ -618,7 +619,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun observeUpdatedBannerTimerUiModelData() {
-        viewModel?.updatedBannerTimerUiModelData?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+        viewModel?.updatedBannerTimerUiModelData?.observe(viewLifecycleOwner) { bannerTimerUiModel ->
             bannerTimerUiModel?.let {
                 shopReminderButtonStatusSharedVieModel?.updateSharedBannerTimerData(it)
             }
@@ -626,7 +627,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun observeShopReminderButtonStatusSharedVieModel() {
-        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.observe(viewLifecycleOwner) { bannerTimerUiModel ->
             if (shopHomeAdapter?.isLoading == false && getSelectedFragment() != this) {
                 bannerTimerUiModel?.let {
                     viewModel?.updateBannerTimerWidgetUiModel(
@@ -708,7 +709,7 @@ open class ShopPageHomeFragment :
                     onSuccessGetBannerTimerRemindMeStatusData(it.data)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -771,7 +772,7 @@ open class ShopPageHomeFragment :
             when (it) {
                 is Success -> {
                     val listRecommendationItem = it.data.recommendationWidget?.recommendationItemList.orEmpty()
-                    if(listRecommendationItem.isNotEmpty()) {
+                    if (listRecommendationItem.isNotEmpty()) {
                         shopHomeAdapter?.setProductComparisonData(it.data)
                     } else {
                         shopHomeAdapter?.removeProductComparisonWidget()
@@ -952,7 +953,7 @@ open class ShopPageHomeFragment :
             listWidgetContentData
                 .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
                 .firstOrNull().let { bannerTimerWidget ->
-                    if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
+                    if (bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
                         viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.getCampaignId())
                     }
                 }
@@ -1002,7 +1003,7 @@ open class ShopPageHomeFragment :
     }
 
     protected fun getSelectedFragment(): Fragment? {
-        return if(ShopUtil.isEnableShopPageReImagined()){
+        return if (ShopUtil.isEnableShopPageReImagined()) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedFragmentInstance()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
@@ -1195,7 +1196,7 @@ open class ShopPageHomeFragment :
                         onSuccessCheckWishlist(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1224,7 +1225,7 @@ open class ShopPageHomeFragment :
                         onSuccessGetCampaignNplRemindMeStatusData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1238,7 +1239,7 @@ open class ShopPageHomeFragment :
                         onSuccessGetCampaignFlashSaleRemindMeStatusData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1305,7 +1306,7 @@ open class ShopPageHomeFragment :
                         onSuccessGetBottomSheetFilterData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1319,7 +1320,7 @@ open class ShopPageHomeFragment :
                         onSuccessGetShopProductFilterCount(count = it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1899,7 +1900,7 @@ open class ShopPageHomeFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    if(ShopUtil.isEnableShopPageReImagined()){
+                    if (ShopUtil.isEnableShopPageReImagined()) {
                         (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
                     } else {
                         (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
@@ -2035,10 +2036,11 @@ open class ShopPageHomeFragment :
 
     protected open fun getPlayWidgetData() {
         shopHomeAdapter?.getPlayWidgetUiModel()?.let {
-            val playWidgetType = if (isOwner)
+            val playWidgetType = if (isOwner) {
                 ShopPageWidgetMapper.mapToPlayWidgetTypeSellerApp(shopId)
-            else
+            } else {
                 ShopPageWidgetMapper.mapToPlayWidgetTypeShopPage(shopId)
+            }
             viewModel?.getPlayWidget(it, playWidgetType)
         }
     }
@@ -4325,8 +4327,9 @@ open class ShopPageHomeFragment :
     }
 
     override fun scrollToTop(isUserClick: Boolean) {
-        if(isUserClick)
+        if (isUserClick) {
             isClickToScrollToTop = true
+        }
         getRecyclerView(view)?.scrollToPosition(0)
     }
 
@@ -4335,7 +4338,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun hideScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if (ShopUtil.isEnableShopPageReImagined()) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
@@ -4343,7 +4346,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun showScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if (ShopUtil.isEnableShopPageReImagined()) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
@@ -4351,7 +4354,7 @@ open class ShopPageHomeFragment :
     }
 
     protected open fun getSelectedTabName(): String {
-        return if(ShopUtil.isEnableShopPageReImagined()){
+        return if (ShopUtil.isEnableShopPageReImagined()) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedTabName().orEmpty()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
@@ -4434,7 +4437,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun showConfetti() {
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if (ShopUtil.isEnableShopPageReImagined()) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.setupShopPageLottieAnimation(homeTabLottieUrl)
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
@@ -4724,7 +4727,6 @@ open class ShopPageHomeFragment :
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.updateMiniCartWidget()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.updateMiniCartWidget()
-
         }
     }
 
@@ -4966,9 +4968,9 @@ open class ShopPageHomeFragment :
     private fun checkShouldSelectCampaignTab(appLink: String) {
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.CAMPAIGN) {
-            if(ShopUtil.isEnableShopPageReImagined()){
+            if (ShopUtil.isEnableShopPageReImagined()) {
                 (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
-            }else{
+            } else {
                 (getRealParentFragment() as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
             }
         }
@@ -5033,12 +5035,12 @@ open class ShopPageHomeFragment :
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         shopHomeAdapter?.removeWidget(uiModel)
         endlessRecyclerViewScrollListener.resetState()
-        if(getSelectedFragment() == this){
+        if (getSelectedFragment() == this) {
             refreshShopHeader()
         }
     }
 
-    protected fun refreshShopHeader(){
+    protected fun refreshShopHeader() {
         if (ShopUtil.isEnableShopPageReImagined()) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.apply {
                 refreshData()
@@ -5139,12 +5141,6 @@ open class ShopPageHomeFragment :
         )
     }
 
-
-    override fun onProductClick(productId: String) {
-        // TODO: Put tracker here
-        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
-    }
-
     override fun onBannerProductGroupMainBannerClick(mainBanner: BannerProductGroupUiModel.Tab.ComponentList.Data) {
         try {
             RouteManager.route(activity ?: return, mainBanner.ctaLink)
@@ -5157,7 +5153,6 @@ open class ShopPageHomeFragment :
             RouteManager.route(activity ?: return, selectedProduct.appLink)
         } catch (_: Exception) {
         }
-
     }
 
     override fun onBannerProductGroupVerticalBannerClick(shopHomeProductCarouselVerticalBannerItemType: VerticalBannerItemType) {
@@ -5200,7 +5195,6 @@ open class ShopPageHomeFragment :
             shopPageHomeTracking.sendShowcaseNavigationBannerWidgetShowcaseClick(shopId, userId, uiModel, selectedShowcase)
         }
 
-
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
 
@@ -5234,9 +5228,8 @@ open class ShopPageHomeFragment :
     override val currentFragment: Fragment
         get() = this
 
-
-    //For home tab, we also need to check whether there is any festivity widget if we want to override the theme
-    //need to be improve this logic in the future by combining this 2 logic in BE
+    // For home tab, we also need to check whether there is any festivity widget if we want to override the theme
+    // need to be improve this logic in the future by combining this 2 logic in BE
     override fun isOverrideTheme(): Boolean {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse() && !isShopHomeTabHasFestivity()
     }
@@ -5438,11 +5431,11 @@ open class ShopPageHomeFragment :
         selectedSwitcherIndex: Int,
         selectedEtalaseIndex: Int
     ) {
-        if(isOwner){
+        if (isOwner) {
             val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
             showErrorToast(sellerViewAtcErrorMessage)
         } else {
-            if(productModel.isVariant){
+            if (productModel.isVariant) {
                 AtcVariantHelper.goToAtcVariant(
                     context = requireContext(),
                     productId = productModel.productId,
@@ -5564,7 +5557,31 @@ open class ShopPageHomeFragment :
         )
     }
 
-    private fun getShopHeaderBottomViewContainer(): View?{
+    private fun getShopHeaderBottomViewContainer(): View? {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBottomViewContainer()
+    }
+
+    override fun onProductClick(trackerModel: ShopHomeTerlarisWidgetTrackerDataModel) {
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+        if (!isOwner) {
+            shopPageHomeTracking.clickReimaginedTerlarisWidget(
+                trackerModel = trackerModel,
+                shopId = shopId,
+                shopName = shopName,
+                userId = userId
+            )
+        }
+    }
+
+    override fun onProductImpression(carouselData: List<ShopHomeProductUiModel>, position: Int, widgetId: String) {
+        if (!isOwner) {
+            shopPageHomeTracking.impressReimaginedTerlarisWidget(
+                carouselData = carouselData,
+                shopId = shopId,
+                shopName = shopName,
+                userId = userId,
+                widgetId = widgetId
+            )
+        }
     }
 }
