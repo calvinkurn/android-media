@@ -1353,24 +1353,6 @@ class CartItemViewHolder constructor(
         }
     }
 
-    private fun validateErrorView(typography: Typography, isError: Boolean) {
-        if (isError) {
-            typography.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN400
-                )
-            )
-        } else {
-            typography.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN600
-                )
-            )
-        }
-    }
-
     fun getItemViewBinding(): ItemCartProductRevampBinding {
         return binding
     }
