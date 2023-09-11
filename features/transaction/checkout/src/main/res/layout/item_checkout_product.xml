@@ -24,14 +24,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_divider_order" />
 
-    <View
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/bg_checkout_supergraphic_order"
         android:layout_width="118dp"
         android:layout_height="62dp"
+        android:importantForAccessibility="no"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/v_divider_shop" />
+        app:layout_constraintTop_toBottomOf="@id/v_divider_shop"
+        app:srcCompat="@drawable/checkout_module_bg_order" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/checkout_ticker_shop_error"
