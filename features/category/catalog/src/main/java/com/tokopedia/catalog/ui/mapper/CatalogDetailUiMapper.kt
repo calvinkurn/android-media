@@ -26,6 +26,7 @@ import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import javax.inject.Inject
 
@@ -66,7 +67,8 @@ class CatalogDetailUiMapper @Inject constructor(
         return CatalogDetailUiModel (
             widgets = widgets,
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
-            priceCtaProperties = mapToPriceCtaProperties(remoteModel)
+            priceCtaProperties = mapToPriceCtaProperties(remoteModel),
+            remoteModel.basicInfo.productSortingStatus.orZero()
         )
     }
 

@@ -5,7 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 data class CatalogDetailUiModel(
     val widgets: List<Visitable<*>> = emptyList(),
     val navigationProperties: NavigationProperties,
-    val priceCtaProperties: PriceCtaProperties
+    val priceCtaProperties: PriceCtaProperties,
+    val productSortingStatus: Int
 )
 
 data class PriceCtaProperties (

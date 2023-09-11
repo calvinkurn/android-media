@@ -4,10 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.catalog.domain.GetProductListFromSearchUseCase
+import com.tokopedia.catalog.domain.model.CatalogProductItem
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.oldcatalog.model.raw.ProductListResponse
 import com.tokopedia.oldcatalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.oldcatalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.usecase.RequestParams
@@ -20,7 +25,8 @@ import javax.inject.Inject
 class CatalogProductListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private var quickFilterUseCase: CatalogQuickFilterUseCase,
-    private val dynamicFilterUseCase: CatalogDynamicFilterUseCase
+    private val dynamicFilterUseCase: CatalogDynamicFilterUseCase,
+    private val getProductListUseCase: GetProductListFromSearchUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     val quickFilterResult = MutableLiveData<Result<DynamicFilterModel>>()
@@ -45,6 +51,13 @@ class CatalogProductListViewModel @Inject constructor(
 
     val mDynamicFilterModel: LiveData<Result<DynamicFilterModel>>
         get() = dynamicFilterResult
+
+
+
+    val productList: LiveData<Result<List<CatalogProductItem>>>
+        get() = _productList
+
+    private val _productList = MutableLiveData<Result<List<CatalogProductItem>>>()
 
     fun fetchQuickFilters(params: RequestParams) {
 
@@ -75,5 +88,19 @@ class CatalogProductListViewModel @Inject constructor(
                 dynamicFilterResult.value = (Fail(e))
             }
         })
+    }
+
+    fun fetchProductListing(params: RequestParams) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val data = getProductListUseCase.execute(params).searchProduct?.data?.catalogProductItemList.orEmpty()
+                _productList.postValue(Success(data))
+
+            },
+            onError = {
+                _productList.postValue(Fail(it))
+            }
+        )
     }
 }
