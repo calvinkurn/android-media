@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="content_creation_bottom_sheet_title">Buat Konten</string>
+    <string name="content_creation_bottom_sheet_performance_action">Lihat Performa</string>
+    <string name="content_creation_bottom_sheet_next_label">Lanjut</string>
+
+    <string name="content_creation_short_description_text">Bikin review, tutorial, hingga unboxing produk yang menginspirasi pembeli. </string>
+    <string name="content_creation_short_description_click_label">Tips Bikin Video.</string>
+
+    <string name="content_creation_post_description_text">Ceritain tentang menariknya suatu produk lewat post gambar/foto. </string>
+    <string name="content_creation_post_description_click_label">Tips Posting Foto.</string>
+
+    <string name="content_creation_live_description_text">Berinteraksi dengan banyak penonton sambil promosi produkmu lewat Live. </string>
+    <string name="content_creation_live_description_click_label">Tips Bikin Live.</string>
+
+    <string name="content_creation_story_description_text">Pamerin tentang bagusnya suatu produk dengan update Story singkat &amp; memikat. </string>
+    <string name="content_creation_story_description_click_label">Tips Bikin Story.</string>
+</resources>
