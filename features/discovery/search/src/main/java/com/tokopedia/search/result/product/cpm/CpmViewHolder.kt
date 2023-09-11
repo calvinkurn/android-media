@@ -15,6 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class CpmViewHolder(
     itemView: View,
     bannerAdsListener: BannerAdsListener?,
+    private val isReimagine: Boolean = false,
 ) : AbstractViewHolder<CpmDataView>(itemView) {
 
     companion object {
@@ -43,6 +44,8 @@ class CpmViewHolder(
         }
     }
     override fun bind(element: CpmDataView) {
-        binding?.adsBanner?.displayHeadlineAds(element.cpmModel)
+        binding?.adsBanner?.displayHeadlineAds(element.cpmModel.apply {
+            isReimagine = this@CpmViewHolder.isReimagine
+        })
     }
 }

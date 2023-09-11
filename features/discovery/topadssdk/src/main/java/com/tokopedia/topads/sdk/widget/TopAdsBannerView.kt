@@ -40,11 +40,13 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
+import com.tokopedia.topads.sdk.utils.CarouselProductCardDefaultDecorationReimagine
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductRevampViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder
@@ -128,15 +130,16 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val isReimagine = cpmModel?.isReimagine.orFalse()
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
             View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
-            BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
             BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
+            renderShopProduct(isReimagine)
             renderSeeMoreCard(isReimagine)
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData?.cpm?.name ?: "")
-            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener, topAdsAddToCartClickListener))
+            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener, topAdsAddToCartClickListener, isReimagine))
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
+            setItemDecorationReimagineSearch(isReimagine, list)
             list.addOnScrollListener(CustomScrollListener(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
@@ -144,6 +147,19 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             template = SHOP_TEMPLATE
         }
         setHeadlineShopData(cpmModel, appLink, adsClickUrl, index)
+    }
+
+    private fun setItemDecorationReimagineSearch(isReimagine: Boolean, recyclerView: RecyclerView) {
+        if(isReimagine)
+            recyclerView.addItemDecoratorReimagine()
+        else
+            recyclerView.removeItemDecorationAt(0)
+    }
+
+    private fun RecyclerView.addItemDecoratorReimagine() {
+        if (itemDecorationCount > 0) removeItemDecorationAt(0)
+
+        addItemDecoration(CarouselProductCardDefaultDecorationReimagine())
     }
 
     private fun setHeadlineShopData(cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
@@ -244,7 +260,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                                     productCardModelList[i],
                                     cpmData.cpm.cpmShop.products[i].applinks,
                                     cpmData.cpm.cpmShop.products[i].image.m_url,
-                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl
+                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl,
                                 )
                                 val product = cpmData.cpm.cpmShop.products[i]
                                 model.apply {
@@ -260,7 +276,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         }
 
                         renderHeaderSeeMore(cpmData, appLink, adsClickUrl, isReimagine)
-                        if (productCardModelList.size < ITEM_3) {
+                        if (productCardModelList.size <= ITEM_3) {
                             items.add(BannerShopViewMoreUiModel(cpmData, appLink, adsClickUrl))
                         }
                     } else {
@@ -324,6 +340,13 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more_revamp
         else
             BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
+    }
+
+    private fun renderShopProduct(isReimagine: Boolean) {
+        if (isReimagine)
+            BannerShopProductRevampViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product_reimagine
+        else
+            BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
     }
 
     private fun renderHeaderSeeMore(cpmData: CpmData, appLink: String, adsClickUrl: String, isReimagine: Boolean) {
@@ -438,7 +461,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         productCardModelList[i],
                         cpmData.cpm.cpmShop.products[i].applinks,
                         cpmData.cpm.cpmShop.products[i].image.m_url,
-                        cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl
+                        cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl,
                     )
                     val product = cpmData.cpm.cpmShop.products[i]
                     model.apply {

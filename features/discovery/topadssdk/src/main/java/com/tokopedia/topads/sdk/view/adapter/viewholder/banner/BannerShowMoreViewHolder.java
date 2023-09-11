@@ -23,6 +23,8 @@ public class BannerShowMoreViewHolder extends AbstractViewHolder<BannerShopViewM
     @LayoutRes
     public static int LAYOUT = com.tokopedia.topads.sdk.R.layout.layout_ads_banner_shop_a_more;
     private static final String className = BannerShowMoreViewHolder.class.getSimpleName();
+
+    private static final Integer CARD_TYPE_BORDER = 1;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
 
     public BannerShowMoreViewHolder(View itemView, TopAdsBannerClickListener topAdsBannerClickListener) {
@@ -34,6 +36,7 @@ public class BannerShowMoreViewHolder extends AbstractViewHolder<BannerShopViewM
     public void bind(final BannerShopViewMoreUiModel element) {
         @Nullable ViewAllCard viewAll = itemView.findViewById(R.id.viewAllAdsBannerShop);
         if(viewAll != null){
+            viewAll.getCardView().setCardType(CARD_TYPE_BORDER);
             viewAll.setCta("", () -> {
                 invokeClickListener(element);
                 return Unit.INSTANCE;

@@ -8,6 +8,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerProductShimmerViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductRevampViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder;
@@ -26,12 +27,16 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
     private final TopAdsItemImpressionListener itemImpressionListener;
     private final TopAdsAddToCartClickListener topAdsAddToCartClickListener;
 
+    private final Boolean isReimagine;
+
     public BannerAdsAdapterTypeFactory(TopAdsBannerClickListener topAdsBannerClickListener,
                                        TopAdsItemImpressionListener itemImpressionListener,
-                                       TopAdsAddToCartClickListener topAdsAddToCartClickListener) {
+                                       TopAdsAddToCartClickListener topAdsAddToCartClickListener,
+                                       Boolean isReimagine) {
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         this.itemImpressionListener = itemImpressionListener;
         this.topAdsAddToCartClickListener = topAdsAddToCartClickListener;
+        this.isReimagine = isReimagine;
     }
 
     @Override
@@ -41,7 +46,11 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
 
     @Override
     public int type(BannerShopProductUiModel viewModel) {
-        return BannerShopProductViewHolder.LAYOUT;
+        if(isReimagine) {
+            return BannerShopProductRevampViewHolder.LAYOUT;
+        } else {
+            return BannerShopProductViewHolder.LAYOUT;
+        }
     }
 
     @Override
@@ -61,6 +70,8 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
             holder = new BannerShopViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
         } else if (viewType == BannerShopProductViewHolder.LAYOUT) {
             holder = new BannerShopProductViewHolder(view, topAdsBannerClickListener, itemImpressionListener, topAdsAddToCartClickListener);
+        } else if(viewType == BannerShopProductRevampViewHolder.LAYOUT){
+            holder = new BannerShopProductRevampViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
         } else if (viewType == BannerShowMoreViewHolder.LAYOUT) {
             holder = new BannerShowMoreViewHolder(view, topAdsBannerClickListener);
         } else if (viewType == BannerProductShimmerViewHolder.Companion.getLAYOUT()) {
