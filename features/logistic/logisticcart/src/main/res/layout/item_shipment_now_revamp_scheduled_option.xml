@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="16dp">
+    android:layout_height="wrap_content" >
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/rb_shipment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_other_schedule"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/tv_title_shipment" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title_shipment"
@@ -22,6 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/rb_shipment"
+        app:layout_constraintBottom_toBottomOf="@id/barrier_bottom_schelly"
         app:typographyType="display_3"
         android:layout_marginStart="12dp"
         tools:text="NOW! - Terjadwal (Rp0 Rp20.000)" />
@@ -32,9 +33,11 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN600"
         android:visibility="gone"
+        android:layout_marginTop="2dp"
         app:layout_constraintTop_toBottomOf="@id/tv_title_shipment"
         app:layout_constraintStart_toStartOf="@id/tv_title_shipment"
-        app:layout_constraintEnd_toStartOf="@id/rb_shipment"
+        app:layout_constraintEnd_toEndOf="@id/tv_title_shipment"
+        app:layout_constraintBottom_toTopOf="@id/tv_other_schedule"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Tiba hari ini, 10:00 - 12:00"
@@ -46,11 +49,23 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_GN500"
         android:visibility="visible"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintTop_toBottomOf="@id/tv_description_shipment"
         app:layout_constraintStart_toStartOf="@id/tv_title_shipment"
-        app:layout_constraintEnd_toStartOf="@id/rb_shipment"
+        app:layout_constraintEnd_toEndOf="@id/tv_title_shipment"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="display_3"
         app:typographyWeight="bold"
+        tools:visibility="visible"
         android:text="@string/other_option_title_widget_schedule_delivery" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_bottom_schelly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        tools:visibility="gone"
+        app:constraint_referenced_ids="tv_other_schedule, rb_shipment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

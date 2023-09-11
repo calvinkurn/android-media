@@ -374,7 +374,6 @@ class CheckoutProductViewHolder(
                 }
             }
             binding.bgCheckoutSupergraphicOrder.isVisible = true
-            binding.bgCheckoutSupergraphicOrder.setBackgroundResource(R.drawable.checkout_module_bg_order)
             if (product.groupInfoBadgeUrl.isNotEmpty()) {
                 binding.ivCheckoutOrderBadge.setImageUrl(product.groupInfoBadgeUrl)
                 if (product.uiGroupType == GroupShop.UI_GROUP_TYPE_NORMAL) {
