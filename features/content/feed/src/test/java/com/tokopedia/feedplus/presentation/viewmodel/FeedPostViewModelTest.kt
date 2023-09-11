@@ -41,9 +41,9 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedXCard
+import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
-import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
@@ -106,7 +106,7 @@ class FeedPostViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = coroutineTestRule.dispatchers
 
-    private val feedXHomeUseCase: FeedXHomeUseCase = mockk()
+    private val repository: FeedRepository = mockk()
     private val atcUseCase: AddToCartUseCase = mockk()
     private val likeContentUseCase: SubmitLikeContentUseCase = mockk()
     private val deletePostUseCase: SubmitActionContentUseCase = mockk()
@@ -135,7 +135,7 @@ class FeedPostViewModelTest {
     @Before
     fun setUp() {
         viewModel = FeedPostViewModel(
-            feedXHomeUseCase = feedXHomeUseCase,
+            repository = repository,
             addToCartUseCase = atcUseCase,
             likeContentUseCase = likeContentUseCase,
             deletePostUseCase = deletePostUseCase,
@@ -633,9 +633,7 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchFeedPosts_whenFailed() {
         // given
-        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
-        coEvery { feedXHomeUseCase(any()) } throws MessageErrorException("Failed")
+        coEvery { repository.getPost(any(), any(), any()) } throws MessageErrorException("Failed")
 
         // when
         viewModel.fetchFeedPosts("", postSource = null)
@@ -650,8 +648,7 @@ class FeedPostViewModelTest {
     fun onFetchFeedPosts_whenSuccessWithoutRelevantPostInCDP() {
         // given
         val dummyData = getDummyFeedModel()
-        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { feedXHomeUseCase(any()) } returns dummyData
+        coEvery { repository.getPost(any(), any(), any()) } returns dummyData
 
         // when
         viewModel.fetchFeedPosts("", true, postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
@@ -674,8 +671,7 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchFeedPosts_whenSuccessWithoutRelevantPost() {
         // given
-        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
+        coEvery { repository.getPost(any(), any(), any()) } returns getDummyFeedModel()
 
         // when
         viewModel.fetchFeedPosts("", postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
@@ -699,10 +695,8 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchFeedPosts_whenSuccessWithRelevantPost() {
         // given
-        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
-        coEvery { feedXHomeUseCase.createParamsWithId("1", any()) } returns emptyMap()
-        coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
+        coEvery { repository.getPost(any(), any(), any()) } returns getDummyFeedModel()
+        coEvery { repository.getRelevantPosts(any()) } returns getDummyFeedModel()
 
         // when
         viewModel.fetchFeedPosts("", true, PostSourceModel("1", null))
@@ -1836,7 +1830,7 @@ class FeedPostViewModelTest {
 
         assert(followRecomModel is FeedFollowRecommendationModel)
         assert((followRecomModel as FeedFollowRecommendationModel).data.size == mockFollowRecommendationData.data.size - 1)
-        assert((followRecomModel as FeedFollowRecommendationModel).data.indexOf(selectedRemovedProfile) == -1)
+        assert(followRecomModel.data.indexOf(selectedRemovedProfile) == -1)
     }
 
     @Test
@@ -1864,7 +1858,7 @@ class FeedPostViewModelTest {
         assert(followRecomModel is FeedFollowRecommendationModel)
         println("JOE LOG ${(followRecomModel as FeedFollowRecommendationModel).data.size}")
         println("JOE LOG ${mockFollowRecommendationData.data.size}")
-        assert((followRecomModel as FeedFollowRecommendationModel).data.size == mockFollowRecommendationData.data.size)
+        assert(followRecomModel.data.size == mockFollowRecommendationData.data.size)
     }
 
     @Test
@@ -1873,10 +1867,7 @@ class FeedPostViewModelTest {
         val mockFollowRecommendationData = getDummyProfileRecommendationList()
         val selectedRemovedProfile = mockFollowRecommendationData.data[1]
 
-        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
-        coEvery { feedXHomeUseCase(any()) } throws MessageErrorException("Failed")
-
+        coEvery { repository.getPost(any(), any(), any()) } throws MessageErrorException("Failed")
         viewModel.fetchFeedPosts("", true, null)
 
         // test
@@ -1887,9 +1878,7 @@ class FeedPostViewModelTest {
     }
 
     private fun provideDefaultFeedPostMockData() {
-        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
-        coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
+        coEvery { repository.getPost(any(), any(), any()) } returns getDummyFeedModel()
         viewModel.fetchFeedPosts("")
     }
 

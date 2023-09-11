@@ -1454,8 +1454,7 @@ class AddressFormFragment :
                 setBtnSaveAddressEnable(true)
             }
         }?.load(
-            viewLifecycleOwner,
-            this,
+
             ConsentCollectionParam(
                 collectionId = collectionId
             )

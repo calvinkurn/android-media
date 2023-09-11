@@ -67,8 +67,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -405,6 +403,13 @@ class MainAddressFragment :
                     setChosenAddressFromChosenAddressResponse(it.data.isStateChosenAddressChanged, it.data.chosenAddressData, it.data.tokonow)
                     showToaster(getString(R.string.toaster_remove_address_success))
                     viewModel.searchAddress(viewModel.savedQuery, prevState, it.data.chosenAddressData.addressId, true)
+                }
+
+                is ManageAddressState.Fail -> {
+                    it.throwable?.run {
+                        showToaster(message.orEmpty(), toastType = Toaster.TYPE_ERROR)
+                        logToCrashlytics(this)
+                    }
                 }
 
                 else -> {
@@ -983,24 +988,7 @@ class MainAddressFragment :
         }
     }
 
-    private fun generateUserConsentWidget(): UserConsentWidget? {
-        return try {
-            val userConsent = UserConsentWidget(requireContext())
-            userConsent.load(
-                viewLifecycleOwner,
-                this,
-                ConsentCollectionParam(
-                    collectionId = viewModel.deleteCollectionId
-                )
-            )
-            userConsent
-        } catch (e: Exception) {
-            logToCrashlytics(e)
-            null
-        }
-    }
-
-    private fun logToCrashlytics(exception: Exception) {
+    private fun logToCrashlytics(exception: Throwable) {
         if (!GlobalConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().recordException(exception)
         } else {
@@ -1010,8 +998,6 @@ class MainAddressFragment :
 
     private fun showDeleteAddressDialog(addressId: String) {
         context?.apply {
-            val userConsent = generateUserConsentWidget()
-
             DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.title_delete_address_dialog))
                 setSecondaryCTAText(getString(R.string.action_cancel_delete_address))
@@ -1022,8 +1008,7 @@ class MainAddressFragment :
                 setPrimaryCTAClickListener {
                     dismiss()
                     viewModel.deletePeopleAddress(
-                        id = addressId,
-                        consentJson = userConsent?.generatePayloadData().orEmpty()
+                        id = addressId
                     )
                 }
             }.show()

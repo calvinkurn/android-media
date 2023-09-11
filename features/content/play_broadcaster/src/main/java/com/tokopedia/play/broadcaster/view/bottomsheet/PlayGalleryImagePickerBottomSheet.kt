@@ -29,11 +29,13 @@ import com.tokopedia.imagepicker.common.model.AlbumItem
 import com.tokopedia.imagepicker.common.model.MediaItem
 import com.tokopedia.imagepicker.common.widget.MediaGridInset
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayCoverFromGalleryBinding
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.*
 import java.io.File
 import javax.inject.Inject
 
@@ -46,6 +48,10 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         AlbumMediaAdapter.OnMediaClickListener,
         AlbumAdapter.OnAlbumAdapterListener,
         LoaderManager.LoaderCallbacks<Cursor> {
+
+    private var _binding: BottomSheetPlayCoverFromGalleryBinding? = null
+    private val binding: BottomSheetPlayCoverFromGalleryBinding
+        get() = _binding!!
 
     var mListener: Listener? = null
 
@@ -73,10 +79,14 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         initBottomSheet()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.bottom_sheet_play_cover_from_gallery, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = BottomSheetPlayCoverFromGalleryBinding.inflate(
+            inflater,
+            container,
+            false
+        )
         dialog?.let { setupDialog(it) }
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,6 +111,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         super.onDestroy()
         LoaderManager.getInstance(this).destroyLoader(ALBUM_LOADER_ID)
         LoaderManager.getInstance(this).destroyLoader(MEDIA_LOADER_ID)
+        _binding = null
     }
 
     /**
@@ -188,7 +199,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         }
     }
 
-    private fun initView() {
+    private fun initView() = with(binding) {
         rvPlayGallery.layoutManager = GridLayoutManager(requireContext(), DEFAULT_GALLERY_SPAN_COUNT)
         rvPlayGallery.addItemDecoration(MediaGridInset(DEFAULT_GALLERY_SPAN_COUNT,
             requireContext().resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),
@@ -210,29 +221,29 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     }
 
     private fun showLoading() {
-        containerPlayLoading?.visibility = View.VISIBLE
+        binding.containerPlayLoading.visible()
     }
 
     private fun hideLoading() {
-        containerPlayLoading?.visibility = View.GONE
+        binding.containerPlayLoading.gone()
     }
 
-    private fun showMediaLayout() {
-        containerPlayGalleryHeader?.visibility = View.VISIBLE
-        rvPlayGallery?.visibility = View.VISIBLE
+    private fun showMediaLayout() = with(binding) {
+        containerPlayGalleryHeader.visible()
+        rvPlayGallery.visible()
     }
 
-    private fun hideMediaLayout() {
-        containerPlayGalleryHeader?.visibility = View.GONE
-        rvPlayGallery?.visibility = View.GONE
+    private fun hideMediaLayout() = with(binding) {
+        containerPlayGalleryHeader.gone()
+        rvPlayGallery.gone()
     }
 
     private fun showAlbumLayout() {
-        rvPlayAlbum?.visibility = View.VISIBLE
+        binding.rvPlayAlbum.visible()
     }
 
     private fun hideAlbumLayout() {
-        rvPlayAlbum?.visibility = View.GONE
+        binding.rvPlayAlbum.gone()
     }
 
     private fun onAlbumLoadedCursor(cursor: Cursor?) {
@@ -272,7 +283,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         hideAlbumLayout()
         selectedAlbumItem = albumItem
 
-        tvPlayGalleryAlbumLabel?.text = if (albumItem.isAll) DEFAULT_ALBUM_TITLE else albumItem.displayName
+        binding.tvPlayGalleryAlbumLabel.text = if (albumItem.isAll) DEFAULT_ALBUM_TITLE else albumItem.displayName
         if (albumItem.isAll && albumItem.isEmpty) {
             showToaster(
                     message = getString(com.tokopedia.imagepicker.common.R.string.error_no_media_storage),
