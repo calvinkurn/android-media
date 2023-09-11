@@ -41,8 +41,7 @@ object MapperTopAdsXFeed {
             badgeUrl = data?.cpm?.badges?.firstOrNull()?.imageUrl.orEmpty(),
             logoUrl = data?.cpm?.cpmImage?.fullEcs.orEmpty(),
             appLink = data?.applinks.orEmpty(),
-            encryptedUserId = "",
-            isLive = false
+            encryptedUserId = ""
         )
 
         val mediaList = topAdsShop?.products?.mapIndexed { index, product ->

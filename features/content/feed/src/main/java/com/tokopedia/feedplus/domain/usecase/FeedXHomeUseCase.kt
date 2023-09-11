@@ -343,7 +343,6 @@ class FeedXHomeUseCase @Inject constructor(
               webLink
               appLink
               encryptedUserID
-              isLive
             }
             
             fragment FeedXProduct on FeedXProduct {
