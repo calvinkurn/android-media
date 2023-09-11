@@ -49,7 +49,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     private val mAdapterListener = object : ContentTaggedProductBottomSheetViewHolder.Listener {
         override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
-            listener?.onProductCardClicked(product, itemPosition)
+            mListener?.onProductCardClicked(product, itemPosition)
         }
 
         override fun onAddToCartProductButtonClicked(

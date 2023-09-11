@@ -27,7 +27,6 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.showImmediately
-import com.tokopedia.stories.analytics.StoriesSharingAnalytics
 import com.tokopedia.stories.bottomsheet.StoriesProductBottomSheet
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
@@ -57,13 +56,11 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetai
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoriesDetailFragment @Inject constructor(
     private val router: Router,
-    private val sharingFactoryAnalytic: StoriesSharingAnalytics.Factory
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesDetailBinding? = null
@@ -99,8 +96,6 @@ class StoriesDetailFragment @Inject constructor(
 
     private val shopId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
-
-    private var sharingAnalytics: StoriesSharingAnalytics? = null
 
     override fun getScreenName(): String {
         return TAG
@@ -178,14 +173,8 @@ class StoriesDetailFragment @Inject constructor(
                         sheet.setListener(object : StoriesSharingComponent.Listener {
                             override fun onDismissEvent(view: StoriesSharingComponent) {
                                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
-                                sharingAnalytics?.onCloseShareSheet(viewModel.storyId)
-                            }
-
-                            override fun onShareChannel(shareModel: ShareModel) {
-                                sharingAnalytics?.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
                             }
                         })
-                        sharingAnalytics?.onClickShareIcon(viewModel.storyId)
                         sheet.show(childFragmentManager, event.metadata)
                     }
                     is StoriesUiEvent.ShowErrorEvent -> {
@@ -269,10 +258,6 @@ class StoriesDetailFragment @Inject constructor(
             }
         }
         binding.vStoriesKebabIcon.showWithCondition(currContent.menus.isNotEmpty())
-
-        if (sharingAnalytics == null && shopId.isNotEmpty() && viewModel.storyId.isNotEmpty()) {
-            sharingAnalytics = sharingFactoryAnalytic.create(shopId = shopId)
-        }
     }
 
     private fun observeBottomSheetStatus(
