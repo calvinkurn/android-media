@@ -103,7 +103,10 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
             viewModel.cartData.collect {
                 when (it) {
                     is BmgmState.Success -> showProducts(it.data)
-                    is BmgmState.Error -> setOnError(it.t)
+                    is BmgmState.Error -> {
+                        sendLogger(it.t)
+                        setOnError()
+                    }
                     else -> {
                         /* no-op */
                     }
@@ -211,8 +214,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setOnError(t: Throwable) {
-        NonFatalIssueLogger.logToCrashlytics(t)
+    private fun setOnError() {
         activity?.finish()
     }
 
