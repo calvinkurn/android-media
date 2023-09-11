@@ -5562,7 +5562,7 @@ open class ShopPageHomeFragment :
     }
 
     override fun onProductClick(trackerModel: ShopHomeTerlarisWidgetTrackerDataModel) {
-        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, trackerModel.productId)
         if (!isOwner) {
             shopPageHomeTracking.clickReimaginedTerlarisWidget(
                 trackerModel = trackerModel,
