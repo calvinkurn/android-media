@@ -11,4 +11,13 @@ interface StoriesCreationRepository {
     suspend fun getStoryPreparationInfo(
         account: ContentAccountUiModel
     ): StoriesCreationConfiguration
+
+    suspend fun createStory(
+        account: ContentAccountUiModel
+    ): String
+
+    suspend fun setActiveProductTag(
+        storyId: String,
+        productIds: List<String>,
+    )
 }

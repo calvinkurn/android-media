@@ -6,7 +6,9 @@ import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepositor
 import com.tokopedia.stories.creation.domain.usecase.CreateStoryUseCase
 import com.tokopedia.stories.creation.domain.usecase.GetStoryPreparationInfoUseCase
 import com.tokopedia.stories.creation.domain.usecase.SetActiveProductTagUseCase
+import com.tokopedia.stories.creation.model.CreateStoryRequest
 import com.tokopedia.stories.creation.model.GetStoryPreparationInfoRequest
+import com.tokopedia.stories.creation.model.SetActiveProductTagRequest
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 import com.tokopedia.stories.creation.view.model.mapper.StoriesCreationUiMapper
 import kotlinx.coroutines.withContext
@@ -33,6 +35,33 @@ class StoriesCreationRepositoryImpl @Inject constructor(
             )
 
             mapper.mapStoryPreparationInfo(response)
+        }
+    }
+
+    override suspend fun createStory(account: ContentAccountUiModel): String {
+        return withContext(dispatchers.io) {
+            val response = createStoryUseCase(
+                CreateStoryRequest(
+                    authorId = account.id,
+                    authorType = account.type,
+                )
+            )
+
+            response.data.storyId
+        }
+    }
+
+    override suspend fun setActiveProductTag(
+        storyId: String,
+        productIds: List<String>
+    ) {
+        return withContext(dispatchers.io) {
+            setActiveProductTagUseCase(
+                SetActiveProductTagRequest(
+                    storyId = storyId,
+                    productIds = productIds
+                )
+            )
         }
     }
 }
