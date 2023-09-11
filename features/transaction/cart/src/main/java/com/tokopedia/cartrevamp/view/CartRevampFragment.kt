@@ -287,6 +287,7 @@ class CartRevampFragment :
         private const val BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX = 4
 
         private const val TOKONOW_UPDATER_DEBOUNCE = 500L
+        private const val TOKONOW_SEE_OTHERS_OR_ALL_LIMIT = 10
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartRevampFragment {
@@ -872,12 +873,11 @@ class CartRevampFragment :
             index
         )
         if (cartShopBottomHolderData != null) {
-            // TODO: reinsert analytics
-//            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
-//                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
-//            } else {
-//                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
-//            }
+            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
+                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
+            } else {
+                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
+            }
             cartShopBottomHolderData.shopData.isCollapsed = false
             viewModel.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
             onNeedToInsertMultipleViewItem(
@@ -1085,10 +1085,6 @@ class CartRevampFragment :
 
     override fun onCartItemQuantityInputFormClicked(qty: String) {
         cartPageAnalytics.eventClickAtcCartClickInputQuantity(qty)
-    }
-
-    override fun onCartItemLabelInputRemarkClicked() {
-        // todo : fix analytics
     }
 
     override fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData) {

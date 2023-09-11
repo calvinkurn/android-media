@@ -486,24 +486,11 @@ class CartGroupViewHolder(
                             icBmgmTicker.gone()
                         }
                         if (cartShopGroupTicker.rightIcon.isNotBlank() && cartShopGroupTicker.rightIconDark.isNotBlank()) {
-                            // TODO: handle Right Icon
-//                            if (root.context.isDarkMode()) {
-//                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
-//                            } else {
-//                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
-//                            }
-                            val color = ContextCompat.getColor(
-                                itemView.context,
-                                unifyprinciplesR.color.Unify_NN500
-                            )
-                            iuTickerRightIcon.setImage(
-                                IconUnify.CHEVRON_RIGHT,
-                                color,
-                                null,
-                                color,
-                                null
-                            )
-                            iuTickerRightIcon.show()
+                            if (root.context.isDarkMode()) {
+                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
+                            } else {
+                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
+                            }
                         } else {
                             iuTickerRightIcon.gone()
                         }

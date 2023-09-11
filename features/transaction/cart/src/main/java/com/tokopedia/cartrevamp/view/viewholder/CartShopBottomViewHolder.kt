@@ -1,5 +1,6 @@
 package com.tokopedia.cartrevamp.view.viewholder
 
+import android.view.ViewGroup.LayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartShopBottomRevampBinding
@@ -41,7 +42,7 @@ class CartShopBottomViewHolder(
                 }
             }
 
-            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            layoutParams.height = LayoutParams.WRAP_CONTENT
             binding.llShopContainer.layoutParams = layoutParams
             binding.llShopContainer.show()
         } else {
