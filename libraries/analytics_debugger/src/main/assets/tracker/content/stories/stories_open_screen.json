@@ -6,7 +6,7 @@
             "event": "openScreen",
             "trackerId": "46042",
             "businessUnit": "content",
-            "currentSite": "tokopediamarketplace",
+            "currentSite": "(tokopediamarketplace|tokopediaseller)",
             "isLoggedInStatus": "(true|false)",
             "screenName": ".*",
             "sessionIris": ".*",
