@@ -808,16 +808,40 @@ internal class PromoUsageViewModel @Inject constructor(
     ): List<PromoItem> {
         val resultItems = mutableListOf<PromoItem>()
         val selectedItems = items.filter { it.state is PromoItemState.Selected }
-            .sortedBy { it.index }
+            .sortedBy {
+                if (it.useSecondaryPromo) {
+                    it.secondaryPromo.index
+                } else {
+                    it.index
+                }
+            }
         resultItems.addAll(selectedItems)
         val normalItems = items.filter { it.state is PromoItemState.Normal }
-            .sortedBy { it.index }
+            .sortedBy {
+                if (it.useSecondaryPromo) {
+                    it.secondaryPromo.index
+                } else {
+                    it.index
+                }
+            }
         resultItems.addAll(normalItems)
         val disabledItems = items.filter { it.state is PromoItemState.Disabled }
-            .sortedBy { it.index }
+            .sortedBy {
+                if (it.useSecondaryPromo) {
+                    it.secondaryPromo.index
+                } else {
+                    it.index
+                }
+            }
         resultItems.addAll(disabledItems)
         val ineligibleItems = items.filter { it.state is PromoItemState.Ineligible }
-            .sortedBy { it.index }
+            .sortedBy {
+                if (it.useSecondaryPromo) {
+                    it.secondaryPromo.index
+                } else {
+                    it.index
+                }
+            }
         resultItems.addAll(ineligibleItems)
         return resultItems
     }
