@@ -1835,7 +1835,7 @@ class FeedPostViewModelTest {
         val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
 
         assert(followRecomModel is FeedFollowRecommendationModel)
-        assert((followRecomModel as FeedFollowRecommendationModel).data.size == mockFollowRecommendationData.data.size-1)
+        assert((followRecomModel as FeedFollowRecommendationModel).data.size == mockFollowRecommendationData.data.size - 1)
         assert((followRecomModel as FeedFollowRecommendationModel).data.indexOf(selectedRemovedProfile) == -1)
     }
 
@@ -1845,7 +1845,7 @@ class FeedPostViewModelTest {
         val mockFollowRecommendationData = getDummyProfileRecommendationList()
         val selectedRemovedProfile = mockFollowRecommendationData.data[1].copy(
             id = "asdfasdf",
-            encryptedId = "asdfasdf",
+            encryptedId = "asdfasdf"
         )
 
         coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
@@ -1921,7 +1921,7 @@ class FeedPostViewModelTest {
     }
 
     private fun getAuthorModelDefault() =
-        FeedAuthorModel("", AuthorType.User, "", "", "", "", "", false)
+        FeedAuthorModel("", AuthorType.User, "", "", "", "", "")
 
     private fun getDummyFeedModel() = FeedModel(
         items = listOf(
@@ -2105,7 +2105,7 @@ class FeedPostViewModelTest {
 
     private fun getDummyProfileRecommendationList(
         profileSize: Int = 5,
-        cursor: String = "asdf",
+        cursor: String = "asdf"
     ): FeedFollowRecommendationModel {
         return FeedFollowRecommendationModel(
             id = "follow-recommendation",
@@ -2122,28 +2122,28 @@ class FeedPostViewModelTest {
                     imageUrl = "https://images.tokopedia.net/img/seller_no_logo_1.png",
                     videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
                     applink = "applink",
-                    isFollowed = false,
+                    isFollowed = false
                 )
             },
             cursor = cursor,
-            status = FeedFollowRecommendationModel.Status.Success,
+            status = FeedFollowRecommendationModel.Status.Success
         )
     }
 
     private fun getDummyShopFollowResponseData(
         success: Boolean = true,
-        isFollowing: Boolean = true,
+        isFollowing: Boolean = true
     ): ShopFollowModel {
         return ShopFollowModel(
             followShop = FollowShop(
                 success = success,
-                isFollowing = isFollowing,
+                isFollowing = isFollowing
             )
         )
     }
 
     private fun getDummyUserFollowResponseData(
-        isError: Boolean = false,
+        isError: Boolean = false
     ) = ProfileDoFollowModelBase(
         profileFollowers = ProfileDoFollowedData(
             messages = if (isError) listOf("Error") else emptyList(),
@@ -2152,13 +2152,13 @@ class FeedPostViewModelTest {
                 userIdSource = "",
                 userIdTarget = "",
                 relation = "",
-                isSuccess = "",
+                isSuccess = ""
             )
         )
     )
 
     private fun getDummyUserUnfollowResponseData(
-        isError: Boolean = false,
+        isError: Boolean = false
     ) = ProfileDoUnFollowModelBase(
         profileFollowers = ProfileDoFollowedData(
             messages = if (isError) listOf("Error") else emptyList(),
@@ -2167,7 +2167,7 @@ class FeedPostViewModelTest {
                 userIdSource = "",
                 userIdTarget = "",
                 relation = "",
-                isSuccess = "",
+                isSuccess = ""
             )
         )
     )
