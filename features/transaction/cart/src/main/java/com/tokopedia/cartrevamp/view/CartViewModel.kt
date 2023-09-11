@@ -219,7 +219,8 @@ class CartViewModel @Inject constructor(
     val updateCartAndGetLastApplyEvent: LiveData<UpdateCartAndGetLastApplyEvent> =
         _updateCartAndGetLastApplyEvent
 
-    private val _selectedAmountState: CartMutableLiveData<Pair<Int, Int>> = CartMutableLiveData(Pair(-1, 0))
+    private val _selectedAmountState: CartMutableLiveData<Pair<Int, Int>> =
+        CartMutableLiveData(Pair(-1, 0))
     val selectedAmountState: CartMutableLiveData<Pair<Int, Int>> = _selectedAmountState
 
     private val _cartTrackerEvent: MutableLiveData<CartTrackerEvent> = MutableLiveData()
@@ -1825,7 +1826,8 @@ class CartViewModel @Inject constructor(
         val allSelectedAvailableCartItems =
             CartDataHelper.getSelectedAvailableCartItemData(cartDataList.value)
         val totalSelected = allSelectedAvailableCartItems.count { it.isSelected }
-        val selectedAmountHolderDataIndex = cartDataList.value.indexOfFirst { it is CartSelectedAmountHolderData }
+        val selectedAmountHolderDataIndex =
+            cartDataList.value.indexOfFirst { it is CartSelectedAmountHolderData }
         val selectedAmountHolderData = cartDataList.value.getOrNull(selectedAmountHolderDataIndex)
         if (selectedAmountHolderData is CartSelectedAmountHolderData) {
             selectedAmountHolderData.selectedAmount = totalSelected
@@ -2780,6 +2782,10 @@ class CartViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    fun addAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>) {
+        cartModel.availableCartItemImpressionList.addAll(availableCartItems)
     }
 
     override fun onCleared() {

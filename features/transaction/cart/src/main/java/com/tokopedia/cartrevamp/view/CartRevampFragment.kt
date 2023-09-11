@@ -17,7 +17,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.CompoundButton
 import android.widget.ImageView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
@@ -228,7 +227,7 @@ class CartRevampFragment :
 
     private var binding by autoClearedNullable<FragmentCartRevampBinding>()
 
-    lateinit var cartAdapter: CartAdapter
+    private var cartAdapter: CartAdapter? = null
     private var refreshHandler: RefreshHandler? = null
     private var progressDialog: LoaderDialog? = null
 
@@ -259,7 +258,7 @@ class CartRevampFragment :
     private var cartAllPerformanceMonitoring: PerformanceMonitoring? = null
     private var isTraceCartAllStopped: Boolean = false
 
-    private lateinit var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener
+    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var hasLoadRecommendation: Boolean = false
 
     private var hasTriedToLoadWishList: Boolean = false
@@ -287,13 +286,6 @@ class CartRevampFragment :
 
     private var wishlistIcon: IconUnify? = null
     private var animatedWishlistImage: ImageView? = null
-
-    private lateinit var editBundleActivityResult: ActivityResultLauncher<Intent>
-    private lateinit var shipmentActivityResult: ActivityResultLauncher<Intent>
-    private lateinit var pdpActivityResult: ActivityResultLauncher<Intent>
-    private lateinit var promoActivityResult: ActivityResultLauncher<Intent>
-    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var addonResultLauncher: ActivityResultLauncher<Intent>
 
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -332,6 +324,7 @@ class CartRevampFragment :
         private const val BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX = 4
 
         private const val TOKONOW_UPDATER_DEBOUNCE = 500L
+        private const val TOKONOW_SEE_OTHERS_OR_ALL_LIMIT = 10
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartRevampFragment {
@@ -391,20 +384,18 @@ class CartRevampFragment :
                     PerformanceMonitoring.start(CART_ALL_TRACE)
             }
         }
-
-        initActivityLauncher()
     }
 
     override fun onResume() {
         super.onResume()
         plusCoachMark = CoachMark2(context ?: requireContext())
         plusCoachMark?.let {
-            cartAdapter.setCoachMark(it)
+            cartAdapter?.setCoachMark(it)
         }
 
         // Check if currently not refreshing, not ATC external flow and not on error state
         if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && binding?.layoutGlobalError?.visibility != View.VISIBLE) {
-            if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
+            if (cartAdapter?.itemCount == 0) {
                 viewModel.processInitialGetCartData(
                     getCartId(),
                     viewModel.cartDataList.value.isEmpty(),
@@ -486,12 +477,14 @@ class CartRevampFragment :
     }
 
     override fun onCartGroupNameClicked(appLink: String) {
+        sendCartImpressionAnalytic()
         routeToApplink(appLink)
     }
 
     override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+            sendCartImpressionAnalytic()
             if (isTokoNow) {
                 routeToTokoNowHomePage()
             } else {
@@ -550,6 +543,9 @@ class CartRevampFragment :
         when (cartGroupHolderData.cartShopGroupTicker.action) {
             CartShopGroupTickerData.ACTION_REDIRECT_PAGE -> {
                 if (cartGroupHolderData.cartShopGroupTicker.applink.isNotBlank()) {
+                    val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                        refreshCartWithSwipeToRefresh()
+                    }
                     val intent = RouteManager.getIntent(
                         requireContext(),
                         cartGroupHolderData.cartShopGroupTicker.applink
@@ -738,7 +734,7 @@ class CartRevampFragment :
         var index = 1
         var recommendationItemClick: RecommendationItem? = null
         val recommendationList = CartDataHelper.getRecommendationItem(
-            cartAdapter.itemCount,
+            cartAdapter?.itemCount ?: 0,
             viewModel.cartDataList.value
         )
         for ((_, item) in recommendationList) {
@@ -799,7 +795,7 @@ class CartRevampFragment :
 
     override fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData) {
         val recommendationList = CartDataHelper.getRecommendationItem(
-            cartAdapter.itemCount,
+            cartAdapter?.itemCount ?: 0,
             viewModel.cartDataList.value
         )
         if (recommendationList.isEmpty()) return
@@ -910,12 +906,11 @@ class CartRevampFragment :
             index
         )
         if (cartShopBottomHolderData != null) {
-            // TODO: reinsert analytics
-//            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
-//                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
-//            } else {
-//                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
-//            }
+            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
+                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
+            } else {
+                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
+            }
             cartShopBottomHolderData.shopData.isCollapsed = false
             viewModel.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
             onNeedToInsertMultipleViewItem(
@@ -1117,15 +1112,12 @@ class CartRevampFragment :
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
         cartPageAnalytics.eventClickAtcCartClickProductName(cartItemHolderData.productName)
+        sendCartImpressionAnalytic()
         routeToProductDetailPage(cartItemHolderData.productId)
     }
 
     override fun onCartItemQuantityInputFormClicked(qty: String) {
         cartPageAnalytics.eventClickAtcCartClickInputQuantity(qty)
-    }
-
-    override fun onCartItemLabelInputRemarkClicked() {
-        // todo : fix analytics
     }
 
     override fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData) {
@@ -1199,6 +1191,7 @@ class CartRevampFragment :
         noteLottieIcon: LottieAnimationView,
         position: Int
     ) {
+        cartPageAnalytics.eventClickNoteIcon()
         val bottomSheet = CartNoteBottomSheet.newInstance(
             CartNoteBottomSheetData(
                 productName = data.productName,
@@ -1208,6 +1201,7 @@ class CartRevampFragment :
             )
         )
         bottomSheet.setListener(listener = { newNote ->
+            cartPageAnalytics.eventClickSaveOnNoteBottomSheet()
             data.notes = newNote
             playNoteAnimation(newNote, noteIcon, noteLottieIcon, position)
         })
@@ -1298,6 +1292,9 @@ class CartRevampFragment :
 
     override fun onEditBundleClicked(cartItemHolderData: CartItemHolderData) {
         activity?.let {
+            val editBundleActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                onResultFromEditBundle(result.resultCode, result.data)
+            }
             cartPageAnalytics.eventClickUbahInProductBundlingPackageProductCard(
                 cartItemHolderData.bundleId,
                 cartItemHolderData.bundleType
@@ -1398,6 +1395,9 @@ class CartRevampFragment :
         )
 
         activity?.let {
+            val addonResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                onResultFromAddOnBottomSheet(result.resultCode, result.data)
+            }
             val intent = RouteManager.getIntent(it, applink)
             addonResultLauncher.launch(intent)
         }
@@ -1504,6 +1504,15 @@ class CartRevampFragment :
         cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
     }
 
+    override fun sendRemoveCartFromSubtractButtonAnalytic(cartItemHolderData: CartItemHolderData) {
+        val analyticItems = CartPageAnalyticsUtil.generateRemoveCartFromSubtractButtonAnalytics(cartItemHolderData)
+        cartPageAnalytics.sendRemoveCartFromSubtractButtonEvent(analyticItems, userSession.userId)
+    }
+
+    override fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>) {
+        viewModel.addAvailableCartItemImpression(availableCartItems)
+    }
+
     private fun addEndlessRecyclerViewScrollListener(
         cartRecyclerView: RecyclerView,
         gridLayoutManager: GridLayoutManager
@@ -1516,7 +1525,7 @@ class CartRevampFragment :
                     }
                 }
             }
-        cartRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener)
+        cartRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener!!)
     }
 
     private fun addRecyclerViewScrollListener(cartRecyclerView: RecyclerView) {
@@ -2076,33 +2085,6 @@ class CartRevampFragment :
         }
     }
 
-    private fun initActivityLauncher() {
-        editBundleActivityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                onResultFromEditBundle(result.resultCode, result.data)
-            }
-        shipmentActivityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                onResultFromShipmentPage(result.resultCode, result.data)
-            }
-        pdpActivityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                onResultFromPdp()
-            }
-        promoActivityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                onResultFromPromoPage(result.resultCode, result.data)
-            }
-        activityResultLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                refreshCartWithSwipeToRefresh()
-            }
-        addonResultLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                onResultFromAddOnBottomSheet(result.resultCode, result.data)
-            }
-    }
-
     private fun isAtcExternalFlow(): Boolean {
         return getAtcProductId() != 0L
     }
@@ -2130,7 +2112,10 @@ class CartRevampFragment :
                 viewLifecycleOwner.lifecycle.addObserver(this)
                 setOnBackButtonClickListener(
                     disableDefaultGtmTracker = true,
-                    backButtonClickListener = ::onBackPressed
+                    backButtonClickListener = {
+                        onBackPressed()
+                        sendCartImpressionAnalytic()
+                    }
                 )
                 setIcon(
                     IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
@@ -2285,6 +2270,7 @@ class CartRevampFragment :
     private fun navigateToShipmentPage() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = true
+        sendCartImpressionAnalytic()
         routeToCheckoutPage()
     }
 
@@ -2369,7 +2355,7 @@ class CartRevampFragment :
 
     private fun observeCartDataList() {
         viewModel.cartDataList.observe(viewLifecycleOwner) { data ->
-            cartAdapter.updateList(data)
+            cartAdapter?.updateList(data)
         }
     }
 
@@ -2851,7 +2837,7 @@ class CartRevampFragment :
 
                 is CartGlobalEvent.OnNeedUpdateWishlistAdapterData -> {
                     event.wishlistHolderData.wishList.removeAt(event.wishlistIndex)
-                    cartAdapter.cartWishlistAdapter?.updateWishlistItems(event.wishlistHolderData.wishList)
+                    cartAdapter?.cartWishlistAdapter?.updateWishlistItems(event.wishlistHolderData.wishList)
                 }
             }
         }
@@ -3109,41 +3095,41 @@ class CartRevampFragment :
     }
 
     private fun onNeedToInsertMultipleViewItem(positionStart: Int, itemCount: Int) {
-        cartAdapter.updateListWithoutDiffUtil(viewModel.cartDataList.value)
+        cartAdapter?.updateListWithoutDiffUtil(viewModel.cartDataList.value)
         if (positionStart == RecyclerView.NO_POSITION) return
         if (binding?.rvCart?.isComputingLayout == true) {
-            binding?.rvCart?.post { cartAdapter.notifyItemRangeInserted(positionStart, itemCount) }
+            binding?.rvCart?.post { cartAdapter?.notifyItemRangeInserted(positionStart, itemCount) }
         } else {
-            cartAdapter.notifyItemRangeInserted(positionStart, itemCount)
+            cartAdapter?.notifyItemRangeInserted(positionStart, itemCount)
         }
     }
 
     private fun onNeedToRemoveMultipleViewItem(positionStart: Int, itemCount: Int) {
-        cartAdapter.updateListWithoutDiffUtil(viewModel.cartDataList.value)
+        cartAdapter?.updateListWithoutDiffUtil(viewModel.cartDataList.value)
         if (positionStart == RecyclerView.NO_POSITION) return
         if (binding?.rvCart?.isComputingLayout == true) {
-            binding?.rvCart?.post { cartAdapter.notifyItemRangeRemoved(positionStart, itemCount) }
+            binding?.rvCart?.post { cartAdapter?.notifyItemRangeRemoved(positionStart, itemCount) }
         } else {
-            cartAdapter.notifyItemRangeRemoved(positionStart, itemCount)
+            cartAdapter?.notifyItemRangeRemoved(positionStart, itemCount)
         }
     }
 
     private fun onNeedToUpdateViewItem(position: Int) {
-        cartAdapter.updateListWithoutDiffUtil(viewModel.cartDataList.value)
+        cartAdapter?.updateListWithoutDiffUtil(viewModel.cartDataList.value)
         if (position == RecyclerView.NO_POSITION) return
         if (binding?.rvCart?.isComputingLayout == true) {
-            binding?.rvCart?.post { cartAdapter.notifyItemChanged(position) }
+            binding?.rvCart?.post { cartAdapter?.notifyItemChanged(position) }
         } else {
-            cartAdapter.notifyItemChanged(position)
+            cartAdapter?.notifyItemChanged(position)
         }
     }
 
     private fun onNeedToUpdateMultipleViewItem(positionStart: Int, count: Int) {
         if (positionStart == RecyclerView.NO_POSITION) return
         if (binding?.rvCart?.isComputingLayout == true) {
-            binding?.rvCart?.post { cartAdapter.notifyItemRangeChanged(positionStart, count) }
+            binding?.rvCart?.post { cartAdapter?.notifyItemRangeChanged(positionStart, count) }
         } else {
-            cartAdapter.notifyItemRangeChanged(positionStart, count)
+            cartAdapter?.notifyItemRangeChanged(positionStart, count)
         }
     }
 
@@ -3889,12 +3875,14 @@ class CartRevampFragment :
 
     private fun routeToCheckoutPage() {
         activity?.let {
+            val shipmentActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                onResultFromShipmentPage(result.resultCode, result.data)
+            }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
             intent.putExtra(
                 CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE,
                 CheckoutConstant.CHECKOUT_PAGE_SOURCE_CART
             )
-
             shipmentActivityResult.launch(intent)
         }
     }
@@ -3909,6 +3897,9 @@ class CartRevampFragment :
 
     private fun routeToProductDetailPage(productId: String) {
         activity?.let {
+            val pdpActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                onResultFromPdp()
+            }
             val intent = RouteManager.getIntent(
                 it,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -3930,6 +3921,9 @@ class CartRevampFragment :
                 )
                 bottomSheetPromo.show(childFragmentManager)
             } else {
+                val promoActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                    onResultFromPromoPage(result.resultCode, result.data)
+                }
                 val intent =
                     RouteManager.getIntent(it, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
                 val promoRequest = generateParamsCouponList()
@@ -3937,7 +3931,6 @@ class CartRevampFragment :
                 intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CART)
                 intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
                 intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
-
                 promoActivityResult.launch(intent)
             }
         }
@@ -4029,6 +4022,13 @@ class CartRevampFragment :
                 imageUrl
             )
         }
+    }
+
+    private fun sendCartImpressionAnalytic() {
+        val cartItems = viewModel.cartModel.availableCartItemImpressionList
+        val analyticData = CartPageAnalyticsUtil.generateCartImpressionAnalytic(cartItems)
+        cartPageAnalytics.sendCartImpressionEvent(analyticData, userSession.userId)
+        viewModel.cartModel.availableCartItemImpressionList = mutableSetOf()
     }
 
     private fun sendATCTrackingURL(recommendationItem: RecommendationItem) {
@@ -4191,7 +4191,7 @@ class CartRevampFragment :
 
     private fun hideItemLoading() {
         viewModel.removeCartLoadingData()
-        endlessRecyclerViewScrollListener.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         hasLoadRecommendation = true
     }
 
@@ -4243,7 +4243,7 @@ class CartRevampFragment :
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return if (position != RecyclerView.NO_POSITION) {
-                    if (position < cartAdapter.itemCount && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT) {
+                    if (position < (cartAdapter?.itemCount ?: 0) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT) {
                         SPAN_SIZE_ONE
                     } else {
                         SPAN_SIZE_TWO
@@ -4290,7 +4290,7 @@ class CartRevampFragment :
             val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
             generateSelectAllCoachMark(mainFlowCoachMarkItems)
             mainFlowCoachMark?.let {
-                cartAdapter.setMainCoachMark(
+                cartAdapter?.setMainCoachMark(
                     CartMainCoachMarkUiModel(
                         it,
                         mainFlowCoachMarkItems,
@@ -4589,6 +4589,9 @@ class CartRevampFragment :
     }
 
     private fun startActivityWithRefreshHandler(intent: Intent) {
+        val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            refreshCartWithSwipeToRefresh()
+        }
         activityResultLauncher.launch(intent)
     }
 
@@ -4801,7 +4804,7 @@ class CartRevampFragment :
     }
 
     private fun updateStateAfterFinishGetCartList() {
-        endlessRecyclerViewScrollListener.resetState()
+        endlessRecyclerViewScrollListener?.resetState()
         refreshHandler?.finishRefresh()
         viewModel.resetData()
     }

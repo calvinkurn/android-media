@@ -21,6 +21,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -53,6 +54,12 @@ class CartGroupViewHolder(
     }
 
     fun bindData(cartGroupHolderData: CartGroupHolderData) {
+        itemView.addOnImpressionListener(cartGroupHolderData, onView = {
+            if (!cartGroupHolderData.isError && cartGroupHolderData.isCollapsed) {
+                actionListener.onAvailableCartItemImpression(cartGroupHolderData.productUiModelList)
+            }
+        })
+
         renderDivider(cartGroupHolderData)
         renderGroupName(cartGroupHolderData)
         renderGroupBadge(cartGroupHolderData)
@@ -273,7 +280,7 @@ class CartGroupViewHolder(
                     ConstraintSet.START,
                     R.id.image_shop_badge,
                     ConstraintSet.END,
-                    4
+                    GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
                 )
             } else {
                 if (cartGroupHolderData.isError) {
@@ -479,24 +486,11 @@ class CartGroupViewHolder(
                             icBmgmTicker.gone()
                         }
                         if (cartShopGroupTicker.rightIcon.isNotBlank() && cartShopGroupTicker.rightIconDark.isNotBlank()) {
-                            // TODO: handle Right Icon
-//                            if (root.context.isDarkMode()) {
-//                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
-//                            } else {
-//                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
-//                            }
-                            val color = ContextCompat.getColor(
-                                itemView.context,
-                                unifyprinciplesR.color.Unify_NN500
-                            )
-                            iuTickerRightIcon.setImage(
-                                IconUnify.CHEVRON_RIGHT,
-                                color,
-                                null,
-                                color,
-                                null
-                            )
-                            iuTickerRightIcon.show()
+                            if (root.context.isDarkMode()) {
+                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
+                            } else {
+                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
+                            }
                         } else {
                             iuTickerRightIcon.gone()
                         }

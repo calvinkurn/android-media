@@ -32,6 +32,8 @@ data class CartModel(
     var lastCartShopGroupTickerCartString: String = "",
     var toBeDeletedBundleGroupId: String = "",
 
+    var availableCartItemImpressionList: MutableSet<CartItemHolderData> = mutableSetOf(),
+
     // adapter
     var tmpCollapsedUnavailableShop: DisabledCollapsedHolderData? = null,
     var firstCartSectionHeaderPosition: Int = -1,
