@@ -40,4 +40,8 @@ data class FilterTabWidgetUiModel(
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    companion object {
+        const val WIDGET_TYPE = "filterTab"
+    }
 }

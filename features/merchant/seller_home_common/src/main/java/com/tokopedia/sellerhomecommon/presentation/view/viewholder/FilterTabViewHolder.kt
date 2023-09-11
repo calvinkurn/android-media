@@ -20,7 +20,7 @@ class FilterTabViewHolder(
             val selectedTab = element.filterTabs?.firstOrNull { it.page == element.selectedFilterPage }
             selectedTab?.let { tab ->
                 tvFilterTabTitle.text = tab.tabTitle
-                tvFilterTabDesc.text = tab.tabTitle
+                tvFilterTabDesc.text = tab.tabName
 
                 root.setOnClickListener {
                     listener.onFilterClicked(

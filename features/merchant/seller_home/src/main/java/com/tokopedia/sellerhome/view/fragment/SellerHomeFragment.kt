@@ -105,6 +105,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
+import com.tokopedia.sellerhomecommon.domain.model.TabModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
@@ -928,6 +929,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun setOnPostWidgetRemoveItemClicked(element: PostListWidgetUiModel) {
         showFeedbackLoopOption(element)
         SellerHomeTracking.sendClickWidgetPostDeleteEvent(element.dataKey)
+    }
+
+    override fun onFilterClicked(tabs: List<TabModel>?, selectedPage: String?) {
+        // No-op
     }
 
     fun setNavigationNavigationView(navigationView: View?, otherMenuView: View?) {

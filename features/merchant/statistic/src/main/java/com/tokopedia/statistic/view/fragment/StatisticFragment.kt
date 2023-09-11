@@ -36,6 +36,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
+import com.tokopedia.sellerhomecommon.domain.model.TabModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
@@ -518,6 +519,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         statisticPage?.let {
             StatisticTracker.sendShowTableTableFilterClickEvent(it, element)
         }
+    }
+
+    override fun onFilterClicked(tabs: List<TabModel>?, selectedPage: String?) {
+        TODO("Open bottomsheet")
     }
 
     fun setSelectedWidget(widget: String) {

@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.asLowerCase
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -11,7 +13,9 @@ import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
+import com.tokopedia.sellerhomecommon.domain.model.TabModel
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
@@ -20,6 +24,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.FilterTabWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -32,6 +37,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import javax.inject.Inject
@@ -56,17 +62,7 @@ class LayoutMapper @Inject constructor(
     ): WidgetLayoutUiModel {
         val widgets = response.layout.widget.orEmpty()
         if (widgets.isNotEmpty()) {
-            val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
-            widgets.forEach { widget ->
-                val widgetType = widget.widgetType.orEmpty()
-                if (WidgetType.isValidWidget(widgetType)) {
-                    val mappedWidget = getWidgetByWidgetType(widgetType, widget, isFromCache)
-                    mappedWidget?.let {
-                        mappedList.add(it)
-                    }
-                }
-            }
-
+            val mappedList = getMappedWidgetList(widgets, isFromCache)
             return WidgetLayoutUiModel(
                 widgetList = mappedList,
                 shopState = getShopState(response.layout.shopState),
@@ -74,6 +70,31 @@ class LayoutMapper @Inject constructor(
             )
         } else {
             throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
+        }
+    }
+
+    override fun mapRemoteDataToUiData(
+        response: GetLayoutResponse,
+        isFromCache: Boolean,
+        extra: Pair<String, Any?>
+    ): WidgetLayoutUiModel {
+        val (extraKey, extraObject) = extra
+        return if (extraKey == GetLayoutUseCase.KEY_PAGE) {
+            val widgets = response.layout.widget.orEmpty()
+            val mappedList = getMappedWidgetList(widgets, isFromCache)
+            (extraObject as? String)?.let { selectedPage ->
+                response.layout.tabs?.takeIf { it.isNotEmpty() }?.let {
+                    val filterTabUiModel = mapToFilterTabWidget(it, selectedPage, isFromCache)
+                    mappedList.add(Int.ZERO, filterTabUiModel)
+                }
+            }
+            WidgetLayoutUiModel(
+                widgetList = mappedList,
+                shopState = getShopState(response.layout.shopState),
+                personaStatus = response.layout.personaStatus.orZero()
+            )
+        } else {
+            mapRemoteDataToUiData(response, isFromCache)
         }
     }
 
@@ -572,11 +593,56 @@ class LayoutMapper @Inject constructor(
         )
     }
 
+    private fun mapToFilterTabWidget(
+        tabs: List<TabModel>,
+        selectedFilterTab: String,
+        fromCache: Boolean
+    ): FilterTabWidgetUiModel {
+        return FilterTabWidgetUiModel(
+            id = String.EMPTY,
+            widgetType = FilterTabWidgetUiModel.WIDGET_TYPE,
+            title = String.EMPTY,
+            subtitle = String.EMPTY,
+            tooltip = null,
+            tag = String.EMPTY,
+            appLink = String.EMPTY,
+            dataKey = String.EMPTY,
+            ctaText = String.EMPTY,
+            gridSize = WidgetGridSize.GRID_SIZE_4,
+            isShowEmpty = false,
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = fromCache,
+            emptyState = WidgetEmptyStateUiModel(),
+            useRealtime = false,
+            filterTabs = tabs,
+            selectedFilterPage = selectedFilterTab
+        )
+    }
+
     private fun getGridSize(gridSize: Int, defaultGridSize: Int): Int {
         return if (gridSize == WidgetGridSize.GRID_SIZE_0) {
             defaultGridSize
         } else {
             gridSize
         }
+    }
+
+    private fun getMappedWidgetList(
+        widgets: List<WidgetModel>,
+        isFromCache: Boolean
+    ): ArrayList<BaseWidgetUiModel<out BaseDataUiModel>> {
+        val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
+        widgets.forEach { widget ->
+            val widgetType = widget.widgetType.orEmpty()
+            if (WidgetType.isValidWidget(widgetType)) {
+                val mappedWidget = getWidgetByWidgetType(widgetType, widget, isFromCache)
+                mappedWidget?.let {
+                    mappedList.add(it)
+                }
+            }
+        }
+        return mappedList
     }
 }
