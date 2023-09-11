@@ -191,13 +191,22 @@ class PromoCompoundView @JvmOverloads constructor(
                         PromoItemInfo(
                             type = PromoItemInfo.TYPE_PROMO_INFO,
                             icon = PromoItemInfo.ICON_NONE,
-                            title = promo.message
+                            title = if (promo.useSecondaryPromo) {
+                                promo.secondaryPromo.message
+                            } else {
+                                promo.message
+                            }
                         )
                     )
                 }
 
                 else -> {
-                    promo.promoItemInfos.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
+                    if (promo.useSecondaryPromo) {
+                        promo.secondaryPromo.promoItemInfos
+                            .filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
+                    } else {
+                        promo.promoItemInfos.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
+                    }
                 }
             }
             llPromoInfo.removeAllViews()
@@ -288,8 +297,13 @@ class PromoCompoundView @JvmOverloads constructor(
             val expiryText = if (promo.isAttempted) {
                 context?.getString(promousageR.string.promo_usage_promo_code_label)
             } else {
-                promo.expiryInfo
-                    .toSpannableHtmlString(tpgPromoExpiryInfo.context)
+                if (promo.useSecondaryPromo) {
+                    promo.secondaryPromo
+                        .expiryInfo.toSpannableHtmlString(tpgPromoExpiryInfo.context)
+                } else {
+                    promo.expiryInfo
+                        .toSpannableHtmlString(tpgPromoExpiryInfo.context)
+                }
             }
             tpgPromoExpiryInfo.text = expiryText
             if (!expiryText.isNullOrBlank()) {
@@ -322,13 +336,26 @@ class PromoCompoundView @JvmOverloads constructor(
                 }
 
                 is PromoItemState.Normal -> {
-                    val isPromoGopayLater = promo.couponType.firstOrNull {
-                        it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
-                    } != null
-                    val isPromoCtaRegisterGopayLater =
+                    val isPromoGopayLater = if (promo.useSecondaryPromo) {
+                        promo.secondaryPromo.couponType.firstOrNull {
+                            it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
+                        } != null
+                    } else {
+                        promo.couponType.firstOrNull {
+                            it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
+                        } != null
+                    }
+                    val isPromoCtaRegisterGopayLater = if (promo.useSecondaryPromo) {
+                        promo.secondaryPromo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+                    } else {
                         promo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
-                    val isPromoCtaValid =
+                    }
+                    val isPromoCtaValid = if (promo.useSecondaryPromo) {
+                        promo.secondaryPromo.cta.text.isNotBlank()
+                            && promo.secondaryPromo.cta.appLink.isNotBlank()
+                    } else {
                         promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
+                    }
                     if (isPromoGopayLater && isPromoCtaRegisterGopayLater && isPromoCtaValid) {
                         tpgAdditionalInfoMessage.text =
                             promo.cta.text.toSpannableHtmlString(tpgAdditionalInfoMessage.context)
@@ -355,18 +382,27 @@ class PromoCompoundView @JvmOverloads constructor(
 
     private fun renderPromoCode(promo: PromoItem) {
         binding?.run {
-            tpgPromoCode.text = promo.code
+            tpgPromoCode.text = if (promo.useSecondaryPromo) {
+                promo.secondaryPromo.code
+            } else {
+                promo.code
+            }
             tpgPromoCode.isVisible = promo.isAttempted && promo.code.isNotBlank()
         }
     }
 
     private fun renderPromoQuota(promo: PromoItem) {
         binding?.run {
-            if (promo.remainingPromoCount > 1) {
+            val remainingPromoCount = if (promo.useSecondaryPromo) {
+                promo.secondaryPromo.remainingPromoCount
+            } else {
+                promo.remainingPromoCount
+            }
+            if (remainingPromoCount > 1) {
                 layoutRemainingQuotaRibbon.visible()
                 tpgRemainingQuota.text = context?.getString(
                     R.string.promo_voucher_placeholder_remaining_quota,
-                    promo.remainingPromoCount
+                    remainingPromoCount
                 )
                 updatePromoBenefitTypeMargin(16.toPx())
                 updateCardViewMargin(5.toPx(), 8.toPx())
@@ -411,18 +447,18 @@ class PromoCompoundView @JvmOverloads constructor(
         }
     }
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        setupOverlay(w, h)
-    }
+//    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+//        super.onSizeChanged(w, h, oldw, oldh)
+//        setupOverlay(w, h)
+//    }
 
-    private fun setupOverlay(width: Int, height: Int) {
-        //overlayDrawable?.bounds = Rect(0, 0, width, height)
-        //viewOverlay?.clear()
-        //overlayDrawable?.let {
-        //    viewOverlay?.add(it)
-        //}
-    }
+//    private fun setupOverlay(width: Int, height: Int) {
+//        overlayDrawable?.bounds = Rect(0, 0, width, height)
+//        viewOverlay?.clear()
+//        overlayDrawable?.let {
+//            viewOverlay?.add(it)
+//        }
+//    }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {

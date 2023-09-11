@@ -15,7 +15,6 @@ data class SecondaryPromoItem(
     val benefitDetail: PromoItemBenefitDetail = PromoItemBenefitDetail(),
     val benefitTypeStr: String = "",
     val remainingPromoCount: Int = 0,
-    val cardDetails: List<PromoItemCardDetail> = emptyList(),
     val clashingInfos: List<PromoItemClashingInfo> = emptyList(),
     val promoItemInfos: List<PromoItemInfo> = emptyList(),
     val boAdditionalData: List<BoAdditionalData> = emptyList(),

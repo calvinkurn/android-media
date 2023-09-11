@@ -242,10 +242,12 @@ data class SecondaryCoupon(
     val id: String = "",
     @SerializedName("index")
     val index: Int = 0,
-    @SerializedName("message")
-    val message: String = "",
     @SerializedName("code")
     val code: String = "",
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("message")
+    val message: String = "",
     @SerializedName("coupon_url")
     val couponUrl: String = "",
     @SerializedName("coupon_type")
@@ -258,6 +260,8 @@ data class SecondaryCoupon(
     val uniqueId: String = "",
     @SerializedName("shop_id")
     val shopId: Long = 0,
+    @SerializedName("is_group_header")
+    val isGroupHeader: Boolean = false,
     @SerializedName("group_id")
     val groupId: Long = 0,
     @SerializedName("is_selected")
@@ -276,8 +280,6 @@ data class SecondaryCoupon(
     val benefitAmount: Double = 0.0,
     @SerializedName("benefit_amount_str")
     val benefitAmountStr: String = "",
-    @SerializedName("coupon_card_details")
-    val couponCardDetails: List<CouponCardDetail> = emptyList(),
     @SerializedName("benefit_details")
     val benefitDetails: List<BenefitDetail> = emptyList(),
     @SerializedName("clashing_infos")

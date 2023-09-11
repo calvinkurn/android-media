@@ -301,9 +301,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                     uniqueId = it.uniqueId,
                     cartStringGroup = it.cartStringGroup,
                     shippingId = it.shippingId,
-                    spId = it.spId,
-
-                    )
+                    spId = it.spId
+                )
             },
             expiryInfo = coupon.expiryInfo,
             expiryTimestamp = coupon.expiryCountdown,
@@ -334,6 +333,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         couponSection: CouponSection,
         secondaryCoupon: SecondaryCoupon
     ): SecondaryPromoItem {
+        val remainingPromoCount = couponSection.couponGroups
+            .firstOrNull { it.id == secondaryCoupon.groupId }?.count ?: 1
         val benefitDetail = secondaryCoupon.benefitDetails.firstOrNull() ?: BenefitDetail()
         return SecondaryPromoItem(
             id = secondaryCoupon.id,
@@ -342,6 +343,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             uniqueId = secondaryCoupon.uniqueId,
             shopId = secondaryCoupon.shopId,
             code = secondaryCoupon.code,
+            message = secondaryCoupon.message,
             benefitAmount = secondaryCoupon.benefitAmount,
             benefitAmountStr = secondaryCoupon.benefitAmountStr,
             benefitDetail = PromoItemBenefitDetail(
@@ -350,7 +352,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 dataType = benefitDetail.dataType
             ),
             benefitTypeStr = secondaryCoupon.benefitTypeStr,
-            cardDetails = mapCardDetails(secondaryCoupon.couponCardDetails),
+            remainingPromoCount = remainingPromoCount,
             clashingInfos = secondaryCoupon.clashingInfos.map {
                 PromoItemClashingInfo(
                     code = it.code,
@@ -370,9 +372,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                     uniqueId = it.uniqueId,
                     cartStringGroup = it.cartStringGroup,
                     shippingId = it.shippingId,
-                    spId = it.spId,
-
-                    )
+                    spId = it.spId
+                )
             },
             expiryInfo = secondaryCoupon.expiryInfo,
             expiryTimestamp = secondaryCoupon.expiryCountdown,

@@ -92,6 +92,7 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                         is_attempted
                         is_highlighted
                         radio_check_state
+                        is_group_header
                         group_id
                         promo_id
                         is_bebas_ongkir
@@ -99,6 +100,56 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                         coupon_url
                         coupon_type
                         expiry_info
+                        clashing_infos {
+                          code
+                          message
+                          icon
+                        }
+                        cta {
+                          text
+                          app_link
+                          type
+                        }
+                        promo_infos {
+                          title
+                          icon
+                          info_type
+                          validation_type
+                          methods
+                        }
+                        benefit_details {
+                          amount_idr
+                          benefit_type
+                          data_type
+                        }
+                        bo_clashing_infos {
+                          code
+                          message
+                          icon
+                        }
+                        additional_bo_datas {
+                          code
+                          unique_id
+                          shipping_id
+                          sp_id
+                          benefit_amount
+                          shipping_price
+                          shipping_subsidy
+                          bo_campaign_id
+                          benefit_class
+                          eta_txt
+                          cart_string_group
+                          shipping_metadata {
+                            unique_id
+                            json_string
+                          }
+                        }
+                        coupon_card_details {
+                          state
+                          color
+                          icon_url
+                          background_url
+                        }
                       }
                       clashing_infos {
                         code
