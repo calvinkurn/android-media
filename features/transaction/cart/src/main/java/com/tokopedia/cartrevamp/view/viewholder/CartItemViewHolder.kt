@@ -694,8 +694,6 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductName(data: CartItemHolderData) {
-        validateErrorView(binding.textProductName, data.isError)
-
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
         if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
             val textProductNameLayoutParams =
@@ -712,6 +710,21 @@ class CartItemViewHolder constructor(
                 binding.textProductName.layoutParams as MarginLayoutParams
             textProductNameLayoutParams.topMargin = 0
             binding.textProductName.text = Utils.getHtmlFormat(data.productName)
+        }
+        if (data.isError) {
+            binding.textProductName.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN400
+                )
+            )
+        } else {
+            binding.textProductName.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN600
+                )
+            )
         }
         binding.textProductName.setOnClickListener(
             getOnClickProductItemListener(
@@ -831,7 +844,21 @@ class CartItemViewHolder constructor(
         } else {
             binding.textProductPrice.visible()
         }
-        validateErrorView(binding.textProductPrice, data.isError)
+        if (data.isError) {
+            binding.textProductPrice.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN400
+                )
+            )
+        } else {
+            binding.textProductPrice.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN950
+                )
+            )
+        }
 
         if (data.wholesalePriceFormatted != null) {
             binding.textProductPrice.text = data.wholesalePriceFormatted
@@ -912,7 +939,6 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderVariant(data: CartItemHolderData) {
-        validateErrorView(binding.textProductVariant, data.isError)
         var paddingRight = 0
         val paddingTop = itemView.resources.getDimensionPixelOffset(R.dimen.dp_2)
         val textProductVariant = binding.textProductVariant
@@ -924,6 +950,21 @@ class CartItemViewHolder constructor(
             textProductVariant.gone()
         }
         textProductVariant.setPadding(0, paddingTop, paddingRight, 0)
+        if (data.isError) {
+            textProductVariant.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN400
+                )
+            )
+        } else {
+            textProductVariant.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN600
+                )
+            )
+        }
     }
 
     private fun renderProductNotes(element: CartItemHolderData) {
