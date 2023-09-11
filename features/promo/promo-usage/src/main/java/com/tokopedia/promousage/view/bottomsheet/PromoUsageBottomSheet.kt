@@ -886,11 +886,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 is ApplyPromoUiAction.Failed -> {
                     renderLoadingDialog(false)
                     if (uiAction.shouldReload) {
+                        showToastMessage(uiAction.throwable)
                         resetView()
+                    } else {
+                        listener?.onApplyPromoFailed(uiAction.throwable)
+                        dismiss()
                     }
-                    showToastMessage(uiAction.throwable)
-                    listener?.onApplyPromoFailed(uiAction.throwable)
-                    dismiss()
                 }
             }
         }

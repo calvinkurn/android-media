@@ -20,13 +20,19 @@ class GetOccCartUseCase @Inject constructor(
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) {
 
-    fun createRequestParams(source: String, gatewayCode: String, tenor: Int): Map<String, Any?> {
+    fun createRequestParams(
+        source: String,
+        gatewayCode: String,
+        tenor: Int,
+        isCartReimagine: Boolean
+    ): Map<String, Any?> {
         return mapOf(
             PARAM_SOURCE to source,
             ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
             PARAM_ADDITIONAL_PARAMS to mapOf(
                 PARAM_GATEWAY_CODE to gatewayCode,
-                PARAM_TENOR to tenor
+                PARAM_TENOR to tenor,
+                PARAM_IS_CART_REIMAGINE to isCartReimagine
             )
         )
     }
@@ -56,6 +62,7 @@ class GetOccCartUseCase @Inject constructor(
         private const val PARAM_GATEWAY_CODE = "gateway_code"
         private const val PARAM_TENOR = "tenure_type"
         private const val PARAM_ADDITIONAL_PARAMS = "additional_params"
+        private const val PARAM_IS_CART_REIMAGINE = "is_cart_reimagine"
 
         private const val GetOccMultiQuery = "GetOccMultiQuery"
 
@@ -689,6 +696,10 @@ class GetOccCartUseCase @Inject constructor(
                 currency_details_str
               }
               sp_ids
+            }
+            user_group_metadata {
+              key
+              value
             }
           }
         }

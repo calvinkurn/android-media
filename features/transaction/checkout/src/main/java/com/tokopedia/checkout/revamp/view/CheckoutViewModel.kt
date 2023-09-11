@@ -58,7 +58,6 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -113,7 +112,6 @@ class CheckoutViewModel @Inject constructor(
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val mTrackerTradeIn: CheckoutTradeInAnalytics,
     private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
-    private val promoUsageRollenceManager: PromoUsageRollenceManager,
     private val helper: CheckoutDataHelper,
     private val userSessionInterface: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
@@ -254,7 +252,7 @@ class CheckoutViewModel @Inject constructor(
                         epharmacy = uploadPrescriptionUiModel
                     )
 
-                    isPromoRevamp = promoUsageRollenceManager
+                    isPromoRevamp = PromoUsageRollenceManager()
                         .isRevamp(saf.cartShipmentAddressFormData.lastApplyData.userGroupMetadata)
                     val promo = CheckoutPromoModel(
                         isEnable = !tickerError.isError,
@@ -594,7 +592,7 @@ class CheckoutViewModel @Inject constructor(
                         fetchEpharmacyData()
                     }
                     if (checkoutItem is CheckoutPromoModel) {
-                        fetchInitialEntryPointInfo()
+                        getInitialEntryPointInfo()
                     }
                 }
             }
@@ -729,43 +727,42 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private fun fetchInitialEntryPointInfo() {
-        viewModelScope.launch(dispatchers.immediate) {
-            val checkoutModel = listData.value.promo()!!
-            if (isPromoRevamp == null || isPromoRevamp == false) {
-                return@launch
-            }
-            withContext(dispatchers.main) {
-                val currentListData = listData.value
-                listData.value = currentListData.map { model ->
-                    if (model is CheckoutPromoModel) {
-                        return@map checkoutModel.copy(
-                            entryPointInfo = PromoEntryPointInfo(),
-                            isLoading = true
-                        )
-                    } else {
-                        return@map model
-                    }
-                }
-            }
-            val isUsingGlobalPromo = checkoutModel.promo
-                .codes.isNotEmpty()
-            val isUsingPromo = checkoutModel
-                .promo.voucherOrders.any { it.code.isNotEmpty() && it.message.state != "red" }
-            if (!isUsingGlobalPromo && !isUsingPromo) {
-                val entryPointInfo = promoProcessor.getEntryPointInfo(
-                    generateCouponListRecommendationRequest()
-                )
+    private fun getInitialEntryPointInfo() {
+        if (isPromoRevamp == true) {
+            viewModelScope.launch(dispatchers.immediate) {
+                val checkoutModel = listData.value.promo()!!
                 withContext(dispatchers.main) {
                     val currentListData = listData.value
                     listData.value = currentListData.map { model ->
                         if (model is CheckoutPromoModel) {
                             return@map checkoutModel.copy(
-                                entryPointInfo = entryPointInfo,
-                                isLoading = false
+                                entryPointInfo = null,
+                                isLoading = true
                             )
                         } else {
                             return@map model
+                        }
+                    }
+                }
+                val isUsingGlobalPromo = checkoutModel.promo
+                    .codes.isNotEmpty()
+                val isUsingPromo = checkoutModel
+                    .promo.voucherOrders.any { it.code.isNotBlank() && it.message.state != "red" }
+                if (!isUsingGlobalPromo && !isUsingPromo) {
+                    val entryPointInfo = promoProcessor.getEntryPointInfo(
+                        generateCouponListRecommendationRequest()
+                    )
+                    withContext(dispatchers.main) {
+                        val currentListData = listData.value
+                        listData.value = currentListData.map { model ->
+                            if (model is CheckoutPromoModel) {
+                                return@map checkoutModel.copy(
+                                    entryPointInfo = entryPointInfo,
+                                    isLoading = false
+                                )
+                            } else {
+                                return@map model
+                            }
                         }
                     }
                 }
@@ -773,19 +770,23 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchEntryPointInfo(
+    private suspend fun getEntryPointInfo(
         checkoutItems: List<CheckoutItem>,
         oldCheckoutItems: List<CheckoutItem>?
-    ) : List<CheckoutItem> {
-        val checkoutModel = checkoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
-        val oldCheckoutModel = oldCheckoutItems?.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
+    ): List<CheckoutItem> {
+        val checkoutModel =
+            checkoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
+        val oldCheckoutModel =
+            oldCheckoutItems?.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
 
         if (checkoutModel != null && oldCheckoutModel != null) {
             if (isPromoRevamp == null || isPromoRevamp == false) {
                 return checkoutItems
             } else {
-                val oldTotalPromoAmount = oldCheckoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
-                val newTotalPromoAmount = checkoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
+                val oldTotalPromoAmount =
+                    oldCheckoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
+                val newTotalPromoAmount =
+                    checkoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
                 val isAnimateWording = newTotalPromoAmount > oldTotalPromoAmount
 
                 val entryPointInfo = promoProcessor
@@ -809,7 +810,7 @@ class CheckoutViewModel @Inject constructor(
     fun reloadEntryPointInfo() {
         viewModelScope.launch(dispatchers.immediate) {
             val data = listData.value
-            val newData = fetchEntryPointInfo(data, null)
+            val newData = getEntryPointInfo(data, null)
             withContext(dispatchers.main) {
                 listData.value = newData
             }
@@ -1397,7 +1398,7 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
-        newItems = fetchEntryPointInfo(newItems, checkoutItems)
+        newItems = getEntryPointInfo(newItems, checkoutItems)
         listData.value = newItems
         calculateTotal()
         sendEEStep3()
@@ -1440,7 +1441,11 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
             }
-            removeInvalidBoCodeFromPromoRequest(shipmentCartItemModel, listData.value, validateUsePromoRequest)
+            removeInvalidBoCodeFromPromoRequest(
+                shipmentCartItemModel,
+                listData.value,
+                validateUsePromoRequest
+            )
             for (ordersItem in validateUsePromoRequest.orders) {
                 if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                     ordersItem.spId = courierItemData.shipperProductId
@@ -1507,7 +1512,7 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
-        newItems = fetchEntryPointInfo(newItems, listData.value)
+        newItems = getEntryPointInfo(newItems, listData.value)
         listData.value = newItems
         cartProcessor.processSaveShipmentState(
             listData.value,
@@ -1629,7 +1634,7 @@ class CheckoutViewModel @Inject constructor(
                 newOrder.validationMetadata = ""
             }
         }
-        newItems = fetchEntryPointInfo(newItems, listData.value)
+        newItems = getEntryPointInfo(newItems, listData.value)
         listData.value = newItems
         cartProcessor.processSaveShipmentState(
             listData.value,
@@ -2374,7 +2379,8 @@ class CheckoutViewModel @Inject constructor(
         var firstScrollIndex = -1
         for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-                val logPromoCode = shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
+                val logPromoCode =
+                    shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
                 if (!logPromoCode.isNullOrEmpty() &&
                     unprocessedUniqueIds.contains(shipmentCartItemModel.cartStringGroup)
                 ) {

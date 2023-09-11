@@ -172,7 +172,6 @@ class CartViewModel @Inject constructor(
     private val followShopUseCase: FollowShopUseCase,
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
     private val cartPromoEntryPointProcessor: CartPromoEntryPointProcessor,
-    private val promoUsageRollenceManager: PromoUsageRollenceManager,
     private val schedulers: ExecutorSchedulers,
     private val dispatchers: CoroutineDispatchers,
     private val cartCalculator: CartCalculator
@@ -2795,7 +2794,7 @@ class CartViewModel @Inject constructor(
 
     fun isPromoRevamp(): Boolean {
         cartModel.cartListData?.let { data ->
-            return promoUsageRollenceManager
+            return PromoUsageRollenceManager()
                 .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
         }
         return false
@@ -2811,7 +2810,6 @@ class CartViewModel @Inject constructor(
                 _entryPointInfoEvent.postValue(entryPointEvent)
             },
             onError = {
-                Timber.e(it)
                 _entryPointInfoEvent.postValue(EntryPointInfoEvent.Error(lastApply))
             }
         )

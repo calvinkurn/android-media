@@ -20,8 +20,7 @@ import javax.inject.Inject
 class CartPromoEntryPointProcessor @Inject constructor(
     private val getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase,
     private val getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
-    private val promoUsageRollenceManager: PromoUsageRollenceManager
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) {
 
     private var isPromoRevamp: Boolean? = null
@@ -71,7 +70,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
         cartDataList: ArrayList<Any>
     ): EntryPointInfoEvent {
         if (isPromoRevamp == null) {
-            isPromoRevamp = promoUsageRollenceManager.isRevamp(lastApply.userGroupMetadata)
+            isPromoRevamp = PromoUsageRollenceManager().isRevamp(lastApply.userGroupMetadata)
         }
         val hasSelectedItemInCart = CartDataHelper.hasSelectedCartItem(cartDataList)
 

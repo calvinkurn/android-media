@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -15,6 +16,10 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
+import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
@@ -36,6 +41,9 @@ import javax.inject.Inject
 class OrderSummaryPagePromoProcessor @Inject constructor(
     private val validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>,
     private val clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>,
+    private val getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase,
+    private val getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     private val orderSummaryAnalytics: OrderSummaryAnalytics,
     private val executorDispatchers: CoroutineDispatchers
 ) {
@@ -454,5 +462,22 @@ class OrderSummaryPagePromoProcessor @Inject constructor(
             }
         }
         return promoCodes
+    }
+
+    suspend fun getEntryPointInfo(
+        promoRequest: PromoRequest
+    ): PromoEntryPointInfo {
+        return try {
+            val param = GetPromoListRecommendationParam.create(
+                promoRequest = promoRequest,
+                chosenAddress = chosenAddressRequestHelper.getChosenAddress(),
+                isPromoRevamp = true
+            )
+            val response = getPromoListRecommendationEntryPointUseCase(param)
+            getPromoListRecommendationMapper
+                .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+        } catch (_: Throwable) {
+            PromoEntryPointInfo(isSuccess = false)
+        }
     }
 }

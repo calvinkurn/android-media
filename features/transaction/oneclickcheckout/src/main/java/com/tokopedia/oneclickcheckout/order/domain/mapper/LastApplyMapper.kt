@@ -31,7 +31,8 @@ object LastApplyMapper {
             voucherOrders = mapVoucherOrders(lastApply.data.voucherOrders),
             additionalInfo = mapAdditionalInfo(lastApply.data.additionalInfo),
             message = mapMessage(lastApply.data.message),
-            listAllPromoCodes = mapAllPromoCodes(lastApply.data.codes, lastApply.data.voucherOrders)
+            listAllPromoCodes = mapAllPromoCodes(lastApply.data.codes, lastApply.data.voucherOrders),
+            userGroupMetadata = lastApply.data.userGroupMetadata
         )
     }
 

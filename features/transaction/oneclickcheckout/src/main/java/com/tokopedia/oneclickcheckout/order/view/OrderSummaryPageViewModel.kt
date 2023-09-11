@@ -58,6 +58,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogis
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
+import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
@@ -70,13 +71,16 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
 import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OrderSummaryPageViewModel @Inject constructor(
@@ -134,6 +138,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     private val saveAddOnProductStateJobs: MutableMap<String, Job> = mutableMapOf()
 
     private var hasSentViewOspEe = false
+    private var isPromoRevamp: Boolean? = null
 
     fun getShopId(): String {
         return orderCart.shop.shopId
@@ -162,8 +167,9 @@ class OrderSummaryPageViewModel @Inject constructor(
     ) {
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
+            val isCartReimagine = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
             globalEvent.value = OccGlobalEvent.Normal
-            val result = cartProcessor.getOccCart(source, gatewayCode, tenor)
+            val result = cartProcessor.getOccCart(source, gatewayCode, tenor, isCartReimagine)
             addressState.value = result.addressState
             orderCart = result.orderCart
             orderShop.value = orderCart.shop
@@ -182,6 +188,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderPayment.value = result.orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
+            isPromoRevamp = PromoUsageRollenceManager()
+                .isRevamp(result.orderPromo.lastApply.userGroupMetadata)
             orderPromo.value = result.orderPromo
             when {
                 result.globalEvent != null -> {
@@ -198,7 +206,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
                 sendPaymentTracker()
-                // todo: first load if no promo, then get entry point?
+                getEntryPointInfo()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
@@ -236,6 +244,41 @@ class OrderSummaryPageViewModel @Inject constructor(
         orderSummaryAnalytics.eventViewPaymentMethod(payment.gatewayName)
         if (payment.creditCard.selectedTerm != null) {
             orderSummaryAnalytics.eventViewTenureOption(payment.creditCard.selectedTerm.term.toString())
+        }
+    }
+
+    private suspend fun getEntryPointInfo() {
+        if (isPromoRevamp == true) {
+            var newOrderPromo = orderPromo.value
+            withContext(executorDispatchers.main) {
+                newOrderPromo = newOrderPromo.copy(
+                    isPromoRevamp = true,
+                    state = OccButtonState.LOADING
+                )
+                orderPromo.value = newOrderPromo
+            }
+
+            val isUsingGlobalPromo = newOrderPromo.lastApply.codes.isNotEmpty()
+            val isUsingPromo = newOrderPromo.lastApply.voucherOrders
+                .any { it.code.isNotBlank() && it.message.state == "red" }
+            if (!isUsingGlobalPromo && !isUsingPromo) {
+                val entryPointInfo = promoProcessor.getEntryPointInfo(generatePromoRequest())
+                withContext(executorDispatchers.main) {
+                    newOrderPromo = newOrderPromo.copy(
+                        entryPointInfo = entryPointInfo,
+                        state = OccButtonState.NORMAL
+                    )
+                    orderPromo.value = newOrderPromo
+                }
+            } else {
+                withContext(executorDispatchers.main) {
+                    newOrderPromo = newOrderPromo.copy(
+                        entryPointInfo = null,
+                        state = OccButtonState.NORMAL
+                    )
+                    orderPromo.value = newOrderPromo
+                }
+            }
         }
     }
 
@@ -429,7 +472,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 }
                 sendViewShippingErrorMessage(result.shippingErrorId)
                 calculateTotal()
-                // todo: hit entry point?
+                getEntryPointInfo()
             }
         }
         updateCart()
@@ -472,7 +515,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                     validateUsePromoRevampUiModel = resultValidateUse
                     globalEvent.value = newEvent
                     updatePromoState(resultValidateUse.promoUiModel)
-                    // todo: hit entry point -> BO applied
                     updateCart()
                     sendViewOspEe()
                     sendPreselectedCourierOption(ratesResult.preselectedSpId)
@@ -490,6 +532,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 globalEvent.value = OccGlobalEvent.Normal
                 updatePromoState(resultValidateUse.promoUiModel)
                 // todo: hit entry point -> BO not applied
+                getEntryPointInfo()
                 updateCart()
                 sendViewOspEe()
                 sendPreselectedCourierOption(ratesResult.preselectedSpId)
@@ -1413,6 +1456,10 @@ class OrderSummaryPageViewModel @Inject constructor(
         saveAddOnProductStateJobs.values.forEach { it.cancel() }
         saveAddOnProductStateJobs.clear()
         super.onCleared()
+    }
+
+    fun useNewPromoPage(): Boolean {
+        return isPromoRevamp == true
     }
 
     companion object {

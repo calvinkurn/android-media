@@ -10,7 +10,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
-import com.tokopedia.promocheckout.common.R as promoR
+import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 class OrderPromoCard(
     private val binding: CardOrderPromoBinding,
@@ -26,8 +27,11 @@ class OrderPromoCard(
     }
 
     fun setupButtonPromo(orderPromo: OrderPromo) {
-//        renderOldButtonPromo(orderPromo)
-        renderNewButtonPromo(orderPromo)
+        if (orderPromo.isPromoRevamp) {
+            renderNewButtonPromo(orderPromo)
+        } else {
+            renderOldButtonPromo(orderPromo)
+        }
     }
 
     private fun renderOldButtonPromo(orderPromo: OrderPromo) {
@@ -39,16 +43,16 @@ class OrderPromoCard(
             OccButtonState.LOADING -> {
                 binding.btnPromoCheckout.state = ButtonPromoCheckoutView.State.LOADING
                 binding.btnPromoCheckout.chevronIcon =
-                    promoR.drawable.ic_promo_checkout_chevron_right
+                    promocheckoutcommonR.drawable.ic_promo_checkout_chevron_right
             }
 
             OccButtonState.DISABLE -> {
                 binding.btnPromoCheckout.state = ButtonPromoCheckoutView.State.INACTIVE
                 binding.btnPromoCheckout.title =
-                    binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
+                    binding.root.context.getString(purchase_platformcommonR.string.promo_checkout_inactive_label)
                 binding.btnPromoCheckout.desc =
-                    binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
-                binding.btnPromoCheckout.chevronIcon = promoR.drawable.ic_promo_checkout_refresh
+                    binding.root.context.getString(purchase_platformcommonR.string.promo_checkout_inactive_desc)
+                binding.btnPromoCheckout.chevronIcon = promocheckoutcommonR.drawable.ic_promo_checkout_refresh
                 binding.btnPromoCheckout.setOnClickListener {
                     if (!orderPromo.isDisabled) {
                         listener.onClickRetryValidatePromo()
@@ -58,7 +62,7 @@ class OrderPromoCard(
 
             else -> {
                 val lastApply = orderPromo.lastApply
-                var title = binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
+                var title = binding.root.context.getString(purchase_platformcommonR.string.promo_funnel_label)
                 if (lastApply.additionalInfo.messageInfo.message.isNotEmpty()) {
                     title = lastApply.additionalInfo.messageInfo.message
                 } else if (lastApply.defaultEmptyPromoMessage.isNotBlank()) {
@@ -68,7 +72,7 @@ class OrderPromoCard(
                 binding.btnPromoCheckout.title = title
                 binding.btnPromoCheckout.desc = lastApply.additionalInfo.messageInfo.detail
                 binding.btnPromoCheckout.chevronIcon =
-                    promoR.drawable.ic_promo_checkout_chevron_right
+                    promocheckoutcommonR.drawable.ic_promo_checkout_chevron_right
 
                 if (lastApply.additionalInfo.usageSummaries.isNotEmpty()) {
                     analytics.eventViewPromoAlreadyApplied()
@@ -103,7 +107,7 @@ class OrderPromoCard(
 
             else -> {
                 val lastApply = orderPromo.lastApply
-                var title = binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
+                var title = binding.root.context.getString(purchase_platformcommonR.string.promo_funnel_label)
                 var isApplied = false
                 if (lastApply.additionalInfo.messageInfo.message.isNotEmpty()) {
                     title = lastApply.additionalInfo.messageInfo.message
@@ -115,7 +119,7 @@ class OrderPromoCard(
                 binding.btnPromoCheckout.title = title
                 binding.btnPromoCheckout.desc = lastApply.additionalInfo.messageInfo.detail
                 binding.btnPromoCheckout.chevronIcon =
-                    promoR.drawable.ic_promo_checkout_chevron_right
+                    promocheckoutcommonR.drawable.ic_promo_checkout_chevron_right
 
                 if (lastApply.additionalInfo.usageSummaries.isNotEmpty()) {
                     analytics.eventViewPromoAlreadyApplied()
