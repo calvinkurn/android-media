@@ -58,7 +58,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                 firebaseRemoteConfig.addOnConfigUpdateListener(new ConfigUpdateListener() {
                     @Override
                     public void onUpdate(@NonNull ConfigUpdate configUpdate) {
-                        Timber.tag(REMOTE_CONFIG_REAL_TIME).d("Updated keys: %s", configUpdate.getUpdatedKeys());
+                        Log.d(REMOTE_CONFIG_REAL_TIME, String.format("Updated keys: %s", configUpdate.getUpdatedKeys()));
 
                         firebaseRemoteConfig.activate()
                                 .addOnCompleteListener(task -> {
@@ -67,7 +67,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                                     }
                                 })
                                 .addOnFailureListener(exception -> {
-                                    Timber.tag(REMOTE_CONFIG_REAL_TIME).e(exception, "Activate onFailureListener: %s", Arrays.toString(exception.getStackTrace()));
+                                    Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Activate onFailureListener: %s", exception.getStackTrace()));
                                     if (listener != null) {
                                         listener.onError(exception);
                                     }
@@ -76,7 +76,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
                     @Override
                     public void onError(FirebaseRemoteConfigException error) {
-                        Timber.tag(REMOTE_CONFIG_REAL_TIME).e(error, "Config update error with code: %s", Arrays.toString(error.getStackTrace()));
+                        Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Config update error with stacktrace: %s", error.getStackTrace()));
 
                         if (listener != null) {
                             listener.onError(error);
@@ -85,6 +85,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                 });
             }
         } catch (Exception e) {
+            Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Remote config error: %s", e.getStackTrace()));
             e.printStackTrace();
         }
     }

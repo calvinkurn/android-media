@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter
 
 import android.content.Context
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.BuyerOrderDetailDiffUtilCallback
@@ -30,6 +31,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
@@ -236,10 +238,17 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         context: Context?,
         productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel
     ) {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
+
         val isEnableProductListHeader = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)
-        if (productListHeaderUiModel.shouldShow(context) && isEnableProductListHeader) {
+
+        if (isEnableProductListHeader) {
             add(productListHeaderUiModel)
+        } else {
+            val productListHeaderIndex = this.indexOfFirst { it is ProductListUiModel.ProductListHeaderUiModel }
+            if (productListHeaderIndex != RecyclerView.NO_POSITION) {
+                removeAt(productListHeaderIndex)
+            }
         }
     }
 
@@ -432,6 +441,18 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         diffResult.dispatchUpdatesTo(this)
         visitables.clear()
         visitables.addAll(newItems)
+    }
+
+    fun updateItems(newVisitable: List<Visitable<BuyerOrderDetailTypeFactory>>) {
+        val diffCallback = BuyerOrderDetailDiffUtilCallback(
+            visitables as List<Visitable<BuyerOrderDetailTypeFactory>>,
+            newVisitable,
+            typeFactory
+        )
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        diffResult.dispatchUpdatesTo(this)
+        visitables.clear()
+        visitables.addAll(newVisitable)
     }
 
     fun removeDigitalRecommendation() {
