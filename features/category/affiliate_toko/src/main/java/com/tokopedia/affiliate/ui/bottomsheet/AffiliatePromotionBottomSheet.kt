@@ -269,7 +269,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 type = params?.type ?: bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
 
                 when (originScreen) {
-                    ORIGIN_SSA_SHOP -> findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                    ORIGIN_SSA_SHOP -> findViewById<Group>(R.id.redirection_group).setOnClickListener {
                         RouteManager.route(
                             context,
                             ApplinkConst.SHOP.replace(
@@ -280,7 +280,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     }
 
                     ORIGIN_PROMO_TOKO_NOW -> {
-                        findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                        findViewById<Group>(R.id.redirection_group).setOnClickListener {
                             RouteManager.route(
                                 context,
                                 ApplinkConst.TokopediaNow.HOME
@@ -289,7 +289,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     }
 
                     ORIGIN_PROMO_DISCO_BANNER, ORIGIN_PROMO_DISCO_BANNER_LIST -> {
-                        findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                        findViewById<Group>(R.id.redirection_group).setOnClickListener {
                             RouteManager.route(
                                 context,
                                 appUrl
