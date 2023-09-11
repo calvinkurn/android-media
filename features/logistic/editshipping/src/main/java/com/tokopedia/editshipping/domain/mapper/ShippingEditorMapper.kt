@@ -13,7 +13,6 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShopIdModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.TickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
-import com.tokopedia.editshipping.util.EditShippingConstant.WHITELABEL_SHIPPER_ID
 import com.tokopedia.logisticCommon.data.response.shippingeditor.Conventional
 import com.tokopedia.logisticCommon.data.response.shippingeditor.CourierTicker
 import com.tokopedia.logisticCommon.data.response.shippingeditor.Data
@@ -56,7 +55,7 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperOnDemand(response: List<OnDemand>): List<ShipperModel> {
         val onDemandModelList = ArrayList<ShipperModel>()
         response.forEach { data ->
-            val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
+            val isWhitelabelShipper = data.isWhitelable
             val shipperDescription =
                 if (isWhitelabelShipper) {
                     data.shipperProduct.firstOrNull()?.description
@@ -83,7 +82,7 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperConventional(response: List<Conventional>): List<ShipperModel> {
         val conventionalModelList = ArrayList<ShipperModel>()
         response.forEach { data ->
-            val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
+            val isWhitelabelShipper = data.isWhitelable
             val shipperDescription =
                 if (isWhitelabelShipper) {
                     data.shipperProduct.firstOrNull()?.description
@@ -105,10 +104,6 @@ class ShippingEditorMapper @Inject constructor() {
             conventionalModelList.add(conventionalUiModel)
         }
         return conventionalModelList
-    }
-
-    private fun isWhitelabelShipper(shipperId: Long): Boolean {
-        return WHITELABEL_SHIPPER_ID.contains(shipperId)
     }
 
     private fun mapFeatureInfo(response: List<FeatureInfo>): List<FeatureInfoModel> {
