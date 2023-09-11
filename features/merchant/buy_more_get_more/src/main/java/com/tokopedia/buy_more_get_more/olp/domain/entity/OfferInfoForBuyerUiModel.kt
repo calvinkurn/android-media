@@ -99,6 +99,8 @@ data class OfferInfoForBuyerUiModel(
 
         object GetNotification : OlpEvent()
 
+        object GetSharingData : OlpEvent()
+
         data class AddToCart(val product: OfferProductListUiModel.Product) : OlpEvent()
     }
 }

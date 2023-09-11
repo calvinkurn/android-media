@@ -9,12 +9,15 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam.UserLocation
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
+import com.tokopedia.buy_more_get_more.olp.data.request.GetSharingDataByOfferIDParam
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.*
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
+import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -38,6 +41,7 @@ class OfferLandingPageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getOfferInfoForBuyerUseCase: GetOfferInfoForBuyerUseCase,
     private val getOfferProductListUseCase: GetOfferProductListUseCase,
+    private val getSharingDataByOfferIDUseCase: GetSharingDataByOfferIDUseCase,
     private val getNotificationUseCase: GetNotificationUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val userSession: UserSessionInterface
@@ -58,6 +62,10 @@ class OfferLandingPageViewModel @Inject constructor(
     private val _productList = MutableLiveData<OfferProductListUiModel>()
     val productList: LiveData<OfferProductListUiModel>
         get() = _productList
+
+    private val _sharingData = MutableLiveData<Result<SharingDataByOfferIdUiModel>>()
+    val sharingData: LiveData<Result<SharingDataByOfferIdUiModel>>
+        get() = _sharingData
 
     private val _navNotificationModel = MutableLiveData(TopNavNotificationModel())
     val navNotificationLiveData: LiveData<TopNavNotificationModel>
@@ -102,6 +110,10 @@ class OfferLandingPageViewModel @Inject constructor(
 
             is OlpEvent.GetNotification -> {
                 getNotification()
+            }
+
+            is OlpEvent.GetSharingData -> {
+                getSharingDataByOfferId()
             }
 
             is OlpEvent.AddToCart -> {
@@ -254,6 +266,23 @@ class OfferLandingPageViewModel @Inject constructor(
             },
             onError = {
                 _miniCartAdd.postValue(Fail(it))
+            }
+        )
+    }
+
+    private fun getSharingDataByOfferId() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val param = GetSharingDataByOfferIDParam(
+                    offerId = currentState.offerIds.firstOrNull().orZero(),
+                    shopId = currentState.shopData.shopId
+                )
+                val result = getSharingDataByOfferIDUseCase.execute(param)
+                _sharingData.postValue(Success(result))
+            },
+            onError = {
+                _sharingData.postValue(Fail(it))
             }
         )
     }

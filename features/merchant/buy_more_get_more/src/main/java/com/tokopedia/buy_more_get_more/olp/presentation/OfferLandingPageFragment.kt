@@ -25,6 +25,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiMode
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
@@ -60,6 +61,7 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -235,6 +237,18 @@ class OfferLandingPageFragment :
             updateCartCounter(notification.totalCart)
         }
 
+        viewModel.sharingData.observe(viewLifecycleOwner) { sharingData ->
+            when (sharingData) {
+                is Success -> {
+                    openShareBottomSheet(sharingData.data)
+                }
+
+                is Fail -> {
+                    binding?.miniCartView.showToaster(sharingData.throwable.localizedMessage)
+                }
+            }
+        }
+
         viewModel.miniCartAdd.observe(viewLifecycleOwner) { atc ->
             when (atc) {
                 is Success -> {
@@ -291,12 +305,12 @@ class OfferLandingPageFragment :
             }
             showShareButton = true
             shareButton?.setOnClickListener {
-                //get sharing data
+                // get sharing data
                 tracker.sendClickShareButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
                     offerInfoForBuyer.nearestWarehouseIds.toSafeString()
                 )
-                openShareBottomSheet()
+                viewModel.processEvent(OlpEvent.GetSharingData)
             }
             cartButton?.setOnClickListener {
                 tracker.sendClickKeranjangButtonEvent(
@@ -474,7 +488,10 @@ class OfferLandingPageFragment :
                     Status.OFFER_ALREADY_FINISH -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
-                            description = getString(R.string.bmgm_description_error_ended_promo, currentState.shopData.shopName),
+                            description = getString(
+                                R.string.bmgm_description_error_ended_promo,
+                                currentState.shopData.shopName
+                            ),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
                             primaryCtaAction = { activity?.finish() },
@@ -486,7 +503,10 @@ class OfferLandingPageFragment :
                     Status.OOS -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),
-                            description = getString(R.string.bmgm_description_error_out_of_stock, currentState.shopData.shopName),
+                            description = getString(
+                                R.string.bmgm_description_error_out_of_stock,
+                                currentState.shopData.shopName
+                            ),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
                             primaryCtaAction = { activity?.finish() },
@@ -560,6 +580,7 @@ class OfferLandingPageFragment :
                     )
                     olpAdapter?.submitList(listOf(emptyStateUiModel))
                 }
+
                 false -> {
                     stickyContent.gone()
                     errorPageLarge.apply {
@@ -719,7 +740,7 @@ class OfferLandingPageFragment :
         }
     }
 
-    private fun openShareBottomSheet() {
+    private fun openShareBottomSheet(sharingData: SharingDataByOfferIdUiModel) {
         UniversalShareBottomSheet.createInstance().apply {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -730,8 +751,16 @@ class OfferLandingPageFragment :
             })
             enableDefaultShareIntent()
             setMetaData(
-                tnTitle = "",
-                tnImage = ""
+                tnTitle = sharingData.offerData.title,
+                tnImage = sharingData.offerData.imageUrl
+            )
+            setLinkProperties(
+                LinkProperties(
+                    ogTitle = sharingData.offerData.title,
+                    ogDescription = sharingData.offerData.description,
+                    ogImageUrl = sharingData.offerData.imageUrl,
+                    deeplink = sharingData.offerData.deeplink
+                )
             )
             setUtmCampaignData(
                 "",
