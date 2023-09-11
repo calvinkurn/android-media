@@ -151,6 +151,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_PERSO_PROD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_PERSO_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_SHOP_PAGE_REIMAGINED
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_CLICK
@@ -187,6 +188,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CODE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.QUANTITY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.REIMAGINE_CLICK_VALUE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.REIMAGINE_IMPRESSION_VALUE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ENTRY_POINT
@@ -202,6 +205,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PRODUCT_ATC_QUA
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SINGLE_BUNDLE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SINGLE_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TERLARIS_WIDGET_VALUE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION
@@ -260,6 +264,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_HOTSPOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINE_CLICK_TERLARIS_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINE_IMPRESSION_TERLARIS_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION
