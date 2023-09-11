@@ -52,7 +52,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         return GlobalConfig.isAllowDebuggingTools() && sharedPrefs != null;
     }
 
-    private void setRealTimeUpdates(@Nullable final Listener listener) {
+    private void setRealTimeUpdates(Listener listener) {
         try {
             if (firebaseRemoteConfig != null) {
                 firebaseRemoteConfig.addOnConfigUpdateListener(new ConfigUpdateListener() {
