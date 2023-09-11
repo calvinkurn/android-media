@@ -75,9 +75,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         activity?.let {
             viewModelFactory?.let { factory ->
                 viewModel = ViewModelProvider(it, factory)[ContentCreationViewModel::class.java]
-                /* TODO : uncomment when available in GQL */
-                viewModel?.getDummyConfig()
-//                viewModel?.fetchConfig()
+                viewModel?.fetchConfig()
             }
         }
     }
