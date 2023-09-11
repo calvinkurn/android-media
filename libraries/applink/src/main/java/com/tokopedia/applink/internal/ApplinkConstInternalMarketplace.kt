@@ -192,9 +192,6 @@ object ApplinkConstInternalMarketplace {
     // DistrictRecommendationShopSettingsActivity
     const val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
 
-    // GeolocationActivity
-    const val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
-
     // OnboardingActivity
     const val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
 
