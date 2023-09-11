@@ -10,7 +10,7 @@ import com.tokopedia.device.info.DeviceInfo
 import java.util.UUID
 
 data class AdditionalInfoModel(
-    val time: Long,
+    val time: String,
     val brand: String,
     val product: String,
     val board: String,
@@ -32,7 +32,7 @@ data class AdditionalInfoModel(
             val wideVineIdBase64 = Base64.encodeToString(wideVineId, Base64.DEFAULT)
 
             return AdditionalInfoModel(
-                time = System.currentTimeMillis(),
+                time = System.currentTimeMillis().toString(),
                 brand = Build.BRAND,
                 product = Build.PRODUCT,
                 board = Build.BOARD,

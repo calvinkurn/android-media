@@ -31,6 +31,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
