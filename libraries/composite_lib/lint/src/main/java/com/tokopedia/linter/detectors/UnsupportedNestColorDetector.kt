@@ -271,7 +271,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
 
         for (token in tokens) {
             val colorSuggestion = UnifyComponentsList.unifyToNestColor[token] ?: return null
-            val suggestion = "com.tokopedia.unifyprinciples.R.color.$colorSuggestion"
+            val suggestion = colorSuggestion
             val quickFix = LintFix.create()
                 .replace()
                 .text(token)

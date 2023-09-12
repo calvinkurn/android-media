@@ -139,4 +139,5 @@
     <string name="hint_branch_et">Put your Branch Link Here ex: https://tokopedia.link/5lT0NZpifAb</string>
     <string name="banner_environment">Enable Banner Environment</string>
 
+    <string name="copy_id">Copied Id %s</string>
 </resources>

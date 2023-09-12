@@ -26,6 +26,10 @@ class OnBoardingPreferencesImpl @Inject constructor(
         return sharedPref.getBoolean(KEY_SWIPE_ONBOARDING, false)
     }
 
+    override fun hasShownBrowseEntryPoint(): Boolean {
+        return sharedPref.getBoolean(KEY_BROWSE_ENTRY_POINT, false)
+    }
+
     override fun setHasShownCreateContent() {
         sharedPref.edit(true) {
             putBoolean(KEY_CREATE_CONTENT, true)
@@ -44,11 +48,18 @@ class OnBoardingPreferencesImpl @Inject constructor(
         }
     }
 
+    override fun setHasShownBrowseEntryPoint() {
+        sharedPref.edit(true) {
+            putBoolean(KEY_BROWSE_ENTRY_POINT, true)
+        }
+    }
+
     companion object {
         private const val FEED_ONBOARDING_PREFERENCES = "feed_onboarding_pref"
 
         private const val KEY_CREATE_CONTENT = "create_content"
         private const val KEY_PROFILE_ENTRY_POINT = "profile_entry_point"
         private const val KEY_SWIPE_ONBOARDING = "swipe_onboarding"
+        private const val KEY_BROWSE_ENTRY_POINT = "browse_entry_point"
     }
 }

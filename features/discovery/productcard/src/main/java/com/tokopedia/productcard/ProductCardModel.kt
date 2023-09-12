@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.layout.LayoutStrategyFactory
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
@@ -19,9 +20,13 @@ import com.tokopedia.productcard.utils.LABEL_RIBBON
 import com.tokopedia.productcard.utils.LABEL_SHIPPING
 import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
+import com.tokopedia.productcard.utils.SlashPriceCashbackExperiment
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
+import com.tokopedia.productcard.utils.rollenceRemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -87,6 +92,8 @@ data class ProductCardModel (
         val isTopStockBar: Boolean = false,
         val cardType: Int = CardUnify2.TYPE_SHADOW,
         val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
+        val pageSource: PageSource = PageSource.OTHER,
+        val abTestRemoteConfig: Lazy<RemoteConfig?> = rollenceRemoteConfig(),
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -97,6 +104,13 @@ data class ProductCardModel (
 
     internal val layoutStrategy =
         LayoutStrategyFactory.create(productListType, isTopStockBar, cardType)
+
+    private val slashedPriceCashbackExperiment by lazyThreadSafetyNone {
+        SlashPriceCashbackExperiment.get(abTestRemoteConfig)
+    }
+
+    fun isOnSlashPriceCashbackExperiment() =
+        slashedPriceCashbackExperiment.isUnderExperiment(pageSource)
 
     val showRibbon: Boolean
         get() = getLabelRibbon()?.title?.isNotEmpty() == true
@@ -251,6 +265,11 @@ data class ProductCardModel (
     }
 
     fun isShowDiscountOrSlashPrice() = discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()
+
+    fun showDiscountAsText(): Boolean = isOnSlashPriceCashbackExperiment()
+
+    fun isShowLabelPrice(): Boolean =
+        !isShowDiscountOrSlashPrice() || isOnSlashPriceCashbackExperiment()
 
     fun isShowFreeOngkirBadge() = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
 
@@ -413,5 +432,10 @@ data class ProductCardModel (
         BEST_SELLER,
         FIXED_GRID,
         LIST_VIEW,
+    }
+
+    enum class PageSource {
+        SEARCH,
+        OTHER,
     }
 }

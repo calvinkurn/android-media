@@ -13,7 +13,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
@@ -61,7 +61,11 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var viewModel: StickyLoginViewModel? = null
+    private val viewModel: StickyLoginViewModel? by lazy {
+        findViewTreeViewModelStoreOwner()?.let {
+            ViewModelProvider(it, viewModelFactory)[StickyLoginViewModel::class.java]
+        }
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -167,11 +171,6 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
                 .stickyLoginModule(StickyLoginModule(it))
                 .build()
             component.inject(this)
-
-            if (it is AppCompatActivity) {
-                val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-                viewModel = viewModelProvider[StickyLoginViewModel::class.java]
-            }
         }
     }
 

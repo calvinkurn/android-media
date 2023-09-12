@@ -148,7 +148,6 @@ class EditAdCostFragment : BaseDaggerFragment() {
                         }
                         else -> {
                             stepperModel?.adBidPrice = number
-                            stepperModel?.dailyBudget = (number * MULTIPLIER).toFloat()
                             stepperModel?.currentBid = number
                             onMinBidChange?.onMinBidChange(number)
                             advertisingCost?.setMessage("")

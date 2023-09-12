@@ -33,11 +33,11 @@ class BridgingAccountLinkingViewModel @Inject constructor(
     private val _accountLinkingStatus = MutableLiveData<AccountLinkingStatusResult>()
     val accountLinkingStatus : LiveData<AccountLinkingStatusResult> get() = _accountLinkingStatus
 
-    fun checkAccountLinkingStatus() {
+    fun checkAccountLinkingStatus(projectId: Int) {
         _accountLinkingStatus.value = AccountLinkingStatusResult.Loading
         launchCatchError(
             block = {
-                _accountLinkingStatus.value = accountLinkingStatusUseCase(Unit)
+                _accountLinkingStatus.value = accountLinkingStatusUseCase(projectId)
             }, onError = {
                 _accountLinkingStatus.value = AccountLinkingStatusResult.Failed(it)
             }

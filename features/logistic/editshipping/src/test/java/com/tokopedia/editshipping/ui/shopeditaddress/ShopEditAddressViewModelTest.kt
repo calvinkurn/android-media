@@ -14,7 +14,6 @@ import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriersNewLocResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocUpdateWarehouse
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationUpdateWarehouseResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -44,7 +43,7 @@ class ShopEditAddressViewModelTest {
     private val zipCodeListObserver: Observer<Result<KeroDistrictRecommendation>> = mockk(relaxed = true)
     private val districtGeocodeObserver: Observer<Result<KeroMapsAutofill>> = mockk(relaxed = true)
     private val checkCouriersObserver: Observer<ShopEditAddressState<ShopLocCheckCouriers>> = mockk(relaxed = true)
-    private val saveEditShopObserver: Observer<ShopEditAddressState<ShopLocUpdateWarehouse>> = mockk(relaxed = true)
+    private val saveEditShopObserver: Observer<ShopEditAddressState<String>> = mockk(relaxed = true)
 
     private lateinit var shopEditAddressViewModel: ShopEditAddressViewModel
 
