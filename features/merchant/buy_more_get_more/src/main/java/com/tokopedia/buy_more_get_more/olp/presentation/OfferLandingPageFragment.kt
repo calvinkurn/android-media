@@ -60,7 +60,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -694,6 +693,7 @@ class OfferLandingPageFragment :
                     currentState.offerIds.toSafeString(),
                     currentState.warehouseIds.toSafeString()
                 )
+                dismiss()
             }
             show(this@OfferLandingPageFragment)
         }
@@ -768,8 +768,7 @@ class OfferLandingPageFragment :
                 "",
                 ""
             )
-            enableAffiliateCommission(AffiliateInput())
-        }.show(childFragmentManager, "")
+        }.show(childFragmentManager, this)
     }
 
     private fun setDefaultErrorSelection(throwable: Throwable) {
