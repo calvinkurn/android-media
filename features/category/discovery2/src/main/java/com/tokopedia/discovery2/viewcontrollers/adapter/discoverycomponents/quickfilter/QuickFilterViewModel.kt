@@ -328,8 +328,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
                         ?.compAdditionalInfo
                         ?.totalProductData
                         ?.productCountWording.orEmpty()
-                }, onError = {
-                        it.printStackTrace()
+                }, onError = { throwable ->
+                        Timber.e(throwable)
                     })
             }
         }

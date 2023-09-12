@@ -45,6 +45,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -545,6 +546,7 @@ class QuickFilterViewModelTest {
         viewModel.fetchDynamicFilterModel()
         assert(componentsItem.filters.size == 1 && componentsItem.filters.first() == mockkFilter)
     }
+
     @Test
     fun `test for setSortData for non dynamic component`() {
         val componentsItem: ComponentsItem = spyk()
@@ -659,7 +661,7 @@ class QuickFilterViewModelTest {
         val viewModel: QuickFilterViewModel =
             spyk(QuickFilterViewModel(application, componentsItem, 99))
         viewModel.filterRepository = filterRepository
-        viewModel.quickFilterUseCase  = mockQuickFilterUseCase
+        viewModel.quickFilterUseCase = mockQuickFilterUseCase
         val prop: Properties = mockk()
         every { componentsItem.properties } returns prop
         every { prop.dynamic } returns false
@@ -680,7 +682,7 @@ class QuickFilterViewModelTest {
 
         viewModel.fetchDynamicFilterModel()
         viewModel.components.filterController = mockFilterController
-        val searchParamHashMap : HashMap<String, String> = hashMapOf()
+        val searchParamHashMap: HashMap<String, String> = hashMapOf()
         every { mockQuickFilterUseCase.onFilterApplied(any(), any(), any()) } returns true
         every { componentsItem.searchParameter.getSearchParameterHashMap() } returns searchParamHashMap
         every { componentsItem.searchParameter.contains(any()) } returns true
@@ -692,7 +694,7 @@ class QuickFilterViewModelTest {
         every { Utils.getTargetComponentOfFilter(any()) } returns mockTargetComponent
 
         val applySortFilterModel = SortFilterBottomSheet.ApplySortFilterModel(
-            mapParameter = hashMapOf("filter1" to "value1","sort1" to "value2"),
+            mapParameter = hashMapOf("filter1" to "value1", "sort1" to "value2"),
             selectedFilterMapParameter = hashMapOf("filter1" to "value1"),
             selectedSortMapParameter = hashMapOf("sort1" to "value2"),
             selectedSortName = "ob_sort",
@@ -754,7 +756,7 @@ class QuickFilterViewModelTest {
         viewModel.getSelectedFilterCount()
 
         val expectedFilterCount = 11
-        assert(expectedFilterCount ==  viewModel.filterCountLiveData.value)
+        assert(expectedFilterCount == viewModel.filterCountLiveData.value)
     }
 
     @Test
@@ -770,8 +772,6 @@ class QuickFilterViewModelTest {
         val expectedFilterCount = 10 // No additional sort filter is selected
         assert(expectedFilterCount == viewModel.filterCountLiveData.value)
     }
-
-
 
     @Test
     fun `test for filterProductsCount should append prefix on filter's param`() {
@@ -828,7 +828,7 @@ class QuickFilterViewModelTest {
     }
 
     @Test
-    fun `test for filterProductsCount with error response`() {
+    fun `test for filterProductsCount with error response should not emit any value for filter count`() {
         val componentsItem: ComponentsItem = spyk()
         val quickFilterGQLRepository: IQuickFilterGqlRepository = mockk()
         val viewModel: QuickFilterViewModel = spyk(
@@ -861,7 +861,6 @@ class QuickFilterViewModelTest {
 
         viewModel.filterProductsCount(mapOfSelectedFilters)
 
-        verify { throwable.printStackTrace() }
+        assertEquals(null, viewModel.filterCountLiveData.value)
     }
-
 }
