@@ -7,6 +7,7 @@ import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
+import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -20,6 +21,7 @@ import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.viewholder.BannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.BlankViewHolder
+import com.tokopedia.catalogcommon.viewholder.CharacteristicViewHolder
 import com.tokopedia.catalogcommon.viewholder.DoubleBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
@@ -40,6 +42,7 @@ class CatalogAdapterFactoryImpl(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             TopFeatureViewHolder.LAYOUT -> TopFeatureViewHolder(view)
+            CharacteristicViewHolder.LAYOUT -> CharacteristicViewHolder(view)
             HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view, heroBannerListener)
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
             StickyTabNavigationViewHolder.LAYOUT -> StickyTabNavigationViewHolder(view)
@@ -107,5 +110,9 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: DoubleBannerCatalogUiModel): Int {
         return DoubleBannerViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: CharacteristicUiModel): Int {
+        return CharacteristicViewHolder.LAYOUT
     }
 }

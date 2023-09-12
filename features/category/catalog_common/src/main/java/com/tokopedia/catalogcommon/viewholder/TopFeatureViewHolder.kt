@@ -34,7 +34,6 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
     private var onceCreateView = false
 
     override fun bind(element: TopFeaturesUiModel) {
-//        binding?.lnRootUi?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
         if (!onceCreateView){
             element.items.forEachIndexed { index, item ->
                 createItem(item)
@@ -51,9 +50,11 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
         val linearLayout = createLinearLayout(
             backgroundColor = item.backgroundColor
         )
-        val icon = createIcon(item.icon)
+        if (item.icon.isNotEmpty()){
+            val icon = createIcon(item.icon)
+            linearLayout.addView(icon)
+        }
         val text = createTypography(item.name, item.textColor)
-        linearLayout.addView(icon)
         linearLayout.addView(text)
         binding?.lnRootUi?.addView(linearLayout)
     }
