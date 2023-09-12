@@ -240,7 +240,7 @@ class PushController(val context: Context) : CoroutineScope {
                     handleReplyChatPushNotification(notificationManager, baseNotification, notification, baseNotificationModel)
                 } else {
                     notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
-                    sendPushEventToIris(IrisAnalyticsEvents.PUSH_RENDERED, baseNotificationModel)
+                    sendPushRenderedEventToIris(baseNotificationModel)
                 }
                 val isNougatAndAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
                 if (isNougatAndAbove) {
@@ -267,7 +267,7 @@ class PushController(val context: Context) : CoroutineScope {
     ) {
         val notificationId = getNotificationIdReplyChat(replyChatNotification)
         notificationManager.notify(notificationId, notification)
-        sendPushEventToIris(IrisAnalyticsEvents.PUSH_RENDERED, baseNotificationModel)
+        sendPushRenderedEventToIris(baseNotificationModel)
     }
 
     private fun getNotificationIdReplyChat(replyChatNotification: ReplyChatNotification): Int {
@@ -322,15 +322,17 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
-    private fun sendPushEventToIris(
-        eventName: String,
-        baseNotificationModel: BaseNotificationModel
-    ) {
-        IrisAnalyticsEvents.sendPushEvent(
-            context,
-            eventName,
-            baseNotificationModel
-        )
+    private fun sendPushRenderedEventToIris(baseNotificationModel: BaseNotificationModel) {
+        if (NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
+                baseNotificationModel.channelName
+            ) == NotificationSettingsUtils.NotificationMode.ENABLED
+        ) {
+            IrisAnalyticsEvents.sendPushEvent(
+                context,
+                IrisAnalyticsEvents.PUSH_RENDERED,
+                baseNotificationModel
+            )
+        }
     }
 
     private fun checkNotificationChannelAndSendEvent(baseNotificationModel: BaseNotificationModel) {
