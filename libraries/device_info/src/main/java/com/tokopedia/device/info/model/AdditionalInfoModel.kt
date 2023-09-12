@@ -2,11 +2,13 @@ package com.tokopedia.device.info.model
 
 import android.content.Context
 import android.media.MediaDrm
+import android.media.UnsupportedSchemeException
 import android.os.Build
 import android.util.Base64
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
+import timber.log.Timber
 import java.util.UUID
 
 data class AdditionalInfoModel(
@@ -27,9 +29,14 @@ data class AdditionalInfoModel(
         private const val ANDROID = "android"
 
         fun generate(context: Context): AdditionalInfoModel {
-            val widevineMediaDrm = MediaDrm(UUID(MOST_SIG_BITS, LEAST_SIG_BITS))
-            val wideVineId = widevineMediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
-            val wideVineIdBase64 = Base64.encodeToString(wideVineId, Base64.DEFAULT)
+            var wideVineIdBase64 = ""
+            try {
+                val widevineMediaDrm = MediaDrm(UUID(MOST_SIG_BITS, LEAST_SIG_BITS))
+                val wideVineId = widevineMediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
+                wideVineIdBase64 = Base64.encodeToString(wideVineId, Base64.DEFAULT)
+            } catch (e: UnsupportedSchemeException) {
+                Timber.e(e)
+            }
 
             return AdditionalInfoModel(
                 time = System.currentTimeMillis().toString(),
