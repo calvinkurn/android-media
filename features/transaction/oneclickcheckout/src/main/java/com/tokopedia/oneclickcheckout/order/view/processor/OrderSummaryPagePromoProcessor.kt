@@ -221,7 +221,14 @@ class OrderSummaryPagePromoProcessor @Inject constructor(
         val productDetails: ArrayList<ProductDetail> = ArrayList()
         orderCart.products.forEach {
             if (!it.isError) {
-                productDetails.add(ProductDetail(it.productId.toLongOrZero(), it.orderQuantity))
+                productDetails.add(
+                    ProductDetail(
+                        productId = it.productId.toLongOrZero(),
+                        quantity = it.orderQuantity,
+                        cartId = it.cartId,
+                        isChecked = true
+                    )
+                )
             }
         }
         ordersItem.product_details = productDetails

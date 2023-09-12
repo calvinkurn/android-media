@@ -84,6 +84,8 @@ class CheckoutPromoProcessor @Inject constructor(
                         productDetail.productId = cartItemModel.productId
                         productDetail.quantity = cartItemModel.quantity
                         productDetail.bundleId = cartItemModel.bundleId.toLongOrZero()
+                        productDetail.cartId = cartItemModel.cartId.toString()
+                        productDetail.isChecked = true
                         productDetailsItems.add(productDetail)
                     }
                     ordersItem.product_details = productDetailsItems

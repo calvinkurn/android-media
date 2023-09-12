@@ -68,5 +68,9 @@ data class ProductDetail(
     var quantity: Int = -1,
     @SuppressLint("Invalid Data Type")
     @SerializedName("bundle_id")
-    var bundleId: Long = 0
+    var bundleId: Long = 0,
+    @SerializedName("is_checked")
+    var isChecked: Boolean = false,
+    @SerializedName("cart_id")
+    var cartId: String = ""
 ) : Parcelable
