@@ -12,6 +12,7 @@ data class ProductCardModel(
     val shopBadge: ShopBadge = ShopBadge(),
     val freeShipping: FreeShipping = FreeShipping(),
     val hasMultilineName: Boolean = false,
+    val hasAddToCart: Boolean = false,
 ) {
 
     fun labelBenefit(): LabelGroup? =

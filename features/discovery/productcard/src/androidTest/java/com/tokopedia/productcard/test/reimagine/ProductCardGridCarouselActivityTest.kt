@@ -1,20 +1,20 @@
 package com.tokopedia.productcard.test.reimagine
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.test.R
-import com.tokopedia.productcard.test.utils.ProductCardItemDecoration
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.productcard.R as productcardR
 
 class ProductCardGridCarouselActivityTest: AppCompatActivity() {
 
@@ -25,28 +25,14 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.productCardReimagineGridCarouselTestRecyclerView)
         recyclerView.adapter = Adapter()
         recyclerView.layoutManager = createLayoutManager()
-        recyclerView.addItemDecoration(object: RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(
-                outRect: Rect,
-                view: View,
-                parent: RecyclerView,
-                state: RecyclerView.State
-            ) {
-                super.getItemOffsets(outRect, view, parent, state)
-
-                outRect.bottom = 16.toPx()
-            }
-        })
     }
 
     private fun createLayoutManager(): RecyclerView.LayoutManager =
-        StaggeredGridLayoutManager(1, VERTICAL)
-
-    private fun createItemDecoration(): RecyclerView.ItemDecoration = ProductCardItemDecoration(
-        resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-    )
+        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
     class Adapter: RecyclerView.Adapter<ViewHolder>() {
+
+        private val testData = productCardReimagineCarouselGridTestData
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.product_card_reimagine_grid_carousel_item_test_layout, null)
@@ -55,11 +41,11 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return productCardReimagineCarouselGridTestData.size
+            return testData.size
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(productCardReimagineCarouselGridTestData[position].first)
+            holder.bind(testData[position].first, testData[position].third)
         }
 
         override fun onViewRecycled(holder: ViewHolder) {
@@ -70,13 +56,29 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
+        private val testDescription: TextView? by lazy {
+            itemView.findViewById(R.id.productCardReimagineTestDescription)
+        }
         private val productCardView: ProductCardGridCarouselView? by lazy {
             itemView.findViewById(R.id.productCardReimagineGridCarouselView)
         }
 
-        fun bind(productCardModel: ProductCardModel) {
-            productCardView?.setProductModel(productCardModel)
-            productCardView?.setOnClickListener { toast("Click") }
+        fun bind(productCardModel: ProductCardModel, description: String) {
+            testDescription?.text = description
+
+            productCardView?.findViewById<CardUnify2?>(
+                productcardR.id.productCardCardUnifyContainer
+            )?.run {
+                layoutParams = layoutParams?.apply { height = WRAP_CONTENT }
+            }
+
+            productCardView?.run {
+                layoutParams = layoutParams?.apply { height = WRAP_CONTENT }
+
+                setProductModel(productCardModel)
+                setOnClickListener { toast("Click") }
+                setAddToCartOnClickListener { toast("Click ATC") }
+            }
         }
 
         private fun toast(message: String) {
