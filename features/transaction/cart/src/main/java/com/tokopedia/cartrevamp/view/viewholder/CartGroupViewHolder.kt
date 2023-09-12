@@ -277,7 +277,7 @@ class CartGroupViewHolder(
                     )
                 }
                 constraintSet.connect(
-                    R.id.tv_shop_name,
+                    R.id.tv_group_name,
                     ConstraintSet.START,
                     R.id.image_shop_badge,
                     ConstraintSet.END,
@@ -286,7 +286,7 @@ class CartGroupViewHolder(
             } else {
                 if (cartGroupHolderData.isError) {
                     constraintSet.connect(
-                        R.id.tv_shop_name,
+                        R.id.tv_group_name,
                         ConstraintSet.START,
                         R.id.cb_select_shop,
                         ConstraintSet.END,
@@ -294,7 +294,7 @@ class CartGroupViewHolder(
                     )
                 } else {
                     constraintSet.connect(
-                        R.id.tv_shop_name,
+                        R.id.tv_group_name,
                         ConstraintSet.START,
                         R.id.cb_select_shop,
                         ConstraintSet.END,
