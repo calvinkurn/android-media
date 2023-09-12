@@ -30,6 +30,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.model.ShopSharingInShowCaseUiModel
 import com.tokopedia.shop.databinding.ActivityNewShopProductListResultBinding
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment.Companion.isShowShareIcon
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.Companion.createInstance
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener
@@ -201,10 +202,16 @@ class ShopProductListResultActivity :
 
     private fun initToolbar() {
         viewBinding?.newNavigationToolbar?.apply {
-            val iconBuilder =
-                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SHOP))
-            iconBuilder.addIcon(IconList.ID_SHARE) {
-                if (fragment is ShopPageProductListResultFragment) (fragment as? ShopPageProductListResultFragment?)?.clickShopShare()
+            val iconBuilder = IconBuilder(
+                builderFlags = IconBuilderFlag(
+                    pageSource = NavSource.SHOP
+                )
+            )
+
+            if (isShowShareIcon) {
+                iconBuilder.addIcon(IconList.ID_SHARE) {
+                    if (fragment is ShopPageProductListResultFragment) (fragment as? ShopPageProductListResultFragment?)?.clickShopShare()
+                }
             }
 
             if (!GlobalConfig.isSellerApp()) {
