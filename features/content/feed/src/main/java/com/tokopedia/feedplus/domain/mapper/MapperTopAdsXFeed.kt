@@ -92,6 +92,7 @@ object MapperTopAdsXFeed {
             ),
             adViewUri = data?.cpm?.uri.orEmpty(),
             adViewUrl = data?.cpm?.cpmImage?.fullUrl.orEmpty(),
+            adClickUrl = data?.adClickUrl.orEmpty(),
             share = currentModel.share.copy(
                 contentId = data?.id.orEmpty(),
                 author = feedAuthor,
