@@ -147,19 +147,49 @@ class CartItemViewHolder constructor(
                 checkboxProduct.gone()
                 vBundlingProductSeparator.show()
                 val marginStart = if (data.isError) {
-                    IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
+                    0
                 } else {
                     BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 }
+                val marginErrorBundling = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
-                constraintSet.connect(
-                    R.id.fl_image_product,
-                    ConstraintSet.START,
-                    ConstraintSet.PARENT_ID,
-                    ConstraintSet.START,
-                    marginStart
-                )
+                if (data.isError) {
+                    constraintSet.connect(
+                        R.id.fl_image_product,
+                        ConstraintSet.START,
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.START,
+                        marginErrorBundling
+                    )
+                    constraintSet.connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.START,
+                        ConstraintSet.PARENT_ID,
+                        ConstraintSet.START
+                    )
+                    constraintSet.clear(R.id.v_bundling_product_separator, ConstraintSet.END)
+                } else {
+                    constraintSet.connect(
+                        R.id.fl_image_product,
+                        ConstraintSet.START,
+                        ConstraintSet.PARENT_ID,
+                        ConstraintSet.START,
+                        marginStart
+                    )
+                    constraintSet.connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.START,
+                        R.id.checkbox_anchor,
+                        ConstraintSet.START
+                    )
+                    constraintSet.connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.END,
+                        R.id.checkbox_anchor,
+                        ConstraintSet.END
+                    )
+                }
                 constraintSet.connect(
                     R.id.fl_image_product,
                     ConstraintSet.TOP,
@@ -173,8 +203,11 @@ class CartItemViewHolder constructor(
             with(binding) {
                 vBundlingProductSeparator.gone()
                 checkboxProduct.show()
-                val marginStart =
+                val marginStart = if (data.isError) {
+                    0
+                } else {
                     IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
+                }
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
@@ -295,7 +328,7 @@ class CartItemViewHolder constructor(
             if (compoundButton.isPressed) {
                 if (!data.isError) {
                     if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                        actionListener?.onCartItemCheckboxClickChanged(bindingAdapterPosition, data)
+                        actionListener?.onCartItemCheckboxClickChanged(bindingAdapterPosition, data, isChecked)
                     }
                 }
             }
@@ -393,8 +426,12 @@ class CartItemViewHolder constructor(
         if (data.isBundlingItem && data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
             binding.productBundlingInfo.show()
             if (data.isError) {
+                val productBundlingInfoParams = binding.productBundlingInfo.layoutParams as MarginLayoutParams
+                productBundlingInfoParams.marginStart = 0
                 binding.checkboxBundle.gone()
             } else {
+                val productBundlingInfoParams = binding.productBundlingInfo.layoutParams as MarginLayoutParams
+                productBundlingInfoParams.marginStart = IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
                 binding.checkboxBundle.show()
             }
 
@@ -549,7 +586,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun adjustProductVerticalSeparatorConstraint(data: CartItemHolderData) {
-        if ((data.isError || !data.isBundlingItem) && !data.isShowBmGmDivider) {
+        if (!data.isBundlingItem && !data.isShowBmGmDivider) {
             binding.vBundlingProductSeparator.gone()
             return
         }
@@ -581,7 +618,7 @@ class CartItemViewHolder constructor(
                         connect(
                             R.id.v_bundling_product_separator,
                             ConstraintSet.TOP,
-                            R.id.checkbox_bundle,
+                            if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
                             ConstraintSet.BOTTOM,
                             MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                         )
@@ -590,7 +627,7 @@ class CartItemViewHolder constructor(
                     connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.TOP,
-                        R.id.checkbox_bundle,
+                        if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
                         ConstraintSet.BOTTOM,
                         MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
@@ -687,8 +724,6 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductName(data: CartItemHolderData) {
-        validateErrorView(binding.textProductName, data.isError)
-
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
         if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
             val textProductNameLayoutParams =
@@ -706,6 +741,21 @@ class CartItemViewHolder constructor(
             textProductNameLayoutParams.topMargin = 0
             binding.textProductName.text = Utils.getHtmlFormat(data.productName)
         }
+        if (data.isError) {
+            binding.textProductName.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN400
+                )
+            )
+        } else {
+            binding.textProductName.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN600
+                )
+            )
+        }
         binding.textProductName.setOnClickListener(
             getOnClickProductItemListener(
                 absoluteAdapterPosition,
@@ -720,7 +770,6 @@ class CartItemViewHolder constructor(
             R.drawable.bg_cart_product_image,
             null
         )
-        val flImageProductLayoutParams = binding.flImageProduct.layoutParams as MarginLayoutParams
         if (data.isError) {
             val nn900Color = ResourcesCompat.getColor(
                 binding.root.resources,
@@ -732,7 +781,6 @@ class CartItemViewHolder constructor(
             loadingDrawable?.mutate()
             loadingDrawable?.setColor(nn900ColorAlpha)
             binding.flImageProduct.foreground = frameBackground
-            flImageProductLayoutParams.leftMargin = 0
         } else {
             val transparentColor = ResourcesCompat.getColor(
                 binding.root.resources,
@@ -743,8 +791,6 @@ class CartItemViewHolder constructor(
             loadingDrawable?.mutate()
             loadingDrawable?.setColor(transparentColor)
             binding.flImageProduct.foreground = frameBackground
-            flImageProductLayoutParams.leftMargin =
-                IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
         }
         data.productImage.let {
             binding.iuImageProduct.loadImage(it)
@@ -823,12 +869,26 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderPrice(data: CartItemHolderData) {
-        if (data.isBundlingItem && data.showBundlePrice) {
+        if (data.isBundlingItem && !data.showBundlePrice) {
             binding.textProductPrice.gone()
         } else {
             binding.textProductPrice.visible()
         }
-        validateErrorView(binding.textProductPrice, data.isError)
+        if (data.isError) {
+            binding.textProductPrice.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN400
+                )
+            )
+        } else {
+            binding.textProductPrice.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN950
+                )
+            )
+        }
 
         if (data.wholesalePriceFormatted != null) {
             binding.textProductPrice.text = data.wholesalePriceFormatted
@@ -909,7 +969,6 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderVariant(data: CartItemHolderData) {
-        validateErrorView(binding.textProductVariant, data.isError)
         var paddingRight = 0
         val paddingTop = itemView.resources.getDimensionPixelOffset(R.dimen.dp_2)
         val textProductVariant = binding.textProductVariant
@@ -921,6 +980,21 @@ class CartItemViewHolder constructor(
             textProductVariant.gone()
         }
         textProductVariant.setPadding(0, paddingTop, paddingRight, 0)
+        if (data.isError) {
+            textProductVariant.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN400
+                )
+            )
+        } else {
+            textProductVariant.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_NN600
+                )
+            )
+        }
     }
 
     private fun renderProductNotes(element: CartItemHolderData) {
@@ -1271,30 +1345,24 @@ class CartItemViewHolder constructor(
             binding.containerProductInformation.layoutParams as MarginLayoutParams
         val layoutParamsFlImageProduct =
             binding.flImageProduct.layoutParams as MarginLayoutParams
-        if (cartItemHolderData.isError) {
+        if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct) {
+            if (cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
+                layoutParamsFlImageProduct.topMargin =
+                    IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+            } else {
+                layoutParamsFlImageProduct.topMargin = 0
+            }
+
+            if (cartItemHolderData.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+                layoutParams.bottomMargin =
+                    PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            } else {
+                layoutParams.bottomMargin = 0
+            }
+        } else {
             layoutParamsFlImageProduct.topMargin = 0
             layoutParams.bottomMargin =
                 PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
-        } else {
-            if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct) {
-                if (cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
-                    layoutParamsFlImageProduct.topMargin =
-                        IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-                } else {
-                    layoutParamsFlImageProduct.topMargin = 0
-                }
-
-                if (cartItemHolderData.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
-                    layoutParams.bottomMargin =
-                        PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                } else {
-                    layoutParams.bottomMargin = 0
-                }
-            } else {
-                layoutParamsFlImageProduct.topMargin = 0
-                layoutParams.bottomMargin =
-                    PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
-            }
         }
     }
 
@@ -1326,7 +1394,7 @@ class CartItemViewHolder constructor(
                     var offerMessage = ""
                     data.bmGmCartInfoData.bmGmData.offerMessage.forEachIndexed { index, s ->
                         offerMessage += s
-                        if (index != (data.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
+                        if (index < (data.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
                             offerMessage += " • "
                         }
                     }
@@ -1335,7 +1403,7 @@ class CartItemViewHolder constructor(
                     binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.bmGmCartInfoData.bmGmData.offerIcon
                     binding.itemCartBmgm.bmgmWidgetView.offerId = data.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
-                        actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId)
+                        actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId, data.shopHolderData.shopId)
                     }
                 }
                 2 -> {
@@ -1384,7 +1452,7 @@ class CartItemViewHolder constructor(
     }
 
     companion object {
-        val TYPE_VIEW_ITEM_CART = R.layout.item_cart_product
+        val TYPE_VIEW_ITEM_CART = R.layout.item_cart_product_revamp
 
         const val LABEL_CASHBACK = "cashback"
         const val LABEL_DISCOUNT = "label diskon"

@@ -15,11 +15,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
+import com.tokopedia.minicart.bmgm.common.utils.logger.NonFatalIssueLogger
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartDetailAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartDetailItemDecoration
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
@@ -72,6 +75,8 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
             this, viewModelFactory
         )[BmgmMiniCartDetailViewModel::class.java]
     }
+    private var cartData: BmgmCommonDataModel? = null
+    private val impressHolder = ImpressHolder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,10 +106,13 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.cartData.collect {
                 when (it) {
-                    is BmgmState.Success -> showProducts(it.data)
-                    is BmgmState.Error -> setOnError()
-                    else -> {
-                        /* no-op */
+                    is BmgmState.Success -> setOnCartDataSuccess(it.data)
+                    is BmgmState.Error -> {
+                        sendLogger(it.t)
+                        setOnError()
+                    }
+
+                    else -> {/* no-op */
                     }
                 }
             }
@@ -112,24 +120,51 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         viewModel.getCartData()
     }
 
+    private fun setOnCartDataSuccess(data: BmgmCommonDataModel) {
+        this.cartData = data
+        showProducts(data)
+        setupCartEntryPoint()
+        setOnCloseClicked()
+        sendImpressionTracker()
+    }
+
     private fun observeCartCheckedListState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.setCheckListState.collectLatest {
                 when (it) {
                     is BmgmState.Loading -> showLoadingButton()
-                    is BmgmState.Success, is BmgmState.Error -> openCartPage()
-                    else -> {
-                        /* no-op */
+                    is BmgmState.Success -> openCartPage()
+                    is BmgmState.Error -> {
+                        sendLogger(it.t)
+                        openCartPage()
+                    }
+
+                    else -> {/* no-op */
                     }
                 }
             }
         }
     }
 
+    private fun sendLogger(t: Throwable) {
+        NonFatalIssueLogger.logToCrashlytics(t, this::class.java.canonicalName)
+    }
+
     private fun openCartPage() {
         dismissLoadingButton()
         dismiss()
         RouteManager.route(context, ApplinkConst.CART)
+    }
+
+    private fun sendClickCheckCartEvent() {
+        cartData?.let { data ->
+            BmgmMiniCartTracker.sendClickCekKeranjangEvent(
+                offerId = data.offerId.toString(),
+                warehouseId = data.warehouseId.toString(),
+                userId = data.shopId,
+                shopId = userSession.get().userId
+            )
+        }
     }
 
     private fun showLoadingButton() {
@@ -154,49 +189,65 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         val productList = getDiscountedProductList(data.tiersApplied, data.hasReachMaxDiscount)
         listAdapter.clearAllElements()
         listAdapter.addElement(productList)
-
-        setupCartEntryPoint(data)
-        setOnCloseClicked(data)
     }
 
-    private fun setOnCloseClicked(data: BmgmCommonDataModel) {
-        super.setCloseClickListener {
-            BmgmMiniCartTracker.sendClickCloseMinicartEvent(
-                offerId = data.offerId.toString(),
-                warehouseId = data.warehouseId.toString(),
-                shopId = data.shopId,
-                userId = userSession.get().userId
-            )
-            dismiss()
-        }
-    }
-
-    private fun setupCartEntryPoint(model: BmgmCommonDataModel) {
-        if (!model.showMiniCartFooter) {
-            binding?.containerSubTotal?.gone()
-            return
-        }
-        binding?.containerSubTotal?.visible()
-
-        footerBinding?.run {
-            tvBmgmFinalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                model.finalPrice, false
-            )
-            val showCrossedPrice = model.finalPrice != model.priceBeforeBenefit
-            if (showCrossedPrice) {
-                tvBmgmPriceBeforeDiscount.visible()
-                tvBmgmPriceBeforeDiscount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    model.priceBeforeBenefit, false
+    private fun sendImpressionTracker() {
+        cartData?.let { data ->
+            binding?.root?.addOnImpressionListener(impressHolder) {
+                BmgmMiniCartTracker.sendImpressionMinicartEvent(
+                    offerId = data.offerId.toString(),
+                    warehouseId = data.warehouseId.toString(),
+                    userId = data.shopId,
+                    shopId = userSession.get().userId
                 )
-                tvBmgmPriceBeforeDiscount.paintFlags =
-                    tvBmgmPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            } else {
-                tvBmgmPriceBeforeDiscount.gone()
             }
+        }
+    }
 
-            btnBmgmOpenCart.isEnabled = true
-            btnBmgmOpenCart.setOnClickListener {
-                viewModel.setCartListCheckboxState(getCartIds(model.tiersApplied))
+    private fun setOnCloseClicked() {
+        cartData?.let { data ->
+            super.setCloseClickListener {
+                BmgmMiniCartTracker.sendClickCloseMinicartEvent(
+                    offerId = data.offerId.toString(),
+                    warehouseId = data.warehouseId.toString(),
+                    shopId = data.shopId,
+                    userId = userSession.get().userId
+                )
+                dismiss()
+            }
+        }
+    }
+
+    private fun setupCartEntryPoint() {
+        cartData?.let { model ->
+            if (!model.showMiniCartFooter) {
+                binding?.containerSubTotal?.gone()
+                return
+            }
+            binding?.containerSubTotal?.visible()
+
+            footerBinding?.run {
+                tvBmgmFinalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    model.finalPrice, false
+                )
+                val showCrossedPrice = model.finalPrice != model.priceBeforeBenefit
+                if (showCrossedPrice) {
+                    tvBmgmPriceBeforeDiscount.visible()
+                    tvBmgmPriceBeforeDiscount.text =
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            model.priceBeforeBenefit, false
+                        )
+                    tvBmgmPriceBeforeDiscount.paintFlags =
+                        tvBmgmPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                } else {
+                    tvBmgmPriceBeforeDiscount.gone()
+                }
+
+                btnBmgmOpenCart.isEnabled = true
+                btnBmgmOpenCart.setOnClickListener {
+                    viewModel.setCartListCheckboxState(getCartIds(model.tiersApplied))
+                    sendClickCheckCartEvent()
+                }
             }
         }
     }
@@ -210,8 +261,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun getDiscountedProductList(
-        tiers: List<BmgmCommonDataModel.TierModel>,
-        hasReachMaxDiscount: Boolean
+        tiers: List<BmgmCommonDataModel.TierModel>, hasReachMaxDiscount: Boolean
     ): List<MiniCartDetailUiModel> {
         val items = mutableListOf<MiniCartDetailUiModel>()
         tiers.forEach { tier ->
@@ -228,8 +278,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun mapToProductList(
-        products: List<BmgmCommonDataModel.ProductModel>,
-        isDiscountedTier: Boolean
+        products: List<BmgmCommonDataModel.ProductModel>, isDiscountedTier: Boolean
     ): List<MiniCartDetailUiModel.Product> {
         return products.mapIndexed { i, product ->
             val isFirstItem = i == Int.ZERO
@@ -244,8 +293,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun getDiscountSectionText(
-        model: BmgmCommonDataModel.TierModel,
-        isDiscountedTier: Boolean
+        model: BmgmCommonDataModel.TierModel, isDiscountedTier: Boolean
     ): MiniCartDetailUiModel {
         return MiniCartDetailUiModel.Section(
             sectionText = model.tierMessage, isDiscountSection = isDiscountedTier

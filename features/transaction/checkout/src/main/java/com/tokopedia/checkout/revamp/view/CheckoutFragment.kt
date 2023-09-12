@@ -95,7 +95,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -434,10 +433,6 @@ class CheckoutFragment :
                     stopTrace()
                 }
 
-                is CheckoutPageState.CheckNoAddress -> {
-                    // no-op
-                }
-
                 is CheckoutPageState.EmptyData -> {
                     onEmptyData()
                     stopTrace()
@@ -469,41 +464,24 @@ class CheckoutFragment :
                     val token = Token()
                     token.ut = it.cartShipmentAddressFormData.keroUnixTime
                     token.districtRecommendation = it.cartShipmentAddressFormData.keroDiscomToken
-                    if (it.eligible) {
-                        val intent =
-                            RouteManager.getIntent(
-                                activity,
-                                ApplinkConstInternalLogistic.ADD_ADDRESS_V3
-                            )
-                        intent.putExtra(CheckoutConstant.KERO_TOKEN, token)
-                        intent.putExtra(
-                            ChooseAddressBottomSheet.EXTRA_REF,
-                            CartConstant.SCREEN_NAME_CART_NEW_USER
+                    val intent =
+                        RouteManager.getIntent(
+                            activity,
+                            ApplinkConstInternalLogistic.ADD_ADDRESS_V3
                         )
-                        intent.putExtra(
-                            ApplinkConstInternalLogistic.PARAM_SOURCE,
-                            AddEditAddressSource.CART.source
-                        )
-                        startActivityForResult(
-                            intent,
-                            LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY
-                        )
-                    } else {
-                        val intent =
-                            RouteManager.getIntent(
-                                activity,
-                                ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-                            )
-                        intent.putExtra(CheckoutConstant.KERO_TOKEN, token)
-                        intent.putExtra(
-                            ChooseAddressBottomSheet.EXTRA_REF,
-                            CartConstant.SCREEN_NAME_CART_NEW_USER
-                        )
-                        startActivityForResult(
-                            intent,
-                            LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY
-                        )
-                    }
+                    intent.putExtra(CheckoutConstant.KERO_TOKEN, token)
+                    intent.putExtra(
+                        ChooseAddressBottomSheet.EXTRA_REF,
+                        CartConstant.SCREEN_NAME_CART_NEW_USER
+                    )
+                    intent.putExtra(
+                        ApplinkConstInternalLogistic.PARAM_SOURCE,
+                        AddEditAddressSource.CART.source
+                    )
+                    startActivityForResult(
+                        intent,
+                        LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY
+                    )
                     stopTrace()
                 }
 
@@ -904,33 +882,23 @@ class CheckoutFragment :
     private fun navigateToPinpointActivity(locationPass: LocationPass?) {
         val activity: Activity? = activity
         if (activity != null) {
-            if (PinpointRolloutHelper.eligibleForRevamp(activity, true)) {
-                val bundle = Bundle()
-                bundle.putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
-                if (locationPass?.latitude != null &&
-                    locationPass.latitude.isNotEmpty() && locationPass.longitude != null &&
-                    locationPass.longitude.isNotEmpty()
-                ) {
-                    bundle.putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
-                    bundle.putDouble(
-                        AddressConstant.EXTRA_LONG,
-                        locationPass.longitude.toDouble()
-                    )
-                }
-                bundle.putString(AddressConstant.EXTRA_CITY_NAME, locationPass?.cityName)
-                bundle.putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass?.districtName)
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT)
-                intent.putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
-                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
-            } else {
-                val intent =
-                    RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-                val bundle = Bundle()
-                bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-                intent.putExtras(bundle)
-                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            val bundle = Bundle()
+            bundle.putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+            if (locationPass?.latitude != null &&
+                locationPass.latitude.isNotEmpty() && locationPass.longitude != null &&
+                locationPass.longitude.isNotEmpty()
+            ) {
+                bundle.putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
+                bundle.putDouble(
+                    AddressConstant.EXTRA_LONG,
+                    locationPass.longitude.toDouble()
+                )
             }
+            bundle.putString(AddressConstant.EXTRA_CITY_NAME, locationPass?.cityName)
+            bundle.putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass?.districtName)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT)
+            intent.putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
         }
     }
 

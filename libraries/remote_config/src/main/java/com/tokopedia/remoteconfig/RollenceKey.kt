@@ -42,7 +42,7 @@ object RollenceKey {
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val TREATMENT_VARIANT = "treatment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
-    const val CART_CHECKOUT_REVAMP = "cartcheckout_android"
+    const val CART_CHECKOUT_REVAMP = "cartcheckout_revamp"
     const val CART_CHECKOUT_NEW = "cart_checkout_new"
 
     // SRP Video Sneak Peek Autoplay
@@ -59,6 +59,9 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
+    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_EXPERIMENT = "seg_sp_cb"
+    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_SRP = "sp_cb_srp"
+    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_ALL = "sp_cb_all"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
@@ -111,5 +114,4 @@ object RollenceKey {
     const val SEARCH_3_PRODUCT_CARD_CONTROL = "control"
     const val SEARCH_3_PRODUCT_CARD_PC_VAR = "pc_var"
     const val SEARCH_3_PRODUCT_CARD_PC_NEWLABEL_VAR = "pc_newlabel_var"
-
 }

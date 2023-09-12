@@ -57,8 +57,8 @@ object CheckoutCrossSellItemView {
         itemBinding.cbCheckoutCrossSellItem.skipAnimation()
         var title = crossSellModel.crossSellModel.info.title
         val startUnderline = title.indexOf(CROSS_SELL_UNDERLINE_TEXT, ignoreCase = true)
-        val underlineText = title.substring(startUnderline, CROSS_SELL_UNDERLINE_TEXT.length)
         if (startUnderline >= 0) {
+            val underlineText = title.substring(startUnderline, CROSS_SELL_UNDERLINE_TEXT.length)
             title = title.replaceRange(
                 startUnderline,
                 CROSS_SELL_UNDERLINE_TEXT.length,

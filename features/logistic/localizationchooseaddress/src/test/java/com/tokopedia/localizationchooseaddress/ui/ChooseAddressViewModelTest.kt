@@ -16,9 +16,6 @@ import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDat
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
-import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -41,7 +38,6 @@ class ChooseAddressViewModelTest {
 
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper = ChooseAddressMapper()
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase = mockk(relaxed = true)
     private val refreshTokonowDataUseCase: RefreshTokonowDataUsecase = mockk(relaxed = true)
 
     private lateinit var chooseAddressViewModel: ChooseAddressViewModel
@@ -50,7 +46,6 @@ class ChooseAddressViewModelTest {
     private val setChosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val getChosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val getDefaultAddressObserver: Observer<Result<DefaultChosenAddressModel>> = mockk(relaxed = true)
-    private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeature>> = mockk(relaxed = true)
     private val tokonowDataObserver: Observer<Result<RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess>> = mockk(relaxed = true)
 
     private val defaultThrowable = Throwable("test error")
@@ -58,12 +53,11 @@ class ChooseAddressViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, eligibleForAddressUseCase, refreshTokonowDataUseCase)
+        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, refreshTokonowDataUseCase)
         chooseAddressViewModel.chosenAddressList.observeForever(chosenAddressListObserver)
         chooseAddressViewModel.setChosenAddress.observeForever(setChosenAddressObserver)
         chooseAddressViewModel.getChosenAddress.observeForever(getChosenAddressObserver)
         chooseAddressViewModel.getDefaultAddress.observeForever(getDefaultAddressObserver)
-        chooseAddressViewModel.eligibleForAnaRevamp.observeForever(eligibleForAddressFeatureObserver)
         chooseAddressViewModel.tokonowData.observeForever(tokonowDataObserver)
     }
 
@@ -72,7 +66,6 @@ class ChooseAddressViewModelTest {
         coEvery { chooseAddressRepo.getChosenAddressList(any(), any()) } returns GetChosenAddressListQglResponse()
         chooseAddressViewModel.getChosenAddressList("address", true)
         verify { chosenAddressListObserver.onChanged(match { it is Success }) }
-
     }
 
     @Test
@@ -146,35 +139,5 @@ class ChooseAddressViewModelTest {
         coEvery { refreshTokonowDataUseCase.execute(any()) } throws defaultThrowable
         chooseAddressViewModel.getTokonowData(LocalCacheModel())
         verify { tokonowDataObserver.onChanged(match { it is Fail }) }
-    }
-
-    @Test
-    fun `Get Eligible For Revamp Ana Success`() {
-        onCheckEligibility_thenReturn()
-        chooseAddressViewModel.checkUserEligibilityForAnaRevamp()
-        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `Get Eligible For Revamp Ana Fail`() {
-        onCheckEligibility_thenThrow()
-        chooseAddressViewModel.checkUserEligibilityForAnaRevamp()
-        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Fail }) }
-    }
-
-    private fun onCheckEligibility_thenReturn() {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureData())
-        }
-    }
-
-    private fun onCheckEligibility_thenThrow() {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable)-> Unit>().invoke(defaultThrowable)
-        }
     }
 }

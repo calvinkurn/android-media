@@ -2230,7 +2230,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         // GIVEN
         val cartItemHolderData = CartItemHolderData(cartId = "123")
         val cartItemHolderDataTwo = CartItemHolderData(cartId = "124")
-        val cartItemHolderDataThree = CartItemHolderData(cartId = "124", isError = true)
+        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isError = true)
         val cartImpressionSet = mutableSetOf(cartItemHolderData)
 
         cartViewModel.cartModel.availableCartItemImpressionList = cartImpressionSet
@@ -2238,13 +2238,14 @@ class CartViewModelTest : BaseCartViewModelTest() {
         // WHEN
         cartViewModel.addAvailableCartItemImpression(
             listOf(
+                cartItemHolderData,
                 cartItemHolderDataTwo,
                 cartItemHolderDataThree
             )
         )
 
         // THEN
-        assertEquals(2, cartViewModel.cartModel.availableCartItemImpressionList.size)
+        assertEquals(3, cartViewModel.cartModel.availableCartItemImpressionList.size)
     }
     // endregion
 

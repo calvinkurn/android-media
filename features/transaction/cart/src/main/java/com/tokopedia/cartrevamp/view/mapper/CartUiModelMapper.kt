@@ -129,6 +129,7 @@ object CartUiModelMapper {
         cartData.availableSection.availableGroupGroups.forEachIndexed { index, availableGroup ->
             val productUiModelList = mutableListOf<CartItemHolderData>()
             val groupShopCount = availableGroup.groupShopCartData.count()
+            var cartGroupBmGmHolderData = CartGroupBmGmHolderData()
             availableGroup.groupShopCartData.forEachIndexed { shopIndex, availableShop ->
                 val shopUiModel = mapGroupShop(availableShop.shop, availableShop.cartDetails)
                 availableShop.cartDetails.forEach { cartDetail ->
@@ -145,6 +146,10 @@ object CartUiModelMapper {
                             isShopShown = availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0
                         }
                         productUiModelList.add(productUiModel)
+                    }
+
+                    if (cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+                        cartGroupBmGmHolderData = mapGroupBmGmHolder(availableGroup.cartString, cartDetail, availableShop.cartStringOrder)
                     }
                 }
                 productUiModelList.lastOrNull()?.isFinalItem = shopIndex == groupShopCount - 1
@@ -222,7 +227,7 @@ object CartUiModelMapper {
                     } else {
                         ""
                     }
-                cartGroupBmGmHolderData = mapGroupBmGmHolder(availableGroup.cartString, availableGroup.groupShopCartData.getOrNull(0)?.cartDetails)
+                this.cartGroupBmGmHolderData = cartGroupBmGmHolderData
             }
             cartGroupHolderDataList.add(groupUiModel)
             if (!groupUiModel.isCollapsed) {
@@ -829,31 +834,16 @@ object CartUiModelMapper {
         }
     }
 
-    private fun mapGroupBmGmHolder(cartString: String, cartDetail: List<CartDetail>?): CartGroupBmGmHolderData {
-        var hasBmGm = false
-        var totalDiscount = 0.0
-        var offerId = 0L
-        var offerJsonData = ""
-        var bundleId = 0L
-        var bundleGroupId = ""
-        cartDetail?.forEach {
-            if (it.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM) {
-                hasBmGm = true
-                totalDiscount += it.cartDetailInfo.bmgmData.totalDiscount
-                offerId = it.cartDetailInfo.bmgmData.offerId
-                bundleId = it.bundleDetail.bundleId.toLongOrZero()
-                bundleGroupId = it.bundleDetail.bundleGroupId
-                offerJsonData = it.cartDetailInfo.bmgmData.offerJsonData
-            }
-        }
+    private fun mapGroupBmGmHolder(cartString: String, cartDetail: CartDetail, cartStringOrder: String): CartGroupBmGmHolderData {
         return CartGroupBmGmHolderData(
-            hasBmGmOffer = hasBmGm,
-            discountBmGmAmount = totalDiscount,
-            offerId = offerId,
-            offerJsonData = offerJsonData,
-            cartBmGmGroupTickerCartString = "$cartString-$offerId",
-            bundleId = bundleId,
-            bundleGroupId = bundleGroupId
+            hasBmGmOffer = true,
+            discountBmGmAmount = cartDetail.cartDetailInfo.bmgmData.totalDiscount,
+            offerId = cartDetail.cartDetailInfo.bmgmData.offerId,
+            offerJsonData = cartDetail.cartDetailInfo.bmgmData.offerJsonData,
+            cartBmGmGroupTickerCartString = "$cartString-${cartDetail.cartDetailInfo.bmgmData.offerId}",
+            bundleId = cartDetail.bundleDetail.bundleId.toLongOrZero(),
+            bundleGroupId = cartDetail.bundleDetail.bundleGroupId,
+            cartStringOrder = cartStringOrder
         )
     }
 

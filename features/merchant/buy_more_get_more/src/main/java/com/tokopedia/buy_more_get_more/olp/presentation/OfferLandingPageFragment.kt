@@ -214,6 +214,7 @@ class OfferLandingPageFragment :
                     viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
                     setupTncBottomSheet()
                     fetchMiniCart()
+                    setMiniCartOnOfferEnd(offerInfoForBuyer)
                 }
 
                 else -> {
@@ -266,6 +267,17 @@ class OfferLandingPageFragment :
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
             setDefaultErrorSelection(throwable)
+        }
+    }
+
+    private fun setMiniCartOnOfferEnd(offerInfoForBuyer: OfferInfoForBuyerUiModel?) {
+        binding?.miniCartView?.run {
+            val offer = offerInfoForBuyer?.offerings?.firstOrNull() ?: return@run
+            setOnCheckCartClickListener(offer.endDate) { isOfferEnded ->
+                if (isOfferEnded) {
+                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
+                }
+            }
         }
     }
 
