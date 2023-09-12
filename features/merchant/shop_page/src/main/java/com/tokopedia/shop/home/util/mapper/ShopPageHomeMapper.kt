@@ -1300,7 +1300,8 @@ object ShopPageHomeMapper {
                         type = it.widgetType,
                         name = it.widgetName,
                         header = ShopLayoutWidget.Widget.Header(
-                            title = it.widgetTitle
+                            title = it.widgetTitle,
+                            widgetStyle = it.header.widgetStyle
                         ),
                         data = it.header.data.map { headerDataUiModel ->
                             ShopLayoutWidget.Widget.Data(bundleGroupId = headerDataUiModel.linkID.toString())
