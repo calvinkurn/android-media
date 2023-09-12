@@ -1204,6 +1204,7 @@ class FeedFragment :
                                 )
                             )
                         }
+                        updateBottomActionView(RecyclerView.NO_POSITION)
                     } else {
                         adapter.setList(it.data.items) {
                             if (_binding == null) return@setList
