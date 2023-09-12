@@ -298,9 +298,8 @@ class StoriesViewModel @Inject constructor(
 
                 if (response) {
                     _uiEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
-                } else {
-                    _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
-                }
+                } else throw MessageErrorException()
+
             }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
         }
     }
