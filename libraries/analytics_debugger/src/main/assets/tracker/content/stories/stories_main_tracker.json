@@ -6,10 +6,13 @@
             "event": "view_item",
             "eventAction": "view - story circle",
             "eventCategory": "stories room",
+            "clientId": ".*",
             "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video)- .* - .*",
             "trackerId": "46043",
             "businessUnit": "content",
             "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*",
             "promotions": [
                 {
                     "creative_name": ".*",
@@ -17,15 +20,13 @@
                     "item_id": ".* - .* - .*",
                     "item_name": "/ - .* - stories"
                 }
-            ],
-            "sessionIris": ".*",
-            "userId": ".*"
+            ]
         },
         {
             "event": "clickContent",
             "eventAction": "click - shop name",
             "eventCategory": "stories room",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video)- .* - .*",
+            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .* - .*",
             "trackerId": "46044",
             "businessUnit": ".*",
             "currentSite": ".*",
@@ -36,7 +37,7 @@
             "event": "clickContent",
             "eventAction": "click - three dots",
             "eventCategory": "stories room",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video)- .* - .*",
+            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .* - .*",
             "trackerId": "46046",
             "businessUnit": ".*",
             "currentSite": ".*",
@@ -58,10 +59,13 @@
             "event": "select_content",
             "eventAction": "click - story circle",
             "eventCategory": "stories room",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video)- .* - .*",
+            "clientId": ".*",
+            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .* - .*",
             "trackerId": "46049",
             "businessUnit": "content",
             "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*",
             "promotions": [
                 {
                     "creative_name": ".*",
@@ -69,15 +73,13 @@
                     "item_id": ".* - .* - .*",
                     "item_name": "/ - .* - stories"
                 }
-            ],
-            "sessionIris": ".*",
-            "userId": ".*"
+            ]
         },
         {
             "event": "clickContent",
             "eventAction": "click - remove story",
             "eventCategory": "stories room",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video)- .* - .*",
+            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .* - .*",
             "trackerId": "46050",
             "businessUnit": ".*",
             "currentSite": ".*",

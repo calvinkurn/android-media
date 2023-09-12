@@ -1,12 +1,14 @@
 package com.tokopedia.stories.analytic
 
+import android.os.Bundle
+import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class StoriesAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
-): StoriesAnalytic {
+) : StoriesAnalytic {
 
     private val userId: String
         get() = userSession.userId.orEmpty()
@@ -20,7 +22,7 @@ class StoriesAnalyticImpl @Inject constructor(
         Tracker.Builder()
             .setEvent("openScreen")
             .setCustomProperty("trackerId", "46042")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("isLoggedInStatus", isLogin.toString())
             .setCustomProperty("screenName", "/stories-room/$storiesId/$authorId")
@@ -36,19 +38,35 @@ class StoriesAnalyticImpl @Inject constructor(
         eventLabel: String,
         promotions: List<String>,
     ) {
-        Tracker.Builder()
-            .setEvent("view_item")
-            .setEventAction("view - story circle")
-            .setEventCategory("stories room")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46043")
-            .setBusinessUnit(BUSINESS_UNIT)
-            .setCurrentSite(currentSite)
-            .setCustomProperty("promotions", promotions)
-            .setCustomProperty("sessionIris", sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        val itemList = promotions.map {
+            Bundle().apply {
+                putString(CREATIVE_NAME, it)
+                putString(CREATIVE_SLOT, it)
+                putString(ITEM_ID, "$it - $it - $it")
+                putString(ITEM_NAME, "/ - $it - $it")
+            }
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(EVENT, "view_item")
+            putString(EVENT_ACTION, "view - story circle")
+            putString(EVENT_CATEGORY, "stories room")
+            putString(
+                EVENT_LABEL,
+                "entryPoint - 12 - 12556 - asgc - image - 1234 - 213"
+            )
+            putString(TRACKER_ID, "46043")
+            putString(BUSINESS_UNIT, "content")
+            putString(CURRENT_SITE, currentSite)
+            putString(SESSION_IRIS, sessionIris)
+            putString(USER_ID, userId)
+            putParcelableArrayList(PROMOTIONS, ArrayList(itemList))
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            "view_item",
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
@@ -60,7 +78,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46044")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
@@ -77,7 +95,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46046")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
@@ -94,7 +112,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46047")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
@@ -108,19 +126,35 @@ class StoriesAnalyticImpl @Inject constructor(
         eventLabel: String,
         promotions: List<String>,
     ) {
-        Tracker.Builder()
-            .setEvent("select_content")
-            .setEventAction("click - story circle")
-            .setEventCategory("stories room")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46049")
-            .setBusinessUnit(BUSINESS_UNIT)
-            .setCurrentSite(currentSite)
-            .setCustomProperty("promotions", promotions)
-            .setCustomProperty("sessionIris", sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        val itemList = promotions.map {
+            Bundle().apply {
+                putString(CREATIVE_NAME, it)
+                putString(CREATIVE_SLOT, it)
+                putString(ITEM_ID, "$it - $it - $it")
+                putString(ITEM_NAME, "/ - $it - $it")
+            }
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(EVENT, "select_content")
+            putString(EVENT_ACTION, "click - story circle")
+            putString(EVENT_CATEGORY, "stories room")
+            putString(
+                EVENT_LABEL,
+                "entryPoint - 12 - 12556 - asgc - image - 1234 - 213"
+            )
+            putString(TRACKER_ID, "46049")
+            putString(BUSINESS_UNIT, "content")
+            putString(CURRENT_SITE, currentSite)
+            putString(SESSION_IRIS, sessionIris)
+            putString(USER_ID, userId)
+            putParcelableArrayList(PROMOTIONS, ArrayList(itemList))
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            "select_content",
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
@@ -132,7 +166,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46050")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
@@ -152,7 +186,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46051")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("item_list", "/stories-room - product card")
             .setCustomProperty("items", items)
@@ -175,7 +209,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46052")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("item_list", itemList)
             .setCustomProperty("items", items)
@@ -197,7 +231,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46054")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("items", items)
             .setCustomProperty("sessionIris", sessionIris)
@@ -218,7 +252,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46056")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("items", items)
             .setCustomProperty("sessionIris", sessionIris)
@@ -236,7 +270,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46057")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
@@ -253,7 +287,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46058")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
@@ -270,7 +304,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46059")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
@@ -287,7 +321,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46060")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
@@ -304,7 +338,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEventCategory("stories room")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "46062")
-            .setBusinessUnit(BUSINESS_UNIT)
+            .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)
             .setUserId(userId)
