@@ -41,7 +41,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
             val gqlResponse = graphQlRepository.response(multipleRequest)
             getSomDetailResponse.getSomDetail = requireNotNull(gqlResponse.getData<SomDetailOrder.Data>(SomDetailOrder.Data::class.java).getSomDetail)
             getSomDetailResponse.somDynamicPriceResponse = requireNotNull(gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice)
-            getSomDetailResponse
+            return getSomDetailResponse
         } catch (e: Throwable) {
             throw e
         }
@@ -208,24 +208,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     }
                     template {
                         code
-                        params {
-                          lg_fmd_txt_learn_more {
-                            type
-                            data
-                          }
-                          lg_fmd_txt_open_dropoff_maps{
-                            type
-                            data
-                          }
-                          lg_fmd_url_learn_more{
-                            type
-                            data
-                          }
-                          lg_fmd_url_open_dropoff_maps{
-                            type
-                            data
-                          }
-                        }
+                        params 
                       }
                   }
                 }
