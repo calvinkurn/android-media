@@ -63,6 +63,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.CommonDataView
@@ -208,6 +209,7 @@ open class HomeAccountUserFragment :
     private var topAdsHeadlineUiModel: TopadsHeadlineUiModel? = null
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
+    private var isTokopediaCardActive = false
 
     var adapter: HomeAccountUserAdapter? = null
     var balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter? = null
@@ -629,6 +631,10 @@ open class HomeAccountUserFragment :
     }
 
     override fun onClickBalanceAndPoint(balanceAndPointUiModel: BalanceAndPointUiModel) {
+        if (balanceAndPointUiModel.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            TokopediaCardAnalytics.sendClickOnTokopediaCardPyEvent(balanceAndPointUiModel.isActive)
+        }
+
         homeAccountAnalytic.eventClickAccountPage(
             balanceAndPointUiModel.id,
             balanceAndPointUiModel.isActive,
@@ -866,6 +872,11 @@ open class HomeAccountUserFragment :
     }
 
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
+        if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            isTokopediaCardActive = balanceAndPoint.isActive
+            TokopediaCardAnalytics.sendViewTokopediaCardIconPyEvent(balanceAndPoint.isActive)
+        }
+
         balanceAndPointAdapter?.changeItemToSuccessBySameId(
             UiModelMapper.getBalanceAndPointUiModel(
                 balanceAndPoint
@@ -1283,6 +1294,7 @@ open class HomeAccountUserFragment :
     private fun mapSettingId(item: CommonDataView) {
         when (item.id) {
             AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE -> {
+                TokopediaCardAnalytics.sendClickOnLihatSemuaPyEvent(isTokopediaCardActive)
                 homeAccountAnalytic.eventClickViewMoreWalletAccountPage()
                 goToApplink(item.applink)
             }

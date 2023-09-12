@@ -16,6 +16,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Screen.SCREEN_FUNDS
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.databinding.FundsAndInvestmentFragmentBinding
@@ -86,6 +87,10 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     override fun onClickWallet(walletUiModel: WalletUiModel) {
+        if (walletUiModel.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            TokopediaCardAnalytics.sendClickPaymentWidgetOnLihatSemuaPagePyEvent(walletUiModel.isActive)
+        }
+
         homeAccountAnalytic.eventClickAssetPage(
             walletUiModel.id,
             walletUiModel.isActive,
@@ -169,6 +174,10 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
+        if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            TokopediaCardAnalytics.sendViewLihatSemuaPagePyEvent(balanceAndPoint.isActive)
+        }
+
         val wallet = UiModelMapper.getWalletUiModel(balanceAndPoint).apply {
             if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC ||
                 balanceAndPoint.id == AccountConstants.WALLET.GOPAYLATERCICIL) {
