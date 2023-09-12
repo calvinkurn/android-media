@@ -60,13 +60,18 @@ class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialIn
     }
 
     private fun constructList(popUp: PopUp): List<ConfirmShippingNotes> {
-        val templateParam = popUp.template.param
-        return when (popUp.template.code) {
-            SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_1 -> template1(templateParam)
-            SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_2 -> template2(templateParam)
-            SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_3 -> template3()
-            else -> listOf()
+        val templateParam = popUp.template?.param
+        var listNotes = listOf<ConfirmShippingNotes>()
+        templateParam?.apply {
+            listNotes = when (popUp.template.code) {
+                SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_1 -> template1(templateParam)
+                SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_2 -> template2(templateParam)
+                SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_3 -> template3()
+                else -> listOf()
+            }
         }
+
+        return listNotes
     }
 
     private fun template1(templateParam: PopUp.Template.Params) = listOf(

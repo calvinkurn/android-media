@@ -17,7 +17,7 @@ data class PopUp(
     val actionButtons: List<ActionButton> = emptyList(),
 
     @SerializedName("template")
-    val template: Template = Template()
+    val template: Template? = null
 
 ) {
     data class ActionButton(
@@ -37,10 +37,10 @@ data class PopUp(
 
     data class Template(
         @SerializedName("code")
-        val code: String = "",
+        val code: String? = null,
 
         @SerializedName("params")
-        val param: Params = Params()
+        val param: Params? = null
 
     ) {
         data class Params(

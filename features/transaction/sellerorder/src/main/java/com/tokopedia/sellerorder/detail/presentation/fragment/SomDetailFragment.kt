@@ -792,7 +792,7 @@ open class SomDetailFragment :
     }
     private fun setActionConfirmShippingAuto(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
         val popUp = buttonResp.popUp
-        if (popUp.template.code != "") {
+        if (popUp.template?.code != null) {
             SomConfirmShippingBottomSheet.instance(context, view, popUp)
         }
         binding?.btnPrimary?.isLoading = false
@@ -1197,7 +1197,6 @@ open class SomDetailFragment :
     }
 
     protected open fun handleRequestPickUpResult(resultCode: Int, data: Intent?) {
-
         if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
             val message = data.getStringExtra(RESULT_PROCESS_REQ_PICKUP).orEmpty()
             showCommonToaster(message)
