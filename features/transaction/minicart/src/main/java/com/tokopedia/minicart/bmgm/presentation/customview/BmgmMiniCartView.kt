@@ -366,6 +366,11 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             format = DateFormatUtils.FORMAT_YYYY_MM_DD_HH_mm_ss,
             dateString = offerEndDate
         )
+
+        if (offerEndInMilliseconds == DateFormatUtils.INVALID_TIME_IN_MILLIS) {
+            return false
+        }
+
         val nowMillis = Date().time
         return offerEndInMilliseconds <= nowMillis
     }

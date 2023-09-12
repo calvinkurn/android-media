@@ -14,7 +14,7 @@ object DateFormatUtils {
 
     val DEFAULT_LOCALE: Locale = Locale("in", "ID")
 
-    private const val INVALID_TIME_IN_MILLIS = -1L
+    const val INVALID_TIME_IN_MILLIS = -1L
 
     fun formatDate(currentFormat: String, newFormat: String, dateString: String, locale: Locale = DEFAULT_LOCALE): String {
         return try {
