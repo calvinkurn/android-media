@@ -33,7 +33,7 @@ data class AdditionalInfoModel(
             try {
                 val widevineMediaDrm = MediaDrm(UUID(MOST_SIG_BITS, LEAST_SIG_BITS))
                 val wideVineId = widevineMediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
-                wideVineIdBase64 = Base64.encodeToString(wideVineId, Base64.DEFAULT)
+                wideVineIdBase64 = Base64.encodeToString(wideVineId, Base64.DEFAULT).trim()
             } catch (e: UnsupportedSchemeException) {
                 Timber.e(e)
             }
