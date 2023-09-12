@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
+import com.tokopedia.minicart.bmgm.common.utils.MiniCartUtils
 import com.tokopedia.minicart.bmgm.common.utils.logger.NonFatalIssueLogger
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
@@ -279,7 +280,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     private fun saveCartDataToLocalStorage() {
         val shopId = shopIds.firstOrNull().orZero()
         val warehouseId = param.warehouseIds.firstOrNull().orZero()
-        viewModel.saveCartDataToLocalStorage(shopId, warehouseId)
+        viewModel.saveCartDataToLocalStorage(shopId, warehouseId, offerEndDate)
     }
 
     private fun showMultipleMessage(messages: List<String>) {
@@ -351,28 +352,11 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     private fun setCartListCheckboxState(data: BmgmMiniCartDataUiModel) {
-        val isOfferEnded = checkIsOfferEnded()
+        val isOfferEnded = MiniCartUtils.checkIsOfferEnded(offerEndDate)
         if (!isOfferEnded) {
             viewModel.setCartListCheckboxState(getCartIds(data.tiersApplied))
         }
         onOfferEndedCallback?.invoke(isOfferEnded)
-    }
-
-    private fun checkIsOfferEnded(): Boolean {
-        if (offerEndDate.isBlank()) {
-            return false
-        }
-        val offerEndInMilliseconds = DateFormatUtils.getTimeInMilliseconds(
-            format = DateFormatUtils.FORMAT_YYYY_MM_DD_HH_mm_ss,
-            dateString = offerEndDate
-        )
-
-        if (offerEndInMilliseconds == DateFormatUtils.INVALID_TIME_IN_MILLIS) {
-            return false
-        }
-
-        val nowMillis = Date().time
-        return offerEndInMilliseconds <= nowMillis
     }
 
     private fun setupCrossedPrice(data: BmgmMiniCartDataUiModel) {

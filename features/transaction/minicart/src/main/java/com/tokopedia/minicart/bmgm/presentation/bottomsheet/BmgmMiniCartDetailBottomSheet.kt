@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -22,6 +23,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
+import com.tokopedia.minicart.bmgm.common.utils.MiniCartUtils
 import com.tokopedia.minicart.bmgm.common.utils.logger.NonFatalIssueLogger
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartDetailAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartDetailItemDecoration
@@ -245,9 +247,24 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
 
                 btnBmgmOpenCart.isEnabled = true
                 btnBmgmOpenCart.setOnClickListener {
-                    viewModel.setCartListCheckboxState(getCartIds(model.tiersApplied))
+                    setCartListCheckboxState(model)
                     sendClickCheckCartEvent()
                 }
+            }
+        }
+    }
+
+    private fun setCartListCheckboxState(model: BmgmCommonDataModel) {
+        context?.let {
+            val isOfferEnded = MiniCartUtils.checkIsOfferEnded(model.offerEndDate)
+            if (!isOfferEnded) {
+                viewModel.setCartListCheckboxState(getCartIds(model.tiersApplied))
+            } else {
+                val appLink = UriUtil.buildUri(
+                    uriPattern = ApplinkConst.BUY_MORE_GET_MORE_OLP, model.offerId.toString()
+                )
+                RouteManager.route(it, appLink)
+                activity?.finish()
             }
         }
     }
