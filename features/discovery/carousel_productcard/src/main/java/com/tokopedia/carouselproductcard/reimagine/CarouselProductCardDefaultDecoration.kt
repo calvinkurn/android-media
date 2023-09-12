@@ -22,7 +22,7 @@ internal class CarouselProductCardDefaultDecoration: RecyclerView.ItemDecoration
         val isFirstPosition = parent.getChildAdapterPosition(view) == 0
         val isLastPosition = itemCount > 0 && itemPosition == itemCount - 1
 
-        outRect.left = if (isFirstPosition) 16.toPx() else 4.toPx()
-        outRect.right = if (isLastPosition) 16.toPx() else 4.toPx()
+        outRect.left = if (isFirstPosition) 16.toPx() else 6.toPx()
+        outRect.right = if (isLastPosition) 16.toPx() else 6.toPx()
     }
 }
