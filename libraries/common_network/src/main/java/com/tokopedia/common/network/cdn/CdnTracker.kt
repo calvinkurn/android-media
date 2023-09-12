@@ -39,7 +39,7 @@ internal object CdnTracker : CoroutineScope {
         )
     }
 
-    fun succeed(
+    fun log(
         context: Context,
         response: Response
     ) {
@@ -48,20 +48,6 @@ internal object CdnTracker : CoroutineScope {
             tag = TAG_ANALYTIC,
             message = response.mapping(context).apply {
                 put("error_description", response.message)
-            }
-        )
-    }
-
-    fun failed(
-        context: Context,
-        response: Response,
-        e: Exception
-    ) {
-        ServerLogger.log(
-            priority = Priority.P1,
-            tag = TAG_ANALYTIC,
-            message = response.mapping(context).apply {
-                e.localizedMessage?.let { put("error_description", it) }
             }
         )
     }
