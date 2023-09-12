@@ -289,7 +289,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         addJavascriptInterface(webView);
         WebSettings webSettings = webView.getSettings();
-        webSettings.setUserAgentString(webSettings.getUserAgentString() + " Tokopedia webview ");
+        String identifierUserAgent = getIdentifierUserAgent();
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + identifierUserAgent);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
@@ -303,6 +304,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
+    }
+
+    private String getIdentifierUserAgent() {
+        String identifierUserAgent;
+        if (GlobalConfig.isSellerApp()) {
+            identifierUserAgent = " Sellerapp webview ";
+        } else {
+            identifierUserAgent = " Tokopedia webview ";
+        }
+        return identifierUserAgent;
     }
 
     protected void addJavascriptInterface(WebView webView) {
