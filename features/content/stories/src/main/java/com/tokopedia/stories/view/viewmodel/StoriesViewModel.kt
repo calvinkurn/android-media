@@ -124,7 +124,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun setupOnboard() {
-        if (!sharedPref.isVisited()) {
+        if (sharedPref.isVisited()) {
             viewModelScope.launch {
                 _uiEvent.emit(StoriesUiEvent.OnboardShown(true))
             }

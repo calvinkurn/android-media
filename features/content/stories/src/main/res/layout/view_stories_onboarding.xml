@@ -1,30 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_NN1000_68"
     android:translationZ="@dimen/content_common_space_12">
+
+    <include
+        android:id="@+id/layout_timer"
+        layout="@layout/layout_loading_timer" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_onboard_close"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/content_common_space_12"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CLOSE"
+        app:layout_constraintBottom_toBottomOf="@+id/loader_circle_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/loader_circle_1" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_circle_1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toEndOf="@id/iv_onboard_close"
+        app:layout_constraintTop_toBottomOf="@id/layout_timer"
+        app:loader_type="circle" />
+
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_circle_2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toEndOf="@id/loader_circle_1"
+        app:layout_constraintTop_toBottomOf="@id/layout_timer"
+        app:loader_type="circle" />
+
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_circle_3"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toEndOf="@id/loader_circle_2"
+        app:layout_constraintTop_toBottomOf="@id/layout_timer"
+        app:loader_type="circle" />
+
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_tap_move_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_onboard_close"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/loader_circle_1"
+        app:layout_constraintTop_toBottomOf="@+id/loader_circle_1"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_url="@string/stories_onboard_tap_anim" />
@@ -100,4 +139,14 @@
         app:layout_constraintEnd_toEndOf="@+id/lottie_swipe_product"
         app:layout_constraintStart_toStartOf="@+id/lottie_swipe_product"
         app:typographyType="display_2" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/onboard_dash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_48"
+        app:layout_constraintEnd_toStartOf="@+id/lottie_tap_next"
+        app:layout_constraintStart_toEndOf="@+id/tv_stories_onboard_back"
+        app:layout_constraintTop_toBottomOf="@+id/tv_stories_onboard_category"
+        app:srcCompat="@drawable/img_dash_onboard" />
 </androidx.constraintlayout.widget.ConstraintLayout>
