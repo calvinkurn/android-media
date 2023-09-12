@@ -2,18 +2,18 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.graphics.Paint
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.R
+import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
 import com.tokopedia.shop.home.view.adapter.ShopHomeV4TerlarisAdapter
@@ -30,7 +30,9 @@ class ShopHomeV4TerlarisViewHolder(
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     interface ShopHomeV4TerlarisViewHolderListener {
-        fun onProductClick(productId: String)
+        fun onProductClick(trackerModel: ShopHomeTerlarisWidgetTrackerDataModel)
+
+        fun onProductImpression(carouselData: List<ShopHomeProductUiModel>, position: Int, widgetId: String)
     }
 
     companion object {
@@ -82,7 +84,12 @@ class ShopHomeV4TerlarisViewHolder(
             val colorSchema = it.header.colorSchema
             val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             setHeaderSection(element)
-            terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(listener, isOverrideTheme ,colorSchema)
+            terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(
+                listener = listener,
+                isOverrideTheme = isOverrideTheme,
+                colorSchema = colorSchema,
+                element = element
+            )
             rvProductCarousel?.apply {
                 isNestedScrollingEnabled = false
                 layoutManager = linearLayoutManager
@@ -96,7 +103,11 @@ class ShopHomeV4TerlarisViewHolder(
                     if (isOverrideTheme) {
                         overrideWidgetTheme(colorSchema = colorSchema)
                     }
-                    showThreeItemLayout(productList = sanitizedProductListCarouselData)
+                    showThreeItemLayout(
+                        productList = sanitizedProductListCarouselData,
+                        widgetId = element.widgetId
+                    )
+                    setupImpressionListener(element, carouselData)
                 } else if (sanitizedProductListCarouselData.size > PRODUCT_ONE) {
                     showMoreThanThreeItemLayout(
                         productList = sanitizedProductListCarouselData
@@ -111,7 +122,7 @@ class ShopHomeV4TerlarisViewHolder(
     private fun setHeaderSection(element: ShopHomeCarousellProductUiModel) {
         val title = element.header.title
         val subTitle = element.header.subtitle
-        widgetTitle?.shouldShowWithAction(title.isNotEmpty()){
+        widgetTitle?.shouldShowWithAction(title.isNotEmpty()) {
             widgetTitle?.text = title
         }
         widgetSubtitle?.shouldShowWithAction(subTitle.isNotEmpty()) {
@@ -119,9 +130,9 @@ class ShopHomeV4TerlarisViewHolder(
         }
     }
 
-    private fun showThreeItemLayout(productList: List<List<ShopHomeProductUiModel>>) {
+    private fun showThreeItemLayout(productList: List<List<ShopHomeProductUiModel>>, widgetId: String) {
         showTheContainer()
-        showLayoutThreeItem(productList = productList)
+        showLayoutThreeItem(productList = productList, widgetId = widgetId)
         hideHorizontalProductCarousel()
     }
 
@@ -140,19 +151,28 @@ class ShopHomeV4TerlarisViewHolder(
         hideHorizontalProductCarousel()
     }
 
-    private fun showLayoutThreeItem(productList: List<List<ShopHomeProductUiModel>>) {
+    private fun showLayoutThreeItem(productList: List<List<ShopHomeProductUiModel>>, widgetId: String) {
         if (productList.isNotEmpty() && productList[0].size == PRODUCT_THREE) {
             // First product
             containerThreeProducts?.visibility = View.VISIBLE
             prodcutCard1?.setOnClickListener {
-                listener.onProductClick(productList[0][0].id)
+                listener.onProductClick(
+                    ShopHomeTerlarisWidgetTrackerDataModel(
+                        productId = productList[0][0].id,
+                        productName = productList[0][0].name,
+                        productPrice = productList[0][0].displayedPrice,
+                        position = 1,
+                        widgetId = widgetId
+                    )
+                )
             }
             ImageHandler.loadImageRounded2(itemView.context, productImg1, productList[0][0].imageUrl.orEmpty(), 8.toPx().toFloat())
             productName1?.text = productList[0][0].name
             productPrice1?.text = productList[0][0].displayedPrice
             productRank1?.text = "1"
             if (!productList[0][0].discountPercentage.isNullOrEmpty() &&
-                !productList[0][0].originalPrice.isNullOrEmpty()) {
+                !productList[0][0].originalPrice.isNullOrEmpty()
+            ) {
                 containerDiscount1?.visibility = View.VISIBLE
                 labelDiscount1?.text = productList[0][0].discountPercentage
                 productOriginalPrice1?.text = productList[0][0].originalPrice
@@ -162,14 +182,23 @@ class ShopHomeV4TerlarisViewHolder(
             }
             // Second product
             prodcutCard2?.setOnClickListener {
-                listener.onProductClick(productList[0][1].id)
+                listener.onProductClick(
+                    ShopHomeTerlarisWidgetTrackerDataModel(
+                        productId = productList[0][1].id,
+                        productName = productList[0][1].name,
+                        productPrice = productList[0][1].displayedPrice,
+                        position = 2,
+                        widgetId = widgetId
+                    )
+                )
             }
             ImageHandler.loadImageRounded2(itemView.context, productImg2, productList[0][1].imageUrl.orEmpty(), 8.toPx().toFloat())
             productName2?.text = productList[0][1].name
             productPrice2?.text = productList[0][1].displayedPrice
             productRank2?.text = "2"
             if (!productList[0][1].discountPercentage.isNullOrEmpty() &&
-                !productList[0][1].originalPrice.isNullOrEmpty()) {
+                !productList[0][1].originalPrice.isNullOrEmpty()
+            ) {
                 containerDiscount2?.visibility = View.VISIBLE
                 labelDiscount2?.text = productList[0][1].discountPercentage
                 productOriginalPrice2?.text = productList[0][1].originalPrice
@@ -179,14 +208,23 @@ class ShopHomeV4TerlarisViewHolder(
             }
             // Third product
             prodcutCard3?.setOnClickListener {
-                listener.onProductClick(productList[0][2].id)
+                listener.onProductClick(
+                    ShopHomeTerlarisWidgetTrackerDataModel(
+                        productId = productList[0][2].id,
+                        productName = productList[0][2].name,
+                        productPrice = productList[0][2].displayedPrice,
+                        position = 3,
+                        widgetId = widgetId
+                    )
+                )
             }
             ImageHandler.loadImageRounded2(itemView.context, productImg3, productList[0][2].imageUrl.orEmpty(), 8.toPx().toFloat())
             productName3?.text = productList[0][2].name
             productPrice3?.text = productList[0][2].displayedPrice
             productRank3?.text = "3"
             if (!productList[0][2].discountPercentage.isNullOrEmpty() &&
-                !productList[0][2].originalPrice.isNullOrEmpty()) {
+                !productList[0][2].originalPrice.isNullOrEmpty()
+            ) {
                 containerDiscount3?.visibility = View.VISIBLE
                 labelDiscount3?.text = productList[0][2].discountPercentage
                 productOriginalPrice3?.text = productList[0][2].originalPrice
@@ -249,5 +287,11 @@ class ShopHomeV4TerlarisViewHolder(
         productPrice2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productName3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productPrice3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+    }
+
+    private fun setupImpressionListener(element: ShopHomeCarousellProductUiModel, carouselData: List<ShopHomeProductUiModel>) {
+        itemView.addOnImpressionListener(element.impressHolder) {
+            listener.onProductImpression(carouselData, bindingAdapterPosition, element.widgetId)
+        }
     }
 }
