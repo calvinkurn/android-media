@@ -188,7 +188,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         }
 
         productOutOfStockCard?.setOnClickListener {
-            RouteManager.route(activity, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+            RouteManager.route(activity, "${ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST}?filter=isEmptyStockOnly")
         }
     }
 
