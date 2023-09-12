@@ -241,6 +241,7 @@ import java.io.File
 import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragment :
     BaseDaggerFragment(),
@@ -1351,14 +1352,14 @@ class ShopPageHeaderFragment :
     }
 
     private fun observeShopPageMiniCartSharedViewModel() {
-        shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner, {
+        shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner) {
             refreshCartCounterData()
             if (it.isShowMiniCartWidget) {
                 showMiniCartWidget()
             } else {
                 hideMiniCartWidget()
             }
-        })
+        }
     }
 
     private fun getSavedInstanceStateData(savedInstanceState: Bundle?) {
@@ -1480,11 +1481,11 @@ class ShopPageHeaderFragment :
     private fun updateBackButtonColorForSellerViewToolbar() {
         context?.let { context ->
             var color =
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
             if (context.isDarkMode()) {
                 color = ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                    unifyprinciplesR.color.Unify_NN500
                 )
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -2421,7 +2422,7 @@ class ShopPageHeaderFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+                        unifyprinciplesR.color.Unify_NN950_68
                     )
                 )
                 text = getString(R.string.shop_page_error_sub_title_get_p1)

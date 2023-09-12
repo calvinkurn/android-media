@@ -29,38 +29,41 @@
             android:layout_height="wrap_content"
             android:padding="8dp">
 
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_content_creation_widget"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_name="VIDEO"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_start_create_content_desc"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_start_create_content_desc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toStartOf="@id/play_sgc_btn_start_live"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ic_content_creation_widget"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2"
-                />
+                app:typographyType="display_3"
+                tools:text="Promosikan produkmu dengan  Live, Video, Foto &amp; Story!" />
 
-            <FrameLayout
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/play_sgc_btn_start_live"
-                android:layout_width="@dimen/play_sgc_btn_start_live_width"
-                android:layout_height="@dimen/play_sgc_btn_start_live_height"
-                android:background="@drawable/bg_content_creation_button"
-                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shop_page_play_creation_button_label"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_start_create_content_desc"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_start_create_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:drawablePadding="6dp"
-                    android:text="@string/shop_page_start_create_content"
-                    android:textColor="@color/Unify_Static_White" />
-
-            </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
