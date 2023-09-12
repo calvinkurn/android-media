@@ -38,7 +38,7 @@
         app:layout_constraintStart_toEndOf="@id/ic_bmgm_ticker"
         app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
         app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"
-        app:layout_constraintEnd_toStartOf="@id/iu_ticker_right_icon"
+        app:layout_constraintEnd_toStartOf="@id/ic_chevron_right_bmgm"
         tools:text="Ongkirmu Rp10.000 Rp30.000 karena Bebas Ongkir!" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -46,7 +46,22 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         app:icon_name="CHEVRON_RIGHT"
+        android:visibility="gone"
         android:layout_centerVertical="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_chevron_right_bmgm"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_name="CHEVRON_RIGHT"
+        android:visibility="gone"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_centerVertical="true"
+        app:layout_constraintStart_toEndOf="@id/tv_bmgm_ticker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
         app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>

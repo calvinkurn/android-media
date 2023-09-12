@@ -7,5 +7,6 @@ data class CartGroupBmGmHolderData(
     var offerJsonData: String = "",
     var cartBmGmGroupTickerCartString: String = "",
     var bundleId: Long = 0L,
-    var bundleGroupId: String = ""
+    var bundleGroupId: String = "",
+    var cartStringOrder: String = ""
 )
