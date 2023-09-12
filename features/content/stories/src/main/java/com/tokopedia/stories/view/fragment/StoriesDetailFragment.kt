@@ -11,7 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -217,11 +217,18 @@ class StoriesDetailFragment @Inject constructor(
         when (currContent.content.type) {
             IMAGE -> {
                 binding.layoutStoriesContent.ivStoriesDetailContent.apply {
-                    setImageUrl(currContent.content.data)
-                    onUrlLoaded = {
-                        contentIsLoaded()
-                        analytic.sendImpressionStoriesContent(currContent.id, mParentPage.authorId)
-                    }
+                    loadImage(
+                        currContent.content.data,
+                        listener = object : ImageLoaderStateListener {
+                            override fun successLoad() {
+                                contentIsLoaded()
+                                analytic.sendImpressionStoriesContent(currContent.id, mParentPage.authorId)
+                            }
+
+                            override fun failedLoad() {
+                                // TODO add some action when fail load image?
+                            }
+                        })
                 }
             }
 
