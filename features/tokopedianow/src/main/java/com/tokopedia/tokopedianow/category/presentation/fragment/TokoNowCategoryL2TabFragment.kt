@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -27,6 +28,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView.ProductCardCompactListener
@@ -42,6 +44,7 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryL2TabAda
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2TabDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2TabAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
+import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2View
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2TabViewModel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
@@ -68,6 +71,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNow
 import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -110,6 +114,8 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
     private var data: CategoryL2TabData = CategoryL2TabData()
 
+    var categoryL2View: CategoryL2View? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerActivityResults()
@@ -148,14 +154,11 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun observeLiveData() {
         observe(viewModel.visitableListLiveData) {
-            categoryAdapter?.submitList(it)
+            submitList(it)
         }
 
         observe(viewModel.addItemToCart) {
-            when (it) {
-                is Success -> onSuccessAddToCart(it)
-                is Fail -> showErrorToaster(it.throwable)
-            }
+            onAddItemToCart(it)
         }
 
         observe(viewModel.updateCartItem) {
@@ -196,12 +199,24 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         observe(viewModel.miniCart) {
             when(it) {
                 is Success -> {
-                    productRecommendationViewModel.updateMiniCartSimplified(it.data)
+                    updateProductRecommendationCart(it.data)
                 }
                 else -> {
-
+                    // do nothing
                 }
             }
+        }
+
+        observe(viewModel.updateToolbarNotification) {
+            updateToolbarNotification()
+        }
+
+        observe(productRecommendationViewModel.updateToolbarNotification) {
+            updateToolbarNotification()
+        }
+
+        observe(productRecommendationViewModel.addItemToCart) {
+            onAddItemToCart(it)
         }
     }
 
@@ -261,6 +276,25 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 else -> SPAN_COUNT
             }
         }
+    }
+
+    private fun updateProductRecommendationCart(miniCartData: MiniCartSimplifiedData) {
+        productRecommendationViewModel.updateMiniCartSimplified(miniCartData)
+    }
+
+    private fun updateToolbarNotification() {
+        categoryL2View?.updateToolbarNotificationCounter()
+    }
+
+    private fun onAddItemToCart(result: Result<AddToCartDataModel>) {
+        when (result) {
+            is Success -> onSuccessAddToCart(result)
+            is Fail -> showErrorToaster(result.throwable)
+        }
+    }
+
+    private fun submitList(items: List<Visitable<*>>) {
+        categoryAdapter?.submitList(items)
     }
 
     private fun openVariantBottomSheet(productId: String, shopId: String) {

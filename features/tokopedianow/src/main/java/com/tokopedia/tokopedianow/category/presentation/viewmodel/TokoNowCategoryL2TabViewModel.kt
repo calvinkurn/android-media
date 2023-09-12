@@ -115,11 +115,13 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val _dynamicFilterModelLiveData = MutableLiveData<DynamicFilterModel?>(null)
     private val _visitableListLiveData = MutableLiveData<List<Visitable<*>>>()
     private val _routeAppLinkLiveData = MutableLiveData<String>()
+    private val _updateToolbarNotification = MutableLiveData<Unit>()
 
     val filterProductCountLiveData: LiveData<String> = _filterProductCountLiveData
     val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = _dynamicFilterModelLiveData
     val visitableListLiveData: LiveData<List<Visitable<*>>> = _visitableListLiveData
     val routeAppLinkLiveData: LiveData<String> = _routeAppLinkLiveData
+    val updateToolbarNotification: LiveData<Unit> = _updateToolbarNotification
 
     private val filterController = FilterController()
     private val visitableList = mutableListOf<Visitable<*>>()
@@ -153,7 +155,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         setCategoryData(data)
         initAffiliateCookie()
         loadFirstPage()
-        getMiniCart()
     }
 
     fun onCartQuantityChanged(
@@ -171,6 +172,9 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             quantity = quantity,
             stock = stock,
             isVariant = isVariant,
+            onSuccessAddToCart = {
+                updateToolbarNotification()
+            },
             onSuccessUpdateCart = { _, _ ->
                 visitableList.updateAllProductQuantity(
                     productId = productId,
@@ -178,6 +182,10 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
                     hasBlockedAddToCart = hasBlockedAddToCart
                 )
                 updateVisitableListLiveData()
+                updateToolbarNotification()
+            },
+            onSuccessDeleteCart = { _, _ ->
+                updateToolbarNotification()
             }
         )
     }
@@ -683,5 +691,9 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         isAllProductShown = false
         filterBottomSheetOpened = false
         _dynamicFilterModelLiveData.postValue(null)
+    }
+
+    private fun updateToolbarNotification() {
+        _updateToolbarNotification.postValue(Unit)
     }
 }

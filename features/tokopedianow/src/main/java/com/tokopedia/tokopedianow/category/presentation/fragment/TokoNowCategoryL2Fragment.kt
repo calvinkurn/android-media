@@ -24,6 +24,7 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2AdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.adapter.viewpager.CategoryL2TabViewPagerAdapter
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
+import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2View
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2ViewModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
@@ -33,7 +34,7 @@ import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
+class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
 
     companion object {
         fun newInstance(
@@ -131,6 +132,10 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
         viewModel.showPageLoading()
     }
 
+    override fun updateToolbarNotificationCounter() {
+        updateToolbarNotification()
+    }
+
     private fun observeLiveData() {
         observe(viewModel.categoryTab) { data ->
             clearAllCategoryTabs()
@@ -180,6 +185,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
             val selectedTabPosition = data.selectedTabPosition
             data.tabList.forEach { tab ->
                 val fragment = TokoNowCategoryL2TabFragment.newInstance(tab)
+                fragment.categoryL2View = this@TokoNowCategoryL2Fragment
                 viewPagerAdapter.addFragment(fragment)
             }
             viewPager.currentItem = selectedTabPosition + 1
