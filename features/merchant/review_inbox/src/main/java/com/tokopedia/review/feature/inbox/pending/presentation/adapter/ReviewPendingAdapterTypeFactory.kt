@@ -5,10 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.BulkReviewUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityCarouselUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.BulkReviewViewHolder
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingCredibilityCarouselViewHolder
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingEmptyViewHolder
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingLoadingViewHolder
@@ -38,6 +40,10 @@ class ReviewPendingAdapterTypeFactory(private val reviewPendingItemListener: Rev
         return ReviewPendingCredibilityCarouselViewHolder.LAYOUT
     }
 
+    override fun type(bulkReviewUiModel: BulkReviewUiModel): Int {
+        return BulkReviewViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ReviewPendingViewHolder.LAYOUT -> ReviewPendingViewHolder(parent, reviewPendingItemListener)
@@ -45,6 +51,7 @@ class ReviewPendingAdapterTypeFactory(private val reviewPendingItemListener: Rev
             ReviewPendingOvoIncentiveViewHolder.LAYOUT -> ReviewPendingOvoIncentiveViewHolder(parent, reviewPendingItemListener)
             ReviewPendingEmptyViewHolder.LAYOUT -> ReviewPendingEmptyViewHolder(parent)
             ReviewPendingCredibilityCarouselViewHolder.LAYOUT -> ReviewPendingCredibilityCarouselViewHolder(parent, reviewPendingItemListener)
+            BulkReviewViewHolder.LAYOUT -> BulkReviewViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
     }

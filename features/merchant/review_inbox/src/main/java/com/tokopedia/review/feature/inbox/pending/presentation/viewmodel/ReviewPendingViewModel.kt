@@ -9,6 +9,8 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.feature.bulkreview.BulkReviewRecommendationWidget
+import com.tokopedia.review.feature.bulkreview.GetBulkReviewRecommendationUseCase
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevMarkAsSeenUseCase
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevWaitForFeedbackUseCase
@@ -27,7 +29,8 @@ class ReviewPendingViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
         private val getProductIncentiveOvo: GetProductIncentiveOvo,
-        private val markAsSeenUseCase: ProductrevMarkAsSeenUseCase
+        private val markAsSeenUseCase: ProductrevMarkAsSeenUseCase,
+        private val bulkReviewUseCase: GetBulkReviewRecommendationUseCase
 ) : BaseViewModel(dispatchers.io) {
 
     private val _reviewList = MutableLiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>()
@@ -37,6 +40,9 @@ class ReviewPendingViewModel @Inject constructor(
     private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>?>()
     val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>?>
         get() = _incentiveOvo
+
+    private var _bulkReview = MutableLiveData<Result<BulkReviewRecommendationWidget>>()
+    val bulkReview: LiveData<Result<BulkReviewRecommendationWidget>> = _bulkReview
 
     fun getReviewData(page: Int, isRefresh: Boolean = false) {
         if (isRefresh) {
@@ -85,6 +91,18 @@ class ReviewPendingViewModel @Inject constructor(
 
     fun getUserName(): String {
         return userSession.name
+    }
+
+    fun getBulkReview(){
+        launchCatchError(block = {
+            //TODO vindo - remove dummy
+//            val userId = userSession.userId
+            val userId = "9129280"
+            val data = bulkReviewUseCase.execute(userId)
+            _bulkReview.postValue(CoroutineSuccess(data))
+        }, onError = {
+            _bulkReview.postValue(CoroutineFail(it))
+        })
     }
 
 }

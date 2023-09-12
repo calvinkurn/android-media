@@ -35,6 +35,7 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.util.ReviewInboxUtil
+import com.tokopedia.review.feature.bulkreview.BulkReviewRecommendationWidget
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackLabelAndImage
@@ -43,6 +44,7 @@ import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponen
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapter
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.BulkReviewUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityCarouselUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
@@ -238,6 +240,29 @@ class ReviewPendingFragment :
         }
         observeReviewList()
         observeOvoIncentive()
+        observeBulkReview()
+    }
+
+    private fun observeBulkReview(){
+        viewModel.bulkReview.observe(viewLifecycleOwner) {
+            when (it) {
+                is CoroutineSucess -> onSuccessGetBulkReview(it.data)
+                else -> {}
+            }
+        }
+    }
+
+    private fun onSuccessGetBulkReview(data: BulkReviewRecommendationWidget) {
+        (adapter as? ReviewPendingAdapter)?.insertBulkReview(
+            BulkReviewUiModel(
+                data = BulkReviewUiModel.Data(
+                    title = data.title,
+                    products = data.list.map {
+                        BulkReviewUiModel.Data.Product.Default(it.product.imageUrl)
+                    }
+                )
+            )
+        )
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -265,6 +290,7 @@ class ReviewPendingFragment :
         clearAllData()
         super.loadInitialData()
         getIncentiveOvoData()
+        viewModel.getBulkReview()
     }
 
     override fun renderList(list: List<ReviewPendingUiModel>, hasNextPage: Boolean) {

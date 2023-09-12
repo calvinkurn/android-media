@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.BulkReviewUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.CoachMarkUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityCarouselUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
@@ -29,6 +30,12 @@ class ReviewPendingAdapter(
     fun insertCredibilityCarouselWidget(credibilityCarouselUiModel: ReviewPendingCredibilityCarouselUiModel) {
         if (visitables.filterIsInstance<ReviewPendingCredibilityCarouselUiModel>().isEmpty()) {
             visitables.add(credibilityCarouselUiModel)
+        }
+    }
+
+    fun insertBulkReview(bulkReviewUiModel: BulkReviewUiModel){
+        if(visitables.filterIsInstance<BulkReviewUiModel>().isEmpty()){
+            visitables.add(0, bulkReviewUiModel)
         }
     }
 
