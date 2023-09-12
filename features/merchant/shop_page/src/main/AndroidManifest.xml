@@ -8,8 +8,7 @@
         </intent>
     </queries>
 
-    <application android:label="@string/app_name"
-        android:theme="@style/ShopPageActivityTheme">
+    <application android:label="@string/app_name" >
         <activity
             android:name=".report.activity.ReportShopWebViewActivity"
             android:exported="false"
