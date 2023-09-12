@@ -7,6 +7,7 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcFilterTabWidgetBinding
 import com.tokopedia.sellerhomecommon.domain.model.TabModel
 import com.tokopedia.sellerhomecommon.presentation.model.FilterTabWidgetUiModel
+import com.tokopedia.utils.htmltags.HtmlUtil
 
 class FilterTabViewHolder(
     view: View?,
@@ -19,14 +20,14 @@ class FilterTabViewHolder(
         with(binding) {
             val selectedTab = element.filterTabs?.firstOrNull { it.page == element.selectedFilterPage }
             selectedTab?.let { tab ->
-                tvFilterTabTitle.text = tab.tabTitle
-                tvFilterTabDesc.text = tab.tabName
+                val filterTabMessage = HtmlUtil.fromHtml(element.filterTabMessage)
+                tvFilterTabTitle.text = filterTabMessage
 
                 root.setOnClickListener {
                     listener.onFilterClicked(
                         element.filterTabs,
                         tab.page,
-                        tab.tabTitle
+                        filterTabMessage.toString()
                     )
                 }
             }

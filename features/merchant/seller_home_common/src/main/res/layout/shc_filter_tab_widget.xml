@@ -21,23 +21,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:typographyType="display_3"
-            tools:text="Evaluasi berdasarkan:"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvFilterTabDesc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN950"
-            android:layout_marginStart="2dp"
-            android:ellipsize="end"
-            app:layout_constraintTop_toTopOf="@id/tvFilterTabTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvFilterTabTitle"
-            app:layout_constraintStart_toEndOf="@id/tvFilterTabTitle"
-            app:layout_constraintEnd_toStartOf="@id/ivFilterTabChevron"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:typographyType="display_3"
-            tools:text="Pesanan Baru"/>
+            tools:text="Evaluasi berdasarkan: Pesanan Baru"/>
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ivFilterTabChevron"

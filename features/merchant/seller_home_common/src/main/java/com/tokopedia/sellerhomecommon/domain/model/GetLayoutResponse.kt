@@ -15,18 +15,7 @@ data class GetSellerDashboardLayout(
     @SerializedName("widget")
     val widget: List<WidgetModel>? = emptyList(),
     @SerializedName("tabs")
-    val tabs: List<TabModel>? = listOf(
-        TabModel(
-            tabTitle = "Evaluasi Berdasarkan: ",
-            tabName = "Pesanan Baru",
-            page = "shop-insight"
-        ),
-        TabModel(
-            tabTitle = "Evaluasi Berdasarkan: ",
-            tabName = "Pesanan Selesai",
-            page = "shop-insight-finishedorder"
-        )
-    ),
+    val tabs: List<TabModel>? = emptyList(),
     @SerializedName("shopState")
     val shopState: Long = 0,
     @SerializedName("personaStatus")

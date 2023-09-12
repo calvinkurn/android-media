@@ -535,7 +535,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }.orEmpty()
         ).apply {
             setFilterTabSelectListener {
-                // TODO: Refresh page
+                statisticPage?.run {
+                    pageSource = it.tabKey
+                    tickerPageName = it.tabKey
+                }
+                reloadPage()
             }
         }.show(childFragmentManager)
     }

@@ -54,6 +54,8 @@ class LayoutMapper @Inject constructor(
         private const val EMPTY_WIDGET_MESSAGE =
             "Oops, kamu tidak punya izin untuk melihat kontent di halaman Home"
         private const val DOUBLE_DOTS_CALENDAR_TITLE = ":"
+
+        private const val TAB_TAG = "{tab}"
     }
 
     override fun mapRemoteDataToUiData(
@@ -81,18 +83,25 @@ class LayoutMapper @Inject constructor(
         val (extraKey, extraObject) = extra
         return if (extraKey == GetLayoutUseCase.KEY_PAGE) {
             val widgets = response.layout.widget.orEmpty()
-            val mappedList = getMappedWidgetList(widgets, isFromCache)
-            (extraObject as? String)?.let { selectedPage ->
-                response.layout.tabs?.takeIf { it.isNotEmpty() }?.let {
-                    val filterTabUiModel = mapToFilterTabWidget(it, selectedPage, isFromCache)
-                    mappedList.add(Int.ZERO, filterTabUiModel)
+            if (widgets.isNotEmpty()) {
+                val mappedList = getMappedWidgetList(widgets, isFromCache)
+                (extraObject as? String)?.let { selectedPage ->
+                    response.layout.tabs?.takeIf { it.isNotEmpty() }?.let {
+                        val selectedTab = it.firstOrNull { tab ->
+                            tab.page == selectedPage
+                        }
+                        val filterTabUiModel = mapToFilterTabWidget(it, selectedTab, isFromCache)
+                        mappedList.add(Int.ZERO, filterTabUiModel)
+                    }
                 }
+                WidgetLayoutUiModel(
+                    widgetList = mappedList,
+                    shopState = getShopState(response.layout.shopState),
+                    personaStatus = response.layout.personaStatus.orZero()
+                )
+            } else {
+                throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
             }
-            WidgetLayoutUiModel(
-                widgetList = mappedList,
-                shopState = getShopState(response.layout.shopState),
-                personaStatus = response.layout.personaStatus.orZero()
-            )
         } else {
             mapRemoteDataToUiData(response, isFromCache)
         }
@@ -595,7 +604,7 @@ class LayoutMapper @Inject constructor(
 
     private fun mapToFilterTabWidget(
         tabs: List<TabModel>,
-        selectedFilterTab: String,
+        selectedFilterTab: TabModel?,
         fromCache: Boolean
     ): FilterTabWidgetUiModel {
         return FilterTabWidgetUiModel(
@@ -617,7 +626,11 @@ class LayoutMapper @Inject constructor(
             emptyState = WidgetEmptyStateUiModel(),
             useRealtime = false,
             filterTabs = tabs,
-            selectedFilterPage = selectedFilterTab
+            selectedFilterPage = selectedFilterTab?.page,
+            filterTabMessage = getReplacementText(
+                selectedFilterTab?.tabTitle.orEmpty(),
+                selectedFilterTab?.tabName.orEmpty()
+            )
         )
     }
 
@@ -645,4 +658,10 @@ class LayoutMapper @Inject constructor(
         }
         return mappedList
     }
+
+    private fun getReplacementText(tabTitle: String, tabName: String): String {
+        val replacementString = "<b>$tabName</b>"
+        return tabTitle.replace(TAB_TAG, replacementString)
+    }
+
 }

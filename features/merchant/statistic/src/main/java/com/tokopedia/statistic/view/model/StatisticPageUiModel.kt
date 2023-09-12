@@ -10,9 +10,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class StatisticPageUiModel(
-    var pageTitle: String = "",
-    val pageSource: String = "",
-    val tickerPageName: String = "",
+    val pageTitle: String = "",
+    var pageSource: String = "",
+    var tickerPageName: String = "",
     val shouldShowTag: Boolean = false,
     val actionMenu: List<ActionMenuUiModel> = emptyList(),
     val dateFilters: List<DateFilterItem> = emptyList(),

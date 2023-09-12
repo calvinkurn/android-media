@@ -96,6 +96,12 @@ class GetLayoutUseCase(
                   dismissibleState
                   useRealtime
                 }
+                tabs {
+                  tabTitle
+                  tabName 
+                  page
+                  tag
+                }
                 shopState
                 personaStatus
               }
