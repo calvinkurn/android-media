@@ -139,7 +139,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
-            setItemDecorationReimagineSearch(isReimagine, list)
+            list.setItemDecorationReimagineSearch(isReimagine)
             list.addOnScrollListener(CustomScrollListener(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
@@ -149,17 +149,20 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         setHeadlineShopData(cpmModel, appLink, adsClickUrl, index)
     }
 
-    private fun setItemDecorationReimagineSearch(isReimagine: Boolean, recyclerView: RecyclerView) {
+    private fun RecyclerView.setItemDecorationReimagineSearch(isReimagine: Boolean) {
         if(isReimagine)
-            recyclerView.addItemDecoratorReimagine()
+            addItemDecoratorReimagine()
         else
-            recyclerView.removeItemDecorationAt(0)
+            removeItemDecorationIfExist()
     }
 
     private fun RecyclerView.addItemDecoratorReimagine() {
-        if (itemDecorationCount > 0) removeItemDecorationAt(0)
-
+        removeItemDecorationIfExist()
         addItemDecoration(CarouselProductCardDefaultDecorationReimagine())
+    }
+
+    private fun RecyclerView.removeItemDecorationIfExist(){
+        if (itemDecorationCount > 0) removeItemDecorationAt(0)
     }
 
     private fun setHeadlineShopData(cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
