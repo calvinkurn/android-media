@@ -11,6 +11,8 @@ import com.tokopedia.catalogcommon.databinding.ItemLayoutCharacteristicBinding
 import com.tokopedia.catalogcommon.databinding.WidgetItemCharacteristicBinding
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -23,6 +25,9 @@ class CharacteristicViewHolder(itemView: View) :
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_item_characteristic
+        const val DIVIDER_COLOR = "#AAB4C8"
+        const val ALPHA_20_PERCENTAGE = 20
+        const val HORIZONTAL_MARGIN = 6
     }
 
     private val binding by viewBinding<WidgetItemCharacteristicBinding>()
@@ -33,8 +38,8 @@ class CharacteristicViewHolder(itemView: View) :
         if (!onceCreateView) {
             element.items.forEachIndexed { index, item ->
                 createItem(item)
-                if (index < element.items.size - 1) {
-                    binding?.lnRootUi?.addView(Divider(marginRight = 6, marginLeft = 6))
+                if (index < element.items.size - Int.ONE) {
+                    binding?.lnRootUi?.addView(Divider(marginRight = HORIZONTAL_MARGIN, marginLeft = HORIZONTAL_MARGIN))
                 }
             }
         }
@@ -55,20 +60,7 @@ class CharacteristicViewHolder(itemView: View) :
         binding?.lnRootUi?.addView(layout.root)
     }
 
-    private fun createLinearLayout(
-        width: Int = LinearLayout.LayoutParams.MATCH_PARENT,
-        height: Int = LinearLayout.LayoutParams.WRAP_CONTENT
-    ): LinearLayout {
-        val linearLayout = LinearLayout(itemView.context)
-        val layoutParam = LinearLayout.LayoutParams(width, height)
-        layoutParam.weight = 1f
-        linearLayout.gravity = Gravity.CENTER
-        linearLayout.layoutParams = layoutParam
-        linearLayout.orientation = LinearLayout.HORIZONTAL
-        return linearLayout
-    }
-
-    private fun Divider(width: Int = 2, marginRight: Int = 0, marginLeft: Int = 0): View {
+    private fun Divider(width: Int = Int.ONE, marginRight: Int = Int.ZERO, marginLeft: Int = Int.ZERO): View {
         val view = View(itemView.context)
         val layoutParam = LinearLayout.LayoutParams(
             width.dpToPx(displayMetrics),
@@ -76,12 +68,12 @@ class CharacteristicViewHolder(itemView: View) :
         )
         layoutParam.setMargins(
             marginLeft.dpToPx(displayMetrics),
-            0,
+            Int.ZERO,
             marginRight.dpToPx(displayMetrics),
-            0
+            Int.ZERO
         )
         view.layoutParams = layoutParam
-        view.setBackgroundColor("#AAB4C8".stringHexColorParseToInt(20))
+        view.setBackgroundColor(DIVIDER_COLOR.stringHexColorParseToInt(ALPHA_20_PERCENTAGE))
         return view
     }
 }
