@@ -40,10 +40,11 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
         val lastApply = model.promo
         val entryPointInfo = model.entryPointInfo
 
-        val isUsingGlobalPromo = lastApply.codes.isNotEmpty()
+        val isUsingGlobalPromo = lastApply.codes.isNotEmpty() && lastApply.message.state != "red"
         val isUsingBoPromo = lastApply.voucherOrders
             .any { it.code.isNotEmpty() && it.message.state != "red" }
-        if (!isUsingGlobalPromo && !isUsingBoPromo) {
+        val hasSummaries = lastApply.additionalInfo.usageSummaries.isNotEmpty()
+        if (!isUsingGlobalPromo && !isUsingBoPromo && !hasSummaries) {
             if (entryPointInfo != null && !model.isLoading) {
                 if (!entryPointInfo.isSuccess) {
                     if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED
