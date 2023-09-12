@@ -11,7 +11,10 @@ object DateFormatUtils {
     const val FORMAT_YYYY_MM_DD = "yyyy-MM-dd"
     const val FORMAT_D_MMMM_YYYY = "d MMMM yyyy"
     const val FORMAT_YYYY_MM_DD_HH_mm_ss = "yyyy-MM-dd HH:mm:ss"
+
     val DEFAULT_LOCALE: Locale = Locale("in", "ID")
+
+    private const val INVALID_TIME_IN_MILLIS = -1L
 
     fun formatDate(currentFormat: String, newFormat: String, dateString: String, locale: Locale = DEFAULT_LOCALE): String {
         return try {
@@ -33,9 +36,9 @@ object DateFormatUtils {
         return try {
             val fromFormat: DateFormat = SimpleDateFormat(format, locale)
             val date = fromFormat.parse(dateString)
-            date?.time ?: -1L
+            date?.time ?: INVALID_TIME_IN_MILLIS
         } catch (e: Exception) {
-            -1L
+            INVALID_TIME_IN_MILLIS
         }
     }
 
