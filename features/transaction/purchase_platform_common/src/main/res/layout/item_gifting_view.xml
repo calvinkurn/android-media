@@ -75,13 +75,10 @@
         tools:text="Kemasan &amp; Kartu Ucapan"
         tools:visibility="gone" />
 
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icon_right"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:icon_color_light_enable="@color/Unify_NN500"
-        app:icon_color_night_enable="@color/Unify_NN500"
-        app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

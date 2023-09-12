@@ -231,8 +231,18 @@ class CheckoutProductViewHolder(
         if (product.shouldShowGroupInfo) {
             binding.vDividerOrder.isVisible = product.orderNumber > 1
             if (product.orderNumber == -1) {
-                binding.tvCheckoutOrderNumber.isVisible = false
-                binding.tvCheckoutOrderDescription.isVisible = false
+                if (product.groupInfoDescription.isNotEmpty()) {
+                    binding.tvCheckoutOrderNumber.text = itemView.context.getString(
+                        R.string.label_order_counter_new,
+                        1
+                    )
+                    binding.tvCheckoutOrderDescription.text = product.groupInfoDescription
+                    binding.tvCheckoutOrderNumber.isVisible = true
+                    binding.tvCheckoutOrderDescription.isVisible = true
+                } else {
+                    binding.tvCheckoutOrderNumber.isVisible = false
+                    binding.tvCheckoutOrderDescription.isVisible = false
+                }
             } else {
                 binding.tvCheckoutOrderNumber.text = itemView.context.getString(
                     R.string.label_order_counter_new,
@@ -511,18 +521,21 @@ class CheckoutProductViewHolder(
                 if (addOns.addOnsDataItemModelList.isNotEmpty()) {
                     binding.buttonGiftingAddonProductLevel.showActive(
                         addOns.addOnsButtonModel.title,
-                        addOns.addOnsButtonModel.description
+                        addOns.addOnsButtonModel.description,
+                        addOns.addOnsButtonModel.rightIconUrl
                     )
                 } else {
                     binding.buttonGiftingAddonProductLevel.showEmptyState(
                         addOns.addOnsButtonModel.title,
-                        addOns.addOnsButtonModel.description.ifEmpty { "(opsional)" }
+                        addOns.addOnsButtonModel.description.ifEmpty { "(opsional)" },
+                        addOns.addOnsButtonModel.rightIconUrl
                     )
                 }
             } else if (addOns.status == 2) {
                 binding.buttonGiftingAddonProductLevel.showInactive(
                     addOns.addOnsButtonModel.title,
-                    addOns.addOnsButtonModel.description
+                    addOns.addOnsButtonModel.description,
+                    addOns.addOnsButtonModel.rightIconUrl
                 )
             }
             binding.buttonGiftingAddonProductLevel.setOnClickListener {
