@@ -74,6 +74,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickup
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReturnToShipper
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
+import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
@@ -97,7 +98,6 @@ import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.FragmentSomListBinding
 import com.tokopedia.sellerorder.databinding.SomListHeaderBinding
-import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -661,7 +661,7 @@ open class SomListFragment :
 
     override fun onConfirmShippingAutoButtonClicked(popUp: PopUp?) {
         popUp?.apply {
-            if (popUp.template.code != "") {
+            if (popUp.template?.code != null) {
                 SomConfirmShippingBottomSheet.instance(context, view, popUp)
             }
         }
