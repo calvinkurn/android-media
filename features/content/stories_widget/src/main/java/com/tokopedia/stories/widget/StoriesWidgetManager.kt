@@ -168,6 +168,7 @@ class StoriesWidgetManager private constructor(
     }
 
     private fun showCoachMarkOnView(view: StoriesWidgetLayout) {
+        if (!options.showCoachMarkIfApplicable) return
         if (showCoachMarkJob?.isActive == true) return
         showCoachMarkJob = lifecycleOwner.lifecycleScope.launch {
             delay(1000)
@@ -299,6 +300,7 @@ class StoriesWidgetManager private constructor(
         private var mScrollingParent: View? = null
         private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
         private var mTrackingManager: TrackingManager = DefaultTrackingManager(entryPoint)
+        private var mShowCoachMarkIfApplicable: Boolean = true
 
         fun setScrollingParent(view: View?) = builder {
             this.mScrollingParent = view
@@ -306,6 +308,10 @@ class StoriesWidgetManager private constructor(
 
         fun setAnimationStrategy(animStrategy: AnimationStrategy) = builder {
             mAnimationStrategy = animStrategy
+        }
+
+        fun setShowCoachMarkIfApplicable(shouldShow: Boolean) = builder {
+            mShowCoachMarkIfApplicable = shouldShow
         }
 
         fun setTrackingManager(trackingManager: TrackingManager) = builder {
@@ -326,6 +332,7 @@ class StoriesWidgetManager private constructor(
             return Options(
                 mScrollingParent,
                 mAnimationStrategy,
+                mShowCoachMarkIfApplicable,
                 mTrackingManager
             )
         }
@@ -339,6 +346,7 @@ class StoriesWidgetManager private constructor(
     class Options internal constructor(
         val scrollingParent: View?,
         val animStrategy: AnimationStrategy,
+        val showCoachMarkIfApplicable: Boolean,
         val trackingManager: TrackingManager
     )
 

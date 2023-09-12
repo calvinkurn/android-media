@@ -588,6 +588,7 @@ open class DynamicProductDetailFragment :
     private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.ProductDetail) {
         setScrollingParent(binding?.rvPdp)
         setAnimationStrategy(NoAnimateAnimationStrategy())
+        setShowCoachMarkIfApplicable(false)
     }
 
     private val scrollListener by lazy {
