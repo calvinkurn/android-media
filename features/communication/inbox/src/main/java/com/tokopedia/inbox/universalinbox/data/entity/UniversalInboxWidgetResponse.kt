@@ -41,7 +41,7 @@ data class UniversalInboxMenuDataResponse(
     val icon: String = "0",
 
     @SerializedName("title")
-    val title: String = "",
+    var title: String = "",
 
     @SerializedName("appLink")
     val applink: String = "",

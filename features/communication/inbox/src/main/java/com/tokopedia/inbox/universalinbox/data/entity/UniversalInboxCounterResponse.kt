@@ -16,9 +16,7 @@ data class UniversalInboxAllCounterResponse(
 
     @SerializedName("notifcenter_unread")
     var notifCenterUnread: UniversalInboxNotifCenterCounterResponse = UniversalInboxNotifCenterCounterResponse()
-) {
-    var driverCounter: Int = Int.ZERO
-}
+)
 
 data class UniversalInboxChatCounterResponse(
     @SerializedName("unreadsUser")

@@ -96,9 +96,9 @@ class UniversalInboxViewModel @Inject constructor(
 
     fun setupViewModelObserver() {
         _actionFlow.process()
-        observeInboxMenuWidgetMetaAndCounterFlow()
         observeInboxMenuLocalFlow()
         observeDriverChannelFlow()
+        observeInboxMenuWidgetMetaAndCounterFlow()
         observeProductRecommendationFlow()
     }
 
@@ -127,9 +127,6 @@ class UniversalInboxViewModel @Inject constructor(
                 }
 
                 // General process
-                is UniversalInboxAction.ShowErrorMessage -> {
-                    showErrorMessage(it.error)
-                }
                 is UniversalInboxAction.RefreshPage -> {
                     removeAllProductRecommendation(false)
                     loadInboxMenuAndWidgetMeta()
@@ -207,6 +204,7 @@ class UniversalInboxViewModel @Inject constructor(
 
             // Handle error case for menu
             (result.menu is Result.Error) -> {
+                setFallbackInboxMenu()
                 setLoadingInboxMenu(false)
                 setErrorWidgetMeta()
                 showErrorMessage(
@@ -396,7 +394,14 @@ class UniversalInboxViewModel @Inject constructor(
     }
 
     private fun resetNavigation() {
-        navigateToPage("")
+        viewModelScope.launch {
+            _inboxNavigationState.update {
+                it.copy(
+                    applink = "",
+                    intent = null
+                )
+            }
+        }
     }
 
     private fun loadProductRecommendation() {

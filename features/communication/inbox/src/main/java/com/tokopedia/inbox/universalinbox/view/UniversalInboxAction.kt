@@ -5,7 +5,6 @@ import android.content.Intent
 sealed class UniversalInboxAction {
 
     // General Actions
-    data class ShowErrorMessage(val error: Pair<Throwable, String>) : UniversalInboxAction()
     object RefreshPage : UniversalInboxAction()
 
     // Navigation Actions
