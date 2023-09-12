@@ -310,6 +310,18 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         applyFilter(option, false)
     }
 
+    fun getCategoryMenuData() {
+        launchCatchError(block = {
+            getCategoryMenuDataAsync().await()
+        }) {
+
+        }
+    }
+
+    fun onResume() {
+        getMiniCart()
+    }
+
     private fun setCategoryData(data: CategoryL2TabData) {
         val tickerData = data.tickerData
         val blockAddToCart = tickerData.blockAddToCart
@@ -514,14 +526,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun getMiniCartAsync(): Deferred<Unit?> {
         return asyncCatchError(block = {
             getMiniCart()
-        }) {
-
-        }
-    }
-
-    fun getCategoryMenuData() {
-        launchCatchError(block = {
-            getCategoryMenuDataAsync().await()
         }) {
 
         }

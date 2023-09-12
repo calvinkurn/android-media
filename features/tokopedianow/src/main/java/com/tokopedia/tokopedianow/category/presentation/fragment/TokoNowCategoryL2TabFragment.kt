@@ -138,6 +138,11 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         onViewCreated()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onResume()
+    }
+
     override fun onDestroy() {
         loginActivityResult = null
         addToCartVariantResult = null
