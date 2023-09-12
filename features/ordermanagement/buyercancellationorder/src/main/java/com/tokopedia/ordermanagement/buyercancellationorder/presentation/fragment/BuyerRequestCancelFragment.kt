@@ -65,8 +65,10 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 08/06/20.
  */
-class BuyerRequestCancelFragment: BaseDaggerFragment(),
-        GetCancelReasonBottomSheetAdapter.ActionListener, GetCancelSubReasonBottomSheetAdapter.ActionListener {
+class BuyerRequestCancelFragment :
+    BaseDaggerFragment(),
+    GetCancelReasonBottomSheetAdapter.ActionListener,
+    GetCancelSubReasonBottomSheetAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -80,8 +82,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var orderId = ""
     private var txId = ""
     private var uri = ""
-    private var isCancelAlreadyRequested : Boolean = false
-    private var isWaitToCancel : Boolean = false
+    private var isCancelAlreadyRequested: Boolean = false
+    private var isWaitToCancel: Boolean = false
     private var cancelRequestedTitle = ""
     private var cancelRequestedBody = ""
     private var waitMessage = ""
@@ -90,7 +92,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var invoiceUrl = ""
     private var statusId = ""
     private var statusInfo = ""
-    private var isFromUoh : Boolean = false
+    private var isFromUoh: Boolean = false
     private var helplinkUrl: String = ""
     private var listProduct = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation>()
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
@@ -156,7 +158,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             isCancelAlreadyRequested = arguments?.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED) ?: false
             cancelRequestedTitle = arguments?.getString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED).toString()
             cancelRequestedBody = arguments?.getString(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED).toString()
-            shopId = arguments?.getString(BuyerConsts.PARAM_SHOP_ID) ?: "-1"
+            shopId = arguments?.getString(BuyerConsts.PARAM_SHOP_ID).orEmpty()
             boughtDate = arguments?.getString(BuyerConsts.PARAM_BOUGHT_DATE).toString()
             invoiceUrl = arguments?.getString(BuyerConsts.PARAM_INVOICE_URL).toString()
             statusId = arguments?.getString(BuyerConsts.PARAM_STATUS_ID).toString()
@@ -205,7 +207,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 setLayoutCancelIsAvailable()
             }
         }
-
     }
 
     private fun setupViews() {
@@ -265,7 +266,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             btnReqCancel.visible()
 
             cardUnifyChooseReason.show()
-
         }
         setListenersCancelIsAvailable()
     }
@@ -436,7 +436,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
 
         binding?.run {
-
             // ticker
             if (buyerCancellationOrderWrapperUiModel.getCancellationReason.isShowTicker) {
                 renderTicker(cancelReasonResponse.tickerInfo)
@@ -444,10 +443,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 buyerTickerInfo.gone()
             }
 
-            //product card list
+            // product card list
             setupRecyclerViewCancellationProduct(buyerCancellationOrderWrapperUiModel.groupedOrders)
 
-            //container cancellation
+            // container cancellation
             setupContainerCancellationProduct(buyerCancellationOrderWrapperUiModel)
 
             // button
@@ -482,21 +481,23 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     else -> {
                         val subReasonLainnya =
                             tvChooseSubReasonLabel.text.toString().trimStart()
-                            tfChooseSubReasonEditable.editText.text.toString().trimStart()
+                        tfChooseSubReasonEditable.editText.text.toString().trimStart()
                         if (subReasonLainnya.isNotEmpty() && !isCancelAlreadyClicked) {
                             reasonCancel = subReasonLainnya
                             isCancelAlreadyClicked = true
                         }
-                        if (isEligibleInstantCancel) submitInstantCancel()
-                        else {
+                        if (isEligibleInstantCancel) {
+                            submitInstantCancel()
+                        } else {
                             submitRequestCancel()
                         }
                     }
                 }
             } else {
                 if (reasonCode != -1) {
-                    if (isEligibleInstantCancel) submitInstantCancel()
-                    else {
+                    if (isEligibleInstantCancel) {
+                        submitInstantCancel()
+                    } else {
                         submitRequestCancel()
                     }
                 }
@@ -620,15 +621,18 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                 }
             } else {
-                //no op
+                // no op
             }
         }
     }
 
     private fun submitRequestCancel() {
-        userSession?.let {
-            buyerCancellationViewModel.requestCancel(it.userId, orderId, "$reasonCode", reasonCancel)
-        }
+        buyerCancellationViewModel.requestCancel(
+            userSession.userId,
+            orderId,
+            "$reasonCode",
+            reasonCancel
+        )
     }
 
     private fun observingRequestCancel() {
@@ -770,10 +774,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun goToChatSeller() {
-        if (shopId != "-1L") {
+        if (shopId.isNotBlank()) {
             context?.let {
                 val intent = RouteManager.getIntent(
-                    it, ApplinkConst.TOPCHAT_ROOM_ASKSELLER,
+                    it,
+                    ApplinkConst.TOPCHAT_ROOM_ASKSELLER,
                     shopId
                 ).apply {
                     putExtra(ApplinkConst.Chat.INVOICE_ID, orderId)
@@ -815,9 +820,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         dialog?.setImageDrawable(R.drawable.ic_terkirim)
         dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
         dialog?.setPrimaryCTAClickListener {
-                dialog.dismiss()
-                activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_CANCEL_ORDER_DISABLE)
-                activity?.finish()
+            dialog.dismiss()
+            activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_CANCEL_ORDER_DISABLE)
+            activity?.finish()
         }
         dialog?.show()
     }
@@ -827,9 +832,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             visible()
             tickerType = BuyerUtils.getTickerType(tickerInfo.type)
             tickerShape = Ticker.SHAPE_FULL
-            setHtmlDescription(tickerInfo.text + " ${getString(R.string.buyer_ticker_info_selengkapnya)
+            setHtmlDescription(
+                tickerInfo.text + " ${getString(R.string.buyer_ticker_info_selengkapnya)
                     .replace(TICKER_URL, tickerInfo.actionUrl)
-                    .replace(TICKER_LABEL, tickerInfo.actionText)}")
+                    .replace(TICKER_LABEL, tickerInfo.actionText)}"
+            )
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
@@ -837,7 +844,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
                 override fun onDismiss() {
                 }
-
             })
         }
     }
@@ -856,5 +862,4 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun showKeyboard(context: Context) {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
-
 }
