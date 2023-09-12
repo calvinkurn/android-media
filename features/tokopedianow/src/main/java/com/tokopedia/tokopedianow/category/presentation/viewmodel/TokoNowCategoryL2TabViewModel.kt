@@ -26,34 +26,44 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2QuickFilterMapper
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addCategoryMenu
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addEmptyState
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addEmptyStateDivider
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addFeedbackWidget
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToCategoryTabLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToQuickFilter
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.updateAllProductQuantity
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateModel
+import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.mapCategoryMenuData
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateProductItem
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
-import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Violation
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFeedbackFieldToggleUseCase
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetSortFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.QUICK_FILTER_TOKONOW_DIRECTORY
@@ -71,6 +81,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
     private val getProductAdsUseCase: GetProductAdsUseCase,
     private val getProductCountUseCase: UseCase<String>,
+    private val getCategoryListUseCase: GetCategoryListUseCase,
+    private val getFeedbackToggleUseCase: GetFeedbackFieldToggleUseCase,
     private val aceSearchParamMapper: AceSearchParamMapper,
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
@@ -96,19 +108,18 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     companion object {
         private const val FIRST_PAGE = 1
         private const val PRODUCT_ROWS = 9
+        private const val CATEGORY_LEVEL_DEPTH = 1
     }
 
     private val _filterProductCountLiveData = MutableLiveData("")
     private val _dynamicFilterModelLiveData = MutableLiveData<DynamicFilterModel?>(null)
     private val _visitableListLiveData = MutableLiveData<List<Visitable<*>>>()
     private val _routeAppLinkLiveData = MutableLiveData<String>()
-    private val _emptyStateLiveData = MutableLiveData<CategoryEmptyStateModel>()
 
     val filterProductCountLiveData: LiveData<String> = _filterProductCountLiveData
     val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = _dynamicFilterModelLiveData
     val visitableListLiveData: LiveData<List<Visitable<*>>> = _visitableListLiveData
     val routeAppLinkLiveData: LiveData<String> = _routeAppLinkLiveData
-    val emptyStateLiveData: LiveData<CategoryEmptyStateModel> = _emptyStateLiveData
 
     private val filterController = FilterController()
     private val visitableList = mutableListOf<Visitable<*>>()
@@ -122,7 +133,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private var filterBottomSheetOpened: Boolean = false
 
     private var getProductJob: Job? = null
-    private var violation: Violation = Violation()
     private var excludedFilter: Option? = null
     private var isAllProductShown = false
 
@@ -171,6 +181,18 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             }
         )
     }
+
+    fun removeProductRecommendationWidget() {
+        visitableList.removeItem<TokoNowProductRecommendationUiModel>()
+        updateVisitableListLiveData()
+    }
+
+    fun getCategoryIdForTracking() =
+        if (categoryIdL2.isNotEmpty()) {
+            "$categoryIdL1/$categoryIdL2"
+        } else {
+            categoryIdL1
+        }
 
     fun updateWishlistStatus(productId: String, hasBeenWishlist: Boolean) {
         launch {
@@ -273,10 +295,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         if (atTheBottomOfThePage) loadMore()
     }
 
-    fun getFilterController(): FilterController {
-        return filterController
-    }
-
     fun onRemoveFilter(option: Option) {
         resetSortFilterIfExclude(option)
         resetSortFilterIfPminPmax(option)
@@ -305,6 +323,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
                 visitableList.clear()
                 visitableList.addTicker(categoryIdL2, tickerData)
                 visitableList.mapToCategoryTabLayout(components)
+                updateVisitableListLiveData()
+
                 visitableList.filterNotLoadedLayout().forEach {
                     when (it) {
                         is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
@@ -312,9 +332,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
                         is CategoryProductListUiModel -> addProductList(it, getProductResponse)
                     }
                 }
-                hideEmptyState()
             } else {
-                showEmptyState()
+                showEmptyState(getProductResponse)
             }
 
             page++
@@ -338,6 +357,33 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             }.let {
                 getProductJob = it
             }
+        }
+    }
+
+    private fun showEmptyState(aceSearchResponse: AceSearchProductModel) {
+        launchCatchError(block = {
+            val violation = aceSearchResponse.searchProduct.data.violation
+            val quickFilterItem = CategoryQuickFilterUiModel(
+                id = CategoryStaticLayoutId.QUICK_FILTER
+            )
+
+            visitableList.clear()
+            visitableList.add(quickFilterItem)
+            visitableList.addEmptyState(
+                violation = violation,
+                excludedFilter = excludedFilter
+            )
+            visitableList.addCategoryMenu()
+            visitableList.addEmptyStateDivider()
+            visitableList.addProductRecommendation()
+            updateVisitableListLiveData()
+
+            getQuickFilterAsync(quickFilterItem).await()
+            getCategoryMenuDataAsync().await()
+            getFeedbackToggleAsync().await()
+            getMiniCartAsync().await()
+        }) {
+
         }
     }
 
@@ -430,6 +476,47 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private suspend fun getCategoryFilter(): DynamicFilterModel {
         val filterParams = createCategoryFilterQueryParams()
         return getSortFilterUseCase.execute(filterParams)
+    }
+
+    private fun getCategoryMenuDataAsync(): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val warehouses = AddressMapper.mapToWarehousesData(addressData.getAddressData())
+            val response = getCategoryListUseCase.execute(warehouses,
+                CATEGORY_LEVEL_DEPTH
+            )
+            visitableList.mapCategoryMenuData(response.data)
+            updateVisitableListLiveData()
+        }) {
+            visitableList.mapCategoryMenuData(emptyList())
+            updateVisitableListLiveData()
+        }
+    }
+
+    private fun getFeedbackToggleAsync(): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val toggle = getFeedbackToggleUseCase.execute()
+            if(!toggle.isActive) return@asyncCatchError
+            visitableList.addFeedbackWidget()
+            updateVisitableListLiveData()
+        }) {
+
+        }
+    }
+
+    private fun getMiniCartAsync(): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            getMiniCart()
+        }) {
+
+        }
+    }
+
+    fun getCategoryMenuData() {
+        launchCatchError(block = {
+            getCategoryMenuDataAsync().await()
+        }) {
+
+        }
     }
 
     private fun applyFilter(option: Option, isApplied: Boolean) {
@@ -576,28 +663,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
-    private fun showEmptyState() {
-        val emptyStateModel = CategoryEmptyStateModel(
-            queryParams,
-            violation,
-            excludedFilter,
-            true
-        )
-        _emptyStateLiveData.postValue(emptyStateModel)
-    }
-
-    private fun hideEmptyState() {
-        if(_emptyStateLiveData.value != null) {
-            val emptyStateModel = CategoryEmptyStateModel(
-                queryParams,
-                violation,
-                excludedFilter,
-                false
-            )
-            _emptyStateLiveData.postValue(emptyStateModel)
-        }
-    }
-
     private fun showLoadMoreLoading() {
         visitableList.addLoadMoreLoading()
         updateVisitableListLiveData()
@@ -609,7 +674,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     }
 
     private fun updateVisitableListLiveData() {
-        _visitableListLiveData.postValue(visitableList)
+        val items = visitableList.toMutableList()
+        _visitableListLiveData.postValue(items)
     }
 
     private fun resetPageState() {

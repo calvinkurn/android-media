@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.fragment
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -28,8 +31,10 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView.ProductCardCompactListener
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryL2TabComponent
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
@@ -37,17 +42,29 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryL2TabAda
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2TabDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2TabAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
-import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2MainView
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2TabViewModel
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
+import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
+import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowL2TabBinding
+import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
+import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
+import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -70,26 +87,17 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         private const val SCROLL_DOWN_DIRECTION = 1
     }
 
-    var categoryL2MainView: CategoryL2MainView? = null
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val adapterTypeFactory by lazy {
-        CategoryL2TabAdapterTypeFactory(
-            adsCarouselListener = createProductAdsCarouselListener(),
-            quickFilterListener = createQuickFilterListener(),
-            productItemListener = createProductItemListener(),
-            productCardCompactListener = createProductCardCompactListener(),
-            similarProductTrackerListener = createSimilarProductTrackerListener()
-        )
-    }
-
-    private val categoryAdapter by lazy {
-        CategoryL2TabAdapter(adapterTypeFactory, CategoryL2TabDiffer())
-    }
+    private var adapterTypeFactory: CategoryL2TabAdapterTypeFactory? = null
+    private var categoryAdapter: CategoryL2TabAdapter? = null
 
     private val viewModel: TokoNowCategoryL2TabViewModel by viewModels {
+        viewModelFactory
+    }
+
+    private val productRecommendationViewModel: TokoNowProductRecommendationViewModel by viewModels {
         viewModelFactory
     }
 
@@ -118,6 +126,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupAdapter()
         setupRecyclerView()
         observeLiveData()
         onViewCreated()
@@ -128,7 +137,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         addToCartVariantResult = null
         sortFilterBottomSheet = null
         categoryChooserBottomSheet = null
-        adapterTypeFactory.onDestroy()
+        adapterTypeFactory?.onDestroy()
         super.onDestroy()
     }
 
@@ -137,13 +146,9 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         super.onAttach(context)
     }
 
-    fun onRemoveFilter(option: Option) {
-        viewModel.onRemoveFilter(option)
-    }
-
     private fun observeLiveData() {
         observe(viewModel.visitableListLiveData) {
-            categoryAdapter.submitList(it)
+            categoryAdapter?.submitList(it)
         }
 
         observe(viewModel.addItemToCart) {
@@ -188,12 +193,14 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
             openLoginPage()
         }
 
-        observe(viewModel.emptyStateLiveData) {
-            if (it.shouldShow) {
-                val filterController = viewModel.getFilterController()
-                categoryL2MainView?.onShowEmptyState(it, filterController)
-            } else {
-                categoryL2MainView?.onHideEmptyState()
+        observe(viewModel.miniCart) {
+            when(it) {
+                is Success -> {
+                    productRecommendationViewModel.updateMiniCartSimplified(it.data)
+                }
+                else -> {
+
+                }
             }
         }
     }
@@ -208,6 +215,24 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         }
         addToCartVariantResult = registerActivityResult {
             getMiniCart()
+        }
+    }
+
+    private fun setupAdapter() {
+        adapterTypeFactory = CategoryL2TabAdapterTypeFactory(
+            adsCarouselListener = createProductAdsCarouselListener(),
+            quickFilterListener = createQuickFilterListener(),
+            productItemListener = createProductItemListener(),
+            productCardCompactListener = createProductCardCompactListener(),
+            similarProductTrackerListener = createSimilarProductTrackerListener(),
+            emptyStateNoResultListener = createEmptyStateNoResultListener(),
+            productRecommendationListener = createProductRecommendationListener(),
+            categoryMenuListener = createCategoryMenuListener(),
+            feedbackWidgetListener = createFeedbackWidgetListener()
+        )
+
+        adapterTypeFactory?.let {
+            categoryAdapter = CategoryL2TabAdapter(it, CategoryL2TabDiffer())
         }
     }
 
@@ -231,7 +256,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun createSpanSizeLookup() = object : GridLayoutManager.SpanSizeLookup() {
         override fun getSpanSize(position: Int): Int {
-            return when (categoryAdapter.getItemViewType(position)) {
+            return when (categoryAdapter?.getItemViewType(position)) {
                 ProductItemViewHolder.LAYOUT -> SPAN_FULL_SPACE
                 else -> SPAN_COUNT
             }
@@ -335,6 +360,107 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
             .categoryContextModule(CategoryContextModule(requireContext()))
             .build()
             .inject(this)
+    }
+
+    private fun goToTokopediaHomePage() {
+        RouteManager.route(context, ApplinkConst.HOME)
+    }
+
+    private fun goToTokopediaNowHomePage() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+    }
+
+    private fun goToProductDetailPage(appLink: String) {
+        val newAppLink = viewModel.createAffiliateLink(appLink)
+        RouteManager.route(activity, newAppLink)
+    }
+
+    private fun goToAtcVariant(productId: String, shopId: String) {
+        AtcVariantHelper.goToAtcVariant(
+            context = requireContext(),
+            productId = productId,
+            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
+            isTokoNow = true,
+            shopId = shopId,
+            trackerCdListName = String.format(TOKONOW_CATEGORY_ORGANIC, data.categoryIdL1),
+            startActivitResult = ::startActivityForResult
+        )
+    }
+
+    private fun trackClickProductRecommendation(
+        product: ProductCardCompactCarouselItemUiModel,
+        position: Int,
+        userId: String
+    ) {
+        val recommendationItem =
+            ProductRecommendationMapper.mapProductItemToRecommendationItem(product)
+        val eventLabel = viewModel.getCategoryIdForTracking()
+
+        SearchResultTracker.trackClickProduct(
+            position,
+            eventLabel,
+            CategoryTracking.Action.CLICK_CLP_PRODUCT_TOKONOW,
+            CategoryTracking.Category.TOKONOW_CATEGORY_PAGE,
+            CategoryTracking.Misc.RECOM_LIST_PAGE_NON_OOC,
+            userId,
+            recommendationItem
+        )
+    }
+
+    private fun trackProductRecommendationImpression(
+        product: ProductCardCompactCarouselItemUiModel,
+        position: Int,
+        userId: String
+    ) {
+        val recommendationItem =
+            ProductRecommendationMapper.mapProductItemToRecommendationItem(product)
+        val eventLabel = viewModel.getCategoryIdForTracking()
+        SearchResultTracker.trackImpressionProduct(
+            position,
+            eventLabel,
+            CategoryTracking.Action.IMPRESSION_CLP_PRODUCT_TOKONOW,
+            CategoryTracking.Category.TOKONOW_CATEGORY_PAGE,
+            CategoryTracking.Misc.RECOM_LIST_PAGE_NON_OOC,
+            userId,
+            recommendationItem
+        )
+    }
+
+    private fun directToSeeMorePage(appLink: String) {
+        val categoryIdTracking = viewModel.getCategoryIdForTracking()
+        val newAppLink = modifySeeMoreAppLink(appLink)
+
+        CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
+        RouteManager.route(activity, newAppLink)
+    }
+
+    private fun showShopClosedToaster() {
+        val message = getString(
+            R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop)
+        showToaster(message = message, type = Toaster.TYPE_ERROR)
+    }
+
+    private fun modifySeeMoreAppLink(
+        originalAppLink: String
+    ): String {
+        val uri = Uri.parse(originalAppLink)
+        val queryParamsMap = UrlParamUtils.getParamMap(uri.query ?: "")
+        val ref = queryParamsMap[RECOM_QUERY_PARAM_REF] ?: ""
+
+        return if (ref == RecomPageConstant.TOKONOW_CLP) {
+            val recomCategoryId = queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] ?: ""
+
+            if (recomCategoryId.isEmpty()) {
+                queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] = data.categoryIdL1
+            }
+
+            "${uri.scheme}://" +
+                "${uri.host}/" +
+                "${uri.path}?" +
+                UrlParamUtils.generateUrlParamString(queryParamsMap)
+        } else {
+            originalAppLink
+        }
     }
 
     private fun createProductAdsCarouselListener(): ProductAdsCarouselListener {
@@ -550,6 +676,109 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
             override fun getResultCount(selectedOption: Option) {
                 viewModel.getProductCount(selectedOption)
+            }
+        }
+    }
+
+    private fun createEmptyStateNoResultListener(): TokoNowEmptyStateNoResultListener {
+        return object : TokoNowEmptyStateNoResultListener {
+            override fun onFindInTokopediaClick() {
+                goToTokopediaHomePage()
+            }
+
+            override fun goToTokopediaNowHome() {
+                goToTokopediaNowHomePage()
+            }
+
+            override fun onRemoveFilterClick(option: Option) {
+                viewModel.onRemoveFilter(option)
+            }
+        }
+    }
+
+    private fun createProductRecommendationListener(): TokoNowProductRecommendationListener {
+        return object : TokoNowProductRecommendationListener {
+            override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel {
+                return productRecommendationViewModel
+            }
+
+            override fun hideProductRecommendationWidget() {
+                viewModel.removeProductRecommendationWidget()
+            }
+
+            override fun openLoginPage() {
+                this@TokoNowCategoryL2TabFragment.openLoginPage()
+            }
+
+            override fun productCardAddVariantClicked(productId: String, shopId: String) {
+                goToAtcVariant(productId, shopId)
+            }
+
+            override fun productCardClicked(
+                position: Int,
+                product: ProductCardCompactCarouselItemUiModel,
+                isLogin: Boolean,
+                userId: String
+            ) {
+                trackClickProductRecommendation(product, position, userId)
+                goToProductDetailPage(product.appLink)
+            }
+
+            override fun productCardImpressed(
+                position: Int,
+                product: ProductCardCompactCarouselItemUiModel,
+                isLogin: Boolean,
+                userId: String
+            ) {
+                trackProductRecommendationImpression(product, position, userId)
+            }
+
+            override fun seeMoreClicked(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {
+                directToSeeMorePage(seeMoreUiModel.appLink)
+            }
+
+            override fun seeAllClicked(appLink: String) {
+                directToSeeMorePage(appLink)
+            }
+
+            override fun productCardAddToCartBlocked() {
+                showShopClosedToaster()
+            }
+        }
+    }
+
+    private fun createCategoryMenuListener(): TokoNowCategoryMenuListener {
+        return object : TokoNowCategoryMenuListener {
+            override fun onCategoryMenuWidgetRetried() {
+                viewModel.getCategoryMenuData()
+            }
+
+            override fun onSeeAllCategoryClicked() {
+            }
+
+            override fun onCategoryMenuItemClicked(
+                data: TokoNowCategoryMenuItemUiModel,
+                itemPosition: Int
+            ) {
+            }
+
+            override fun onCategoryMenuItemImpressed(
+                data: TokoNowCategoryMenuItemUiModel,
+                itemPosition: Int
+            ) {
+            }
+
+            override fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel) {
+            }
+        }
+    }
+
+    private fun createFeedbackWidgetListener(): FeedbackWidgetListener {
+        return object : FeedbackWidgetListener {
+            override fun onFeedbackCtaClicked() {
+                TokoNowProductFeedbackBottomSheet().also {
+                    it.showBottomSheet(activity?.supportFragmentManager, view)
+                }
             }
         }
     }
