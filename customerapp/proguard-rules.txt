@@ -355,3 +355,4 @@ public static com.tokopedia.stability.ChangeDelegate *;
 
 # kyc ds sdk
 -keep class com.gojek.ojosdk.** {*;}
+-keepclassmembers enum com.gojek.kyc.** {*;}

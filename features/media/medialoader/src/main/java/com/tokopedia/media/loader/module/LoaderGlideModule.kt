@@ -37,7 +37,7 @@ class LoaderGlideModule : AppGlideModule() {
         super.registerComponents(context, glide, registry)
 
         // custom network interceptor
-        if (isCustomOkHttpClient()) {
+        if (RemoteConfig.shouldAbleToExposeResponseHeader(context)) {
             val client = OkHttpClient.Builder()
                 .addInterceptor(NetworkLogInterceptor(context))
                 .build()
@@ -65,11 +65,6 @@ class LoaderGlideModule : AppGlideModule() {
         * avoid some potential problems with trying to parse metadata.
         * */
         return false
-    }
-
-    // Hansel-able method
-    private fun isCustomOkHttpClient(): Boolean {
-        return true
     }
 
     companion object {

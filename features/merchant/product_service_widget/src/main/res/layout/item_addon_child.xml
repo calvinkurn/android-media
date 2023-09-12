@@ -21,7 +21,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tf_description"
         app:layout_constraintStart_toEndOf="@+id/cu_addon"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3" />
+        app:typographyType="display_2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tf_description"
@@ -38,14 +38,14 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_edu"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        app:icon_name="INFORMATION"
-        app:icon_color_light_enable="@color/Unify_NN900"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginStart="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tf_name"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@+id/cu_addon"
         app:layout_constraintStart_toEndOf="@+id/tf_name"
-        app:layout_constraintTop_toTopOf="@+id/tf_name" />
+        app:layout_constraintTop_toTopOf="@+id/cu_addon" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tf_price"
@@ -55,7 +55,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tf_slashed_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tf_name"
-        app:typographyType="display_3" />
+        app:typographyType="display_2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tf_slashed_price"
@@ -65,6 +65,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/tf_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tf_price"
-        app:typographyType="display_3" />
+        app:typographyType="display_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
