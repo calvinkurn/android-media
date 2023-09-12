@@ -109,7 +109,7 @@ object CartPageAnalyticsUtil {
             val productDataMap = mapOf(
                 ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
                 ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
-                ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
+                ConstantTransactionAnalytics.Key.ITEM_ID to it.cartId,
                 ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
             )
             data.add(productDataMap)

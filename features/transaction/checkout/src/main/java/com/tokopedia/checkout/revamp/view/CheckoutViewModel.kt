@@ -586,7 +586,13 @@ class CheckoutViewModel @Inject constructor(
                         fetchEpharmacyData()
                     }
                     if (checkoutItem is CheckoutPromoModel) {
-                        getInitialEntryPointInfo()
+                        val hasSelectCourierInAnyOrder = listData.value
+                            .any { it is CheckoutOrderModel && it.shipment.courierItemData != null }
+                        if (hasSelectCourierInAnyOrder) {
+                            validatePromo()
+                        } else {
+                            getInitialEntryPointInfo()
+                        }
                     }
                 }
             }

@@ -30,7 +30,6 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView.Companion.setTextColor
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
@@ -38,7 +37,6 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.min
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -257,51 +255,6 @@ class CartGroupViewHolder(
         with(binding) {
             val constraintSet = ConstraintSet()
             constraintSet.clone(clShopHeader)
-
-            if (cartGroupHolderData.groupBadge.isNotBlank()) {
-                if (cartGroupHolderData.isError) {
-                    constraintSet.connect(
-                        R.id.image_shop_badge,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        0
-                    )
-                } else {
-                    constraintSet.connect(
-                        R.id.image_shop_badge,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                    )
-                }
-                constraintSet.connect(
-                    R.id.tv_group_name,
-                    ConstraintSet.START,
-                    R.id.image_shop_badge,
-                    ConstraintSet.END,
-                    GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                )
-            } else {
-                if (cartGroupHolderData.isError) {
-                    constraintSet.connect(
-                        R.id.tv_group_name,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        0
-                    )
-                } else {
-                    constraintSet.connect(
-                        R.id.tv_group_name,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                    )
-                }
-            }
 
             if (cartGroupHolderData.fulfillmentName.isNotBlank() || (cartGroupHolderData.shouldValidateWeight && cartGroupHolderData.extraWeight > 0)) {
                 constraintSet.apply {
