@@ -256,51 +256,6 @@ class CartGroupViewHolder(
             val constraintSet = ConstraintSet()
             constraintSet.clone(clShopHeader)
 
-            if (cartGroupHolderData.groupBadge.isNotBlank()) {
-                if (cartGroupHolderData.isError) {
-                    constraintSet.connect(
-                        R.id.image_shop_badge,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        0
-                    )
-                } else {
-                    constraintSet.connect(
-                        R.id.image_shop_badge,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                    )
-                }
-                constraintSet.connect(
-                    R.id.tv_group_name,
-                    ConstraintSet.START,
-                    R.id.image_shop_badge,
-                    ConstraintSet.END,
-                    GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                )
-            } else {
-                if (cartGroupHolderData.isError) {
-                    constraintSet.connect(
-                        R.id.tv_group_name,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        0
-                    )
-                } else {
-                    constraintSet.connect(
-                        R.id.tv_group_name,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                    )
-                }
-            }
-
             if (cartGroupHolderData.fulfillmentName.isNotBlank() || (cartGroupHolderData.shouldValidateWeight && cartGroupHolderData.extraWeight > 0)) {
                 constraintSet.apply {
                     clear(R.id.image_shop_badge, ConstraintSet.BOTTOM)
