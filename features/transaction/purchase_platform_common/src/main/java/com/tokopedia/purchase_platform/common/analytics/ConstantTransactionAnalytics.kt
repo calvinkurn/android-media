@@ -468,6 +468,10 @@ object ConstantTransactionAnalytics {
         const val BUNDLE_TYPE_SINGLE = "single"
         const val BUNDLE_TYPE_MULTIPLE = "multiple"
         const val CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME = "/cart - bundling"
+
+        // Cart Checkout Revamp
+        const val NOTE_SIMPAN = "simpan"
+        const val NOTE_EDIT = "edit"
     }
 
     object ExtraKey {

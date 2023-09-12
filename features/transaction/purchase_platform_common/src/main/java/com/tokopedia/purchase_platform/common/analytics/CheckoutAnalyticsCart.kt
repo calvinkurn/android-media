@@ -1061,12 +1061,13 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-    fun eventClickSaveOnNoteBottomSheet() {
+    fun eventClickSaveOnNoteBottomSheet(isPreviousNoteEmpty: Boolean, cartId: String) {
+        val noteStatusLabel = if (isPreviousNoteEmpty) ConstantTransactionAnalytics.EventLabel.NOTE_SIMPAN else ConstantTransactionAnalytics.EventLabel.NOTE_EDIT
         val gtmData = getGtmData(
             ConstantTransactionAnalytics.EventName.CLICK_PP,
             ConstantTransactionAnalytics.EventCategory.CART,
             ConstantTransactionAnalytics.EventAction.CLICK_SIMPAN_ON_NOTE_BOTTOMSHEET,
-            ""
+            "$noteStatusLabel - $cartId"
         )
         gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_SIMPAN_ON_NOTE_BOTTOMSHEET
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -1081,7 +1082,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ConstantTransactionAnalytics.EventAction.CLICK_NOTE_ICON,
             ""
         )
-        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_SIMPAN_ON_NOTE_BOTTOMSHEET
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_NOTE_ICON
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         sendGeneralEvent(gtmData)

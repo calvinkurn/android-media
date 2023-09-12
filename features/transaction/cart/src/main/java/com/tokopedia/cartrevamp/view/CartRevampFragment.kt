@@ -1185,7 +1185,7 @@ class CartRevampFragment :
             )
         )
         bottomSheet.setListener(listener = { newNote ->
-            cartPageAnalytics.eventClickSaveOnNoteBottomSheet()
+            cartPageAnalytics.eventClickSaveOnNoteBottomSheet(data.notes.isEmpty(), data.cartId)
             data.notes = newNote
             playNoteAnimation(newNote, noteIcon, noteLottieIcon, position)
         })
