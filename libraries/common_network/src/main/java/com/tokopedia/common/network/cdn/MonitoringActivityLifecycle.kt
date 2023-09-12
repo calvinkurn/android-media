@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -64,6 +65,7 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
                         val token = object : TypeToken<DataResponse<String>>() {}.type
                         val restRequest = RestRequest.Builder(url, token)
                             .setHeaders(mapOf("host" to "images.tokopedia.net"))
+                            .setRequestType(RequestType.GET)
                             .build()
                         restRepository.getResponse(restRequest)
                     }
