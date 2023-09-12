@@ -305,9 +305,9 @@ class StoriesWidgetManager private constructor(
 
         private var mScrollingParent: View? = null
         private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
-        private val trackingQueue by lazyThreadSafetyNone { TrackingQueue(context) }
-        private val userSession by lazyThreadSafetyNone { UserSession(context.applicationContext) }
-        private val defaultTrackingManager by lazyThreadSafetyNone { DefaultTrackingManager(entryPoint, trackingQueue, userSession) }
+        private val trackingQueue : TrackingQueue get() = TrackingQueue(context)
+        private val userSession get() =  UserSession(context.applicationContext)
+        private val defaultTrackingManager get() =  DefaultTrackingManager(entryPoint, trackingQueue, userSession)
         private var mTrackingManager: TrackingManager = defaultTrackingManager
 
         fun setScrollingParent(view: View?) = builder {
