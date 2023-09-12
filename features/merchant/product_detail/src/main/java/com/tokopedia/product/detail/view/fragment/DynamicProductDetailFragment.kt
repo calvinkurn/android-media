@@ -304,6 +304,7 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
+import com.tokopedia.stories.widget.NoAnimateAnimationStrategy
 import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.storiesManager
@@ -586,6 +587,7 @@ open class DynamicProductDetailFragment :
 
     private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.ProductDetail) {
         setScrollingParent(binding?.rvPdp)
+        setAnimationStrategy(NoAnimateAnimationStrategy())
     }
 
     private val scrollListener by lazy {
