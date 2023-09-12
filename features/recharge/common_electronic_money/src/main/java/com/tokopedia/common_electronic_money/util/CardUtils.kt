@@ -23,7 +23,6 @@ class CardUtils {
         private const val JAKCARD_AID_STAG = "D3600000030003"
         private const val TAPCASH_AID = "A000424E49100001"
         private const val EMONEY_AID = "0000000000000001"
-        private const val BCA_AID = "A0000000180F0000018001"
         private const val SUCCESSFULLY_EXECUTED = "9000"
         private const val SUCCESSFULLY_EXECUTED_BRIZZI = "9100"
         private val BRIZZI_COMMAND = byteArrayOf(
@@ -133,27 +132,5 @@ class CardUtils {
             }
             return false
         }
-
-        @JvmStatic
-        fun isBCACard(intent: Intent): Boolean {
-            try {
-                val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-                if (tag != null) {
-                    val isoDep = IsoDep.get(tag)
-                    isoDep.connect()
-                    isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC
-                    val bytes = isoDep.transceive(hexStringToByteArray(BCA_AID))
-                    isoDep.close()
-                    val toHext = toHex(bytes)
-                    return  toHext == SUCCESSFULLY_EXECUTED
-                }
-            } catch (e: Exception){
-                FirebaseCrashlytics.getInstance().recordException(e)
-                e.printStackTrace()
-            }
-            return false
-        }
-
-
     }
 }
