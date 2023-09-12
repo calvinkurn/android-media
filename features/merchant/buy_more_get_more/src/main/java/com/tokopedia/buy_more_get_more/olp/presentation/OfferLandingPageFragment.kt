@@ -208,6 +208,7 @@ class OfferLandingPageFragment :
                     viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
                     setupTncBottomSheet()
                     fetchMiniCart()
+                    setMiniCartOnOfferEnd(offerInfoForBuyer)
                 }
 
                 else -> {
@@ -248,6 +249,17 @@ class OfferLandingPageFragment :
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
             setDefaultErrorSelection(throwable)
+        }
+    }
+
+    private fun setMiniCartOnOfferEnd(offerInfoForBuyer: OfferInfoForBuyerUiModel?) {
+        binding?.miniCartView?.run {
+            val offer = offerInfoForBuyer?.offerings?.firstOrNull() ?: return@run
+            setOnCheckCartClickListener(offer.endDate) { isOfferEnded ->
+                if (isOfferEnded) {
+                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
+                }
+            }
         }
     }
 
@@ -464,7 +476,10 @@ class OfferLandingPageFragment :
                     Status.OFFER_ALREADY_FINISH -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
-                            description = getString(R.string.bmgm_description_error_ended_promo, currentState.shopData.shopName),
+                            description = getString(
+                                R.string.bmgm_description_error_ended_promo,
+                                currentState.shopData.shopName
+                            ),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
                             primaryCtaAction = { activity?.finish() },
@@ -476,7 +491,10 @@ class OfferLandingPageFragment :
                     Status.OOS -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),
-                            description = getString(R.string.bmgm_description_error_out_of_stock, currentState.shopData.shopName),
+                            description = getString(
+                                R.string.bmgm_description_error_out_of_stock,
+                                currentState.shopData.shopName
+                            ),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
                             primaryCtaAction = { activity?.finish() },
@@ -550,6 +568,7 @@ class OfferLandingPageFragment :
                     )
                     olpAdapter?.submitList(listOf(emptyStateUiModel))
                 }
+
                 false -> {
                     stickyContent.gone()
                     errorPageLarge.apply {

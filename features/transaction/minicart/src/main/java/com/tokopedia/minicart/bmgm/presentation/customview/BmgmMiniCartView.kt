@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
@@ -37,8 +36,10 @@ import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartWidgetBinding
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.time.DateFormatUtils
 import dagger.Lazy
 import kotlinx.coroutines.flow.collectLatest
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -81,7 +82,8 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         )[BmgmMiniCartViewModel::class.java]
     }
     private var hasVisited = false
-    private val impressHolder = ImpressHolder()
+    private var offerEndDate = ""
+    private var onOfferEndedCallback: ((isOfferEnded: Boolean) -> Unit)? = null
 
     init {
         binding = ViewBmgmMiniCartWidgetBinding.inflate(
@@ -121,6 +123,14 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         observeSetCarChecklistStatus(lifecycleOwner)
     }
 
+    fun setOnCheckCartClickListener(
+        offerEndDate: String,
+        callback: (isOfferEnded: Boolean) -> Unit
+    ) {
+        this.offerEndDate = offerEndDate
+        this.onOfferEndedCallback = callback
+    }
+
     fun fetchData(
         shopIds: List<Long>,
         offerIds: List<Long>,
@@ -134,11 +144,11 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         this.shopIds = shopIds
         this.offerCount = offerCount
 
-        viewModel.getMiniCartData(shopIds, param, false)
+        viewModel.getMiniCartData(shopIds = shopIds, param = param, showLoadingState = false)
     }
 
     fun refreshAfterAtC() {
-        viewModel.getMiniCartData(shopIds, param, false)
+        viewModel.getMiniCartData(shopIds = shopIds, param = param, showLoadingState = false)
     }
 
     private fun refreshData() {
@@ -156,8 +166,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                         showErrorState()
                     }
 
-                    else -> {
-                        /* no-op */
+                    else -> {/* no-op */
                     }
                 }
             }
@@ -175,8 +184,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                         openCartPage()
                     }
 
-                    else -> {
-                        /* no-op */
+                    else -> {/* no-op */
                     }
                 }
             }
@@ -335,11 +343,31 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 tvBmgmFinalPrice.text = data.getPriceAfterDiscountStr()
                 setupCrossedPrice(data)
                 btnBmgmOpenCart.setOnClickListener {
-                    viewModel.setCartListCheckboxState(getCartIds(data.tiersApplied))
+                    setCartListCheckboxState(data)
                     sendClickCekKeranjangButton()
                 }
             }
         }
+    }
+
+    private fun setCartListCheckboxState(data: BmgmMiniCartDataUiModel) {
+        val isOfferEnded = checkIsOfferEnded()
+        if (!isOfferEnded) {
+            viewModel.setCartListCheckboxState(getCartIds(data.tiersApplied))
+        }
+        onOfferEndedCallback?.invoke(isOfferEnded)
+    }
+
+    private fun checkIsOfferEnded(): Boolean {
+        if (offerEndDate.isBlank()) {
+            return false
+        }
+        val offerEndInMilliseconds = DateFormatUtils.getTimeInMilliseconds(
+            format = DateFormatUtils.FORMAT_YYYY_MM_DD_HH_mm_ss,
+            dateString = offerEndDate
+        )
+        val nowMillis = Date().time
+        return offerEndInMilliseconds <= nowMillis
     }
 
     private fun setupCrossedPrice(data: BmgmMiniCartDataUiModel) {
@@ -395,10 +423,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         val userId = userSession.get().userId
 
         BmgmMiniCartTracker.sendClickCekKeranjangEvent(
-            offerId = offerId,
-            warehouseId = warehouseId,
-            shopId = shopId,
-            userId = userId
+            offerId = offerId, warehouseId = warehouseId, shopId = shopId, userId = userId
         )
     }
 
