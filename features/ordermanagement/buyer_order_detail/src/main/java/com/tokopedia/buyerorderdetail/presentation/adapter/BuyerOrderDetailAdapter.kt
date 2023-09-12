@@ -238,17 +238,8 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         context: Context?,
         productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel
     ) {
-        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
-
-        val isEnableProductListHeader = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)
-
-        if (isEnableProductListHeader) {
+        if (productListHeaderUiModel.shouldShow(context)) {
             add(productListHeaderUiModel)
-        } else {
-            val productListHeaderIndex = this.indexOfFirst { it is ProductListUiModel.ProductListHeaderUiModel }
-            if (productListHeaderIndex != RecyclerView.NO_POSITION) {
-                removeAt(productListHeaderIndex)
-            }
         }
     }
 
