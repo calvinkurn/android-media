@@ -1,10 +1,12 @@
 package com.tokopedia.stories.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -93,6 +95,15 @@ class StoriesDetailFragment @Inject constructor(
     private val shopId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
+    private val activityResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let { data -> }
+        }
+    }
+
+
     override fun getScreenName(): String {
         return TAG
     }
@@ -159,7 +170,8 @@ class StoriesDetailFragment @Inject constructor(
                             .show(childFragmentManager)
                     }
                     is StoriesUiEvent.Login -> {
-                        goTo(ApplinkConst.LOGIN)
+                        val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
+                        router.route(activityResult, intent)
                     }
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
