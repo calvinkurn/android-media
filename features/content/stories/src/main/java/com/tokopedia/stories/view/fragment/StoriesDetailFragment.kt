@@ -308,11 +308,6 @@ class StoriesDetailFragment @Inject constructor(
         showPageLoading(true)
 
         icClose.setOnClickListener { activity?.finish() }
-        /**
-         * Testing purpose
-         */
-
-        vStoriesOnboarding.lottieSwipeProduct.setFailureListener {}
 
         binding.icClose.hide()
         icClose.setOnClickListener {

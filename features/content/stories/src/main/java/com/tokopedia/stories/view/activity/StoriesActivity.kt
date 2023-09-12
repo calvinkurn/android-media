@@ -4,7 +4,6 @@ import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.R
@@ -14,6 +13,7 @@ import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -28,11 +28,13 @@ class StoriesActivity : BaseActivity() {
         get() = _binding!!
 
     private var bundle: Bundle? = null
+    private val shopId: String
+        get() = intent.data?.lastPathSegment.orEmpty()
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: StoriesViewModelFactory.Creator
 
-    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory }
+    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory.create(shopId) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
