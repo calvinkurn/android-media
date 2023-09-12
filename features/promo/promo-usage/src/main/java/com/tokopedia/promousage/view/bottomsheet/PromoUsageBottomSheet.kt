@@ -558,9 +558,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
                 is AttemptPromoUiAction.Failed -> {
                     renderLoadingDialog(false)
-                    if (uiAction.errorMessage.isNotBlank()) {
-                        showToastMessage(uiAction.errorMessage)
-                    }
+                    showToastError(uiAction.errorMessage)
                 }
             }
         }
@@ -858,8 +856,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
                 is ClearPromoUiAction.Failed -> {
                     renderLoadingDialog(false)
-                    showToastMessage(uiAction.throwable)
+                    showToastError(uiAction.throwable)
                     listener?.onClearPromoFailed(uiAction.throwable)
+                    dismiss()
                 }
             }
         }
@@ -885,13 +884,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
                 is ApplyPromoUiAction.Failed -> {
                     renderLoadingDialog(false)
-                    if (uiAction.shouldReload) {
-                        showToastMessage(uiAction.throwable)
-                        resetView()
-                    } else {
-                        listener?.onApplyPromoFailed(uiAction.throwable)
-                        dismiss()
-                    }
+                    showToastError(uiAction.throwable)
+                    listener?.onApplyPromoFailed(uiAction.throwable)
+                    dismiss()
                 }
             }
         }
@@ -902,29 +897,29 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (uiAction) {
                 is ClosePromoPageUiAction.SuccessWithApplyPromo -> {
                     renderLoadingDialog(false)
-                    dismiss()
                     listener?.onClosePageWithApplyPromo(
                         entryPoint = uiAction.entryPoint,
                         validateUse = uiAction.validateUse,
                         lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest
                     )
+                    dismiss()
                 }
 
                 is ClosePromoPageUiAction.SuccessWithClearPromo -> {
                     renderLoadingDialog(false)
-                    dismiss()
                     listener?.onClosePageWithClearPromo(
                         entryPoint = uiAction.entryPoint,
                         clearPromo = uiAction.clearPromo,
                         lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest,
                         isFlowMvcLockToCourier = uiAction.isFlowMvcLockToCourier
                     )
+                    dismiss()
                 }
 
                 is ClosePromoPageUiAction.SuccessNoAction -> {
                     renderLoadingDialog(false)
-                    dismiss()
                     listener?.onClosePageWithNoAction()
+                    dismiss()
                 }
 
                 is ClosePromoPageUiAction.Failed -> {
@@ -1027,13 +1022,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun showToastMessage(throwable: Throwable) {
-        binding?.root?.context?.let { showToastMessage(throwable.getErrorMessage(it)) }
+    private fun showToastError(throwable: Throwable) {
+        binding?.root?.context?.let { showToastError(throwable.getErrorMessage(it)) }
     }
 
-    private fun showToastMessage(message: String) {
+    private fun showToastError(message: String) {
         binding?.root?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 

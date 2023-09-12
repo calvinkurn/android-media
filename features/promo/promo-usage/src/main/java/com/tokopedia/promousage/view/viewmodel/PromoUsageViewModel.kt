@@ -73,6 +73,7 @@ internal class PromoUsageViewModel @Inject constructor(
 
     private var entryPoint: PromoPageEntryPoint = PromoPageEntryPoint.CART_PAGE
     private var defaultErrorMessage: String = ""
+    private var initialSelectedPromoCodes: List<String>? = null
 
     private val _promoPageUiState = MutableLiveData<PromoPageUiState>(PromoPageUiState.Initial)
     val promoPageUiState: LiveData<PromoPageUiState>
@@ -210,6 +211,9 @@ internal class PromoUsageViewModel @Inject constructor(
         }
         items = sortPromo(items, true)
         items = addTncPromo(items)
+        if (initialSelectedPromoCodes == null) {
+            initialSelectedPromoCodes = items.getSelectedPromoCodes()
+        }
         _promoPageUiState.postValue(
             PromoPageUiState.Success(
                 tickerInfo = tickerInfo,
@@ -936,9 +940,7 @@ internal class PromoUsageViewModel @Inject constructor(
         boPromoCodes: List<String>
     ) {
         _promoPageUiState.ifSuccess { pageState ->
-            val hasSelectedAttemptedCode = pageState.items.getAttemptedItems()
-                .any { it.state is PromoItemState.Selected }
-            if (isChangedFromInitialState() || hasSelectedAttemptedCode) {
+            if (isChangedFromInitialState()) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
                 if (hasSelectedPromo) {
                     onApplyPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
@@ -1151,10 +1153,7 @@ internal class PromoUsageViewModel @Inject constructor(
 
                 onFailed?.invoke(exception) ?: run {
                     _applyPromoUiAction.postValue(
-                        ApplyPromoUiAction.Failed(
-                            throwable = exception,
-                            shouldReload = false
-                        )
+                        ApplyPromoUiAction.Failed(exception)
                     )
                     processAndSendEventViewErrorAfterClickPakaiPromo(exception, selectedPromoCodes)
                 }
@@ -1631,9 +1630,7 @@ internal class PromoUsageViewModel @Inject constructor(
         boPromoCodes: List<String>
     ) {
         _promoPageUiState.ifSuccess { pageState ->
-            val hasSelectedAttemptedCode = pageState.items.getAttemptedItems()
-                .any { it.state is PromoItemState.Selected }
-            if (isChangedFromInitialState() || hasSelectedAttemptedCode) {
+            if (isChangedFromInitialState()) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
                 if (hasSelectedPromo) {
                     onApplyPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
@@ -1685,9 +1682,7 @@ internal class PromoUsageViewModel @Inject constructor(
         boPromoCodes: List<String>
     ) {
         _promoPageUiState.ifSuccess { pageState ->
-            val hasSelectedAttemptedCode = pageState.items.getAttemptedItems()
-                .any { it.state is PromoItemState.Selected }
-            if (isChangedFromInitialState() || hasSelectedAttemptedCode) {
+            if (isChangedFromInitialState()) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
                 if (hasSelectedPromo) {
                     onApplyPromo(
@@ -1724,30 +1719,23 @@ internal class PromoUsageViewModel @Inject constructor(
         // Check if
         // Case 1: has any promo item unchecked, but exist as pre applied promo item
         // Case 2: has any promo item checked but have not been applied
-        val currentItems = _promoPageUiState.asSuccessOrNull()
-            ?.items?.filterIsInstance<PromoItem>()
-        if (currentItems != null) {
-            val initialPreSelectedPromoCodes =
-                currentItems.filter { it.isPreSelected }.map { it.code }
-            currentItems.forEach { item ->
-                val code = if (item.useSecondaryPromo) {
-                    item.secondaryPromo.code
-                } else {
-                    item.code
+        initialSelectedPromoCodes?.let { selectedCodes ->
+            _promoPageUiState.asSuccessOrNull()
+                ?.items?.filterIsInstance<PromoItem>()?.forEach { item ->
+                    val code = if (item.useSecondaryPromo) {
+                        item.secondaryPromo.code
+                    } else {
+                        item.code
+                    }
+                    // Case 1
+                    if (selectedCodes.contains(code) && item.state !is PromoItemState.Selected) {
+                        return true
+                    }
+                    // Case 2
+                    if (!selectedCodes.contains(code) && item.state is PromoItemState.Selected) {
+                        return true
+                    }
                 }
-                // Case 1
-                if (initialPreSelectedPromoCodes.contains(code)
-                    && item.state !is PromoItemState.Selected
-                ) {
-                    return true
-                }
-                // Case 2
-                if (!initialPreSelectedPromoCodes.contains(code)
-                    && item.state is PromoItemState.Selected
-                ) {
-                    return true
-                }
-            }
         }
         return false
     }
