@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -28,6 +29,7 @@ import com.tokopedia.stories.view.utils.STORY_GROUP_ID
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
+import com.tokopedia.stories.view.utils.loadImage
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -169,8 +171,15 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
         when (currContent.content.type) {
             IMAGE -> {
                 binding.layoutStoriesContent.ivStoriesDetailContent.apply {
-                    setImageUrl(currContent.content.data)
-                    onUrlLoaded = { contentIsLoaded() }
+                    loadImage(
+                        currContent.content.data,
+                        listener = object : ImageLoaderStateListener {
+                            override fun successLoad() {
+                                contentIsLoaded()
+                            }
+
+                            override fun failedLoad() {}
+                        })
                 }
             }
             VIDEO -> {
