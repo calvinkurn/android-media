@@ -579,6 +579,11 @@ class CheckoutViewModel @Inject constructor(
                     if (checkoutItem is CheckoutEpharmacyModel && checkoutItem.epharmacy.showImageUpload && checkoutItem.epharmacy.consultationFlow) {
                         fetchEpharmacyData()
                     }
+                    if (checkoutItem is CheckoutPromoModel) {
+                        if (listData.value.any { it is CheckoutOrderModel && it.shipment.courierItemData != null }) {
+                            validatePromo()
+                        }
+                    }
                 }
             }
         }
