@@ -2,7 +2,10 @@ package com.tokopedia.devicefingerprint.header
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaDrm
+import android.os.Build
 import android.text.TextUtils
+import android.util.Base64
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceConnectionInfo.getCarrierName
@@ -26,11 +29,16 @@ import com.tokopedia.device.info.DevicePerformanceInfo.getDeviceDpi
 import com.tokopedia.device.info.DevicePerformanceInfo.getDeviceMemoryClassCapacity
 import com.tokopedia.device.info.DeviceScreenInfo.getScreenResolution
 import com.tokopedia.device.info.DeviceScreenInfo.isTablet
+import com.tokopedia.device.info.model.AdditionalInfoModel
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.header.model.FingerPrint
+import com.tokopedia.devicefingerprint.header.model.FingerPrintNew
 import com.tokopedia.devicefingerprint.location.LocationCache
 import com.tokopedia.encryption.security.toBase64
 import com.tokopedia.network.data.model.FingerprintModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -77,9 +85,15 @@ object FingerprintModelGenerator {
         val now = (System.currentTimeMillis() / 1000)
         if (fingerprintCache.isEmpty() || isFingerprintExpired(context, now) ||
             adsIdAlreadyRetrieved(context)) {
-            val fp = generateFingerprintData(context)
-            fingerprintHasAdsId = fp.hasUniqueId()
-            fingerprintCache = Gson().toJson(fp)
+            if (FirebaseRemoteConfigImpl(context).getBoolean(ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA, true)) {
+                val fp = generateNewFingerprintData(context)
+                fingerprintHasAdsId = fp.hasUniqueId()
+                fingerprintCache = Gson().toJson(fp)
+            } else {
+                val fp = generateFingerprintData(context)
+                fingerprintHasAdsId = fp.hasUniqueId()
+                fingerprintCache = Gson().toJson(fp)
+            }
             getFingerprintSharedPref(context).edit().putString(FINGERPRINT_USE_CASE, fingerprintCache)
                 .putLong(FINGERPRINT_TS, now).apply()
             fingerprintLastTs = now
@@ -159,6 +173,85 @@ object FingerprintModelGenerator {
                 uuid = uuid,
                 inval = VisorFingerprintInstance.getDVToken(context),
                 installer = context.packageManager.getInstallerPackageName(context.packageName)?: "")
+        return fp
+    }
+
+    private fun generateNewFingerprintData(context: Context): FingerPrintNew {
+        val deviceName = getModelName()
+        val deviceFabrik = getManufacturerName()
+        val deviceOS = getOSName()
+        val deviceSystem = "android"
+        val isRooted = isRooted()
+        val timezone = getTimeZoneOffset()
+        val userAgent = getHttpAgent()
+        val isEmulator = isEmulated()
+        val isTablet = isTablet(context)
+        val screenReso = getScreenResolution(context)
+        val deviceLanguage = getLanguage()
+        val ssid = getSSID(context)
+        val carrier = getCarrierName(context)
+        val androidId = getAndroidId(context)
+        val imei = getImei(context)
+        val isx86 = isx86()
+        val packageName = getPackageName(context)
+        val uuid = getUUID(context)
+        val isNakama = isNakama(getUserSession(context))
+        val deviceAvailableProcessor = getAvailableProcessor(context.applicationContext)
+        val deviceMemoryClass = getDeviceMemoryClassCapacity(context.applicationContext)
+        val deviceDpi = getDeviceDpi(context.applicationContext)
+        val deviceTime = System.currentTimeMillis().toString()
+        val brand = Build.BRAND
+        val product = Build.PRODUCT
+        val board = Build.BOARD
+        val cpuAbi = Build.CPU_ABI
+        val device = Build.DEVICE
+        val versionName = GlobalConfig.VERSION_NAME
+        val advertisingId = DeviceInfo.getAdsId(context)
+        val widevineMediaDrm = MediaDrm(UUID(
+            AdditionalInfoModel.MOST_SIG_BITS,
+            AdditionalInfoModel.LEAST_SIG_BITS
+        ))
+        val wideVineId = widevineMediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
+        val wideVineIdBase64 = Base64.encodeToString(wideVineId, Base64.DEFAULT).trim()
+        val fp = FingerPrintNew(
+            unique_id = DeviceInfo.getAdsId(context),
+            device_name = deviceName,
+            user_dname = DeviceInfo.getUserDeviceName(context),
+            device_manufacturer = deviceFabrik,
+            device_model = deviceName,
+            device_system = deviceSystem,
+            current_os = deviceOS,
+            is_jailbroken_rooted = isRooted,
+            timezone = timezone,
+            user_agent = userAgent,
+            is_emulator = isEmulator,
+            is_tablet = isTablet,
+            screen_resolution = screenReso,
+            language = deviceLanguage,
+            ssid = ssid,
+            carrier = carrier,
+            location_latitude = LocationCache.getLatitudeCache(context),
+            location_longitude = LocationCache.getLongitudeCache(context),
+            androidId = androidId,
+            isx86 = isx86,
+            packageName = packageName,
+            is_nakama = isNakama.toString().toUpperCase(Locale.ROOT),
+            availableProcessor = deviceAvailableProcessor,
+            deviceMemoryClassCapacity = deviceMemoryClass,
+            deviceDpi = deviceDpi,
+            pid = imei,
+            uuid = uuid,
+            inval = VisorFingerprintInstance.getDVToken(context),
+            time = deviceTime,
+            brand = brand,
+            product = product,
+            board = board,
+            cpuAbi = cpuAbi,
+            device = device,
+            versionName = versionName,
+            advertisingId = advertisingId,
+            wideVineId = wideVineIdBase64,
+            installer = context.packageManager.getInstallerPackageName(context.packageName)?: "")
         return fp
     }
 

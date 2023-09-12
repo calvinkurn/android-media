@@ -22,8 +22,8 @@ data class AdditionalInfoModel(
 ) {
 
     companion object {
-        private const val MOST_SIG_BITS = -0x121074568629b532L
-        private const val LEAST_SIG_BITS = -0x5c37d8232ae2de13L
+        const val MOST_SIG_BITS = -0x121074568629b532L
+        const val LEAST_SIG_BITS = -0x5c37d8232ae2de13L
         private const val ANDROID = "android"
 
         fun generate(context: Context): AdditionalInfoModel {
