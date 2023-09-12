@@ -24,6 +24,7 @@
             app:icon_name="FIRE" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@id/chevron"

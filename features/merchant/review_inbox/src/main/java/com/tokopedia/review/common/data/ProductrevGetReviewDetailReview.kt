@@ -25,6 +25,9 @@ data class ProductrevGetReviewDetailReview(
         @SerializedName("editable")
         @Expose
         val editable: Boolean = false,
+        @SerializedName("isRatingEditable")
+        @Expose
+        val isRatingEditable: Boolean = false,
         @SerializedName("sentAsAnonymous")
         @Expose
         val sentAsAnonymous: Boolean = false,

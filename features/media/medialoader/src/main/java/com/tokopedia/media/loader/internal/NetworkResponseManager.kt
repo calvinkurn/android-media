@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.media.loader.data.Header
 import com.tokopedia.media.loader.data.toModel
+import com.tokopedia.media.loader.isValid
 import okhttp3.Headers
 
 class NetworkResponseManager constructor(
@@ -27,6 +28,8 @@ class NetworkResponseManager constructor(
     }
 
     fun header(url: String): List<Header> {
+        if (context.isValid().not()) return emptyList()
+
         val header = getString(url, "")
         if (header.isEmpty()) return emptyList()
 

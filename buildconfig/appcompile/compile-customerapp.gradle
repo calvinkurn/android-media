@@ -219,7 +219,6 @@ includeIfEnabled("features:promo:mvc_widget")
 includeIfEnabled("features:promo:quest_widget")
 includeIfEnabled("features:promo:tokomember")
 
-includeIfEnabled("features:top_ads:top_ads_headline_usecase")
 includeIfEnabled("features:top_ads:top_ads_detail_sheet")
 includeIfEnabled("features:top_ads:top_ads_dashboard")
 includeIfEnabled("features:top_ads:top_ads_management_common")

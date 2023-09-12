@@ -61,6 +61,8 @@ object UniversalInboxValueUtil {
     const val CHATBOT_TYPE = 1
     const val GOJEK_TYPE = 101
 
+    const val GOJEK_REPLACE_TEXT = "{order_counter}"
+
     /**
      * Static Menu
      */
