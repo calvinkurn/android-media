@@ -3,7 +3,6 @@ package com.tokopedia.creation.common.presentation.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +18,7 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.usecase.coroutines.Result
@@ -51,13 +51,14 @@ fun ContentCreationComponent(
 @Composable
 private fun ContentCreationLoadingView() {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         NestLoader(
-            variant = NestLoaderType.Decorative(isWhite = false),
-            modifier = Modifier.height(48.dp)
+            variant = NestLoaderType.Decorative(isWhite = false, size = NestLoaderSize.Large)
         )
     }
 }
@@ -88,6 +89,7 @@ private fun ContentCreationSuccessView(
         NestButton(
             text = stringResource(creationcommonR.string.content_creation_bottom_sheet_next_label),
             onClick = onNextClicked,
+            isEnabled = selectedItem != null,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -112,7 +114,7 @@ private fun ContentCreationComponentPreview() {
                             type = "image",
                             id = "",
                             coverUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
-                            mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
+                            mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png"
                         ),
                         descriptionApplink = "tokopedia://any",
                         drawableIconId = IconUnify.VIDEO,
@@ -127,12 +129,12 @@ private fun ContentCreationComponentPreview() {
                             type = "image",
                             id = "",
                             coverUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
-                            mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
+                            mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png"
                         ),
                         descriptionApplink = "tokopedia://any",
                         drawableIconId = IconUnify.VIDEO,
                         authorType = ContentCreationAuthorEnum.USER
-                    ),
+                    )
                 )
             )
         ),
@@ -146,12 +148,12 @@ private fun ContentCreationComponentPreview() {
                 type = "image",
                 id = "",
                 coverUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
-                mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
+                mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png"
             ),
             descriptionApplink = "tokopedia://any",
             drawableIconId = IconUnify.VIDEO,
             authorType = ContentCreationAuthorEnum.SHOP
         ),
-        onSelectItem = {},
+        onSelectItem = {}
     ) {}
 }
