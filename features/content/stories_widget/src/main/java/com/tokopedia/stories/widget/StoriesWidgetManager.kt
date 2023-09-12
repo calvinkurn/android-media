@@ -2,6 +2,7 @@ package com.tokopedia.stories.widget
 
 import android.content.Context
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.tracking.DefaultTrackingManager
 import com.tokopedia.stories.widget.tracking.TrackingManager
 import kotlinx.coroutines.Job
@@ -92,6 +94,7 @@ class StoriesWidgetManager private constructor(
 
                 launch {
                     viewModel.stories.collectLatest {
+                        Log.d("StoriesWidgetMan", "OnStarted")
                         viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
                     }
                 }
@@ -103,7 +106,7 @@ class StoriesWidgetManager private constructor(
                         when (message) {
                             is StoriesWidgetMessage.ShowCoachMark -> {
                                 mShopIdCoachMarked = message.shopId
-                                showCoachMarkOnId(message.shopId)
+                                showCoachMarkOnId(message.shopId, message.text)
                             }
                         }
 
@@ -162,20 +165,17 @@ class StoriesWidgetManager private constructor(
             .build()
     }
 
-    private fun showCoachMarkOnId(shopId: String) {
+    private fun showCoachMarkOnId(shopId: String, text: String) {
         getViewByShopId(shopId)
-            ?.let(::showCoachMarkOnView)
+            ?.let { showCoachMarkOnView(it, text) }
     }
 
-    private fun showCoachMarkOnView(view: StoriesWidgetLayout) {
-        if (!options.showCoachMarkIfApplicable) return
+    private fun showCoachMarkOnView(view: StoriesWidgetLayout, text: String) {
+        if (!options.showCoachMarkIfApplicable || text.isBlank()) return
         if (showCoachMarkJob?.isActive == true) return
         showCoachMarkJob = lifecycleOwner.lifecycleScope.launch {
             delay(1000)
-            coachMark.show(
-                view,
-                "Ada update menarik dari toko ini"
-            )
+            coachMark.show(view, text)
         }
     }
 
@@ -188,6 +188,7 @@ class StoriesWidgetManager private constructor(
             val shopId = mShopIdCoachMarked ?: return@addOnScrollChangedListener
             val storiesLayout = getViewByShopId(shopId) ?: return@addOnScrollChangedListener
             if (storiesLayout.getLocalVisibleRect(scrollBounds)) {
+                Log.d("StoriesWidgetMan", "OnScrolled")
                 requestShowCoachMark()
             } else {
                 hideCoachMark()
@@ -203,6 +204,7 @@ class StoriesWidgetManager private constructor(
         setListener(storiesViewListener)
 
         if (shopId == mShopIdCoachMarked) requestShowCoachMark()
+        Log.d("StoriesWidgetMan", "OnAttached")
     }
 
     private fun StoriesWidgetLayout.onDetached() {

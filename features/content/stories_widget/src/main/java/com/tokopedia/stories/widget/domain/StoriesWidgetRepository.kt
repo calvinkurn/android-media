@@ -1,8 +1,5 @@
 package com.tokopedia.stories.widget.domain
 
-import com.tokopedia.stories.widget.StoriesWidgetState
-import com.tokopedia.stories.widget.TimeMillis
-
 /**
  * Created by kenny.hadisaputra on 27/07/23
  */
@@ -17,5 +14,5 @@ interface StoriesWidgetRepository {
     suspend fun getStoriesWidgetState(
         entryPoint: StoriesEntryPoint,
         shopIds: List<String>
-    ): List<StoriesWidgetState>
+    ): StoriesWidgetInfo
 }

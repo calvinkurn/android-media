@@ -3,13 +3,15 @@ package com.tokopedia.stories.widget
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
+import com.tokopedia.stories.widget.domain.StoriesWidgetState
+import com.tokopedia.stories.widget.domain.TimeMillis
 
 /**
  * Created by kenny.hadisaputra on 24/08/23
  */
 class StoriesWidgetFakeRepository(
     private val forbiddenEntryPoints: List<StoriesEntryPoint> = emptyList(),
-    initialHasSeenCoachMark: Boolean = false,
+    initialHasSeenCoachMark: Boolean = false
 ) : StoriesWidgetRepository {
 
     private var mHasSeenCoachMark = initialHasSeenCoachMark

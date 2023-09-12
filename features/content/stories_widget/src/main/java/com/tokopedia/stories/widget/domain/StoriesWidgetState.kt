@@ -1,4 +1,6 @@
-package com.tokopedia.stories.widget
+package com.tokopedia.stories.widget.domain
+
+import com.tokopedia.stories.widget.StoriesStatus
 
 /**
  * Created by kenny.hadisaputra on 25/07/23

@@ -9,11 +9,12 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.SELLERAPP_DISABLED_STORIES_ENT
 import com.tokopedia.stories.internal.StoriesPreferenceUtil
 import com.tokopedia.stories.internal.storage.StoriesSeenStorage
 import com.tokopedia.stories.widget.StoriesStatus
-import com.tokopedia.stories.widget.StoriesWidgetState
-import com.tokopedia.stories.widget.TimeMillis
 import com.tokopedia.stories.widget.domain.GetShopStoriesStatusUseCase
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
+import com.tokopedia.stories.widget.domain.StoriesWidgetState
+import com.tokopedia.stories.widget.domain.TimeMillis
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -50,9 +51,9 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
     override suspend fun getStoriesWidgetState(
         entryPoint: StoriesEntryPoint,
         shopIds: List<String>
-    ): List<StoriesWidgetState> = withContext(dispatchers.io) {
+    ): StoriesWidgetInfo = withContext(dispatchers.io) {
         val isEntryPointAllowed = isEntryPointAllowed(entryPoint)
-        if (!isEntryPointAllowed) return@withContext emptyList()
+        if (!isEntryPointAllowed) return@withContext StoriesWidgetInfo.Default
 
         delay(1000)
         val result = shopIds.map { shopId ->
@@ -91,7 +92,10 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
             )
         }
 
-        return@withContext result
+        return@withContext StoriesWidgetInfo(
+            result,
+            "Test CoachMark"
+        )
     }
 
     private fun getStoriesStatus(anyStoryExists: Boolean, hasUnseenStories: Boolean): StoriesStatus {

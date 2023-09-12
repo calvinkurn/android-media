@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
+import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -36,6 +37,8 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
     private val uiMessageManager = UiEventManager<StoriesWidgetMessage>()
     val uiMessage: Flow<StoriesWidgetMessage?> get() = uiMessageManager.event
 
+    private var mCoachMarkText = ""
+
     init {}
 
     fun onIntent(intent: StoriesWidgetIntent) {
@@ -61,8 +64,10 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
         if (shopIds.isEmpty()) return
 
         viewModelScope.launch {
-            val storiesState = repository.getStoriesWidgetState(entryPoint, shopIds)
-            val storiesStateMap = storiesState.associateBy { it.shopId }
+            val storiesInfo = repository.getStoriesWidgetState(entryPoint, shopIds)
+            mCoachMarkText = storiesInfo.coachMarkText
+
+            val storiesStateMap = storiesInfo.widgetStates.associateBy { it.shopId }
             _storiesMap.update { it + storiesStateMap }
         }
     }
@@ -94,7 +99,7 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
 
             runCatching {
                 _storiesMap.value.firstNotNullOf {
-                    if (it.value.status == StoriesStatus.HasUnseenStories) {
+                    if (it.value.status != StoriesStatus.NoStories) {
                         it.key
                     } else {
                         null
@@ -111,6 +116,6 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
     }
 
     private suspend fun showCoachMark(shopId: String) {
-        uiMessageManager.emitEvent(StoriesWidgetMessage.ShowCoachMark(shopId))
+        uiMessageManager.emitEvent(StoriesWidgetMessage.ShowCoachMark(shopId, mCoachMarkText))
     }
 }

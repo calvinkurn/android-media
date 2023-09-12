@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.children
 import com.tokopedia.stories.widget.databinding.LayoutStoriesBorderBinding
+import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import kotlin.properties.Delegates
 
 /**

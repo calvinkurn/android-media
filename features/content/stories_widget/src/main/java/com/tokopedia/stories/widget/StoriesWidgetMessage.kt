@@ -10,5 +10,5 @@ sealed class StoriesWidgetMessage : UiEvent {
 
     override val id: Long = UUID.randomUUID().mostSignificantBits
 
-    data class ShowCoachMark(val shopId: String) : StoriesWidgetMessage()
+    data class ShowCoachMark(val shopId: String, val text: String) : StoriesWidgetMessage()
 }
