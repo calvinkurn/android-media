@@ -13,13 +13,22 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBanne
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 
-class UniversalInboxDiffUtilItemCallBack :
-    DiffUtil.ItemCallback<Visitable<UniversalInboxTypeFactory>>() {
+class UniversalInboxDiffUtilCallBack(
+    private val oldList: List<Visitable<in UniversalInboxTypeFactory>>,
+    private val newList: List<Visitable<in UniversalInboxTypeFactory>>
+): DiffUtil.Callback() {
 
-    override fun areItemsTheSame(
-        oldItem: Visitable<UniversalInboxTypeFactory>,
-        newItem: Visitable<UniversalInboxTypeFactory>
-    ): Boolean {
+    override fun getOldListSize(): Int {
+        return oldList.size
+    }
+
+    override fun getNewListSize(): Int {
+        return newList.size
+    }
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val newItem = newList[newItemPosition]
+        val oldItem = oldList[oldItemPosition]
         return when {
             // Menu items name are the same
             (newItem is UniversalInboxMenuUiModel && oldItem is UniversalInboxMenuUiModel) ->
@@ -76,10 +85,9 @@ class UniversalInboxDiffUtilItemCallBack :
         }
     }
 
-    override fun areContentsTheSame(
-        oldItem: Visitable<UniversalInboxTypeFactory>,
-        newItem: Visitable<UniversalInboxTypeFactory>
-    ): Boolean {
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val newItem = newList[newItemPosition]
+        val oldItem = oldList[oldItemPosition]
         return when {
             // Menu items contents are the same
             (newItem is UniversalInboxMenuUiModel && oldItem is UniversalInboxMenuUiModel) ->

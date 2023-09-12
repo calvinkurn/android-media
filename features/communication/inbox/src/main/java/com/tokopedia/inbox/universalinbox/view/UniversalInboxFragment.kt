@@ -41,7 +41,6 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.shouldRef
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
-import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxDiffUtilItemCallBack
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactoryImpl
@@ -114,8 +113,7 @@ class UniversalInboxFragment @Inject constructor(
                 this,
                 this,
                 this
-            ),
-            UniversalInboxDiffUtilItemCallBack()
+            )
         )
     }
 

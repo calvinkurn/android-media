@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
@@ -26,10 +26,11 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaU
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import timber.log.Timber
 
-class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
-    private val typeFactory: UniversalInboxTypeFactory,
-    diffUtilItemCallback: DiffUtil.ItemCallback<T>
-) : ListAdapter<T, AbstractViewHolder<*>>(diffUtilItemCallback) {
+class UniversalInboxAdapter(
+    private val typeFactory: UniversalInboxTypeFactory
+) : BaseListAdapter<Visitable<in UniversalInboxTypeFactory>, UniversalInboxTypeFactory>(
+    typeFactory
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -49,7 +50,7 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
                 UniversalInboxRecommendationLoaderViewHolder.LAYOUT -> layout.isFullSpan = true
                 UniversalInboxRecommendationTitleViewHolder.LAYOUT -> layout.isFullSpan = true
             }
-            (holder as AbstractViewHolder<Visitable<*>>).bind(getItem(position))
+            (holder as AbstractViewHolder<Visitable<*>>).bind(visitables[position])
         } catch (throwable: Throwable) {
             Timber.e(throwable)
         }
@@ -59,7 +60,7 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
         return if (position < 0 || position >= itemCount) {
             HideViewHolder.LAYOUT
         } else {
-            getItem(position).type(typeFactory)
+            visitables[position].type(typeFactory)
         }
     }
 
@@ -73,10 +74,13 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
     private val loaderUiModel by lazy {
         LoadingMoreModel()
     }
-
-    private fun updateItems(newList: List<T>) {
+    private fun updateItems(newList: List<Visitable<in UniversalInboxTypeFactory>>) {
         try {
-            submitList(newList)
+            val diffResult = DiffUtil.calculateDiff(
+                UniversalInboxDiffUtilCallBack(visitables, newList)
+            )
+            visitables = newList
+            diffResult.dispatchUpdatesTo(this)
         } catch (throwable: Throwable) {
             Timber.e(throwable)
         }
@@ -87,7 +91,7 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
             recommendationFirstPosition
         } else {
             // get first index or -1
-            currentList.indexOfFirst {
+            visitables.indexOfFirst {
                 it is UniversalInboxRecommendationUiModel
             }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
                 recommendationFirstPosition = it
@@ -97,22 +101,22 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
 
     private fun checkCachedRecommendationFirstPosition(): Boolean {
         return recommendationFirstPosition?.let {
-            it < currentList.size && currentList[it] is UniversalInboxRecommendationUiModel
+            it < visitables.size && visitables[it] is UniversalInboxRecommendationUiModel
         } ?: false
     }
 
     private fun isRecommendationLoader(position: Int): Boolean {
-        return currentList[position]::class == LoadingMoreModel::class
+        return visitables[position]::class == LoadingMoreModel::class
     }
 
     private fun getFirstLoadingPosition(): Int? {
-        return if (currentList.isEmpty()) {
+        return if (visitables.isEmpty()) {
             null
-        } else if (isRecommendationLoader(currentList.lastIndex)) {
-            currentList.lastIndex
+        } else if (isRecommendationLoader(visitables.lastIndex)) {
+            visitables.lastIndex
         } else {
             // get first index or -1
-            currentList.indexOfFirst {
+            visitables.indexOfFirst {
                 it is LoadingMoreModel
             }.takeIf { it >= 0 } // get result when it not -1 (found)
         }
@@ -128,7 +132,7 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
             recommendationTitlePosition
         } else {
             // get first index or -1
-            currentList.indexOfFirst {
+            visitables.indexOfFirst {
                 it is UniversalInboxRecommendationTitleUiModel
             }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
                 recommendationTitlePosition = it
@@ -138,13 +142,13 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
 
     private fun checkCachedRecommendationTitlePosition(): Boolean {
         return recommendationTitlePosition?.let {
-            it < currentList.size && currentList[it] is UniversalInboxRecommendationTitleUiModel
+            it < visitables.size && visitables[it] is UniversalInboxRecommendationTitleUiModel
         } ?: false
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateFirstTopAdsBanner(listAds: List<TopAdsImageViewModel>) {
-        currentList.forEach loop@{ item ->
+        visitables.forEach loop@{ item ->
             if (item is UniversalInboxTopAdsBannerUiModel) {
                 item.ads = listAds
                 return@loop
@@ -156,14 +160,14 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
     }
 
     private fun isWidgetMetaAdded(): Boolean {
-        return currentList.firstOrNull() is UniversalInboxWidgetMetaUiModel
+        return visitables.firstOrNull() is UniversalInboxWidgetMetaUiModel
     }
 
     fun getWidgetPosition(widgetType: Int): Int {
         var position = -1
         try {
             if (isWidgetMetaAdded()) {
-                val widgetMetaUiModel = currentList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+                val widgetMetaUiModel = visitables.firstOrNull() as? UniversalInboxWidgetMetaUiModel
                 widgetMetaUiModel?.widgetList?.forEachIndexed { index, uiModel ->
                     if (uiModel.type == widgetType) {
                         position = index
@@ -178,7 +182,7 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
 
     fun tryUpdateMenuItemsAtPosition(newList: List<Visitable<in UniversalInboxTypeFactory>>) {
         try {
-            val editedList = currentList.toMutableList()
+            val editedList = visitables.toMutableList()
             val fromIndex = if (isWidgetMetaAdded()) 1 else 0
             editedList.subList(
                 fromIndex = fromIndex,
@@ -186,7 +190,7 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
                 toIndex = getPositionBeforeProductRecommendation() ?: itemCount
             ).apply {
                 clear()
-                addAll(newList as List<T>) // replace the sublist
+                addAll(newList) // replace the sublist
             }
             updateItems(editedList)
         } catch (throwable: Throwable) {
@@ -205,10 +209,10 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
         newList: List<Visitable<in UniversalInboxTypeFactory>>
     ) {
         try {
-            val editedList = currentList.toMutableList()
+            val editedList = visitables.toMutableList()
             if (getRecommendationTitlePosition() == null && title.isNotBlank()) {
                 editedList.add(
-                    UniversalInboxRecommendationTitleUiModel(title) as T
+                    UniversalInboxRecommendationTitleUiModel(title)
                 )
             }
             val productRecommendationFirstPosition = getProductRecommendationFirstPosition()
@@ -218,12 +222,12 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
                     toIndex = itemCount
                 ).apply {
                     clear()
-                    addAll(newList as List<T>) // replace the sublist
+                    addAll(newList) // replace the sublist
                 }
             } else {
-                editedList.addAll(newList as List<T>)
+                editedList.addAll(newList)
             }
-            editedList.remove(loaderUiModel as T) // Remove loader if any
+            editedList.remove(loaderUiModel) // Remove loader if any
             updateItems(editedList)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
@@ -232,13 +236,13 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
 
     fun tryUpdateWidgetMeta(item: UniversalInboxWidgetMetaUiModel) {
         try {
-            val widgetMetaUiModel = currentList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+            val widgetMetaUiModel = visitables.firstOrNull() as? UniversalInboxWidgetMetaUiModel
             if (widgetMetaUiModel == null) {
                 tryAddItemAtPosition(0, item)
             } else {
                 // Replace item in the list
-                val editedList = currentList.toMutableList()
-                editedList[0] = item as T
+                val editedList = visitables.toMutableList()
+                editedList[0] = item
                 updateItems(editedList)
             }
         } catch (throwable: Throwable) {
@@ -249,8 +253,8 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
     private fun tryAddItemAtPosition(position: Int, item: Visitable<in UniversalInboxTypeFactory>) {
         try {
             // Add to the list
-            val editedList = currentList.toMutableList()
-            editedList.add(position, item as T)
+            val editedList = visitables.toMutableList()
+            editedList.add(position, item)
             updateItems(editedList)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
@@ -259,8 +263,8 @@ class UniversalInboxAdapter<T : Visitable<in UniversalInboxTypeFactory>>(
 
     fun tryRemoveItemAtPosition(position: Int) {
         try {
-            if (currentList.isEmpty()) return
-            val editedList = currentList.toMutableList()
+            if (visitables.isEmpty()) return
+            val editedList = visitables.toMutableList()
             editedList.removeAt(position)
             updateItems(editedList)
         } catch (throwable: Throwable) {
