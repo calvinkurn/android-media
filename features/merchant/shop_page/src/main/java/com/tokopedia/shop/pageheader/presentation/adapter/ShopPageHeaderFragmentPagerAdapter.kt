@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabIconUrlModel
@@ -37,6 +38,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     private val ctxRef = WeakReference(ctx)
     private var isOverrideTheme: Boolean = false
     private var patternColorType: String = ""
+    private var colorSchema: ShopPageColorSchema = ShopPageColorSchema()
 
     companion object {
         @ColorRes
@@ -103,12 +105,17 @@ internal class ShopPageHeaderFragmentPagerAdapter(
         ctx?.let {
             textTabName.apply {
                 show()
-                //TODO need to check colorSchema for this one
-//                if (active) {
-//                    setTextColor(ContextCompat.getColor(it, ICON_COLOR_LIGHT_ENABLE))
-//                } else {
-//                    setTextColor(ContextCompat.getColor(it, ICON_COLOR_LIGHT))
-//                }
+                if (active) {
+                    val linkColor = colorSchema.getColorIntValue(
+                        ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR
+                    )
+                    setTextColor(linkColor)
+                } else {
+                    val highEmphasizeColor = colorSchema.getColorIntValue(
+                        ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+                    )
+                    setTextColor(highEmphasizeColor)
+                }
                 text = listShopPageTabModel.getOrNull(position)?.tabText.orEmpty()
             }
         }
@@ -293,8 +300,13 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 
     }
 
-    fun setPageTheme(isOverrideTheme: Boolean, patternColorType: String) {
+    fun setPageTheme(
+        isOverrideTheme: Boolean,
+        patternColorType: String,
+        colorSchema: ShopPageColorSchema
+    ) {
         this.isOverrideTheme = isOverrideTheme
         this.patternColorType = patternColorType
+        this.colorSchema = colorSchema
     }
 }

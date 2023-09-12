@@ -1687,7 +1687,8 @@ class ShopPageHeaderFragmentV2 :
         listShopPageTabModel = (setupTabContentWrapper() as? List<ShopPageHeaderTabModel>) ?: listOf()
         viewPagerAdapterHeader?.setPageTheme(
             shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme.orFalse(),
-            getShopNavBarConfig()?.patternColorType.orEmpty()
+            getShopNavBarConfig()?.patternColorType.orEmpty(),
+            getShopNavBarConfig()?.colorSchema ?: ShopPageColorSchema()
         )
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         selectedPosition = getSelectedDynamicTabPosition()
