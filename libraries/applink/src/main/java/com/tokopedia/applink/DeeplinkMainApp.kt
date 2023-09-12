@@ -17,6 +17,7 @@ import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed
 import com.tokopedia.applink.find.DeepLinkMapperFind
+import com.tokopedia.applink.find.DeepLinkMapperFind.navigateToAppNotifSettings
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -247,6 +248,9 @@ object DeeplinkMainApp {
                 DeeplinkMapperDeals.getRegisteredNavigationDeals(context, deeplink)
             }
         ),
+        "device-notification-settings" to mutableListOf(
+            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) }
+        ),
         "digital" to mutableListOf(
             DLP.startsWith("order") { context: Context, deeplink: String ->
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
@@ -284,6 +288,9 @@ object DeeplinkMainApp {
             }
         ),
         "feed" to mutableListOf(
+            DLP.matchPattern("browse") { _: Context, deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            },
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperContent.getNavContentFromAppLink(deeplink)
             }
@@ -1271,6 +1278,11 @@ object DeeplinkMainApp {
         ),
         "webview" to mutableListOf(
             DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BASE }
+        ),
+        "webview-kyc" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            }
         ),
         "webviewbackhome" to mutableListOf(
             DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME }

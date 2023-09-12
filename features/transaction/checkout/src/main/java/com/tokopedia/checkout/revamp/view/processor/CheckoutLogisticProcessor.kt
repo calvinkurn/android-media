@@ -1,24 +1,19 @@
 package com.tokopedia.checkout.revamp.view.processor
 
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.view.CheckoutLogger
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.domain.param.EditAddressParam
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticCommon.data.request.EditPinpointParam
+import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -36,47 +31,23 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesCoroutineUseCase
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.user.session.UserSessionInterface
-import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 class CheckoutLogisticProcessor @Inject constructor(
-    private val eligibleForAddressUseCase: Lazy<EligibleForAddressUseCase>,
-    private val editAddressUseCase: EditAddressUseCase,
+    private val updatePinpointUseCase: UpdatePinpointUseCase,
     private val ratesUseCase: GetRatesCoroutineUseCase,
     private val ratesApiUseCase: GetRatesApiCoroutineUseCase,
     private val ratesWithScheduleUseCase: GetRatesWithScheduleDeliveryCoroutineUseCase,
     private val ratesResponseStateConverter: RatesResponseStateConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
-    private val userSessionInterface: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) {
 
     var isBoUnstackEnabled = false
-
-    fun checkIsUserEligibleForRevampAna(
-        cartShipmentAddressFormData: CartShipmentAddressFormData,
-        callback: (CheckoutPageState) -> Unit
-    ) {
-        eligibleForAddressUseCase.get()
-            .eligibleForAddressFeature({ response: KeroAddrIsEligibleForAddressFeatureData ->
-                callback(
-                    CheckoutPageState.NoAddress(
-                        cartShipmentAddressFormData,
-                        response.eligibleForRevampAna.eligible
-                    )
-                )
-            }, { throwable: Throwable ->
-                callback(CheckoutPageState.Error(throwable))
-            }, AddressConstant.ANA_REVAMP_FEATURE_ID)
-    }
 
     suspend fun editAddressPinpoint(
         latitude: String,
@@ -86,71 +57,46 @@ class CheckoutLogisticProcessor @Inject constructor(
         return withContext(dispatchers.io) {
             return@withContext try {
                 val requestParams =
-                    generateEditAddressRequestParams(latitude, longitude, recipientAddressModel)
-                val stringResponse =
-                    editAddressUseCase.createObservable(requestParams).toBlocking().single()
-                var response: JsonObject? = null
-                var messageError = ""
-                var statusSuccess: Boolean
-                try {
-                    response = JsonParser().parse(stringResponse).asJsonObject
-                    val statusCode =
-                        response.asJsonObject.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)[EditAddressUseCase.RESPONSE_IS_SUCCESS].asInt
-                    statusSuccess = statusCode == 1
-                    if (!statusSuccess) {
-                        messageError =
-                            response.getAsJsonArray("message_error")[0].asString
-                    }
-                } catch (e: Exception) {
-                    Timber.d(e)
-                    statusSuccess = false
-                }
-                if (response != null && statusSuccess) {
+                    generateUpdatePinpointParam(latitude, longitude, recipientAddressModel)
+                val response = updatePinpointUseCase(requestParams)
+                val statusSuccess = response.keroEditAddress.data.isSuccess == 1
+                if (statusSuccess) {
                     recipientAddressModel.latitude = latitude
                     recipientAddressModel.longitude = longitude
                     EditAddressResult(isSuccess = true)
                 } else {
                     EditAddressResult(
                         isSuccess = false,
-                        errorMessage = messageError.ifEmpty { "Terjadi kesalahan. Ulangi beberapa saat lagi" }
+                        errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
                     )
                 }
             } catch (t: Throwable) {
-                val exception = getActualThrowableForRx(t)
-                Timber.d(exception)
-                EditAddressResult(isSuccess = false, throwable = exception)
+                Timber.d(t)
+                EditAddressResult(isSuccess = false, throwable = t)
             }
         }
     }
 
-    private fun generateEditAddressRequestParams(
+    private fun generateUpdatePinpointParam(
         addressLatitude: String,
         addressLongitude: String,
         recipientAddressModel: RecipientAddressModel
-    ): RequestParams {
-        val params: MutableMap<String, String> = AuthHelper.generateParamsNetwork(
-            userSessionInterface.userId,
-            userSessionInterface.deviceId,
-            TKPDMapParam()
+    ): UpdatePinpointParam {
+        val params = EditPinpointParam(
+            addressId = recipientAddressModel.id.toLongOrZero(),
+            addressName = recipientAddressModel.addressName,
+            address1 = recipientAddressModel.street,
+            postalCode = recipientAddressModel.postalCode,
+            district = recipientAddressModel.destinationDistrictId,
+            city = recipientAddressModel.cityId,
+            province = recipientAddressModel.provinceId,
+            address2 = "$addressLatitude, $addressLongitude",
+            receiverName = recipientAddressModel.recipientName,
+            phone = recipientAddressModel.recipientPhoneNumber
         )
-        params[EditAddressParam.ADDRESS_ID] = recipientAddressModel.id
-        params[EditAddressParam.ADDRESS_NAME] = recipientAddressModel.addressName
-        params[EditAddressParam.ADDRESS_STREET] =
-            recipientAddressModel.street
-        params[EditAddressParam.POSTAL_CODE] = recipientAddressModel.postalCode
-        params[EditAddressParam.DISTRICT_ID] = recipientAddressModel.destinationDistrictId
-        params[EditAddressParam.CITY_ID] = recipientAddressModel.cityId
-        params[EditAddressParam.PROVINCE_ID] = recipientAddressModel.provinceId
-        params[EditAddressParam.LATITUDE] = addressLatitude
-        params[EditAddressParam.LONGITUDE] = addressLongitude
-        params[EditAddressParam.RECEIVER_NAME] = recipientAddressModel.recipientName
-        params[EditAddressParam.RECEIVER_PHONE] = recipientAddressModel.recipientPhoneNumber
-        val requestParams = RequestParams.create()
-        requestParams.putAllString(params)
-        return requestParams
-    }
 
-    private fun getActualThrowableForRx(t: Throwable) = t.cause?.cause ?: t.cause ?: t
+        return UpdatePinpointParam(input = params)
+    }
 
     fun getProductForRatesRequest(orderProducts: List<CheckoutProductModel>): ArrayList<Product> {
         val products = arrayListOf<Product>()

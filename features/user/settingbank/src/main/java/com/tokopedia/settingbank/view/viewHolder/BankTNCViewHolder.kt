@@ -3,17 +3,9 @@ package com.tokopedia.settingbank.view.viewHolder
 import android.text.Html
 import android.text.Spanned
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.domain.model.TemplateData
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
-
 
 class BankTNCViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
@@ -43,7 +35,4 @@ class BankTNCViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         }
         return result
     }
-
-
 }
-

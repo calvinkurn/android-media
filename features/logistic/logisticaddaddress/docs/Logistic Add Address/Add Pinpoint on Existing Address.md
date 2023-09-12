@@ -41,85 +41,46 @@ implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 
 ### Instructions
 
-1. When user doesn’t have pinpoint, redirect them to `ApplinkConstInternalMarketplace.GEOLOCATION` by passing `LocationData` object that contains current address **district name** and **city name**.
+1. When user doesn’t have pinpoint, redirect them to `ApplinkConstInternalLogistic.PINPOINT` by passing **EXTRA_IS_GET_PINPOINT_ONLY** to `true`, **district name**, and **city name**.
+
+
+```
+val bundle = Bundle()
+bundle.putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+
+bundle.putString(AddressConstant.EXTRA_CITY_NAME, locationPass?.cityName)
+bundle.putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass?.districtName)
+val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT)
+intent.putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+```
+2. After user succeed adding the pinpoint, Pinpoint page will give the selected latitude and longitude from `SaveAddressDataModel.latitude, SaveAddressDataModel.longitude` 
 
 
 
 ```
-LocationPass existingAddressData = new LocationPass();
-locationPass.setCityName(city);
-locationPass.setDistrictName(district);
-
-Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
-Bundle bundle = new Bundle();
-bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, existingAddressData);
-intent.putExtras(bundle);
-startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+val addressData = data.getParcelableExtra<SaveAddressDataModel>(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL)
 ```
-2. After user succeed adding the pinpoint, GeolocationActivity will give the selected latitude and longitude from `locationPass.getLatitude(), locationPass.getLongitude()` 
-
-
+3. Save the pinpoint data by using `UpdatePinpointUseCase` and provide the whole address data in the parameter
 
 ```
-LocationPass locationPass = data.getExtras().getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION);
-```
-3. Save the pinpoint data by using `EditAddressUseCase` and provide the whole address data in the parameter
+val params = EditPinpointParam(
+    addressId = recipientAddressModel.id.toLongOrZero(),
+    addressName = recipientAddressModel.addressName,
+    address1 = recipientAddressModel.street,
+    postalCode = recipientAddressModel.postalCode,
+    district = recipientAddressModel.destinationDistrictId,
+    city = recipientAddressModel.cityId,
+    province = recipientAddressModel.provinceId,
+    address2 = "$addressLatitude, $addressLongitude",
+    receiverName = recipientAddressModel.recipientName,
+    phone = recipientAddressModel.recipientPhoneNumber
+)
 
-
-
-```
-params.put(EditAddressParam.ADDRESS_ID, addressId);
-params.put(EditAddressParam.ADDRESS_NAME, addressName);
-params.put(EditAddressParam.ADDRESS_STREET, addressStreet);
-params.put(EditAddressParam.POSTAL_CODE, postalCode);
-params.put(EditAddressParam.DISTRICT_ID, districtId);
-params.put(EditAddressParam.CITY_ID, cityId);
-params.put(EditAddressParam.PROVINCE_ID, provinceId);
-params.put(EditAddressParam.LATITUDE, latitude);
-params.put(EditAddressParam.LONGITUDE, longitude);
-params.put(EditAddressParam.RECEIVER_NAME, receiverName);
-params.put(EditAddressParam.RECEIVER_PHONE, receiverPhone);
+val requestParams = UpdatePinpointParam(input = params)
 ```
 
-
-
-```
-editAddressUseCase.createObservable(params)
-.subscribeOn(executorSchedulers.getIo())
-.observeOn(executorSchedulers.getMain())
-.unsubscribeOn(executorSchedulers.getIo())
-.subscribe(new Subscriber<String>() {
-    @Override
-    public void onNext(String stringResponse) {
-        if (getView() != null) {
-            JsonObject response = null;
-            String messageError = null;
-            boolean statusSuccess;
-            try {
-                response = new JsonParser().parse(stringResponse).getAsJsonObject();
-                int statusCode = response.getAsJsonObject().getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
-                        .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).getAsInt();
-                statusSuccess = statusCode == 1;
-                if (!statusSuccess) {
-                    messageError = response.getAsJsonArray("message_error").get(0).getAsString();
-                }
-            } catch (Exception e) {
-                Timber.d(e);
-                statusSuccess = false;
-            }
-
-            if (response != null && statusSuccess) {
-                // do success
-            } else {
-                // do error
-            }
-        }
-    }
-})
-```
 4. Update pinpoint to local choose address data. This step is important to make sure the current chosen address data has the saved pinpoint.
-
-
 
 ```
 fun Context.updateLocalChosenAddressPinpoint(latitude: String, longitude: String) {
@@ -144,8 +105,6 @@ fun Context.updateLocalChosenAddressPinpoint(latitude: String, longitude: String
 }
 ```
 5. Refresh your page with the latest LocalCacheModel data
-
-
 
 ```
 private fun refresh() {

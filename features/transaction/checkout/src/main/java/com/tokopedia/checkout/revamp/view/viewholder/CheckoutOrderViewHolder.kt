@@ -49,16 +49,18 @@ class CheckoutOrderViewHolder(
                 if (addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
                     binding.buttonGiftingAddonOrderLevel.showActive(
                         addOnsButton.title,
-                        addOnsButton.description
+                        addOnsButton.description,
+                        addOnsButton.rightIconUrl
                     )
                 } else {
                     binding.buttonGiftingAddonOrderLevel.showEmptyState(
                         addOnsButton.title,
-                        addOnsButton.description.ifEmpty { "(opsional)" }
+                        addOnsButton.description.ifEmpty { "(opsional)" },
+                        addOnsButton.rightIconUrl
                     )
                 }
             } else if (statusAddOn == 2) {
-                binding.buttonGiftingAddonOrderLevel.showInactive(addOnsButton.title, addOnsButton.description)
+                binding.buttonGiftingAddonOrderLevel.showInactive(addOnsButton.title, addOnsButton.description, addOnsButton.rightIconUrl)
             }
             binding.buttonGiftingAddonOrderLevel.visibility = View.VISIBLE
             binding.buttonGiftingAddonOrderLevel.setOnClickListener {

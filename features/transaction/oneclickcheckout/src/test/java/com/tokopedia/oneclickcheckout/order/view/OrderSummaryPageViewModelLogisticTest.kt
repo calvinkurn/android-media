@@ -8,17 +8,16 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PriceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
-import com.tokopedia.oneclickcheckout.order.view.model.OrderEnableAddressFeature
 import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
@@ -28,7 +27,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.oneclickcheckout.utils.callOnCleared
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -2697,9 +2695,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     fun `Save Pinpoint Success`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        every {
-            editAddressUseCase.get().createObservable(any())
-        } returns Observable.just("{\"data\": {\"is_success\": 1}}")
+        coEvery { editAddressUseCase(any()) } returns KeroEditAddressResponse.Data(keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 1)))
 
         // When
         orderSummaryPageViewModel.savePinpoint("", "")
@@ -2721,29 +2717,21 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.savePinpoint("", "")
 
         // Then
-        verify(inverse = true) { editAddressUseCase.get().createObservable(any()) }
-        assertEquals(
-            OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE),
-            orderSummaryPageViewModel.globalEvent.value
-        )
+        coVerify(inverse = true) { editAddressUseCase(any()) }
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Save Pinpoint Error`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        every {
-            editAddressUseCase.get().createObservable(any())
-        } returns Observable.just("{\"data\": {\"is_success\": 0},\"message_error\": [\"error\"]}")
+        coEvery { editAddressUseCase(any()) } returns KeroEditAddressResponse.Data(keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 0)))
 
         // When
         orderSummaryPageViewModel.savePinpoint("", "")
 
         // Then
-        assertEquals(
-            OccGlobalEvent.Error(errorMessage = "error"),
-            orderSummaryPageViewModel.globalEvent.value
-        )
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
@@ -2751,9 +2739,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         val throwable = Throwable()
-        every { editAddressUseCase.get().createObservable(any()) } returns Observable.error(
-            throwable
-        )
+        coEvery { editAddressUseCase(any()) } throws throwable
 
         // When
         orderSummaryPageViewModel.savePinpoint("", "")
@@ -2875,40 +2861,6 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
-    fun `Get Eligible For Revamp Ana Success`() {
-        // Given
-        val response = KeroAddrIsEligibleForAddressFeatureData()
-        onCheckEligibility_thenReturn(response)
-
-        // When
-        orderSummaryPageViewModel.checkUserEligibilityForAnaRevamp()
-
-        // Then
-        val expected = OrderEnableAddressFeature(response)
-        assertEquals(
-            OccState.Success(expected),
-            orderSummaryPageViewModel.eligibleForAnaRevamp.value
-        )
-    }
-
-    @Test
-    fun `Get Eligible For Revamp Ana Fail`() {
-        // Given
-        val error = Throwable()
-        onCheckEligibility_thenThrow(error)
-
-        // When
-        orderSummaryPageViewModel.checkUserEligibilityForAnaRevamp()
-
-        // Then
-        val expected = Failure(error)
-        assertEquals(
-            OccState.Failed(expected),
-            orderSummaryPageViewModel.eligibleForAnaRevamp.value
-        )
-    }
-
-    @Test
     fun `Get normal shipping duration param`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -2957,34 +2909,5 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assert((orderSummaryPageViewModel.orderShippingDuration.value as OccState.Success<OrderShippingDuration>).data.pslCode == helper.logisticPromo.promoCode)
-    }
-
-    private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureData) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(
-                keroAddrIsEligibleForAddressFeatureResponse
-            )
-        }
-    }
-
-    private fun onCheckEligibility_thenThrow(error: Throwable) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(error)
-        }
-    }
-
-    @Test
-    fun `verify eligible for address cancel jobs when viewmodel call on cleared`() {
-        // When
-        orderSummaryPageViewModel.callOnCleared()
-
-        // Then
-        verify(exactly = 1) {
-            eligibleForAddressUseCase.cancelJobs()
-        }
     }
 }

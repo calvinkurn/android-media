@@ -48,7 +48,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_default="wrap"
             app:typographyType="display_3"
-            app:typographyWeight="bold"
             tools:text="Loaa Store df" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

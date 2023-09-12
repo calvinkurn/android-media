@@ -2,34 +2,45 @@ package com.tokopedia.feedplus.detail
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.feedplus.databinding.ActivityFeedDetailBinding
+import com.tokopedia.feedplus.detail.di.DaggerFeedDetailComponent
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment.Companion.TAB_FIRST_INDEX
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment.Companion.TAB_TYPE_CDP
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment.Companion.ENTRY_POINT_APPLINK
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.play_common.util.extension.commit
+import javax.inject.Inject
 
 /**
  * Created by meyta.taliti on 16/05/23.
  */
 class FeedDetailActivity : BaseActivity() {
 
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private var _binding: ActivityFeedDetailBinding? = null
     private val binding: ActivityFeedDetailBinding
         get() = _binding!!
 
-    private var postId: String = ""
+    private val postId: String
+        get() = intent.data?.lastPathSegment.orEmpty()
+
+    private val viewModel: FeedDetailViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        super.onCreate(savedInstanceState)
         _binding = ActivityFeedDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        postId = intent.data?.lastPathSegment.orEmpty()
+        observeTitleLiveData()
 
-        super.onCreate(savedInstanceState)
         setupView()
     }
 
@@ -44,6 +55,7 @@ class FeedDetailActivity : BaseActivity() {
     }
 
     private fun setupView() {
+        val source = intent.data?.getQueryParameter(KEY_QUERY_SOURCE) ?: TAB_TYPE_CDP
         val extrasData = Bundle().apply {
             putString(ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID, postId)
             intent.extras?.let {
@@ -58,7 +70,7 @@ class FeedDetailActivity : BaseActivity() {
                     FeedDataModel(
                         title = TAB_TYPE_CDP,
                         key = TAB_TYPE_CDP,
-                        type = intent.data?.getQueryParameter(KEY_QUERY_SOURCE) ?: TAB_TYPE_CDP,
+                        type = source,
                         position = TAB_FIRST_INDEX,
                         isActive = true
                     ),
@@ -69,6 +81,21 @@ class FeedDetailActivity : BaseActivity() {
                 )
             )
         }
+
+        viewModel.getTitle(source)
+    }
+
+    private fun observeTitleLiveData() {
+        viewModel.titleLiveData.observe(this) { title ->
+            binding.feedDetailHeader.title = title
+        }
+    }
+
+    private fun inject() {
+        DaggerFeedDetailComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     companion object {

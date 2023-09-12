@@ -16,12 +16,9 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -77,23 +74,11 @@ class CheckoutViewModelLoadSafTest : BaseCheckoutViewModelTest() {
             getShipmentAddressFormV4UseCase.invoke(any())
         } returns response
 
-        every {
-            eligibleForAddressUseCase.get().eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            (firstArg() as (KeroAddrIsEligibleForAddressFeatureData) -> Unit).invoke(
-                KeroAddrIsEligibleForAddressFeatureData(
-                    eligibleForRevampAna = EligibleForAddressFeature(
-                        true
-                    )
-                )
-            )
-        }
-
         // when
         viewModel.loadSAF(false, false, false)
 
         // then
-        assertEquals(CheckoutPageState.NoAddress(response, true), viewModel.pageState.value)
+        assertEquals(CheckoutPageState.NoAddress(response), viewModel.pageState.value)
     }
 
     @Test

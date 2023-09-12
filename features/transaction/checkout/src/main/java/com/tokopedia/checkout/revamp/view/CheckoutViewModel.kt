@@ -324,12 +324,6 @@ class CheckoutViewModel @Inject constructor(
                     sendEEStep2()
                 }
 
-                is CheckoutPageState.CheckNoAddress -> {
-                    logisticProcessor.checkIsUserEligibleForRevampAna(saf.cartShipmentAddressFormData) { checkoutPageState: CheckoutPageState ->
-                        pageState.value = checkoutPageState
-                    }
-                }
-
                 else -> {
                     withContext(dispatchers.main) {
                         pageState.value = saf
@@ -590,6 +584,11 @@ class CheckoutViewModel @Inject constructor(
                     }
                     if (checkoutItem is CheckoutEpharmacyModel && checkoutItem.epharmacy.showImageUpload && checkoutItem.epharmacy.consultationFlow) {
                         fetchEpharmacyData()
+                    }
+                    if (checkoutItem is CheckoutPromoModel) {
+                        if (listData.value.any { it is CheckoutOrderModel && it.shipment.courierItemData != null }) {
+                            validatePromo()
+                        }
                     }
                 }
             }
