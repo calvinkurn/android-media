@@ -2,7 +2,6 @@ package com.tokopedia.buyerorderdetail.presentation.adapter
 
 import android.content.Context
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.BuyerOrderDetailDiffUtilCallback
@@ -30,9 +29,6 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
@@ -432,18 +428,6 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         diffResult.dispatchUpdatesTo(this)
         visitables.clear()
         visitables.addAll(newItems)
-    }
-
-    fun updateItems(newVisitable: List<Visitable<BuyerOrderDetailTypeFactory>>) {
-        val diffCallback = BuyerOrderDetailDiffUtilCallback(
-            visitables as List<Visitable<BuyerOrderDetailTypeFactory>>,
-            newVisitable,
-            typeFactory
-        )
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        diffResult.dispatchUpdatesTo(this)
-        visitables.clear()
-        visitables.addAll(newVisitable)
     }
 
     fun removeDigitalRecommendation() {
