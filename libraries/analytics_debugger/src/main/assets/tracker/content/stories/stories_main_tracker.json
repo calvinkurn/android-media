@@ -7,7 +7,7 @@
             "eventAction": "view - story circle",
             "eventCategory": "stories room",
             "clientId": ".*",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video)- .* - .*",
+            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .* - .*",
             "trackerId": "46043",
             "businessUnit": "content",
             "currentSite": "(tokopediamarketplace|tokopediaseller)",

@@ -35,15 +35,21 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46043
     override fun sendViewStoryCircleEvent(
-        eventLabel: String,
-        promotions: List<String>,
+        entryPoint: String,
+        storiesId: String,
+        partnerId: String,
+        creatorType: String,
+        contentType: String,
+        currentCircle: String,
+        templateTracker: String,
+        promotions: List<StoriesEEModel>,
     ) {
         val itemList = promotions.map {
             Bundle().apply {
-                putString(CREATIVE_NAME, it)
-                putString(CREATIVE_SLOT, it)
-                putString(ITEM_ID, "$it - $it - $it")
-                putString(ITEM_NAME, "/ - $it - $it")
+                putString(CREATIVE_NAME, it.creativeName)
+                putString(CREATIVE_SLOT, it.creativeSlot)
+                putString(ITEM_ID, it.itemId)
+                putString(ITEM_NAME, it.itemName)
             }
         }
 
@@ -53,7 +59,7 @@ class StoriesAnalyticImpl @Inject constructor(
             putString(EVENT_CATEGORY, "stories room")
             putString(
                 EVENT_LABEL,
-                "entryPoint - 12 - 12556 - asgc - image - 1234 - 213"
+                "$entryPoint - $storiesId - $partnerId - asgc - image - $currentCircle - $templateTracker"
             )
             putString(TRACKER_ID, "46043")
             putString(BUSINESS_UNIT, "content")
@@ -123,15 +129,21 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46049
     override fun sendClickStoryCircleEvent(
-        eventLabel: String,
-        promotions: List<String>,
+        entryPoint: String,
+        storiesId: String,
+        partnerId: String,
+        creatorType: String,
+        contentType: String,
+        currentCircle: String,
+        templateTracker: String,
+        promotions: List<StoriesEEModel>,
     ) {
         val itemList = promotions.map {
             Bundle().apply {
-                putString(CREATIVE_NAME, it)
-                putString(CREATIVE_SLOT, it)
-                putString(ITEM_ID, "$it - $it - $it")
-                putString(ITEM_NAME, "/ - $it - $it")
+                putString(CREATIVE_NAME, it.creativeName)
+                putString(CREATIVE_SLOT, it.creativeSlot)
+                putString(ITEM_ID, it.itemId)
+                putString(ITEM_NAME, it.itemName)
             }
         }
 
@@ -141,7 +153,7 @@ class StoriesAnalyticImpl @Inject constructor(
             putString(EVENT_CATEGORY, "stories room")
             putString(
                 EVENT_LABEL,
-                "entryPoint - 12 - 12556 - asgc - image - 1234 - 213"
+                "$entryPoint - $storiesId - $partnerId - asgc - image - $currentCircle - $templateTracker"
             )
             putString(TRACKER_ID, "46049")
             putString(BUSINESS_UNIT, "content")

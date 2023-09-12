@@ -45,6 +45,12 @@ class StoriesGroupFragment @Inject constructor(
     val authorId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
+    // we need to know everytime stories open from where
+    // add the logic later
+    // currently used for tracker
+    val entryPoint: String
+        get() = "Entry Point"
+
     val viewModelProvider get() = viewModelFactory.create(authorId)
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
@@ -113,7 +119,12 @@ class StoriesGroupFragment @Inject constructor(
     private fun setupViews() = with(binding) {
         showPageLoading(true)
 
-        layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
+        layoutGroupLoading.icCloseLoading.setOnClickListener {
+            analytic.sendClickExitStoryRoomEvent(
+                eventLabel = "$entryPoint - $authorId - storiesId - asgc - image - nextStoriesId - currentCircle"
+            )
+            activity?.finish()
+        }
         if (storiesGroupViewPager.adapter != null) return@with
         storiesGroupViewPager.adapter = pagerAdapter
         storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
@@ -148,7 +159,12 @@ class StoriesGroupFragment @Inject constructor(
             viewModel.storiesEvent.collect { event ->
                 when (event) {
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
-                    StoriesUiEvent.FinishedAllStories -> activity?.finish()
+                    StoriesUiEvent.FinishedAllStories -> {
+                        analytic.sendClickExitStoryRoomEvent(
+                            eventLabel = "$entryPoint - $authorId - storiesId - asgc - image - nextStoriesId - currentCircle"
+                        )
+                        activity?.finish()
+                    }
                     is StoriesUiEvent.ErrorGroupPage -> {
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here

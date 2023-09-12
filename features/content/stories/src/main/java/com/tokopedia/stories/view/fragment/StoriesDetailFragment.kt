@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -18,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.analytic.StoriesAnalytic
+import com.tokopedia.stories.analytic.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
@@ -29,6 +31,7 @@ import com.tokopedia.stories.view.utils.STORY_GROUP_ID
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
+import com.tokopedia.stories.view.utils.loadImage
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -125,6 +128,7 @@ class StoriesDetailFragment @Inject constructor(
                         }
                         showPageLoading(false)
                     }
+
                     else -> return@collect
                 }
             }
@@ -142,6 +146,48 @@ class StoriesDetailFragment @Inject constructor(
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
         binding.layoutDetailLoading.categoriesLoader.hide()
+
+        val templateTracker = state.groupItems[state.selectedGroupPosition].detail.detailItems[
+            state.groupItems[state.selectedGroupPosition].detail.selectedDetailPosition].meta
+            .templateTracker
+
+
+//        TODO on click group
+//        analytic.sendClickStoryCircleEvent(
+//            entryPoint = mParentPage.entryPoint,
+//            storiesId = "stories id",
+//            partnerId = mParentPage.authorId,
+//            creatorType = "asgc",
+//            contentType = "image",
+//            currentCircle = state.groupHeader[state.selectedGroupPosition].title,
+//            templateTracker = templateTracker,
+//            promotions = state.groupHeader.mapIndexed { index, storiesGroupHeader ->
+//                StoriesEEModel(
+//                    creativeName = storiesGroupHeader.title,
+//                    creativeSlot = index.plus(1).toString(),
+//                    itemId = "${state.groupHeader[state.selectedGroupPosition].title} - storycat impressed - ${mParentPage.authorId}",
+//                    itemName = "/ - $templateTracker - stories"
+//                )
+//            },
+//        )
+
+        analytic.sendViewStoryCircleEvent(
+            entryPoint = mParentPage.entryPoint,
+            storiesId = "stories id",
+            partnerId = mParentPage.authorId,
+            creatorType = "asgc",
+            contentType = "image",
+            currentCircle = state.groupHeader[state.selectedGroupPosition].title,
+            templateTracker = templateTracker,
+            promotions = state.groupHeader.mapIndexed { index, storiesGroupHeader ->
+                StoriesEEModel(
+                    creativeName = storiesGroupHeader.title,
+                    creativeSlot = index.plus(1).toString(),
+                    itemId = "${state.groupHeader[state.selectedGroupPosition].title} - storycat impressed - ${mParentPage.authorId}",
+                    itemName = "/ - $templateTracker - stories"
+                )
+            },
+        )
     }
 
     private fun renderStoriesDetail(
@@ -178,6 +224,7 @@ class StoriesDetailFragment @Inject constructor(
                     }
                 }
             }
+
             VIDEO -> {
                 // TODO handle video content here
             }
@@ -204,7 +251,12 @@ class StoriesDetailFragment @Inject constructor(
     private fun setupStoriesView() = with(binding) {
         showPageLoading(true)
 
-        icClose.setOnClickListener { activity?.finish() }
+        icClose.setOnClickListener {
+            analytic.sendClickExitStoryRoomEvent(
+                eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - storiesId - asgc - image - nextStoriesId - currentCircle"
+            )
+            activity?.finish()
+        }
 
         rvStoriesCategory.apply {
             adapter = mAdapter
@@ -227,7 +279,12 @@ class StoriesDetailFragment @Inject constructor(
                     resumeStories()
                 }
 
-                TouchEventStories.NEXT_PREV -> viewModelAction(PreviousDetail)
+                TouchEventStories.NEXT_PREV -> {
+                    analytic.sendClickTapPreviousContentEvent(
+                        eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - storiesId - asgc - image - currentCircle - nextStoriesId"
+                    )
+                    viewModelAction(PreviousDetail)
+                }
             }
         }
         flStoriesNext.onTouchEventStories { event ->
@@ -246,7 +303,12 @@ class StoriesDetailFragment @Inject constructor(
                     resumeStories()
                 }
 
-                TouchEventStories.NEXT_PREV -> viewModelAction(NextDetail)
+                TouchEventStories.NEXT_PREV -> {
+                    analytic.sendClickTapNextContentEvent(
+                        eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - storiesId - asgc - image - currentCircle - nextStoriesId"
+                    )
+                    viewModelAction(NextDetail)
+                }
             }
         }
         flStoriesProduct.setOnClickListener {
@@ -294,7 +356,8 @@ class StoriesDetailFragment @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): StoriesDetailFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG_FRAGMENT_STORIES_DETAIL) as? StoriesDetailFragment
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG_FRAGMENT_STORIES_DETAIL) as? StoriesDetailFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 StoriesDetailFragment::class.java.name
