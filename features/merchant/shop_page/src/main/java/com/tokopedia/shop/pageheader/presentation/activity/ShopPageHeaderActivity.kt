@@ -3,7 +3,6 @@ package com.tokopedia.shop.pageheader.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -83,9 +82,6 @@ class ShopPageHeaderActivity :
         checkIfApplinkRedirectedForMigration()
         if(ShopUtil.isEnableShopPageReImagined()){
             configStatusBarAndSetFullScreen()
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            window.decorView.rootView.isForceDarkAllowed = false
         }
         super.onCreate(savedInstanceState)
         window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))

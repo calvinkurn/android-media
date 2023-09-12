@@ -2,6 +2,6 @@
 <resources>
     <style name="ShopPageActivityTheme" parent="Theme.White">
         <item  name="android:actionButtonStyle">@style/ShopPageActionBarMenuItemStyle</item>
-<!--        <item name="android:forceDarkAllowed">false</item>-->
+        <item name="android:forceDarkAllowed">false</item>
     </style>
 </resources>
