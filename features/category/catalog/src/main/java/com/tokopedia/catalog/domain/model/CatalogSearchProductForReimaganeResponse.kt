@@ -116,6 +116,10 @@ data class CatalogProductItem(
         @Expose
         val priceString: String = "",
 
+        @SerializedName("priceRange")
+        @Expose
+        val priceRange: String = "",
+
         @SerializedName("categoryBreadcrumb")
         @Expose
         val categoryBreadcrumb: String = "",

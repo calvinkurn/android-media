@@ -21,7 +21,7 @@ class ProductListMapper {
                     item?.priceString.orEmpty(),
                     item?.originalPrice.orEmpty()
                 ),
-                priceRange = item?.priceString.orEmpty(),
+                priceRange = item?.priceRange.orEmpty(),
                 labelGroupList = toGroupList(item?.labelGroupList.orEmpty()),
                 shopBadgeList = toBadgeList(item?.badgeList.orEmpty()),
                 shopLocation = item?.shop?.name.orEmpty(),
