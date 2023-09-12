@@ -178,7 +178,9 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
                                 contentIsLoaded()
                             }
 
-                            override fun failedLoad() {}
+                            override fun failedLoad() {
+                                // TODO add some action when fail load image?
+                            }
                         })
                 }
             }
