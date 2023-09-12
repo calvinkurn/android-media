@@ -78,7 +78,15 @@ class PdpFintechWidget @JvmOverloads constructor(
         val v2 = Typography(context).apply {
             text = "Second Row"
         }
-        binding.sliderView.setItems(arrayListOf(v1, v2))
+
+        val v3 = Typography(context).apply {
+            text = "Third Row"
+        }
+
+        val v4 = Typography(context).apply {
+            text = "Fourth Row"
+        }
+        binding.sliderView.setItems(arrayListOf(v1, v2, v3, v4))
     }
 
 
