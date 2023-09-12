@@ -839,7 +839,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderPrice(data: CartItemHolderData) {
-        if (data.isBundlingItem && data.showBundlePrice) {
+        if (data.isBundlingItem && !data.showBundlePrice) {
             binding.textProductPrice.gone()
         } else {
             binding.textProductPrice.visible()
