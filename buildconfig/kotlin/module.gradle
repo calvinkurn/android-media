@@ -1,18 +1,7 @@
-static def isComposeEnabled(project) {
-    def buildGradlePath = project.file('build.gradle')
-    if (buildGradlePath.exists()) {
-        return buildGradlePath.text.contains('compose true')
-    } else {
-        return false
-    }
-}
-
-if (isComposeEnabled(project)) {
-    apply plugin: rootProject.ext.gradlePlugin.composeCompilerReportPlugin
-}
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/composeCompilerReport.gradle"
 
 
 kapt {
