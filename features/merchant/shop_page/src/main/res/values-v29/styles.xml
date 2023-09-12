@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ShopPageActivityTheme" parent="Theme.White">
+        <item  name="android:actionButtonStyle">@style/ShopPageActionBarMenuItemStyle</item>
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+</resources>
