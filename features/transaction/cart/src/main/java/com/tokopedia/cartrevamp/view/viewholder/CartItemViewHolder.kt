@@ -328,7 +328,7 @@ class CartItemViewHolder constructor(
             if (compoundButton.isPressed) {
                 if (!data.isError) {
                     if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                        actionListener?.onCartItemCheckboxClickChanged(bindingAdapterPosition, data)
+                        actionListener?.onCartItemCheckboxClickChanged(bindingAdapterPosition, data, isChecked)
                     }
                 }
             }
@@ -1353,7 +1353,7 @@ class CartItemViewHolder constructor(
                     var offerMessage = ""
                     data.bmGmCartInfoData.bmGmData.offerMessage.forEachIndexed { index, s ->
                         offerMessage += s
-                        if (index != (data.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
+                        if (index < (data.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
                             offerMessage += " • "
                         }
                     }
@@ -1362,7 +1362,7 @@ class CartItemViewHolder constructor(
                     binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.bmGmCartInfoData.bmGmData.offerIcon
                     binding.itemCartBmgm.bmgmWidgetView.offerId = data.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
-                        actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId)
+                        actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId, data.shopHolderData.shopId)
                     }
                 }
                 2 -> {

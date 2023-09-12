@@ -47,6 +47,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
@@ -160,7 +161,6 @@ import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_ST
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_LOADING
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.constant.CartConstant
-import com.tokopedia.purchase_platform.common.constant.CartConstant.BMGM_APPLINK
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -1150,18 +1150,12 @@ class CartRevampFragment :
         updateStateAfterCheckChanged(selected)
     }
 
-    override fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData) {
+    override fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean) {
         if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
-            val (index, cartItem) = cartAdapter?.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId) ?: (null to null)
-            cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
-            if (index != null) {
-                cartAdapter?.notifyItemChanged(index)
-            }
-
-            val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItemHolderData)
-            if (cartGroupHolderData != null) {
-                getGroupProductTicker(cartGroupHolderData, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
-            }
+            val (index, cartItemByOfferId) = CartDataHelper.getCartItemHolderDataAndIndexByOfferId(viewModel.cartDataList.value, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
+            cartItemByOfferId.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            cartAdapter?.notifyItemChanged(index)
+            getGroupProductTicker(cartItemHolderData)
         }
     }
 
@@ -1318,15 +1312,13 @@ class CartRevampFragment :
         }
 
         if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartAdapter != null) {
-            val (index, cartItem) = cartAdapter?.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId) ?: (null to null)
-            cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
-            if (index != null) {
-                cartAdapter?.notifyItemChanged(index)
-            }
+            val (index, cartItem) = CartDataHelper.getCartItemHolderDataAndIndexByOfferId(viewModel.cartDataList.value, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
+            cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            cartAdapter?.notifyItemChanged(index)
 
             val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItemHolderData)
             if (cartGroupHolderData != null) {
-                getGroupProductTicker(cartGroupHolderData, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
+                getGroupProductTicker(cartItemHolderData)
             }
         }
     }
@@ -2279,7 +2271,7 @@ class CartRevampFragment :
             if (pair.first) {
                 val listCartGroupHolderDataWithBmGm = CartDataHelper.getListCartGroupHolderDataWithBmgm(viewModel.cartDataList.value)
                 listCartGroupHolderDataWithBmGm.forEach { cartGroupHolderData ->
-                    getGroupProductTicker(cartGroupHolderData, cartGroupHolderData.cartGroupBmGmHolderData.offerId)
+                    getGroupProductTicker(cartGroupHolderData)
                 }
             }
         }?.launchIn(lifecycleScope)
@@ -2799,32 +2791,28 @@ class CartRevampFragment :
         viewModel.bmGmGroupProductTickerState.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is GetBmGmGroupProductTickerState.Success -> {
-                    val (index, cartItem) = cartAdapter?.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first) ?: (null to null)
+                    val (index, cartItem) = CartDataHelper.getCartItemHolderDataAndIndexByOfferId(viewModel.cartDataList.value, data.pairOfferIdBmGmTickerResponse.first)
                     if (data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.action == BMGM_TICKER_RELOAD_ACTION) {
-                        cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
                     } else if (data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.action.isEmpty()) {
-                        cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
+                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
                         val listOfferMessage = arrayListOf<String>()
                         data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.listMessage.forEachIndexed { i, s ->
                             listOfferMessage.add(s.text)
                         }
-                        cartItem?.bmGmCartInfoData?.bmGmData?.offerMessage = listOfferMessage
+                        cartItem.bmGmCartInfoData.bmGmData.offerMessage = listOfferMessage
 
-                        val cartGroupHolderData = cartItem?.let { CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, it) }
+                        val cartGroupHolderData = cartItem.let { CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, it) }
                         cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.discountAmount
                         viewModel.reCalculateSubTotal()
                     }
-                    if (index != null) {
-                        cartAdapter?.notifyItemChanged(index)
-                    }
+                    cartAdapter?.notifyItemChanged(index)
                 }
 
                 is GetBmGmGroupProductTickerState.Failed -> {
-                    val (index, cartItem) = cartAdapter?.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdThrowable.first) ?: (null to null)
-                    cartItem?.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
-                    if (index != null) {
-                        cartAdapter?.notifyItemChanged(index)
-                    }
+                    val (index, cartItem) = CartDataHelper.getCartItemHolderDataAndIndexByOfferId(viewModel.cartDataList.value, data.pairOfferIdThrowable.first)
+                    cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                    cartAdapter?.notifyItemChanged(index)
                 }
 
                 else -> {}
@@ -4930,18 +4918,51 @@ class CartRevampFragment :
         awaitClose { setOnCheckedChangeListener(null) }
     }
 
-    private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData, offerId: Long) {
+    private fun getGroupProductTicker(cartItemHolderData: CartItemHolderData) {
         viewModel.getBmGmGroupProductTicker(
-            cartGroupHolderData.cartGroupBmGmHolderData.cartBmGmGroupTickerCartString,
-            BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData, offerId)
+                cartItemHolderData.bmGmCartInfoData.bmGmData.offerId,
+                BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
+                        CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value,
+                                cartItemHolderData.bmGmCartInfoData.bmGmData.offerId),
+                        cartItemHolderData.bundleId.toLongOrZero(),
+                        cartItemHolderData.bundleGroupId,
+                        cartItemHolderData.bmGmCartInfoData.bmGmData.offerId,
+                        cartItemHolderData.bmGmCartInfoData.bmGmData.offerJsonData,
+                        cartItemHolderData.cartStringOrder)
         )
     }
 
-    override fun onBmGmChevronRightClicked(offerId: Long) {
-        val applink = "$BMGM_APPLINK$offerId"
-        activity?.let {
-            RouteManager.route(it, applink)
+    private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData) {
+            viewModel.getBmGmGroupProductTicker(
+                    cartGroupHolderData.cartGroupBmGmHolderData.offerId,
+                    BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
+                            cartGroupHolderData.productUiModelList,
+                            cartGroupHolderData.cartGroupBmGmHolderData.bundleId,
+                            cartGroupHolderData.cartGroupBmGmHolderData.bundleGroupId,
+                            cartGroupHolderData.cartGroupBmGmHolderData.offerId,
+                            cartGroupHolderData.cartGroupBmGmHolderData.offerJsonData,
+                            cartGroupHolderData.cartGroupBmGmHolderData.cartStringOrder)
+            )
+    }
+
+    override fun onBmGmChevronRightClicked(offerId: Long, shopId: String) {
+        val productIds = arrayListOf<String>()
+        val warehouseIds = arrayListOf<String>()
+
+        CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, offerId).forEach {
+            productIds.add(it.productId)
+            warehouseIds.add(it.warehouseId)
         }
+
+        val intent = RouteManager.getIntent(
+                context,
+                ApplinkConstInternalMechant.BUY_MORE_GET_MORE_OLP,
+                offerId.toString(),
+                warehouseIds.joinToString(","),
+                productIds.joinToString(","),
+                shopId
+        )
+        context?.startActivity(intent)
     }
 
     override fun onBmGmTickerReloadClicked() {
