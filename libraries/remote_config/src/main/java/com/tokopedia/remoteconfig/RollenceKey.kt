@@ -42,7 +42,7 @@ object RollenceKey {
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val TREATMENT_VARIANT = "treatment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
-    const val CART_CHECKOUT_REVAMP = "cartcheckout_android"
+    const val CART_CHECKOUT_REVAMP = "cartcheckout_revamp"
     const val CART_CHECKOUT_NEW = "cart_checkout_new"
 
     // SRP Video Sneak Peek Autoplay
@@ -114,5 +114,4 @@ object RollenceKey {
     const val SEARCH_3_PRODUCT_CARD_CONTROL = "control"
     const val SEARCH_3_PRODUCT_CARD_PC_VAR = "pc_var"
     const val SEARCH_3_PRODUCT_CARD_PC_NEWLABEL_VAR = "pc_newlabel_var"
-
 }
