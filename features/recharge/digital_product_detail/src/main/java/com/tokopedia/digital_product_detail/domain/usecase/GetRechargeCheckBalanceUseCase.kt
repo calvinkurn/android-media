@@ -55,6 +55,7 @@ class GetRechargeCheckBalanceUseCase @Inject constructor(
                   iconURL
                   mediaURL
                   label1
+                  label2
                   textLink
                   appLink
                   mediaURL
