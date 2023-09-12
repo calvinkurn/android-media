@@ -55,21 +55,7 @@ object BroadcasterUtil {
         if (!recordSizes.isNullOrEmpty()) return findBestResolution(recordSizes)
 
         // Nothing found, use default
-        return supportedPreviewSizes?.firstOrNull() ?: defaultResolution
-    }
-
-    fun findFlipSize(supportedPreviewSizes: List<Streamer.Size>?, videoSize: Streamer.Size): Streamer.Size {
-        val recordSizes = findSizeWithPreferredAspectRatio(videoSize.ratio, supportedPreviewSizes)
-        if (!recordSizes.isNullOrEmpty()) return findBestResolution(recordSizes)
-
-        // Same aspect ratio not found, search for less or similar frame sides
-        val flipSizeSimilarFrameSize = supportedPreviewSizes?.firstOrNull {
-            it.height <= videoSize.height && it.width <= videoSize.width
-        }
-        if (flipSizeSimilarFrameSize != null) return flipSizeSimilarFrameSize
-
-        // Nothing found, use default
-        return supportedPreviewSizes?.firstOrNull() ?: defaultResolution
+        return defaultResolution
     }
 
     @Suppress("MagicNumber")

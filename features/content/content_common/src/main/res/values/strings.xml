@@ -155,7 +155,7 @@
     <string name="content_common_menu_report">Laporkan</string>
     <string name="comment_delete_undo">Kembalikan</string>
     <string name="comment_delete_kembali">Komentar dihapus.</string>
-    <string name="content_comment_error_secondary">Ke Pengaturan</string>
+    <string name="content_global_error_secondary_text">Ke Pengaturan</string>
 
     <!--Report Bottom Sheet -->
     <string name="content_comment_edit_text_hint">Ketik komentarmu…</string>

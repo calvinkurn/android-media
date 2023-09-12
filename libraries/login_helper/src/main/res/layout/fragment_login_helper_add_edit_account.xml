@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_NN0"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_username"
+        app:unify_text_field_label="@string/login_helper_enter_user_email"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_password"
+        app:unify_text_field_input_type="textPassword"
+        app:unify_text_field_label="@string/login_helper_enter_password"
+        app:layout_constraintTop_toBottomOf="@id/et_username"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_tribe"
+        app:unify_text_field_label="@string/login_helper_enter_tribe"
+        app:layout_constraintTop_toBottomOf="@id/et_password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_warning"
+        app:typographyWeight="bold"
+        android:text="@string/login_helper_account_whitelist"
+        app:layout_constraintTop_toBottomOf="@+id/et_tribe"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/consent_checkbox"
+        android:text="@string/login_helper_consent_checkbox"
+        app:layout_constraintTop_toBottomOf="@+id/tv_warning"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_save_to_db"
+        android:text="@string/login_helper_save_to_db"
+        app:layout_constraintTop_toBottomOf="@+id/consent_checkbox"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_save_to_local"
+        android:text="@string/login_helper_save_to_local"
+        app:layout_constraintTop_toBottomOf="@+id/btn_save_to_db"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_group"
+        app:constraint_referenced_ids="consent_checkbox, tv_warning, btn_save_to_local"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:id="@+id/footer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
