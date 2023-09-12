@@ -29,11 +29,6 @@ class AccordionInformationViewHolder(itemView: View) :
     private var lastPositionExpand = -1
 
     override fun bind(element: AccordionInformationUiModel) {
-//        binding?.clRootAccordion?.setBackgroundColor(
-//            element.widgetBackgroundColor.orDefaultColor(
-//                itemView.context
-//            )
-//        )
         binding?.accordion?.removeAllViews()
         binding?.tvTitle?.text = element.titleWidget
         binding?.tvTitle?.setTextColor(element?.widgetTextColor.orDefaultColor(itemView.context))
