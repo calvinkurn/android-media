@@ -14,10 +14,9 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.R.*
-import com.tokopedia.unifyprinciples.R.color.Unify_NN0
 import com.tokopedia.unifyprinciples.R.color.Unify_NN950
 import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
 import com.tokopedia.unifyprinciples.Typography
@@ -55,6 +54,12 @@ class OlpToolbar : Toolbar {
             refreshViews()
         }
 
+    var showShareButton:Boolean = false
+        set(value) {
+            field = value
+            shareButton?.visibleWithCondition(value)
+        }
+
     var showWhiteToolbar: Boolean = false
         set(value) {
             field = value
@@ -62,12 +67,14 @@ class OlpToolbar : Toolbar {
                 tpgTitle?.setTextColor(resources.getColor(Unify_NN950))
                 tpgSubTitle?.setTextColor(resources.getColor(Unify_NN950))
                 cartButton?.setBlackIconValue()
+                shareButton?.setBlackIconValue()
                 moreMenuButton?.setBlackIconValue()
                 navigationIcon = backIconBlack
             } else {
                 tpgTitle?.setTextColor(resources.getColor(Unify_Static_White))
                 tpgSubTitle?.setTextColor(resources.getColor(Unify_Static_White))
                 cartButton?.setWhiteIconValue()
+                shareButton?.setWhiteIconValue()
                 moreMenuButton?.setWhiteIconValue()
                 navigationIcon = backIconWhite
             }
@@ -77,6 +84,7 @@ class OlpToolbar : Toolbar {
     private var tpgSubTitle: Typography? = null
     private var iconNotifWraper: FrameLayout? = null
     var cartButton: IconUnify? = null
+    var shareButton: IconUnify? = null
     private var notification: NotificationUnify? = null
     var moreMenuButton: IconUnify? = null
     private var backIconWhite = getIconUnifyDrawable(
@@ -115,6 +123,7 @@ class OlpToolbar : Toolbar {
         tpgSubTitle = findViewById(R.id.tpg_sub_title)
         iconNotifWraper = findViewById(R.id.icon_notif_wrapper)
         cartButton = findViewById(R.id.cart)
+        shareButton = findViewById(R.id.sharing)
         notification = findViewById(R.id.notification_counter)
         moreMenuButton = findViewById(R.id.more_menu)
         navigationIcon = backIconWhite

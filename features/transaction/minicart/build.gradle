@@ -41,10 +41,13 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+
+    implementation rootProject.ext.firebase.crashlytics
 
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components

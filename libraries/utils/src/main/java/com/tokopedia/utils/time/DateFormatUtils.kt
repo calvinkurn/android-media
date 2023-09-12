@@ -10,7 +10,11 @@ object DateFormatUtils {
     const val FORMAT_DD_MMMM_YYYY = "dd MMMM yyyy"
     const val FORMAT_YYYY_MM_DD = "yyyy-MM-dd"
     const val FORMAT_D_MMMM_YYYY = "d MMMM yyyy"
+    const val FORMAT_YYYY_MM_DD_HH_mm_ss = "yyyy-MM-dd HH:mm:ss"
+
     val DEFAULT_LOCALE: Locale = Locale("in", "ID")
+
+    const val INVALID_TIME_IN_MILLIS = -1L
 
     fun formatDate(currentFormat: String, newFormat: String, dateString: String, locale: Locale = DEFAULT_LOCALE): String {
         return try {
@@ -25,6 +29,16 @@ object DateFormatUtils {
         } catch (e: Exception) {
             e.printStackTrace()
             dateString
+        }
+    }
+
+    fun getTimeInMilliseconds(format: String, dateString: String, locale: Locale = DEFAULT_LOCALE): Long {
+        return try {
+            val fromFormat: DateFormat = SimpleDateFormat(format, locale)
+            val date = fromFormat.parse(dateString)
+            date?.time ?: INVALID_TIME_IN_MILLIS
+        } catch (e: Exception) {
+            INVALID_TIME_IN_MILLIS
         }
     }
 

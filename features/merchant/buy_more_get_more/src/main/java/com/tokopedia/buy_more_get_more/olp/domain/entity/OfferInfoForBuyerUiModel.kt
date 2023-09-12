@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactory
-import com.tokopedia.buy_more_get_more.olp.utils.Constant
+import com.tokopedia.buy_more_get_more.olp.utils.constant.Constant
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 data class OfferInfoForBuyerUiModel(
@@ -38,6 +38,7 @@ data class OfferInfoForBuyerUiModel(
         data class Tier(
             val tierId: Long = 0,
             val level: Int = 0,
+            val tierWording: String = "",
             val rules: List<Rule> = emptyList(),
             val benefits: List<Benefit> = emptyList(),
             val attributes: String = ""

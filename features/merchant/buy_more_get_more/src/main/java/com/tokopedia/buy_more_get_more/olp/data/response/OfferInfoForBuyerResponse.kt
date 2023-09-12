@@ -45,7 +45,7 @@ data class OfferInfoForBuyerResponse(
         @SerializedName("shop_data")
         val shopData: ShopData = ShopData(),
         @SerializedName("term_and_condition")
-    val tnc: List<String> = emptyList(),
+        val tnc: List<String> = emptyList()
     ) {
         data class ShopData(
             @SerializedName("shop_id")
@@ -61,6 +61,8 @@ data class OfferInfoForBuyerResponse(
             val tierId: Long = 0,
             @SerializedName("level")
             val level: Int = 0,
+            @SerializedName("tier_wording")
+            val tierWording: String = "",
             @SerializedName("rule")
             val rules: List<Rule> = emptyList(),
             @SerializedName("benefit")

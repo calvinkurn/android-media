@@ -30,6 +30,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
@@ -43,6 +45,8 @@ class OfferLandingPageViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(OlpUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val mutex = Mutex()
 
     val currentState: OlpUiState
         get() = _uiState.value
@@ -101,7 +105,7 @@ class OfferLandingPageViewModel @Inject constructor(
             }
 
             is OlpEvent.AddToCart -> {
-                addToCart(event.product)
+                validateOffering(event.product) // validate offering before addToCart
             }
 
             is OlpEvent.SetWarehouseIds -> setWarehouseIds(event.warehouseIds)
@@ -135,37 +139,40 @@ class OfferLandingPageViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val param = GetOfferingInfoForBuyerRequestParam(
-                    offerIds = currentState.offerIds,
-                    shopIds = if (currentState.shopData.shopId.isMoreThanZero()) {
-                        listOf(currentState.shopData.shopId)
-                    } else {
-                        emptyList()
-                    },
-                    productAnchor = if (currentState.warehouseIds.isNotEmpty()) {
-                        GetOfferingInfoForBuyerRequestParam.ProductAnchor(
-                            currentState.productIds,
-                            currentState.warehouseIds
-                        )
-                    } else {
-                        null
-                    },
-                    userLocation = UserLocation(
-                        addressId = currentState.localCacheModel?.address_id.toLongOrZero(),
-                        districtId = currentState.localCacheModel?.district_id.toLongOrZero(),
-                        postalCode = currentState.localCacheModel?.postal_code.orEmpty(),
-                        latitude = currentState.localCacheModel?.lat.orEmpty(),
-                        longitude = currentState.localCacheModel?.long.orEmpty(),
-                        cityId = currentState.localCacheModel?.city_id.toLongOrZero()
-                    ),
-                    userId = userId.toLongOrZero()
-                )
-                val result = getOfferInfoForBuyerUseCase.execute(param)
+                val result = getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam())
                 _offeringInfo.postValue(result)
             },
             onError = {
                 _error.postValue(it)
             }
+        )
+    }
+
+    private fun getOfferingInfoForBuyerRequestParam(): GetOfferingInfoForBuyerRequestParam {
+        return GetOfferingInfoForBuyerRequestParam(
+            offerIds = currentState.offerIds,
+            shopIds = if (currentState.shopData.shopId.isMoreThanZero()) {
+                listOf(currentState.shopData.shopId)
+            } else {
+                emptyList()
+            },
+            productAnchor = if (currentState.warehouseIds.isNotEmpty()) {
+                GetOfferingInfoForBuyerRequestParam.ProductAnchor(
+                    currentState.productIds,
+                    currentState.warehouseIds
+                )
+            } else {
+                null
+            },
+            userLocation = UserLocation(
+                addressId = currentState.localCacheModel?.address_id.toLongOrZero(),
+                districtId = currentState.localCacheModel?.district_id.toLongOrZero(),
+                postalCode = currentState.localCacheModel?.postal_code.orEmpty(),
+                latitude = currentState.localCacheModel?.lat.orEmpty(),
+                longitude = currentState.localCacheModel?.long.orEmpty(),
+                cityId = currentState.localCacheModel?.city_id.toLongOrZero()
+            ),
+            userId = userId.toLongOrZero()
         )
     }
 
@@ -216,19 +223,34 @@ class OfferLandingPageViewModel @Inject constructor(
         )
     }
 
-    private fun addToCart(
-        product: OfferProductListUiModel.Product
-    ) {
+    private fun validateOffering(product: OfferProductListUiModel.Product) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val param = AddToCartUseCase.getMinimumParams(
-                    productId = product.productId.toString(),
-                    shopId = currentState.shopData.shopId.orZero().toString()
-                )
-                addToCartUseCase.setParams(param)
-                val result = addToCartUseCase.executeOnBackground()
-                _miniCartAdd.postValue(Success(result))
+                mutex.withLock {
+                    getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam())
+                    addToCart(product)
+                }
+            },
+            onError = {
+                _error.postValue(it)
+            }
+        )
+    }
+
+    private fun addToCart(product: OfferProductListUiModel.Product) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                mutex.withLock {
+                    val param = AddToCartUseCase.getMinimumParams(
+                        productId = product.productId.toString(),
+                        shopId = currentState.shopData.shopId.orZero().toString()
+                    )
+                    addToCartUseCase.setParams(param)
+                    val result = addToCartUseCase.executeOnBackground()
+                    _miniCartAdd.postValue(Success(result))
+                }
             },
             onError = {
                 _miniCartAdd.postValue(Fail(it))
