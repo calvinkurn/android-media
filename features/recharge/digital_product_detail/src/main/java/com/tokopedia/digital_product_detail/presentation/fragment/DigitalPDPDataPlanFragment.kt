@@ -514,7 +514,7 @@ class DigitalPDPDataPlanFragment :
 
         viewModel.indosatCheckBalance.observe(viewLifecycleOwner) { checkBalanceData ->
             when (checkBalanceData) {
-                is RechargeNetworkResult.Success -> onSuccessGetCheckBalance(checkBalanceData.data)
+                is RechargeNetworkResult.Success -> onFailedGetCheckBalance(checkBalanceData = checkBalanceData.data)
                 is RechargeNetworkResult.Fail -> onFailedGetCheckBalance(checkBalanceData.error)
                 is RechargeNetworkResult.Loading -> onLoadingGetCheckBalance()
             }
@@ -863,11 +863,15 @@ class DigitalPDPDataPlanFragment :
                 if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
                     hideCheckBalanceWidgetLocalLoad()
                     removeClientNumberBottomPadding()
-                    showCheckBalanceWarning(
-                        checkBalanceData?.campaignLabelText.orEmpty(),
-                        checkBalanceData?.campaignLabelTextColor.orEmpty(),
-                        isShowOnlyWarning = true
-                    )
+                    checkBalanceData?.let {
+                        if (it.campaignLabelText.isNotEmpty()) {
+                            showCheckBalanceWarning(
+                                it.campaignLabelText,
+                                it.campaignLabelTextColor,
+                                isShowOnlyWarning = true
+                            )
+                        }
+                    }
                     setupDynamicScrollViewPadding()
                 } else {
                     getIndosatCheckBalance()
