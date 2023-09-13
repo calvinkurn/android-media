@@ -7,6 +7,7 @@
             android:name=".olp.presentation.OfferLandingPageActivity"
             android:configChanges="orientation"
             android:exported="false"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
 
