@@ -14,7 +14,7 @@ object ShippingEditorQuery {
                   shipper_name
                   is_active
                   text_promo
-                  is_whitelable
+                  is_whitelabel
                   image
                   feature_info {
                     header
@@ -32,7 +32,7 @@ object ShippingEditorQuery {
                   shipper_name
                   is_active
                   text_promo
-                  is_whitelable
+                  is_whitelabel
                   image
                   feature_info {
                     header
