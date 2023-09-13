@@ -25,6 +25,7 @@ data class ProductCardCompactUiModel(
     val labelGroupList: List<LabelGroup> = listOf(),
     val needToChangeMaxLinesName: Boolean = false,
     val hasBlockedAddToCart: Boolean = false,
+    val warehouseId: String = "",
     /**
      * use pre draw only if need dynamic height of product card (ex: carousel)
      */
