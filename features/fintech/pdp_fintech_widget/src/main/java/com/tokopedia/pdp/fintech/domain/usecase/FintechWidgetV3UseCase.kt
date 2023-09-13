@@ -11,5 +11,16 @@ import javax.inject.Inject
 class FintechWidgetV3UseCase @Inject constructor(graphqlRepository: GraphqlRepository):
     GraphqlUseCase<WidgetDetailV3>(graphqlRepository) {
 
-
+        fun getWidgetV3Data(
+            onSuccess: (WidgetDetailV3) -> Unit,
+            onError: (Throwable) -> Unit,
+        ) {
+            this.setTypeClass(WidgetDetailV3::class.java)
+            this.setGraphqlQuery(PayLaterGetPdpWidgetV3.GQL_QUERY)
+            this.execute({
+                onSuccess.invoke(it)
+            }, {
+                onError.invoke(it)
+            })
+        }
 }

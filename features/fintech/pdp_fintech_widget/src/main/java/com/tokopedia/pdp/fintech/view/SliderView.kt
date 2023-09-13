@@ -19,6 +19,7 @@ import android.widget.ScrollView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.animation.doOnEnd
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.pdp_fintech.databinding.SliderViewLayoutBinding
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -29,6 +30,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SliderView: ScrollView {
+
+    companion object {
+        private const val VERTICAL_PADDING = 12
+    }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -94,7 +99,9 @@ class SliderView: ScrollView {
             requestLayout()
         }
 
-        for (view in views) {
+        views.forEachIndexed { index, view ->
+            if (index == 0) view.setMargin(0, VERTICAL_PADDING.toPx(), 0, 0)
+            if (index == views.size - 1) view.setMargin(0, 0, 0, VERTICAL_PADDING.toPx())
             binding?.container?.addView(view)
         }
 
@@ -116,7 +123,7 @@ class SliderView: ScrollView {
                     view.top
                 )
                 scrollAnimator.duration = animDuration
-                scrollAnimator.interpolator = UnifyMotion.EASE_IN_OUT
+                scrollAnimator.interpolator = UnifyMotion.EASE_OVERSHOOT
                 scrollAnimator.startDelay = delay
 
                 animators.add(scrollAnimator)
@@ -142,7 +149,7 @@ class SliderView: ScrollView {
     }
 
     private fun smoothScrollToTop(endAction: () -> Unit) {
-        val animator = ValueAnimator.ofInt(scrollY, 0)
+        val animator = ValueAnimator.ofInt(scrollY, VERTICAL_PADDING.toPx())
         animator.duration = UnifyMotion.T3
         animator.interpolator = UnifyMotion.EASE_OVERSHOOT
         animator.addUpdateListener { animation -> scrollTo(0, animation.animatedValue as Int) }

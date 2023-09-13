@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdp.fintech.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.domain.usecase.FintechWidgetUseCase
+import com.tokopedia.pdp.fintech.domain.usecase.FintechWidgetV3UseCase
 import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class FintechWidgetViewModel @Inject constructor
     (
      val fintchWidgetUseCase: FintechWidgetUseCase,
+     val fintechWidgetV3UseCase: FintechWidgetV3UseCase,
      @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
 ) :
     BaseViewModel(dispatcher) {
