@@ -195,9 +195,11 @@ class ShopProductListResultActivity :
                 isShowShareIcon = false
             } else {
                 etalaseId = data?.pathSegments?.getOrNull(SHOWCASE_ID_POSITION_ON_APP_LINK).orEmpty()
+                isShowShareIcon = true
             }
         } else {
             etalaseId = "0"
+            isShowShareIcon = true
         }
     }
 
