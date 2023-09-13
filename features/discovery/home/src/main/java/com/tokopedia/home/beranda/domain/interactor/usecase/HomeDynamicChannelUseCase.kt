@@ -143,7 +143,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                         param = it.param,
                                         isOptional = it.isOptional,
                                         content = it.content,
-                                        status = it.status
+                                        status = it.status,
+                                        isShimmer = it.isShimmer,
                                     )
                                 },
                                 isProcessingAtf = true
@@ -1414,7 +1415,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             param = atfData.param,
                             isOptional = atfData.isOptional,
                             content = atfData.content,
-                            status = atfData.status
+                            status = atfData.status,
+                            isShimmer = atfData.isShimmer
                         )
                     }
                 )

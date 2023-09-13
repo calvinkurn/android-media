@@ -14,5 +14,6 @@ data class AtfCacheEntity(
         val param: String = "",
         val isOptional: Boolean = false,
         var content: String? = "",
-        var status: Int = AtfKey.STATUS_SUCCESS
+        var status: Int = AtfKey.STATUS_SUCCESS,
+        val isShimmer: Boolean = true,
 )

@@ -18,7 +18,7 @@ data class TodoWidgetListDataModel(
     val widgetParam: String = "",
     val verticalPosition: Int = 0,
     val status: Int = STATUS_LOADING,
-    val showShimmering: Boolean = false,
+    val showShimmering: Boolean = true,
 ) : HomeComponentVisitable, ImpressHolder() {
 
     companion object {

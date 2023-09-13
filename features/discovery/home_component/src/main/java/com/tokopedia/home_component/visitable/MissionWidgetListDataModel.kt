@@ -17,7 +17,7 @@ data class MissionWidgetListDataModel(
     val missionWidgetList: List<MissionWidgetDataModel> = listOf(),
     val verticalPosition: Int = 0,
     val status: Int = STATUS_LOADING,
-    val showShimmering: Boolean = false,
+    val showShimmering: Boolean = true,
 ) : HomeComponentVisitable, ImpressHolder() {
 
     companion object {
