@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -18,13 +17,10 @@ import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.convertTa
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.model.TickerModel
 import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
-import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsReceiverParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsSenderParam
@@ -58,7 +54,6 @@ class ManageAddressViewModel @Inject constructor(
     private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
     private val chooseAddressRepo: ChooseAddressRepository,
     private val chooseAddressMapper: ChooseAddressMapper,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
     private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
@@ -109,11 +104,6 @@ class ManageAddressViewModel @Inject constructor(
     private val _setChosenAddress = MutableLiveData<Result<ChosenAddressModel>>()
     val setChosenAddress: LiveData<Result<ChosenAddressModel>>
         get() = _setChosenAddress
-
-    private val _eligibleForAddressFeature =
-        MutableLiveData<Result<EligibleForAddressFeatureModel>>()
-    val eligibleForAddressFeature: LiveData<Result<EligibleForAddressFeatureModel>>
-        get() = _eligibleForAddressFeature
 
     private val _validateShareAddressState = MutableLiveData<ValidateShareAddressState>()
     val validateShareAddressState: LiveData<ValidateShareAddressState>
@@ -317,43 +307,6 @@ class ManageAddressViewModel @Inject constructor(
             _setChosenAddress.value =
                 Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
         }
-    }
-
-    fun checkUserEligibilityForAnaRevamp() {
-        eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                _eligibleForAddressFeature.value =
-                    Success(
-                        EligibleAddressFeatureMapper.mapResponseToModel(
-                            it,
-                            AddressConstant.ANA_REVAMP_FEATURE_ID,
-                            null
-                        )
-                    )
-            },
-            {
-                _eligibleForAddressFeature.value = Fail(it)
-            },
-            AddressConstant.ANA_REVAMP_FEATURE_ID
-        )
-    }
-
-    fun checkUserEligibilityForEditAddressRevamp(data: RecipientAddressModel) {
-        eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                _eligibleForAddressFeature.value = Success(
-                    EligibleAddressFeatureMapper.mapResponseToModel(
-                        it,
-                        AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID,
-                        data
-                    )
-                )
-            },
-            {
-                _eligibleForAddressFeature.value = Fail(it)
-            },
-            AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
-        )
     }
 
     private val onErrorGetStateChosenAddress = CoroutineExceptionHandler { _, e ->
