@@ -131,6 +131,7 @@ class OfferLandingPageFragment :
     private val olpAdapterTypeFactory by lazy {
         OlpAdapterTypeFactoryImpl(this, this, this)
     }
+
     private var sortId = ""
     private var sortName = ""
     private var tncBottomSheet: TncBottomSheet? = null
@@ -771,14 +772,15 @@ class OfferLandingPageFragment :
                     ogTitle = sharingData.offerData.title,
                     ogDescription = sharingData.offerData.description,
                     ogImageUrl = sharingData.offerData.imageUrl,
-                    deeplink = sharingData.offerData.deeplink
+                    deeplink = viewModel.getDeeplink(),
+                    desktopUrl = sharingData.offerData.deeplink
                 )
             )
             setUtmCampaignData(
-                "",
-                "",
-                "",
-                ""
+                pageName = "BMGM",
+                userId = userSession.userId.toString(),
+                pageId = viewModel.getPageIdForSharing(),
+                feature = "share"
             )
         }.show(childFragmentManager, this)
     }

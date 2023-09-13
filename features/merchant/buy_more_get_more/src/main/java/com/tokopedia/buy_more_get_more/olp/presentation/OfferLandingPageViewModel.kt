@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam
@@ -35,6 +37,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
@@ -151,7 +154,8 @@ class OfferLandingPageViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam())
+                val result =
+                    getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam())
                 _offeringInfo.postValue(result)
             },
             onError = {
@@ -328,5 +332,19 @@ class OfferLandingPageViewModel @Inject constructor(
                 tnc = tnc
             )
         }
+    }
+
+    fun getPageIdForSharing(): String {
+        return "BMGM-${userSession.userId}-${currentState.shopData.shopId}-${currentState.offerIds.firstOrNull()}-${Date()}-default"
+    }
+
+    fun getDeeplink(): String {
+        return UriUtil.buildUri(
+            ApplinkConst.BUY_MORE_GET_MORE_OLP,
+            currentState.offerIds.firstOrNull().toString(),
+            currentState.warehouseIds.firstOrNull().toString(),
+            currentState.productIds.firstOrNull().toString(),
+            currentState.shopData.shopId.toString()
+        )
     }
 }
