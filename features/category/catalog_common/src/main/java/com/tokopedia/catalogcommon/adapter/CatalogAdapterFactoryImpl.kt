@@ -15,6 +15,7 @@ import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
+import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
@@ -29,6 +30,7 @@ import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
 import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
+import com.tokopedia.catalogcommon.viewholder.SupportFeatureViewHolder
 import com.tokopedia.catalogcommon.viewholder.TextDescriptionViewHolder
 import com.tokopedia.catalogcommon.viewholder.TopFeatureViewHolder
 import com.tokopedia.catalogcommon.viewholder.TrustmakerViewHolder
@@ -55,6 +57,7 @@ class CatalogAdapterFactoryImpl(
             BannerViewHolder.LAYOUT -> BannerViewHolder(view)
             DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view)
             ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view)
+            SupportFeatureViewHolder.LAYOUT -> SupportFeatureViewHolder(view)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
@@ -114,5 +117,9 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: CharacteristicUiModel): Int {
         return CharacteristicViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: SupportFeaturesUiModel): Int {
+        return SupportFeatureViewHolder.LAYOUT
     }
 }

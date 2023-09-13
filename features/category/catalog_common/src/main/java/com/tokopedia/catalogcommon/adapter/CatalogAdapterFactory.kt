@@ -11,6 +11,7 @@ import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
+import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
@@ -31,5 +32,7 @@ interface CatalogAdapterFactory {
     fun type(uiModel: BannerCatalogUiModel): Int
     fun type(uiModel: DoubleBannerCatalogUiModel): Int
     fun type(uiModel: CharacteristicUiModel): Int
+    fun type(uiModel: SupportFeaturesUiModel): Int
+
 
 }

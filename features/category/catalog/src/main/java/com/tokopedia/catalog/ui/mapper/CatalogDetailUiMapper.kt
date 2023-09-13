@@ -23,6 +23,7 @@ import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
+import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
@@ -39,7 +40,7 @@ class CatalogDetailUiMapper @Inject constructor(
 ) {
     fun mapToWidgetVisitables(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
-    ): List<Visitable<*>>{
+    ): List<Visitable<*>> {
         val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
         return remoteModel.layouts?.filter {
             !it.data?.style?.isHidden.orTrue()
@@ -48,18 +49,31 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner()
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
-                WidgetTypes.CATALOG_CHARACTERISTIC.type -> { it.mapToCharacteristic(isDarkMode)}
+                WidgetTypes.CATALOG_CHARACTERISTIC.type -> {
+                    it.mapToCharacteristic(isDarkMode)
+                }
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> it.mapToBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation()
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
                 WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
-                WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> {
+                    it.mapToSupportFeature(remoteModel)
+                }
+
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
-                WidgetTypes.CATALOG_COMPARISON.type -> { DummyUiModel(content = it.name)}
-                WidgetTypes.CATALOG_SIMILAR_PRODUCT.type -> { DummyUiModel(content = it.name)}
-                else -> { BlankUiModel() }
+                WidgetTypes.CATALOG_COMPARISON.type -> {
+                    DummyUiModel(content = it.name)
+                }
+
+                WidgetTypes.CATALOG_SIMILAR_PRODUCT.type -> {
+                    DummyUiModel(content = it.name)
+                }
+
+                else -> {
+                    BlankUiModel()
+                }
             }.applyGlobalProperies(remoteModel, it)
         }.orEmpty()
     }
@@ -68,7 +82,7 @@ class CatalogDetailUiMapper @Inject constructor(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): CatalogDetailUiModel {
         val widgets = mapToWidgetVisitables(remoteModel)
-        return CatalogDetailUiModel (
+        return CatalogDetailUiModel(
             widgets = widgets,
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
             priceCtaProperties = mapToPriceCtaProperties(remoteModel),
@@ -88,7 +102,10 @@ class CatalogDetailUiMapper @Inject constructor(
         }?.data?.run {
             val marketPrice = priceCta.marketPrice.firstOrNull()
             PriceCtaProperties(
-                price = listOf(marketPrice?.minFmt.orEmpty(), marketPrice?.maxFmt.orEmpty()).joinToString(" - ") ,
+                price = listOf(
+                    marketPrice?.minFmt.orEmpty(),
+                    marketPrice?.maxFmt.orEmpty()
+                ).joinToString(" - "),
                 productName = priceCta.name,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
                 MethodChecker.getColor(context, textColorRes)
@@ -184,7 +201,7 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToCharacteristic(
         isDarkMode: Boolean
     ): CharacteristicUiModel {
-        val textColor = colorMapping(isDarkMode,DARK_COLOR_01, LIGHT_COLOR_01)
+        val textColor = colorMapping(isDarkMode, DARK_COLOR_01, LIGHT_COLOR_01)
         return CharacteristicUiModel(
             items = data?.characteristic.orEmpty().map {
                 CharacteristicUiModel.ItemCharacteristicUiModel(
@@ -267,8 +284,10 @@ class CatalogDetailUiMapper @Inject constructor(
             imageUrls = data?.doubleBanner?.map { it.imageUrl }.orEmpty()
         )
     }
-    
-    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToExpertReview(isDarkMode: Boolean): ExpertReviewUiModel {
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToExpertReview(
+        isDarkMode: Boolean
+    ): ExpertReviewUiModel {
         return ExpertReviewUiModel(
             content = data?.expertReview.orEmpty().map {
                 ExpertReviewUiModel.ItemExpertReviewUiModel(
@@ -299,6 +318,25 @@ class CatalogDetailUiMapper @Inject constructor(
                     )
                 )
             }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToSupportFeature(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): SupportFeaturesUiModel {
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
+        return SupportFeaturesUiModel(
+            items = data?.supportFeature?.map {
+                SupportFeaturesUiModel.ItemSupportFeaturesUiModel(
+                    id = it.desc,
+                    icon = it.iconUrl,
+                    title = it.title,
+                    description = it.desc,
+                    backgroundColor = colorMapping(isDarkMode, DARK_COLOR, LIGHT_COLOR, 20),
+                    descColor = colorMapping(isDarkMode, "#AEB2BF", "#6D7588"),
+                    titleColor = colorMapping(isDarkMode, "#F5F6FF", "#212121"),
+                )
+            }.orEmpty()
         )
     }
 
