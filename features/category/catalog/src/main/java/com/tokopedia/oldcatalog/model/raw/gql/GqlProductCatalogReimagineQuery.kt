@@ -243,6 +243,15 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
             title
           }
         }
+        ... on CatalogCompCtaPrice {
+          basicInfo {
+            name
+            marketPrice {
+              minFmt
+              maxFmt
+            }
+          }
+        }
       }
     }
   }
