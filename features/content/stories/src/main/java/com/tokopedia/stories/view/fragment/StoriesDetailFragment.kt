@@ -70,7 +70,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
         get() = arguments?.getString(STORY_GROUP_ID).orEmpty()
 
     private val isEligiblePage: Boolean
-        get() = groupId == viewModel.mGroupId
+        get() = groupId == viewModel.mGroup.groupId
 
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
