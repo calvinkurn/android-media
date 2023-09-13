@@ -11,13 +11,10 @@ import com.tokopedia.stories.internal.storage.StoriesSeenStorage
 import com.tokopedia.stories.widget.StoriesStatus
 import com.tokopedia.stories.widget.domain.GetShopStoriesStatusUseCase
 import com.tokopedia.stories.widget.domain.StoriesEntrySource
-import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
-import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.domain.TimeMillis
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -50,8 +47,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
         )
     }
 
-<<<<<<< HEAD
-    override suspend fun getStoriesWidgetState(
+    override suspend fun getStoriesWidgetInfo(
         entryPoint: StoriesEntrySource,
         shopIds: List<String>
     ): StoriesWidgetInfo = withContext(dispatchers.io) {

@@ -12,7 +12,7 @@ interface StoriesWidgetRepository {
     suspend fun getUpdatedSeenStatus(shopId: String, lastUpdated: TimeMillis): Boolean
 
     suspend fun getStoriesWidgetInfo(
-        entryPoint: StoriesEntryPoint,
+        entryPoint: StoriesEntrySource,
         shopIds: List<String>
     ): StoriesWidgetInfo
 }
