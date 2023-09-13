@@ -2,6 +2,7 @@ package com.tokopedia.stories.widget
 
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.domain.TimeMillis
@@ -11,7 +12,8 @@ import com.tokopedia.stories.widget.domain.TimeMillis
  */
 class StoriesWidgetFakeRepository(
     private val forbiddenEntryPoints: List<StoriesEntryPoint> = emptyList(),
-    initialHasSeenCoachMark: Boolean = false
+    initialHasSeenCoachMark: Boolean = false,
+    private val coachMarkText: String = ""
 ) : StoriesWidgetRepository {
 
     private var mHasSeenCoachMark = initialHasSeenCoachMark
@@ -31,12 +33,12 @@ class StoriesWidgetFakeRepository(
         return seenStatusMap[shopId].orFalse()
     }
 
-    override suspend fun getStoriesWidgetState(
+    override suspend fun getStoriesWidgetInfo(
         entryPoint: StoriesEntryPoint,
         shopIds: List<String>
-    ): List<StoriesWidgetState> {
-        if (forbiddenEntryPoints.contains(entryPoint)) return emptyList()
-        return stateMap.values.toList()
+    ): StoriesWidgetInfo {
+        if (forbiddenEntryPoints.contains(entryPoint)) return StoriesWidgetInfo.Default
+        return StoriesWidgetInfo(stateMap, coachMarkText)
     }
 
     fun setSeenStatus(shopId: String, hasBeenSeen: Boolean) {

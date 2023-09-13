@@ -27,6 +27,8 @@ class StoriesWidgetTest {
 
     private val modelBuilder = StoriesWidgetModelBuilder()
 
+    private val coachMarkText = "This is CoachMark"
+
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher.coroutineDispatcher)
@@ -200,7 +202,10 @@ class StoriesWidgetTest {
                     status = StoriesStatus.HasUnseenStories
                 )
             )
-            val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = false)
+            val repo = StoriesWidgetFakeRepository(
+                initialHasSeenCoachMark = false,
+                coachMarkText = coachMarkText
+            )
             repo.setStoriesWidgetState(shopStoriesStates)
 
             val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
@@ -213,7 +218,7 @@ class StoriesWidgetTest {
                         .hasAtLeastOneElementOfType(StoriesWidgetMessage.ShowCoachMark::class.java)
 
                     Assertions.assertThat(it.last())
-                        .isEqualTo(StoriesWidgetMessage.ShowCoachMark("1"))
+                        .isEqualTo(StoriesWidgetMessage.ShowCoachMark("1", coachMarkText))
                 }
         }
 
@@ -230,7 +235,10 @@ class StoriesWidgetTest {
                     status = StoriesStatus.HasUnseenStories
                 )
             )
-            val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = true)
+            val repo = StoriesWidgetFakeRepository(
+                initialHasSeenCoachMark = true,
+                coachMarkText = coachMarkText
+            )
             repo.setStoriesWidgetState(shopStoriesStates)
 
             val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
@@ -240,7 +248,7 @@ class StoriesWidgetTest {
             viewModel.uiMessage.createHelper(this)
                 .onValues {
                     Assertions.assertThat(it)
-                        .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark(""))
+                        .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark("", coachMarkText))
                 }
         }
 
@@ -257,7 +265,10 @@ class StoriesWidgetTest {
                     status = StoriesStatus.AllStoriesSeen
                 )
             )
-            val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = false)
+            val repo = StoriesWidgetFakeRepository(
+                initialHasSeenCoachMark = false,
+                coachMarkText = coachMarkText
+            )
             repo.setStoriesWidgetState(shopStoriesStates)
 
             val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
@@ -267,7 +278,7 @@ class StoriesWidgetTest {
             viewModel.uiMessage.createHelper(this)
                 .onValues {
                     Assertions.assertThat(it)
-                        .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark(""))
+                        .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark("", coachMarkText))
                 }
         }
 
@@ -284,7 +295,10 @@ class StoriesWidgetTest {
                     status = StoriesStatus.AllStoriesSeen
                 )
             )
-            val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = true)
+            val repo = StoriesWidgetFakeRepository(
+                initialHasSeenCoachMark = true,
+                coachMarkText = coachMarkText
+            )
             repo.setStoriesWidgetState(shopStoriesStates)
 
             val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
@@ -294,7 +308,7 @@ class StoriesWidgetTest {
             viewModel.uiMessage.createHelper(this)
                 .onValues {
                     Assertions.assertThat(it)
-                        .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark(""))
+                        .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark("", coachMarkText))
                 }
         }
 
@@ -310,7 +324,9 @@ class StoriesWidgetTest {
                 status = StoriesStatus.HasUnseenStories
             )
         )
-        val repo = StoriesWidgetFakeRepository()
+        val repo = StoriesWidgetFakeRepository(
+            coachMarkText = coachMarkText
+        )
         repo.setStoriesWidgetState(shopStoriesStates)
 
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
@@ -321,7 +337,7 @@ class StoriesWidgetTest {
             .onValues {
                 val lastValue = it.last()
                 Assertions.assertThat(lastValue)
-                    .isEqualTo(StoriesWidgetMessage.ShowCoachMark("1"))
+                    .isEqualTo(StoriesWidgetMessage.ShowCoachMark("1", coachMarkText))
 
                 viewModel.clearMessage(lastValue!!.id)
             }

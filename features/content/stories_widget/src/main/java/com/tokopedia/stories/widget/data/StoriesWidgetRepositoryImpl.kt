@@ -48,7 +48,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getStoriesWidgetState(
+    override suspend fun getStoriesWidgetInfo(
         entryPoint: StoriesEntryPoint,
         shopIds: List<String>
     ): StoriesWidgetInfo = withContext(dispatchers.io) {
@@ -93,7 +93,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
         }
 
         return@withContext StoriesWidgetInfo(
-            result,
+            result.associateBy { it.shopId },
             "Test CoachMark"
         )
     }
