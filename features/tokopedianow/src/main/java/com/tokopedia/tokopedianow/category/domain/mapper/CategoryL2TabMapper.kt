@@ -66,9 +66,17 @@ object CategoryL2TabMapper {
         val oosCategoryIds = tickerData.oosCategoryIds
 
         if(oosTickerList.isNotEmpty() && oosCategoryIds.contains(categoryIdL2)) {
-            add(TokoNowTickerUiModel(id = CategoryStaticLayoutId.TICKER_WIDGET_ID, tickers = oosTickerList))
+            add(TokoNowTickerUiModel(
+                id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
+                tickers = oosTickerList,
+                hasOutOfStockTicker = true
+            ))
         } else {
-            add(TokoNowTickerUiModel(id = CategoryStaticLayoutId.TICKER_WIDGET_ID, tickers = tickerList))
+            add(TokoNowTickerUiModel(
+                id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
+                tickers = tickerList,
+                hasOutOfStockTicker = false
+            ))
         }
     }
 

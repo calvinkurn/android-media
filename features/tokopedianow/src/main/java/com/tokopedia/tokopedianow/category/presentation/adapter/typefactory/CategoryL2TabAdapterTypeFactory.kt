@@ -35,6 +35,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultVie
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProgressBarViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder.TokoNowTickerTrackerListener
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
@@ -55,6 +56,7 @@ class CategoryL2TabAdapterTypeFactory(
     private var productRecommendationListener: TokoNowProductRecommendationListener? = null,
     private var categoryMenuListener: TokoNowCategoryMenuListener? = null,
     private var feedbackWidgetListener: FeedbackWidgetListener? = null,
+    private var tickerTrackerListener: TokoNowTickerTrackerListener? = null
 ) : BaseAdapterTypeFactory(),
     TokoNowTickerTypeFactory,
     CategoryL2TabAdapterFactory,
@@ -105,7 +107,7 @@ class CategoryL2TabAdapterTypeFactory(
                 TokoNowProgressBarViewHolder(view)
             }
             TokoNowTickerViewHolder.LAYOUT -> {
-                TokoNowTickerViewHolder(view)
+                TokoNowTickerViewHolder(view, tickerTrackerListener)
             }
             TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(
                 itemView = view,
@@ -157,5 +159,6 @@ class CategoryL2TabAdapterTypeFactory(
         productRecommendationListener = null
         categoryMenuListener = null
         feedbackWidgetListener = null
+        tickerTrackerListener = null
     }
 }

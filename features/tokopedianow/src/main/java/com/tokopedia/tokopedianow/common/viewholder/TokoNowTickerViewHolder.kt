@@ -6,17 +6,20 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowTickerBinding
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowTickerViewHolder(
-        itemView: View
+    itemView: View,
+    private val trackerListener: TokoNowTickerTrackerListener? = null
 ) : AbstractViewHolder<TokoNowTickerUiModel>(itemView), TickerPagerCallback {
 
     companion object {
@@ -39,6 +42,8 @@ class TokoNowTickerViewHolder(
                 data = data
             )
         }
+        setupTickerCallback(data)
+        addImpressionListener(data)
     }
 
     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
@@ -75,5 +80,29 @@ class TokoNowTickerViewHolder(
                 )
             )
         }
+    }
+
+    private fun addImpressionListener(data: TokoNowTickerUiModel) {
+        binding?.ticker?.addOnImpressionListener(data) {
+            trackerListener?.onImpressTicker(data)
+        }
+    }
+
+    private fun setupTickerCallback(data: TokoNowTickerUiModel) {
+        binding?.ticker?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+
+            }
+
+            override fun onDismiss() {
+                trackerListener?.onCloseTicker(data)
+            }
+        })
+    }
+
+    interface TokoNowTickerTrackerListener {
+        fun onImpressTicker(data: TokoNowTickerUiModel)
+
+        fun onCloseTicker(data: TokoNowTickerUiModel)
     }
 }

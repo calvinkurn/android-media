@@ -53,11 +53,13 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Compan
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_CARD_ITEM
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder.TokoNowTickerTrackerListener
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowL2TabBinding
@@ -266,7 +268,8 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             emptyStateNoResultListener = createEmptyStateNoResultListener(),
             productRecommendationListener = createProductRecommendationListener(),
             categoryMenuListener = createCategoryMenuListener(),
-            feedbackWidgetListener = createFeedbackWidgetListener()
+            feedbackWidgetListener = createFeedbackWidgetListener(),
+            tickerTrackerListener = createTickerTrackerListener()
         )
 
         adapterTypeFactory?.let {
@@ -553,6 +556,20 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun trackProductAddToCart(atcData: CategoryAtcTrackerModel) {
         categoryL2Analytic.productAnalytic.trackProductAddToCart(atcData)
+    }
+
+    private fun trackImpressionOutOfStockTicker() {
+        val categoryIdL2 = data.categoryIdL2
+        val warehouseIds = viewModel.getWarehouseIds()
+        categoryL2Analytic.tickerAnalytic
+            .sendImpressionOosTickerEvent(categoryIdL2, warehouseIds)
+    }
+
+    private fun trackClickCloseOutOfStockTicker() {
+        val categoryIdL2 = data.categoryIdL2
+        val warehouseIds = viewModel.getWarehouseIds()
+        categoryL2Analytic.tickerAnalytic
+            .sendClickCloseButtonOnOosTickerEvent(categoryIdL2, warehouseIds)
     }
 
     private fun createSpanSizeLookup() = object : GridLayoutManager.SpanSizeLookup() {
@@ -914,6 +931,22 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             override fun onFeedbackCtaClicked() {
                 TokoNowProductFeedbackBottomSheet().also {
                     it.showBottomSheet(activity?.supportFragmentManager, view)
+                }
+            }
+        }
+    }
+
+    private fun createTickerTrackerListener(): TokoNowTickerTrackerListener {
+        return object : TokoNowTickerTrackerListener {
+            override fun onImpressTicker(data: TokoNowTickerUiModel) {
+                if(data.hasOutOfStockTicker) {
+                    trackImpressionOutOfStockTicker()
+                }
+            }
+
+            override fun onCloseTicker(data: TokoNowTickerUiModel) {
+                if(data.hasOutOfStockTicker) {
+                    trackClickCloseOutOfStockTicker()
                 }
             }
         }
