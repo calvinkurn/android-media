@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.analytic.StoriesAnalytic
+import com.tokopedia.stories.analytic.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
@@ -202,6 +203,20 @@ class StoriesGroupFragment @Inject constructor(
         selectGroupPosition(state.selectedGroupPosition, false)
 
         showPageLoading(false)
+
+        analytic.sendViewStoryCircleEvent(
+            entryPoint = entryPoint,
+            partnerId = authorId,
+            currentCircle = state.groupHeader[state.selectedGroupPosition].groupId,
+            promotions = state.groupHeader.mapIndexed { index, storiesGroupHeader ->
+                StoriesEEModel(
+                    creativeName = "",
+                    creativeSlot = index.plus(1).toString(),
+                    itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.title} - $authorId",
+                    itemName = "/ - stories"
+                )
+            },
+        )
     }
 
     private fun selectGroupPosition(position: Int, showAnimation: Boolean) = with(binding.storiesGroupViewPager) {

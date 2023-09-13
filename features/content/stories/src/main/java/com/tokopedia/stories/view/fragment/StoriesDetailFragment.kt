@@ -26,6 +26,7 @@ import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.STORY_GROUP_ID
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
@@ -61,7 +62,20 @@ class StoriesDetailFragment @Inject constructor(
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
-            override fun onClickGroup(position: Int) {
+            override fun onClickGroup(position: Int, data: StoriesGroupHeader) {
+                analytic.sendClickStoryCircleEvent(
+                    entryPoint = mParentPage.entryPoint,
+                    partnerId = mParentPage.authorId,
+                    currentCircle = data.title,
+                    promotions = listOf(
+                        StoriesEEModel(
+                            creativeName = "",
+                            creativeSlot = position.plus(1).toString(),
+                            itemId = "${data.groupId} - ${data.title} - ${mParentPage.authorId}",
+                            itemName = "/ - stories"
+                        ),
+                    ),
+                )
                 viewModelAction(StoriesUiAction.SelectGroup(position, false))
             }
         })
@@ -144,50 +158,8 @@ class StoriesDetailFragment @Inject constructor(
         ) return
 
         mAdapter.setItems(state.groupHeader)
-        mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
+        mAdapter.notifyItemRangeInserted(0, state.groupHeader.size)
         binding.layoutDetailLoading.categoriesLoader.hide()
-
-        val templateTracker = state.groupItems[state.selectedGroupPosition].detail.detailItems[
-            state.groupItems[state.selectedGroupPosition].detail.selectedDetailPosition].meta
-            .templateTracker
-
-
-//        TODO on click group
-//        analytic.sendClickStoryCircleEvent(
-//            entryPoint = mParentPage.entryPoint,
-//            storiesId = "stories id",
-//            partnerId = mParentPage.authorId,
-//            creatorType = "asgc",
-//            contentType = "image",
-//            currentCircle = state.groupHeader[state.selectedGroupPosition].title,
-//            templateTracker = templateTracker,
-//            promotions = state.groupHeader.mapIndexed { index, storiesGroupHeader ->
-//                StoriesEEModel(
-//                    creativeName = storiesGroupHeader.title,
-//                    creativeSlot = index.plus(1).toString(),
-//                    itemId = "${state.groupHeader[state.selectedGroupPosition].title} - storycat impressed - ${mParentPage.authorId}",
-//                    itemName = "/ - $templateTracker - stories"
-//                )
-//            },
-//        )
-
-        analytic.sendViewStoryCircleEvent(
-            entryPoint = mParentPage.entryPoint,
-            storiesId = "stories id",
-            partnerId = mParentPage.authorId,
-            creatorType = "asgc",
-            contentType = "image",
-            currentCircle = state.groupHeader[state.selectedGroupPosition].title,
-            templateTracker = templateTracker,
-            promotions = state.groupHeader.mapIndexed { index, storiesGroupHeader ->
-                StoriesEEModel(
-                    creativeName = storiesGroupHeader.title,
-                    creativeSlot = index.plus(1).toString(),
-                    itemId = "${state.groupHeader[state.selectedGroupPosition].title} - storycat impressed - ${mParentPage.authorId}",
-                    itemName = "/ - $templateTracker - stories"
-                )
-            },
-        )
     }
 
     private fun renderStoriesDetail(

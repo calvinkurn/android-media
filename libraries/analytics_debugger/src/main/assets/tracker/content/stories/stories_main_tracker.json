@@ -7,7 +7,7 @@
             "eventAction": "view - story circle",
             "eventCategory": "stories room",
             "clientId": ".*",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .* - .*",
+            "eventLabel": ".* - .* - .*",
             "trackerId": "46043",
             "businessUnit": "content",
             "currentSite": "(tokopediamarketplace|tokopediaseller)",
@@ -18,7 +18,7 @@
                     "creative_name": ".*",
                     "creative_slot": ".*",
                     "item_id": ".* - .* - .*",
-                    "item_name": "/ - .* - stories"
+                    "item_name": "/ - stories"
                 }
             ]
         },
@@ -60,7 +60,7 @@
             "eventAction": "click - story circle",
             "eventCategory": "stories room",
             "clientId": ".*",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .* - .*",
+            "eventLabel": ".* - .* - .*",
             "trackerId": "46049",
             "businessUnit": "content",
             "currentSite": "(tokopediamarketplace|tokopediaseller)",
@@ -71,7 +71,7 @@
                     "creative_name": ".*",
                     "creative_slot": ".*",
                     "item_id": ".* - .* - .*",
-                    "item_name": "/ - .* - stories"
+                    "item_name": "/ - stories"
                 }
             ]
         },

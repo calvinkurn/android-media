@@ -36,12 +36,8 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker ID: 46043
     override fun sendViewStoryCircleEvent(
         entryPoint: String,
-        storiesId: String,
         partnerId: String,
-        creatorType: String,
-        contentType: String,
         currentCircle: String,
-        templateTracker: String,
         promotions: List<StoriesEEModel>,
     ) {
         val itemList = promotions.map {
@@ -59,7 +55,7 @@ class StoriesAnalyticImpl @Inject constructor(
             putString(EVENT_CATEGORY, "stories room")
             putString(
                 EVENT_LABEL,
-                "$entryPoint - $storiesId - $partnerId - asgc - image - $currentCircle - $templateTracker"
+                "$entryPoint - $partnerId - $currentCircle"
             )
             putString(TRACKER_ID, "46043")
             putString(BUSINESS_UNIT, "content")
@@ -130,12 +126,8 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker ID: 46049
     override fun sendClickStoryCircleEvent(
         entryPoint: String,
-        storiesId: String,
         partnerId: String,
-        creatorType: String,
-        contentType: String,
         currentCircle: String,
-        templateTracker: String,
         promotions: List<StoriesEEModel>,
     ) {
         val itemList = promotions.map {
@@ -153,7 +145,7 @@ class StoriesAnalyticImpl @Inject constructor(
             putString(EVENT_CATEGORY, "stories room")
             putString(
                 EVENT_LABEL,
-                "$entryPoint - $storiesId - $partnerId - asgc - image - $currentCircle - $templateTracker"
+                "$entryPoint - $partnerId - $currentCircle"
             )
             putString(TRACKER_ID, "46049")
             putString(BUSINESS_UNIT, "content")

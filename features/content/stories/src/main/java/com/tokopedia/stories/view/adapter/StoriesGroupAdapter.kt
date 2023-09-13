@@ -33,7 +33,7 @@ class StoriesGroupAdapter(
     }
 
     interface Listener {
-        fun onClickGroup(position: Int)
+        fun onClickGroup(position: Int, data: StoriesGroupHeader)
     }
 
     internal class StoriesGroupAdapterDelegate {
@@ -72,7 +72,7 @@ class StoriesGroupAdapter(
             else unSelectedView()
 
             binding.root.setOnClickListener {
-                listener.onClickGroup(bindingAdapterPosition)
+                listener.onClickGroup(bindingAdapterPosition, data)
             }
         }
 
