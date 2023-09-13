@@ -1,9 +1,9 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -27,6 +27,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
@@ -78,7 +79,15 @@ class CheckoutProductViewHolder(
         bundleBinding.tvProductNameBundle.text = "${product.quantity} x ${product.name}"
         bundleBinding.tvProductNameBundle.isVisible = true
         if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
-            product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bundleBinding.root.context) {
+            val px = EPHARMACY_ICON_SIZE.dpToPx(binding.root.context.resources.displayMetrics)
+            product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bundleBinding.root.context, {
+                this.overrideSize(
+                    Resize(
+                        px,
+                        px
+                    )
+                )
+            }) {
                 try {
                     bundleBinding.tvProductNameBundle.text =
                         SpannableStringBuilder("  ${product.quantity} x ${product.name}").apply {
@@ -86,7 +95,7 @@ class CheckoutProductViewHolder(
                                 ImageSpan(
                                     bundleBinding.root.context,
                                     it,
-                                    DynamicDrawableSpan.ALIGN_BASELINE
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) DynamicDrawableSpan.ALIGN_CENTER else DynamicDrawableSpan.ALIGN_BASELINE
                                 ),
                                 0,
                                 1,
@@ -165,15 +174,23 @@ class CheckoutProductViewHolder(
         productBinding.tvProductName.text = product.name
         productBinding.tvProductName.isVisible = true
         if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
-            product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(productBinding.root.context) {
+            val px = EPHARMACY_ICON_SIZE.dpToPx(binding.root.context.resources.displayMetrics)
+            product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(productBinding.root.context, {
+                this.overrideSize(
+                    Resize(
+                        px,
+                        px
+                    )
+                )
+            }) {
                 try {
                     productBinding.tvProductName.text =
                         SpannableStringBuilder("  ${product.name}").apply {
                             setSpan(
                                 ImageSpan(
                                     productBinding.root.context,
-                                    Bitmap.createScaledBitmap(it, EPHARMACY_ICON_SIZE.dpToPx(binding.root.context.resources.displayMetrics), EPHARMACY_ICON_SIZE.dpToPx(binding.root.context.resources.displayMetrics), false),
-                                    DynamicDrawableSpan.ALIGN_BASELINE
+                                    it,
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) DynamicDrawableSpan.ALIGN_CENTER else DynamicDrawableSpan.ALIGN_BASELINE
                                 ),
                                 0,
                                 1,
@@ -736,6 +753,6 @@ class CheckoutProductViewHolder(
         private const val VIEW_ALPHA_DISABLED = 0.5f
         private const val DEBOUNCE_TIME_ADDON = 500L
 
-        private const val EPHARMACY_ICON_SIZE = 10
+        private const val EPHARMACY_ICON_SIZE = 12
     }
 }
