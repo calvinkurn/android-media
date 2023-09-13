@@ -1,0 +1,81 @@
+{
+  "imagenerator_policy": {
+    "args": [
+      {
+        "key": "product_id",
+        "type": "string",
+        "required": true
+      },
+      {
+        "key": "has_campaign",
+        "type": "string",
+        "required": true
+      },
+      {
+        "key": "new_product_price",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "product_image_url",
+        "type": "string",
+        "required": true
+      },
+      {
+        "key": "product_rating",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "product_title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "key": "campaign_discount",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "campaign_info",
+        "type": "string",
+        "required": false
+      },
+      {
+        "key": "platform",
+        "type": "string",
+        "required": true
+      },
+      {
+        "key": "product_price",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "campaign_name",
+        "type": "string",
+        "required": false
+      },
+      {
+        "key": "has_ribbon",
+        "type": "bool",
+        "required": false
+      },
+      {
+        "key": "product_image_orientation",
+        "type": "string",
+        "required": false
+      },
+      {
+        "key": "is_bebas_ongkir",
+        "type": "bool",
+        "required": true
+      },
+      {
+        "key": "bebas_ongkir_type",
+        "type": "string",
+        "required": true
+      }
+    ]
+  }
+}

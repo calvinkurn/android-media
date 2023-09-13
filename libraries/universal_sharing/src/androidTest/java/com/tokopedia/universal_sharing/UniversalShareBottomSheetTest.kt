@@ -1,35 +1,29 @@
 package com.tokopedia.universal_sharing
 
-import android.content.Context
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.common.di.AppStubModule
-import com.tokopedia.common.di.DaggerAppStubComponent
-import com.tokopedia.common.stub.GraphqlRepositoryStub
-import com.tokopedia.common.stub.UniversalShareBottomSheetStub
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.common.stub.FakeActivityComponentFactory
+import com.tokopedia.common.stub.FakeGraphqlRepository
 import com.tokopedia.common.view.UniversalShareTestActivity
-import com.tokopedia.test.application.matcher.RecyclerViewMatcher
-import com.tokopedia.test.application.matcher.hasViewHolderOf
-import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.ChipViewHolder
+import com.tokopedia.universal_sharing.di.ActivityComponentFactory
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
-import com.tokopedia.universal_sharing.view.model.ChipProperties
-import com.tokopedia.universal_sharing.view.model.LinkProperties
-import org.hamcrest.CoreMatchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import timber.log.Timber
 
 class UniversalShareBottomSheetTest {
+
+    private lateinit var fakeGraphqlRepository: FakeGraphqlRepository
+    private lateinit var baseAppComponent: BaseAppComponent
+    private val testComponent = FakeActivityComponentFactory()
+    private lateinit var timber: MockTimber
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
@@ -38,125 +32,127 @@ class UniversalShareBottomSheetTest {
         false
     )
 
-    lateinit var repositoryStub: GraphqlRepositoryStub
-
-    private val applicationContext: Context
-        get() = InstrumentationRegistry
-            .getInstrumentation().context.applicationContext
-
     @Before
-    fun before() {
-        val fakeBaseAppComponent = DaggerAppStubComponent.builder().appStubModule(AppStubModule(applicationContext)).build()
-        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(fakeBaseAppComponent)
-        repositoryStub = fakeBaseAppComponent.graphqlRepository() as GraphqlRepositoryStub
-    }
+    fun setup() {
+        timber = MockTimber()
+        Timber.plant(timber)
+        baseAppComponent = stubAppGraphqlRepo()
 
-    @After
-    fun after() {
-        setMockParam(GraphqlRepositoryStub.MockParam.NO_PARAM)
+        //we will use this to manipulate on extract branch link
+        ActivityComponentFactory.instance = testComponent
+        fakeGraphqlRepository = baseAppComponent.graphqlRepository() as FakeGraphqlRepository
     }
 
     @Test
-    fun `bottom-sheet_show_affiliate_commission`() {
-        setMockParam(GraphqlRepositoryStub.MockParam.ELIGIBLE_COMMISSION)
+    fun sharingPDP_NonLoginUser_ImageOptionsFromMedia() {
+        testComponent.isLogin = false
 
-        runTest(
-            UniversalShareBottomSheetStub().apply {
-                enableAffiliateCommission(anyInput())
-            }
-        ) {
-            Espresso.onView(withId(R.id.affilate_commision)).check(matches(isDisplayed()))
+        universalSharingRobot {
+            runTest(UniversalShareModel.getDefaultPDPBottomSheet())
+            atScrollImagesOptions(3)
+            atClickOneImageOptions(2)
+        } validate {
+            shouldShowTitleBottomSheet()
+            shouldShowTitleHeadingImageOptions()
+            shouldShowImagesOptions(2)
+            shouldShowThumbnailShare()
+            shouldShowDefaultShareMediaList()
         }
     }
 
     @Test
-    fun `bottom-sheet_hide_affiliate_commission_when_not_eligible`() {
-        setMockParam(GraphqlRepositoryStub.MockParam.NOT_ELIGIBLE_COMMISSION)
+    fun sharingPDP_LoginUser_6ImagesOptionsFromMedia_UserNotRegisterOnAffiliate_NotEligibleAffiliate_EligibleCommission() {
+        testComponent.isLogin = true
+        fakeGraphqlRepository.mockParam = FakeGraphqlRepository.MockParam.NOT_REGISTERED
 
-        runTest(
-            UniversalShareBottomSheetStub().apply {
+        universalSharingRobot {
+            runTest(UniversalShareModel.getDefaultPDPBottomSheet().apply {
                 enableAffiliateCommission(anyInput())
-            }
-        ) {
-            Espresso.onView(withId(R.id.affilate_commision)).check(matches(not(isDisplayed())))
+            })
+            atScrollImagesOptions(3)
+            atClickOneImageOptions(2)
+        } validate {
+            shouldShowTitleBottomSheet()
+            shouldShowTitleHeadingImageOptions()
+            shouldShowImagesOptions(2)
+            shouldShowThumbnailShare()
+            shouldShowRegisterAffiliateTicker()
+            shouldShowDefaultShareMediaList()
         }
     }
 
     @Test
-    fun `bottom-sheet_able_click_the_chip_and_get_the_properties_on_listener`() {
-        val chips = chipComponentList()
+    fun sharingPDP_LoginUser_2ImagesOptionsFromMedia_UserRegisteredOnAffiliate_EligibleAffiliateAndCommission() {
+        testComponent.isLogin = true
+        fakeGraphqlRepository.mockParam = FakeGraphqlRepository.MockParam.ELIGIBLE_COMMISSION
+
+        universalSharingRobot {
+            runTest(UniversalShareModel.getPDPBottomSheetWith2ImagesOption().apply {
+                enableAffiliateCommission(anyInput())
+            })
+            atScrollImagesOptions(1)
+            atClickOneImageOptions(1)
+        } validate {
+            shouldShowTitleBottomSheet()
+            shouldShowTitleHeadingImageOptions()
+            shouldShowImagesOptions(1)
+            shouldShowThumbnailShare()
+            shouldShowCommissionAffiliate()
+            shouldShowDefaultShareMediaList()
+        }
+    }
+
+    @Test
+    fun sharingPDP_LoginUser_2ImagesOptionsFromMedia_UserRegisteredOnAffiliate_NotEligibleAffiliateAndCommission() {
+        testComponent.isLogin = true
+        fakeGraphqlRepository.mockParam = FakeGraphqlRepository.MockParam.NOT_ELIGIBLE_COMMISSION
+
+        universalSharingRobot {
+            runTest(UniversalShareModel.getPDPBottomSheetWith2ImagesOption().apply {
+                enableAffiliateCommission(anyInput())
+            })
+            atScrollImagesOptions(1)
+            atClickOneImageOptions(1)
+        } validate {
+            shouldShowTitleBottomSheet()
+            shouldShowTitleHeadingImageOptions()
+            shouldShowImagesOptions(1)
+            shouldShowThumbnailShare()
+            shouldHideCommissionAffiliate()
+            shouldShowDefaultShareMediaList()
+        }
+    }
+
+    @Test
+    fun sharingShop_LoginUser_ShowShopChips() {
+        testComponent.isLogin = true
         var onTitleChipPropertiesSelected = ""
 
-        runTest(
-            UniversalShareBottomSheetStub().apply {
-                setChipList(chips)
+        universalSharingRobot {
+            runTest(UniversalShareModel.getShopBottomSheet().apply {
                 onChipChangedListener {
                     onTitleChipPropertiesSelected = it.title
                 }
-            }
-        ) {
-            Espresso.onView(withId(R.id.lst_chip)).check(matches(isDisplayed()))
-            Espresso.onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(0)).perform(ViewActions.click())
-            assert(onTitleChipPropertiesSelected.isNotEmpty())
+            })
+            atScrollChips(4)
+            atClickChips(2)
+        } validate {
+            shouldShowTitleBottomSheet()
+            shouldShowTitleChipOptions()
+            shouldShowTabChips()
+            shouldShowSelectionTabChips(2)
+            hasTitleChipSharing(onTitleChipPropertiesSelected)
+            shouldShowThumbnailShare()
+            shouldShowShareMediaListIfImageOnlySharingOptions()
         }
     }
 
-    @Test
-    fun `bottom-sheet_show_chip_component_with_default_selection_state`() {
-        val chips = chipComponentList()
-            .toMutableList()
-            .also {
-                it.last().isSelected = true
-            }
-
-        runTest(
-            UniversalShareBottomSheetStub().apply {
-                setChipList(chips)
-            }
-        ) {
-            Espresso.onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(0))
-                .check(matches(hasDescendant(withId(R.id.view_chip))))
-
-            Espresso.onView(withId(R.id.lst_chip)).check(matches(isDisplayed()))
-        }
-    }
-
-    @Test
-    fun `bottom-sheet_show_chip_component_with_first_item_as_default_selection_state`() {
-        runTest(
-            UniversalShareBottomSheetStub().apply {
-                setChipList(chipComponentList())
-            }
-        ) {
-            Espresso.onView(withId(R.id.lst_chip)).check(matches(isDisplayed()))
-            Espresso.onView(withId(R.id.lst_chip)).check(matches(hasViewHolderOf(ChipViewHolder::class.java)))
-        }
-    }
-
-    private fun runTest(bottomSheet: UniversalShareBottomSheetStub, block: () -> Unit) {
+    private fun runTest(bottomSheet: UniversalShareBottomSheet) {
         activityTestRule.launchActivity(Intent())
         activityTestRule.activity.getShareFragment().showUniversalBottomSheet(bottomSheet)
-        block.invoke()
-        Thread.sleep(3000)
-        bottomSheet.dismiss()
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     private fun anyInput(): AffiliateInput = AffiliateInput()
-
-    private fun setMockParam(param: GraphqlRepositoryStub.MockParam) {
-        repositoryStub.mockParam = param
-    }
-
-    private fun chipComponentList() = listOf(
-        ChipProperties(
-            id = 1,
-            title = "Foo",
-            properties = LinkProperties()
-        ),
-        ChipProperties(
-            id = 2,
-            title = "Bar",
-            properties = LinkProperties()
-        ),
-    )
 }

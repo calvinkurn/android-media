@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.universal_sharing.test.R
+import com.tokopedia.universal_sharing.test.R as universal_sharingtestR
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 
 class UniversalShareFragmentTest : Fragment() {
@@ -16,7 +16,7 @@ class UniversalShareFragmentTest : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_universal_share_test, container, false)
+        return inflater.inflate(universal_sharingtestR.layout.fragment_universal_share_test, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,6 +28,6 @@ class UniversalShareFragmentTest : Fragment() {
     }
 
     companion object {
-        private val TAG = "UniversalShareTestActivity"
+        private const val TAG = "UniversalShareTestActivity"
     }
 }

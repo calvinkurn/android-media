@@ -29,7 +29,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -54,10 +53,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
-import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
+import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.di.UniversalShareComponent
-import com.tokopedia.universal_sharing.di.UniversalShareModule
-import com.tokopedia.universal_sharing.di.UniversalShareUseCaseModule
 import com.tokopedia.universal_sharing.model.BroadcastChannelModel
 import com.tokopedia.universal_sharing.model.CampaignStatus
 import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
@@ -97,8 +94,8 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.iconunify.R as unifyIconR
-import com.tokopedia.universal_sharing.R as sharingR
+import com.tokopedia.iconunify.R as iconunifyR
+import com.tokopedia.universal_sharing.R as universal_sharingR
 
 /**
  * Created by Rafli Syam 20/07/2020
@@ -255,8 +252,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     }
 
     override fun getComponent(): UniversalShareComponent? {
-        return DaggerUniversalShareComponent.builder().baseAppComponent((LinkerManager.getInstance().context.applicationContext as BaseMainApplication).baseAppComponent)
-            .universalShareModule(UniversalShareModule()).universalShareUseCaseModule(UniversalShareUseCaseModule()).build()
+        return ActivityComponentFactory.instance.createActivityComponent()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -412,7 +408,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             savedImagePath = screenShotImagePath
             thumbNailImageUrl = screenShotImagePath
             thumbNailImageUrlFallback = tnImage
-            thumbNailTitle = getString(sharingR.string.screenshoot_success_title)
+            thumbNailTitle = getString(universal_sharingR.string.screenshoot_success_title)
             imageOptionsList = null
         } else {
             thumbNailTitle = tnTitle
@@ -590,77 +586,77 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         val context = LinkerManager.getInstance().context
         when (model.getCampaignStatus()) {
             CampaignStatus.UPCOMING -> {
-                if (model.discountPercentage != 0F) {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_upcoming_discount,
+                personalizedMessage = if (model.discountPercentage != 0F) {
+                    context.getString(
+                        universal_sharingR.string.personalized_campaign_message_upcoming_discount,
                         model.getStartDateCampaign(),
                         model.getDiscountString(),
                         model.price
                     )
                 } else {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_upcoming_without_discount,
+                    context.getString(
+                        universal_sharingR.string.personalized_campaign_message_upcoming_without_discount,
                         model.getStartDateCampaign()
                     )
                 }
                 personalizedImage = context.getString(
-                    com.tokopedia.universal_sharing.R.string.start_personalized_campaign_info,
+                    universal_sharingR.string.start_personalized_campaign_info,
                     DateUtil.getDateCampaignInfo(model.startTime)
                 )
             }
             CampaignStatus.ON_GOING -> {
-                if (model.discountPercentage != 0F) {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_ongoing_discount,
+                personalizedMessage = if (model.discountPercentage != 0F) {
+                    context.getString(
+                        universal_sharingR.string.personalized_campaign_message_ongoing_discount,
                         model.getDiscountString(),
                         model.price
                     )
                 } else {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_ongoing_without_disc,
+                    context.getString(
+                        universal_sharingR.string.personalized_campaign_message_ongoing_without_disc,
                         model.price
                     )
                 }
                 personalizedImage = context.getString(
-                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    universal_sharingR.string.ongoing_personalized_campaign_info,
                     DateUtil.getDateCampaignInfo(model.endTime)
                 )
             }
             CampaignStatus.END_SOON -> {
-                if (model.discountPercentage != 0F) {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_endsoon_discount,
+                personalizedMessage = if (model.discountPercentage != 0F) {
+                    context.getString(
+                        universal_sharingR.string.personalized_campaign_message_endsoon_discount,
                         model.getMinuteLeft().toString(),
                         model.getDiscountString(),
                         model.price
                     )
                 } else {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_endsoon_without_disc,
+                    context.getString(
+                        universal_sharingR.string.personalized_campaign_message_endsoon_without_disc,
                         model.getMinuteLeft().toString(),
                         model.getDiscountString()
                     )
                 }
                 personalizedImage = context.getString(
-                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    universal_sharingR.string.ongoing_personalized_campaign_info,
                     DateUtil.getDateCampaignInfo(model.endTime)
                 )
             }
             CampaignStatus.END_BY_A_WEEK -> {
-                if (model.discountPercentage != 0F) {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_endweek_discount,
+                personalizedMessage = if (model.discountPercentage != 0F) {
+                    context.getString(
+                        universal_sharingR.string.personalized_campaign_message_endweek_discount,
                         model.getDiscountString(),
                         model.price
                     )
                 } else {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_ongoing_without_disc,
+                    context.getString(
+                        universal_sharingR.string.personalized_campaign_message_ongoing_without_disc,
                         model.price
                     )
                 }
                 personalizedImage = context.getString(
-                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    universal_sharingR.string.ongoing_personalized_campaign_info,
                     DateUtil.getDateCampaignInfo(model.endTime)
                 )
             }
@@ -699,9 +695,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             BroadcastChannelModel(
                 id = id,
                 type = type,
-                title = context.getString(com.tokopedia.universal_sharing.R.string.title_broadcast),
-                description = context.getString(com.tokopedia.universal_sharing.R.string.description_broadcast),
-                imageResDrawable = com.tokopedia.universal_sharing.R.drawable.ic_broadcast,
+                title = context.getString(universal_sharingR.string.title_broadcast),
+                description = context.getString(universal_sharingR.string.description_broadcast),
+                imageResDrawable = universal_sharingR.drawable.ic_broadcast,
                 callback = callback
             )
         )
@@ -870,7 +866,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.WHATSAPP
                 shareOnlyLink = isImageOnlySharing
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_whatsapp) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_whatsapp) }
             }
         )
         socialMediaList.add(
@@ -892,7 +888,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     UniversalShareConst.PackageChannel.PACKAGE_NAME_FACEBOOK,
                     UniversalShareConst.PackageChannel.FACEBOOK_FEED_ACTIVITY
                 )
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_facebook) }
             }
         )
         if (!TextUtils.isEmpty(savedImagePath)) {
@@ -908,7 +904,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_STORY
                     shareOnlyLink = true
                     appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = UniversalShareConst.PackageChannel.FACEBOOK_STORY_INTENT_ACTION)
-                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook_story) }
+                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_facebook_story) }
                 }
             )
             socialMediaList.add(
@@ -922,7 +918,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_IG_FEED)
                     shareOnlyLink = true
                     appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
-                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram) }
+                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_instagram) }
                 }
             )
             socialMediaList.add(
@@ -936,7 +932,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_STORY
                     shareOnlyLink = true
                     appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
-                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram_story) }
+                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_instagram_story) }
                 }
             )
         } else {
@@ -951,7 +947,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_IG_DM)
                     shareOnlyLink = false
                     appIntent = getAppIntent(MimeType.TEXT, packageName)
-                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram_dm) }
+                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_instagram_dm) }
                 }
             )
         }
@@ -970,7 +966,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 } else {
                     appIntent = getAppIntent(MimeType.TEXT, packageName)
                 }
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_line) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_line) }
             }
         )
         socialMediaList.add(
@@ -984,7 +980,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_TWITTER)
                 shareOnlyLink = isImageOnlySharing
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_twitter) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_twitter) }
             }
         )
         socialMediaList.add(
@@ -998,7 +994,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_TELEGRAM)
                 shareOnlyLink = isImageOnlySharing
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_telegram) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_telegram) }
             }
         )
         socialMediaList.sortBy { it.socialMediaOrderingScore }
@@ -1496,7 +1492,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                                 linkerShareResult.url
                             )
                         )
-
                         dismiss()
                     }
 
