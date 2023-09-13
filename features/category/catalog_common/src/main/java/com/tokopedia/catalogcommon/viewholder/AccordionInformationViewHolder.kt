@@ -57,7 +57,7 @@ class AccordionInformationViewHolder(itemView: View) :
                 element.widgetTextColor.orDefaultColor(itemView.context),
                 PorterDuff.Mode.SRC_IN
             )
-            binding?.accordion?.get(index)?.findViewById<Typography>(R.id.accordion_title)
+            binding?.accordion?.get(index)?.findViewById<Typography>(com.tokopedia.accordion.R.id.accordion_title)
                 ?.setTextColor(item.textTitleColor.orDefaultColor(itemView.context))
         }
 
