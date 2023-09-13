@@ -39,6 +39,7 @@ internal object CdnTracker : CoroutineScope {
         )
     }
 
+    @JvmStatic
     fun log(
         context: Context,
         response: Response
