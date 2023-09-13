@@ -95,13 +95,13 @@ class TokoNowRepurchaseViewHolder(
     }
 
     private fun showAllView() {
-        vsTitle?.show()
+        tvTitle?.show()
         rvProduct?.show()
         tvSeeAll?.show()
     }
 
     private fun hideAllView() {
-        vsTitle?.hide()
+        tvTitle?.hide()
         rvProduct?.hide()
         tvSeeAll?.hide()
     }

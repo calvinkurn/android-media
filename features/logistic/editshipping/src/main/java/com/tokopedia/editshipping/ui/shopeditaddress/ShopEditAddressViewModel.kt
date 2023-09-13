@@ -30,8 +30,8 @@ class ShopEditAddressViewModel @Inject constructor(
     val districtLocation: LiveData<Result<DistrictLocation>>
         get() = _districtLocation
 
-    private val _saveEditShop = MutableLiveData<ShopEditAddressState<ShopLocUpdateWarehouse>>()
-    val saveEditShop: LiveData<ShopEditAddressState<ShopLocUpdateWarehouse>>
+    private val _saveEditShop = MutableLiveData<ShopEditAddressState<String>>()
+    val saveEditShop: LiveData<ShopEditAddressState<String>>
         get() = _saveEditShop
 
     private val _zipCodeList = MutableLiveData<Result<KeroDistrictRecommendation>>()
@@ -79,16 +79,16 @@ class ShopEditAddressViewModel @Inject constructor(
         _saveEditShop.value = ShopEditAddressState.Loading
         viewModelScope.launch(onErrorSaveEditShopLocation) {
             val saveEditLocation = shopRepo.saveEditShopLocation(
-                shopId,
-                warehouseId,
-                warehouseName,
-                districtId,
-                latLon,
-                addressDetail,
-                postalCode
+                shopId = shopId,
+                warehouseId = warehouseId,
+                warehouseName = warehouseName,
+                districtId = districtId,
+                latLon = latLon,
+                addressDetail = addressDetail,
+                postalCode = postalCode
             )
             _saveEditShop.value =
-                ShopEditAddressState.Success(saveEditLocation.shopLocUpdateWarehouse)
+                ShopEditAddressState.Success(warehouseName)
         }
     }
 

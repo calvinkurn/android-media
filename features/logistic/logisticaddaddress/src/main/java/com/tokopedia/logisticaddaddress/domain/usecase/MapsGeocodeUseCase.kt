@@ -6,8 +6,8 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.logisticaddaddress.data.entity.mapsgeocode.MapsGeocodeParam
-import com.tokopedia.logisticaddaddress.data.entity.mapsgeocode.MapsGeocodeResponse
+import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeParam
+import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeResponse
 import javax.inject.Inject
 
 class MapsGeocodeUseCase @Inject constructor(

@@ -226,7 +226,7 @@ class TokoNowCategoryViewModel @Inject constructor(
                 src = SRC_DIRECTORY_TOKONOW,
                 userId = getUserId(),
                 addressData = getAddressData()
-            )
+            ).generateQueryParams()
 
             val response = getProductAdsUseCase.execute(params)
 

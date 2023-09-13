@@ -393,7 +393,7 @@ open class ChatListInboxFragment :
 
     private fun shouldShowBroadcastFabNewLabel(): Boolean {
         val labelCache = viewModel.getBooleanCache(
-            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}"
         )
         val rollenceValue = getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
         return labelCache && rollenceValue
@@ -1064,7 +1064,7 @@ open class ChatListInboxFragment :
         }
     }
 
-    override fun getRollenceValue(key: String): Boolean {
+    private fun getRollenceValue(key: String): Boolean {
         return try {
             abTestPlatform.getString(key, "").isNotEmpty()
         } catch (t: Throwable) {

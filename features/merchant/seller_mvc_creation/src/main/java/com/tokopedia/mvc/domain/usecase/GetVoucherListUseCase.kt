@@ -49,6 +49,7 @@ class GetVoucherListUseCase @Inject constructor(
                         voucher_discount_amt_max
                         voucher_minimum_amt
                         voucher_quota
+                        galadriel_voucher_id
                         confirmed_global_quota
                         booked_global_quota
                         voucher_start_time

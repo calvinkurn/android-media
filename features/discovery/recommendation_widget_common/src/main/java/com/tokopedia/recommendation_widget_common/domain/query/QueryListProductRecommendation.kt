@@ -38,6 +38,7 @@ object QueryListProductRecommendation {
         "                            apps\n" +
         "                          }\n" +
         "                        }\n" +
+        "                        endDate\n" +
         "                      }\n" +
         "                      recommendation {\n" +
         "                        id\n" +

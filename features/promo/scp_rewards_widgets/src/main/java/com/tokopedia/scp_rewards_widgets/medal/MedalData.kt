@@ -51,7 +51,8 @@ data class Cta(
     val text: String? = null,
     val isShown: Boolean? = false,
     val appLink: String? = null,
-    val deepLink: String? = null
+    val deepLink: String? = null,
+    val style: String? = null,
 )
 
 class MedalError(val imageUrl: String?) : Visitable<MedalViewTypeFactory> {
