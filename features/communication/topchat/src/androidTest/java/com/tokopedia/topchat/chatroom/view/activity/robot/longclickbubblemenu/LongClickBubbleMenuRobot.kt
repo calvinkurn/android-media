@@ -6,13 +6,15 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.allOf
+import com.tokopedia.dialog.R as dialogR
 
 object LongClickBubbleMenuRobot {
 
     fun clickLongClickMenuItemAt(position: Int) {
         onView(
-            withRecyclerView(R.id.rvMenu).atPositionOnView(
-                position, R.id.ll_long_click_menu_item
+            withRecyclerView(R.id.rv_menu).atPositionOnView(
+                position,
+                R.id.ll_long_click_menu_item
             )
         ).perform(click())
     }
@@ -20,7 +22,7 @@ object LongClickBubbleMenuRobot {
     fun clickDeleteMsgMenu() {
         onView(
             allOf(
-                isDescendantOfA(withId(R.id.rvMenu)),
+                isDescendantOfA(withId(R.id.rv_menu)),
                 withText(R.string.title_topchat_delete_msg)
             )
         ).perform(click())
@@ -29,10 +31,9 @@ object LongClickBubbleMenuRobot {
     fun clickConfirmDeleteMsgDialog() {
         onView(
             allOf(
-                withId(com.tokopedia.dialog.R.id.dialog_btn_primary),
+                withId(dialogR.id.dialog_btn_primary),
                 withText(R.string.topchat_action_delete_msg_bubble_confirmation)
             )
         ).perform(click())
     }
-
 }

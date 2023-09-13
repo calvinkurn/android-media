@@ -13,21 +13,22 @@ object LazyLoadDynamicChannelHelper {
         val dataList: MutableList<MissionWidgetDataModel> = mutableListOf()
         for (pojo in missionWidgetList) {
             dataList.add(
-                    MissionWidgetDataModel(
-                        id = pojo.id,
-                        title = pojo.title,
-                        subTitle = pojo.subTitle,
-                        appLink = pojo.appLink,
-                        imageURL = pojo.imageURL,
-                        pageName = pojo.pageName,
-                        categoryID = pojo.categoryID,
-                        productID = pojo.productID,
-                        productName = pojo.productName,
-                        recommendationType = pojo.recommendationType,
-                        buType = pojo.buType,
-                        isTopads = pojo.isTopads,
-                        isCarousel = pojo.isCarousel
-                    )
+                MissionWidgetDataModel(
+                    id = pojo.id,
+                    title = pojo.title,
+                    subTitle = pojo.subTitle,
+                    appLink = pojo.appLink,
+                    imageURL = pojo.imageURL,
+                    pageName = pojo.pageName,
+                    categoryID = pojo.categoryID,
+                    productID = pojo.productID,
+                    productName = pojo.productName,
+                    recommendationType = pojo.recommendationType,
+                    buType = pojo.buType,
+                    isTopads = pojo.isTopads,
+                    isCarousel = pojo.isCarousel,
+                    shopId = pojo.shopId
+                )
             )
         }
         return dataList

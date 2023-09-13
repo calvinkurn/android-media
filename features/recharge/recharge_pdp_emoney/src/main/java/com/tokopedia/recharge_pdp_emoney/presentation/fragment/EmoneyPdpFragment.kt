@@ -2,15 +2,21 @@ package com.tokopedia.recharge_pdp_emoney.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -32,13 +38,17 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -49,6 +59,7 @@ import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentPagerAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
+import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
@@ -80,7 +91,9 @@ open class EmoneyPdpFragment :
     EmoneyPdpHeaderViewWidget.ActionListener,
     EmoneyPdpInputCardNumberWidget.ActionListener,
     EmoneyPdpProductViewHolder.ActionListener,
-    EmoneyPdpBottomCheckoutWidget.ActionListener {
+    EmoneyPdpBottomCheckoutWidget.ActionListener,
+    EmoneyMenuBottomSheets.MenuListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -117,6 +130,7 @@ open class EmoneyPdpFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         arguments?.let {
             detailPassData = it.getParcelable(EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA)
                 ?: DigitalCategoryDetailPassData.Builder().build()
@@ -152,8 +166,8 @@ open class EmoneyPdpFragment :
             issuerId = detailPassData.operatorId ?: ""
         }
 
+        emoneyPdpViewModel.getDppoConsent()
         loadData()
-
         renderCardState(detailPassData)
 
         binding.emoneyPdpHeaderView.actionListener = this
@@ -163,6 +177,21 @@ open class EmoneyPdpFragment :
         binding.emoneyBuyWidget.listener = this
 
         setAnimationAppBarLayout()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        val dppoConsentData = emoneyPdpViewModel.dppoConsent.value
+        inflater.inflate(R.menu.menu_emoney, menu)
+        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+            menu.showConsentIcon()
+            menu.setupConsentIcon(dppoConsentData.data.description)
+            menu.setupKebabIcon()
+        } else {
+            menu.hideConsentIcon()
+            menu.setupKebabIcon()
+        }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -259,6 +288,7 @@ open class EmoneyPdpFragment :
             Observer {
                 when (it) {
                     is Success -> {
+                        showProducts()
                         renderProducts(
                             it.data.product.dataCollections.firstOrNull()?.products
                                 ?: listOf()
@@ -291,6 +321,15 @@ open class EmoneyPdpFragment :
             renderErrorMessage(MessageErrorException(it.title))
             binding.emoneyFullPageLoadingLayout.hide()
             binding.emoneyBuyWidget.onBuyButtonLoading(false)
+        }
+
+        emoneyPdpViewModel.dppoConsent.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {}
+            }
         }
     }
 
@@ -697,7 +736,7 @@ open class EmoneyPdpFragment :
             product.attributes.pricePlain,
             userSession.userId
         )
-        val bottomSheet = EmoneyProductDetailBottomSheet(product)
+        val bottomSheet = EmoneyProductDetailBottomSheet.newBottomSheet(product)
         bottomSheet.show(childFragmentManager, TAG)
     }
 
@@ -804,6 +843,83 @@ open class EmoneyPdpFragment :
         }
     }
 
+    override fun onOrderListClicked() {
+        context?.let {
+            if (userSession.isLoggedIn) {
+                RouteManager.route(it, ApplinkConst.DIGITAL_ORDER)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                startActivityForResult(intent, EmoneyPdpActivity.REQUEST_CODE_LOGIN_EMONEY)
+            }
+        }
+    }
+
+    override fun onHelpClicked() {
+        context?.let {
+            RouteManager.route(it, ApplinkConst.CONTACT_US_NATIVE)
+        }
+    }
+
+    private fun showBottomMenus() {
+        val menuBottomSheet = EmoneyMenuBottomSheets.newInstance()
+        menuBottomSheet.listener = this
+        menuBottomSheet.setShowListener {
+            menuBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        menuBottomSheet.show(childFragmentManager, EmoneyPdpActivity.TAG_EMONEY_MENU)
+    }
+
+    private fun Menu.hideConsentIcon() {
+        findItem(R.id.emoney_action_dppo_consent).isVisible = false
+    }
+
+    private fun Menu.showConsentIcon() {
+        findItem(R.id.emoney_action_dppo_consent).isVisible = true
+    }
+
+    private fun Menu.setupConsentIcon(description: String) {
+        if (description.isNotEmpty()) {
+            context?.let { ctx ->
+                val iconUnify = getIconUnifyDrawable(
+                    ctx,
+                    IconUnify.INFORMATION,
+                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                )
+                iconUnify?.toBitmap()?.let {
+                    getItem(0).setOnMenuItemClickListener {
+                        val bottomSheet = DigitalDppoConsentBottomSheet(description)
+                        bottomSheet.show(childFragmentManager)
+                        true
+                    }
+                    getItem(0).icon = BitmapDrawable(
+                        ctx.resources,
+                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun Menu.setupKebabIcon() {
+        context?.let { ctx ->
+            val iconUnify = getIconUnifyDrawable(
+                ctx,
+                IconUnify.MENU_KEBAB_VERTICAL,
+                ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+            )
+            iconUnify?.toBitmap()?.let {
+                getItem(1).setOnMenuItemClickListener {
+                    showBottomMenus()
+                    true
+                }
+                getItem(1).icon = BitmapDrawable(
+                    ctx.resources,
+                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                )
+            }
+        }
+    }
+
     companion object {
         private const val TAG = "EmoneyProductDetailBottomSheet"
 
@@ -830,6 +946,8 @@ open class EmoneyPdpFragment :
         const val ISSUER_NAME_EMONEY = "emoney"
         const val ISSUER_NAME_BRIZZI = "brizzi"
         const val ISSUER_NAME_TAPCASH = "tapcash"
+
+        private const val TOOLBAR_ICON_SIZE = 64
 
         fun newInstance(digitalCategoryDetailPassData: DigitalCategoryDetailPassData): EmoneyPdpFragment {
             val fragment = EmoneyPdpFragment()

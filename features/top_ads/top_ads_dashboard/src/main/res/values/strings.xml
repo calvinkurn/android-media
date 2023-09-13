@@ -266,6 +266,7 @@
     <string name="topads_dash_insight_dialog_desc">Cek rekomendasi berikut agar performa iklanmu meningkat.</string>
     <string name="topads_dash_insight_dialog_btn">Cek Rekomendasi</string>
     <string name="topads_dash_product_suggestion_insight_count">Produk Berpotensi (%d)</string>
+    <string name="topads_insight_centre_suggestion_insight_count">Ada %d produk berpotensi</string>
     <string name="topads_dash_bid_suggestion_insight_count">Anggaran Harian  (%d)</string>
     <string name="topads_dash_insight_widget_title">Rekomendasi TopAds</string>
     <string name="topads_dash_insight_widget_desc">Performa iklanmu kurang maksimal? Rekomendasi berikut bisa meningkatkan performa iklanmu.</string>
@@ -524,6 +525,115 @@
     <string name="top_ads_tool_tip_auto_description">Fitur yang membantumu untuk tambah kredit secara otomatis, agar iklanmu terus aktif.</string>
     <string name="top_ads_tool_tip_frequency_description">Seberapa sering tambah kredit dalam sehari untuk menjaga iklanmu terus aktif.</string>
     <string name="top_ads_tool_tip_max_credit_limit_description">Kredit TopAds akan bertambah secara otomatis setiap kreditmu kurang dari angka yang tertera di sini.</string>
+    <string name="topads_layout_chips_text">Semua</string>
 
+<!--    <string name="topads_group_card_insight_count_format">%s saran untukmu</string>-->
+    <string name="topads_group_card_insight_count_format"><![CDATA["<b>%s</b> ]]> saran untukmu</string>
+    <string name="topads_beranda_saran">Saran Topads</string>
+    <string name="topads_beranda_saran_see_full">Lihat Selengkapnya</string>
+    <string name="iklan_produk_subtitle">Iklan Produk</string>
+    <string name="iklan_toko_subtitle">Iklan Toko</string>
+
+
+<!--    Saran Topads-->
+    <string name="topads_dash_suggestion">Saran Topads</string>
+    <string name="topads_click_saran_topads">Cek Saran TopAds</string>
+    <string name="topads_read_saran_articles">Baca Artikel</string>
+    <string name="topads_insight_number_of_searches">Jumlah Pencarian</string>
+    <string name="topads_insight_show_potential">Potensi Tampil</string>
+    <string name="topads_insight_keyword_cost">Biaya Kata Kunci</string>
+    <string name="topads_insight_advertising_cost">Biaya Iklan</string>
+    <string name="topads_what_is_saran_topads_question">Apa itu Saran TopAds?</string>
+    <string name="topads_insight_current_cost">Biaya Saat Ini</string>
+    <string name="topads_insight_recommended">Disarankan</string>
+    <string name="topads_insight_current_budget">Anggaran Saat Ini</string>
+    <string name="topads_insight_daily_budget">Anggaran Harian</string>
+    <string name="topads_insight_savings_potential">Potensi Hemat</string>
+    <string name="topads_insight_ad_type_product">Iklan Produk</string>
+    <string name="topads_insight_ad_type_shop">Iklan Toko</string>
+    <string name="topads_insight_ad_type">Tipe Iklan</string>
+    <string name="topads_insight_ad_group">Grup iklan</string>
+    <string name="topads_insight_performance_appears">Performa Tampil</string>
+    <string name="topads_insight_top_frequently">Sering Teratas</string>
+    <string name="topads_insight_top_rarity">Jarang Teratas</string>
+    <string name="topads_insight_lose_competition">Kalah Saing</string>
+    <string name="topads_insight_not_rated">Belum Dinilai</string>
+    <string name="topads_insight_performance_count">%sx teratas dari %s total tampil</string>
+    <string name="topads_insight_performance_not_rated_desc">Data sedang diproses. Cek lagi nanti, ya.</string>
+    <string name="topads_insight_performance_info_heading">Perhitungan dari persentase jumlah tampil teratas dibagi total tampil.</string>
+    <string name="wide">Luas</string>
+    <string name="specific">Spesifik</string>
+
+    <string name="topads_url_format_template">%s?url=%s</string>
+    <string name="unoptimised_group_heading_group_detail">Coba cek dan maksimalkan iklanmu yang lain, ya.</string>
+    <string name="topads_insight_no_active_ads_title">Kamu belum punya iklan yang lagi aktif, nih~</string>
+    <string name="topads_insight_max_out_title">Yay, semua iklanmu sudah maksimal!</string>
+    <string name="topads_insight_title_improve_ads_performance">Tingkatkan performa %s grup iklanmu, yuk!</string>
+    <string name="topads_insight_global_error_description">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="topads_insight_global_error_title">Ada gangguan di rumah Toped!.</string>
+    <string name="topads_insight_educational_bottom_sheet_title">Saran TopAds adalah fitur yang menyediakan rekomendasi saat iklanmu masih bisa dimaksimalkan untuk hasil yang lebih baik. Yuk, tonton video penjelasannya!</string>
+
+
+    <string name="topads_insight_biaya_iklan_cta_text">Terapkan Biaya yang Disarankan</string>
+    <string name="topads_insight_daily_budget_cta_text">Terapkan Anggaran Harian</string>
+    <string name="topads_insight_positive_keywords_cta_text_format">Tambah %d Kata Kunci</string>
+    <string name="topads_insight_existing_keywords_cta_text_format">Terapkan %d Biaya Kata Kunci</string>
+    <string name="topads_insight_negative_keywords_cta_text_format">Tambah %d Kata Kunci Negatif</string>
+    <string name="topads_insight_ads_in_search">Iklan di Pencarian</string>
+    <string name="topads_insight_ads_in_recommendations">Iklan di Rekomendasi</string>
+    <string name="topads_insight_min_bid_error_msg_format">Min. biaya Rp%d.</string>
+    <string name="topads_insight_max_bid_error_msg_format">Maks. biaya Rp%d.</string>
+    <string name="topads_insight_recommended_bid_apply">Disarankan Rp%d. Terapkan</string>
+    <string name="topads_insight_kata_kunci_accordian_subtitle">Kunjungan pembeli menurun. Pakai kata kunci populer untuk potensi tampil +%s kali/hari.</string>
+    <string name="topads_insight_biaya_kata_kunci_accordian_subtitle">Kata kuncimu kalah saing. Sesuaikan biaya kata kunci untuk potensi tampil +%s kali/hari.</string>
+    <string name="topads_insight_negative_kata_kunci_accordian_subtitle">Iklanmu kurang efektif &amp; boros. Potensi hemat Rp%s/hari dengan kata kunci negatif.</string>
+    <string name="topads_insight_biaya_iklan_accordian_subtitle">Total tampil menurun, nih. Tambah biaya iklan untuk potensi tampil +%s kali/hari.</string>
+    <string name="topads_insight_daily_budget_accordian_subtitle">Durasi iklan belum maksimal. Tambah anggaran untuk potensi klik +%s klik/hari.</string>
+    <string name="topads_dashboard_times_per_day_value"><![CDATA[<b><font size="17">+%s</font></b> kali/hari]]></string>
+    <string name="topads_dashboard_times_per_month_template"><![CDATA[<b><font size="17">+%s</font></b> /bulan]]></string>
+    <string name="topads_dashboard_price_per_click_template"><![CDATA[<b><font size="17">Rp%s</font></b>/klik]]></string>
+    <string name="topads_dashboard_increase_times_template"><![CDATA[<b><font size="17">+%s</font></b> kali]]></string>
+    <string name="topads_dashboard_price_per_month_template"><![CDATA[<b><font size="17">Rp%s</font></b> /bulan]]></string>
+    <string name="topads_insight_kata_kunci_submit_success_toast_msg">Berhasil menambahkan kata kunci.</string>
+    <string name="topads_insight_biaya_kata_kunci_submit_success_toast_msg">Berhasil mengubah biaya kata kunci.</string>
+    <string name="topads_insight_biaya_iklan_submit_success_toast_msg">Berhasil mengubah biaya iklan.</string>
+    <string name="topads_insight_daily_budget_submit_success_toast_msg">Berhasil mengubah anggaran harian.</string>
+    <string name="topads_insight_negative_kata_kunci_submit_success_toast_msg">Berhasil menambahkan kata kunci negatif.</string>
+    <string name="topads_dashboard_submit_insight_fail_dialog_description">Oops, ada gangguan pada sistem. Klik Coba Lagi untuk tambahkan kata kunci baru, ya.</string>
+    <string name="topads_dashboard_submit_kata_kunci_insight_fail_title">%d kata kunci gagal ditambahkan</string>
+    <string name="topads_dashboard_submit_biaya_kata_kunci_insight_fail_title">%d biaya kata kunci gagal diubah</string>
+    <string name="topads_dashboard_submit_negative_kata_kunci_insight_fail_title">%d kata kunci negatif gagal ditambahkan</string>
+    <string name="topads_dashboard_submit_biaya_iklan_insight_fail_title">Perubahan biaya iklan gagal diterapkan</string>
+    <string name="topads_dashboard_submit_daily_budget_insight_fail_title">Perubahan pada anggaran harian gagal diterapkan</string>
+    <string name="topads_ads_price_format_1">Rp%s</string>
+    <string name="topads_insight_confirmation_dialog_desc_kata_kunci">%d kata kunci akan ditambahkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_desc_biaya_kata_kunci">Biaya kata kunci baru akan diterapkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_desc_biaya_iklan">Biaya iklan baru akan diterapkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_desc_daily_budget">Anggaran harian baru akan diterapkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_desc_negative_kata_kunci">%d kata kunci negatif akan ditambahkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_title">Terapkan perubahan ini untuk iklanmu?</string>
+    <string name="topads_yes_apply">Ya, Terapkan</string>
+    <string name="topads_insight_min_budget_rp">Min. anggaran Rp%d</string>
+    <string name="topads_insight_max_budget_rp">Maks. anggaran Rp%d</string>
+    <string name="topads_dashboard_saran_ads_info_sheet_desc">Kumpulan rekomendasi untuk iklanmu yang masih bisa dimaksimalkan.</string>
+    <string name="top_ads_optimised_widget_title_groups_page">Semua iklan tokomu sudah maksimal!</string>
+    <string name="top_ads_optimised_widget_subtitle_groups_page">Biar iklanmu lebih maksimal, lihat tips pada halaman Saran TopAds juga yuk.</string>
+    <string name="top_ads_non_optimised_widget_title_groups_page">Baru %d dari %d iklan tokomu yang maksimal</string>
+    <string name="top_ads_non_optimised_widget_subtitle_groups_page">Yuk, cek Saran TopAds untuk maksimalkan performa iklanmu!</string>
+    <string name="top_ads_optimised_widget_title_group_detail_page">Pengaturan iklanmu sudah maksimal!</string>
+    <string name="top_ads_non_optimised_widget_title_group_detail_page">%d pengaturan iklan belum maksimal</string>
+    <string name="topads_insight_centre_choose_potential_products_with_count">Pilih Produk Berpotensi (%d)</string>
+    <string name="topads_insight_centre_choose_product">Pilih Produk</string>
+    <string name="topads_insight_centre_product_item_description"><![CDATA[<font size="13">Dicari sebanyak: <b>%s kali</b></font>]]></string>
+    <string name="topads_insight_centre_choose_product_title">Iklankan Produk</string>
+    <string name="topads_insight_centre_advertise_product_with_count">Iklankan Produk (%d)</string>
+    <string name="topads_insight_centre_potential_products_empty_state_title">Produk berpotensi gagal ditampilkan</string>
+    <string name="topads_insight_centre_potential_products_empty_state_desc">Oops, ada gangguan pada sistem. Coba klik Muat Ulang, ya.</string>
+    <string name="topads_insight_centre_potential_products_emtpy_state_cta">Muat Ulang</string>
+    <string name="topads_insight_centre_group_settings">Pengaturan Grup</string>
+    <string name="topads_insight_centre_featured_products">Produk Terpilih (%d)</string>
+    <string name="topads_insight_centre_reset">Atur Ulang</string>
+    <string name="topads_insight_centre_create_new_group">Buat Grup Baru</string>
+    <string name="topads_insight_centre_add_to_another_group">Tambah ke Grup Lain</string>
+    <string name="topads_insight_centre_create_group_title_info">Nama grup dapat disesuaikan berdasarkan kategori atau tema iklanmu.</string>
 </resources>
-

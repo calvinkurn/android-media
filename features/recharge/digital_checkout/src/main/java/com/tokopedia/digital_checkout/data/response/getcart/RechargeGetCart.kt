@@ -1,8 +1,10 @@
 package com.tokopedia.digital_checkout.data.response.getcart
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
+import kotlinx.parcelize.Parcelize
 
 /**
  * @author by jessica on 08/01/21
@@ -128,12 +130,31 @@ data class RechargeGetCart(
         @SerializedName("collection_point_id")
         @Expose
         val collectionPointId: String = "",
+
+        @SerializedName("collection_point_version")
+        @Expose
+        val collectionPointVersion: String = "",
+
+        @SerializedName("collection_data_elements")
+        @Expose
+        val collectionDataElements: List<CollectionDataElements> = emptyList(),
 ) {
     data class Response(
             @SerializedName("rechargeGetCart")
             @Expose
             val response: RechargeGetCart = RechargeGetCart()
     )
+
+    @Parcelize
+    data class CollectionDataElements(
+            @SerializedName("key")
+            @Expose
+            val key: String = "",
+
+            @SerializedName("value")
+            @Expose
+            val value: String = ""
+    ): Parcelable
 
     data class OpenPaymentConfig(
             @SerializedName("min_payment")

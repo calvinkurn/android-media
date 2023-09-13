@@ -67,8 +67,7 @@ private fun getLabelCampaignHeight(context: Context, hasLabelCampaign: Boolean):
 
 private fun getLabelBestSellerHeight(context: Context, hasLabelBestSeller: Boolean): Int {
     return if (hasLabelBestSeller)
-        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height) +
-                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_margintop)
+        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height)
     else 0
 }
 
@@ -96,8 +95,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
             val hasLabelCampaign = productCardModel.isShowLabelCampaign()
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
 
-            val hasLabelCampaignOrBestSeller = hasLabelCampaign || hasLabelBestSeller
-            val contentMarginTop = getListViewContentMarginTop(context, hasLabelCampaignOrBestSeller)
+            val contentMarginTop = getListViewContentMarginTop(context, hasLabelCampaign)
             val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
             val contentHeight = productCardModel.getContentHeightList(context)
             val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
@@ -120,8 +118,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
     }
 }
 
-private fun getListViewContentMarginTop(context: Context, hasLabelCampaignOrBestSeller: Boolean): Int {
-    return if (hasLabelCampaignOrBestSeller)
+private fun getListViewContentMarginTop(context: Context, hasLabelCampaign: Boolean): Int {
+    return if (hasLabelCampaign)
         context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
     else 0
 }
@@ -260,7 +258,7 @@ private fun ProductCardModel.getPromoSectionHeight(context: Context): Int {
         labelDiscountHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_discount_height)
     }
 
-    if (labelPrice != null && labelPrice.title.isNotEmpty() && !isShowDiscountOrSlashPrice()) {
+    if (labelPrice != null && labelPrice.title.isNotEmpty() && isShowLabelPrice()) {
         labelPriceMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_label_price_margin_top)
         labelPriceHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_price_height)
     }

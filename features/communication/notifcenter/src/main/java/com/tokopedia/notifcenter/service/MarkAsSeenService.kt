@@ -2,13 +2,16 @@ package com.tokopedia.notifcenter.service
 
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
-import com.tokopedia.notifcenter.di.DaggerNotificationComponent
-import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
 import com.tokopedia.notifcenter.domain.NotificationMarkAsSeenUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class MarkAsSeenService : JobIntentServiceX() {
@@ -16,17 +19,21 @@ class MarkAsSeenService : JobIntentServiceX() {
     @Inject
     lateinit var markAsSeenUseCase: NotificationMarkAsSeenUseCase
 
+    @Inject
+    lateinit var dispatchers: CoroutineDispatchers
+
+    private val scope = CoroutineScope(Job())
+
     override fun onCreate() {
         super.onCreate()
         initInjector()
     }
 
     private fun initInjector() {
-        DaggerNotificationComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .commonModule(CommonModule(this))
-                .build()
-                .inject(this)
+        NotificationActivityComponentFactory
+            .instance
+            .createNotificationComponent(application)
+            .inject(this)
     }
 
     override fun onHandleWork(intent: Intent) {
@@ -34,7 +41,17 @@ class MarkAsSeenService : JobIntentServiceX() {
             if (it == -1) return
         }
         val notifIds = intent.getStringArrayListExtra(KEY_TRACK_IDs) ?: return
-        markAsSeenUseCase.markAsSeen(role, notifIds)
+        val param = NotificationMarkAsSeenUseCase.Param(
+            role = role,
+            notifIds = notifIds
+        )
+        try {
+            scope.launch {
+                markAsSeenUseCase(param)
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
     }
 
     companion object {
@@ -42,10 +59,10 @@ class MarkAsSeenService : JobIntentServiceX() {
         private const val KEY_ROLE = "key_role"
         private const val KEY_TRACK_IDs = "key_track_ids"
         fun startService(
-                context: Context?,
-                @RoleType
-                role: Int?,
-                markAsSeenAnalytic: MarkAsSeenAnalytic
+            context: Context?,
+            @RoleType
+            role: Int?,
+            markAsSeenAnalytic: MarkAsSeenAnalytic
         ) {
             // https://issuetracker.google.com/issues/112157099
             try {
@@ -58,10 +75,10 @@ class MarkAsSeenService : JobIntentServiceX() {
         }
 
         private fun createJobIntent(
-                context: Context,
-                @RoleType
-                previousRole: Int,
-                markAsSeenAnalytic: MarkAsSeenAnalytic
+            context: Context,
+            @RoleType
+            previousRole: Int,
+            markAsSeenAnalytic: MarkAsSeenAnalytic
         ): Intent {
             val intent = Intent(context, MarkAsSeenService::class.java)
             intent.putExtra(KEY_ROLE, previousRole)
@@ -69,5 +86,4 @@ class MarkAsSeenService : JobIntentServiceX() {
             return intent
         }
     }
-
 }

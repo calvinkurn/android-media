@@ -68,14 +68,14 @@ class AffiliateTransactionDetailViewModelTest {
             )
         )
         coEvery { affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(any(), any(), any()) } returns affiliateTrafficCommissionCardDetails
-        val response = affiliateTransactionDetailViewModel.getDetailListOrganize(affiliateCommisionDetails?.getAffiliateCommissionDetail?.data?.detail)
+        val response = affiliateTransactionDetailViewModel.getDetailListOrganize(affiliateCommisionDetails?.getAffiliateCommissionDetail?.commissionDetailData?.detail)
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f")
 
         assertEquals(Gson().toJson(affiliateTransactionDetailViewModel.getDetailList().value), Gson().toJson(response))
         assertEquals(affiliateTransactionDetailViewModel.getCommissionData().value, affiliateCommisionDetails.getAffiliateCommissionDetail)
         assertEquals(affiliateTransactionDetailViewModel.progressBar().value, false)
         assertEquals(affiliateTransactionDetailViewModel.commissionType, "PRODUCT")
-        affiliateCommisionDetails.getAffiliateCommissionDetail?.data?.commissionType = "TRAFFIC"
+        affiliateCommisionDetails.getAffiliateCommissionDetail?.commissionDetailData?.commissionType = "TRAFFIC"
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f")
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f", 1)
         assertEquals(affiliateTransactionDetailViewModel.getShimmerVisibility().value, false)
@@ -95,5 +95,22 @@ class AffiliateTransactionDetailViewModelTest {
 
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f", 1)
         assertEquals(affiliateTransactionDetailViewModel.getShimmerVisibility().value, false)
+    }
+
+    @Test
+    fun extractBranchLinkTest() {
+        coEvery { extractBranchLinkUseCase.invoke(any()).android_deeplink } returns ""
+        affiliateTransactionDetailViewModel.extractBranchLink("")
+        assertNotNull(affiliateTransactionDetailViewModel.getAppLink())
+    }
+
+    @Test
+    fun extractBranchLinkExceptionTest() {
+        val exception = java.lang.Exception("Validate Data Exception")
+
+        coEvery { extractBranchLinkUseCase.invoke(any()).android_deeplink } throws exception
+        affiliateTransactionDetailViewModel.extractBranchLink("")
+
+        assertEquals(affiliateTransactionDetailViewModel.getErrorMessage().value, exception)
     }
 }

@@ -23,8 +23,6 @@ abstract class ProductItemViewHolder(
 
     abstract val productCardView: IProductCardView?
 
-    protected var productCardModel: ProductCardModel? = null
-
     protected fun ProductItemDataView.toProductCardModel(
         productImage: String,
         isWideContent: Boolean,
@@ -51,6 +49,7 @@ abstract class ProductItemViewHolder(
             productListType = productListType,
             hasAddToCartButton = showButtonAtc,
             isPortrait = isPortrait,
+            pageSource = ProductCardModel.PageSource.SEARCH,
         )
     }
 

@@ -9,5 +9,5 @@ data class ComparisonModel(
     val specsModel: SpecsListModel,
     val productCardModel: ProductCardModel,
     val recommendationItem: RecommendationItem,
-    val isCurrentItem: Boolean
+    val isClickable: Boolean,
 ): ImpressHolder()

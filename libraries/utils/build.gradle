@@ -14,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.utils'
+    testNamespace 'com.tokopedia.utils.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
@@ -46,6 +48,12 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
 }
 
 dependencies {
@@ -56,16 +64,21 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.networkDependencies.glide
     androidTestImplementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.supportLibDependencies.exifinterface
 
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.lifeCycleCommon
     implementation rootProject.ext.miscDependencies.sliceCore
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+
+    testImplementation rootProject.ext.testDependencies.mockk
 }
 
 project.ext {

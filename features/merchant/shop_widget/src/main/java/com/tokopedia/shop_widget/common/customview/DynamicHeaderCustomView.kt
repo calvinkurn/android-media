@@ -89,7 +89,7 @@ class DynamicHeaderCustomView: FrameLayout {
             } else {
                 itemView?.context?.getString(R.string.thematic_widget_see_all)
             }
-            tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             tpSeeAll?.setOnClickListener {
                 listener?.onSeeAllClick(ctaTextLink)
             }
@@ -154,7 +154,7 @@ class DynamicHeaderCustomView: FrameLayout {
     fun configNonFestivity(){
         val defaultTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        val defaultCtaColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val defaultCtaColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         tpTitle?.setTextColor(defaultTitleColor)
         tpSubtitle?.setTextColor(defaultSubTitleColor)
         tpSeeAll?.setTextColor(defaultCtaColor)

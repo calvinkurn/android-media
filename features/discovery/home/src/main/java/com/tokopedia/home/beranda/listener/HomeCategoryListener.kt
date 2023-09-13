@@ -47,11 +47,7 @@ interface HomeCategoryListener {
 
     fun openShop()
 
-    fun onOpenPlayChannelList(appLink: String)
-
     fun sendIrisTrackerHashMap(tracker: HashMap<String, Any>)
-
-    fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 
     fun actionAppLinkWalletHeader(appLinkBalance: String)
 
@@ -82,8 +78,6 @@ interface HomeCategoryListener {
     fun setActivityStateListener(activityStateListener: ActivityStateListener)
 
     fun onPageDragStateChanged(isDragged: Boolean)
-
-    fun onSpotlightItemClicked(actionLink: String)
 
     fun onTokopointCheckNowClicked(applink: String)
 
@@ -143,5 +137,5 @@ interface HomeCategoryListener {
 
     fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?)
 
-    fun goToLogin()
+    fun onLoginWidgetClick()
 }

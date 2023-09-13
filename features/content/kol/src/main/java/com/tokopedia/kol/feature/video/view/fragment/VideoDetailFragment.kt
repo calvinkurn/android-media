@@ -28,6 +28,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXLike
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.common.util.resize
@@ -42,7 +43,6 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -252,6 +252,8 @@ class VideoDetailFragment :
     }
 
     private fun initView() {
+        ivClose.setImageResource(IconUnify.CLOSE)
+
         val detailId = arguments?.getString(VideoDetailActivity.PARAM_ID, "")
         if (detailId?.isEmpty() == true || detailId == "0") {
             activity?.finish()
@@ -483,37 +485,59 @@ class VideoDetailFragment :
     private fun bindLike(like: FeedXLike) {
         when {
             like.isLiked -> {
-                binding.likeIcon.loadImageWithoutPlaceholder(com.tokopedia.feedcomponent.R.drawable.ic_thumb_green)
+                updateLikeButton(true)
                 binding.likeText.text = like.countFmt
                 binding.likeText.setTextColor(
                     MethodChecker.getColor(
                         binding.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
 
             like.count > 0 -> {
-                binding.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
+                updateLikeButton(false)
                 binding.likeText.text = like.countFmt
                 binding.likeText.setTextColor(
                     MethodChecker.getColor(
                         binding.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }
 
             else -> {
-                binding.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
+                updateLikeButton(false)
                 binding.likeText.setText(com.tokopedia.content.common.R.string.kol_action_like)
                 binding.likeText.setTextColor(
                     MethodChecker.getColor(
                         binding.likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }
+        }
+    }
+
+    private fun updateLikeButton(isLiked: Boolean) {
+        val likedColor = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        val dislikeColor = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        if (isLiked) {
+            binding.likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = likedColor,
+                newLightDisable = dislikeColor,
+                newDarkEnable = likedColor,
+                newDarkDisable = dislikeColor,
+            )
+        } else {
+            binding.likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = dislikeColor,
+                newLightDisable = likedColor,
+                newDarkEnable = dislikeColor,
+                newDarkDisable = likedColor,
+            )
         }
     }
 

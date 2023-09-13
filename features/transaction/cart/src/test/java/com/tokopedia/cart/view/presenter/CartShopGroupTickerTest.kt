@@ -7,10 +7,10 @@ import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopG
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorResponse
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorTicker
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -112,7 +112,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     fun `WHEN bo affordability and bundling is disabled THEN should not hit API`() {
         // GIVEN
         val cartString = "123-123-123"
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = CartShopGroupTickerData(
                 enableCartAggregator = false,
                 enableBoAffordability = false
@@ -125,10 +125,10 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 selectedProductWithBundle()
             )
         )
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -154,7 +154,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             enableCartAggregator = true,
             enableBoAffordability = false
         )
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = tickerData,
             cartString = cartString,
             maximumShippingWeight = 1.0,
@@ -173,7 +173,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             )
         )
         val tickerText = "dapat bebas ongkir"
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -189,7 +189,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -213,7 +213,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         val tickerData = CartShopGroupTickerData(
             enableBoAffordability = true
         )
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = tickerData,
             cartString = cartString,
             maximumShippingWeight = 1.0,
@@ -227,10 +227,10 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 )
             )
         )
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -253,7 +253,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         val tickerData = CartShopGroupTickerData(
             enableBoAffordability = true
         )
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = tickerData,
             cartString = cartString,
             maximumShippingWeight = 1000.0,
@@ -270,7 +270,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             )
         )
         val tickerText = "dapat bebas ongkir"
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -286,7 +286,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -310,12 +310,12 @@ class CartShopGroupTickerTest : BaseCartTest() {
         val tickerData = CartShopGroupTickerData(
             enableBoAffordability = true
         )
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = tickerData,
             cartString = cartString
         )
         val tickerText = "+ Rp10.000 lagi untuk dapat bebas ongkir"
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -331,7 +331,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -351,12 +351,12 @@ class CartShopGroupTickerTest : BaseCartTest() {
         val tickerData = CartShopGroupTickerData(
             enableBoAffordability = true
         )
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = tickerData,
             cartString = cartString
         )
         val tickerText = "dapat bebas ongkir"
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -372,7 +372,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -392,12 +392,12 @@ class CartShopGroupTickerTest : BaseCartTest() {
         val tickerData = CartShopGroupTickerData(
             enableBoAffordability = true
         )
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = tickerData,
             cartString = cartString
         )
         val tickerText = ""
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -413,7 +413,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -433,18 +433,18 @@ class CartShopGroupTickerTest : BaseCartTest() {
         val tickerData = CartShopGroupTickerData(
             enableBoAffordability = true
         )
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = tickerData,
             cartString = cartString
         )
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
         } throws IOException()
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -460,7 +460,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     fun `WHEN get bo affordability twice in debounce time THEN should only hit API once`() {
         // GIVEN
         val cartString = "123-123-123"
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
@@ -480,9 +480,9 @@ class CartShopGroupTickerTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceTimeBy(1)
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -495,7 +495,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     fun `WHEN get bo affordability and view detached THEN should not hit API and not update view`() {
         // GIVEN
         val cartString = "123-123-123"
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
@@ -515,7 +515,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceTimeBy(1)
         cartListPresenter.detachView()
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
@@ -531,7 +531,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     fun `WHEN get bo affordability with snippet LCA THEN should hit with only snippet data LCA`() {
         // GIVEN
         val cartString = "123-123-123"
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
@@ -558,7 +558,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
 
         // WHEN
         cartListPresenter.setLocalizingAddressData(lca)
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -569,7 +569,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     fun `WHEN get bo affordability with full LCA THEN should hit with only full data LCA`() {
         // GIVEN
         val cartString = "123-123-123"
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
@@ -599,7 +599,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
 
         // WHEN
         cartListPresenter.setLocalizingAddressData(lca)
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -609,7 +609,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     @Test
     fun `WHEN cart aggregator disabled with valid product THEN bundle cross sell should be disabled`() {
         // GIVEN
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartString = "123-123-123",
             cartShopGroupTicker = CartShopGroupTickerData(
                 enableCartAggregator = false,
@@ -625,10 +625,10 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 selectedBundleProductWithoutBundleIds()
             )
         )
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -649,7 +649,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     @Test
     fun `WHEN cart aggregator enabled with valid product THEN bundle cross sell should be enabled`() {
         // GIVEN
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartString = "123-123-123",
             cartShopGroupTicker = CartShopGroupTickerData(
                 enableCartAggregator = true,
@@ -666,7 +666,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             )
         )
         val tickerText = "tambah produk bundling"
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
         } returns CartShopGroupTickerAggregatorGqlResponse(
@@ -684,7 +684,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -709,7 +709,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     @Test
     fun `WHEN cart aggregator enabled with selected bundle product THEN bundle cross sell should be disabled`() {
         // GIVEN
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartString = "123-123-123",
             cartShopGroupTicker = CartShopGroupTickerData(
                 enableCartAggregator = true,
@@ -726,10 +726,10 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 selectedBundleProduct()
             )
         )
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -750,7 +750,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     @Test
     fun `WHEN cart aggregator enabled with no selected product THEN bundle cross sell should be disabled`() {
         // GIVEN
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartString = "123-123-123",
             cartShopGroupTicker = CartShopGroupTickerData(
                 enableCartAggregator = true,
@@ -763,10 +763,10 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 unselectedBundleProductWithoutBundleIds()
             )
         )
-        val expectedCartShopHolderData = cartShopHolderData.copy()
+        val expectedCartShopHolderData = cartGroupHolderData.copy()
 
         // WHEN
-        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -787,7 +787,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     @Test
     fun `WHEN cart data product is empty THEN return false for bundle cross sell`() {
         // Given
-        val cartShopHolderData = CartShopHolderData(
+        val cartGroupHolderData = CartGroupHolderData(
             cartShopGroupTicker = CartShopGroupTickerData(
                 enableCartAggregator = true,
                 enableBoAffordability = true
@@ -796,7 +796,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
         )
 
         // When
-        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartGroupHolderData)
 
         // Then
         assertFalse(enableBundleCrossSell)

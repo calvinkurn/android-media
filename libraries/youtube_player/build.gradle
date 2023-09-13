@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    namespace 'com.tokopedia.youtube_player'
+    testNamespace 'com.tokopedia.youtube_player.test'
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+}
+
+project.ext {
+    artifactId = 'youtube-player'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.1"
+    artifactName = "youtube-player-release"
+}
+
+apply from: '../../publish_local.gradle'

@@ -77,19 +77,12 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   name
                   product_id
                   product_name
+                  courier_info
                   is_same_day
                   awb
                   awb_upload_proof_text
                   awb_text_color
                   awb_upload_url
-                }
-                shipment_change {
-                  id
-                  name
-                  product_id
-                  product_name
-                  is_same_day
-                  awb
                 }
                 booking_info {
                   driver {
@@ -127,6 +120,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 deadline {
                   text
                   color
+                  style
                 }
                 insurance {
                   type

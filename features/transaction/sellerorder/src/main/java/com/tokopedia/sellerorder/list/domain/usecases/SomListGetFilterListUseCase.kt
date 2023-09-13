@@ -11,8 +11,8 @@ import javax.inject.Inject
  * Created by fwidjaja on 08/05/20.
  */
 class SomListGetFilterListUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: FilterResultMapper
+    private val gqlRepository: GraphqlRepository,
+    private val mapper: FilterResultMapper
 ) : BaseGraphqlUseCase<SomListFilterUiModel>(gqlRepository) {
 
     override suspend fun executeOnBackground(): SomListFilterUiModel {
@@ -61,9 +61,10 @@ class SomListGetFilterListUseCase @Inject constructor(
                   text
                   value
                 }
+                highlighted_status_key
               }
               status
             }
-        """.trimIndent() //Don't remove `status` field since it's necessary for refresh token flow
+        """.trimIndent() // Don't remove `status` field since it's necessary for refresh token flow
     }
 }

@@ -29,9 +29,9 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
 
     fun toOnScrolledMode() {
         showShadow()
-        setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N600))
+        setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN800))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N600))
+            navigationIcon?.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN800))
         } else navigationIcon =  ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
 
     }
@@ -43,7 +43,7 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
             var pT = ViewHelper.getStatusBarHeight(context)
             val pR = this.paddingRight
             val pB = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
-            this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             this.setPadding(pL, pT, pR, pB)
         }
     }

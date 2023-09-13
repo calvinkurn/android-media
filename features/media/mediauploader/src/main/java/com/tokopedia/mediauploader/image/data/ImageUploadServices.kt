@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.image.data
 
-import com.tokopedia.mediauploader.common.util.NetworkTimeOutInterceptor.Companion.HEADER_TIMEOUT
+import com.tokopedia.mediauploader.common.util.interceptor.NetworkTimeOutInterceptor.Companion.HEADER_TIMEOUT
 import com.tokopedia.mediauploader.image.data.entity.ImageUploader
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

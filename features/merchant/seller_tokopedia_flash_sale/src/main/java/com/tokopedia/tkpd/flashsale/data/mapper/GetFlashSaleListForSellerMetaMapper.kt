@@ -16,7 +16,7 @@ class GetFlashSaleListForSellerMetaMapper @Inject constructor() {
                 tab.displayName
             )
         }
-        return TabMetadata(tabs, response.getFlashSaleListForSellerMeta.tickerNonMultiLocMessage)
+        return TabMetadata(tabs)
     }
 
 }

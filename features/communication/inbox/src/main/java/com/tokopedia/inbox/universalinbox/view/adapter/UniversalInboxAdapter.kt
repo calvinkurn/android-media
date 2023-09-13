@@ -1,0 +1,226 @@
+package com.tokopedia.inbox.universalinbox.view.adapter
+
+import com.tokopedia.adapterdelegate.BaseCommonAdapter
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationLoaderDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationTitleDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationWidgetDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsBannerDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsHeadlineDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxWidgetMetaDelegate
+import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
+import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
+import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
+
+class UniversalInboxAdapter(
+    userSession: UserSessionInterface,
+    widgetListener: UniversalInboxWidgetListener,
+    menuListener: UniversalInboxMenuListener,
+    tdnBannerResponseListener: TdnBannerResponseListener,
+    topAdsClickListener: TopAdsImageViewClickListener,
+    recommendationListener: RecommendationListener
+) : BaseCommonAdapter() {
+
+    init {
+        delegatesManager.addDelegate(UniversalInboxWidgetMetaDelegate(widgetListener))
+        delegatesManager.addDelegate(UniversalInboxMenuItemDelegate(menuListener))
+        delegatesManager.addDelegate(
+            UniversalInboxTopAdsBannerDelegate(tdnBannerResponseListener, topAdsClickListener)
+        )
+        delegatesManager.addDelegate(UniversalInboxRecommendationWidgetDelegate())
+        delegatesManager.addDelegate(UniversalInboxRecommendationTitleDelegate())
+        delegatesManager.addDelegate(UniversalInboxRecommendationDelegate(recommendationListener))
+        delegatesManager.addDelegate(UniversalInboxRecommendationLoaderDelegate())
+        delegatesManager.addDelegate(UniversalInboxMenuSeparatorDelegate())
+        delegatesManager.addDelegate(UniversalInboxTopAdsHeadlineDelegate(userSession))
+    }
+
+    private var recommendationViewType: Int? = null
+    private var recommendationFirstPosition: Int? = null
+
+    fun getProductRecommendationViewType(): Int? {
+        if (recommendationViewType != null) {
+            return recommendationViewType
+        } else {
+            itemList.forEachIndexed { index, item ->
+                if (item is RecommendationItem) {
+                    recommendationViewType = getItemViewType(index)
+                    return recommendationViewType
+                }
+            }
+            return null
+        }
+    }
+
+    fun getProductRecommendationFirstPosition(): Int? {
+        if (checkCachedRecommendationFirstPosition()) {
+            return recommendationFirstPosition
+        } else {
+            itemList.forEachIndexed { index, item ->
+                if (item is RecommendationItem) {
+                    recommendationFirstPosition = index
+                    return recommendationFirstPosition
+                }
+            }
+            return null
+        }
+    }
+
+    private fun checkCachedRecommendationFirstPosition(): Boolean {
+        var result = false
+        recommendationFirstPosition?.let {
+            if (it < itemList.size) {
+                result = itemList[it] is RecommendationItem
+            }
+        }
+        return result
+    }
+
+    private fun isRecommendationLoader(position: Int): Boolean {
+        return itemList[position]::class == UniversalInboxRecommendationLoaderUiModel::class
+    }
+
+    fun getFirstLoadingPosition(): Int? {
+        if (isRecommendationLoader(itemList.lastIndex)) {
+            return itemList.lastIndex
+        } else {
+            itemList.forEachIndexed { index, item ->
+                if (item is UniversalInboxRecommendationLoaderUiModel) {
+                    return index
+                }
+            }
+        }
+        return null
+    }
+
+    fun getFirstTopAdsBannerPositionPair(): Pair<Int, UniversalInboxTopAdsBannerUiModel>? {
+        itemList.forEachIndexed { index, item ->
+            if (item is UniversalInboxTopAdsBannerUiModel) {
+                return Pair(index, item)
+            }
+        }
+        return null
+    }
+
+    fun updateAllCounters(counterData: UniversalInboxAllCounterResponse): List<Int> {
+        val listIndex = arrayListOf<Int>()
+        itemList.forEachIndexed { index, item ->
+            if (item is UniversalInboxMenuUiModel) {
+                when (item.type) {
+                    MenuItemType.CHAT_BUYER -> {
+                        item.counter = counterData.chatUnread.unreadBuyer
+                    }
+                    MenuItemType.CHAT_SELLER -> {
+                        item.counter = counterData.chatUnread.unreadSeller
+                    }
+                    MenuItemType.DISCUSSION -> {
+                        item.counter = counterData.othersUnread.discussionUnread
+                    }
+                    MenuItemType.REVIEW -> {
+                        item.counter = counterData.othersUnread.reviewUnread
+                    }
+                }
+                listIndex.add(index)
+            } else if (item is UniversalInboxMenuSeparatorUiModel) { // Not in static menu anymore
+                return@forEachIndexed
+            }
+        }
+        return listIndex
+    }
+
+    fun isWidgetMetaAdded(): Boolean {
+        return itemList.firstOrNull() is UniversalInboxWidgetMetaUiModel
+    }
+
+    fun getWidgetPosition(widgetType: Int): Int {
+        var position = -1
+        try {
+            if (isWidgetMetaAdded()) {
+                val widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+                widgetMetaUiModel?.widgetList?.forEachIndexed { index, uiModel ->
+                    if (uiModel.type == widgetType) {
+                        position = index
+                    }
+                }
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+        return position
+    }
+
+    fun addWidget(
+        position: Int,
+        uiModel: UniversalInboxWidgetUiModel
+    ) {
+        var widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+        if (widgetMetaUiModel == null) {
+            // Widget meta rv not added
+            widgetMetaUiModel = UniversalInboxWidgetMetaUiModel()
+            addItem(Int.ZERO, widgetMetaUiModel)
+        }
+        widgetMetaUiModel.widgetList.add(position, uiModel)
+        notifyItemRangeChanged(
+            Int.ZERO,
+            getProductRecommendationFirstPosition() ?: itemList.size
+        ) // notify item ranged changed in page rv
+        // item ranged needed for addition & update meta
+    }
+
+    fun updateWidgetCounter(
+        position: Int,
+        counter: Int,
+        additionalAction: (UniversalInboxWidgetUiModel) -> Unit = {}
+    ) {
+        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)?.let {
+            it.widgetList.getOrNull(position)?.let { uiModel ->
+                uiModel.counter = counter
+                additionalAction(uiModel)
+            }
+            notifyItemChanged(Int.ZERO)
+        }
+    }
+
+    fun removeWidget(position: Int) {
+        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)
+            ?.widgetList?.removeAt(position)
+        notifyItemChanged(Int.ZERO) // notify item changed in page rv, first item
+    }
+
+    fun removeAllProductRecommendation() {
+        getProductRecommendationFirstPosition()?.let {
+            var itemCountToDrop = itemList.size - it
+            if (it < itemList.size && // out of bound
+                it > Int.ZERO && // not -1
+                isRecommendationTitle(it - Int.ONE)
+            ) {
+                itemCountToDrop++
+            }
+            val result = itemList.dropLast(itemCountToDrop)
+            clearAllItems() // clear all
+            addItemsAndAnimateChanges(result) // add the widget & menu
+        }
+    }
+
+    private fun isRecommendationTitle(position: Int): Boolean {
+        return itemList[position]::class == UniversalInboxRecommendationTitleUiModel::class
+    }
+}

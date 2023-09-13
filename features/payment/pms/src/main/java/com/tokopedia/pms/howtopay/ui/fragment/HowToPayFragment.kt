@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logger.ServerLogger
@@ -185,6 +186,8 @@ class HowToPayFragment : BaseDaggerFragment() {
                     copyToClipBoard(context, data.transactionCode, data.gatewayCode)
                     showToast(getString(R.string.pms_hwp_common_copy_success, paymentCodeHeading))
                 }
+
+                if (data.helpPageData?.isVA() == true) addVATicker()
             }
         }
     }
@@ -227,6 +230,12 @@ class HowToPayFragment : BaseDaggerFragment() {
             copyToClipBoard(context, data.transactionCode, data.gatewayCode)
             showToast(getString(R.string.pms_hwp_common_copy_success, getPaymentCodeHeading(data.paymentCodeHint)))
         }
+    }
+
+    private fun addVATicker() {
+        tickerAmountNote.visible()
+        tickerAmountNote.tickerTitle = String.EMPTY
+        tickerAmountNote.setTextDescription(getString(R.string.pms_va_ticker_description))
     }
 
     private fun addStoreTransferPayment(data: HowToPayData) {
@@ -306,7 +315,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifycomponents.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ),
                     startIndex, spannable.length,
@@ -324,7 +333,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         val startIndex = 0
         val endIndex = spannableString.length
         val color =
-            ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G500)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {

@@ -1,5 +1,5 @@
 {
-  "shipment_address_form_v3": {
+  "shipment_address_form_v4": {
     "status": "OK",
     "error_message": [],
     "data": {
@@ -46,6 +46,13 @@
           },
           "group_shop": [
             {
+              "group_type": 1,
+              "ui_group_type": 0,
+              "group_information": {
+                "name": "POINT99 COMPUTER",
+                "badge_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                "description": "Kota Bandung"
+              },
               "errors": [],
               "shipping_id": 0,
               "sp_id": 0,
@@ -71,39 +78,128 @@
                 "booking_fee": 0,
                 "is_leasing_product": false
               },
-              "shop": {
-                "shop_id": 2283942,
-                "user_id": 20711650,
-                "shop_name": "POINT99 COMPUTER",
-                "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/1/26/2283942/2283942_32a4c550-bdff-4177-a8cc-f5b503d8e885.jpg",
-                "shop_url": "https://www.tokopedia.com/point99",
-                "shop_status": 1,
-                "is_gold": 1,
-                "is_gold_badge": true,
-                "is_official": 0,
-                "is_free_returns": 0,
-                "address_id": 2191,
-                "postal_code": "40111",
-                "latitude": "-6.907706",
-                "longitude": "107.608829",
-                "district_id": 2191,
-                "district_name": "",
-                "origin": 0,
-                "address_street": "",
-                "province_id": 0,
-                "city_id": 165,
-                "city_name": "Kota Bandung",
-                "gold_merchant": {
-                  "is_gold": 1,
-                  "is_gold_badge": true,
-                  "gold_merchant_logo_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
-                },
-                "official_store": {
-                  "is_official": 0,
-                  "os_logo_url": ""
-                },
-                "shop_alert_message": ""
-              },
+              "group_shop_v2_saf": [
+                {
+                  "cart_string_order": "2283942-0-1844361-400316431",
+                  "shop": {
+                    "shop_id": 2283942,
+                    "user_id": 20711650,
+                    "shop_name": "POINT99 COMPUTER",
+                    "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/1/26/2283942/2283942_32a4c550-bdff-4177-a8cc-f5b503d8e885.jpg",
+                    "shop_url": "https://www.tokopedia.com/point99",
+                    "shop_status": 1,
+                    "is_gold": 1,
+                    "is_gold_badge": true,
+                    "is_official": 0,
+                    "is_free_returns": 0,
+                    "address_id": 2191,
+                    "postal_code": "40111",
+                    "latitude": "-6.907706",
+                    "longitude": "107.608829",
+                    "district_id": 2191,
+                    "district_name": "",
+                    "origin": 0,
+                    "address_street": "",
+                    "province_id": 0,
+                    "city_id": 165,
+                    "city_name": "Kota Bandung",
+                    "gold_merchant": {
+                      "is_gold": 1,
+                      "is_gold_badge": true,
+                      "gold_merchant_logo_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                    },
+                    "official_store": {
+                      "is_official": 0,
+                      "os_logo_url": ""
+                    },
+                    "shop_alert_message": ""
+                  },
+                  "cart_details": [
+                    {
+                      "errors": [],
+                      "cart_id": "2066147017",
+                      "product_id": 1271231575,
+                      "product_name": "Corsair 4000D AIRFLOW Tempered Glass Mid-Tower ATX Case",
+                      "product_price_fmt": "Rp1.379.000",
+                      "product_price": 1379000,
+                      "product_original_price": 0,
+                      "product_wholesale_price": 1379000,
+                      "product_wholesale_price_fmt": "Rp1.379.000",
+                      "product_weight_fmt": "14000gr",
+                      "product_weight": 14000,
+                      "product_condition": 1,
+                      "product_url": "https://www.tokopedia.com/point99/corsair-4000d-airflow-tempered-glass-mid-tower-atx-case",
+                      "product_returnable": 0,
+                      "product_is_free_returns": 0,
+                      "product_is_preorder": 0,
+                      "product_cashback": "",
+                      "product_min_order": 1,
+                      "product_invenage_value": 25,
+                      "product_switch_invenage": 1,
+                      "product_price_currency": 1,
+                      "product_image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/21/7f42d394-ce16-4558-80c6-27c5391f070c.jpg",
+                      "product_notes": "",
+                      "product_quantity": 1,
+                      "product_menu_id": 11272553,
+                      "product_finsurance": 0,
+                      "product_fcancel_partial": 0,
+                      "product_cat_id": 307,
+                      "product_catalog_id": 0,
+                      "product_category": "Komputer & Laptop / Komponen Komputer / Casing Komputer",
+                      "product_shipment": [],
+                      "product_shipment_mapping": [],
+                      "purchase_protection_plan_data": {
+                        "protection_available": true,
+                        "protection_type_id": 1,
+                        "protection_price_per_product": 1000,
+                        "protection_price": 1000,
+                        "protection_title": "Protection Title",
+                        "protection_subtitle": "Protection Subtitle",
+                        "protection_link_text": "",
+                        "protection_link_url": "",
+                        "protection_opt_in": false,
+                        "protection_checkbox_disabled": false
+                      },
+                      "free_returns": {
+                        "free_returns_logo": ""
+                      },
+                      "product_tracker_data": {
+                        "attribution": "none/other",
+                        "tracker_list_name": "none/other"
+                      },
+                      "product_preorder": {
+                        "duration_text": "",
+                        "duration_day": "0"
+                      },
+                      "trade_in_info": {
+                        "is_valid_trade_in": false,
+                        "new_device_price": 0,
+                        "new_device_price_fmt": "",
+                        "old_device_price": 0,
+                        "old_device_price_fmt": "",
+                        "drop_off_enable": false,
+                        "device_model": "",
+                        "diagnostic_id": 0
+                      },
+                      "free_shipping": {
+                        "eligible": false,
+                        "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "product_ticker": {
+                        "show_ticker": false,
+                        "message": ""
+                      },
+                      "variant_description_detail": {
+                        "variant_name": [],
+                        "variant_description": ""
+                      },
+                      "product_alert_message": "",
+                      "product_information": [],
+                      "campaign_id": 0
+                    }
+                  ]
+                }
+              ],
               "shop_shipments": [
                 {
                   "ship_id": 1,
@@ -361,90 +457,6 @@
                 "name": "",
                 "telp_no": ""
               },
-              "products": [
-                {
-                  "errors": [],
-                  "cart_id": "2066147017",
-                  "product_id": 1271231575,
-                  "product_name": "Corsair 4000D AIRFLOW Tempered Glass Mid-Tower ATX Case",
-                  "product_price_fmt": "Rp1.379.000",
-                  "product_price": 1379000,
-                  "product_original_price": 0,
-                  "product_wholesale_price": 1379000,
-                  "product_wholesale_price_fmt": "Rp1.379.000",
-                  "product_weight_fmt": "14000gr",
-                  "product_weight": 14000,
-                  "product_condition": 1,
-                  "product_url": "https://www.tokopedia.com/point99/corsair-4000d-airflow-tempered-glass-mid-tower-atx-case",
-                  "product_returnable": 0,
-                  "product_is_free_returns": 0,
-                  "product_is_preorder": 0,
-                  "product_cashback": "",
-                  "product_min_order": 1,
-                  "product_invenage_value": 25,
-                  "product_switch_invenage": 1,
-                  "product_price_currency": 1,
-                  "product_image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/21/7f42d394-ce16-4558-80c6-27c5391f070c.jpg",
-                  "product_notes": "",
-                  "product_quantity": 1,
-                  "product_menu_id": 11272553,
-                  "product_finsurance": 0,
-                  "product_fcancel_partial": 0,
-                  "product_cat_id": 307,
-                  "product_catalog_id": 0,
-                  "product_category": "Komputer & Laptop / Komponen Komputer / Casing Komputer",
-                  "product_shipment": [],
-                  "product_shipment_mapping": [],
-                  "purchase_protection_plan_data": {
-                    "protection_available": true,
-                    "protection_type_id": 1,
-                    "protection_price_per_product": 1000,
-                    "protection_price": 1000,
-                    "protection_title": "Protection Title",
-                    "protection_subtitle": "Protection Subtitle",
-                    "protection_link_text": "",
-                    "protection_link_url": "",
-                    "protection_opt_in": false,
-                    "protection_checkbox_disabled": false
-                  },
-                  "free_returns": {
-                    "free_returns_logo": ""
-                  },
-                  "product_tracker_data": {
-                    "attribution": "none/other",
-                    "tracker_list_name": "none/other"
-                  },
-                  "product_preorder": {
-                    "duration_text": "",
-                    "duration_day": "0"
-                  },
-                  "trade_in_info": {
-                    "is_valid_trade_in": false,
-                    "new_device_price": 0,
-                    "new_device_price_fmt": "",
-                    "old_device_price": 0,
-                    "old_device_price_fmt": "",
-                    "drop_off_enable": false,
-                    "device_model": "",
-                    "diagnostic_id": 0
-                  },
-                  "free_shipping": {
-                    "eligible": false,
-                    "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
-                  },
-                  "product_ticker": {
-                    "show_ticker": false,
-                    "message": ""
-                  },
-                  "variant_description_detail": {
-                    "variant_name": [],
-                    "variant_description": ""
-                  },
-                  "product_alert_message": "",
-                  "product_information": [],
-                  "campaign_id": 0
-                }
-              ],
               "warehouse": {
                 "warehouse_id": 1844361,
                 "city_name": "Kota Bandung"
@@ -484,10 +496,10 @@
       },
       "tickers": [
         {
-          "id" : 0,
-          "message" : "Ticker BBO Description",
-          "page" : "checkout",
-          "title" : "Ticker BBO Title"
+          "id": 0,
+          "message": "Ticker BBO Description",
+          "page": "checkout",
+          "title": "Ticker BBO Title"
         }
       ],
       "campaign_timer": {

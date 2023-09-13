@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.viewholders
 
 import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -14,10 +15,14 @@ import com.tokopedia.home_component.databinding.HomeComponentBannerRevampBinding
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.NpaLinearLayoutManager
+import com.tokopedia.home_component.util.recordCrashlytics
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
-import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
+import com.tokopedia.home_component.widget.atf_banner.BannerRevampItemModel
 import com.tokopedia.home_component.viewholders.adapter.BannerRevampChannelAdapter
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
+import com.tokopedia.home_component.widget.atf_banner.BannerShimmerModel
+import com.tokopedia.home_component.widget.atf_banner.BannerVisitable
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -39,7 +44,7 @@ class BannerRevampViewHolder(
     CoroutineScope {
     private var binding: HomeComponentBannerRevampBinding? by viewBinding()
     private var isCache = true
-    private var layoutManager = LinearLayoutManager(itemView.context)
+    private val layoutManager by lazy { NpaLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL) }
 
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
@@ -52,39 +57,38 @@ class BannerRevampViewHolder(
     private var isFromDrag = false
     private var isFromInitialize = false
 
+    private val adapter by lazy { BannerRevampChannelAdapter( this) }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {
         try {
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
-            channelModel?.let { channel ->
-                this.isCache = element.isCache
-                try {
-                    val banners = channel.convertToBannerItemModel()
-                    totalBanner = banners.size
-                    if (previousTotalBanner != totalBanner) {
-                        binding?.bannerIndicator?.setBannerIndicators(banners.size)
-                        binding?.bannerIndicator?.setBannerListener(object :
-                                BannerIndicatorListener {
-                                override fun onChangePosition(position: Int) {
-                                    scrollTo(position)
-                                }
+            renderBanner()
+        } catch (_: Exception) { }
+    }
 
-                                override fun getCurrentPosition(position: Int) {
-                                    // no-op
-                                }
-                            })
-                    } else {
-                        isFromInitialize = true
+    private fun renderBanner() {
+        channelModel?.let { channel ->
+            val banners = channel.convertToBannerItemModel()
+            totalBanner = banners.size
+            initBanner(banners)
+            if (previousTotalBanner != totalBanner) {
+                binding?.bannerIndicator?.setBannerIndicators(banners.size)
+                binding?.bannerIndicator?.setBannerListener(object :
+                    BannerIndicatorListener {
+                    override fun onChangePosition(position: Int) {
+                        scrollTo(position)
                     }
-                    initBanner(banners)
-                } catch (_: NumberFormatException) {
-                    // no-op
-                }
+
+                    override fun getCurrentPosition(position: Int) {
+                        // no-op
+                    }
+                })
+            } else {
+                isFromInitialize = true
             }
-        } catch (_: Exception) {
-            // no-op
         }
     }
 
@@ -150,12 +154,7 @@ class BannerRevampViewHolder(
         }
     }
 
-    private fun getLayoutManager(): LinearLayoutManager {
-        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        return layoutManager
-    }
-
-    private fun initBanner(list: List<BannerItemModel>) {
+    private fun initBanner(list: List<BannerVisitable>) {
         if (list.size > Int.ONE) {
             val snapHelper: SnapHelper = BannerComponentViewHolder.CubicBezierSnapHelper(itemView.context)
             binding?.rvBannerRevamp?.let {
@@ -167,11 +166,11 @@ class BannerRevampViewHolder(
         val layoutParams = binding?.rvBannerRevamp?.layoutParams as ConstraintLayout.LayoutParams
         binding?.rvBannerRevamp?.layoutParams = layoutParams
 
-        binding?.rvBannerRevamp?.layoutManager = getLayoutManager()
+        binding?.rvBannerRevamp?.layoutManager = this.layoutManager
         binding?.cardContainerBanner?.let {
             it.animateOnPress = if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
-            val adapter = BannerRevampChannelAdapter(list, this, it)
             val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER_SIZE_INT_SIZE
+            adapter.submitList(list)
             binding?.rvBannerRevamp?.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
             binding?.rvBannerRevamp?.adapter = adapter
         }
@@ -207,9 +206,15 @@ class BannerRevampViewHolder(
         return isFromDrag
     }
 
-    private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {
+    override fun onTouchEvent(motionEvent: MotionEvent) {
+        binding?.cardContainerBanner?.onTouchEvent(motionEvent)
+    }
+
+    private fun ChannelModel.convertToBannerItemModel(): List<BannerVisitable> {
         return try {
-            this.channelGrids.mapIndexed { index, channelGrid -> BannerItemModel(channelGrid.id.toIntOrZero(), channelGrid.imageUrl, index) }
+            this.channelGrids.mapIndexed { index, channelGrid ->
+                BannerRevampItemModel(channelGrid.id.toIntOrZero(), channelGrid.imageUrl, index)
+            }.ifEmpty { listOf(BannerShimmerModel()) }
         } catch (e: NumberFormatException) {
             listOf()
         }

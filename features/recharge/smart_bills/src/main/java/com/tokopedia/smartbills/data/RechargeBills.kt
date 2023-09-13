@@ -1,10 +1,13 @@
 package com.tokopedia.smartbills.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common.topupbills.data.RechargeField
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class RechargeBills(
         @SerializedName("UUID")
         @Expose
@@ -86,7 +89,7 @@ data class RechargeBills(
         @Expose
         var promo: Promo = Promo(),
 
-        ): RechargeBillsModel() {
+        ): RechargeBillsModel(), Parcelable {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {
                 return typeFactory.type(this)
         }
@@ -108,6 +111,7 @@ data class RechargeBills(
         }
 }
 
+@Parcelize
 data class NewBillLabel(
         @SerializedName("isNewLabel")
         @Expose
@@ -115,4 +119,4 @@ data class NewBillLabel(
         @SerializedName("text")
         @Expose
         val text: String = "",
-)
+): Parcelable

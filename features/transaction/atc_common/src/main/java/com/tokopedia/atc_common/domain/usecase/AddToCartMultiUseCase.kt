@@ -12,8 +12,10 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
-class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseCase<AtcMultiData>,
-                                                private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) {
+class AddToCartMultiUseCase @Inject constructor(
+    private val useCase: GraphqlUseCase<AtcMultiData>,
+    private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
+) {
 
     companion object {
         private const val PARAM = "param"
@@ -34,13 +36,18 @@ class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseC
                     val productPrice = param.productPrice
                     val category = param.category
                     AddToCartBaseAnalytics.sendAppsFlyerTracking(
-                        productId, productName, productPrice.roundToLong().toString(),
-                            quantity.toString(), category)
+                        productId,
+                        productName,
+                        productPrice.roundToLong().toString(),
+                        quantity.toString(),
+                        category
+                    )
                     AddToCartBaseAnalytics.sendBranchIoTracking(
                         productId, productName, productPrice.roundToLong().toString(),
-                            quantity.toString(), category, "",
-                            "", "", "",
-                            "", "", userId)
+                        quantity.toString(), category, "",
+                        "", "", "",
+                        "", "", userId
+                    )
                 }
             }
             Success(atc)
@@ -51,8 +58,8 @@ class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseC
 
     private fun generateParam(arrayAtcMultiParam: ArrayList<AddToCartMultiParam>): Map<String, Any?> {
         return mapOf(
-                PARAM to arrayAtcMultiParam,
-                KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+            PARAM to arrayAtcMultiParam,
+            KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
         )
     }
 }

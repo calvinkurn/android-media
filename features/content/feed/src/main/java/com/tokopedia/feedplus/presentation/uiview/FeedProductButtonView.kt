@@ -5,6 +5,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_NINETY_NINE
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_ZERO
@@ -18,7 +19,9 @@ class FeedProductButtonView(
     private val binding: ViewProductSeeMoreBinding,
     private val listener: FeedListener
 ) {
+
     private var products: List<FeedCardProductModel> = emptyList()
+    private var totalProducts: Int = 0
 
     fun bindData(
         postId: String,
@@ -28,14 +31,16 @@ class FeedProductButtonView(
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
+        totalProducts: Int,
         trackerData: FeedTrackerDataModel?,
+        topAdsTrackerData: FeedTopAdsTrackerDataModel?,
         positionInFeed: Int
     ) {
         with(binding) {
-            bind(products)
+            bind(products, totalProducts)
 
             icPlayProductSeeMore.setOnClickListener {
-                listener.onProductTagButtonClicked(
+                onClick(
                     postId,
                     author,
                     postType,
@@ -44,11 +49,12 @@ class FeedProductButtonView(
                     hasVoucher,
                     products,
                     trackerData,
+                    topAdsTrackerData,
                     positionInFeed
                 )
             }
             tvPlayProductCount.setOnClickListener {
-                listener.onProductTagButtonClicked(
+                onClick(
                     postId,
                     author,
                     postType,
@@ -57,25 +63,57 @@ class FeedProductButtonView(
                     hasVoucher,
                     products,
                     trackerData,
+                    topAdsTrackerData,
                     positionInFeed
                 )
             }
         }
     }
 
-    private fun bind(products: List<FeedCardProductModel>) {
+    private fun onClick(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        trackerData: FeedTrackerDataModel?,
+        topAdsTrackerData: FeedTopAdsTrackerDataModel?,
+        positionInFeed: Int
+    ) {
+        topAdsTrackerData?.let {
+            listener.onTopAdsClick(it)
+        }
+        listener.onProductTagButtonClicked(
+            postId,
+            author,
+            postType,
+            isFollowing,
+            campaign,
+            hasVoucher,
+            products,
+            trackerData,
+            positionInFeed
+        )
+    }
+
+    private fun bind(products: List<FeedCardProductModel>, totalProducts: Int) {
         this.products = products
+        this.totalProducts = totalProducts
         with(binding) {
             when {
-                products.size == PRODUCT_COUNT_ZERO -> {
+                totalProducts == PRODUCT_COUNT_ZERO && products.size == PRODUCT_COUNT_ZERO -> {
                     root.hide()
                 }
-                products.size > PRODUCT_COUNT_NINETY_NINE -> {
+                totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
                     tvPlayProductCount.text = NINETY_NINE_PLUS
                     root.show()
                 }
                 else -> {
-                    tvPlayProductCount.text = products.size.toString()
+                    val total =
+                        if (totalProducts > PRODUCT_COUNT_ZERO) totalProducts else products.size
+                    tvPlayProductCount.text = total.toString()
                     root.show()
                 }
             }
@@ -87,7 +125,7 @@ class FeedProductButtonView(
     }
 
     fun showIfPossible() {
-        bind(this.products)
+        bind(this.products, totalProducts)
     }
 
     companion object {

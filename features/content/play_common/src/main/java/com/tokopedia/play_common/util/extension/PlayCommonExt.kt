@@ -36,6 +36,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -176,7 +178,10 @@ suspend inline fun View.awaitPreDraw() = suspendCancellableCoroutine<Unit> { con
     val vto = viewTreeObserver
     val listener = object : ViewTreeObserver.OnPreDrawListener {
         override fun onPreDraw(): Boolean {
-            cont.resume(Unit)
+            if (cont.isActive) {
+                cont.resume(Unit)
+            } else return true
+
             when {
                 vto.isAlive -> vto.removeOnPreDrawListener(this)
                 else -> viewTreeObserver.removeOnPreDrawListener(this)
@@ -199,6 +204,35 @@ val View.globalVisibleRect: Rect
         getGlobalVisibleRect(rect)
         return rect
     }
+
+val View.localVisibleRect: Rect
+    get() {
+        val rect = Rect()
+        getLocalVisibleRect(rect)
+        return rect
+    }
+
+val screenRect: Rect
+    get() {
+        return Rect(0, 0, getScreenWidth(), getScreenHeight())
+    }
+
+fun View.getVisiblePortion(boundsRect: Rect = screenRect): FloatArray {
+    val visibleRect = globalVisibleRect
+    val visibleHeightPortion = if (height <= 0) {
+        0f
+    } else {
+        visibleRect.height().toFloat() / boundsRect.height()
+    }
+
+    val visibleWidthPortion = if (width <= 0) {
+        0f
+    } else {
+        visibleRect.width().toFloat() / boundsRect.width()
+    }
+
+    return floatArrayOf(visibleWidthPortion, visibleHeightPortion)
+}
 
 val View.visibleHeight: Int
     get() = if (visibility == View.GONE) 0 else height

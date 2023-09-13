@@ -23,7 +23,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.Header
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.OptionUiModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.UnifyButton
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -33,7 +32,6 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     InboxReputationFilterAdapter.FilterListener, InboxReputationFilterActivity.ResetListener {
 
     companion object {
-        private const val FILTER_ALL_TIME: String = "1"
         private const val FILTER_LAST_WEEK: String = "2"
         private const val FILTER_THIS_MONTH: String = "3"
         private const val FILTER_LAST_3_MONTH: String = "4"
@@ -104,16 +102,19 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     }
 
     private fun prepareView() {
-        list?.apply {
-            layoutManager = LinearLayoutManager(
-                activity,
-                LinearLayoutManager.VERTICAL, false
-            )
-            adapter = InboxReputationFilterAdapter.createInstance(
-                this@InboxReputationFilterFragment,
-                listOption
-            )
-        }
+        prepareRecyclerView()
+        prepareSaveButton()
+    }
+
+    private fun prepareRecyclerView() {
+        list?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        list?.adapter = InboxReputationFilterAdapter.createInstance(
+            this@InboxReputationFilterFragment,
+            listOption
+        ).also { adapter = it }
+    }
+
+    private fun prepareSaveButton() {
         saveButton?.setOnClickListener {
             val data = Intent()
             data.putExtra(SELECTED_TIME_FILTER, timeFilter)
@@ -137,12 +138,6 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     private fun createListOption(): ArrayList<OptionUiModel> {
         val list: ArrayList<OptionUiModel> = ArrayList()
         list.add(HeaderOptionUiModel(getString(R.string.filter_time)))
-        list.add(
-            OptionUiModel(
-                getString(R.string.filter_all_time),
-                GetInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_ALL_TIME, list.size
-            )
-        )
         list.add(
             OptionUiModel(
                 getString(R.string.filter_last_7_days),

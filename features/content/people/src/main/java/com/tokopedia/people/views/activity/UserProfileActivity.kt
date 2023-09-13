@@ -6,13 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.people.di.DaggerUserProfileComponent
-import com.tokopedia.people.di.UserProfileModule
+import com.tokopedia.people.di.UserProfileInjector
 import com.tokopedia.people.views.fragment.UserProfileFragment
 import javax.inject.Inject
 
@@ -41,13 +39,7 @@ class UserProfileActivity : BaseSimpleActivity() {
     }
 
     private fun inject() {
-        DaggerUserProfileComponent.builder()
-            .baseAppComponent(
-                (applicationContext as BaseMainApplication).baseAppComponent,
-            )
-            .userProfileModule(UserProfileModule(this))
-            .build()
-            .inject(this)
+        UserProfileInjector.get(this).inject(this)
     }
 
     private fun setupFragmentFactory() {

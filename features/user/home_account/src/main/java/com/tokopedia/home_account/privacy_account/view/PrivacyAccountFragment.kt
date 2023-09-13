@@ -1,6 +1,5 @@
 package com.tokopedia.home_account.privacy_account.view
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
@@ -14,25 +13,25 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.consentWithdrawal.data.ConsentGroupListDataModel
 import com.tokopedia.home_account.databinding.FragmentPrivacyAccountBinding
-import com.tokopedia.home_account.privacy_account.data.LinkStatus
-import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
-import com.tokopedia.home_account.privacy_account.data.UserAccountDataView
 import com.tokopedia.home_account.privacy_account.di.LinkAccountComponent
 import com.tokopedia.home_account.privacy_account.listener.PrivacyAccountListener
 import com.tokopedia.home_account.privacy_account.view.adapter.PrivacyAccountAdapter
 import com.tokopedia.home_account.privacy_account.view.bottomsheet.ClarificationDataUsageBottomSheet
 import com.tokopedia.home_account.privacy_account.view.bottomsheet.VerificationEnabledDataUsageBottomSheet
 import com.tokopedia.home_account.privacy_account.viewmodel.PrivacyAccountViewModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -42,8 +41,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
@@ -95,16 +92,8 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         setViewDescSocialNetworkConsent()
-        setViewLinkAccountLoading()
         setViewDataUsageLoading()
-
-        if (isShowConsentWithdrawal()) {
-            viewBinding?.layoutConsentWithdrawal?.root?.show()
-            setViewConsentWithdrawalLoading()
-            viewModel.getConsentGroupList()
-        } else {
-            viewBinding?.layoutConsentWithdrawal?.root?.hide()
-        }
+        renderConsentWithdrawal()
     }
 
     private fun initObserver() {
@@ -115,6 +104,7 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
                     setVisibilityDataUsage(true)
                     switchListener()
                 }
+
                 is Fail -> {
                     setVisibilityDataUsage(false)
                 }
@@ -132,20 +122,9 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
                         showToasterFailedSetConsent(isChecked)
                     }
                 }
+
                 is Fail -> {
                     showToasterFailedSetConsent(isChecked)
-                }
-            }
-        }
-
-        viewModel.linkStatus.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    setViewLinkAccount(it.data)
-                    setVisibilityLinkAccount(true)
-                }
-                is Fail -> {
-                    setVisibilityLinkAccount(false)
                 }
             }
         }
@@ -155,10 +134,21 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
                 is Success -> {
                     onSuccessGetConsentGroupList(it.data)
                 }
+
                 is Fail -> {
                     onFailedGetConsentGroupList(it.throwable)
                 }
             }
+        }
+    }
+
+    private fun renderConsentWithdrawal() {
+        if (isShowConsentWithdrawal()) {
+            viewBinding?.layoutConsentWithdrawal?.root?.show()
+            setViewConsentWithdrawalLoading()
+            viewModel.getConsentGroupList()
+        } else {
+            viewBinding?.layoutConsentWithdrawal?.root?.hide()
         }
     }
 
@@ -207,7 +197,7 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
                     ds.isFakeBoldText = true
                     ds.color = MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 }
             },
@@ -345,115 +335,13 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
                 data.groups.sortedBy { it.priority }
                 privacyAccountAdapter.setItems(data.groups)
             }
-        }
-    }
 
-    private fun LinkStatus.toUserAccountDataView(): UserAccountDataView {
-        val phone = this.phoneNo.ifEmpty {
-            userSessionInterface.phoneNumber
-        }
-
-        val statusLinked = status == STATUS_LINKED
-        return UserAccountDataView(
-            isLinked = statusLinked,
-            status = if (statusLinked) {
-                String.format(context?.getString(R.string.label_link_acc_phone) ?: "", phone)
+            if (data.ticker.isNotEmpty()) {
+                consentGroupTicker.visibility = View.VISIBLE
+                consentGroupTicker.setTextDescription(data.ticker)
             } else {
-                context?.getString(R.string.label_link_acc_not_linked) ?: ""
-            },
-            partnerName = context?.getString(R.string.label_link_acc_gojek) ?: "",
-            linkDate = String.format(
-                context?.getString(R.string.label_link_acc_linked_date) ?: "",
-                formatDateLocalTimezone(linkedDate)
-            )
-        )
-    }
-
-    private fun getIndonesiaLocale(): Locale {
-        return try {
-            Locale(LANGUAGE_CODE, COUNTRY_CODE)
-        } catch (e: Exception) {
-            Locale.getDefault()
-        }
-    }
-
-    private fun formatDateLocalTimezone(mDate: String): String {
-        return try {
-            val date = SimpleDateFormat(SERVER_DATE_FORMAT, getIndonesiaLocale())
-            date.timeZone = TimeZone.getTimeZone(TIMEZONE_UTC)
-            SimpleDateFormat(
-                LOCAL_DATE_FORMAT,
-                getIndonesiaLocale()
-            ).format(date.parse(mDate) ?: "")
-        } catch (e: Exception) {
-            mDate
-        }
-    }
-
-    private fun setViewLinkAccount(data: LinkStatusResponse) {
-        if (data.response.linkStatus.isNotEmpty()) {
-            val linkStatus = data.response.linkStatus.first()
-            val item = linkStatus.toUserAccountDataView()
-
-            viewBinding?.layoutItemLinkAccount?.apply {
-                privacyItemTitle.text = item.partnerName
-                privacyItemTextButton.showWithCondition(!item.isLinked)
-                privacyItemImageButton.showWithCondition(item.isLinked)
-                privacyItemDescription.text =
-                    item.status.plus(if (item.isLinked) item.linkDate else "")
+                consentGroupTicker.visibility = View.GONE
             }
-
-            linkedAccountListener(item.isLinked)
-        } else {
-            viewBinding?.layoutItemLinkAccount?.root?.gone()
-        }
-    }
-
-    private fun linkedAccountListener(isLinked: Boolean) {
-        viewBinding?.layoutItemLinkAccount?.root?.setOnClickListener {
-            if (isLinked) {
-                onViewAccountClicked()
-            } else {
-                onLinkAccountClicked()
-            }
-        }
-    }
-
-    private fun setVisibilityLinkAccount(isVisible: Boolean) {
-        viewBinding?.apply {
-            incLoaderLinkAccount.loaderHeader.gone()
-            incLoaderLinkAccount.loaderDesc.gone()
-            incLoaderLinkAccount.cardLoad.showWithCondition(!isVisible)
-            txtHeaderLinkAccount.visibleWithCondition(isVisible)
-            txtDescLinkAccount.visibleWithCondition(isVisible)
-            layoutItemLinkAccount.root.visibleWithCondition(isVisible)
-        }
-
-        if (!isVisible) {
-            viewBinding?.incLoaderLinkAccount?.cardLoad?.apply {
-                title?.text = getString(R.string.opt_text_header_failed)
-                description?.text = getString(R.string.opt_text_desc_failed)
-            }
-
-            reloadLinkAccountListener()
-        }
-    }
-
-    private fun reloadLinkAccountListener() {
-        viewBinding?.incLoaderLinkAccount?.cardLoad?.setOnClickListener {
-            setViewLinkAccountLoading()
-            viewModel.getLinkStatus()
-        }
-    }
-
-    private fun setViewLinkAccountLoading() {
-        viewBinding?.apply {
-            incLoaderLinkAccount.loaderHeader.show()
-            incLoaderLinkAccount.loaderDesc.show()
-            incLoaderLinkAccount.cardLoad.gone()
-            txtHeaderLinkAccount.invisible()
-            txtDescLinkAccount.invisible()
-            layoutItemLinkAccount.root.invisible()
         }
     }
 
@@ -461,32 +349,6 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
         viewBinding?.layoutConsentWithdrawal?.apply {
             mainLayout.hide()
             loaderShimmering.show()
-        }
-    }
-
-    private fun onLinkAccountClicked() {
-        homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
-        val intent =
-            RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
-                    putExtra(
-                        ApplinkConstInternalGlobal.PARAM_LD,
-                        LinkAccountWebviewFragment.BACK_BTN_APPLINK
-                    )
-                }
-        startActivityForResult(intent, LINK_ACCOUNT_WEBVIEW_REQUEST)
-    }
-
-    private fun onViewAccountClicked() {
-        homeAccountAnalytics.trackClickViewStatusLinkAccountPage()
-        LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == LINK_ACCOUNT_WEBVIEW_REQUEST) {
-            setViewLinkAccountLoading()
-            viewModel.getLinkStatus(userSessionInterface.phoneNumber.isEmpty())
         }
     }
 
@@ -519,14 +381,6 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
         private const val TEXT_LINK_DESC_CONSENT_SOCIAL_NETWORK = "Cek Data yang Dipakai"
         private const val SET_CONSENT_SUCCESS = 1
 
-        const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
-
-        private const val SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-        private const val LOCAL_DATE_FORMAT = "dd MMM yyyy"
-        private const val TIMEZONE_UTC = "UTC"
-        private const val LANGUAGE_CODE = "id"
-        private const val COUNTRY_CODE = "ID"
-        private const val STATUS_LINKED = "linked"
         private const val ROLLENCE_KEY_CONSENT_WITHDRAWAL = "cpcw_and"
 
         private val SCREEN_NAME = PrivacyAccountFragment::class.java.simpleName

@@ -32,7 +32,12 @@ data class KeroEditAddressResponse(
                 val isSuccess: Int = 0,
 
                 @SerializedName("is_state_chosen_address_changed")
-                val isStateChosenAddressChanged: Boolean = false
+                val isStateChosenAddressChanged: Boolean = false,
+
+                @SerializedName("chosen_address")
+                var chosenAddressData: KeroAddrStateChosenAddressData = KeroAddrStateChosenAddressData(),
+                @SerializedName("tokonow")
+                var tokonow: KeroAddressRespTokonow = KeroAddressRespTokonow()
             )
         }
     }

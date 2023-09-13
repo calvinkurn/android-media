@@ -15,7 +15,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -207,7 +206,6 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.addonInfo,
                 buyerOrderDetailData.orderId,
                 buyerOrderDetailData.orderStatus.id,
-                buyerOrderDetailData.isPof.orFalse(),
                 insuranceDetailData,
                 singleAtcRequestStates,
                 collapseProductList
@@ -236,7 +234,6 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.addonInfo,
                 buyerOrderDetailData.orderId,
                 buyerOrderDetailData.orderStatus.id,
-                buyerOrderDetailData.isPof.orFalse(),
                 insuranceDetailData,
                 singleAtcRequestStates,
                 collapseProductList
@@ -331,7 +328,6 @@ object ProductListUiStateMapper {
         addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
         orderId: String,
         orderStatusId: String,
-        isPof: Boolean,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean
@@ -371,7 +367,8 @@ object ProductListUiStateMapper {
                 singleAtcResultFlow = singleAtcResultFlow,
                 collapseProductList = collapseProductList,
                 remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBundlingList.size,
-                isPof = false
+                isPof = false,
+                shop = shop
             )
         } ?: (Int.ZERO to emptyList())
 
@@ -413,7 +410,7 @@ object ProductListUiStateMapper {
                 collapseProductList = collapseProductList,
                 numOfRemovedProductBundle = numOfRemovedProductBundle,
                 numOfRemovedNonProductBundle = numOfRemovedNonProductBundle,
-                numOfRemovedAddOnsList = numOfRemovedAddOn,
+                numOfRemovedAddOn = numOfRemovedAddOn,
                 numOfRemovedUnFulfilledProduct = numOfRemovedUnfulfilled
             ),
             tickerInfo = tickerDetails
@@ -424,12 +421,12 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         numOfRemovedProductBundle: Int,
         numOfRemovedNonProductBundle: Int,
-        numOfRemovedAddOnsList: Int,
+        numOfRemovedAddOn: Int,
         numOfRemovedUnFulfilledProduct: Int
     ): ProductListUiModel.ProductListToggleUiModel? {
         return if (collapseProductList) {
             val numOfRemovedItems =
-                numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOnsList + numOfRemovedUnFulfilledProduct
+                numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOn + numOfRemovedUnFulfilledProduct
             if (numOfRemovedItems.isMoreThanZero()) {
                 ProductListUiModel.ProductListToggleUiModel(
                     collapsed = true,
@@ -457,7 +454,8 @@ object ProductListUiStateMapper {
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        remainingSlot: Int
+        remainingSlot: Int,
+        shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop? = null
     ): Pair<Int, List<ProductListUiModel.ProductUiModel>> {
         /**
          * Reduce the non-bundle response items to be mapped based on the remaining slot on the product
@@ -482,7 +480,8 @@ object ProductListUiStateMapper {
                 orderStatusId,
                 isPof,
                 insuranceDetailData,
-                singleAtcResultFlow
+                singleAtcResultFlow,
+                shop = shop
             )
         }.orEmpty()
         return numOfRemovedNonBundles to mappedNonBundles
@@ -612,14 +611,21 @@ object ProductListUiStateMapper {
                 }.orEmpty()
             )
         }
+
         return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
             Int.ZERO to null
         } else {
-            if (collapseProductList && remainingSlot.isZero()) {
-                Int.ONE to mappedAddOn
-            } else {
-                Int.ZERO to mappedAddOn
-            }
+            mappedAddOn?.run {
+                if (collapseProductList) {
+                    if (remainingSlot.isZero()) {
+                        Int.ONE to null
+                    } else {
+                        (Int.ONE - remainingSlot).coerceAtLeast(Int.ZERO) to this
+                    }
+                } else {
+                    Int.ZERO to this
+                }
+            } ?: (Int.ZERO to null)
         }
     }
 
@@ -663,7 +669,8 @@ object ProductListUiStateMapper {
         orderStatusId: String,
         isPof: Boolean,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
-        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
+        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
+        shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop? = null
     ): ProductListUiModel.ProductUiModel {
         return ProductListUiModel.ProductUiModel(
             button = mapActionButton(product.button),
@@ -684,7 +691,11 @@ object ProductListUiStateMapper {
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
             addonsListUiModel = getAddonsSectionProductLevel(details, addonSummary),
             insurance = mapInsurance(product.productId, insuranceDetailData),
-            isPof = isPof
+            isPof = isPof,
+            productUrl = product.productUrl,
+            shopId = shop?.shopId,
+            shopName = shop?.shopName,
+            shopType = shop?.shopType
         )
     }
 
@@ -752,7 +763,8 @@ object ProductListUiStateMapper {
             totalPrice = product.totalPrice,
             totalPriceText = product.totalPriceText,
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
-            insurance = mapInsurance(product.productId, bundleId, insuranceDetailData)
+            insurance = mapInsurance(product.productId, bundleId, insuranceDetailData),
+            productUrl = ""
         )
     }
 

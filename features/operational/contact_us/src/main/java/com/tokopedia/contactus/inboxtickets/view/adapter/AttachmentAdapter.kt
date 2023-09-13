@@ -31,7 +31,6 @@ class AttachmentAdapter constructor(
     private val caseId: String
 ) : RecyclerView.Adapter<AttachmentViewHolder>() {
     private val attachmentList: MutableList<AttachmentItem>
-    private val caseIdList: MutableList<String> by lazy { ArrayList<String>() }
     private var listener: AttachmentListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachmentViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(

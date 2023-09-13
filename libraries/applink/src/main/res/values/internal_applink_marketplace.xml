@@ -90,6 +90,7 @@
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
     <string name="path_shop_score_performance" translatable="false">/shop/performance</string>
     <string name="path_shop_penalty" translatable="false">/shop-penalty</string>
+    <string name="path_shop_penalty_old" translatable="false">/shop-penalty-old</string>
     <string name="path_shop_penalty_detail" translatable="false">/shop-penalty-detail</string>
     <string name="path_shop_admin_invitation_confirmation" translatable="false">/shop-admin/invitation-page</string>
     <string name="path_shop_admin_invitation_accepted" translatable="false">/shop-admin/accepted-page</string>
@@ -103,7 +104,6 @@
     <string name="path_seller_review_detail" translatable="false">/seller-review-detail</string>
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
-    <string name="path_geolocation" translatable="false">/geolocation</string>
 
     <string name="path_chat_search">/chat-search</string>
     <string name="path_chat_template_setting">/chat/settings/templatechat</string>

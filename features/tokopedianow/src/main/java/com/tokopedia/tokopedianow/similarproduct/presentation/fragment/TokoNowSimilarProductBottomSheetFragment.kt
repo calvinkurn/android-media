@@ -97,7 +97,7 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
         stock: Int,
         isVariant: Boolean
     ) {
-        if(viewModel.isLoggedIn) {
+        if(viewModel.isLoggedIn()) {
             viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
@@ -107,8 +107,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
     override fun onProductClicked(product: ProductCardCompactSimilarProductUiModel) {
         goToProductDetailPage(product)
         listener?.trackClickProduct(
-            userId = viewModel.userId,
-            warehouseId = viewModel.warehouseId,
+            userId = viewModel.getUserId(),
+            warehouseId = viewModel.getWarehouseId(),
             similarProduct = product,
             productIdTriggered = productIdTriggered
         )
@@ -116,8 +116,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
 
     override fun onProductImpressed(product: ProductCardCompactSimilarProductUiModel) {
         listener?.trackImpressionBottomSheet(
-            userId = viewModel.userId,
-            warehouseId = viewModel.warehouseId,
+            userId = viewModel.getUserId(),
+            warehouseId = viewModel.getWarehouseId(),
             similarProduct = product,
             productIdTriggered = productIdTriggered
         )
@@ -150,8 +150,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
 
         bottomSheet?.setOnDismissListener {
             listener?.trackClickCloseBottomsheet(
-                userId = viewModel.userId,
-                warehouseId = viewModel.warehouseId,
+                userId = viewModel.getUserId(),
+                warehouseId = viewModel.getWarehouseId(),
                 productIdTriggered = productIdTriggered
             )
         }
@@ -225,8 +225,8 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
         bottomSheet?.changeQuantity(data.data.quantity, position)
 
         listener?.trackClickAddToCart(
-            userId = viewModel.userId,
-            warehouseId = viewModel.warehouseId,
+            userId = viewModel.getUserId(),
+            warehouseId = viewModel.getWarehouseId(),
             similarProduct = productList[position],
             productIdTriggered = productIdTriggered,
             newQuantity = data.data.quantity
@@ -284,15 +284,15 @@ class TokoNowSimilarProductBottomSheetFragment : Fragment(),
 
     private fun trackAction() {
         listener?.trackClickSimilarProductBtn(
-            userId = viewModel.userId,
-            warehouseId = viewModel.warehouseId,
+            userId = viewModel.getUserId(),
+            warehouseId = viewModel.getWarehouseId(),
             productIdTriggered = productIdTriggered
         )
 
         if(productList.isEmpty()) {
             listener?.trackImpressionEmptyState(
-                userId = viewModel.userId,
-                warehouseId = viewModel.warehouseId,
+                userId = viewModel.getUserId(),
+                warehouseId = viewModel.getWarehouseId(),
                 productIdTriggered = productIdTriggered
             )
         }

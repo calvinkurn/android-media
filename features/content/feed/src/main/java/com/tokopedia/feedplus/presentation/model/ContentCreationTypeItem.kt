@@ -12,9 +12,21 @@ data class ContentCreationTypeItem(
     val creatorType: CreatorType
 )
 
+/**
+ * position matter
+ */
 enum class CreateContentType(val value: String) {
-    CREATE_LIVE("livestream"),
-    CREATE_POST("post"),
-    CREATE_SHORT_VIDEO("shortvideo"),
-    NONE("")
+    ShortVideo("shortvideo"),
+    Post("post"),
+    Live("livestream"),
+    NONE("");
+
+    companion object {
+        fun getTypeByValue(value: String): CreateContentType {
+            return CreateContentType.values()
+                .firstOrNull {
+                    it.value.equals(value, false)
+                } ?: NONE
+        }
+    }
 }

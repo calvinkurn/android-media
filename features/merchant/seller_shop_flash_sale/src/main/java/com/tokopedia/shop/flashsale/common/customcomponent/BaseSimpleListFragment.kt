@@ -64,7 +64,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     }
 
     private fun setupSwipeToRefreshLayout(view: View) {
-        val loaderColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val loaderColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         swipeToRefresh = getSwipeRefreshLayout(view)
         swipeToRefresh?.setColorSchemeColors(loaderColor)
         swipeToRefresh?.setOnRefreshListener { onSwipeRefresh() }
@@ -147,7 +147,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         val message = ErrorHandler.getErrorMessage(activity, throwable)
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.baselist.R.string.retry_label), listener).show()
+                getString(com.tokopedia.abstraction.R.string.retry_label), listener).show()
         }
     }
 

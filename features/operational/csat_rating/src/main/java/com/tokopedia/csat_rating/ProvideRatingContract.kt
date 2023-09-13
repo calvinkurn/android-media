@@ -32,14 +32,4 @@ interface ProvideRatingContract {
         fun disableSubmitButton()
         fun enableSubmitButton()
     }
-
-    interface ProvideRatingPresenter : CustomerPresenter<ProvideRatingView> {
-
-        fun onFirstEmojiClick()
-        fun onSecondEmojiClick()
-        fun onThirdEmojiClick()
-        fun onFourthEmojiClick()
-        fun onFifthEmojiClick()
-        fun onSubmitClick()
-    }
 }

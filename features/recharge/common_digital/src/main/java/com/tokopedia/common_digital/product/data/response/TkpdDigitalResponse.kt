@@ -49,90 +49,6 @@ class TkpdDigitalResponse {
         this.jsonElementIncluded = jsonElementIncluded
     }
 
-    fun <T> convertDataObj(clazz: Class<T>?): T? {
-        return if (objData == null) {
-            try {
-                objData = gson.fromJson(strData, clazz)
-                objData as T?
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-                null
-            }
-        } else {
-            objData as T
-        }
-    }
-
-    fun <T> convertDataList(clazz: Class<Array<T>?>?): List<T>? {
-        return if (objData == null) {
-            try {
-                objData = Arrays.asList(*gson.fromJson(strData, clazz).also { objData = it } as Array<T>)
-                objData as List<T>?
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-                null
-            }
-        } else {
-            objData as List<T>?
-        }
-    }
-
-    fun <T> convertIncludedObj(clazz: Class<T>?): T? {
-        return if (objIncluded == null) {
-            try {
-                objIncluded = gson.fromJson(strIncluded, clazz)
-                objIncluded as T?
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-                null
-            }
-        } else {
-            objIncluded as T
-        }
-    }
-
-    fun <T> convertIncludedList(clazz: Class<Array<T>?>?): List<T>? {
-        return if (objIncluded == null) {
-            try {
-                objIncluded = Arrays.asList(*gson.fromJson(strIncluded, clazz).also { objIncluded = it } as Array<T>)
-                objIncluded as List<T>?
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-                null
-            }
-        } else {
-            objIncluded as List<T>?
-        }
-    }
-
-    fun <T> convertMetaObj(clazz: Class<T>?): T? {
-        return if (objMeta == null) {
-            try {
-                objMeta = gson.fromJson(strMeta, clazz)
-                objMeta as T?
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-                null
-            }
-        } else {
-            objMeta as T
-        }
-    }
-
-    fun <T> convertMetaList(clazz: Class<Array<T>?>?): List<T>? {
-        return if (objMeta == null) {
-            try {
-                objMeta = Arrays.asList(*gson.fromJson(strMeta, clazz).also { objMeta = it } as Array<T>)
-                objMeta as List<T>?
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-                null
-            }
-        } else {
-            objMeta as List<T>?
-        }
-    }
-
     /**
      * @author anggaprasetiyo on 3/7/17.
      */
@@ -216,13 +132,15 @@ class TkpdDigitalResponse {
                 } catch (e: JsonSyntaxException) {
                     e.printStackTrace()
                     factoryDefault(
-                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT, code
+                        ErrorNetMessage.MESSAGE_ERROR_DEFAULT,
+                        code
                     )
                 }
             }
 
             private fun factoryDefault(
-                    messageErrorDefault: String, errorCode: Int
+                messageErrorDefault: String,
+                errorCode: Int
             ): DigitalErrorResponse {
                 val digitalErrorResponse = DigitalErrorResponse()
                 val errorList: MutableList<Error> = ArrayList()
@@ -245,6 +163,7 @@ class TkpdDigitalResponse {
         private const val KEY_META = "meta"
         private const val KEY_ERROR = "errors"
         private const val DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data"
+
         @Throws(IOException::class)
         fun factory(strResponse: String): TkpdDigitalResponse {
             Log.d(TAG, strResponse)
@@ -259,7 +178,7 @@ class TkpdDigitalResponse {
                     try {
                         val digitalErrorResponse = Gson().fromJson(strResponse, DigitalErrorResponse::class.java)
                         throw DigitalResponseErrorException(
-                                digitalErrorResponse.digitalErrorMessageFormatted
+                            digitalErrorResponse.digitalErrorMessageFormatted
                         )
                     } catch (e: JsonSyntaxException) {
                         e.printStackTrace()

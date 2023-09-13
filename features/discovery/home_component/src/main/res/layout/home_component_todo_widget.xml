@@ -61,8 +61,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:layout_marginVertical="12dp"
-            app:unify_local_load_title="@string/mission_widget_failed_title"
-            app:unify_local_load_description="@string/mission_widget_failed_description"
+            app:unify_local_load_title="@string/home_default_error_title"
+            app:unify_local_load_description="@string/home_default_error_desc"
             android:visibility="gone"
             tools:visibility="visible"/>
 
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/container_todo_widget_item"
-        tools:background="@color/Unify_B500"
+        tools:background="@color/Unify_BN500"
         tools:layout_height="8dp"
         tools:visibility="visible" />
 

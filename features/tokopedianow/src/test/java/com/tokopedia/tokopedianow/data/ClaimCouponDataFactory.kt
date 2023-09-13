@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.RedeemCouponResponse
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 
@@ -91,16 +92,16 @@ object ClaimCouponDataFactory {
 
         val newListClaimCoupon: List<Visitable<*>> = if (isEmpty) {
             listOf<Visitable<*>>(
-                TokoNowChooseAddressWidgetUiModel(id = "0")
+                createHomeHeaderUiModel()
             )
         } else if (isError) {
             listOf<Visitable<*>>(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 claimCoupon.copy(state = TokoNowLayoutState.HIDE)
             )
         } else {
             listOf<Visitable<*>>(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 claimCoupon.copy(
                     claimCouponList = createCatalogCouponList(
                         slugs,

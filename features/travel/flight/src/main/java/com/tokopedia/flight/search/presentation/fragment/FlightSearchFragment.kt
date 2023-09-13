@@ -244,8 +244,9 @@ open class FlightSearchFragment :
         if (isListEmpty && flightSearchViewModel.isDoneLoadData()) {
             hideLoading()
             adapter.addElement(emptyDataViewModel)
-            if (!flightSearchViewModel.isInFilterMode)
+            if (!flightSearchViewModel.isInFilterMode) {
                 flightSearchViewModel.sendProductNotFoundTrack()
+            }
         } else {
             isLoadingInitialData = false
             if (isListEmpty) showLoading()
@@ -421,7 +422,8 @@ open class FlightSearchFragment :
         }
 
         flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
-            getDepartureAirport(), getArrivalAirport()
+            getDepartureAirport(),
+            getArrivalAirport()
         )
         flightSearchViewModel.initialize(true, isReturnTrip())
         flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
@@ -443,7 +445,8 @@ open class FlightSearchFragment :
             flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
             flightSearchViewModel.flightAirportCombine =
                 flightSearchViewModel.buildAirportCombineModel(
-                    getDepartureAirport(), getArrivalAirport()
+                    getDepartureAirport(),
+                    getArrivalAirport()
                 )
             flightSearchViewModel.generateSearchStatistics()
             flightSearchViewModel.initialize(true, isReturnTrip())
@@ -470,7 +473,6 @@ open class FlightSearchFragment :
     open fun getSearchHorizontalProgress(): HorizontalProgressBar = horizontal_progress_bar
 
     open fun renderSearchList(list: List<FlightJourneyModel>) {
-
         renderList(list)
 
         if (list.isNotEmpty()) {
@@ -578,7 +580,6 @@ open class FlightSearchFragment :
 
         // setup items
         if (filterItems.size < flightSearchViewModel.getQuickFilterItemSize()) {
-
             if (flightSearchViewModel.isFilterModelInitialized() &&
                 flightSearchViewModel.filterModel.canFilterSeatDistancing
             ) {
@@ -805,13 +806,18 @@ open class FlightSearchFragment :
     }
 
     private fun navigateToTheNextPage(
-        selectedId: String, selectedTerm: String,
-        fareModel: FlightPriceModel, isBestPairing: Boolean
+        selectedId: String,
+        selectedTerm: String,
+        fareModel: FlightPriceModel,
+        isBestPairing: Boolean
     ) {
         onFlightSearchFragmentListener?.let {
             it.selectFlight(
-                selectedId, selectedTerm, fareModel,
-                isBestPairing, flightSearchViewModel.isCombineDone,
+                selectedId,
+                selectedTerm,
+                fareModel,
+                isBestPairing,
+                flightSearchViewModel.isCombineDone,
                 flightSearchViewModel.flightSearchPassData.searchRequestId
             )
         }
@@ -853,21 +859,24 @@ open class FlightSearchFragment :
     }
 
     private fun initPromoChips() {
-        flightSearchViewModel.promoData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (!it.data.dataPromoChips.isNullOrEmpty()) {
-                        showPromoChips()
-                        promoChipsWidget.renderPromoList(it.data.dataPromoChips[FLIGHT_PROMO_CHIPS_START_DATE].airlinePrices)
-                    } else {
+        flightSearchViewModel.promoData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (!it.data.dataPromoChips.isNullOrEmpty()) {
+                            showPromoChips()
+                            promoChipsWidget.renderPromoList(it.data.dataPromoChips[FLIGHT_PROMO_CHIPS_START_DATE].airlinePrices)
+                        } else {
+                            hidePromoChips()
+                        }
+                    }
+                    is Fail -> {
                         hidePromoChips()
                     }
                 }
-                is Fail -> {
-                    hidePromoChips()
-                }
             }
-        })
+        )
         promoChipsWidget.setListener(promoChipsListener)
     }
 
@@ -888,8 +897,12 @@ open class FlightSearchFragment :
 
     interface OnFlightSearchFragmentListener {
         fun selectFlight(
-            selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
-            isBestPairing: Boolean, isCombineDone: Boolean, requestId: String
+            selectedFlightID: String,
+            selectedTerm: String,
+            flightPriceModel: FlightPriceModel,
+            isBestPairing: Boolean,
+            isCombineDone: Boolean,
+            requestId: String
         )
 
         fun changeDate(flightSearchPassDataModel: FlightSearchPassDataModel)

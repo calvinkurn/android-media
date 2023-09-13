@@ -6,13 +6,8 @@
 
     <application
         android:debuggable="true"
-        android:label="New Inbox"
+        android:label="Inbox"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="HardcodedDebugMode"
-        tools:replace="android:debuggable,android:label">
-
-        <activity
-            android:name=".fake.view.activity.FakeInboxActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-    </application>
+        tools:replace="android:debuggable,android:label"/>
 </manifest>

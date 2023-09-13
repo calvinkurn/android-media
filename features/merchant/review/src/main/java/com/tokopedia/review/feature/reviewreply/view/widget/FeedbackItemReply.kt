@@ -3,9 +3,9 @@ package com.tokopedia.review.feature.reviewreply.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,7 +25,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.unifyprinciples.Typography
 
-class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
+class FeedbackItemReply : FrameLayout, ReviewReplyListener {
 
     companion object {
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
@@ -49,7 +49,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         this.productReplyUiModel = productReplyUiModel
         binding.ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))
         binding.tvFeedbackUser.text = MethodChecker.fromHtml(String.format(context.getString(R.string.label_name_reviewer_builder), data.reviewerName.orEmpty()))
-        binding.tvFeedbackDate.text = data.reviewTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
+        binding.tvFeedbackDate.text = data.reviewTime.orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
         setupFeedbackReview(data.reviewText.orEmpty())
         setImageAttachment(data)
         setReplyView(data)
@@ -60,7 +60,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
 
     private fun setReplyView(data: FeedbackUiModel) {
         binding.tvReplyComment.text = data.replyText
-        binding.tvReplyDate.text = data.replyTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
+        binding.tvReplyDate.text = data.replyTime.orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
         if (data.autoReply == isAutoReply) {
             binding.tvReplyUser.text = context.getString(R.string.user_reply)
         } else {
@@ -72,10 +72,10 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         binding.replyFeedbackState.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
         if (feedbackText.isEmpty()) {
             binding.tvFeedbackReview.text = context.getString(R.string.review_not_found)
-            binding.tvFeedbackReview.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            binding.tvFeedbackReview.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
         } else {
             binding.tvFeedbackReview.apply {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
                 text = feedbackText
             }
         }
@@ -105,7 +105,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
     }
 
     private fun mapFeedbackUiModelToReviewMediaData(
-        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
     ): ProductrevGetReviewMedia {
         return ProductrevGetReviewMedia(
             reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
@@ -113,7 +113,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
                 reviewDetail = listOf(),
                 reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
                 reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
-                mediaCount =reviewMediaThumbnailUiModel.generateMediaCount()
+                mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
             )
         )
     }
@@ -166,7 +166,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         binding.tvReplyComment.text = comment
     }
 
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+    private inner class ReviewMediaThumbnailListener : ReviewMediaThumbnailTypeFactory.Listener {
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             val element = element
             val productReplyUiModel = productReplyUiModel

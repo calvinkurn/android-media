@@ -79,7 +79,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
         banner.let {
             val textColor = if (banner.textColor.isEmpty())
-                ContextCompat.getColor(itemView.context, R.color.Unify_N50) else Color.parseColor(banner.textColor)
+                ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50) else Color.parseColor(banner.textColor)
             if(channelConfig.hasCloseButton){
                 listCarouselCloseButton.show()
                 listCarouselCloseButton.setOnClickListener {
@@ -113,7 +113,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     val backColor = Color.parseColor(banner.backColor)
                     listCarouselView.setBackgroundColor(backColor)
                     listCarouselView.visibility = View.VISIBLE
-                } else listCarouselView.visibility = View.GONE
+                } else listCarouselView.visibility = View.INVISIBLE
             }
 
             if(banner.title.isEmpty()) listCarouselBannerHeader.visibility = View.GONE
@@ -250,7 +250,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                         cardInteraction = cardInteraction
                     )
                 )
-                val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
+                val addToCartButton = recommendationCard.findViewById<UnifyButton>(com.tokopedia.productcard.R.id.buttonAddToCart)
                 addToCartButton.text = itemView.context.getString(R.string.home_global_component_buy_again)
                 recommendationCard.setAddToCartOnClickListener {
                     recommendation.listener?.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)

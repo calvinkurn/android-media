@@ -6,8 +6,12 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.FormAddressNewAkunBinding
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
@@ -15,7 +19,7 @@ import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperError
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperWatcher
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperWatcherPhone
 
-class FormAccountWidget : LinearLayout {
+class FormAccountWidget : ConstraintLayout {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -33,7 +37,7 @@ class FormAccountWidget : LinearLayout {
         get() = binding?.etNamaPenerima?.textFieldInput?.text.toString()
 
     init {
-        binding = FormAddressNewAkunBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = FormAddressNewAkunBinding.inflate(LayoutInflater.from(context), this)
     }
 
     fun setPhoneNumber(
@@ -72,7 +76,7 @@ class FormAccountWidget : LinearLayout {
                 onClickPhoneNumberFirstIcon.invoke()
             }
             btnInfo.setOnClickListener {
-                onClickBtnInfo
+                onClickBtnInfo.invoke()
             }
         }
     }
@@ -88,7 +92,16 @@ class FormAccountWidget : LinearLayout {
                     context?.getString(R.string.tv_error_field)
                 )
             )
-            etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
+            etNomorHp.getFirstIcon().let {
+                it.clearImage()
+                it.setImageDrawable(
+                    getIconUnifyDrawable(
+                        context,
+                        IconUnify.CONTACT
+                    )
+                )
+                it.show()
+            }
             etNomorHp.textFieldInput.addTextChangedListener(
                 setWrapperWatcherPhone(
                     etNomorHp.textFieldWrapper,
@@ -114,7 +127,7 @@ class FormAccountWidget : LinearLayout {
 
     fun setupOnTextChangeListener(
         hasFocusInputReceiverName: () -> Unit,
-        hasFocusInputPhoneNumber: () -> Unit,
+        hasFocusInputPhoneNumber: () -> Unit
     ) {
         binding?.apply {
             etNomorHp.textFieldInput.apply {

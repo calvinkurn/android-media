@@ -3,6 +3,8 @@ package com.tokopedia.topads.view.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +29,9 @@ import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataIt
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.constants.MpTopadsConst
 import com.tokopedia.topads.create.R
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.topads.common.R as topadscommonR
+import com.tokopedia.iconunify.R as iconunifyR
 import com.tokopedia.topads.create.databinding.BottomsheetProductNameSeePerformanceBinding
 import com.tokopedia.topads.create.databinding.TopadsCreateBottomsheetSeePerformanceBinding
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -58,8 +63,14 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     private var productId: String = ""
     private var currentSite: String = ""
     private var dateFilterType: Int = DATE_FILTER_TYPE_LAST_3_DAYS
-    private var startDate: String = getDaysAgo(3, REQUEST_DATE_FORMAT) // Default date filter type is - DATE_FILTER_TYPE_LAST_3_DAYS
-    private var endDate: String = getDaysAgo(0, REQUEST_DATE_FORMAT) // Default date filter type is - DATE_FILTER_TYPE_LAST_3_DAYS
+    private var startDate: String = getDaysAgo(
+        3,
+        REQUEST_DATE_FORMAT
+    ) // Default date filter type is - DATE_FILTER_TYPE_LAST_3_DAYS
+    private var endDate: String = getDaysAgo(
+        0,
+        REQUEST_DATE_FORMAT
+    ) // Default date filter type is - DATE_FILTER_TYPE_LAST_3_DAYS
 
     private val mainBottomSheetBinding by lazy {
         TopadsCreateBottomsheetSeePerformanceBinding.inflate(LayoutInflater.from(this))
@@ -85,6 +96,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         currentSite = intent.data?.getQueryParameter(CURRENT_SITE).orEmpty()
         openMainBottomSheet()
         firstFetch()
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
     private fun initInjector() {
@@ -94,7 +106,10 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     private fun openMainBottomSheet() {
         attachObservers()
         attachClickListeners()
-        mainBottomSheetBinding.dateFilter.chipText = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_date_x_last_days), 3) // Default date filter type is - DATE_FILTER_TYPE_LAST_3_DAYS
+        mainBottomSheetBinding.dateFilter.chipText = String.format(
+            getString(topadscommonR.string.topads_common_date_x_last_days),
+            3
+        ) // Default date filter type is - DATE_FILTER_TYPE_LAST_3_DAYS
 
         seePerformanceTopadsBottomSheet = BottomSheetUnify().apply {
             setChild(mainBottomSheetBinding.root)
@@ -116,7 +131,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             chip_right_icon.setImageDrawable(
                 ContextCompat.getDrawable(
                     context,
-                    com.tokopedia.iconunify.R.drawable.iconunify_chevron_down
+                    iconunifyR.drawable.iconunify_chevron_down
                 )
             )
             // called the listener just to show the right icon of chip
@@ -148,7 +163,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         View.VISIBLE
                     mainBottomSheetBinding.includeTambahKredit.btnRefreshCredits.visibility =
                         View.VISIBLE
-                    mainBottomSheetBinding.includeTambahKredit.creditAmount.text = it.data.topadsDashboardDeposits.data.amountFmt.replace(" ", "")
+                    mainBottomSheetBinding.includeTambahKredit.creditAmount.text =
+                        it.data.topadsDashboardDeposits.data.amountFmt.replace(" ", "")
                 }
                 else -> {}
             }
@@ -165,7 +181,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         seePerformanceTopAdsViewModel?.adId?.observe(this) {
-            getProductStatistics(seePerformanceTopAdsViewModel?.goalId?.value ?: ADS_PLACEMENT_FILTER_TYPE_ALL)
+            getProductStatistics(
+                seePerformanceTopAdsViewModel?.goalId?.value ?: ADS_PLACEMENT_FILTER_TYPE_ALL
+            )
             seePerformanceTopAdsViewModel?.getPromoInfo()
         }
 
@@ -174,7 +192,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 TOPADS_ACTIVE_AND_VISIBLE -> {
                     ImageViewCompat.setImageTintList(
                         mainBottomSheetBinding.includeStatusIklan.adStatusDot,
-                        ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                this,
+                                unifyprinciplesR.color.Unify_GN500
+                            )
+                        )
                     )
                     mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
                         getString(R.string.ads_active)
@@ -186,7 +209,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 TOPADS_ACTIVE_BUT_NOT_VISIBLE -> {
                     ImageViewCompat.setImageTintList(
                         mainBottomSheetBinding.includeStatusIklan.adStatusDot,
-                        ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_YN300))
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                this,
+                                unifyprinciplesR.color.Unify_YN300
+                            )
+                        )
                     )
                     mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
                         getString(R.string.ads_active)
@@ -199,7 +227,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 TOPADS_NOT_ACTIVE -> {
                     ImageViewCompat.setImageTintList(
                         mainBottomSheetBinding.includeStatusIklan.adStatusDot,
-                        ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                this,
+                                unifyprinciplesR.color.Unify_NN500
+                            )
+                        )
                     )
                     mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
                         getString(R.string.topads_non_active)
@@ -210,6 +243,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 }
             }
             seePerformanceTopAdsViewModel?.getGroupInfo()
+            seePerformanceTopAdsViewModel?.getTotalAdsAndKeywordsCount()
             mainBottomSheetBinding.includeStatusIklan.statusIklanLoader.visibility = View.INVISIBLE
             mainBottomSheetBinding.includeStatusIklan.statusIklanGroup.visibility = View.VISIBLE
         }
@@ -239,68 +273,102 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             if (it != null && it.response?.errors.isNullOrEmpty()) {
                 mainBottomSheetBinding.includeAdGroupManual.groupName.text =
                     it.response?.data?.firstOrNull()?.groupName
-                mainBottomSheetBinding.includeAdGroupManual.productsCount.text =
-                    it.response?.data?.firstOrNull()?.totalItem.toString()
-                mainBottomSheetBinding.includeAdGroupManual.keywordsCount.text =
-                    it.response?.data?.firstOrNull()?.totalKeyword.toString()
                 mainBottomSheetBinding.includeAdGroupManual.adCostSearch.text =
                     String.format(
                         getString(R.string.topads_ads_price_format_1),
                         convertToCurrency(
-                            it.response?.data?.firstOrNull()?.groupBidSetting?.productSearch?.toLong() ?: 0
+                            it.response?.data?.firstOrNull()?.groupBidSetting?.productSearch?.toLong()
+                                ?: 0
                         )
                     )
                 mainBottomSheetBinding.includeAdGroupManual.adCostRecommend.text =
                     String.format(
                         getString(R.string.topads_ads_price_format_1),
                         convertToCurrency(
-                            it.response?.data?.firstOrNull()?.groupBidSetting?.productBrowse?.toLong() ?: 0
+                            it.response?.data?.firstOrNull()?.groupBidSetting?.productBrowse?.toLong()
+                                ?: 0
                         )
                     )
 
                 it.response?.data?.firstOrNull()?.groupPriceDaily?.apply {
                     when (this) {
                         INFINITE_DAILY_BUDGET.toFloat() -> {
-                            mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text = getString(R.string.tidak_dibatasi)
-                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.GONE
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text =
+                                getString(R.string.tidak_dibatasi)
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility =
+                                View.GONE
                         }
                         else -> {
-                            mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text = String.format(
-                                getString(R.string.topads_ads_price_format_1),
-                                convertToCurrency(it.response?.data?.firstOrNull()?.groupPriceDaily?.toLong() ?: 0)
-                            )
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text =
+                                String.format(
+                                    getString(R.string.topads_ads_price_format_1),
+                                    convertToCurrency(
+                                        it.response?.data?.firstOrNull()?.groupPriceDaily?.toLong()
+                                            ?: 0
+                                    )
+                                )
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text =
                                 String.format(
                                     getString(R.string.topads_ads_price_format_2),
-                                    it.response?.data?.firstOrNull()?.groupPriceDailySpentFmt?.replace(" ", ""),
+                                    it.response?.data?.firstOrNull()?.groupPriceDailySpentFmt?.replace(
+                                        " ",
+                                        ""
+                                    ),
                                     convertToCurrency(
-                                        it.response?.data?.firstOrNull()?.groupPriceDaily?.toLong() ?: 0
+                                        it.response?.data?.firstOrNull()?.groupPriceDaily?.toLong()
+                                            ?: 0
                                     )
                                 )
 
                             /** ProgressBar unify needs to be updated when rendered & visible on screen */
-                            val dailySpentPercent = (100 * convertMoneyToValue(it.response?.data?.firstOrNull()?.groupPriceDailySpentFmt ?: "") / this).toInt()
+                            val dailySpentPercent = (100 * convertMoneyToValue(
+                                it.response?.data?.firstOrNull()?.groupPriceDailySpentFmt ?: ""
+                            ) / this).toInt()
                             val colorArray: IntArray = when {
                                 dailySpentPercent > DAILY_BUDGET_SPENT_CRITICAL_THREASHOLD -> intArrayOf(
-                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, com.tokopedia.unifyprinciples.R.color.Unify_RN500),
-                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                                    ContextCompat.getColor(
+                                        this@SeePerformanceTopadsActivity,
+                                        unifyprinciplesR.color.Unify_RN500
+                                    ),
+                                    ContextCompat.getColor(
+                                        this@SeePerformanceTopadsActivity,
+                                        unifyprinciplesR.color.Unify_RN500
+                                    )
                                 )
                                 dailySpentPercent > DAILY_BUDGET_SPENT_MODERATE_THRESHOLD -> intArrayOf(
-                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, com.tokopedia.unifyprinciples.R.color.Unify_YN300),
-                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, com.tokopedia.unifyprinciples.R.color.Unify_YN300)
+                                    ContextCompat.getColor(
+                                        this@SeePerformanceTopadsActivity,
+                                        unifyprinciplesR.color.Unify_YN300
+                                    ),
+                                    ContextCompat.getColor(
+                                        this@SeePerformanceTopadsActivity,
+                                        unifyprinciplesR.color.Unify_YN300
+                                    )
                                 )
                                 else -> intArrayOf(
-                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500),
-                                    ContextCompat.getColor(this@SeePerformanceTopadsActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                                    ContextCompat.getColor(
+                                        this@SeePerformanceTopadsActivity,
+                                        unifyprinciplesR.color.Unify_GN500
+                                    ),
+                                    ContextCompat.getColor(
+                                        this@SeePerformanceTopadsActivity,
+                                        unifyprinciplesR.color.Unify_GN500
+                                    )
                                 )
                             }
-                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressBarColor = colorArray
-                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.setValue(dailySpentPercent)
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressBarColor =
+                                colorArray
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.setValue(
+                                dailySpentPercent
+                            )
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.progressDrawable.cornerRadius =
-                                com.tokopedia.unifyprinciples.R.dimen.abc_progress_bar_height_material.toPx().toFloat()
+                                unifyprinciplesR.dimen.abc_progress_bar_height_material.toPx()
+                                    .toFloat()
                             mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.trackDrawable.cornerRadius =
-                                com.tokopedia.unifyprinciples.R.dimen.abc_progress_bar_height_material.toPx().toFloat()
-                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility = View.GONE
+                                unifyprinciplesR.dimen.abc_progress_bar_height_material.toPx()
+                                    .toFloat()
+                            mainBottomSheetBinding.includeAdGroupManual.dailyBudgetProgressBar.visibility =
+                                View.GONE
                         }
                     }
                 }
@@ -314,37 +382,62 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         AUTO_ADS_INACTIVE -> {
                             ImageViewCompat.setImageTintList(
                                 mainBottomSheetBinding.includeAdGroupAutomatic.adStatusIndicator,
-                                ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        this,
+                                        unifyprinciplesR.color.Unify_NN500
+                                    )
+                                )
                             )
                             getString(R.string.ads_deactive)
                         }
                         AUTO_ADS_IN_THE_PROCESS_TYPE_1, AUTO_ADS_IN_THE_PROCESS_TYPE_2, AUTO_ADS_IN_THE_PROCESS_TYPE_3 -> {
                             ImageViewCompat.setImageTintList(
                                 mainBottomSheetBinding.includeAdGroupAutomatic.adStatusIndicator,
-                                ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_BN500))
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        this,
+                                        unifyprinciplesR.color.Unify_BN500
+                                    )
+                                )
                             )
                             getString(R.string.ads_inprogress)
                         }
                         AUTO_ADS_ACTIVE_AND_VISIBLE -> {
                             ImageViewCompat.setImageTintList(
                                 mainBottomSheetBinding.includeAdGroupAutomatic.adStatusIndicator,
-                                ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        this,
+                                        unifyprinciplesR.color.Unify_GN500
+                                    )
+                                )
                             )
                             getString(R.string.ads_active)
                         }
                         AUTO_ADS_ACTIVE_BUT_INVISIBLE -> {
-                            mainBottomSheetBinding.includeAdGroupAutomatic.adStatusInfo.visibility = View.VISIBLE
-                            mainBottomSheetBinding.includeAdGroupAutomatic.adStatusInfoBtn.visibility = View.VISIBLE
+                            mainBottomSheetBinding.includeAdGroupAutomatic.adStatusInfo.visibility =
+                                View.VISIBLE
+                            mainBottomSheetBinding.includeAdGroupAutomatic.adStatusInfoBtn.visibility =
+                                View.VISIBLE
                             ImageViewCompat.setImageTintList(
                                 mainBottomSheetBinding.includeAdGroupAutomatic.adStatusIndicator,
-                                ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_YN300))
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        this,
+                                        unifyprinciplesR.color.Unify_YN300
+                                    )
+                                )
                             )
                             getString(R.string.ads_active)
                         }
                         else -> ""
                     }
                 mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudget2.text =
-                    String.format(getString(R.string.topads_ads_price_format_3), convertToCurrency(it.data.dailyBudget.toLong()))
+                    String.format(
+                        getString(R.string.topads_ads_price_format_3),
+                        convertToCurrency(it.data.dailyBudget.toLong())
+                    )
                 mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetDesc2.text =
                     String.format(
                         getString(R.string.topads_ads_price_format_4),
@@ -352,9 +445,13 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         convertToCurrency(it.data.dailyBudget.toLong())
                     )
                 if (it.data.dailyBudget.isMoreThanZero()) {
-                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(100 * it.data.dailyUsage / it.data.dailyBudget)
+                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(
+                        100 * it.data.dailyUsage / it.data.dailyBudget
+                    )
                 } else {
-                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(EMPTY)
+                    mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetProgressBar.setValue(
+                        EMPTY
+                    )
                 }
             }
         }
@@ -366,6 +463,13 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 ADS_PLACEMENT_FILTER_TYPE_IN_RECOMMENDATION -> getString(R.string.topads_ads_performance_in_recommendation_filter_title)
                 else -> ""
             }
+        }
+
+        seePerformanceTopAdsViewModel?.totalAdsAndKeywordsCount?.observe(this){
+            mainBottomSheetBinding.includeAdGroupManual.productsCount.text =
+                it.firstOrNull()?.totalProducts?.toString()
+            mainBottomSheetBinding.includeAdGroupManual.keywordsCount.text =
+                it.firstOrNull()?.totalKeywords?.toString()
         }
     }
 
@@ -417,8 +521,10 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includePerformaTampil.adPerformanceInfo.setOnClickListener {
-            val statTotalTopSlotImpression = (seePerformanceTopAdsViewModel?.productStatistics?.value as? Success<ProductStatisticsResponse>)?.data?.getDashboardProductStatistics?.data?.firstOrNull()?.statTotalTopSlotImpression
-            val statTotalImpression = (seePerformanceTopAdsViewModel?.productStatistics?.value as? Success<ProductStatisticsResponse>)?.data?.getDashboardProductStatistics?.data?.firstOrNull()?.statTotalImpression
+            val statTotalTopSlotImpression =
+                (seePerformanceTopAdsViewModel?.productStatistics?.value as? Success<ProductStatisticsResponse>)?.data?.getDashboardProductStatistics?.data?.firstOrNull()?.statTotalTopSlotImpression
+            val statTotalImpression =
+                (seePerformanceTopAdsViewModel?.productStatistics?.value as? Success<ProductStatisticsResponse>)?.data?.getDashboardProductStatistics?.data?.firstOrNull()?.statTotalImpression
 
             if (statTotalImpression == null || statTotalImpression == TOPADS_PERFORMANCE_NOT_RATED_THRESHOLD.toString()) {
                 showDescriptionBottomSheet(
@@ -427,7 +533,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     getString(R.string.topads_ads_performance_not_rated),
                     "",
                     EMPTY,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 )
             } else {
                 val performanceCountTemplate = "%.2f%%"
@@ -445,7 +551,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                                 statTotalTopSlotImpression,
                                 statTotalImpression
                             ),
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                            unifyprinciplesR.color.Unify_GN500
                         )
                     }
                     adPerformanceCount > TOPADS_PERFORMANCE_RARITY_THRESHOLD -> {
@@ -458,7 +564,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                                 statTotalTopSlotImpression,
                                 statTotalImpression
                             ),
-                            com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                            unifyprinciplesR.color.Unify_YN500
                         )
                     }
                     else -> {
@@ -471,7 +577,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                                 statTotalTopSlotImpression,
                                 statTotalImpression
                             ),
-                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                            unifyprinciplesR.color.Unify_RN500
                         )
                     }
                 }
@@ -538,7 +644,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     putExtra(TopAdsDashboardConstant.TAB_POSITION, MpTopadsConst.CONST_2)
                     putExtra(
                         TopAdsDashboardConstant.GROUPID,
-                        seePerformanceTopAdsViewModel?.topAdsPromoInfo?.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID ?: ""
+                        seePerformanceTopAdsViewModel?.topAdsPromoInfo?.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID
+                            ?: ""
                     )
                     putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, SEE_ADS_PERFORMANCE_TAG)
                 }
@@ -588,12 +695,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, EMPTY)
         intent.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, EMPTY)
         startActivityForResult(intent, TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT)
-    }
-
-    private fun openOldAutoTopUpBottomSheet() {
-        val intent = Intent(this, TopAdsAddCreditActivity::class.java)
-        intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
-        startActivityForResult(intent, TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT)
     }
 
     private fun hideMainBottomSheetContent() {
@@ -658,39 +759,39 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     /** title is used as key to check for date filter option user has opted for*/
     fun updateDateFilter(title: String) {
         when (title) {
-            getString(com.tokopedia.topads.common.R.string.topads_common_date_today) -> {
+            getString(topadscommonR.string.topads_common_date_today) -> {
                 startDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
                 endDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
                 dateFilterType = DATE_FILTER_TYPE_TODAY
             }
-            getString(com.tokopedia.topads.common.R.string.topads_common_date_yesterday) -> {
+            getString(topadscommonR.string.topads_common_date_yesterday) -> {
                 endDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
                 startDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
                 dateFilterType = DATE_FILTER_TYPE_YESTERDAY
             }
-            String.format(getString(com.tokopedia.topads.common.R.string.topads_common_date_x_last_days), 3) -> {
+            String.format(getString(topadscommonR.string.topads_common_date_x_last_days), 3) -> {
                 endDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
                 startDate = getDaysAgo(3, REQUEST_DATE_FORMAT)
                 dateFilterType = DATE_FILTER_TYPE_LAST_3_DAYS
             }
-            String.format(getString(com.tokopedia.topads.common.R.string.topads_common_date_x_last_days), 7) -> {
+            String.format(getString(topadscommonR.string.topads_common_date_x_last_days), 7) -> {
                 endDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
                 startDate = getDaysAgo(7, REQUEST_DATE_FORMAT)
                 dateFilterType = DATE_FILTER_TYPE_WEEK
             }
-            String.format(getString(com.tokopedia.topads.common.R.string.topads_common_date_x_last_days), 30) -> {
+            String.format(getString(topadscommonR.string.topads_common_date_x_last_days), 30) -> {
                 endDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
                 startDate = getDaysAgo(30, REQUEST_DATE_FORMAT)
                 dateFilterType = DATE_FILTER_TYPE_MONTH
             }
-            getString(com.tokopedia.topads.common.R.string.topads_common_date_this_month) -> {
+            getString(topadscommonR.string.topads_common_date_this_month) -> {
                 endDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
                 startDate = getFirstDateOfMonth(REQUEST_DATE_FORMAT)
                 dateFilterType = DATE_FILTER_TYPE_CURRENT_MONTH
             }
             else -> openCalendar()
         }
-        if (title != getString(com.tokopedia.topads.common.R.string.topads_common_custom)) {
+        if (title != getString(topadscommonR.string.topads_common_custom)) {
             mainBottomSheetBinding.dateFilter.chipText = title
             getProductStatistics(
                 seePerformanceTopAdsViewModel?.goalId?.value ?: ADS_PLACEMENT_FILTER_TYPE_ALL
@@ -707,7 +808,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         startDate = SimpleDateFormat(REQUEST_DATE_FORMAT).format(dateFrom)
         endDate = SimpleDateFormat(REQUEST_DATE_FORMAT).format(dateTo)
         dateFilterType = DATE_FILTER_TYPE_CUSTOM
-        mainBottomSheetBinding.dateFilter.chipText = getString(com.tokopedia.topads.common.R.string.topads_common_custom)
+        mainBottomSheetBinding.dateFilter.chipText =
+            getString(topadscommonR.string.topads_common_custom)
         getProductStatistics(
             seePerformanceTopAdsViewModel?.goalId?.value ?: ADS_PLACEMENT_FILTER_TYPE_ALL
         )
@@ -719,12 +821,15 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeCardStatistics.productStatisticsGroup.visibility =
             View.VISIBLE
 
-        mainBottomSheetBinding.includeCardStatistics.tampilCount.text = dataItem?.statTotalImpression
+        mainBottomSheetBinding.includeCardStatistics.tampilCount.text =
+            dataItem?.statTotalImpression
         mainBottomSheetBinding.includeCardStatistics.klikCount.text = dataItem?.statTotalClick
-        mainBottomSheetBinding.includeCardStatistics.totalTerjualCount.text = dataItem?.statTotalSold
+        mainBottomSheetBinding.includeCardStatistics.totalTerjualCount.text =
+            dataItem?.statTotalSold
         mainBottomSheetBinding.includeCardStatistics.pendapatanCount.text =
             dataItem?.statTotalGrossProfit?.replace(" ", "")
-        mainBottomSheetBinding.includeCardStatistics.pengeluaranCount.text = dataItem?.statTotalSpent?.replace(" ", "")
+        mainBottomSheetBinding.includeCardStatistics.pengeluaranCount.text =
+            dataItem?.statTotalSpent?.replace(" ", "")
         mainBottomSheetBinding.includeCardStatistics.efektivitasIklanCount.text =
             dataItem?.statTotalRoas
     }
@@ -733,7 +838,11 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         if (dataItem.statTotalImpression == TOPADS_PERFORMANCE_NOT_RATED_THRESHOLD.toString()) {
             mainBottomSheetBinding.includePerformaTampil.adPerformance.text =
                 getString(R.string.topads_ads_performance_not_rated)
-            setGreyCondition()
+            setColorCondition(
+                unifyprinciplesR.color.Unify_NN300,
+                unifyprinciplesR.color.Unify_NN300,
+                unifyprinciplesR.color.Unify_NN300
+            )
         } else {
             val adPerformance =
                 100 * convertMoneyToValue(dataItem.statTotalTopSlotImpression) / convertMoneyToValue(
@@ -742,78 +851,45 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
             mainBottomSheetBinding.includePerformaTampil.adPerformance.text = when {
                 adPerformance > TOPADS_PERFORMANCE_FREQUENTLY_THRESHOLD -> {
-                    setGreenCondition()
+                    setColorCondition(
+                        unifyprinciplesR.color.Unify_GN500,
+                        unifyprinciplesR.color.Unify_GN500,
+                        unifyprinciplesR.color.Unify_GN500
+                    )
                     getString(R.string.topads_ads_performance_top_frequently)
                 }
                 adPerformance > TOPADS_PERFORMANCE_RARITY_THRESHOLD -> {
-                    setYellowCondition()
+                    setColorCondition(
+                        unifyprinciplesR.color.Unify_YN500,
+                        unifyprinciplesR.color.Unify_YN500,
+                        unifyprinciplesR.color.Unify_NN300
+                    )
                     getString(R.string.topads_ads_performance_top_rarity)
                 }
                 else -> {
-                    setRedCondition()
+                    setColorCondition(
+                        unifyprinciplesR.color.Unify_RN500,
+                        unifyprinciplesR.color.Unify_NN300,
+                        unifyprinciplesR.color.Unify_NN300
+                    )
                     getString(R.string.topads_ads_performance_lose_competition)
                 }
             }
         }
     }
 
-    private fun setGreenCondition() {
+    private fun setColorCondition(color1: Int, color2: Int, color3: Int) {
         ImageViewCompat.setImageTintList(
             mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block1,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            ColorStateList.valueOf(ContextCompat.getColor(this, color1))
         )
         ImageViewCompat.setImageTintList(
             mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block2,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            ColorStateList.valueOf(ContextCompat.getColor(this, color2))
         )
         ImageViewCompat.setImageTintList(
             mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block3,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-        )
-    }
-
-    private fun setYellowCondition() {
-        ImageViewCompat.setImageTintList(
-            mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block1,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_YN500))
-        )
-        ImageViewCompat.setImageTintList(
-            mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block2,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_YN500))
-        )
-        ImageViewCompat.setImageTintList(
-            mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block3,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN300))
-        )
-    }
-
-    private fun setRedCondition() {
-        ImageViewCompat.setImageTintList(
-            mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block1,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
-        )
-        ImageViewCompat.setImageTintList(
-            mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block2,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN300))
-        )
-        ImageViewCompat.setImageTintList(
-            mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block3,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN300))
-        )
-    }
-
-    private fun setGreyCondition() {
-        ImageViewCompat.setImageTintList(
-            mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block1,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN300))
-        )
-        ImageViewCompat.setImageTintList(
-            mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block2,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN300))
-        )
-        ImageViewCompat.setImageTintList(
-            mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block3,
-            ColorStateList.valueOf(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN300))
+            ColorStateList.valueOf(ContextCompat.getColor(this, color3))
         )
     }
 
@@ -935,9 +1011,15 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
     fun updateAdsPlacingFilter(goalId: Int) {
         when (goalId) {
-            ADS_PLACEMENT_FILTER_TYPE_ALL -> SeePerformanceTopadsTracker.clickIklanSemuaPenempatan(currentSite)
-            ADS_PLACEMENT_FILTER_TYPE_IN_SEARCH -> SeePerformanceTopadsTracker.clickIklanPencarian(currentSite)
-            ADS_PLACEMENT_FILTER_TYPE_IN_RECOMMENDATION -> SeePerformanceTopadsTracker.clickIklanRekomendasi(currentSite)
+            ADS_PLACEMENT_FILTER_TYPE_ALL -> SeePerformanceTopadsTracker.clickIklanSemuaPenempatan(
+                currentSite
+            )
+            ADS_PLACEMENT_FILTER_TYPE_IN_SEARCH -> SeePerformanceTopadsTracker.clickIklanPencarian(
+                currentSite
+            )
+            ADS_PLACEMENT_FILTER_TYPE_IN_RECOMMENDATION -> SeePerformanceTopadsTracker.clickIklanRekomendasi(
+                currentSite
+            )
         }
         getProductStatistics(goalId)
     }
@@ -953,46 +1035,46 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
         val dateFilterList = arrayListOf(
             ItemListUiModel(
-                getString(com.tokopedia.topads.common.R.string.topads_common_date_today),
+                getString(topadscommonR.string.topads_common_date_today),
                 today,
                 dateFilterType == DATE_FILTER_TYPE_TODAY
             ),
             ItemListUiModel(
-                getString(com.tokopedia.topads.common.R.string.topads_common_date_yesterday),
+                getString(topadscommonR.string.topads_common_date_yesterday),
                 yesterday,
                 dateFilterType == DATE_FILTER_TYPE_YESTERDAY
             ),
             ItemListUiModel(
-                String.format(getString(com.tokopedia.topads.common.R.string.topads_common_date_x_last_days), 3),
+                String.format(getString(topadscommonR.string.topads_common_date_x_last_days), 3),
                 "$daysAgo3 - $today",
                 dateFilterType == DATE_FILTER_TYPE_LAST_3_DAYS
             ),
             ItemListUiModel(
-                String.format(getString(com.tokopedia.topads.common.R.string.topads_common_date_x_last_days), 7),
+                String.format(getString(topadscommonR.string.topads_common_date_x_last_days), 7),
                 "$daysAgo7 - ${getDaysAgo(1, DATE_FORMAT_DD_MMM_YYYY)}",
                 dateFilterType == DATE_FILTER_TYPE_WEEK
             ),
             ItemListUiModel(
-                String.format(getString(com.tokopedia.topads.common.R.string.topads_common_date_x_last_days), 30),
+                String.format(getString(topadscommonR.string.topads_common_date_x_last_days), 30),
                 "$daysAgo30 - ${getDaysAgo(1, DATE_FORMAT_DD_MMM_YYYY)}",
                 dateFilterType == DATE_FILTER_TYPE_MONTH
             ),
             ItemListUiModel(
-                getString(com.tokopedia.topads.common.R.string.topads_common_date_this_month),
+                getString(topadscommonR.string.topads_common_date_this_month),
                 "$firstDateOfMonth - $today",
                 dateFilterType == DATE_FILTER_TYPE_CURRENT_MONTH
             ),
             ItemListUiModel(
-                getString(com.tokopedia.topads.common.R.string.topads_common_custom),
+                getString(topadscommonR.string.topads_common_custom),
                 if (dateFilterType == DATE_FILTER_TYPE_CUSTOM) {
                     "${
-                    SimpleDateFormat(DATE_FORMAT_DD_MMM_YYYY).format(
-                        selectedDateFrom
-                    )
+                        SimpleDateFormat(DATE_FORMAT_DD_MMM_YYYY).format(
+                            selectedDateFrom
+                        )
                     } - ${SimpleDateFormat(DATE_FORMAT_DD_MMM_YYYY).format(selectedDateTo)}"
                 } else {
                     getString(
-                        com.tokopedia.topads.common.R.string.topads_common_select_date
+                        topadscommonR.string.topads_common_select_date
                     )
                 },
                 dateFilterType == DATE_FILTER_TYPE_CUSTOM

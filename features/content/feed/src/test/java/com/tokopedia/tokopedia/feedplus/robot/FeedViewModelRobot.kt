@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListUseCase
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetFollowingUseCase
@@ -50,7 +50,7 @@ class FeedViewModelRobot(
     getWhitelistNewUseCase: GetWhiteListUseCase,
     sendReportUseCase: SubmitReportContentUseCase,
     addToWishlistV2UseCase: AddToWishlistV2UseCase,
-    trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
+    trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
     feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
     shopRecomUseCase: ShopRecomUseCase,
     shopRecomMapper: ShopRecomUiMapper,
@@ -115,7 +115,7 @@ fun create(
     getWhitelistNewUseCase: GetWhiteListUseCase = mockk(relaxed = true),
     sendReportUseCase: SubmitReportContentUseCase = mockk(relaxed = true),
     addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true),
-    trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase = mockk(relaxed = true),
+    trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
     feedXTrackViewerUseCase: FeedXTrackViewerUseCase = mockk(relaxed = true),
     shopRecomUseCase: ShopRecomUseCase = mockk(relaxed = true),
     shopRecomMapper: ShopRecomUiMapper = ShopRecomUiMapperImpl(),

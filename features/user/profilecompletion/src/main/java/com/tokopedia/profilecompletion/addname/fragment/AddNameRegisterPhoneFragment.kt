@@ -13,7 +13,6 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
@@ -34,8 +33,8 @@ import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
 import com.tokopedia.profilecompletion.common.ColorUtils
+import com.tokopedia.profilecompletion.databinding.FragmentAddNameRegisterBinding
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
-import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -45,14 +44,10 @@ import javax.inject.Inject
  */
 open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View {
 
+    private var _binding: FragmentAddNameRegisterBinding? = null
+    private val binding get() = _binding!!
     var phoneNumber: String? = ""
     var uuid: String? = ""
-
-    private var bottomInfo: TextView? = null
-    private var progressBar: ProgressBar? = null
-    private var mainContent: View? = null
-    private var textName: TextFieldUnify? = null
-    private var btnNext: UnifyButton? = null
 
     private var isError = false
 
@@ -115,24 +110,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         savedInstanceState: Bundle?
     ): View? {
         splitCompatInstall()
-
-        return try {
-            val view = inflater.inflate(
-                com.tokopedia.profilecompletion.R.layout.fragment_add_name_register,
-                container,
-                false
-            )
-            bottomInfo = view.findViewById(R.id.bottom_info)
-            progressBar = view.findViewById(R.id.progress_bar)
-            mainContent = view.findViewById(R.id.main_content)
-            textName = view.findViewById(R.id.et_name)
-            btnNext = view.findViewById(R.id.btn_continue)
-            view
-        } catch (e: Throwable) {
-            e.printStackTrace();
-            null
-        }
-
+        _binding = FragmentAddNameRegisterBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     private fun splitCompatInstall() {
@@ -146,20 +125,20 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         presenter.attachView(this)
         setView()
         setViewListener()
-        btnNext?.let { disableButton(it) }
+        binding?.btnContinue?.let { disableButton(it) }
     }
 
     private fun setViewListener() {
-        textName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        binding?.etName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (charSequence.isNotEmpty()) {
-                    btnNext?.let { enableButton(it) }
+                    binding?.btnContinue?.let { enableButton(it) }
                 } else {
-                    btnNext?.let { disableButton(it) }
+                    binding?.btnContinue?.let { disableButton(it) }
                 }
                 if (isError) {
                     hideValidationError()
@@ -171,13 +150,13 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             }
         })
 
-        btnNext?.setOnClickListener { onContinueClick() }
+        binding?.btnContinue?.setOnClickListener { onContinueClick() }
     }
 
     private fun onContinueClick() {
         KeyboardHandler.DropKeyboard(activity, view)
         phoneNumber?.let {
-            registerPhoneAndName(textName?.textFieldInput?.text.toString(), it)
+            registerPhoneAndName(binding?.etName?.textFieldInput?.text.toString(), it)
             analytics.trackClickFinishAddNameButton()
         }
     }
@@ -206,7 +185,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     }
 
     private fun setView() {
-        btnNext?.let { disableButton(it) }
+        binding?.btnContinue?.let { disableButton(it) }
         initTermPrivacyView()
     }
 
@@ -227,7 +206,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ), SPAN_34, SPAN_54, FLAG_0
                 )
@@ -235,14 +214,14 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ), SPAN_61, SPAN_78, FLAG_0
                 )
 
-                bottomInfo?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
-                bottomInfo?.movementMethod = LinkMovementMethod.getInstance()
-                bottomInfo?.isSelected = false
+                binding?.bottomInfo?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+                binding?.bottomInfo?.movementMethod = LinkMovementMethod.getInstance()
+                binding?.bottomInfo?.isSelected = false
             }
         }
     }
@@ -266,7 +245,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                 ds.isUnderlineText = false
                 ds.color = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             }
         }
@@ -274,14 +253,14 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     private fun hideValidationError() {
         isError = false
-        textName?.setError(false)
-        textName?.setMessage("")
+        binding?.etName?.setError(false)
+        binding?.etName?.setMessage("")
     }
 
     private fun showValidationError(errorMessage: String) {
         isError = true
-        textName?.setError(true)
-        textName?.setMessage(errorMessage)
+        binding?.etName?.setError(true)
+        binding?.etName?.setMessage(errorMessage)
     }
 
     private fun enableButton(button: UnifyButton) {
@@ -293,13 +272,13 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     }
 
     override fun showLoading() {
-        mainContent?.visibility = View.GONE
-        progressBar?.visibility = View.VISIBLE
+        binding?.mainContent?.visibility = View.GONE
+        binding?.progressBar?.visibility = View.VISIBLE
     }
 
     fun dismissLoading() {
-        mainContent?.visibility = View.VISIBLE
-        progressBar?.visibility = View.GONE
+        binding?.mainContent?.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.GONE
     }
 
     override fun onErrorRegister(throwable: Throwable) {
@@ -334,5 +313,10 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
             finish()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

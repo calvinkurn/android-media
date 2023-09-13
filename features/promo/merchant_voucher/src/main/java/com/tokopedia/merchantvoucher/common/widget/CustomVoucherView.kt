@@ -20,6 +20,8 @@ import android.text.style.TypefaceSpan
 import android.graphics.Typeface
 import android.text.TextPaint
 import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import com.tokopedia.utils.resources.isDarkMode
 
 
 /*
@@ -106,7 +108,7 @@ open class CustomVoucherView : FrameLayout {
 
     override fun onDraw(canvas: Canvas) {
         paint.isAntiAlias = true
-        paint.color = androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        paint.color = androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         paint.strokeWidth = 0f
         paint.style = Paint.Style.FILL_AND_STROKE
         paint.strokeJoin = Paint.Join.BEVEL
@@ -121,7 +123,12 @@ open class CustomVoucherView : FrameLayout {
 
     @ColorInt
     protected open fun getShadowColor(): Int {
-        return androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N300)
+        @ColorRes val colorRes = if (context.isDarkMode()) {
+            R.color.merchantvoucher_dms_shadow_dark
+        } else {
+            R.color.merchantvoucher_dms_shadow_light
+        }
+        return androidx.core.content.ContextCompat.getColor(context,colorRes)
     }
 
     private fun initDimensionData() {

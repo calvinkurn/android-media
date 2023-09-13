@@ -34,10 +34,10 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.util.ViewHelper
@@ -72,14 +72,11 @@ import com.tokopedia.home_account.data.model.RecommendationTitleView
 import com.tokopedia.home_account.data.model.SeparatorView
 import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.data.model.ShortcutResponse
-import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.privacy_account.view.LinkAccountWebViewActivity
-import com.tokopedia.home_account.privacy_account.view.LinkAccountWebviewFragment
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
@@ -117,6 +114,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -134,6 +132,7 @@ import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -234,10 +233,10 @@ open class HomeAccountUserFragment :
         return remoteConfig.getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
+    // feature explicit profile for temporary disabled, because Product Manager have not capacity for this.
+    // the rollout will set up back by announce of product team
     private fun isEnableExplicitProfileMenu(): Boolean {
-        return getAbTestPlatform()
-            .getString(EXPLICIT_PROFILE_MENU_ROLLOUT)
-            .contains(EXPLICIT_PROFILE_MENU_ROLLOUT)
+        return false
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -277,10 +276,13 @@ open class HomeAccountUserFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val label = getLabelProfileManagement()
+        homeAccountAnalytic.sendViewOnAkunSayaPageEvent(label)
+
         binding?.homeAccountUserToolbar?.let {
             it.setIcon(
                 IconBuilder(
-                    IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
+                    IconBuilderFlag(pageSource = NavSource.ACCOUNT)
                 ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
             )
             viewLifecycleOwner.lifecycle.addObserver(it)
@@ -352,23 +354,17 @@ open class HomeAccountUserFragment :
         }
     }
 
-    override fun onLinkingAccountClicked(isLinked: Boolean) {
-        homeAccountAnalytic.trackClickLinkAccount()
-        if (isLinked) {
-            LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
+    private fun getLabelProfileManagement(): String {
+        return if (DeeplinkMapperUser.isProfileManagementM2Activated()) {
+            AccountConstants.Analytics.Label.LABEL_M2
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
-                putExtra(
-                    ApplinkConstInternalGlobal.PARAM_LD,
-                    LinkAccountWebviewFragment.BACK_BTN_APPLINK
-                )
-            }
-            startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+            AccountConstants.Analytics.Label.LABEL_EMPTY
         }
     }
 
     override fun onProfileClicked() {
-        homeAccountAnalytic.eventClickProfile()
+        val label = getLabelProfileManagement()
+        homeAccountAnalytic.eventClickProfile(label)
     }
 
     override fun onIconWarningClicked(profile: ProfileDataView) {
@@ -376,7 +372,8 @@ open class HomeAccountUserFragment :
     }
 
     override fun onEditProfileClicked() {
-        homeAccountAnalytic.eventClickProfile()
+        val label = getLabelProfileManagement()
+        homeAccountAnalytic.eventClickProfile(label)
         goToApplink(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
     }
 
@@ -385,9 +382,11 @@ open class HomeAccountUserFragment :
             TYPE_TOKOMEMBER -> {
                 homeAccountAnalytic.eventClickRewardMemberStore()
             }
+
             TYPE_TOPQUEST -> {
                 homeAccountAnalytic.eventClickRewardTopQuest()
             }
+
             TYPE_KUPON_SAYA -> {
                 homeAccountAnalytic.eventClickRewardMyCoupon()
             }
@@ -405,6 +404,7 @@ open class HomeAccountUserFragment :
                 homeAccountAnalytic.eventClickAppSettingShake(isActive)
                 accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SHAKE, isActive)
             }
+
             AccountConstants.SettingCode.SETTING_GEOLOCATION_ID -> {
                 homeAccountAnalytic.eventClickAppSettingGeolocation(isActive)
                 if (isActive) {
@@ -414,17 +414,21 @@ open class HomeAccountUserFragment :
                     goToApplicationDetailActivity()
                 }
             }
+
             AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
                 homeAccountAnalytic.eventClickAppSettingSafeMode(isActive)
                 switch.isChecked = !isActive
                 createAndShowSafeModeAlertDialog(isActive)
             }
+
             AccountConstants.SettingCode.SETTING_DARK_MODE -> {
                 setupDarkMode(isActive)
             }
+
             AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY -> {
                 accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, isActive)
             }
+
             else -> {
             }
         }
@@ -540,17 +544,17 @@ open class HomeAccountUserFragment :
                     updateWishlist(wishlistStatusFromPdp, position)
                 }
             }
+
             REQUEST_CODE_CHANGE_NAME -> {
                 if (resultCode == Activity.RESULT_OK) {
                     gotoSettingProfile()
                 }
             }
+
             REQUEST_CODE_PROFILE_SETTING -> {
                 getData()
             }
-            REQUEST_CODE_LINK_ACCOUNT -> {
-                viewModel.refreshPhoneNo()
-            }
+
             REQUEST_CODE_REGISTER_BIOMETRIC -> {
                 if (resultCode == Activity.RESULT_OK) {
                     biometricOfferingDialog?.dismiss()
@@ -577,6 +581,7 @@ open class HomeAccountUserFragment :
                     }
                 }
             }
+
             REQUEST_CODE_EXPLICIT_PROFILE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     view?.let {
@@ -589,12 +594,14 @@ open class HomeAccountUserFragment :
                     }
                 }
             }
+
             REQUEST_CODE_ADD_PHONE -> {
                 getData()
                 if (resultCode == Activity.RESULT_OK) {
                     view?.let { Toaster.build(it, getString(R.string.add_phone_success_message)).show() }
                 }
             }
+
             REQUEST_CODE_VERIFY_PHONE -> {
                 getData()
                 if (resultCode == Activity.RESULT_OK) {
@@ -656,6 +663,7 @@ open class HomeAccountUserFragment :
                 is Success -> {
                     onSuccessGetBuyerAccount(it.data)
                 }
+
                 is Fail -> {
                     onFailedGetBuyerAccount()
                 }
@@ -697,6 +705,7 @@ open class HomeAccountUserFragment :
                     is Success -> {
                         onSuccessGetShortcutGroup(it.data)
                     }
+
                     is Fail -> {
                         onFailedGetShortcutGroup(it.throwable)
                     }
@@ -711,6 +720,7 @@ open class HomeAccountUserFragment :
                     is Success -> {
                         onSuccessGetCentralizedAssetConfig(it.data)
                     }
+
                     is Fail -> {
                         onFailedGetCentralizedAssetConfig()
                     }
@@ -725,6 +735,7 @@ open class HomeAccountUserFragment :
                     is ResultBalanceAndPoint.Success -> {
                         onSuccessGetBalanceAndPoint(it.data)
                     }
+
                     is ResultBalanceAndPoint.Fail -> {
                         onFailedGetBalanceAndPoint(it.walletId)
                     }
@@ -764,6 +775,7 @@ open class HomeAccountUserFragment :
                 is Success -> {
                     onSuccessLoadTokpediaPlusWidget(it.data)
                 }
+
                 is Fail -> {
                     adapter?.onFailedLoadTokopediaWidget(it.throwable)
                 }
@@ -981,7 +993,8 @@ open class HomeAccountUserFragment :
                     }
                     coachMark?.showCoachMark(coachMarkItem)
                 }
-            } catch (ignored: Exception) {}
+            } catch (ignored: Exception) {
+            }
         }
     }
 
@@ -1048,7 +1061,7 @@ open class HomeAccountUserFragment :
     private fun setupStatusBar() {
         activity?.let {
             binding?.statusBarBg?.background = ColorDrawable(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             )
             binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(it)
         }
@@ -1133,15 +1146,14 @@ open class HomeAccountUserFragment :
 
             settingsMenuIterator.shouldRemove(
                 when (value.id) {
-                    AccountConstants.SettingCode.SETTING_LINK_ACCOUNT -> {
-                        isEnablePrivacyAccount()
-                    }
                     AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
                         !isEnablePrivacyAccount()
                     }
+
                     AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
                         !isEnableExplicitProfileMenu()
                     }
+
                     else -> false
                 }
             )
@@ -1274,63 +1286,68 @@ open class HomeAccountUserFragment :
                 homeAccountAnalytic.eventClickViewMoreWalletAccountPage()
                 goToApplink(item.applink)
             }
+
             AccountConstants.SettingCode.SETTING_MORE_MEMBER -> {
                 homeAccountAnalytic.eventClickOnMoreMemberOption()
                 goToApplink(item.applink)
             }
+
             AccountConstants.SettingCode.SETTING_ACCOUNT_PERSONAL_DATA_ID -> {
                 homeAccountAnalytic.eventClickAccountSetting(PERSONAL_DATA)
             }
+
             AccountConstants.SettingCode.SETTING_ACCOUNT_ADDRESS_ID -> {
                 homeAccountAnalytic.eventClickAccountSetting(ADDRESS_LIST)
                 homeAccountAnalytic.eventClickAccountSettingListAddress()
                 goToApplink(item.applink)
             }
+
             AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID -> {
                 homeAccountAnalytic.eventClickPaymentSetting(ACCOUNT_BANK)
                 homeAccountAnalytic.eventClickAccountSettingBankAccount()
                 goToApplink(item.applink)
             }
+
             AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT -> {
                 homeAccountAnalytic.eventClickAccountSettingInstantPayment()
                 goToApplink(item.applink)
             }
+
             AccountConstants.SettingCode.SETTING_INSTANT_BUY -> {
                 homeAccountAnalytic.eventClickAccountSettingInstantBuy()
                 goToApplink(item.applink)
             }
+
             AccountConstants.SettingCode.SETTING_NOTIFICATION -> {
                 homeAccountAnalytic.eventClickAccountSettingNotification()
                 goToApplink(item.applink)
             }
+
             AccountConstants.SettingCode.SETTING_APP_SETTING -> {
                 homeAccountAnalytic.eventClickOnMoreAppSettingOption()
             }
+
             AccountConstants.SettingCode.SETTING_ABOUT_TOKOPEDIA -> {
                 homeAccountAnalytic.eventClickOnMoreAboutTokopediaOption()
             }
+
             AccountConstants.SettingCode.SETTING_TKPD_PAY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PAYMENT_METHOD)
                 goToApplink(item.applink)
             }
-
             AccountConstants.SettingCode.SETTING_TNC_ID -> {
                 homeAccountAnalytic.eventClickSetting(TERM_CONDITION)
                 homeAccountAnalytic.eventClickTermsAndConditionsAboutTokopedia()
-                RouteManager.route(
-                    activity,
-                    AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_TERM_CONDITION
-                )
+                val urlTnc = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_TERM_CONDITION}"
+                RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, urlTnc)
             }
 
             AccountConstants.SettingCode.SETTING_ABOUT_US -> {
                 homeAccountAnalytic.eventClickSetting(ABOUT_US)
                 homeAccountAnalytic.eventClickGetToKnowAboutTokopedia()
+                val urlAboutUs = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_ABOUT_US}"
                 RouteManager.getIntent(
-                    activity,
-                    AccountConstants.Url.BASE_WEBVIEW_APPLINK +
-                        AccountConstants.Url.BASE_MOBILE +
-                        AccountConstants.Url.PATH_ABOUT_US
+                    activity, ApplinkConstInternalGlobal.WEBVIEW, urlAboutUs
                 ).run {
                     startActivity(this)
                 }
@@ -1338,19 +1355,15 @@ open class HomeAccountUserFragment :
 
             AccountConstants.SettingCode.SETTING_IP -> {
                 homeAccountAnalytic.eventClickIpAboutTokopedia()
-                RouteManager.route(
-                    activity,
-                    AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_IP
-                )
+                val urlSettingIp = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_IP}"
+                RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, TITLE,  urlSettingIp)
             }
 
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PRIVACY_POLICY)
                 homeAccountAnalytic.eventClickPrivacyPolicyAboutTokopedia()
-                RouteManager.route(
-                    activity,
-                    AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_PRIVACY_POLICY
-                )
+                val urlPrivacyPolicy = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_PRIVACY_POLICY}"
+                RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, urlPrivacyPolicy)
             }
 
             AccountConstants.SettingCode.SETTING_APP_REVIEW_ID -> {
@@ -1363,27 +1376,33 @@ open class HomeAccountUserFragment :
                 homeAccountAnalytic.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             }
+
             AccountConstants.SettingCode.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
                 RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
+
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
                 checkLogoutOffering()
             }
+
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
                 RouteManager.route(context, ApplinkConstInternalUserPlatform.MEDIA_QUALITY_SETTING)
             }
+
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 homeAccountAnalytic.eventClickAppSettingCleanCache()
                 showDialogClearCache()
             }
+
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_SCREEN_RECORD -> {
                 context?.let {
                     homeAccountAnalytic.eventClickAppSettingScreenRecord()
                     RouteManager.route(it, ApplinkConstInternalGlobal.SCREEN_RECORDER)
                 }
             }
+
             AccountConstants.SettingCode.SETTING_SECURITY -> {
                 homeAccountAnalytic.eventClickAccountSettingAccountSecurity()
                 val intent = RouteManager.getIntent(context, item.applink).apply {
@@ -1395,18 +1414,17 @@ open class HomeAccountUserFragment :
                 }
                 startActivity(intent)
             }
-            AccountConstants.SettingCode.SETTING_LINK_ACCOUNT -> {
-                homeAccountAnalytic.trackClickSettingLinkAcc()
-                goToApplink(item.applink)
-            }
+
             AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
                 homeAccountAnalytic.eventClickAccountSettingPrivacyAccount()
                 goToApplink(item.applink)
             }
+
             AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
                 val intent = RouteManager.getIntent(context, item.applink)
                 startActivityForResult(intent, REQUEST_CODE_EXPLICIT_PROFILE)
             }
+
             else -> {
                 goToApplink(item.applink)
             }
@@ -1446,6 +1464,7 @@ open class HomeAccountUserFragment :
                     startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
                 }
             }
+
             override fun updateDrawState(ds: TextPaint) {
                 ds.color = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
@@ -1756,19 +1775,6 @@ open class HomeAccountUserFragment :
         }
     }
 
-    private fun showBottomSheetLinkAccount() {
-        val child = View.inflate(context, R.layout.layout_bottom_sheet_link_account, null)
-        val btnPrimary: UnifyButton = child.findViewById(R.id.bottom_sheet_link_account_btn)
-        val imagePrimary: ImageUnify = child.findViewById(R.id.bottom_sheet_link_account_image)
-
-        BottomSheetUnify().apply {
-//            ImageUtils.loadImage(imagePrimary)
-            btnPrimary.setOnClickListener { }
-            setChild(child)
-            setCloseClickListener { dismiss() }
-        }.show(parentFragmentManager, "linkAccount")
-    }
-
     private fun gotoChangeName(profile: ProfileDataView) {
         val intent = RouteManager.getIntent(
             requireContext(),
@@ -1793,7 +1799,7 @@ open class HomeAccountUserFragment :
         }
     }
 
-    override fun isShown(isShown: Boolean, pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) { }
+    override fun isShown(isShown: Boolean, pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {}
 
     override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
         tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
@@ -1826,7 +1832,6 @@ open class HomeAccountUserFragment :
         private const val REQUEST_CODE_CHANGE_NAME = 300
         private const val REQUEST_CODE_PROFILE_SETTING = 301
         private const val REQUEST_FROM_PDP = 394
-        private const val REQUEST_CODE_LINK_ACCOUNT = 302
         private const val REQUEST_CODE_REGISTER_BIOMETRIC = 303
         private const val REQUEST_CODE_EXPLICIT_PROFILE = 304
         private const val REQUEST_CODE_ADD_PHONE = 305
@@ -1843,7 +1848,6 @@ open class HomeAccountUserFragment :
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
-        private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         private const val COACHMARK_SIZE = 3
@@ -1858,6 +1862,7 @@ open class HomeAccountUserFragment :
 
         private const val COACHMARK_DELAY_MS = 1000L
         private const val PRIVACY_POLICY = "Kebijakan Privasi"
+        private const val TITLE = "Tokopedia"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

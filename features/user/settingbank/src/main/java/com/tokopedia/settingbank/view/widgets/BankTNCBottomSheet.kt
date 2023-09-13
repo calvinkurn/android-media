@@ -12,11 +12,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.domain.model.TemplateData
 import com.tokopedia.unifycomponents.BottomSheetUnify
-
+import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class BankTNCBottomSheet : BottomSheetUnify() {
 
-    var templateData: TemplateData?= null
+    var templateData: TemplateData? = null
 
     val MIME_TYPE = "text/html"
     val ENCODING = "utf-8"
@@ -24,7 +25,7 @@ class BankTNCBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.run {
-            if(containsKey(TEMPLATE_DATA)){
+            if (containsKey(TEMPLATE_DATA)) {
                 templateData = getParcelable(TEMPLATE_DATA)
             }
         }
@@ -41,29 +42,39 @@ class BankTNCBottomSheet : BottomSheetUnify() {
         templateData?.let {
             val htmlText = getHTMLTextFromString(it.template)
             view.findViewById<WebView>(R.id.tncWebView).setBackgroundColor(Color.TRANSPARENT)
-            view.findViewById<WebView>(R.id.tncWebView).loadDataWithBaseURL(null, htmlText,
-                    MIME_TYPE, ENCODING, null)
+            view.findViewById<WebView>(R.id.tncWebView).loadDataWithBaseURL(
+                null,
+                htmlText,
+                MIME_TYPE,
+                ENCODING,
+                null
+            )
         }
     }
 
     private fun initBottomSheet() {
         context?.run {
             val child = LayoutInflater.from(this)
-                    .inflate(R.layout.bottom_sheets_tnc, ConstraintLayout(this), false)
+                .inflate(R.layout.bottom_sheets_tnc, ConstraintLayout(this), false)
             setTitle(TITLE)
             setChild(child)
         }
     }
 
-    private fun getHTMLTextFromString(text : String) : String{
-        val textHexColor = String.format("#%06x",
-                MethodChecker.getColor(context,
-                        com.tokopedia.unifycomponents.R.color.Unify_N700) and 0xffffff)
-        return  "<html><head><style type=\"text/css\">" +
-                "   body {" +
-                "      color:${textHexColor}" +
-                "   }" +
-                "</style></head><body>${text}</body></html>"
+    private fun getHTMLTextFromString(text: String): String {
+        val textHexColor = String.format(
+            Locale.getDefault(),
+            "#%06x",
+            MethodChecker.getColor(
+                context,
+                unifyprinciplesR.color.Unify_NN950
+            ) and 0xffffff
+        )
+        return "<html><head><style type=\"text/css\">" +
+            "   body {" +
+            "      color:$textHexColor" +
+            "   }" +
+            "</style></head><body>$text</body></html>"
     }
 
     private fun setDefaultParams() {
@@ -72,16 +83,16 @@ class BankTNCBottomSheet : BottomSheetUnify() {
         isHideable = true
     }
 
-    companion object{
+    companion object {
         private val TITLE = "Syarat dan Ketentuan"
         private val TEMPLATE_DATA = "template_data"
         private val TAG = "BankTNCBottomSheet"
-        fun showBankTNCBottomSheet(templateData: TemplateData, activity: FragmentActivity?){
+        fun showBankTNCBottomSheet(templateData: TemplateData, activity: FragmentActivity?) {
             activity?.let {
-                if(!activity.isFinishing){
+                if (!activity.isFinishing) {
                     val bottomSheet = BankTNCBottomSheet()
-                    val argument = Bundle();
-                    argument.putParcelable(TEMPLATE_DATA , templateData)
+                    val argument = Bundle()
+                    argument.putParcelable(TEMPLATE_DATA, templateData)
                     bottomSheet.arguments = argument
                     bottomSheet.show(activity.supportFragmentManager, TAG)
                 }

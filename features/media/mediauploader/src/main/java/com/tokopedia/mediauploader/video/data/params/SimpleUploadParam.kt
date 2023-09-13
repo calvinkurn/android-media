@@ -1,7 +1,7 @@
 package com.tokopedia.mediauploader.video.data.params
 
 import com.tokopedia.mediauploader.common.state.ProgressUploader
-import com.tokopedia.mediauploader.common.util.fileBody
+import com.tokopedia.mediauploader.common.util.network.fileBody
 import java.io.File
 
 data class SimpleUploadParam(

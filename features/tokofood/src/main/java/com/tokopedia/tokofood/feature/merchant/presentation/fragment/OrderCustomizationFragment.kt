@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -47,7 +48,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -222,7 +222,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                     val quantity = binding?.qeuProductQtyEditor?.getValue().orZero()
-                    updateSubtotalPriceLabel(addOnUiModels, quantity)
+                    if (quantity > Int.ZERO) {
+                        updateSubtotalPriceLabel(addOnUiModels, quantity)
+                    }
                 }
                 override fun afterTextChanged(p0: Editable?) {}
             })
@@ -310,6 +312,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART, UiEvent.EVENT_HIDE_LOADING_UPDATE_TO_CART -> {
                         binding?.atcButton?.isLoading = false
                         hideKeyboard()
+                        (it.data as? String)?.let { message ->
+                            showToaster(message)
+                        }
                         parentFragmentManager.popBackStack()
                     }
                     UiEvent.EVENT_PHONE_VERIFICATION -> {
@@ -371,6 +376,17 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             Toaster.build(
                 view = view,
                 text = message,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun showToaster(toasterMessage: String) {
+        view?.let { view ->
+            Toaster.build(
+                view = view,
+                text = toasterMessage,
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_NORMAL
             ).show()

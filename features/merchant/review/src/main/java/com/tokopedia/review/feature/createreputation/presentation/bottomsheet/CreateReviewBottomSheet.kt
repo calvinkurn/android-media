@@ -222,14 +222,6 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             dialogHandler.showIncentivesExitWarningDialog()
             return
         }
-        if (viewModel.isGoodRating() && viewModel.isReviewTextEmpty() && viewModel.isMediaEmpty()) {
-            dialogHandler.showSendRatingOnlyDialog()
-            return
-        }
-        if (!viewModel.isReviewTextEmpty() || !viewModel.isMediaEmpty()) {
-            dialogHandler.showReviewUnsavedWarningDialog()
-            return
-        }
         isUserInitiateDismiss = true
         dismiss()
     }
@@ -522,41 +514,6 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             )
         }
 
-        fun showSendRatingOnlyDialog() {
-            val title = getString(R.string.review_form_send_rating_only_dialog_title)
-            showDialog(
-                title,
-                getString(R.string.review_form_send_rating_only_body),
-                getString(R.string.review_form_send_rating_only_exit),
-                {
-                    isUserInitiateDismiss = true
-                    dismiss()
-                },
-                getString(R.string.review_form_send_rating_only),
-                {
-                    viewModel.submitReview()
-                    trackingHandler.trackClickDialogOption(title)
-                }
-            )
-            trackingHandler.trackViewDialog(title)
-        }
-
-        fun showReviewUnsavedWarningDialog() {
-            val title = getString(R.string.review_form_dismiss_form_dialog_title)
-            showDialog(
-                title,
-                getString(R.string.review_form_dismiss_form_dialog_body),
-                getString(R.string.review_edit_dialog_exit),
-                {
-                    isUserInitiateDismiss = true
-                    dismiss()
-                },
-                getString(R.string.review_form_dismiss_form_dialog_stay),
-                { trackingHandler.trackClickDialogOption(title) }
-            )
-            trackingHandler.trackViewDialog(title)
-        }
-
         fun showReviewIncompleteDialog() {
             val title = getString(R.string.review_create_incomplete_title)
             showDialog(
@@ -743,97 +700,76 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         private fun collectProductCardUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.productCardUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormProductCard?.updateUi(it, continuation)
-                }
+                binding?.reviewFormProductCard?.updateUi(it)
             }
         }
 
         private fun collectRatingUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.ratingUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormRating?.updateUi(it, continuation)
-                }
+                binding?.reviewFormRating?.updateUi(it)
             }
         }
 
         private fun collectTickerUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.tickerUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormTicker?.updateUi(it, continuation)
-                }
+                binding?.reviewFormTicker?.updateUi(it)
             }
         }
 
         private fun collectTextAreaTitleUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.textAreaTitleUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormTextAreaTitle?.updateUi(it, continuation)
-                }
+                binding?.reviewFormTextAreaTitle?.updateUi(it)
             }
         }
 
         private fun collectBadRatingCategoriesUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.badRatingCategoriesUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormBadRatingCategories?.updateUi(it, continuation)
-                }
+                binding?.reviewFormBadRatingCategories?.updateUi(it)
             }
         }
 
         private fun collectTopicsUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.topicsUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormTopics?.updateUI(it, continuation)
-                }
+                binding?.reviewFormTopics?.updateUI(it)
             }
         }
 
         private fun collectTextAreaUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.textAreaUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormTextArea?.updateUi(it, CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA, continuation)
-                }
+                binding?.reviewFormTextArea?.updateUi(
+                    uiState = it,
+                    source = CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA
+                )
             }
         }
 
         private fun collectTemplateUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.templateUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormTemplates?.updateUi(it, continuation)
-                }
+                binding?.reviewFormTemplates?.updateUi(it)
             }
         }
 
         private fun collectMediaPickerUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.mediaPickerUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormMediaPicker?.updateUi(it, continuation)
-                }
+                binding?.reviewFormMediaPicker?.updateUi(it)
             }
         }
 
         private fun collectAnonymousUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.anonymousUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormAnonymous?.updateUi(it, continuation)
-                }
+                binding?.reviewFormAnonymous?.updateUi(it)
             }
         }
 
         private fun collectProgressBarUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.progressBarUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormProgressBarWidget?.updateUi(it, continuation)
-                }
+                binding?.reviewFormProgressBarWidget?.updateUi(it)
             }
         }
 
         private fun collectSubmitButtonUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.submitButtonUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewFormSubmitButton?.updateUi(it, continuation)
-                }
+                binding?.reviewFormSubmitButton?.updateUi(it)
             }
         }
 

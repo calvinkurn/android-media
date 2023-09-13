@@ -7,16 +7,18 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
 
-class AuthenticateCCAdapterFactory(val onAdapterInteractionListener: BaseListAdapter.OnAdapterInteractionListener<TypeAuthenticateCreditCard>) : BaseAdapterTypeFactory() {
-    fun type(typeAuthenticateCreditCard: TypeAuthenticateCreditCard) : Int {
+class AuthenticateCCAdapterFactory(
+    private val onAdapterInteractionListener: BaseListAdapter.OnAdapterInteractionListener<TypeAuthenticateCreditCard>
+) : BaseAdapterTypeFactory() {
+
+    fun type(typeAuthenticateCreditCard: TypeAuthenticateCreditCard): Int {
         return AuthenticateCCViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        if(type == AuthenticateCCViewHolder.LAYOUT){
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        if (type == AuthenticateCCViewHolder.LAYOUT) {
             return AuthenticateCCViewHolder(onAdapterInteractionListener, parent)
         }
         return super.createViewHolder(parent, type)
     }
-
 }

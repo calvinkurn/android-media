@@ -33,6 +33,7 @@
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
     <string name="path_add_pin_complete">/add-pin-complete</string>
     <string name="path_edit_profile_info">/edit-profile-info</string>
+    <string name="path_profile_management">/profile-management</string>
 
     <!--Manage Name-->
     <string name="path_manage_name">/manage-name</string>
@@ -117,6 +118,9 @@
     <string name="path_user_identification_form">/user-identification-form</string>
     <string name="path_user_identification_only">/user-identification-only</string>
     <string name="path_liveness_detection">/liveness-detection</string>
+
+    <string name="path_goto_kyc">/goto-kyc.*</string>
+    <string name="path_goto_kyc_webview">/webview-kyc</string>
 
     <!--Privacy Center-->
     <string name="path_search_history">/search-history</string>

@@ -3,9 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/emoney_action_overflow_menu"
-        android:icon="@drawable/ic_toolbar_overflow_level_two_black"
+        android:id="@+id/emoney_action_dppo_consent"
         android:orderInCategory="100"
+        android:icon="@drawable/iconunify_information"
+        android:iconTint="@color/Unify_NN900"
+        app:itemIconSize="12dp"
+        android:title=""
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/emoney_action_overflow_menu"
+        android:orderInCategory="100"
+        android:iconTint="@color/Unify_NN900"
+        app:itemIconSize="12dp"
         android:title=""
         app:showAsAction="always" />
 </menu>

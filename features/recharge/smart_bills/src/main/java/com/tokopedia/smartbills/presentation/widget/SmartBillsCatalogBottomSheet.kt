@@ -13,7 +13,7 @@ import com.tokopedia.smartbills.data.SmartBillsCatalogMenu
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAddBillsAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUnify(), SmartBillsAddBillsAdapter.SmartBillsCatalogsListener {
+class SmartBillsCatalogBottomSheet: BottomSheetUnify(), SmartBillsAddBillsAdapter.SmartBillsCatalogsListener {
 
     init {
         isFullpage = false
@@ -23,6 +23,15 @@ class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUn
 
     private val smartBillsAddBillsAdapter = SmartBillsAddBillsAdapter(this@SmartBillsCatalogBottomSheet)
     private lateinit var smartBillsCatalogRecycleView: RecyclerView
+    private var listener: CatalogCallback? = null
+    private var sbmCatalogMenu: ArrayList<SmartBillsCatalogMenu>? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            sbmCatalogMenu = it.getParcelableArrayList(CATALOG_MENU_EXTRA) ?: arrayListOf()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         smartBillsCatalogRecycleView = RecyclerView(requireContext()).apply {
@@ -34,7 +43,7 @@ class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUn
         setChild(smartBillsCatalogRecycleView)
         setTitle(getString(R.string.smart_bills_add_bills_title_bottom_sheet_catalog))
         setCloseClickListener {
-            listener.onCloseCatalogBottomSheet()
+            listener?.onCloseCatalogBottomSheet()
             dismiss()
         }
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -49,16 +58,19 @@ class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUn
                 SpacingItemDecoration(getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
                         getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5))
             )
+            sbmCatalogMenu?.let { sbmCatalogMenu ->
+                smartBillsAddBillsAdapter.listCatalogMenu = sbmCatalogMenu.toMutableList()
+            }
         }
     }
 
-    fun showSBMCatalog(sbmCatalogMenu: List<SmartBillsCatalogMenu>){
-        smartBillsAddBillsAdapter.listCatalogMenu = sbmCatalogMenu
+    fun setListener(listener: CatalogCallback) {
+        this.listener = listener
     }
 
     override fun onCatalogClicked(applink: String, category: String) {
         dismiss()
-        listener.onCatalogClickCallback(applink, category)
+        listener?.onCatalogClickCallback(applink, category)
     }
 
     override fun dismiss() {
@@ -67,9 +79,13 @@ class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUn
 
     companion object{
         private const val SMART_BILLS_CATALOG_SPAN = 5
-
-        fun newInstance(listener: CatalogCallback): SmartBillsCatalogBottomSheet {
-            return SmartBillsCatalogBottomSheet(listener)
+        private const val CATALOG_MENU_EXTRA = "CATALOG_MENU_EXTRA"
+        fun newInstance(sbmCatalogMenu: ArrayList<SmartBillsCatalogMenu>): SmartBillsCatalogBottomSheet {
+            val bottomSheet = SmartBillsCatalogBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelableArrayList(CATALOG_MENU_EXTRA, sbmCatalogMenu)
+            bottomSheet.arguments = bundle
+            return bottomSheet
         }
     }
 

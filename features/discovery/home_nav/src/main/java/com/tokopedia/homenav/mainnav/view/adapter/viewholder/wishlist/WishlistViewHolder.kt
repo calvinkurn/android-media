@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderWishlistListBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.WishlistTypeFactoryImpl
@@ -21,6 +22,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by Frenzel on 18/04/22
  */
+
+@MePage(MePage.Widget.WISHLIST)
 class WishlistViewHolder(itemView: View,
                          val mainNavListener: MainNavListener
 ): AbstractViewHolder<WishlistDataModel>(itemView) {
@@ -53,7 +56,7 @@ class WishlistViewHolder(itemView: View,
         if (element.collections.isEmpty() || element.isEmptyState) {
             visitableList.add(EmptyStateWishlistDataModel())
         } else {
-            visitableList.addAll(element.collections.map { WishlistModel(it) })
+            visitableList.addAll(element.collections.mapIndexed { index, it -> WishlistModel(it, index) })
             if(element.showViewAll) {
                 visitableList.add(OtherWishlistModel())
                 binding?.wishlistRv?.setHeightBasedOnCardMaxHeight()

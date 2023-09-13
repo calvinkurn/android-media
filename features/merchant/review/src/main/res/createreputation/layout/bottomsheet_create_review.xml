@@ -110,7 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="8dp"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN50"
             app:layout_constraintBottom_toTopOf="@id/barrier_review_form_progress_bar" />
 
         <androidx.constraintlayout.widget.Barrier

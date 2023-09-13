@@ -25,11 +25,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageTopRightCrop
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.toPx
@@ -37,6 +40,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.video_widget.VideoPlayerView
 import timber.log.Timber
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
 
 internal val View.isVisible: Boolean
@@ -151,20 +155,23 @@ internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolea
     }
 }
 
-internal fun ImageView.loadImageRounded(url: String?) {
+internal fun ImageView.loadImageRounded(url: String?, radius: Float) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
             setErrorDrawable(R.drawable.product_card_placeholder_grey)
             setPlaceHolder(R.drawable.product_card_placeholder_grey)
             centerCrop()
-            setRoundedRadius(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat())
+            setRoundedRadius(radius)
         }
     }
 }
 
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
-    if (labelGroup == null) hide()
-    else showLabel(labelGroup)
+    if (labelGroup == null) {
+        hide()
+    } else {
+        showLabel(labelGroup)
+    }
 }
 
 private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
@@ -177,8 +184,11 @@ private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
 private fun Label.determineLabelType(labelGroupType: String) {
     val unifyLabelType = labelGroupType.toUnifyLabelType()
 
-    if (unifyLabelType != -1) setLabelType(unifyLabelType)
-    else setCustomLabelType(labelGroupType)
+    if (unifyLabelType != -1) {
+        setLabelType(unifyLabelType)
+    } else {
+        setCustomLabelType(labelGroupType)
+    }
 }
 
 internal fun String?.toUnifyLabelType(): Int {
@@ -216,21 +226,25 @@ private fun Label.trySetCustomLabelType(labelGroupType: String) {
 
 @ColorRes
 private fun String?.toUnifyLabelColor(context: Context): Int {
-    return if (context.isDarkMode())
+    return if (context.isDarkMode()) {
         when (this) {
-            TRANSPARENT_BLACK -> unifyRColor.Unify_N200_68
-            else -> unifyRColor.Unify_N200_68
+            TRANSPARENT_BLACK -> unifyRColor.Unify_Overlay_Lvl1
+            else -> unifyRColor.Unify_Overlay_Lvl1
         }
-    else
+    } else {
         when (this) {
             TRANSPARENT_BLACK -> unifyRColor.Unify_N700_68
             else -> unifyRColor.Unify_N700_68
         }
+    }
 }
 
 internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
-    if (labelGroup == null) hide()
-    else showTypography(labelGroup)
+    if (labelGroup == null) {
+        hide()
+    } else {
+        showTypography(labelGroup)
+    }
 }
 
 private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
@@ -331,8 +345,11 @@ internal fun renderLabelBestSeller(
 }
 
 private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup?) {
-    if (labelBestSellerModel == null) hide()
-    else showLabelBestSeller(labelBestSellerModel)
+    if (labelBestSellerModel == null) {
+        hide()
+    } else {
+        showLabelBestSeller(labelBestSellerModel)
+    }
 }
 
 private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
@@ -358,8 +375,11 @@ internal fun renderLabelBestSellerCategorySide(
 }
 
 private fun Typography.initLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup?) {
-    if (categorySideModel == null) hide()
-    else showLabelCategorySide(categorySideModel)
+    if (categorySideModel == null) {
+        hide()
+    } else {
+        showLabelCategorySide(categorySideModel)
+    }
 }
 
 private fun Typography.showLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup) {
@@ -383,8 +403,11 @@ internal fun renderLabelBestSellerCategoryBottom(
 }
 
 private fun Typography.initLabelCategoryBottom(categoryBottomModel: ProductCardModel.LabelGroup?) {
-    if (categoryBottomModel == null) hide()
-    else showLabelCategoryBottom(categoryBottomModel)
+    if (categoryBottomModel == null) {
+        hide()
+    } else {
+        showLabelCategoryBottom(categoryBottomModel)
+    }
 }
 
 private fun Typography.showLabelCategoryBottom(categoryBottomModel: ProductCardModel.LabelGroup) {
@@ -426,8 +449,17 @@ private fun renderStockPercentage(
                 height = it.context.resources.getDimension(FIRE_HEIGHT).toInt()
             )
         }
-        it.progressBarColorType = ProgressBarUnify.COLOR_RED
+        renderStockProgressBarColor(it)
         it.setValue(productCardModel.stockBarPercentage, false)
+    }
+}
+
+private fun renderStockProgressBarColor(progressBarStock: ProgressBarUnify?) {
+    progressBarStock?.apply {
+        progressBarColor = intArrayOf(
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_RN600),
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_RN600)
+        )
     }
 }
 
@@ -454,7 +486,7 @@ internal fun getStockLabelColor(productCardModel: ProductCardModel, it: Typograp
             MethodChecker.getColor(it.context, unifyRColor.Unify_N700_68)
     }
 
-fun <T: View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
+fun <T : View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
     val viewStub = findViewById<ViewStub?>(viewStubId.id)
     if (viewStub == null) {
         return findViewById<T>(viewId.id)
@@ -464,7 +496,7 @@ fun <T: View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
     return findViewById<T>(viewId.id)
 }
 
-fun <T: View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
+fun <T : View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
     if (isShow) {
         findViewById<T>(viewStubId, viewId)?.show()
     } else {
@@ -477,7 +509,7 @@ internal fun setupImageRatio(
     imageProduct: ImageView?,
     mediaAnchorProduct: Space?,
     videoProduct: VideoPlayerView?,
-    ratio: String,
+    ratio: String
 ) {
     constraintLayoutProductCard.applyConstraintSet {
         imageProduct?.id?.let { id ->
@@ -496,13 +528,13 @@ internal fun renderLabelReposition(
     isShow: Boolean,
     labelRepositionBackground: ImageView?,
     labelReposition: Typography?,
-    labelGroup: ProductCardModel.LabelGroup?,
+    labelGroup: ProductCardModel.LabelGroup?
 ) {
     if (isShow) {
         showRepositionLabel(
             labelRepositionBackground,
             labelReposition,
-            labelGroup,
+            labelGroup
         )
     } else {
         labelReposition?.hide()
@@ -513,7 +545,7 @@ internal fun renderLabelReposition(
 private fun showRepositionLabel(
     labelBackground: ImageView?,
     textViewLabel: Typography?,
-    labelGroup: ProductCardModel.LabelGroup?,
+    labelGroup: ProductCardModel.LabelGroup?
 ) {
     if (labelGroup != null) {
         textViewLabel.shouldShowWithAction(labelGroup.title.isNotEmpty()) {
@@ -546,8 +578,11 @@ private fun ProductCardModel.LabelGroup.toRepositionLabelTextColor(context: Cont
             context,
             unifyRColor.Unify_Static_White
         )
-        if (isGimmick()) type.toUnifyTextColor(context)
-        else staticWhiteColor
+        if (isGimmick()) {
+            type.toUnifyTextColor(context)
+        } else {
+            staticWhiteColor
+        }
     } catch (throwable: Throwable) {
         Timber.e(throwable)
         ContextCompat.getColor(
@@ -566,8 +601,11 @@ private fun ProductCardModel.LabelGroup.toRepositionLabelBackground(context: Con
             context,
             unifyRColor.Unify_NN0
         )
-        if (isGimmick()) whiteColor
-        else type.toUnifyTextColor(context)
+        if (isGimmick()) {
+            whiteColor
+        } else {
+            type.toUnifyTextColor(context)
+        }
     } catch (throwable: Throwable) {
         Timber.e(throwable)
         ContextCompat.getColor(
@@ -582,6 +620,7 @@ internal fun renderLabelOverlay(
     labelOverlayBackground: ImageView?,
     labelOverlay: Typography?,
     labelGroup: ProductCardModel.LabelGroup?,
+    isRotateBackground: Boolean = true
 ) {
     if (isShow && labelGroup != null) {
         labelOverlay?.let {
@@ -590,7 +629,7 @@ internal fun renderLabelOverlay(
         }
         labelOverlayBackground?.let { background ->
             background.show()
-            background.rotationX = 180f
+            if (isRotateBackground) background.rotationX = 180f
             background.loadImageTopRightCrop(labelGroup.imageUrl)
         }
     } else {
@@ -602,9 +641,9 @@ internal fun renderLabelOverlay(
 internal fun renderLabelOverlayStatus(
     isShow: Boolean,
     labelOverlayStatus: Label?,
-    labelGroup: ProductCardModel.LabelGroup?,
+    labelGroup: ProductCardModel.LabelGroup?
 ) {
-    if(isShow && labelGroup != null) {
+    if (isShow && labelGroup != null) {
         labelOverlayStatus?.let {
             it.show()
             it.showOverlayLabel(labelGroup)
@@ -627,15 +666,18 @@ private fun Label.determineOverlayLabelType(labelGroupType: String) {
     } else {
         val unifyLabelType = labelGroupType.toOverlayUnifyLabelType()
 
-        if (unifyLabelType != -1) setLabelType(unifyLabelType)
-        else trySetCustomOverlayLabelType(labelGroupType)
+        if (unifyLabelType != -1) {
+            setLabelType(unifyLabelType)
+        } else {
+            trySetCustomOverlayLabelType(labelGroupType)
+        }
     }
 }
 
 private fun Label.setCustomOverlayLabelType(colorHexString: String) {
     unlockFeature = true
 
-    setLabelType(colorHexString)
+    try { setLabelType(colorHexString) } catch (_: Exception) { }
 }
 
 private fun Label.trySetCustomOverlayLabelType(labelGroupType: String) {
@@ -678,9 +720,18 @@ internal fun createColorSampleDrawable(context: Context, colorString: String): G
     gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
     gradientDrawable.setStroke(
         strokeWidth,
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200),
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
     )
     gradientDrawable.setColor(com.tokopedia.productcard.safeParseColor(colorString))
 
     return gradientDrawable
 }
+
+internal fun rollenceRemoteConfig(): Lazy<RemoteConfig?> =
+    lazyThreadSafetyNone {
+        try {
+            RemoteConfigInstance.getInstance().abTestPlatform
+        } catch (_: Throwable) {
+            null
+        }
+    }

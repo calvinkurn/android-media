@@ -54,7 +54,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class DealsCheckoutFragment : BaseDaggerFragment() {
@@ -200,7 +199,6 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                                         EXTRA_PARAMETER_TOP_PAY_DATA,
                                         checkoutResultData
                                     )
-                                    intent.putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, System.currentTimeMillis())
                                     startActivityForResult(intent, PAYMENT_SUCCESS)
                                 } else {
                                     showErrorToaster(it.data.checkout.data.error)
@@ -285,7 +283,11 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun showErrorToaster(message: String) {
         view?.let { view ->
-            Toaster.build(view, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.build(
+                view,
+                message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
                 context?.resources?.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster).orEmpty()
             ).show()
         }
@@ -398,8 +400,15 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun showPayment() {
         btnPayment?.setOnClickListener {
-            analytics.checkoutProceedPaymentClick(dealsVerify.metadata.quantity, dealsDetail.categoryId,
-                dealsDetail.id, dealsDetail.displayName, dealsDetail.brand.title, promoApplied, dealsDetail.salesPrice)
+            analytics.checkoutProceedPaymentClick(
+                dealsVerify.metadata.quantity,
+                dealsDetail.categoryId,
+                dealsDetail.id,
+                dealsDetail.displayName,
+                dealsDetail.brand.title,
+                promoApplied,
+                dealsDetail.salesPrice
+            )
             if (dealsVerify.gatewayCode.isNullOrEmpty()) {
                 viewModel.checkoutGeneral(validatePromoCodesCheckoutGeneral(listOf(promoCode)))
             } else {
@@ -456,12 +465,15 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun validatePromoCodesCheckoutGeneral(promoCodes: List<String>): DealsGeneral {
         return if (promoCodes.isNotEmpty()) {
-            if (promoCodes.first().isNotEmpty()) dealsCheckoutMapper.mapCheckoutDeals(
-                dealsDetail,
-                dealsVerify,
-                listOf(promoCode)
-            )
-            else dealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
+            if (promoCodes.first().isNotEmpty()) {
+                dealsCheckoutMapper.mapCheckoutDeals(
+                    dealsDetail,
+                    dealsVerify,
+                    listOf(promoCode)
+                )
+            } else {
+                dealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
+            }
         } else {
             dealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
         }
@@ -469,12 +481,15 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun validatePromoCodesCheckoutInstant(promoCodes: List<String>): DealsInstant {
         return if (promoCodes.isNotEmpty()) {
-            if (promoCodes.first().isNotEmpty()) dealsCheckoutMapper.mapCheckoutDealsInstant(
-                dealsDetail,
-                dealsVerify,
-                listOf(promoCode)
-            )
-            else dealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
+            if (promoCodes.first().isNotEmpty()) {
+                dealsCheckoutMapper.mapCheckoutDealsInstant(
+                    dealsDetail,
+                    dealsVerify,
+                    listOf(promoCode)
+                )
+            } else {
+                dealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
+            }
         } else {
             dealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
         }

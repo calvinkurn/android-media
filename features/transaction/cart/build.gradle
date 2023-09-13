@@ -4,6 +4,8 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.cart'
+    testNamespace 'com.tokopedia.cart.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -31,6 +33,7 @@ buildscript {
 
 dependencies {
 
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -67,7 +70,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)

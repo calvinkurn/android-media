@@ -128,6 +128,7 @@ class FeedXCard(
         const val TYPE_FEED_PLAY_CHANNEL = "sgc_play_channel"
         const val TYPE_FEED_PLAY_SHORT_VIDEO = "sgc_play_short_video"
         const val TYPE_FEED_PLAY_LIVE = "sgc_play_livestream"
+        const val TYPE_FEED_FOLLOW_RECOM = "follow_recommendation"
 
         const val TYPE_FEED_ASGC_NEW_PRODUCTS = "asgc_new_products"
         const val TYPE_FEED_ASGC_RESTOCK = "asgc_restock_products"
@@ -163,6 +164,12 @@ class FeedXCardItem(
 class FeedXProduct(
     @SerializedName("id")
     val id: String = "",
+    @SerializedName("isParent")
+    val isParent: Boolean = false,
+    @SerializedName("parentID")
+    val parentID: String = "",
+    @SerializedName("hasVariant")
+    val hasVariant: Boolean = false,
     @SerializedName("shopID")
     val shopId: String = "",
     @SerializedName("shopName")
@@ -175,6 +182,8 @@ class FeedXProduct(
     val weblink: String = "",
     @SerializedName("appLink")
     val applink: String = "",
+    @SerializedName("affiliate")
+    val affiliate: FeedXProductAffiliate = FeedXProductAffiliate(),
     @SerializedName("star")
     val star: Double = 0.0,
     @SerializedName("price")
@@ -216,7 +225,16 @@ class FeedXProduct(
     @SerializedName("isCashback")
     val isCashback: Boolean = false,
     @SerializedName("cashbackFmt")
-    val cashbackFmt: String = ""
+    val cashbackFmt: String = "",
+    @SerializedName("isStockAvailable")
+    val isAvailable: Boolean = false,
+)
+
+class FeedXProductAffiliate(
+    @SerializedName("id")
+    val id: String = "",
+    @SerializedName("channel")
+    val channel: String = ""
 )
 
 class FeedXMedia(
@@ -355,6 +373,8 @@ class FeedXScore(
 }
 
 class FeedXCta(
+    @SerializedName("subtitle")
+    val subtitles: List<String> = emptyList(),
     @SerializedName("texts")
     val texts: List<String> = emptyList(),
     @SerializedName("color")

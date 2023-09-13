@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@id/view_comment"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
     <include
         android:id="@+id/kol_comment_product"
@@ -80,7 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:indeterminate="true"
         android:visibility="invisible" />
 

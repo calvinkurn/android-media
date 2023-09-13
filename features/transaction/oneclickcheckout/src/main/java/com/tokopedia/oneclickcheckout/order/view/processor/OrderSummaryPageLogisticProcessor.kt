@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
-import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -15,8 +14,9 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrival
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceTextData
-import com.tokopedia.logisticCommon.domain.param.EditAddressParam
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.data.request.EditPinpointParam
+import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
@@ -29,8 +29,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.network.authentication.AuthHelper
-import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -46,10 +44,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
-import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.withContext
-import org.json.JSONException
 import javax.inject.Inject
 
 class OrderSummaryPageLogisticProcessor @Inject constructor(
@@ -57,7 +53,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
     private val ratesResponseStateConverter: RatesResponseStateConverter,
     private val chooseAddressRepository: Lazy<ChooseAddressRepository>,
     private val chooseAddressMapper: Lazy<ChooseAddressMapper>,
-    private val editAddressUseCase: Lazy<EditAddressUseCase>,
+    private val editAddressUseCase: UpdatePinpointUseCase,
     private val orderSummaryAnalytics: OrderSummaryAnalytics,
     private val executorDispatchers: CoroutineDispatchers
 ) {
@@ -185,9 +181,9 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             return null to productList
         }
         return ShipmentDetailData().apply {
-            shopId = orderShop.shopId.toString()
+            shopId = orderShop.shopId
             preorder = preOrder
-            addressId = address.addressId.toString()
+            addressId = address.addressId
             shipmentCartData = ShipmentCartData(
                 originDistrictId = orderShop.districtId,
                 originPostalCode = orderShop.postalCode,
@@ -205,7 +201,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 preOrderDuration = productPreOrderDuration,
                 isFulfillment = orderShop.isFulfillment,
                 boMetadata = orderShop.boMetadata,
-                destinationDistrictId = address.districtId.toString(),
+                destinationDistrictId = address.districtId,
                 destinationPostalCode = address.postalCode,
                 destinationLatitude = address.latitude,
                 destinationLongitude = address.longitude
@@ -751,56 +747,35 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
     suspend fun savePinpoint(
         address: OrderProfileAddress,
         longitude: String,
-        latitude: String,
-        userId: String,
-        deviceId: String
+        latitude: String
     ): OccGlobalEvent {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val params = AuthHelper.generateParamsNetwork(userId, deviceId, TKPDMapParam())
-                params[EditAddressParam.ADDRESS_ID] = address.addressId
-                params[EditAddressParam.ADDRESS_NAME] = address.addressName
-                params[EditAddressParam.ADDRESS_STREET] = address.addressStreet
-                params[EditAddressParam.POSTAL_CODE] = address.postalCode
-                params[EditAddressParam.DISTRICT_ID] = address.districtId
-                params[EditAddressParam.CITY_ID] = address.cityId
-                params[EditAddressParam.PROVINCE_ID] = address.provinceId
-                params[EditAddressParam.LATITUDE] = latitude
-                params[EditAddressParam.LONGITUDE] = longitude
-                params[EditAddressParam.RECEIVER_NAME] = address.receiverName
-                params[EditAddressParam.RECEIVER_PHONE] = address.phone
+                val param = EditPinpointParam(
+                    addressId = address.addressId.toLongOrZero(),
+                    addressName = address.addressName,
+                    address1 = address.addressStreet,
+                    postalCode = address.postalCode,
+                    district = address.districtId,
+                    city = address.cityId,
+                    province = address.provinceId,
+                    address2 = "$latitude, $longitude",
+                    receiverName = address.receiverName,
+                    phone = address.phone
+                )
+                val params = UpdatePinpointParam(input = param)
 
-                val stringResponse =
-                    editAddressUseCase.get().createObservable(
-                        RequestParams.create().apply {
-                            putAllString(params)
-                        }
-                    ).toBlocking().single()
-                var messageError: String? = null
-                var statusSuccess: Boolean
-                try {
-                    val response = JsonParser().parse(stringResponse).asJsonObject
-                    val statusCode = response.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
-                        .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).asInt
-                    statusSuccess = statusCode == 1
-                    if (!statusSuccess) {
-                        messageError = response.getAsJsonArray("message_error").get(0).asString
-                    }
-                } catch (e: JSONException) {
-                    statusSuccess = false
-                }
+                val stringResponse = editAddressUseCase(params)
+                val statusSuccess: Boolean = stringResponse.keroEditAddress.data.isSuccess == 1
 
                 if (statusSuccess) {
                     return@withContext OccGlobalEvent.TriggerRefresh(successMessage = SAVE_PINPOINT_SUCCESS_MESSAGE)
+                } else {
+                    return@withContext OccGlobalEvent.Error(errorMessage = DEFAULT_ERROR_MESSAGE)
                 }
-
-                if (messageError.isNullOrBlank()) {
-                    messageError = DEFAULT_ERROR_MESSAGE
-                }
-                return@withContext OccGlobalEvent.Error(errorMessage = messageError)
             } catch (t: Throwable) {
-                return@withContext OccGlobalEvent.Error(t.cause ?: t)
+                return@withContext OccGlobalEvent.Error(t)
             }
         }
         OccIdlingResource.decrement()

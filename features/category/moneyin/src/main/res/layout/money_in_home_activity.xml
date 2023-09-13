@@ -42,7 +42,7 @@
                 android:paddingRight="16dp"
                 android:paddingBottom="12dp"
                 android:text="@string/not_elligible_money_in"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="heading_6"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -56,7 +56,7 @@
                 android:layout_height="12dp"
                 android:layout_margin="8dp"
                 android:src="@drawable/ic_action_x"
-                android:tint="@color/Unify_Y300"
+                android:tint="@color/Unify_YN300"
                 android:visibility="gone"
                 android:contentDescription="@null"
                 app:layout_constraintRight_toRightOf="@+id/tv_price_elligible"
@@ -87,7 +87,7 @@
                 android:layout_marginRight="16dp"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/sp_6"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -106,7 +106,7 @@
                 android:lineSpacingExtra="@dimen/sp_4"
                 app:typographyType="heading_5"
                 android:text="@string/header_section_price"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_model_name" />
@@ -121,7 +121,7 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/model_not_found"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -140,7 +140,7 @@
                 android:lineSpacingExtra="@dimen/sp_4"
                 app:typographyType="heading_5"
                 android:text="@string/depends_on_test"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_initial_price"
@@ -166,7 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no_imei"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3" />
 
                 <EditText
@@ -185,7 +185,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="4dp"
-                    android:background="@color/Unify_N75"
+                    android:background="@color/Unify_NN50"
                     app:layout_constraintEnd_toEndOf="@+id/iv_arrow_down" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -194,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/enter_the_imei_number_text"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -203,7 +203,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/how_to_check_imei"
-                    android:textColor="@color/Unify_G500"
+                    android:textColor="@color/Unify_GN500"
                     app:typographyType="heading_6" />
             </LinearLayout>
 
@@ -221,7 +221,7 @@
                 android:lineHeight="@dimen/sp_20"
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:text="@string/moneyin_text_not_upto_15min"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 android:visibility="gone"
                 app:typographyType="heading_5"
                 app:layout_constraintBottom_toTopOf="@+id/tv_go_to_product_details"
@@ -246,7 +246,7 @@
                 android:paddingBottom="12dp"
                 app:typographyType="heading_5"
                 android:text="@string/go_to_product_details"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_NN0"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"

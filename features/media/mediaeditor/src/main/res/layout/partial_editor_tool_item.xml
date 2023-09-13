@@ -4,11 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="72dp"
-    android:layout_height="62dp"
-    android:gravity="center"
+    android:minHeight="62dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_gravity="center"
         android:layout_marginBottom="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -40,7 +41,16 @@
         android:layout_height="wrap_content"
         app:typographyType="display_3"
         android:textColor="@color/Unify_NN950"
-        android:gravity="center"
-        tools:text="Hapus Latar Belakang"/>
+        android:layout_gravity="center"
+        tools:text="Contrast"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:layout_gravity="center"
+        android:id="@+id/new_label"
+        android:layout_marginTop="5dp"
+        app:labelType="general_dark_red"
+        app:labelTitle="Baru"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

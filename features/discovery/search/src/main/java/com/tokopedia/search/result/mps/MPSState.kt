@@ -33,6 +33,11 @@ data class MPSState(
     val bottomSheetFilterState: BottomSheetFilterState = BottomSheetFilterState(),
 ): SearchUiState {
 
+    private val shopIdSet: Set<String>
+        get() = (result.data?.filterIsInstance<MPSShopWidgetDataView>() ?: emptyList())
+            .map { it.id }
+            .toSet()
+
     val visitableList
         get() = result.data ?: listOf()
     val startFrom
@@ -78,6 +83,14 @@ data class MPSState(
         mpsModel.shopList.map {
             MPSShopWidgetDataView.create(it, parameter.keywords())
         }
+
+    private fun mpsShopWidgetListLoadMore(
+        mpsModel: MPSModel,
+    ): List<Visitable<*>> {
+        return mpsModel.shopList
+            .filterNot { shop -> shop.id in shopIdSet }
+            .map { MPSShopWidgetDataView.create(it, parameter.keywords()) }
+    }
 
     private fun loadMoreVisitableList(): List<Visitable<*>> =
         if (paginationState.hasNextPage) listOf(LoadingMoreModel())
@@ -135,7 +148,7 @@ data class MPSState(
 
     private fun successLoadMoreData(mpsModel: MPSModel): List<Visitable<*>> =
         visitableList.filter { it !is LoadingMoreModel } +
-            mpsShopWidgetList(mpsModel) +
+            mpsShopWidgetListLoadMore(mpsModel) +
             loadMoreVisitableList()
 
     fun errorLoadMore(throwable: Throwable) = copy(loadMoreThrowable = throwable)

@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:textSize="@dimen/unify_font_16"
         android:textStyle="bold"
         tools:text="Masuk ke Tokopedia" />
@@ -43,7 +43,7 @@
         android:maxLines="3"
         android:paddingStart="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/layout_lvl1"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:textSize="@dimen/unify_font_12"
         tools:text="Cek semua pesanan yang kamu terima disini" />
 
@@ -56,7 +56,7 @@
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_toStartOf="@+id/imgSawSmallOrderCommon"
         android:maxLines="2"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:textSize="@dimen/unify_font_12"
         android:textStyle="bold"
         tools:text="Cek Sekarang" />

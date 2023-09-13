@@ -111,9 +111,9 @@ class InboxContactUsViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _uiState.value = InboxUiState(
-                    showChatBotWidget = false
+                    showChatBotWidget = false,
+                    exception = e
                 )
-                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
     }

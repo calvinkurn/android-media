@@ -19,7 +19,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             tools:text="Check-in"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="small" />
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -45,7 +45,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             tools:text="Check-out"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             />
 
         <androidx.appcompat.widget.AppCompatEditText

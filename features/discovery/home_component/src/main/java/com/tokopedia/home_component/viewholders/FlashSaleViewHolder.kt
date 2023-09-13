@@ -20,9 +20,9 @@ import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.home_component.util.loadImageWithDefault
 import com.tokopedia.home_component.util.setGradientBackgroundRounded
 import com.tokopedia.home_component.visitable.FlashSaleDataModel
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.viewallcard.ViewAllCard
@@ -44,6 +44,7 @@ class FlashSaleViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.home_component_flash_sale
         private const val CONTENT_TITLE_AS_INTEGER = "title-as-integer"
+        private const val className = "com.tokopedia.home_component.viewholders.FlashSaleViewHolder"
     }
 
     override fun bind(element: FlashSaleDataModel) {
@@ -67,7 +68,7 @@ class FlashSaleViewHolder(
 
     private fun setupCarousel(element: FlashSaleDataModel, parentRecycledViewPool: RecyclerView.RecycledViewPool?) {
         val channelGrids = element.channelModel.channelGrids
-        val productCardList = channelGrids.map { ChannelModelMapper.mapToProductCardModel(it, element.cardInteraction, isTopStockbar = true, cardType = CardUnify2.TYPE_CLEAR) }
+        val productCardList = channelGrids.map { ChannelModelMapper.mapToProductCardModel(it, animateOnPress = CardUnify2.ANIMATE_NONE, isTopStockbar = true, cardType = CardUnify2.TYPE_CLEAR) }
         binding?.run {
             carouselFlashSale.bindCarouselProductCardViewGrid(
                 productCardModelList = productCardList,
@@ -78,6 +79,15 @@ class FlashSaleViewHolder(
                         carouselProductCardPosition: Int
                     ) {
                         channelGrids.getOrNull(carouselProductCardPosition)?.let {
+                            if (it.isTopads) {
+                                TopAdsUrlHitter(className).hitImpressionUrl(
+                                    context,
+                                    it.impression,
+                                    it.id,
+                                    it.name,
+                                    it.imageUrl
+                                )
+                            }
                             flashSaleWidgetListener?.onProductCardImpressed(element.channelModel, it)
                         }
                     }
@@ -92,6 +102,15 @@ class FlashSaleViewHolder(
                         carouselProductCardPosition: Int
                     ) {
                         channelGrids.getOrNull(carouselProductCardPosition)?.let {
+                            if (it.isTopads) {
+                                TopAdsUrlHitter(className).hitImpressionUrl(
+                                    context,
+                                    it.productClickUrl,
+                                    it.id,
+                                    it.name,
+                                    it.imageUrl
+                                )
+                            }
                             flashSaleWidgetListener?.onProductCardClicked(element.channelModel, it, it.applink)
                         }
                     }
@@ -137,7 +156,7 @@ class FlashSaleViewHolder(
 
     private fun setBannerBackground(element: FlashSaleDataModel) {
         element.channelModel.channelBanner.let {
-            if(it.gradientColor.isNotEmpty() && !getGradientBackgroundViewAllWhite(it.gradientColor, context)) {
+            if (it.gradientColor.isNotEmpty() && !getGradientBackgroundViewAllWhite(it.gradientColor, context)) {
                 binding?.containerFlashSale?.setGradientBackgroundRounded(it.gradientColor)
             } else {
                 val defaultGradient = arrayListOf(
@@ -146,8 +165,9 @@ class FlashSaleViewHolder(
                 )
                 binding?.containerFlashSale?.setGradientBackgroundRounded(defaultGradient)
             }
-            if(it.imageUrl.isNotEmpty())
+            if (it.imageUrl.isNotEmpty()) {
                 binding?.supergraphicFlashSale?.loadImageWithDefault(element.channelModel.channelBanner.imageUrl, defaultImage = R.drawable.supergraphic_flash_sale_default)
+            }
         }
     }
 }

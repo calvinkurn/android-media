@@ -159,7 +159,7 @@ class MixTopComponentViewHolder(
     private fun mappingHeader(channel: ChannelModel){
         val bannerItem = channel.channelBanner
         val ctaData = channel.channelBanner.cta
-        var textColor = ContextCompat.getColor(bannerTitle.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+        var textColor = ContextCompat.getColor(bannerTitle.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
@@ -216,7 +216,7 @@ class MixTopComponentViewHolder(
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
         startSnapHelper.attachToRecyclerView(recyclerView)
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction, this)
         adapter = MixTopComponentAdapter(visitables, typeFactoryImpl)
         recyclerView.adapter = adapter
     }
@@ -311,7 +311,6 @@ class MixTopComponentViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this,
                     componentName = HOME_MIX_TOP
             ))
         }

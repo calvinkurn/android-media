@@ -180,7 +180,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_P600
+                                com.tokopedia.unifyprinciples.R.color.Unify_PN600
                             )
                         )
                         setWeight(Typography.BOLD)
@@ -195,7 +195,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                             )
                         )
                         setWeight(Typography.REGULAR)
@@ -211,7 +211,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_P600
+                                com.tokopedia.unifyprinciples.R.color.Unify_PN600
                             )
                         )
                         setWeight(Typography.BOLD)
@@ -237,7 +237,7 @@ class OfficialCategoriesTab(context: Context,
                 context,
                 image_view_category_icon,
                 categoriesItemTab[position].inactiveIconUrl,
-                R.drawable.ic_loading_image
+                com.tokopedia.design.R.drawable.ic_loading_image
             )
             text_view_category_title?.text = categoriesItemTab[position].title
         }

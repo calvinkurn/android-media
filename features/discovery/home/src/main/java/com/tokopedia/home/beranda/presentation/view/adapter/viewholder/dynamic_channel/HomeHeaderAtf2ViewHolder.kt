@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.LoginWidgetView
 import com.tokopedia.home.databinding.HomeHeaderAtf2Binding
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.util.toDpInt
@@ -27,11 +28,11 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeHeaderAtf2ViewHolder(
     itemView: View,
     private val listener: HomeCategoryListener
-) :
-    AbstractViewHolder<HomeHeaderDataModel>(itemView) {
+) : AbstractViewHolder<HomeHeaderDataModel>(itemView) {
 
     private var binding: HomeHeaderAtf2Binding? by viewBinding()
     private var balanceWidgetView: BalanceWidgetView? = null
+    private var loginWidgetView: LoginWidgetView? = null
     private var chooseAddressView: ChooseAddressWidget? = null
     private var viewPullRefresh: LayoutIconPullRefreshView? = null
     private val paddingBottomChooseAddress = 3f.toDpInt()
@@ -46,10 +47,11 @@ class HomeHeaderAtf2ViewHolder(
         renderEmptySpace()
         renderHeader()
         element.headerDataModel?.let {
-            renderBalanceLayout(
-                it.homeBalanceModel,
-                element.headerDataModel?.isUserLogin ?: false
-            )
+            if(it.isUserLogin) {
+                renderBalanceLayout(it.homeBalanceModel)
+            } else {
+                renderLoginWidget()
+            }
         }
         renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
@@ -85,18 +87,22 @@ class HomeHeaderAtf2ViewHolder(
         binding?.viewEmpty?.invalidate()
     }
 
-    private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean) {
+    private fun renderBalanceLayout(data: HomeBalanceModel) {
         if (balanceWidgetView == null) {
             balanceWidgetView = getParentLayout(binding?.viewBalanceWidget)
         }
-        data?.let {
-            if (isUserLogin) {
-                balanceWidgetView?.visible()
-                balanceWidgetView?.bind(it, listener)
-            } else {
-                balanceWidgetView?.gone()
-            }
+        loginWidgetView?.gone()
+        balanceWidgetView?.visible()
+        balanceWidgetView?.bind(data, listener)
+    }
+
+    private fun renderLoginWidget() {
+        if(loginWidgetView == null) {
+            loginWidgetView = getParentLayout(binding?.viewLoginWidget)
         }
+        balanceWidgetView?.gone()
+        loginWidgetView?.visible()
+        loginWidgetView?.bind(listener)
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
