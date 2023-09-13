@@ -1655,7 +1655,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                 orderSummaryAnalytics.eventChooseCourierSelectionOSP(
                                     shippingCourierUiModel.productData.shipperId.toString()
                                 )
-                                viewModel.chooseCourier(shippingCourierUiModel)
+                                viewModel.chooseCourier(shippingCourierUiModel, isNeedPinpoint)
                             }
 
                             override fun onCourierShipmentRecommendationCloseClicked() {

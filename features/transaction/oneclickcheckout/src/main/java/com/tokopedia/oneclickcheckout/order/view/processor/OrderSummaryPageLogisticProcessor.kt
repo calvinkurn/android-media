@@ -784,7 +784,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
 
     fun chooseCourier(
         chosenShippingCourierViewModel: ShippingCourierUiModel,
-        shipping: OrderShipment
+        shipping: OrderShipment,
+        needPinpoint: Boolean
     ): OrderShipment? {
         val shippingRecommendationData = shipping.shippingRecommendationData
         if (shippingRecommendationData != null) {
@@ -820,7 +821,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                             shippingRecommendationData = shippingRecommendationData,
                             logisticPromoShipping = null,
                             isShowLogisticPromoTickerMessage = false,
-                            isApplyLogisticPromo = false
+                            isApplyLogisticPromo = false,
+                            needPinpoint = needPinpoint
                         )
                     }
                 }
