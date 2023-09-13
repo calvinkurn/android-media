@@ -318,6 +318,7 @@ class CheckoutProductViewHolder(
                 } else {
                     (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = Int.ZERO
                 }
+                vProductSeparatorBmgm.show()
             }
         }
 
@@ -680,10 +681,13 @@ class CheckoutProductViewHolder(
             } else {
                 llAddonBmgmProductItems.removeAllViews()
                 if (addOnProduct.bottomsheet.isShown) {
-                    tvProductAddOnsSectionTitleBmgm.text = addOnProduct.title
-                    tvProductAddOnsSeeAllBmgm.apply {
-                        visible()
+                    tvProductAddOnsSectionTitleBmgm.run {
+                        text = addOnProduct.title
+                        show()
+                    }
+                    tvProductAddOnsSeeAllBmgm.run {
                         text = addOnProduct.bottomsheet.title
+                        show()
                         setOnClickListener {
                             listener.onClickSeeAllAddOnProductService(product)
                         }
