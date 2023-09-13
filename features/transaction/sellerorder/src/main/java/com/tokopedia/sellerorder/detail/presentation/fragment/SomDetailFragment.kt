@@ -792,7 +792,7 @@ open class SomDetailFragment :
     }
     private fun setActionConfirmShippingAuto(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
         val popUp = buttonResp.popUp
-        if (popUp.template?.code != null) {
+        if (!popUp.template?.code.isNullOrBlank()) {
             SomConfirmShippingBottomSheet.instance(context, view, popUp)
         }
         binding?.btnPrimary?.isLoading = false
