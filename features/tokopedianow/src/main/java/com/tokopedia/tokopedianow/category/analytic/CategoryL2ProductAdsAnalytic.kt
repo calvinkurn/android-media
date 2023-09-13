@@ -72,7 +72,6 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
             .sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
-
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 43883
     fun trackProductAdsClick(

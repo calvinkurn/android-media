@@ -327,6 +327,11 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
+    fun getWarehouseIds(): String {
+        val localCacheModel = addressData.getAddressData()
+        return AddressMapper.mapToWarehouseIds(localCacheModel)
+    }
+
     fun onResume() {
         getMiniCart()
     }

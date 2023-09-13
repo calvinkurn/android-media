@@ -463,6 +463,29 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         )
     }
 
+    private fun trackClickFilterButton() {
+        val categoryIdL1 = data.categoryIdL1
+        val warehouseIds = viewModel.getWarehouseIds()
+        categoryL2Analytic.quickFilterAnalytic
+            .sendClickQuickFilterButtonEvent(categoryIdL1, warehouseIds)
+    }
+
+    private fun trackOpenBrandDropDown(filter: Filter) {
+        if(filter.isBrandFilter) {
+            val categoryIdL1 = data.categoryIdL1
+            val warehouseIds = viewModel.getWarehouseIds()
+            categoryL2Analytic.quickFilterAnalytic
+                .sendClickBrandNavigationalDropdownEvent(categoryIdL1, warehouseIds)
+        }
+    }
+
+    private fun trackOpenFilterPage() {
+        val categoryIdL1 = data.categoryIdL1
+        val warehouseIds = viewModel.getWarehouseIds()
+        categoryL2Analytic.quickFilterAnalytic
+            .sendClickFullFilterButtonEvent(categoryIdL1, warehouseIds)
+    }
+
     private fun directToSeeMorePage(appLink: String) {
         val categoryIdTracking = viewModel.getCategoryIdForTracking()
         val newAppLink = modifySeeMoreAppLink(appLink)
@@ -707,14 +730,17 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         return object : CategoryQuickFilterListener {
             override fun openFilterPage() {
                 viewModel.onOpenFilterPage()
+                trackOpenFilterPage()
             }
 
             override fun openL3FilterPage(filter: Filter) {
                 openCategoryChooserFilterPage(filter)
+                trackOpenBrandDropDown(filter)
             }
 
             override fun applyFilter(filter: Filter, option: Option) {
                 viewModel.applyQuickFilter(filter, option)
+                trackClickFilterButton()
             }
         }
     }

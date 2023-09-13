@@ -29,6 +29,7 @@ class CategoryL2Analytic @Inject constructor(userSession: UserSessionInterface) 
 
     val adsProductAnalytic = CategoryL2ProductAdsAnalytic(userSession)
     val productAnalytic = CategoryL2ProductAnalytic(userSession)
+    val quickFilterAnalytic = CategoryL2QuickFilterAnalytic()
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 43878
