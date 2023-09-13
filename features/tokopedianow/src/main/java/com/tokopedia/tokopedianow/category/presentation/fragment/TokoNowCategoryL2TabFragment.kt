@@ -495,6 +495,20 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             .sendClickWishlistButtonOosEvent(index, data.categoryIdL1, productId)
     }
 
+    private fun trackFilterBottomSheetImpression() {
+        val categoryIdL2 = data.categoryIdL2
+        val warehouseIds = viewModel.getWarehouseIds()
+        categoryL2Analytic.sortFilterAnalytic
+            .sendImpressionFilterBottomSheetEvent(categoryIdL2, warehouseIds)
+    }
+
+    private fun trackClickApplySortFilter() {
+        val categoryIdL2 = data.categoryIdL2
+        val warehouseIds = viewModel.getWarehouseIds()
+        categoryL2Analytic.sortFilterAnalytic
+            .sendClickFilterBottomSheetApplyFilterEvent(categoryIdL2, warehouseIds)
+    }
+
     private fun directToSeeMorePage(appLink: String) {
         val categoryIdTracking = viewModel.getCategoryIdForTracking()
         val newAppLink = modifySeeMoreAppLink(appLink)
@@ -771,13 +785,16 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             dynamicFilterModel,
             createFilterBottomSheetCallback()
         )
+
+        trackFilterBottomSheetImpression()
     }
 
     private fun createFilterBottomSheetCallback(): SortFilterBottomSheet.Callback {
         return object : SortFilterBottomSheet.Callback {
             override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
-                sortFilterBottomSheet?.dismiss()
                 viewModel.applySortFilter(applySortFilterModel)
+                sortFilterBottomSheet?.dismiss()
+                trackClickApplySortFilter()
             }
 
             override fun getResultCount(mapParameter: Map<String, String>) {
