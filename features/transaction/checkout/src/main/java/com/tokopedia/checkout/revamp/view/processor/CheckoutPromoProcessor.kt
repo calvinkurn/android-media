@@ -2,6 +2,7 @@ package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.checkout.revamp.view.generateCheckoutOrderInsuranceFromCourier
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -519,7 +520,8 @@ class CheckoutPromoProcessor @Inject constructor(
                             checkoutItems[item.index] = value.copy(
                                 shipment = value.shipment.copy(
                                     isLoading = false,
-                                    courierItemData = courierItemData
+                                    courierItemData = courierItemData,
+                                    insurance = generateCheckoutOrderInsuranceFromCourier(courierItemData, value)
                                 ),
                                 boUniqueId = voucherOrder.uniqueId,
                                 isShippingBorderRed = false

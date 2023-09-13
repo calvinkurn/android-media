@@ -60,7 +60,7 @@
                 android:id="@+id/checkout_upsell_description_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/Unify_NN950"
                     app:typographyType="paragraph_3"
-                    tools:text="Langganan PLUS bisa puas belanja pakai Bebas Ongkir lebih banyak!" />
+                    tools:text="Mau nikmain lagi pengiriamn cepat Bebas Ongkir PLUS? Langgangan, yuk!" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_checkout_upsell_description"

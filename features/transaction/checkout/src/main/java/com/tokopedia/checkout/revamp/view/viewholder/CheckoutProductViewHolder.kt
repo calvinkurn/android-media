@@ -354,6 +354,7 @@ class CheckoutProductViewHolder(
             productBinding.llAddonProductItems.removeAllViews()
             if (addOnProduct.bottomsheet.isShown) {
                 productBinding.tvProductAddOnsSectionTitle.text = addOnProduct.title
+                productBinding.tvProductAddOnsSectionTitle.visible()
                 productBinding.tvProductAddOnsSeeAll.apply {
                     visible()
                     text = addOnProduct.bottomsheet.title
@@ -450,6 +451,7 @@ class CheckoutProductViewHolder(
             bundleBinding.llAddonProductItemsBundle.removeAllViews()
             if (addOnProduct.bottomsheet.isShown) {
                 bundleBinding.tvProductAddOnsSectionTitleBundle.text = addOnProduct.title
+                bundleBinding.tvProductAddOnsSectionTitleBundle.visible()
                 bundleBinding.tvProductAddOnsSeeAllBundle.apply {
                     visible()
                     text = addOnProduct.bottomsheet.title
