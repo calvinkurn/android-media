@@ -151,7 +151,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         ),
                         isCache = true,
                         addShimmeringChannel = true,
-                        isLoadingAtf = true
                     )
                     dynamicChannelPlainResponse.apply {
                         Log.d("Each merge list size:", ("" + this.list.size))
