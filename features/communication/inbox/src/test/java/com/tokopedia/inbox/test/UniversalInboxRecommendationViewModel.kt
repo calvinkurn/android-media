@@ -31,7 +31,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
     )
 
     @Test
-    fun `refresh product recommendation, get product recommendation`() {
+    fun `observe product recommendation, get product recommendation`() {
         runTest {
             // Given
             val expectedResult = dummyProductRecommendation.recommendationItemList.map {
@@ -69,7 +69,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
     }
 
     @Test
-    fun `refresh product recommendation, get empty product recommendation`() {
+    fun `observe product recommendation, get empty product recommendation`() {
         runTest {
             // Given
             mockRecommendationFlow(Result.Success(dummyProductRecommendationEmpty))
@@ -105,7 +105,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
     }
 
     @Test
-    fun `refresh product recommendation, get error recommendation`() {
+    fun `observe product recommendation, get error recommendation`() {
         runTest {
             // Given
             mockRecommendationFlow(Result.Error(dummyThrowable))
@@ -151,7 +151,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
     }
 
     @Test
-    fun `refresh and get more product recommendation, get more product recommendation`() {
+    fun `observe and get more product recommendation, get more product recommendation`() {
         runTest {
             // Given
             val expectedResult = dummyProductRecommendation.recommendationItemList.map {
@@ -186,7 +186,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
     }
 
     @Test
-    fun `refresh and get more product recommendation, get empty product recommendation`() {
+    fun `observe and get more product recommendation, get empty product recommendation`() {
         runTest {
             // Given
             mockRecommendationFlow(Result.Success(dummyProductRecommendationEmpty))
@@ -219,7 +219,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
     }
 
     @Test
-    fun `should give error when error get more recommendation`() {
+    fun `observe and get more product recommendation, get error`() {
         runTest {
             // Given
             mockRecommendationFlow(Result.Error(dummyThrowable))
@@ -257,6 +257,28 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 1,
                 viewModel.getRecommendationPage()
             )
+        }
+    }
+
+    @Test
+    fun `observe and get more product recommendation, get loading`() {
+        runTest {
+            // Given
+            mockRecommendationFlow(Result.Loading)
+
+            viewModel.productRecommendationUiState.test {
+                // When initial state
+                viewModel.setupViewModelObserver()
+                // Then skip
+                skipItems(1)
+
+                // When update state
+                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                // Then update state
+                assertLoadingState(awaitItem())
+
+                cancelAndConsumeRemainingEvents()
+            }
         }
     }
 

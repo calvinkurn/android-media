@@ -16,12 +16,10 @@
 // import io.mockk.coEvery
 // import io.mockk.every
 // import io.mockk.verify
-// import kotlinx.coroutines.runBlocking
-// import kotlinx.coroutines.test.runTest
 // import org.junit.Assert
 // import org.junit.Test
 //
-// class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestFixture() {
+// class UniversalInboxWidgetViewModelTest : UniversalInboxViewModelTestFixture() {
 //
 //    private val dummyIcon = "99"
 //    private val dummyWidgetMetaResponse = UniversalInboxWrapperResponse(
@@ -53,37 +51,6 @@
 //    private val dummyWidgetUiError = UniversalInboxWidgetMetaUiModel(
 //        isError = true
 //    )
-//
-//    @Test
-//    fun `should give widget error only when fail to get widget, but success get counter`() {
-//        runBlocking {
-//            // Given
-//            coEvery {
-//                getAllCounterUseCase(any())
-//            } returns dummyCounterResponse
-//
-//            coEvery {
-//                getWidgetMetaUseCase(Unit)
-//            } throws dummyThrowable
-//
-//            every {
-//                inboxMenuMapper.mapWidgetMetaToUiModel(any(), any(), any())
-//            } returns dummyWidgetUiError
-//
-//            // When
-//            viewModel.loadWidgetMetaAndCounter()
-//
-//            // Then
-//            Assert.assertEquals(
-//                dummyCounterResponse,
-//                (viewModel.allCounter.value as Success).data
-//            )
-//            Assert.assertEquals(
-//                Pair(dummyWidgetUiError, dummyCounterResponse),
-//                viewModel.widget.value
-//            )
-//        }
-//    }
 //
 //    @Test
 //    fun `should give error when fail to map widget & counter`() {

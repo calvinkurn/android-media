@@ -65,7 +65,7 @@ abstract class UniversalInboxViewModelTestFixture {
     private lateinit var resourceProvider: UniversalInboxResourceProvider
     protected lateinit var inboxMenuMapper: UniversalInboxMenuMapper
     private var inboxMiscMapper = UniversalInboxMiscMapper()
-    protected var inboxWidgetMetaMapper = UniversalInboxWidgetMetaMapper()
+    protected lateinit var inboxWidgetMetaMapper: UniversalInboxWidgetMetaMapper
 
     private lateinit var mockLifecycleOwner: LifecycleOwner
     protected lateinit var lifecycle: LifecycleRegistry
@@ -98,6 +98,7 @@ abstract class UniversalInboxViewModelTestFixture {
         context = mockk()
         resourceProvider = UniversalInboxResourceProviderImpl(context)
         inboxMenuMapper = spyk(UniversalInboxMenuMapper(resourceProvider))
+        inboxWidgetMetaMapper = spyk(UniversalInboxWidgetMetaMapper())
     }
 
     private fun earlyMock() {

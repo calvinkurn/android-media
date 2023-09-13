@@ -18,6 +18,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -486,6 +487,215 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             coVerify(exactly = 1) {
                 getWidgetMetaUseCase.updateCache(any())
             }
+        }
+    }
+
+    @Test
+    fun `observe inbox menu and refresh counter, get updated counter`() {
+        runTest {
+            // Given
+            val expectedResponse = UniversalInboxWrapperResponse().also {
+                it.chatInboxMenu.widgetMenu = listOf(
+                    UniversalInboxWidgetDataResponse(
+                        title = "1",
+                        type = GOJEK_TYPE
+                    )
+                )
+                it.chatInboxMenu.inboxMenu = listOf(
+                    UniversalInboxMenuDataResponse(
+                        title = "2",
+                        type = MenuItemType.CHAT_BUYER.counterType
+                    )
+                )
+            }
+            val expectedResponseDriver = listOf(getDummyConversationsChannel(unreadCount = 1))
+
+            mockWidgetMeta(Result.Success(expectedResponse))
+            mockDriverCounter(Result.Success(expectedResponseDriver))
+
+            var counterResponse = UniversalInboxAllCounterResponse()
+            val counterFlow = MutableSharedFlow<Result<UniversalInboxAllCounterResponse>>()
+            coEvery {
+                getAllCounterUseCase.observe()
+            } returns counterFlow
+
+            coEvery {
+                getAllCounterUseCase.refreshCounter(any())
+            } coAnswers {
+                counterFlow.emit(Result.Success(counterResponse))
+            }
+
+            viewModel.inboxMenuUiState.test {
+                // When initial state
+                viewModel.setupViewModelObserver()
+                // Then skip
+                skipItems(1)
+
+                // When update state
+                viewModel.processAction(UniversalInboxAction.RefreshPage)
+                val updatedState = awaitItem()
+                Assert.assertEquals(
+                    0,
+                    (updatedState.menuList.first() as UniversalInboxMenuUiModel).counter
+                )
+
+                counterResponse = UniversalInboxAllCounterResponse().apply {
+                    this.chatUnread.unreadBuyer = 1
+                }
+                counterFlow.emit(Result.Success(counterResponse))
+                // When update state 2
+                viewModel.processAction(UniversalInboxAction.RefreshCounter)
+                // Then updated state 2
+                val newState = awaitItem()
+                Assert.assertEquals(
+                    1,
+                    (newState.menuList.first() as UniversalInboxMenuUiModel).counter
+                )
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `observe inbox menu and fail fetch inbox, get fallback menu and error message`() {
+        runTest {
+            // Given
+            val expectedResponse = inboxMenuMapper.generateFallbackMenu()
+            val expectedResponseCounter = UniversalInboxAllCounterResponse().also {
+                it.chatUnread.unreadBuyer = 1
+                it.notifCenterUnread.notifUnread = "3"
+            }
+            val expectedResponseDriver = listOf(getDummyConversationsChannel(unreadCount = 1))
+            val expectedResult = inboxMenuMapper.mapToInboxMenu(
+                userSession,
+                expectedResponse.chatInboxMenu.inboxMenu,
+                expectedResponseCounter
+            )
+
+            mockWidgetMeta(Result.Success(expectedResponse))
+            mockCounter(Result.Success(expectedResponseCounter))
+            mockDriverCounter(Result.Success(expectedResponseDriver))
+            coEvery {
+                getWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta()
+            } throws dummyThrowable
+
+            viewModel.inboxMenuUiState.test {
+                // When initial state
+                viewModel.setupViewModelObserver()
+                // Then skip
+                skipItems(1)
+
+                // When update state
+                viewModel.processAction(UniversalInboxAction.RefreshPage)
+                val updatedState = awaitItem()
+                Assert.assertEquals(
+                    expectedResult,
+                    updatedState.menuList
+                )
+
+                cancelAndConsumeRemainingEvents()
+            }
+            viewModel.errorUiState.test {
+                // When initial state
+                viewModel.setupViewModelObserver()
+
+                // When update state
+                viewModel.processAction(UniversalInboxAction.RefreshPage)
+                // Then updated error state
+                val errorState = awaitItem()
+                Assert.assertEquals(
+                    dummyThrowable.message,
+                    errorState.error?.first?.message
+                )
+                Assert.assertEquals(
+                    "loadInboxMenuAndWidgetMeta",
+                    errorState.error?.second
+                )
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `observe inbox and fail to generate fallback, get error message`() {
+        runTest {
+            // Given
+            mockWidgetMeta(Result.Success(null))
+            mockCounter(Result.Loading)
+            mockDriverCounter(Result.Success(listOf()))
+            every {
+                inboxMenuMapper.generateFallbackMenu()
+            } throws dummyThrowable
+
+            viewModel.errorUiState.test {
+                // When initial state
+                viewModel.setupViewModelObserver()
+
+                // When update state
+                viewModel.processAction(UniversalInboxAction.RefreshPage)
+
+                // Then updated error state
+                val errorState = awaitItem()
+                Assert.assertEquals(
+                    dummyThrowable.message,
+                    errorState.error?.first?.message
+                )
+                Assert.assertEquals(
+                    "setFallbackInboxMenu",
+                    errorState.error?.second
+                )
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `observe inbox menu and fail to refresh counter, get error message`() {
+        runTest {
+            // Given
+            coEvery {
+                getAllCounterUseCase.refreshCounter(any())
+            } throws dummyThrowable
+
+            viewModel.errorUiState.test {
+                // When initial state
+                viewModel.setupViewModelObserver()
+
+                // When update state
+                viewModel.processAction(UniversalInboxAction.RefreshCounter)
+
+                // Then updated error state
+                val errorState = awaitItem()
+                Assert.assertEquals(
+                    dummyThrowable.message,
+                    errorState.error?.first?.message
+                )
+                Assert.assertEquals(
+                    "refreshCounter",
+                    errorState.error?.second
+                )
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `observe inbox menu and refresh driver, get new job`() {
+        runTest {
+            // When
+            viewModel.setupViewModelObserver()
+            val oldJob = viewModel.driverJob
+            viewModel.processAction(UniversalInboxAction.RefreshDriverWidget)
+
+            // Then
+            Assert.assertNotEquals(
+                oldJob,
+                viewModel.driverJob
+            )
         }
     }
 
