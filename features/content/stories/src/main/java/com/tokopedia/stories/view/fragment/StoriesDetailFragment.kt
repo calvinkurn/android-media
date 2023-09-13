@@ -89,7 +89,7 @@ class StoriesDetailFragment @Inject constructor(
         get() = arguments?.getString(STORY_GROUP_ID).orEmpty()
 
     private val isEligiblePage: Boolean
-        get() = groupId == viewModel.mGroupId
+        get() = groupId == viewModel.mGroup.groupId
 
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
@@ -260,7 +260,7 @@ class StoriesDetailFragment @Inject constructor(
 
                 TouchEventStories.NEXT_PREV -> {
                     analytic.sendClickTapPreviousContentEvent(
-                        eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - storiesId - asgc - image - currentCircle - nextStoriesId"
+                        eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - ${viewModel.mStories.id} - asgc - ${viewModel.mStories.content.type.value} - ${viewModel.mGroup.groupName} - prevStoriesId"
                     )
                     viewModelAction(PreviousDetail)
                 }
@@ -284,7 +284,7 @@ class StoriesDetailFragment @Inject constructor(
 
                 TouchEventStories.NEXT_PREV -> {
                     analytic.sendClickTapNextContentEvent(
-                        eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - storiesId - asgc - image - currentCircle - nextStoriesId"
+                        eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - ${viewModel.mStories.id} - asgc - ${viewModel.mStories.content.type.value} - ${viewModel.mGroup.groupName} - nextStoriesId"
                     )
                     viewModelAction(NextDetail)
                 }

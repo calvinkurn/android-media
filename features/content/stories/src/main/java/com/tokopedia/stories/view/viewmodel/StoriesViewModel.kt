@@ -14,6 +14,7 @@ import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.RESUME
@@ -54,11 +55,17 @@ class StoriesViewModel @AssistedInject constructor(
     private val _detailPos = MutableStateFlow(-1)
     private val _resetValue = MutableStateFlow(-1)
 
-    val mGroupId: String
+    val mGroup: StoriesGroupItemUiModel
         get() {
             val groupPosition = _groupPos.value
-            return if (groupPosition < 0) ""
-            else _storiesMainData.value.groupItems[groupPosition].groupId
+            return _storiesMainData.value.groupItems[groupPosition]
+        }
+
+    val mStories: StoriesDetailItemUiModel
+        get() {
+            val groupPosition = _groupPos.value
+            val detailPosition = _detailPos.value
+            return _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
         }
 
     private val mStoriesMainData: StoriesUiModel
@@ -196,7 +203,7 @@ class StoriesViewModel @AssistedInject constructor(
         val isCached = mGroupItem.detail.detailItems.isNotEmpty()
         val detail = if (isCached) mGroupItem.detail
         else {
-            val detailData = requestStoriesDetailData(mGroupId)
+            val detailData = requestStoriesDetailData(mGroup.groupId)
             updateMainData(detail = detailData, groupPosition = mGroupPos)
             detailData
         }
@@ -253,7 +260,7 @@ class StoriesViewModel @AssistedInject constructor(
 
         _storiesMainData.update { group ->
             group.copy(
-                selectedGroupId = mGroupId,
+                selectedGroupId = mGroup.groupId,
                 selectedGroupPosition = mGroupPos,
                 groupHeader = group.groupHeader.mapIndexed { index, storiesGroupHeader ->
                     storiesGroupHeader.copy(isSelected = index == mGroupPos)
@@ -281,7 +288,7 @@ class StoriesViewModel @AssistedInject constructor(
         _detailPos.update { position }
         val positionCached = mGroupItem.detail.selectedDetailPositionCached
         val currentDetail = mGroupItem.detail.copy(
-            selectedGroupId = mGroupId,
+            selectedGroupId = mGroup.groupId,
             selectedDetailPosition = position,
             selectedDetailPositionCached = if (positionCached <= position) position else positionCached,
             detailItems = mGroupItem.detail.detailItems.map { item ->
