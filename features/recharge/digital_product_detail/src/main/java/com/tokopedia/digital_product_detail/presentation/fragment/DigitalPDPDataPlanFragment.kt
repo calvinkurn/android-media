@@ -514,7 +514,7 @@ class DigitalPDPDataPlanFragment :
 
         viewModel.indosatCheckBalance.observe(viewLifecycleOwner) { checkBalanceData ->
             when (checkBalanceData) {
-                is RechargeNetworkResult.Success -> onFailedGetCheckBalance(checkBalanceData = checkBalanceData.data)
+                is RechargeNetworkResult.Success -> onSuccessGetCheckBalance(checkBalanceData.data)
                 is RechargeNetworkResult.Fail -> onFailedGetCheckBalance(checkBalanceData.error)
                 is RechargeNetworkResult.Loading -> onLoadingGetCheckBalance()
             }
