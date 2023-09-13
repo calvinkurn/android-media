@@ -26,44 +26,7 @@ class SliderImageTextViewHolder(itemView: View) :
 
     override fun bind(element: SliderImageTextUiModel) {
         val imageSlideAdapter = ImageSlidePagerAdapter(element.items)
-//        binding?.root?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
         binding?.viewPager?.adapter = imageSlideAdapter
         binding?.viewPager?.currentItem = Int.ZERO
-        binding?.tvHighlight?.text = element.items[Int.ZERO].textHighlight
-        binding?.tvTitle?.text = element.items[Int.ZERO].textTitle
-        binding?.tvDescription?.text = element.items[Int.ZERO].textDescription
-
-        binding?.tvHighlight?.setTextColor(element.items[Int.ZERO].textHighlightColor)
-        binding?.tvTitle?.setTextColor(element.items[Int.ZERO].textTitleColor)
-        binding?.tvDescription?.setTextColor(element.items[Int.ZERO].textDescriptionColor)
-
-        val animation = AnimationUtils.loadAnimation(itemView.context, R.anim.fade_in)
-
-        binding?.viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-
-            override fun onPageSelected(position: Int) {
-
-                binding?.tvHighlight?.startAnimation(animation)
-                binding?.tvTitle?.startAnimation(animation)
-                binding?.tvDescription?.startAnimation(animation)
-                binding?.tvHighlight?.text = element.items[position].textHighlight
-                binding?.tvTitle?.text = element.items[position].textTitle
-                binding?.tvDescription?.text = element.items[position].textDescription
-
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                if (state != SCROLL_STATE_IDLE){
-                    imageSlideAdapter.resetAlphaView()
-                }
-            }
-
-        })
     }
 }

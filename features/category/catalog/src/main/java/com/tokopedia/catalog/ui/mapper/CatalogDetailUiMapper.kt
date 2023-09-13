@@ -217,7 +217,7 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToSliderImageText(
         isDarkMode: Boolean
     ): SliderImageTextUiModel {
-        val textColor = getTextColor(isDarkMode)
+        val textColor = colorMapping(isDarkMode,DARK_COLOR_01,LIGHT_COLOR_01)
         return SliderImageTextUiModel(
             items = data?.imageSlider.orEmpty().map {
                 SliderImageTextUiModel.ItemSliderImageText(

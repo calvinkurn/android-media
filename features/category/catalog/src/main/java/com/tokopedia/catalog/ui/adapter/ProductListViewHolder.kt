@@ -22,7 +22,7 @@ class ProductListViewHolder(
 
     private val binding by viewBinding<ItemCatalogPrefferedProductBinding>()
 
-    override fun bind(element: CatalogProductItem?) {
+    override fun bind(element: CatalogProductItem) {
         val data = mapperToCatalogProductModel(element)
         binding?.productCard?.apply {
             setProductModel(data)
@@ -30,6 +30,9 @@ class ProductListViewHolder(
                 productListListener.onAtcButtonClicked(
                     mapperToCatalogProductAtcUiModel(element ?: return@setAddToCartOnClickListener)
                 )
+            }
+            setOnClickListener {
+                productListListener.onClickProductCard(element, adapterPosition)
             }
         }
     }

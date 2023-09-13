@@ -38,6 +38,7 @@ object CatalogConstant {
 
     const val SOURCE = "catalog"
     const val DEVICE = "android"
+    const val DEVICE_MOBILE = "mobile"
 
     const val QUICK_FILTER_SOURCE = "quick_filter"
     const val SEARCH_PRODUCT_SOURCE = "search_product"
