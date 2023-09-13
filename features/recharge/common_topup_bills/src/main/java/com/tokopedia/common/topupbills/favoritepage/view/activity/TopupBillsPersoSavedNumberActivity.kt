@@ -14,8 +14,10 @@ import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPage
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-open class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
+open class TopupBillsPersoSavedNumberActivity :
+    BaseSimpleActivity(),
     HasComponent<CommonTopupBillsComponent> {
 
     protected lateinit var clientNumberType: String
@@ -68,8 +70,8 @@ open class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.common_topup_saved_number_title))
 
-        //draw background without overdraw GPU
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+        // draw background without overdraw GPU
+        window.setBackgroundDrawableResource(unifyprinciplesR.color.Unify_Background)
 
         toolbar.elevation = 0f
         (toolbar as HeaderUnify).transparentMode = false
@@ -77,8 +79,16 @@ open class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return DualTabSavedNumberFragment
-            .newInstance(clientNumberType, number, currentCategoryName,
-                dgCategoryIds, dgOperatorIds, isSwitchChecked, loyaltyStatus, pageConfig)
+            .newInstance(
+                clientNumberType,
+                number,
+                currentCategoryName,
+                dgCategoryIds,
+                dgOperatorIds,
+                isSwitchChecked,
+                loyaltyStatus,
+                pageConfig
+            )
     }
 
     override fun onBackPressed() {
@@ -95,7 +105,7 @@ open class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             categoryName: String,
             isSwitchChecked: Boolean,
             loyaltyStatus: String,
-            favoriteNumberPageConfig: FavoriteNumberPageConfig,
+            favoriteNumberPageConfig: FavoriteNumberPageConfig
         ): Intent {
             val intent = Intent(context, TopupBillsPersoSavedNumberActivity::class.java)
             val extras = Bundle()
@@ -109,6 +119,7 @@ open class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             extras.putSerializable(EXTRA_FAVORITE_NUMBER_PAGE_CONFIG, favoriteNumberPageConfig)
 
             intent.putExtras(extras)
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             return intent
         }
         const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
