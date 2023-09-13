@@ -491,9 +491,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private fun setStatusBarColor() {
         if (shopHeaderLayoutData.isOverrideTheme) {
             if (getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value) {
-                setStatusBarLightColor()
-            } else {
                 setStatusBarDarkColor()
+            } else {
+                setStatusBarLightColor()
             }
         } else {
             if (context?.isDarkMode() == false) {
