@@ -28,8 +28,8 @@ object CheckoutBmgmMapper {
                         BmgmCommonDataModel.ProductModel(
                             productId = bmgmProduct.productId,
                             warehouseId = bmgmProduct.warehouseId.toString(),
-                            productName = product.name,
-                            productImage = product.imageUrl,
+                            productName = bmgmProduct.productName,
+                            productImage = bmgmProduct.imageUrl,
                             productPrice = bmgmProduct.priceBeforeBenefit,
                             quantity = bmgmProduct.quantity,
                             cartId = bmgmProduct.cartId
