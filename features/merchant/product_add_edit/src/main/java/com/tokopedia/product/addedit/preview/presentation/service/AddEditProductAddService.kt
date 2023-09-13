@@ -262,6 +262,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
             return outputFile.absolutePath
         } catch (e: Exception) {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
             return ""
         }
     }
