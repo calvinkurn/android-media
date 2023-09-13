@@ -31,7 +31,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.model.ShopSharingInShowCaseUiModel
 import com.tokopedia.shop.databinding.ActivityNewShopProductListResultBinding
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment.Companion.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment.Companion.isShowShareIcon
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.Companion.createInstance
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener
