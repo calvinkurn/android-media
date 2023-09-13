@@ -866,7 +866,11 @@ open class ShopPageHomeFragment :
             getRecyclerView(view)?.let {
                 if (it.itemDecorationCount == Int.ZERO) {
                     context?.let { ctx ->
-                        it.addItemDecoration(ShopFestivityRvItemDecoration(ctx))
+                        it.addItemDecoration(ShopFestivityRvItemDecoration(
+                            ctx,
+                            getBodyBackgroundHexColor(),
+                            isOverrideTheme()
+                        ))
                     }
                 }
             }
@@ -5238,7 +5242,7 @@ open class ShopPageHomeFragment :
     //For home tab, we also need to check whether there is any festivity widget if we want to override the theme
     //need to be improve this logic in the future by combining this 2 logic in BE
     override fun isOverrideTheme(): Boolean {
-        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse() && !isShopHomeTabHasFestivity()
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
     }
 
     override fun getShopPageHomeFragment(): ShopPageHomeFragment {
