@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
@@ -138,7 +139,7 @@ class CatalogToolbar : Toolbar {
             RouteManager.route(context, ApplinkConst.HOME_NAVIGATION)
         }
         searchButton?.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + title)
         }
     }
 }
