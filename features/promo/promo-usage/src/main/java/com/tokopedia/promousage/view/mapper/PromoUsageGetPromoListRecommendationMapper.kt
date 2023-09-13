@@ -51,7 +51,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         return PromoPageTickerInfo(
             message = response.promoListRecommendation.data.tickerInfo.message,
             iconUrl = response.promoListRecommendation.data.tickerInfo.iconUrl,
-            backgroundUrl = response.promoListRecommendation.data.tickerInfo.backgroundUrl,
+            backgroundUrl = response.promoListRecommendation.data.tickerInfo.backgroundUrl
         )
     }
 
@@ -200,15 +200,17 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         couponSection: CouponSection,
         coupon: Coupon,
         recommendedPromoCodes: List<String>,
-        selectedPromoCodes: List<String>,
+        selectedPromoCodes: List<String>
     ): PromoItem {
         val secondaryCoupon: SecondaryCoupon? = coupon.secondaryCoupon.firstOrNull()
         val remainingPromoCount = couponSection.couponGroups
             .firstOrNull { it.id == coupon.groupId }?.count ?: 1
 
         val isRecommended = recommendedPromoCodes.isNotEmpty() &&
-            (recommendedPromoCodes.contains(coupon.code)
-                || recommendedPromoCodes.contains(secondaryCoupon?.code))
+            (
+                recommendedPromoCodes.contains(coupon.code) ||
+                    recommendedPromoCodes.contains(secondaryCoupon?.code)
+                )
         val isSelected = coupon.isSelected || secondaryCoupon?.isSelected ?: false
 
         val primaryClashingInfos =
@@ -233,7 +235,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
 
         val benefitDetail = coupon.benefitDetails.firstOrNull() ?: BenefitDetail()
         val selectedPromoInSection = couponSection.coupons.filter { it.isSelected }
-        val isExpanded = when(couponSection.id) {
+        val isExpanded = when (couponSection.id) {
             PromoPageSection.SECTION_RECOMMENDATION -> {
                 true
             }
@@ -265,7 +267,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             SecondaryPromoItem()
         }
         return PromoItem(
-            id = coupon.id,
+            id = coupon.code,
             headerId = couponSection.id,
             index = coupon.index,
             uniqueId = coupon.uniqueId,
@@ -325,7 +327,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             isHighlighted = coupon.isHighlighted || secondaryCoupon?.isHighlighted ?: false,
             isLastRecommended = isRecommended && index == couponSection.coupons.size - 1,
             isExpanded = isExpanded,
-            isVisible = isVisible,
+            isVisible = isVisible
         )
     }
 
@@ -337,7 +339,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             .firstOrNull { it.id == secondaryCoupon.groupId }?.count ?: 1
         val benefitDetail = secondaryCoupon.benefitDetails.firstOrNull() ?: BenefitDetail()
         return SecondaryPromoItem(
-            id = secondaryCoupon.id,
+            id = secondaryCoupon.code,
             headerId = couponSection.id,
             index = secondaryCoupon.index,
             uniqueId = secondaryCoupon.uniqueId,
