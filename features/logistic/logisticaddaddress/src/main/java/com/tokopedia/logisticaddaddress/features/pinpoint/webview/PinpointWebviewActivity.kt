@@ -118,7 +118,7 @@ class PinpointWebviewActivity : BaseSimpleActivity() {
         value?.takeIf { data -> data.isNotEmpty() }?.run {
             try {
                 appendQueryParameter(PARAM_SOURCE, PinpointSource.valueOf(this).param)
-            } catch (e: IllegalArgumentException) {
+            } catch (@Suppress("SwallowedException") e: IllegalArgumentException) {
                 // no op
             }
         }

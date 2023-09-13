@@ -27,22 +27,27 @@
         android:id="@+id/label_product_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/cv_product_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyWeight="bold"
+        tools:text="Sepatu Adidas Sepatu Adidas Sepatu Adidas Sepatu Adidas Sepatu Adidas"
         android:textColor="@color/Unify_NN950_96"
         android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_price"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/cv_product_img"
         app:layout_constraintTop_toBottomOf="@id/label_product_name"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_YN500"
+        tools:text="Sepatu Adidas Sepatu Adidas Sepatu Adidas Sepatu Adidas Sepatu Adidas"
         app:typographyWeight="bold"
         android:layout_marginStart="12dp"/>
 

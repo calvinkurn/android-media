@@ -10,7 +10,6 @@ import com.tokopedia.oneclickcheckout.common.OCC_OVO_ACTIVATION_URL
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
-import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -19,7 +18,6 @@ import javax.inject.Named
 
 @Module(
     includes = [
-        PeopleAddressNetworkModule::class,
         PurchasePlatformNetworkModule::class,
         PurchasePlatformBaseModule::class
     ]

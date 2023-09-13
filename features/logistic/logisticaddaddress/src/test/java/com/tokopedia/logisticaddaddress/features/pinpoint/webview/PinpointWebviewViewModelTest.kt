@@ -5,7 +5,6 @@ import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
-import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.AddAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.helper.KeroMapsAutofillProvider
@@ -40,7 +39,7 @@ class PinpointWebviewViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = PinpointWebviewViewModel(repo, SaveAddressMapper())
+        viewModel = PinpointWebviewViewModel(repo)
         viewModel.pinpointState.observeForever(liveDataObserver)
         every { liveDataObserver.onChanged(any()) } just Runs
     }
