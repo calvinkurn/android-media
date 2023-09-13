@@ -7,6 +7,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -20,11 +21,14 @@ import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductCardGridCarouselView: ConstraintLayout {
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
+    private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
     private val adsText by lazyView<Typography?>(R.id.productCardAds)
     private val nameText by lazyView<Typography?>(R.id.productCardName)
@@ -63,17 +67,19 @@ class ProductCardGridCarouselView: ConstraintLayout {
         )
 
         cardContainer?.run {
-            layoutParams = cardContainer?.layoutParams?.apply {
-                height = MATCH_PARENT
-            }
-
+            layoutParams = layoutParams?.apply { height = MATCH_PARENT }
             elevation = 0f
+
+            setCardUnifyBackgroundColor(
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
+            )
         }
     }
 
     fun setProductModel(productCardModel: ProductCardModel) {
         renderImage(productCardModel)
         renderAds(productCardModel)
+        renderAddToCart(productCardModel)
         renderName(productCardModel)
         renderPrice(productCardModel)
         renderSlashedPrice(productCardModel)
@@ -95,6 +101,14 @@ class ProductCardGridCarouselView: ConstraintLayout {
 
     private fun renderAds(productCardModel: ProductCardModel) {
         adsText?.showWithCondition(productCardModel.isAds)
+    }
+
+    private fun renderAddToCart(productCardModel: ProductCardModel) {
+        val cardConstraintLayout = cardConstraintLayout ?: return
+
+        showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
+            AddToCartButton(cardConstraintLayout)
+        }
     }
 
     private fun renderName(productCardModel: ProductCardModel) {
@@ -191,6 +205,10 @@ class ProductCardGridCarouselView: ConstraintLayout {
 
     fun addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
         imageView?.addOnImpressionListener(holder, onView)
+    }
+
+    fun setAddToCartOnClickListener(onClickListener: OnClickListener) {
+        findViewById<UnifyButton?>(R.id.productCardAddToCart)?.setOnClickListener(onClickListener)
     }
 
     override fun setOnClickListener(l: OnClickListener?) {

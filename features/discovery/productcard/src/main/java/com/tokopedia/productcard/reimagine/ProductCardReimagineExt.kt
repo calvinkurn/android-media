@@ -2,11 +2,14 @@ package com.tokopedia.productcard.reimagine
 
 import android.view.View
 import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.utils.toOverlayUnifyLabelType
@@ -62,3 +65,19 @@ private fun Typography.labelBackground(color: Int) =
 
 internal fun <T: View?> View.lazyView(@IdRes id: Int): Lazy<T?> =
     lazyThreadSafetyNone { findViewById(id) }
+
+internal fun <T: View?> View.showView(@IdRes id: Int, isShow: Boolean, initializer: () -> T) {
+    if (isShow)
+        (findViewById<T>(id) ?: initializer())?.show()
+    else
+        findViewById<T>(id)?.hide()
+}
+
+internal fun ConstraintLayout?.applyConstraintSet(configure: ConstraintSet.() -> Unit) {
+    val constraintLayout = this ?: return
+    val constraintSet = ConstraintSet()
+
+    constraintSet.clone(constraintLayout)
+    constraintSet.configure()
+    constraintSet.applyTo(constraintLayout)
+}

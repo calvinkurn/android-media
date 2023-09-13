@@ -10,6 +10,7 @@ import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.LABEL_VARIANT_TAG
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import com.tokopedia.productcard.test.R as productcardtestR
 
 internal fun productCardInPosition(position: Int, itemMatcherList: Map<Int, Matcher<View?>>): Matcher<View?>? {
     return ProductCardInPositionMatcher(position, itemMatcherList)
@@ -73,6 +74,8 @@ private class ProductCardInPositionMatcher(
         R.id.productCardFooterLayoutContainer,
         R.id.productCardCardUnifyContainer,
         R.id.productCardConstraintLayout,
+        productcardtestR.id.productCardReimagineTestDescription,
+        productcardtestR.id.productCardReimagineGridCarouselView,
     )
 
     private fun ViewGroup.getUncheckedChildren(): List<View> {

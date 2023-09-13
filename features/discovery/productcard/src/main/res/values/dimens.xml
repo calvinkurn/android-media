@@ -178,9 +178,9 @@
     <dimen name="product_card_reimagine_price_margin_top">4dp</dimen>
     <dimen name="product_card_reimagine_price_height">18dp</dimen>
     <dimen name="product_card_reimagine_slashed_price_margin_top">2dp</dimen>
-    <dimen name="product_card_reimagine_slashed_price_height">12dp</dimen>
+    <dimen name="product_card_reimagine_slashed_price_height">13dp</dimen>
     <dimen name="product_card_reimagine_discount_percentage_margin_top">2dp</dimen>
-    <dimen name="product_card_reimagine_discount_percentage_height">12dp</dimen>
+    <dimen name="product_card_reimagine_discount_percentage_height">13dp</dimen>
     <dimen name="product_card_reimagine_label_benefit_margin_top">4dp</dimen>
     <dimen name="product_card_reimagine_label_benefit_height">20dp</dimen>
     <dimen name="product_card_reimagine_credibility_margin_top">4dp</dimen>

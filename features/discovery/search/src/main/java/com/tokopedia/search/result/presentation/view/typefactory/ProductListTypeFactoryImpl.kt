@@ -332,7 +332,12 @@ class ProductListTypeFactoryImpl(
                 sameSessionRecommendationListener,
             )
             InspirationListAtcViewHolder.LAYOUT ->
-                InspirationListAtcViewHolder(view, inspirationListAtcListener, recycledViewPool)
+                InspirationListAtcViewHolder(
+                    view,
+                    inspirationListAtcListener,
+                    recycledViewPool,
+                    reimagineSearch2Component,
+                )
             AdsLowOrganicTitleViewHolder.LAYOUT ->
                 AdsLowOrganicTitleViewHolder(view)
             InspirationKeywordViewHolder.LAYOUT ->
