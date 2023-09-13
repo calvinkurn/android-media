@@ -1910,7 +1910,7 @@ class FeedPostViewModelTest {
     }
 
     private fun getAuthorModelDefault() =
-        FeedAuthorModel("", AuthorType.User, "", "", "", "", "", false)
+        FeedAuthorModel("", AuthorType.User, "", "", "", "", "")
 
     private fun getDummyFeedModel() = FeedModel(
         items = listOf(
