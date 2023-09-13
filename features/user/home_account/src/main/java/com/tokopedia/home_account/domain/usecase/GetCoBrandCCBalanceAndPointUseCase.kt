@@ -25,6 +25,7 @@ open class GetCoBrandCCBalanceAndPointUseCase @Inject constructor(
                 weblink
                 is_active
                 type
+                status_name
             }
         }
     """.trimIndent()
