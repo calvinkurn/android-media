@@ -275,7 +275,7 @@ class ThankYouPageAnalytics @Inject constructor(
             putString(KEY_EVENT_LABEL, String.EMPTY)
             putString(KEY_TRACKER_ID, TRACKER_45032)
             putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
-            putBundle(KEY_PROMOTION, promotionBundle)
+            putParcelableArrayList(KEY_PROMOTION, arrayListOf(promotionBundle))
         }
 
         analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
@@ -290,7 +290,7 @@ class ThankYouPageAnalytics @Inject constructor(
             putString(KEY_EVENT_LABEL, String.EMPTY)
             putString(KEY_TRACKER_ID, TRACKER_45031)
             putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
-            putBundle(KEY_PROMOTION, promotionBundle)
+            putParcelableArrayList(KEY_PROMOTION, arrayListOf(promotionBundle))
         }
 
         analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
