@@ -315,6 +315,7 @@ class ShopPageHeaderFragment :
 
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
         const val DEFAULT_SHOWCASE_ID = "0"
+        const val SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA = "HIDE_SHARE_CTA"
         const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
         private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
@@ -339,7 +340,6 @@ class ShopPageHeaderFragment :
         private const val CHIPS_NAME_CAMPAIGN = "Launching Eksklusif"
         private const val CHIPS_NAME_TOKO_PAGE = "Halaman Toko"
         private const val VALUE_ROLLENCE_NEW_SHOP_SHARE = "control_variant"
-        var isShowShareIcon = true
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragment()
@@ -1580,7 +1580,7 @@ class ShopPageHeaderFragment :
             UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                DEFAULT_SHOWCASE_ID
+                SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
             ),
             "utf-8"
         )

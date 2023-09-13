@@ -30,6 +30,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.model.ShopSharingInShowCaseUiModel
 import com.tokopedia.shop.databinding.ActivityNewShopProductListResultBinding
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment.Companion.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment.Companion.isShowShareIcon
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.Companion.createInstance
@@ -188,10 +189,16 @@ class ShopProductListResultActivity :
     }
 
     private fun getEtalaseIdFromUri(data: Uri?, pathSegments: List<String>) {
-        etalaseId = if (pathSegments.size >= SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS) {
-            data?.pathSegments?.getOrNull(SHOWCASE_ID_POSITION_ON_APP_LINK).orEmpty()
+        if (pathSegments.size >= SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS) {
+            val _etalaseId = data?.pathSegments?.getOrNull(SHOWCASE_ID_POSITION_ON_APP_LINK).orEmpty()
+            if (_etalaseId == SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA) {
+                etalaseId = SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
+                isShowShareIcon = false
+            } else {
+                etalaseId = data?.pathSegments?.getOrNull(SHOWCASE_ID_POSITION_ON_APP_LINK).orEmpty()
+            }
         } else {
-            "0"
+            etalaseId = "0"
         }
     }
 
@@ -327,6 +334,8 @@ class ShopProductListResultActivity :
         const val SHOP_ID_OR_DOMAIN_PATH_SEGMENT = 1
         const val SHOWCASE_ID_POSITION_ON_APP_LINK = 3
         private const val KEY_QUERY_PARAM_EXTRA = "QUERY_PARAM"
+        var isShowShareIcon = true
+
         fun createIntent(
             context: Context?,
             shopId: String?,

@@ -1805,7 +1805,8 @@ class ShopPageProductListResultFragment :
             "SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT"
         private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
         private const val SEARCH_AUTOCOMPLETE_PAGE_SOURCE = "SEARCH_AUTOCOMPLETE_PAGE_SOURCE"
-        private const val DEFAULT_SHOWCASE_ID = "0"
+
+//        private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val SEMUA_PRODUCT_ETALASE_NAME = "Semua Produk"
         private const val SEMUA_PRODUCT_ETALASE_ALIAS = "etalase"
@@ -2030,7 +2031,7 @@ class ShopPageProductListResultFragment :
             UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                DEFAULT_SHOWCASE_ID
+                ShopPageHeaderFragment.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
             ),
             "utf-8"
         )
