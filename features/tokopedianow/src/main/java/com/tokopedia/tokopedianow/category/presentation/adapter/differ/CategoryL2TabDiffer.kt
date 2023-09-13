@@ -34,7 +34,7 @@ class CategoryL2TabDiffer : BaseTokopediaNowDiffer() {
         return if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
             oldItem.getChangePayload(newItem)
         } else {
-            null
+            super.getChangePayload(oldItemPosition, newItemPosition)
         }
     }
 
