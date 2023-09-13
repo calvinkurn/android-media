@@ -5,26 +5,28 @@ import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 
 object BmGmTickerRequestMapper {
-    fun generateGetGroupProductTickerRequestParams(listProduct: List<CartItemHolderData>,
-                                                   bundleId: Long,
-                                                   bundleGroupId: String,
-                                                   offerId: Long,
-                                                   offerJsonData: String,
-                                                   cartStringOrder: String): BmGmGetGroupProductTickerParams {
+    fun generateGetGroupProductTickerRequestParams(
+        listProduct: List<CartItemHolderData>,
+        bundleId: Long,
+        bundleGroupId: String,
+        offerId: Long,
+        offerJsonData: String,
+        cartStringOrder: String
+    ): BmGmGetGroupProductTickerParams {
         val listCart = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart>()
         val cartDetailsBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
         val listProductBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
         listProduct.forEach { product ->
             listProductBmGm.add(
-                    BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
-                            cartId = product.cartId,
-                            shopId = product.shopHolderData.shopId,
-                            productId = product.productId,
-                            warehouseId = product.warehouseId,
-                            qty = product.quantity,
-                            finalPrice = product.productPrice.toString().removeSingleDecimalSuffix(),
-                            checkboxState = !product.isSelected
-                    )
+                BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
+                    cartId = product.cartId,
+                    shopId = product.shopHolderData.shopId,
+                    productId = product.productId,
+                    warehouseId = product.warehouseId,
+                    qty = product.quantity,
+                    finalPrice = product.productPrice.toString().removeSingleDecimalSuffix(),
+                    checkboxState = product.isSelected
+                )
             )
         }
 
