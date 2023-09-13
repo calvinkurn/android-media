@@ -4,16 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.stories.widget.domain.StoriesEntrySource
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
+import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -30,8 +34,14 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
         fun create(entryPoint: StoriesEntrySource): StoriesWidgetViewModel
     }
 
-    private val _storiesMap = MutableStateFlow(emptyMap<String, StoriesWidgetState>())
-    val stories: StateFlow<Map<String, StoriesWidgetState>> get() = _storiesMap.asStateFlow()
+    private val _storiesState = MutableStateFlow(StoriesWidgetInfo.Default)
+    val stories: StateFlow<Map<String, StoriesWidgetState>> get() = _storiesState.map {
+        it.widgetStates
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyMap()
+    )
 
     private val uiMessageManager = UiEventManager<StoriesWidgetMessage>()
     val uiMessage: Flow<StoriesWidgetMessage?> get() = uiMessageManager.event
@@ -48,7 +58,7 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
     }
 
     fun getStoriesState(shopId: String): Flow<StoriesWidgetState?> {
-        return _storiesMap.map { it[shopId] }.distinctUntilChanged()
+        return _storiesState.map { it.widgetStates[shopId] }.distinctUntilChanged()
     }
 
     fun clearMessage(id: Long) {
@@ -61,29 +71,35 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
         if (shopIds.isEmpty()) return
 
         viewModelScope.launch {
-            val storiesState = repository.getStoriesWidgetState(entryPoint, shopIds)
-            val storiesStateMap = storiesState.associateBy { it.shopId }
-            _storiesMap.update { it + storiesStateMap }
+            val storiesInfo = repository.getStoriesWidgetInfo(entryPoint, shopIds)
+            _storiesState.update {
+                it.copy(
+                    widgetStates = it.widgetStates + storiesInfo.widgetStates,
+                    coachMarkText = storiesInfo.coachMarkText
+                )
+            }
         }
     }
 
     private fun onGetLatestStoriesStatus() {
         viewModelScope.launch {
-            _storiesMap.update {
-                it.mapValues { entry ->
-                    val isStoriesSeen = repository.getUpdatedSeenStatus(
-                        entry.key,
-                        entry.value.updatedAt
-                    )
+            _storiesState.update {
+                it.copy(
+                    widgetStates = it.widgetStates.mapValues { entry ->
+                        val isStoriesSeen = repository.getUpdatedSeenStatus(
+                            entry.key,
+                            entry.value.updatedAt
+                        )
 
-                    entry.value.copy(
-                        status = if (entry.value.status != StoriesStatus.NoStories && isStoriesSeen) {
-                            StoriesStatus.AllStoriesSeen
-                        } else {
-                            entry.value.status
-                        }
-                    )
-                }
+                        entry.value.copy(
+                            status = if (entry.value.status != StoriesStatus.NoStories && isStoriesSeen) {
+                                StoriesStatus.AllStoriesSeen
+                            } else {
+                                entry.value.status
+                            }
+                        )
+                    }
+                )
             }
         }
     }
@@ -93,8 +109,8 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
             if (repository.hasSeenCoachMark()) return@launch
 
             runCatching {
-                _storiesMap.value.firstNotNullOf {
-                    if (it.value.status == StoriesStatus.HasUnseenStories) {
+                _storiesState.value.widgetStates.firstNotNullOf {
+                    if (it.value.status != StoriesStatus.NoStories) {
                         it.key
                     } else {
                         null
@@ -111,6 +127,11 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
     }
 
     private suspend fun showCoachMark(shopId: String) {
-        uiMessageManager.emitEvent(StoriesWidgetMessage.ShowCoachMark(shopId))
+        uiMessageManager.emitEvent(
+            StoriesWidgetMessage.ShowCoachMark(
+                shopId,
+                _storiesState.value.coachMarkText
+            )
+        )
     }
 }

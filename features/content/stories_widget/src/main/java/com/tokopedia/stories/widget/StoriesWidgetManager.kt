@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
 import com.tokopedia.stories.widget.domain.StoriesEntrySource
+import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.tracking.DefaultTrackingManager
 import com.tokopedia.stories.widget.tracking.TrackingManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -110,7 +111,7 @@ class StoriesWidgetManager private constructor(
                         when (message) {
                             is StoriesWidgetMessage.ShowCoachMark -> {
                                 mShopIdCoachMarked = message.shopId
-                                showCoachMarkOnId(message.shopId)
+                                showCoachMarkOnId(message.shopId, message.text)
                             }
                         }
 
@@ -169,19 +170,17 @@ class StoriesWidgetManager private constructor(
             .build()
     }
 
-    private fun showCoachMarkOnId(shopId: String) {
+    private fun showCoachMarkOnId(shopId: String, text: String) {
         getViewByShopId(shopId)
-            ?.let(::showCoachMarkOnView)
+            ?.let { showCoachMarkOnView(it, text) }
     }
 
-    private fun showCoachMarkOnView(view: StoriesWidgetLayout) {
+    private fun showCoachMarkOnView(view: StoriesWidgetLayout, text: String) {
+        if (!options.showCoachMarkIfApplicable || text.isBlank()) return
         if (showCoachMarkJob?.isActive == true) return
         showCoachMarkJob = lifecycleOwner.lifecycleScope.launch {
             delay(1000)
-            coachMark.show(
-                view,
-                "Ada update menarik dari toko ini"
-            )
+            coachMark.show(view, text)
         }
     }
 
@@ -309,6 +308,7 @@ class StoriesWidgetManager private constructor(
         private val userSession get() =  UserSession(context.applicationContext)
         private val defaultTrackingManager get() =  DefaultTrackingManager(entryPoint, trackingQueue, userSession)
         private var mTrackingManager: TrackingManager = defaultTrackingManager
+        private var mShowCoachMarkIfApplicable: Boolean = true
 
         fun setScrollingParent(view: View?) = builder {
             this.mScrollingParent = view
@@ -316,6 +316,10 @@ class StoriesWidgetManager private constructor(
 
         fun setAnimationStrategy(animStrategy: AnimationStrategy) = builder {
             mAnimationStrategy = animStrategy
+        }
+
+        fun setShowCoachMarkIfApplicable(shouldShow: Boolean) = builder {
+            mShowCoachMarkIfApplicable = shouldShow
         }
 
         fun setTrackingManager(trackingManager: TrackingManager) = builder {
@@ -336,6 +340,7 @@ class StoriesWidgetManager private constructor(
             return Options(
                 mScrollingParent,
                 mAnimationStrategy,
+                mShowCoachMarkIfApplicable,
                 mTrackingManager
             )
         }
@@ -349,6 +354,7 @@ class StoriesWidgetManager private constructor(
     class Options internal constructor(
         val scrollingParent: View?,
         val animStrategy: AnimationStrategy,
+        val showCoachMarkIfApplicable: Boolean,
         val trackingManager: TrackingManager
     )
 

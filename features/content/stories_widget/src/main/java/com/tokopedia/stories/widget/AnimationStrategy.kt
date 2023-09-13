@@ -10,7 +10,7 @@ interface AnimationStrategy {
     fun onAnimate(shopId: String)
 }
 
-class OneTimeAnimationStrategy : com.tokopedia.stories.widget.AnimationStrategy {
+class OneTimeAnimationStrategy : AnimationStrategy {
 
     private var mHasAnimate = false
 
@@ -23,7 +23,7 @@ class OneTimeAnimationStrategy : com.tokopedia.stories.widget.AnimationStrategy 
     }
 }
 
-class NoAnimateAnimationStrategy : com.tokopedia.stories.widget.AnimationStrategy {
+class NoAnimateAnimationStrategy : AnimationStrategy {
 
     override fun shouldPlayAnimation(shopId: String): Boolean {
         return false
