@@ -263,4 +263,7 @@ public class RemoteConfigKey {
     public static final String FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_fintech_enable_additional_device_info";
 
     public static final String ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL = "android_is_enable_order_status_detail_test";
+
+    public static final String ANDROID_IS_ENABLE_SOM_STATUS_DETAIL = "android_is_enable_som_status_detail_test";
+
 }

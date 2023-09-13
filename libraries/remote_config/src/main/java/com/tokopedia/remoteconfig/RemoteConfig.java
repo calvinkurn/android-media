@@ -1,5 +1,7 @@
 package com.tokopedia.remoteconfig;
 
+import com.google.firebase.remoteconfig.ConfigUpdate;
+
 import java.util.Set;
 
 /**
@@ -90,6 +92,11 @@ public interface RemoteConfig {
     interface Listener {
         void onComplete(RemoteConfig remoteConfig);
 
+        void onError(Exception e);
+    }
+
+    interface RealTimeUpdateListener {
+        void onComplete(Set<String> updatedKeys);
         void onError(Exception e);
     }
 }

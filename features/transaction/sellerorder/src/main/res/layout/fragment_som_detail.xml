@@ -18,6 +18,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:unify_header_is_show_shadow="true" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRemoteConfigRealTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Remote Config Real Time"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/som_detail_toolbar"/>
+
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
@@ -25,7 +35,7 @@
             app:layout_constraintBottom_toTopOf="@id/shadow_container_btn_detail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/som_detail_toolbar">
+            app:layout_constraintTop_toBottomOf="@id/tvRemoteConfigRealTime">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
