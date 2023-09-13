@@ -1,7 +1,6 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.banner
 
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
@@ -18,7 +17,7 @@ class BannerShopProductRevampViewHolder(
     private val impressionListener: TopAdsItemImpressionListener?
 ) : AbstractViewHolder<BannerShopProductUiModel?>(container) {
     private val productCardGridViewA: ProductCardGridCarouselView =
-        itemView.findViewById(R.id.product_item)
+        itemView.findViewById(R.id.topAdsProductItem)
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(itemView.context)
     }

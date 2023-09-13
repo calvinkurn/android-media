@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ProductCardGridCarouselView : ConstraintLayout {
+class ProductCardGridCarouselView: ConstraintLayout {
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
@@ -89,7 +89,7 @@ class ProductCardGridCarouselView : ConstraintLayout {
             productCardModel.imageUrl,
             context.resources.getDimensionPixelSize(
                 R.dimen.product_card_reimagine_carousel_image_radius
-            ).toFloat()
+            ).toFloat(),
         )
     }
 
@@ -117,7 +117,7 @@ class ProductCardGridCarouselView : ConstraintLayout {
     }
 
     private fun renderSlashedPrice(productCardModel: ProductCardModel) {
-        slashedPriceText?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty()) {
+        slashedPriceText?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty(),) {
             it.setTextAndContentDescription(
                 productCardModel.slashedPrice,
                 R.string.content_desc_textViewSlashedPrice
@@ -129,7 +129,7 @@ class ProductCardGridCarouselView : ConstraintLayout {
 
     private fun renderDiscountPercentage(productCardModel: ProductCardModel) {
         discountText?.shouldShowWithAction(
-            productCardModel.discountPercentage != 0
+            productCardModel.discountPercentage != 0,
         ) {
             it.setTextAndContentDescription(
                 "${productCardModel.discountPercentage}%",

@@ -44,8 +44,6 @@ class CpmViewHolder(
         }
     }
     override fun bind(element: CpmDataView) {
-        binding?.adsBanner?.displayHeadlineAds(element.cpmModel.apply {
-            isReimagine = this@CpmViewHolder.isReimagine
-        })
+        binding?.adsBanner?.displayHeadlineAds(element.cpmModel, isReimagine = isReimagine)
     }
 }

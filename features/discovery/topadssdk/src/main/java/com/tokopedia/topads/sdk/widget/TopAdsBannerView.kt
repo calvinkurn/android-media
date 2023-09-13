@@ -97,6 +97,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context.applicationContext)
     }
+    private var isReimagine: Boolean = false
+
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -127,7 +129,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (activityIsFinishing(context))
             return
         val cpmData = cpmModel?.data?.firstOrNull()
-        val isReimagine = cpmModel?.isReimagine.orFalse()
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
             View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
             BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
@@ -166,7 +167,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun setHeadlineShopData(cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
-        val isReimagine = cpmModel?.isReimagine.orFalse()
         val adsBannerShopCardView = findViewById<ShopCardView?>(R.id.adsBannerShopCardView)
         val shopDetail = findViewById<View?>(R.id.shop_detail)
         val topAdsCarousel = findViewById<ToadsCarousel>(R.id.TopAdsCarousel)
@@ -922,7 +922,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         displayAds(cpmModel, index)
     }
 
-    fun displayHeadlineAds(cpmModel: CpmModel?, index: Int = 0) {
+    fun displayHeadlineAds(cpmModel: CpmModel?, index: Int = 0, isReimagine: Boolean = false) {
+        this.isReimagine = isReimagine
         displayAds(cpmModel, index)
     }
 

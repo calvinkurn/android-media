@@ -266,7 +266,7 @@ class ProductListTypeFactoryImpl(
                 SmallGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             BigGridProductItemViewHolder.LAYOUT ->
                 BigGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
-            CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener, reimagineSearch2Component.isReimagineCarousel())
+            CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener, reimagineSearch2Component.isReimagineShopAds())
             TickerViewHolder.LAYOUT -> TickerViewHolder(view, tickerListener)
             SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(
                 view,
