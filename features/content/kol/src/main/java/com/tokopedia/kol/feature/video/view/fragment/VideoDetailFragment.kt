@@ -252,7 +252,7 @@ class VideoDetailFragment :
     }
 
     private fun initView() {
-        ivClose.setImageResource(IconUnify.CLOSE)
+        binding.ivClose.setImageResource(IconUnify.CLOSE)
 
         val detailId = arguments?.getString(VideoDetailActivity.PARAM_ID, "")
         if (detailId?.isEmpty() == true || detailId == "0") {
