@@ -21,6 +21,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -35,6 +36,10 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     }
 
     private var loadingView: View? = null
+    private var loaderStart: LoaderUnify? = null
+    private var loaderCenter: LoaderUnify? = null
+    private var loaderEnd: LoaderUnify? = null
+
     private var switcherView: ViewSwitcher? = null
 
     private var activeView: View? = null
@@ -64,6 +69,10 @@ class PromoEntryPointWidget @JvmOverloads constructor(
 
     private fun setupViews(attrs: AttributeSet?) {
         loadingView = findViewById(R.id.loader_promo_checkout)
+        loaderStart = findViewById(R.id.loader_promo_start)
+        loaderCenter = findViewById(R.id.loader_promo_center)
+        loaderEnd = findViewById(R.id.loader_promo_end)
+
         errorView = findViewById(R.id.error_promo_checkout)
         switcherView = findViewById(R.id.switcher_promo_checkout)
 
@@ -213,6 +222,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     }
 
     fun showLoading() {
+        loaderStart?.type = LoaderUnify.TYPE_CIRCLE
+        loaderCenter?.type = LoaderUnify.TYPE_LINE
+        loaderEnd?.type = LoaderUnify.TYPE_LINE
         loadingView?.visibility = View.VISIBLE
         switcherView?.visibility = View.GONE
         errorView?.visibility = View.GONE
