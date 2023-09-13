@@ -59,7 +59,7 @@ class CheckoutViewModelAddressTest : BaseCheckoutViewModelTest() {
             toasterProcessor.commonToaster.emit(
                 CheckoutPageToaster(
                     Toaster.TYPE_ERROR,
-                    toasterMessage = "Gagal mengubah alamat"
+                    toasterMessage = "Alamat gagal diganti"
                 )
             )
         }
@@ -111,14 +111,14 @@ class CheckoutViewModelAddressTest : BaseCheckoutViewModelTest() {
             toasterProcessor.commonToaster.emit(
                 CheckoutPageToaster(
                     Toaster.TYPE_NORMAL,
-                    toasterMessage = "Berhasil mengubah alamat"
+                    toasterMessage = "Alamat berhasil diganti"
                 )
             )
         }
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_NORMAL,
-                toasterMessage = "Berhasil mengubah alamat"
+                toasterMessage = "Alamat berhasil diganti"
             ),
             latestToaster
         )

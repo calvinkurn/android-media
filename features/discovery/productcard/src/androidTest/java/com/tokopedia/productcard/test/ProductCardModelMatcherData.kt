@@ -2,13 +2,16 @@ package com.tokopedia.productcard.test
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.FreeOngkir
 import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.ProductCardModel.NonVariant
+import com.tokopedia.productcard.ProductCardModel.PageSource.SEARCH
 import com.tokopedia.productcard.ProductCardModel.ShopBadge
 import com.tokopedia.productcard.ProductCardModel.Variant
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.test.utils.campaignLabelUrl
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.fulfillmentBadgeImageUrl
@@ -44,6 +47,8 @@ import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unifycomponents.CardUnify2
 
 private const val PLUS_VARIAN_LAIN_TEXT = "+ Keranjang"
@@ -55,6 +60,7 @@ internal fun getProductCardModelMatcherData(useViewStub: Boolean): List<ProductC
         testSlashPriceWithoutLabelDiscount(),
         testLabelDiscountWithoutSlashPrice(),
         testLabelPriceAndSlashPrice(),
+        testLabelPriceAndSlashPriceSRP(),
         testTwoLinesProductName(),
         testMaximumInfoAndLabel(),
         testLabelGimmickNumberOfStock(),
@@ -516,7 +522,7 @@ private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
 
     val productCardModel = ProductCardModel(
-            productName = "Slash Price prioritized over Label Price",
+            productName = "Slash Price with Label Price",
             productImageUrl = productImageUrl,
             discountPercentage = "20%",
             slashedPrice = "Rp8.499.000",
@@ -2850,6 +2856,48 @@ private fun testRibbonGoldCardClear(): ProductCardModelMatcher {
         R.id.imageRibbonArch to isDisplayed(),
         R.id.imageRibbonContent to isDisplayed(),
         R.id.textRibbon to isDisplayedWithText(labelRibbon.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelPriceAndSlashPriceSRP(): ProductCardModelMatcher {
+    val remoteConfig = ProductCardDummyRemoteConfig(
+        getString = { _, _ -> RollenceKey.PRODUCT_CARD_SLASHED_PRICE_CASHBACK_SRP }
+    ).get()
+
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
+
+    val productCardModel = ProductCardModel(
+        productName = "Slash Price with Label Price SRP",
+        productImageUrl = productImageUrl,
+        discountPercentage = "20%",
+        slashedPrice = "Rp8.499.000",
+        formattedPrice = "Rp7.999.000",
+        shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+            badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+        },
+        shopLocation = "DKI Jakarta",
+        hasThreeDots = true,
+        freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+            labelGroups.add(labelPrice)
+        },
+        pageSource = SEARCH,
+        abTestRemoteConfig = remoteConfig,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

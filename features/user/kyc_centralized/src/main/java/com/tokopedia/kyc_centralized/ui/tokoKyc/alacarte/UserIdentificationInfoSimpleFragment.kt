@@ -138,9 +138,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
                 KYCConstant.consentCollectionIdProduction
            }
         )
-        viewBinding?.layoutBenefit?.userConsentKyc?.load(
-            viewLifecycleOwner, this, consentParam
-        )
+        viewBinding?.layoutBenefit?.userConsentKyc?.load(consentParam)
 
         viewBinding?.layoutBenefit?.kycBenefitBtn?.setOnClickListener {
             viewBinding?.layoutBenefit?.userConsentKyc?.submitConsent()

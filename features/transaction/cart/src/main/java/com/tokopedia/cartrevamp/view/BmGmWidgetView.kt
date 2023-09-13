@@ -15,6 +15,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.cart.R as cartR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class BmGmWidgetView @JvmOverloads constructor(
     context: Context,
@@ -82,6 +83,7 @@ class BmGmWidgetView @JvmOverloads constructor(
             tvBmgmTicker.gone()
             icBmgmTicker.gone()
             iuTickerRightIcon.gone()
+            icChevronRightBmgm.gone()
             cartShopTickerLargeLoader.type =
                 LoaderUnify.TYPE_LINE
             cartShopTickerLargeLoader.show()
@@ -101,11 +103,13 @@ class BmGmWidgetView @JvmOverloads constructor(
             ivTickerBg.setImageResource(cartR.drawable.bg_cart_bmgm)
             tvBmgmTicker.visible()
             tvBmgmTicker.text = MethodChecker.fromHtml(title)
+            tvBmgmTicker.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_TN500))
 
             icBmgmTicker.visible()
             icBmgmTicker.loadImage(urlLeftIcon)
 
-            iuTickerRightIcon.visible()
+            iuTickerRightIcon.gone()
+            icChevronRightBmgm.visible()
         }
     }
 
@@ -116,11 +120,14 @@ class BmGmWidgetView @JvmOverloads constructor(
             cartShopTickerSmallLoader.gone()
             tvBmgmTicker.show()
             tvBmgmTicker.text = "Info promosi gagal dimuat. Muat ulang, yuk!"
+            tvBmgmTicker.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950))
             icBmgmTicker.gone()
             val iconColor = MethodChecker.getColor(
                 root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                unifyprinciplesR.color.Unify_NN900
             )
+
+            icChevronRightBmgm.gone()
             val reloadIcon = getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
             iuTickerRightIcon.setImageDrawable(reloadIcon)
             iuTickerRightIcon.show()

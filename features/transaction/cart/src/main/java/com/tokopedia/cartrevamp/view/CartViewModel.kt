@@ -2792,11 +2792,11 @@ class CartViewModel @Inject constructor(
         cartModel.availableCartItemImpressionList.addAll(availableCartItems)
     }
 
-    fun getBmGmGroupProductTicker(cartBmGmGroupTickerCartString: String, params: BmGmGetGroupProductTickerParams) {
-        if (cartModel.lastCartBmGmGroupTickerCartString == cartBmGmGroupTickerCartString) {
+    fun getBmGmGroupProductTicker(offerId: Long, params: BmGmGetGroupProductTickerParams) {
+        if (cartModel.lastOfferId == offerId) {
             cartBmGmGroupTickerJob?.cancel()
         }
-        cartModel.lastCartBmGmGroupTickerCartString = cartBmGmGroupTickerCartString
+        cartModel.lastOfferId = offerId
         cartBmGmGroupTickerJob = viewModelScope.launch(dispatchers.io) {
             try {
                 val result = getGroupProductTickerUseCase(params)

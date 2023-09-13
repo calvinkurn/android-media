@@ -1,39 +1,44 @@
 package com.tokopedia.cartrevamp.view.mapper
 
 import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 
 object BmGmTickerRequestMapper {
-    fun generateGetGroupProductTickerRequestParams(cartGroup: CartGroupHolderData, offerId: Long): BmGmGetGroupProductTickerParams {
+    fun generateGetGroupProductTickerRequestParams(
+        listProduct: List<CartItemHolderData>,
+        bundleId: Long,
+        bundleGroupId: String,
+        offerId: Long,
+        offerJsonData: String,
+        cartStringOrder: String
+    ): BmGmGetGroupProductTickerParams {
         val listCart = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart>()
         val cartDetailsBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
         val listProductBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
-        cartGroup.productUiModelList.forEach { cartItemProduct ->
-            if (cartItemProduct.bmGmCartInfoData.bmGmData.offerId == offerId) {
-                listProductBmGm.add(
-                        BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
-                                cartId = cartItemProduct.cartId,
-                                shopId = cartItemProduct.shopHolderData.shopId,
-                                productId = cartItemProduct.productId,
-                                warehouseId = cartItemProduct.warehouseId,
-                                qty = cartItemProduct.quantity,
-                                finalPrice = cartItemProduct.productPrice.toString().removeSingleDecimalSuffix(),
-                                checkboxState = cartItemProduct.isSelected
-                        )
+        listProduct.forEach { product ->
+            listProductBmGm.add(
+                BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
+                    cartId = product.cartId,
+                    shopId = product.shopHolderData.shopId,
+                    productId = product.productId,
+                    warehouseId = product.warehouseId,
+                    qty = product.quantity,
+                    finalPrice = product.productPrice.toString().removeSingleDecimalSuffix(),
+                    checkboxState = product.isSelected
                 )
-            }
+            )
         }
 
         cartDetailsBmGm.add(
             BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails(
                 bundleDetail = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.BundleDetail(
-                    bundleId = cartGroup.cartGroupBmGmHolderData.bundleId,
-                    bundleGroupId = cartGroup.cartGroupBmGmHolderData.bundleGroupId
+                    bundleId = bundleId,
+                    bundleGroupId = bundleGroupId
                 ),
                 offer = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Offer(
                     offerId = offerId,
-                    offerJsonData = cartGroup.cartGroupBmGmHolderData.offerJsonData
+                    offerJsonData = offerJsonData
                 ),
                 products = listProductBmGm
             )
@@ -41,59 +46,13 @@ object BmGmTickerRequestMapper {
 
         listCart.add(
             BmGmGetGroupProductTickerParams.BmGmCart(
-                cartStringOrder = cartGroup.cartString,
+                cartStringOrder = cartStringOrder,
                 cartDetails = cartDetailsBmGm
             )
         )
 
         return BmGmGetGroupProductTickerParams(
             carts = listCart
-        )
-    }
-
-    fun generateGetAllGroupProductTickerRequestParams(cartGroup: CartGroupHolderData, offerId: Long): BmGmGetGroupProductTickerParams {
-        val listCart = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart>()
-        val cartDetailsBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
-        val listProductBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
-        if (cartGroup.cartGroupBmGmHolderData.offerId == offerId) {
-            cartGroup.productUiModelList.forEach { cartItemProduct ->
-                listProductBmGm.add(
-                        BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
-                                cartId = cartItemProduct.cartId,
-                                shopId = cartItemProduct.shopHolderData.shopId,
-                                productId = cartItemProduct.productId,
-                                warehouseId = cartItemProduct.warehouseId,
-                                qty = cartItemProduct.quantity,
-                                finalPrice = cartItemProduct.productPrice.toString().removeSingleDecimalSuffix(),
-                                checkboxState = cartItemProduct.isSelected
-                        )
-                )
-            }
-        }
-
-        cartDetailsBmGm.add(
-                BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails(
-                        bundleDetail = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.BundleDetail(
-                                bundleId = cartGroup.cartGroupBmGmHolderData.bundleId,
-                                bundleGroupId = cartGroup.cartGroupBmGmHolderData.bundleGroupId
-                        ),
-                        offer = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Offer(
-                                offerId = offerId,
-                                offerJsonData = cartGroup.cartGroupBmGmHolderData.offerJsonData
-                        ),
-                        products = listProductBmGm
-                )
-        )
-
-        listCart.add(
-                BmGmGetGroupProductTickerParams.BmGmCart(
-                        cartStringOrder = cartGroup.cartString,
-                        cartDetails = cartDetailsBmGm
-                )
-        )
-
-        return BmGmGetGroupProductTickerParams(
-                carts = listCart
         )
     }
 }

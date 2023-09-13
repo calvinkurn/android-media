@@ -37,7 +37,6 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.min
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -100,7 +99,7 @@ class CartGroupViewHolder(
 
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.isError) {
-            binding.tvShopName.apply {
+            binding.tvGroupName.apply {
                 setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
@@ -110,7 +109,7 @@ class CartGroupViewHolder(
                 weightType = Typography.REGULAR
             }
         } else {
-            binding.tvShopName.apply {
+            binding.tvGroupName.apply {
                 setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
@@ -121,12 +120,12 @@ class CartGroupViewHolder(
             }
         }
 
-        binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
+        binding.tvGroupName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
             val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
             val shopName =
                 cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
-            binding.tvShopName.setOnClickListener {
+            binding.tvGroupName.setOnClickListener {
                 actionListener.onCartShopNameClicked(
                     shopId,
                     shopName,
@@ -134,13 +133,13 @@ class CartGroupViewHolder(
                 )
             }
         } else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
-            binding.tvShopName.setOnClickListener {
+            binding.tvGroupName.setOnClickListener {
                 actionListener.onCartGroupNameClicked(
                     cartGroupHolderData.groupAppLink
                 )
             }
         } else {
-            binding.tvShopName.setOnClickListener(null)
+            binding.tvGroupName.setOnClickListener(null)
         }
     }
 
@@ -258,34 +257,17 @@ class CartGroupViewHolder(
             constraintSet.clone(clShopHeader)
 
             if (cartGroupHolderData.groupBadge.isNotBlank()) {
-                if (cartGroupHolderData.isError) {
-                    constraintSet.connect(
-                        R.id.image_shop_badge,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        0
-                    )
-                } else {
-                    constraintSet.connect(
-                        R.id.image_shop_badge,
-                        ConstraintSet.START,
-                        R.id.cb_select_shop,
-                        ConstraintSet.END,
-                        GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                    )
-                }
                 constraintSet.connect(
-                    R.id.tv_shop_name,
+                    R.id.tv_group_name,
                     ConstraintSet.START,
                     R.id.image_shop_badge,
                     ConstraintSet.END,
-                    4
+                    GROUP_DEFAULT_MARGIN.dpToPx(itemView.resources.displayMetrics)
                 )
             } else {
                 if (cartGroupHolderData.isError) {
                     constraintSet.connect(
-                        R.id.tv_shop_name,
+                        R.id.tv_group_name,
                         ConstraintSet.START,
                         R.id.cb_select_shop,
                         ConstraintSet.END,
@@ -293,7 +275,7 @@ class CartGroupViewHolder(
                     )
                 } else {
                     constraintSet.connect(
-                        R.id.tv_shop_name,
+                        R.id.tv_group_name,
                         ConstraintSet.START,
                         R.id.cb_select_shop,
                         ConstraintSet.END,
@@ -474,6 +456,12 @@ class CartGroupViewHolder(
                         cartShopTickerLargeLoader.gone()
                         cartShopTickerSmallLoader.gone()
                         tvBmgmTicker.text = MethodChecker.fromHtml(cartShopGroupTicker.tickerText)
+                        tvBmgmTicker.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                unifyprinciplesR.color.Unify_TN600
+                            )
+                        )
                         tvBmgmTicker.show()
                         if (cartShopGroupTicker.leftIcon.isNotBlank() && cartShopGroupTicker.leftIconDark.isNotBlank()) {
                             if (root.context.isDarkMode()) {
@@ -486,24 +474,11 @@ class CartGroupViewHolder(
                             icBmgmTicker.gone()
                         }
                         if (cartShopGroupTicker.rightIcon.isNotBlank() && cartShopGroupTicker.rightIconDark.isNotBlank()) {
-                            // TODO: handle Right Icon
-//                            if (root.context.isDarkMode()) {
-//                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
-//                            } else {
-//                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
-//                            }
-                            val color = ContextCompat.getColor(
-                                itemView.context,
-                                unifyprinciplesR.color.Unify_NN500
-                            )
-                            iuTickerRightIcon.setImage(
-                                IconUnify.CHEVRON_RIGHT,
-                                color,
-                                null,
-                                color,
-                                null
-                            )
-                            iuTickerRightIcon.show()
+                            if (root.context.isDarkMode()) {
+                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
+                            } else {
+                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
+                            }
                         } else {
                             iuTickerRightIcon.gone()
                         }
@@ -522,6 +497,12 @@ class CartGroupViewHolder(
                         cartShopTickerLargeLoader.gone()
                         cartShopTickerSmallLoader.gone()
                         tvBmgmTicker.text = MethodChecker.fromHtml(cartShopGroupTicker.errorText)
+                        tvBmgmTicker.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                unifyprinciplesR.color.Unify_NN950
+                            )
+                        )
                         tvBmgmTicker.show()
                         icBmgmTicker.gone()
                         val iconColor = MethodChecker.getColor(
