@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -68,6 +69,9 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var userSession: Lazy<UserSessionInterface>
+
+    @Inject
+    lateinit var irisSession: IrisSession
 
     private var binding: BottomSheetBmgmMiniCartDetailBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
@@ -163,6 +167,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
             BmgmMiniCartTracker.sendClickCekKeranjangEvent(
                 offerId = data.offerId.toString(),
                 warehouseId = data.warehouseId.toString(),
+                irisSessionId = irisSession.getSessionId(),
                 userId = data.shopId,
                 shopId = userSession.get().userId
             )
@@ -199,6 +204,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
                 BmgmMiniCartTracker.sendImpressionMinicartEvent(
                     offerId = data.offerId.toString(),
                     warehouseId = data.warehouseId.toString(),
+                    irisSessionId = irisSession.getSessionId(),
                     userId = data.shopId,
                     shopId = userSession.get().userId
                 )
@@ -212,6 +218,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
                 BmgmMiniCartTracker.sendClickCloseMinicartEvent(
                     offerId = data.offerId.toString(),
                     warehouseId = data.warehouseId.toString(),
+                    irisSessionId = irisSession.getSessionId(),
                     shopId = data.shopId,
                     userId = userSession.get().userId
                 )
