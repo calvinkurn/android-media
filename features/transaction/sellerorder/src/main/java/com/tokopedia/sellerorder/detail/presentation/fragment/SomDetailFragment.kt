@@ -47,6 +47,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -138,6 +141,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
+import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.URLDecoder
 import java.net.UnknownHostException
@@ -194,6 +198,10 @@ open class SomDetailFragment :
     }
     protected val bottomSheetManager by lazy {
         view?.let { if (it is ViewGroup) BottomSheetManager(it, childFragmentManager) else null }
+    }
+
+    private val remoteConfig: FirebaseRemoteConfigImpl by lazy {
+        FirebaseRemoteConfigImpl(context)
     }
 
     private fun createChatIcon(context: Context): IconUnify {
@@ -296,6 +304,7 @@ open class SomDetailFragment :
         setHasOptionsMenu(true)
         setupBackgroundColor()
         setupToolbar()
+        showOrHideTvRemoteConfigRealTime()
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
@@ -357,6 +366,28 @@ open class SomDetailFragment :
     override fun onRejectCancelRequest() {
         SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
         rejectCancelOrder()
+    }
+
+    private fun showOrHideTvRemoteConfigRealTime() {
+        context?.let {
+            remoteConfig.setRealtimeUpdateListener(object : RemoteConfig.RealTimeUpdateListener {
+                override fun onUpdate(updatedKeys: MutableSet<String>?) {
+                    if (updatedKeys?.contains(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL) == true) {
+                        showRemote()
+                    }
+                }
+
+                override fun onError(e: Exception?) {
+                }
+            })
+        }
+
+        showRemote()
+    }
+
+    private fun showRemote() {
+        val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)
+        binding?.tvRemoteConfigRealTime?.showWithCondition(isShowRemoteConfigRealTime)
     }
 
     private fun checkUserRole() {

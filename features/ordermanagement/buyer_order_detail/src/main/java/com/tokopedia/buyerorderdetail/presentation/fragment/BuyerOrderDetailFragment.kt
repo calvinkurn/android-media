@@ -245,9 +245,9 @@ open class BuyerOrderDetailFragment :
                 null
             ) as? BuyerOrderDetailToolbarMenu
             )?.apply {
-                setViewModel(viewModel)
-                setNavigator(navigator)
-            }
+            setViewModel(viewModel)
+            setNavigator(navigator)
+        }
     }
 
     override fun getScreenName() = BuyerOrderDetailFragment::class.java.simpleName
@@ -471,15 +471,14 @@ open class BuyerOrderDetailFragment :
 
     private fun showOrHideTvRemoteConfigRealTime() {
         context?.let {
-            remoteConfig.setRealtimeUpdateListener(object: RealTimeUpdateListener {
-                override fun onComplete(updatedKeys: MutableSet<String>?) {
+            remoteConfig.setRealtimeUpdateListener(object : RealTimeUpdateListener {
+                override fun onUpdate(updatedKeys: MutableSet<String>?) {
                     if (updatedKeys?.contains(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL) == true) {
                         showRemote()
                     }
                 }
 
                 override fun onError(e: Exception?) {
-
                 }
             })
         }
@@ -488,7 +487,7 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun showRemote() {
-        val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)
+        val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL)
         binding?.tvRemoteConfigRealTime?.showWithCondition(isShowRemoteConfigRealTime)
     }
 

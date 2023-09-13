@@ -69,7 +69,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                         firebaseRemoteConfig.activate()
                                 .addOnCompleteListener(task -> {
                                     if (realTimeUpdateListener != null) {
-                                        realTimeUpdateListener.onComplete(configUpdate.getUpdatedKeys());
+                                        realTimeUpdateListener.onUpdate(configUpdate.getUpdatedKeys());
                                     }
                                 })
                                 .addOnFailureListener(exception -> {

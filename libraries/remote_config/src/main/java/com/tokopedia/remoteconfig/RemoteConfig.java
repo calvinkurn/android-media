@@ -95,8 +95,12 @@ public interface RemoteConfig {
         void onError(Exception e);
     }
 
+    /**
+     * @param RealtimeUpdateListener to listen when real-time config updates from the Remote Config data and automatically
+     *                               or if any error happened
+     */
     interface RealTimeUpdateListener {
-        void onComplete(Set<String> updatedKeys);
+        void onUpdate(Set<String> updatedKeys);
         void onError(Exception e);
     }
 }
