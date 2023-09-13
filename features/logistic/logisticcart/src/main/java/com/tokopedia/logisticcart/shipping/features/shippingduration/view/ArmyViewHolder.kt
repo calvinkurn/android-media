@@ -37,7 +37,7 @@ class ArmyViewHolder(val binding: ItemArmyBinding) : RecyclerView.ViewHolder(bin
                     logisticcartR.string.checkout_bebas_ongkir_view_holder_description_template,
                     data.bebasOngkirKuota
                 )
-                tvKuotaInfo.text = HtmlLinkHelper(itemView.context, kuotaTextTemplate).spannedString
+                tvKuotaInfo.text = kuotaTextTemplate
                 tvKuotaInfo.visible()
             } else {
                 tvKuotaInfo.gone()
