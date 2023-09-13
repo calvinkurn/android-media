@@ -2,12 +2,10 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.graphics.Paint
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -82,7 +80,7 @@ class ShopHomeV4TerlarisViewHolder(
             val colorSchema = it.header.colorSchema
             val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             setHeaderSection(element)
-            terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(listener, isOverrideTheme ,colorSchema)
+            terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(listener, isOverrideTheme, colorSchema)
             rvProductCarousel?.apply {
                 isNestedScrollingEnabled = false
                 layoutManager = linearLayoutManager
@@ -111,7 +109,7 @@ class ShopHomeV4TerlarisViewHolder(
     private fun setHeaderSection(element: ShopHomeCarousellProductUiModel) {
         val title = element.header.title
         val subTitle = element.header.subtitle
-        widgetTitle?.shouldShowWithAction(title.isNotEmpty()){
+        widgetTitle?.shouldShowWithAction(title.isNotEmpty()) {
             widgetTitle?.text = title
         }
         widgetSubtitle?.shouldShowWithAction(subTitle.isNotEmpty()) {
@@ -152,7 +150,8 @@ class ShopHomeV4TerlarisViewHolder(
             productPrice1?.text = productList[0][0].displayedPrice
             productRank1?.text = "1"
             if (!productList[0][0].discountPercentage.isNullOrEmpty() &&
-                !productList[0][0].originalPrice.isNullOrEmpty()) {
+                !productList[0][0].originalPrice.isNullOrEmpty()
+            ) {
                 containerDiscount1?.visibility = View.VISIBLE
                 labelDiscount1?.text = productList[0][0].discountPercentage
                 productOriginalPrice1?.text = productList[0][0].originalPrice
@@ -169,7 +168,8 @@ class ShopHomeV4TerlarisViewHolder(
             productPrice2?.text = productList[0][1].displayedPrice
             productRank2?.text = "2"
             if (!productList[0][1].discountPercentage.isNullOrEmpty() &&
-                !productList[0][1].originalPrice.isNullOrEmpty()) {
+                !productList[0][1].originalPrice.isNullOrEmpty()
+            ) {
                 containerDiscount2?.visibility = View.VISIBLE
                 labelDiscount2?.text = productList[0][1].discountPercentage
                 productOriginalPrice2?.text = productList[0][1].originalPrice
@@ -186,7 +186,8 @@ class ShopHomeV4TerlarisViewHolder(
             productPrice3?.text = productList[0][2].displayedPrice
             productRank3?.text = "3"
             if (!productList[0][2].discountPercentage.isNullOrEmpty() &&
-                !productList[0][2].originalPrice.isNullOrEmpty()) {
+                !productList[0][2].originalPrice.isNullOrEmpty()
+            ) {
                 containerDiscount3?.visibility = View.VISIBLE
                 labelDiscount3?.text = productList[0][2].discountPercentage
                 productOriginalPrice3?.text = productList[0][2].originalPrice
@@ -241,8 +242,8 @@ class ShopHomeV4TerlarisViewHolder(
     }
 
     private fun overrideWidgetTheme(colorSchema: ShopPageColorSchema) {
-        widgetTitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
-        widgetSubtitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS))
+        widgetTitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS))
+        widgetSubtitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productName1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productPrice1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productName2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
