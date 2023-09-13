@@ -74,7 +74,9 @@ class CouponListFragment : BaseDaggerFragment() {
                     context?.launchLink(data.appLink, data.url)
                 }
             }, { data ->
-                context?.launchLink(data.appLink, data.url)
+                if (couponListViewModel.couponPageStatus != CouponStatus.EXPIRED) {
+                    context?.launchLink(data.appLink, data.url)
+                }
             })
         )
     }

@@ -10,6 +10,7 @@
     <string name="error_non_whitelisted_user_description">Pantau aja terus, ya. Nanti kita bakal kabarin kalau sudah tersedia buat kamu!</string>
     <string name="error_non_whitelisted_user_action">Ke Halaman Utama</string>
     <string name="title_medali_bonus">Bonus Saya</string>
+    <string name="title_medali_bonus_inactive">Bonus-bonus di Medali</string>
     <string name="title_active">Aktif</string>
     <string name="title_history">Riwayat</string>
     <string name="coupon_list_active_empty_title">"Belum ada bonus, nih"</string>

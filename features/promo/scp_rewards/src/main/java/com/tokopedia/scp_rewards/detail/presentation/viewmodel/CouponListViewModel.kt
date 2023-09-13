@@ -66,11 +66,18 @@ class CouponListViewModel @Inject constructor(
     fun getCouponList(medaliSlug: String = "", sourceName: String, pageName: String = "") {
         viewModelScope.launchCatchError(
             block = {
+                // currently backend is using inactive status for history page API.
+                val status = if (couponPageStatus == CouponStatus.EXPIRED) {
+                    CouponStatus.INACTIVE
+                } else {
+                    couponPageStatus
+                }
+
                 val response = getMedalBenefitUseCase.getMedalBenefits(
                     medaliSlug = medaliSlug,
                     sourceName = sourceName,
                     pageName = pageName,
-                    type = couponPageStatus.orEmpty()
+                    type = status.orEmpty()
                 )
 
                 when (val responseCode = response.scpRewardsMedaliBenefitList?.resultStatus?.code) {

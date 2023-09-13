@@ -44,7 +44,6 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTitle(getString(scp_rewardsR.string.title_medali_bonus))
         binding?.apply {
             listOfTabs?.let { safeList ->
                 safeList.forEach { tabs.addNewTab(it.title).setCounter(it.list?.size.orZero()) }
@@ -58,8 +57,15 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
                 tabs.setupWithViewPager(viewPager)
             }
             when (activeTabCouponStatus) {
-                CouponStatus.INACTIVE -> tabs.hide()
-                CouponStatus.EMPTY -> goToTab(CouponStatus.INACTIVE)
+                CouponStatus.ACTIVE -> setTitle(getString(scp_rewardsR.string.title_medali_bonus))
+                CouponStatus.INACTIVE -> {
+                    setTitle(getString(scp_rewardsR.string.title_medali_bonus_inactive))
+                    tabs.hide()
+                }
+                CouponStatus.EMPTY -> {
+                    setTitle(getString(scp_rewardsR.string.title_medali_bonus))
+                    goToTab(CouponStatus.EXPIRED)
+                }
             }
         }
     }
@@ -91,7 +97,7 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
                     ),
                     TabData(
                         title = getString(scp_rewardsR.string.title_history),
-                        status = CouponStatus.INACTIVE,
+                        status = CouponStatus.EXPIRED,
                         list = null,
                         medaliSlug = medaliSlug
                     )
@@ -107,7 +113,7 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
                     ),
                     TabData(
                         title = getString(scp_rewardsR.string.title_history),
-                        status = CouponStatus.INACTIVE,
+                        status = CouponStatus.EXPIRED,
                         list = null,
                         medaliSlug = medaliSlug
                     )
@@ -131,7 +137,7 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
             fragmentManager: FragmentManager,
             medaliSlug: String,
             list: List<MedalBenefitModel>?,
-            filterList: List<FilterModel>?,
+            filterList: List<FilterModel>?
         ) {
             val bundle = Bundle().apply {
                 putString(MEDALI_SLUG, medaliSlug)
