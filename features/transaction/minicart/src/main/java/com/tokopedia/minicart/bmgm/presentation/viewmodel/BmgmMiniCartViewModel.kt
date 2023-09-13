@@ -55,10 +55,10 @@ class BmgmMiniCartViewModel @Inject constructor(
         miniCartLocalCacheUseCases.get().clearLocalCache()
     }
 
-    fun saveCartDataToLocalStorage(shopId: Long, warehouseId: Long) {
+    fun saveCartDataToLocalStorage(shopId: Long, warehouseId: Long, offerEndDate: String) {
         val result = _cartData.value
         if (result is BmgmState.Success) {
-            miniCartLocalCacheUseCases.get().saveToLocalCache(result.data, shopId, warehouseId)
+            miniCartLocalCacheUseCases.get().saveToLocalCache(result.data, shopId, warehouseId, offerEndDate)
         }
     }
 }

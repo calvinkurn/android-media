@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -24,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
+import com.tokopedia.minicart.bmgm.common.utils.MiniCartUtils
 import com.tokopedia.minicart.bmgm.common.utils.logger.NonFatalIssueLogger
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
@@ -36,10 +38,8 @@ import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartWidgetBinding
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.time.DateFormatUtils
 import dagger.Lazy
 import kotlinx.coroutines.flow.collectLatest
-import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -67,10 +67,14 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     @Inject
     lateinit var userSession: Lazy<UserSessionInterface>
 
+    @Inject
+    lateinit var irisSession: IrisSession
+
     private var param = BmgmParamModel()
     private var shopIds = listOf<Long>()
-    private var messageIndex = Int.ZERO
     private var offerCount: Int = Int.ZERO
+    private var messageIndex = Int.ZERO
+    private var latestOfferMessage = ""
 
     private var binding: ViewBmgmMiniCartWidgetBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
@@ -96,17 +100,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         setupRecyclerView()
     }
 
-    private fun setupView() {
-        binding?.run {
-            tvBmgmCartDiscount.setFactory {
-                return@setFactory Typography(root.context).apply {
-                    setType(Typography.DISPLAY_3)
-                    setTextColor(context.getResColor(unifyprinciplesR.color.Unify_NN950))
-                }
-            }
-        }
-    }
-
     override fun onDetachedFromWindow() {
         viewModel.clearCartDataLocalCache()
         binding = null
@@ -115,6 +108,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     override fun setOnItemClickedListener() {
         saveCartDataToLocalStorage()
+        sendClickUpSellingEvent()
         RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
@@ -124,8 +118,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     fun setOnCheckCartClickListener(
-        offerEndDate: String,
-        callback: (isOfferEnded: Boolean) -> Unit
+        offerEndDate: String, callback: (isOfferEnded: Boolean) -> Unit
     ) {
         this.offerEndDate = offerEndDate
         this.onOfferEndedCallback = callback
@@ -149,6 +142,17 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     fun refreshAfterAtC() {
         viewModel.getMiniCartData(shopIds = shopIds, param = param, showLoadingState = false)
+    }
+
+    private fun setupView() {
+        binding?.run {
+            tvBmgmCartDiscount.setFactory {
+                return@setFactory Typography(root.context).apply {
+                    setType(Typography.DISPLAY_3)
+                    setTextColor(context.getResColor(unifyprinciplesR.color.Unify_NN950))
+                }
+            }
+        }
     }
 
     private fun refreshData() {
@@ -273,13 +277,15 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 val message = messages.firstOrNull().orEmpty()
                 showSingleMessageWithNoAnimation(message)
             }
+
+            sendMiniCartTrackingOnLastMessageChanged(messages.last())
         }
     }
 
     private fun saveCartDataToLocalStorage() {
         val shopId = shopIds.firstOrNull().orZero()
         val warehouseId = param.warehouseIds.firstOrNull().orZero()
-        viewModel.saveCartDataToLocalStorage(shopId, warehouseId)
+        viewModel.saveCartDataToLocalStorage(shopId, warehouseId, offerEndDate)
     }
 
     private fun showMultipleMessage(messages: List<String>) {
@@ -351,28 +357,11 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     private fun setCartListCheckboxState(data: BmgmMiniCartDataUiModel) {
-        val isOfferEnded = checkIsOfferEnded()
+        val isOfferEnded = MiniCartUtils.checkIsOfferEnded(offerEndDate)
         if (!isOfferEnded) {
             viewModel.setCartListCheckboxState(getCartIds(data.tiersApplied))
         }
         onOfferEndedCallback?.invoke(isOfferEnded)
-    }
-
-    private fun checkIsOfferEnded(): Boolean {
-        if (offerEndDate.isBlank()) {
-            return false
-        }
-        val offerEndInMilliseconds = DateFormatUtils.getTimeInMilliseconds(
-            format = DateFormatUtils.FORMAT_YYYY_MM_DD_HH_mm_ss,
-            dateString = offerEndDate
-        )
-
-        if (offerEndInMilliseconds == DateFormatUtils.INVALID_TIME_IN_MILLIS) {
-            return false
-        }
-
-        val nowMillis = Date().time
-        return offerEndInMilliseconds <= nowMillis
     }
 
     private fun setupCrossedPrice(data: BmgmMiniCartDataUiModel) {
@@ -428,7 +417,47 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         val userId = userSession.get().userId
 
         BmgmMiniCartTracker.sendClickCekKeranjangEvent(
-            offerId = offerId, warehouseId = warehouseId, shopId = shopId, userId = userId
+            offerId = offerId,
+            warehouseId = warehouseId,
+            irisSessionId = irisSession.getSessionId(),
+            shopId = shopId,
+            userId = userId
+        )
+    }
+
+    private fun sendMiniCartTrackingOnLastMessageChanged(currentLastMessage: String) {
+        val shouldSendTracker = currentLastMessage.isNotBlank() && currentLastMessage != latestOfferMessage
+        if (shouldSendTracker) {
+            latestOfferMessage = currentLastMessage
+
+            val offerId = param.offerIds.firstOrNull().orZero().toString()
+            val warehouseId = param.warehouseIds.firstOrNull().orZero().toString()
+            val shopId = shopIds.firstOrNull().orZero().toString()
+            val userId = userSession.get().userId
+            BmgmMiniCartTracker.sendImpressionUpsellingEvent(
+                offerId = offerId,
+                warehouseId = warehouseId,
+                irisSessionId = irisSession.getSessionId(),
+                lastOfferMessage = latestOfferMessage,
+                shopId = shopId,
+                userId = userId
+            )
+        }
+    }
+
+    private fun sendClickUpSellingEvent() {
+        val offerId = param.offerIds.firstOrNull().orZero().toString()
+        val warehouseId = param.warehouseIds.firstOrNull().orZero().toString()
+        val shopId = shopIds.firstOrNull().orZero().toString()
+        val userId = userSession.get().userId
+
+        BmgmMiniCartTracker.sendClickUpSellingEvent(
+            offerId = offerId,
+            warehouseId = warehouseId,
+            irisSessionId = irisSession.getSessionId(),
+            lastOfferMessage = latestOfferMessage,
+            shopId = shopId,
+            userId = userId
         )
     }
 

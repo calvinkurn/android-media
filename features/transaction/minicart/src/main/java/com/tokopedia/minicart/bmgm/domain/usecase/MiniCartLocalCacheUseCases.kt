@@ -25,9 +25,10 @@ class MiniCartLocalCacheUseCases @Inject constructor(
         model: BmgmMiniCartDataUiModel,
         shopId: Long,
         warehouseId: Long,
+        offerEndDate: String
     ) {
         launch {
-            val data = mapToCommonData(model, shopId, warehouseId)
+            val data = mapToCommonData(model, shopId, warehouseId, offerEndDate)
             PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, data)
         }
     }
@@ -49,6 +50,7 @@ class MiniCartLocalCacheUseCases @Inject constructor(
         model: BmgmMiniCartDataUiModel,
         shopId: Long,
         warehouseId: Long,
+        offerEndDate: String,
         showMiniCartFooter: Boolean = true
     ): BmgmCommonDataModel {
         return BmgmCommonDataModel(
