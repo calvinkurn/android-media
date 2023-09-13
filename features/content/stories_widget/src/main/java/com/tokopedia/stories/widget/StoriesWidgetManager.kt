@@ -2,7 +2,6 @@ package com.tokopedia.stories.widget
 
 import android.content.Context
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import androidx.appcompat.app.AppCompatActivity
@@ -94,7 +93,6 @@ class StoriesWidgetManager private constructor(
 
                 launch {
                     viewModel.stories.collectLatest {
-                        Log.d("StoriesWidgetMan", "OnStarted")
                         viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
                     }
                 }
@@ -188,7 +186,6 @@ class StoriesWidgetManager private constructor(
             val shopId = mShopIdCoachMarked ?: return@addOnScrollChangedListener
             val storiesLayout = getViewByShopId(shopId) ?: return@addOnScrollChangedListener
             if (storiesLayout.getLocalVisibleRect(scrollBounds)) {
-                Log.d("StoriesWidgetMan", "OnScrolled")
                 requestShowCoachMark()
             } else {
                 hideCoachMark()
@@ -204,7 +201,6 @@ class StoriesWidgetManager private constructor(
         setListener(storiesViewListener)
 
         if (shopId == mShopIdCoachMarked) requestShowCoachMark()
-        Log.d("StoriesWidgetMan", "OnAttached")
     }
 
     private fun StoriesWidgetLayout.onDetached() {
