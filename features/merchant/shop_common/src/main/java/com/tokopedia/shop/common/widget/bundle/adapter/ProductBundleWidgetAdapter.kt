@@ -10,31 +10,48 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
+import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleMultipleShimmeringViewHolder
 import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleMultipleViewHolder
+import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleSingleShimmeringViewHolder
 import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleSingleViewHolder
 
 class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var bundleListItem: List<BundleUiModel> = listOf()
+    private var bundleListItem: MutableList<BundleUiModel> = mutableListOf()
     private var listener: ProductBundleListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val displayMetrics = parent.resources.displayMetrics
         val containerWidgetParam = createContainerWidgetParams(displayMetrics)
         val itemView = createItemView(parent, viewType, containerWidgetParam)
-        return if (viewType == ProductBundleSingleViewHolder.LAYOUT) {
-            ProductBundleSingleViewHolder(
-                itemView,
-                containerWidgetParam
-            ).apply {
-                setListener(listener)
+        return when (viewType) {
+            ProductBundleSingleViewHolder.LAYOUT -> {
+                ProductBundleSingleViewHolder(
+                    itemView,
+                    containerWidgetParam
+                ).apply {
+                    setListener(listener)
+                }
             }
-        } else {
-            ProductBundleMultipleViewHolder(
-                itemView,
-                containerWidgetParam
-            ).apply {
-                setListener(listener)
+            ProductBundleMultipleViewHolder.LAYOUT -> {
+                ProductBundleMultipleViewHolder(
+                    itemView,
+                    containerWidgetParam
+                ).apply {
+                    setListener(listener)
+                }
+            }
+            ProductBundleSingleShimmeringViewHolder.LAYOUT -> {
+                ProductBundleSingleShimmeringViewHolder(
+                    itemView,
+                    containerWidgetParam
+                )
+            }
+            else -> {
+                ProductBundleMultipleShimmeringViewHolder(
+                    itemView,
+                    containerWidgetParam
+                )
             }
         }
     }
@@ -53,7 +70,11 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     override fun getItemViewType(position: Int): Int {
         val bundleItem = bundleListItem.getOrNull(position) ?: BundleUiModel()
-        return if (bundleItem.bundleType == BundleTypes.SINGLE_BUNDLE) {
+        return if (bundleItem.bundleType == BundleTypes.SINGLE_BUNDLE && bundleItem.isShimmering) {
+            ProductBundleSingleShimmeringViewHolder.LAYOUT
+        } else if (bundleItem.bundleType == BundleTypes.MULTIPLE_BUNDLE && bundleItem.isShimmering) {
+            ProductBundleMultipleShimmeringViewHolder.LAYOUT
+        } else if (bundleItem.bundleType == BundleTypes.SINGLE_BUNDLE && !bundleItem.isShimmering) {
             ProductBundleSingleViewHolder.LAYOUT
         } else {
             ProductBundleMultipleViewHolder.LAYOUT
@@ -77,7 +98,8 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
         }
 
     fun updateDataSet(newList: List<BundleUiModel>) {
-        bundleListItem = newList
+        bundleListItem.clear()
+        bundleListItem.addAll(newList)
         notifyDataSetChanged()
     }
 
