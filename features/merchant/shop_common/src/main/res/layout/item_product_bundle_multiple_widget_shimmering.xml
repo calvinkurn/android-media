@@ -121,7 +121,7 @@
             app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/shimmer_12"
+            android:id="@+id/shimmer_10"
             android:layout_width="100dp"
             android:layout_height="32dp"
             android:layout_marginTop="8dp"
@@ -133,15 +133,15 @@
             app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/shimmer_13"
+            android:id="@+id/shimmer_11"
             android:layout_width="0dp"
             android:layout_height="22dp"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="20dp"
-            app:layout_constraintBottom_toBottomOf="@+id/shimmer_12"
-            app:layout_constraintEnd_toStartOf="@+id/shimmer_12"
+            app:layout_constraintBottom_toBottomOf="@+id/shimmer_10"
+            app:layout_constraintEnd_toStartOf="@+id/shimmer_10"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/shimmer_12"
+            app:layout_constraintTop_toTopOf="@+id/shimmer_10"
             app:loader_type="rect" />
 
         <View
