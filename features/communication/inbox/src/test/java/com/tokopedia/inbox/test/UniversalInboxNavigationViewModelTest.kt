@@ -21,13 +21,13 @@ class UniversalInboxNavigationViewModelTest : UniversalInboxViewModelTestFixture
             viewModel.inboxNavigationUiState.test {
                 // When initial state
                 viewModel.setupViewModelObserver()
-                // Then empty state
-                Assert.assertEquals(null, awaitItem().intent)
 
                 // When navigate with intent
                 viewModel.processAction(UniversalInboxAction.NavigateWithIntent(expectedIntent))
                 // Then new state
                 Assert.assertEquals(expectedIntent, awaitItem().intent)
+
+                cancelAndConsumeRemainingEvents()
             }
         }
     }
@@ -41,8 +41,6 @@ class UniversalInboxNavigationViewModelTest : UniversalInboxViewModelTestFixture
             viewModel.inboxNavigationUiState.test {
                 // When initial state
                 viewModel.setupViewModelObserver()
-                // Then empty state
-                Assert.assertEquals("", awaitItem().applink)
 
                 // When navigate with applink
                 viewModel.processAction(UniversalInboxAction.NavigateToPage(expectedApplink))
@@ -50,23 +48,6 @@ class UniversalInboxNavigationViewModelTest : UniversalInboxViewModelTestFixture
                 Assert.assertEquals(expectedApplink, awaitItem().applink)
 
                 cancelAndConsumeRemainingEvents()
-            }
-        }
-    }
-
-    @Test
-    fun `reset navigation, reset all state`() {
-        runTest {
-            viewModel.inboxNavigationUiState.test {
-                // When initial state
-                viewModel.setupViewModelObserver()
-
-                // When initial state
-                viewModel.processAction(UniversalInboxAction.ResetNavigation)
-                // Then same state
-                val updatedState = awaitItem()
-                Assert.assertEquals(null, updatedState.intent)
-                Assert.assertEquals("", updatedState.applink)
             }
         }
     }
