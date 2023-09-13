@@ -38,8 +38,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -71,24 +71,23 @@ class UniversalInboxViewModel @Inject constructor(
         MutableSharedFlow<UniversalInboxAction>(extraBufferCapacity = 16)
 
     private val _inboxMenuUiState = MutableStateFlow(UniversalInboxMenuUiState())
-    val inboxMenuUiState: StateFlow<UniversalInboxMenuUiState>
-        get() = _inboxMenuUiState
+    val inboxMenuUiState = _inboxMenuUiState.asStateFlow()
 
-    private val _inboxNavigationState = MutableStateFlow(UniversalInboxNavigationUiState())
-    val inboxNavigationUiState: StateFlow<UniversalInboxNavigationUiState>
-        get() = _inboxNavigationState
+    private val _inboxNavigationState = MutableSharedFlow<UniversalInboxNavigationUiState>(
+        extraBufferCapacity = 16,
+        replay = 0
+    )
+    val inboxNavigationUiState = _inboxNavigationState.asSharedFlow()
 
     private val _productRecommendationState = MutableStateFlow(
         UniversalInboxProductRecommendationUiState()
     )
-    val productRecommendationUiState: StateFlow<UniversalInboxProductRecommendationUiState>
-        get() = _productRecommendationState
+    val productRecommendationUiState = _productRecommendationState.asStateFlow()
 
     private val _errorUiState = MutableSharedFlow<UniversalInboxErrorUiState>(
         extraBufferCapacity = 16
     )
-    val errorUiState: SharedFlow<UniversalInboxErrorUiState>
-        get() = _errorUiState
+    val errorUiState = _errorUiState.asSharedFlow()
 
     private var driverJob: Job? = null
 
@@ -122,9 +121,6 @@ class UniversalInboxViewModel @Inject constructor(
                 is UniversalInboxAction.NavigateToPage -> {
                     navigateToPage(it.applink)
                 }
-                is UniversalInboxAction.ResetNavigation -> {
-                    resetNavigation()
-                }
 
                 // General process
                 is UniversalInboxAction.ShowErrorMessage -> {
@@ -133,6 +129,9 @@ class UniversalInboxViewModel @Inject constructor(
                 is UniversalInboxAction.RefreshPage -> {
                     removeAllProductRecommendation(false)
                     loadInboxMenuAndWidgetMeta()
+                }
+                is UniversalInboxAction.RefreshCounter -> {
+                    refreshCounter()
                 }
 
                 // Recommendation process
@@ -337,11 +336,20 @@ class UniversalInboxViewModel @Inject constructor(
             try {
                 // Fetch inbox menu & widget from remote
                 getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta(Unit)
-                // Refresh counter
-                getAllCounterUseCase.refreshCounter(userSession.shopId)
+                refreshCounter()
             } catch (throwable: Throwable) {
                 setFallbackInboxMenu()
                 showErrorMessage(Pair(throwable, ::loadInboxMenuAndWidgetMeta.name))
+            }
+        }
+    }
+
+    private fun refreshCounter() {
+        viewModelScope.launch {
+            try {
+                getAllCounterUseCase.refreshCounter(userSession.shopId)
+            } catch (throwable: Throwable) {
+                showErrorMessage(Pair(throwable, ::refreshCounter.name))
             }
         }
     }
@@ -380,23 +388,19 @@ class UniversalInboxViewModel @Inject constructor(
     }
 
     private fun navigateWithIntent(intent: Intent) {
-        viewModelScope.launch {
-            _inboxNavigationState.update {
-                it.copy(intent = intent)
-            }
-        }
+        _inboxNavigationState.tryEmit(
+            UniversalInboxNavigationUiState(
+                intent = intent
+            )
+        )
     }
 
     private fun navigateToPage(applink: String) {
-        viewModelScope.launch {
-            _inboxNavigationState.update {
-                it.copy(applink = applink)
-            }
-        }
-    }
-
-    private fun resetNavigation() {
-        navigateToPage("")
+        _inboxNavigationState.tryEmit(
+            UniversalInboxNavigationUiState(
+                applink = applink
+            )
+        )
     }
 
     private fun loadProductRecommendation() {
