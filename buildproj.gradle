@@ -125,6 +125,7 @@ subprojects {
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBase}")
+                substitute module('com.google.firebase:firebase-config') with module("com.google.firebase:firebase-config:${firebaseRemoteConfigVersion}")
                 substitute module('com.google.firebase:firebase-config-ktx') with module("com.google.firebase:firebase-config-ktx:${firebaseRemoteConfigVersion}")
                 substitute module('com.google.firebase:firebase-perf-ktx') with module("com.google.firebase:firebase-perf-ktx:${firebasePerfVersion}")
 
