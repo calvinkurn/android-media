@@ -487,7 +487,7 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun showRemote() {
-        val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL)
+        val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)
         binding?.tvRemoteConfigRealTime?.showWithCondition(isShowRemoteConfigRealTime)
     }
 

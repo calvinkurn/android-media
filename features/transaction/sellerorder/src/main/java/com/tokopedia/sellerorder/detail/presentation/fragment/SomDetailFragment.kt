@@ -372,7 +372,7 @@ open class SomDetailFragment :
         context?.let {
             remoteConfig.setRealtimeUpdateListener(object : RemoteConfig.RealTimeUpdateListener {
                 override fun onUpdate(updatedKeys: MutableSet<String>?) {
-                    if (updatedKeys?.contains(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL) == true) {
+                    if (updatedKeys?.contains(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL) == true) {
                         showRemote()
                     }
                 }
@@ -386,7 +386,7 @@ open class SomDetailFragment :
     }
 
     private fun showRemote() {
-        val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)
+        val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL)
         binding?.tvRemoteConfigRealTime?.showWithCondition(isShowRemoteConfigRealTime)
     }
 
