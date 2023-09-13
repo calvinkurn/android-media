@@ -610,7 +610,7 @@ open class SomDetailFragment :
                                 binding?.btnPrimary?.isLoading = true
                                 setActionConfirmShipping(buttonResp.displayName)
                             }
-                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) -> {
+                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) -> {
                                 binding?.btnPrimary?.isLoading = true
                                 setActionConfirmShippingAuto(buttonResp)
                             }
