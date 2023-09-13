@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.text.Spannable
@@ -171,7 +172,7 @@ class CheckoutProductViewHolder(
                             setSpan(
                                 ImageSpan(
                                     productBinding.root.context,
-                                    it,
+                                    Bitmap.createScaledBitmap(it, EPHARMACY_ICON_SIZE.dpToPx(binding.root.context.resources.displayMetrics), EPHARMACY_ICON_SIZE.dpToPx(binding.root.context.resources.displayMetrics), false),
                                     DynamicDrawableSpan.ALIGN_BASELINE
                                 ),
                                 0,
@@ -734,5 +735,7 @@ class CheckoutProductViewHolder(
         private const val VIEW_ALPHA_ENABLED = 1.0f
         private const val VIEW_ALPHA_DISABLED = 0.5f
         private const val DEBOUNCE_TIME_ADDON = 500L
+
+        private const val EPHARMACY_ICON_SIZE = 10
     }
 }

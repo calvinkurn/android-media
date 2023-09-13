@@ -56,7 +56,7 @@ class CheckoutEpharmacyViewHolder(
             if (uploadPrescriptionUiModel.hasInvalidPrescription) {
                 binding.uploadPrescriptionText.text =
                     itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_upload_invalid_title_text)
-                binding.uploadPrescriptionText.setWeight(Typography.BOLD)
+                binding.uploadPrescriptionText.setWeight(Typography.REGULAR)
                 binding.uploadDescriptionText.text =
                     itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_upload_invalid_description_text)
                 binding.uploadDescriptionText.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
@@ -77,7 +77,7 @@ class CheckoutEpharmacyViewHolder(
             }
             binding.uploadPrescriptionText.text =
                 itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_upload_prescription_attached_title_text)
-            binding.uploadPrescriptionText.setWeight(Typography.BOLD)
+            binding.uploadPrescriptionText.setWeight(Typography.REGULAR)
             binding.uploadDescriptionText.text = itemView.resources.getString(
                 purchase_platformcommonR.string.pp_epharmacy_upload_prescription_count_text,
                 uploadPrescriptionUiModel.uploadedImageCount
@@ -115,7 +115,7 @@ class CheckoutEpharmacyViewHolder(
                 })
                 .start()
             binding.uploadDescriptionText.text =
-                itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found)
+                itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found_new)
             binding.uploadDescriptionText.setTextColorCompat(unifyprinciplesR.color.Unify_RN500)
             binding.uploadDescriptionText.show()
         }
