@@ -100,10 +100,12 @@ class UniversalInboxGetInboxMenuAndWidgetMetaUseCase @Inject constructor(
     ) {
         // try-catch block is used to prevent obstructing the flow
         // in case of a failure to save to the cache
-        try {
-            localRepository.setInboxMenuCache(value)
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
+        withContext(dispatcher.io) {
+            try {
+                localRepository.setInboxMenuCache(value)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+            }
         }
     }
 }

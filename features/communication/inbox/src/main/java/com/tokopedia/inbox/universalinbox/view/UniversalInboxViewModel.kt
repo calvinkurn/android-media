@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -174,10 +173,6 @@ class UniversalInboxViewModel @Inject constructor(
                 UniversalInboxCombineState(menu, counter, driverChannel)
             }
                 .filterNotNull()
-                .catch {
-                    Timber.d(it)
-                    showErrorMessage(Pair(it, ::observeInboxMenuWidgetMetaAndCounterFlow.name))
-                }
                 .collectLatest {
                     withContext(dispatcher.default) {
                         handleGetMenuAndCounterResult(it)
@@ -285,10 +280,6 @@ class UniversalInboxViewModel @Inject constructor(
     private fun observeProductRecommendationFlow() {
         viewModelScope.launch {
             getRecommendationUseCase.observe()
-                .catch {
-                    Timber.d(it)
-                    Result.Error(it)
-                }
                 .collectLatest {
                     withContext(dispatcher.default) {
                         handleResultProductRecommendation(it)
@@ -302,7 +293,15 @@ class UniversalInboxViewModel @Inject constructor(
     ) {
         when (result) {
             is Result.Success -> {
-                onSuccessGetProductRecommendation(result.data)
+                _productRecommendationState.update {
+                    it.copy(
+                        isLoading = false,
+                        title = result.data.title,
+                        productRecommendation = result.data.recommendationItemList.map { item ->
+                            UniversalInboxRecommendationUiModel(item)
+                        }
+                    )
+                }
                 page++
             }
             is Result.Error -> {
@@ -312,17 +311,6 @@ class UniversalInboxViewModel @Inject constructor(
             is Result.Loading -> {
                 setLoadingRecommendation(true)
             }
-        }
-    }
-
-    private fun onSuccessGetProductRecommendation(
-        response: RecommendationWidget
-    ) {
-        try {
-            updateProductRecommendation(response)
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            showErrorMessage(Pair(throwable, ::onSuccessGetProductRecommendation.name))
         }
     }
 
@@ -407,20 +395,6 @@ class UniversalInboxViewModel @Inject constructor(
     private fun loadProductRecommendation() {
         viewModelScope.launch {
             getRecommendationUseCase.fetchProductRecommendation(getRecommendationParam(page))
-        }
-    }
-
-    private fun updateProductRecommendation(response: RecommendationWidget) {
-        viewModelScope.launch {
-            _productRecommendationState.update {
-                it.copy(
-                    isLoading = false,
-                    title = response.title,
-                    productRecommendation = response.recommendationItemList.map { item ->
-                        UniversalInboxRecommendationUiModel(item)
-                    }
-                )
-            }
         }
     }
 
