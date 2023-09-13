@@ -244,7 +244,7 @@
             "event": "clickContent",
             "eventAction": "click - exit story room",
             "eventCategory": "stories room",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) -(next|prev story_id) - .*",
+            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .* - .*",
             "trackerId": "46062",
             "businessUnit": "content",
             "currentSite": "(tokopediamarketplace|tokopediaseller)",

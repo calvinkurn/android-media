@@ -232,7 +232,7 @@ class StoriesDetailFragment @Inject constructor(
 
         icClose.setOnClickListener {
             analytic.sendClickExitStoryRoomEvent(
-                eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - storiesId - asgc - image - nextStoriesId - currentCircle"
+                eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - ${viewModel.mStories.id} - asgc - ${viewModel.mStories.content.type.value} - nextStoriesId - ${viewModel.mGroup.groupName}"
             )
             activity?.finish()
         }
