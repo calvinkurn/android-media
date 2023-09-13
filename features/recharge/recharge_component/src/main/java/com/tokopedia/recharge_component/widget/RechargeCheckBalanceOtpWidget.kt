@@ -3,6 +3,7 @@ package com.tokopedia.recharge_component.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.databinding.WidgetRechargeCheckBalanceOtpBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -25,8 +26,9 @@ class RechargeCheckBalanceOtpWidget @JvmOverloads constructor(
             binding.checkBalanceOtpLabel.setNotification(
                 label,
                 NotificationUnify.TEXT_TYPE,
-                NotificationUnify.COLOR_PRIMARY,
+                NotificationUnify.COLOR_PRIMARY
             )
+            binding.checkBalanceOtpLabel.show()
         }
     }
 }
