@@ -17,7 +17,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleSingleVie
 
 class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var bundleListItem: MutableList<BundleUiModel> = mutableListOf()
+    private var bundleListItem: List<BundleUiModel> = listOf()
     private var listener: ProductBundleListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -98,8 +98,7 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
         }
 
     fun updateDataSet(newList: List<BundleUiModel>) {
-        bundleListItem.clear()
-        bundleListItem.addAll(newList)
+        bundleListItem = newList
         notifyDataSetChanged()
     }
 
