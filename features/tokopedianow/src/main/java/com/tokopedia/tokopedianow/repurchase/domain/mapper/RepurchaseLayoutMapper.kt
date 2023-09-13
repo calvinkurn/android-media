@@ -102,48 +102,6 @@ object RepurchaseLayoutMapper {
         removeAll { it is RepurchaseProductUiModel }
     }
 
-    fun MutableList<Visitable<*>>.addCategoryMenu(
-        @TokoNowLayoutState state: Int
-    ) {
-        add(TokoNowCategoryMenuUiModel(state = state))
-    }
-
-    fun MutableList<Visitable<*>>.mapCategoryMenuData(
-        response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?,
-        warehouseId: String = ""
-    ) {
-        getCategoryMenuIndex()?.let { index ->
-            val item = this[index]
-            if (item is TokoNowCategoryMenuUiModel) {
-                val newItem = if (!response.isNullOrEmpty()) {
-                    val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
-                    val categoryList = CategoryMenuMapper.mapToCategoryList(
-                        response = response,
-                        headerName = item.title,
-                        seeAllAppLink = seeAllAppLink
-                    )
-                    item.copy(
-                        categoryListUiModel = categoryList,
-                        state = TokoNowLayoutState.SHOW,
-                        seeAllAppLink = seeAllAppLink
-                    )
-                } else {
-                    item.copy(
-                        categoryListUiModel = null,
-                        state = TokoNowLayoutState.HIDE,
-                        seeAllAppLink = ""
-                    )
-                }
-                removeAt(index)
-                add(index, newItem)
-            }
-        }
-    }
-
-    fun MutableList<Visitable<*>>.getCategoryMenuIndex(): Int? {
-        return firstOrNull { it is TokoNowCategoryMenuUiModel }?.let { indexOf(it) }
-    }
-
     fun MutableList<Visitable<*>>.addChooseAddress() {
         add(TokoNowChooseAddressWidgetUiModel())
     }
