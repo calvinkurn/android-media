@@ -33,9 +33,18 @@ class ReviewPendingAdapter(
         }
     }
 
-    fun insertBulkReview(bulkReviewUiModel: BulkReviewUiModel){
-        if(visitables.filterIsInstance<BulkReviewUiModel>().isEmpty()){
-            visitables.add(0, bulkReviewUiModel)
+    fun insertBulkReview(bulkReviewUiModel: BulkReviewUiModel) {
+        if (visitables.filterIsInstance<BulkReviewUiModel>().isEmpty()) {
+            val target = visitables.indexOfFirst {
+                it is ReviewPendingUiModel
+            }.takeIf { it > -1 }
+            if (target == null) {
+                visitables.add(bulkReviewUiModel)
+                notifyItemInserted(visitables.size)
+            } else {
+                visitables.add(target, bulkReviewUiModel)
+                notifyItemInserted(target)
+            }
         }
     }
 

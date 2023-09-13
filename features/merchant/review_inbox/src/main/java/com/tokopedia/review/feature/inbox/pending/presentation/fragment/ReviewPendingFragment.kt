@@ -258,8 +258,10 @@ class ReviewPendingFragment :
                 data = BulkReviewUiModel.Data(
                     title = data.title,
                     products = data.list.map {
-                        BulkReviewUiModel.Data.Product.Default(it.product.imageUrl)
-                    }
+                        BulkReviewUiModel.Product.Default(it.product.imageUrl)
+                    },
+                    productCountFmt = data.productCountFmt,
+                    appLink = data.linkDetail.appLink
                 )
             )
         )
@@ -290,7 +292,6 @@ class ReviewPendingFragment :
         clearAllData()
         super.loadInitialData()
         getIncentiveOvoData()
-        viewModel.getBulkReview()
     }
 
     override fun renderList(list: List<ReviewPendingUiModel>, hasNextPage: Boolean) {
@@ -304,6 +305,8 @@ class ReviewPendingFragment :
         ) {
             endlessRecyclerViewScrollListener.loadMoreNextPage()
         }
+
+        viewModel.getBulkReview()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -662,5 +665,10 @@ class ReviewPendingFragment :
     private fun refresh() {
         coachMarkManager?.resetCoachMarkState()
         loadInitialData()
+    }
+
+    override fun onClickBulkReview(appLink: String) {
+        val context = context ?: return
+        RouteManager.route(context, appLink)
     }
 }

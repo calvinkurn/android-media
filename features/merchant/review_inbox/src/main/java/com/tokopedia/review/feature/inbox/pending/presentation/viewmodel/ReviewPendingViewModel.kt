@@ -95,11 +95,9 @@ class ReviewPendingViewModel @Inject constructor(
 
     fun getBulkReview(){
         launchCatchError(block = {
-            //TODO vindo - remove dummy
-//            val userId = userSession.userId
-            val userId = "9129280"
+            val userId = userSession.userId
             val data = bulkReviewUseCase.execute(userId)
-            _bulkReview.postValue(CoroutineSuccess(data))
+            if(data.list.isNotEmpty()) _bulkReview.postValue(CoroutineSuccess(data))
         }, onError = {
             _bulkReview.postValue(CoroutineFail(it))
         })

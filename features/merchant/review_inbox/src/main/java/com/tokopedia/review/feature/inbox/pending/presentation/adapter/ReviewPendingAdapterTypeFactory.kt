@@ -51,7 +51,7 @@ class ReviewPendingAdapterTypeFactory(private val reviewPendingItemListener: Rev
             ReviewPendingOvoIncentiveViewHolder.LAYOUT -> ReviewPendingOvoIncentiveViewHolder(parent, reviewPendingItemListener)
             ReviewPendingEmptyViewHolder.LAYOUT -> ReviewPendingEmptyViewHolder(parent)
             ReviewPendingCredibilityCarouselViewHolder.LAYOUT -> ReviewPendingCredibilityCarouselViewHolder(parent, reviewPendingItemListener)
-            BulkReviewViewHolder.LAYOUT -> BulkReviewViewHolder(parent)
+            BulkReviewViewHolder.LAYOUT -> BulkReviewViewHolder(parent, reviewPendingItemListener)
             else -> return super.createViewHolder(parent, type)
         }
     }

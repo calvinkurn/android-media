@@ -12,21 +12,22 @@ class BulkReviewUiModel(
 
     data class Data(
         val title: String,
-        val products: List<Product>
-    ) {
-        sealed class Product {
-            abstract val imageUrl: String
+        val products: List<Product>,
+        val productCountFmt: String,
+        val appLink: String
+    )
 
-            data class Default(
-                override val imageUrl: String
-            ) : Product()
+    sealed class Product {
+        abstract val imageUrl: String
 
-            data class More(
-                override val imageUrl: String,
-                val count: String
-            ) : Product()
-        }
+        data class Default(
+            override val imageUrl: String
+        ) : Product()
 
+        data class More(
+            override val imageUrl: String,
+            val count: String
+        ) : Product()
     }
 
 }

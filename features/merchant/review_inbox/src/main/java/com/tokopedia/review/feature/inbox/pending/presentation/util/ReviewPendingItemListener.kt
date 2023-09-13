@@ -12,4 +12,5 @@ interface ReviewPendingItemListener {
     fun onReviewCredibilityWidgetImpressed(title: String, position: Int)
     fun shouldShowCoachMark(): Boolean
     fun updateCoachMark()
+    fun onClickBulkReview(appLink: String)
 }
