@@ -605,6 +605,7 @@ class DigitalPDPDataPlanFragment :
         val clientNumbers =
             listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
         viewModel.cancelMCCMProductsJob()
+        viewModel.setMCCMLoading()
         viewModel.getMCCMProducts(clientNumbers, listOf(categoryId))
     }
 

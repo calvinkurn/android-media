@@ -49,7 +49,8 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
                     component.name,
                     position,
                     component.properties?.design
-                        ?: ""
+                        ?: "",
+                    properties = component.properties
                 )
             }
         }

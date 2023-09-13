@@ -202,7 +202,8 @@ class MixLeftPaddingComponentViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    componentName = FPM_MIX_LEFT
+                    componentName = FPM_MIX_LEFT,
+                    listener = this,
                 )
             )
         }
