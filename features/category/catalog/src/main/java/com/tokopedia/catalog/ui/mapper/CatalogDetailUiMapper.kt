@@ -101,11 +101,16 @@ class CatalogDetailUiMapper @Inject constructor(
             it.type == WidgetTypes.CATALOG_CTA_PRICE.type
         }?.data?.run {
             val marketPrice = priceCta.marketPrice.firstOrNull()
+            val minFmt = marketPrice?.minFmt.orEmpty()
+            val maxFmt = marketPrice?.maxFmt.orEmpty()
+            val displayedPrice = if (minFmt == maxFmt) {
+                maxFmt
+            } else {
+                listOf(minFmt, maxFmt).joinToString(" - ")
+            }
+
             PriceCtaProperties(
-                price = listOf(
-                    marketPrice?.minFmt.orEmpty(),
-                    marketPrice?.maxFmt.orEmpty()
-                ).joinToString(" - "),
+                price = displayedPrice,
                 productName = priceCta.name,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
                 MethodChecker.getColor(context, textColorRes)
