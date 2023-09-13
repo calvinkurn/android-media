@@ -195,7 +195,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 ShopPageHeaderTabIconUrlModel::class.java
             ).run {
                 if(isOverrideTheme){
-                    configIconColorByBackgroundTheme(lightModeUrl, darkModeUrl)
+                    configIconColorByBackgroundTheme(lightModeUrl, darkThemeUrl)
                 }else{
                     configIconColorByDeviceTheme(lightModeUrl, darkModeUrl)
                 }
@@ -215,12 +215,12 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 
     private fun configIconColorByBackgroundTheme(
         lightModeUrl: String,
-        darkModeUrl: String
+        darkThemeUrl: String
     ): String {
         return if (patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
-            lightModeUrl
+            darkThemeUrl
         } else {
-            darkModeUrl
+            lightModeUrl
         }
     }
 
