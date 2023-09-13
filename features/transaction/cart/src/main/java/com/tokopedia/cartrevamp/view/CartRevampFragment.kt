@@ -1151,6 +1151,10 @@ class CartRevampFragment :
 
     override fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean) {
         if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+            val selected = !cartItemHolderData.isSelected
+            viewModel.setItemSelected(position, cartItemHolderData, selected)
+            updateStateAfterCheckChanged(selected)
+
             cartItemHolderData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
             cartItemHolderData.isSelected = isChecked
             cartAdapter?.notifyItemChanged(position)
