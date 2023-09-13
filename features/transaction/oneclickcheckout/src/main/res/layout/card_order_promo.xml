@@ -12,16 +12,18 @@
     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
         android:id="@+id/btn_promo_checkout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <com.tokopedia.promocheckout.common.view.widget.PromoEntryPointWidget
         android:id="@+id/btn_promo_entry_point"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_promo_entry_point_bottom"
         android:layout_width="match_parent"
-        android:layout_height="8dp"/>
+        android:layout_height="8dp" />
 
 </LinearLayout>

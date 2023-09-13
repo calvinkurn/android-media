@@ -160,6 +160,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
@@ -294,7 +295,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                 }
 
                 if (clearPromo != null) {
-                    onClearPromo(clearPromo)
+                    onClearPromo(validateUsePromoRequest, clearPromo)
                 }
             }
         }
@@ -310,8 +311,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         viewModel.reloadRates()
     }
 
-    private fun onClearPromo(clearPromo: ClearPromoUiModel) {
+    private fun onClearPromo(
+        validateUsePromoRequest: ValidateUsePromoRequest?,
+        clearPromo: ClearPromoUiModel
+    ) {
         // reset
+        viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
         viewModel.validateUsePromoRevampUiModel = null
         viewModel.updatePromoStateWithoutCalculate(
             PromoUiModel().apply {
@@ -873,14 +878,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                                 }
 
                                 override fun onButtonChooseOtherPromo() {
-                                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                                    intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
-                                    intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
-                                    intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
-                                    intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
-
-                                    orderSummaryAnalytics.eventClickPilihPromoLainPromoErrorOSP()
-                                    startActivityForResult(intent, REQUEST_CODE_PROMO)
+                                    if (viewModel.useNewPromoPage()) {
+                                        goToNewPromoPage(
+                                            validateUsePromoRequest = viewModel.generateValidateUsePromoRequest(),
+                                            promoRequest = viewModel.generatePromoRequest(),
+                                            bboCodes = viewModel.generateBboPromoCodes()
+                                        )
+                                    } else {
+                                        orderSummaryAnalytics.eventClickPilihPromoLainPromoErrorOSP()
+                                        goToOldPromoPage(
+                                            validateUsePromoRequest = viewModel.generateValidateUsePromoRequest(),
+                                            promoRequest = viewModel.generatePromoRequest(),
+                                            bboCodes = viewModel.generateBboPromoCodes()
+                                        )
+                                    }
                                 }
                             }
                         )
@@ -1955,6 +1966,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     if (viewModel.useNewPromoPage()) {
                         goToNewPromoPage(validateUsePromoRequest, promoRequest, bboCodes)
                     } else {
+                        val codes = validateUsePromoRequest.codes
+                        val promoCodes = ArrayList<String>()
+                        for (code in codes) {
+                            promoCodes.add(code)
+                        }
+                        if (validateUsePromoRequest.orders.isNotEmpty()) {
+                            val orderCodes = validateUsePromoRequest.orders[0].codes
+                            for (code in orderCodes) {
+                                promoCodes.add(code)
+                            }
+                        }
+                        orderSummaryAnalytics.eventClickPromoOSP(promoCodes)
                         goToOldPromoPage(validateUsePromoRequest, promoRequest, bboCodes)
                     }
                 }
@@ -1972,19 +1995,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
         intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
         intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, ArrayList(bboCodes))
-
-        val codes = validateUsePromoRequest.codes
-        val promoCodes = ArrayList<String>()
-        for (code in codes) {
-            promoCodes.add(code)
-        }
-        if (validateUsePromoRequest.orders.isNotEmpty()) {
-            val orderCodes = validateUsePromoRequest.orders[0].codes
-            for (code in orderCodes) {
-                promoCodes.add(code)
-            }
-        }
-        orderSummaryAnalytics.eventClickPromoOSP(promoCodes)
         startActivityForResult(intent, REQUEST_CODE_PROMO)
     }
 
@@ -2097,7 +2107,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         lastValidateUsePromoRequest: ValidateUsePromoRequest,
         isFlowMvcLockToCourier: Boolean
     ) {
-        onClearPromo(clearPromo)
+        onClearPromo(lastValidateUsePromoRequest, clearPromo)
     }
 
     override fun onClosePageWithNoAction() {
@@ -2125,7 +2135,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         lastValidateUsePromoRequest: ValidateUsePromoRequest,
         isFlowMvcLockToCourier: Boolean
     ) {
-        onClearPromo(clearPromo)
+        onClearPromo(lastValidateUsePromoRequest, clearPromo)
     }
 
     override fun onClearPromoFailed(throwable: Throwable) {

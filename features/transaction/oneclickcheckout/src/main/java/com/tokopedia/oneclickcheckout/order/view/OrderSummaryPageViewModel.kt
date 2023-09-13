@@ -4,6 +4,7 @@ import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -131,7 +132,6 @@ class OrderSummaryPageViewModel @Inject constructor(
     private val saveAddOnProductStateJobs: MutableMap<String, Job> = mutableMapOf()
 
     private var hasSentViewOspEe = false
-    private var isPromoRevamp: Boolean? = null
 
     fun getShopId(): String {
         return orderCart.shop.shopId
@@ -163,6 +163,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             val isCartReimagine = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
             globalEvent.value = OccGlobalEvent.Normal
             val result = cartProcessor.getOccCart(source, gatewayCode, tenor, isCartReimagine)
+            val isPromoRevamp = PromoUsageRollenceManager().isRevamp(result.orderPromo.lastApply.userGroupMetadata)
             addressState.value = result.addressState
             orderCart = result.orderCart
             orderShop.value = orderCart.shop
@@ -181,9 +182,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderPayment.value = result.orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
-            isPromoRevamp = PromoUsageRollenceManager()
-                .isRevamp(result.orderPromo.lastApply.userGroupMetadata)
-            orderPromo.value = result.orderPromo
+            orderPromo.value = result.orderPromo.copy(isPromoRevamp = isPromoRevamp)
             when {
                 result.globalEvent != null -> {
                     globalEvent.value = result.globalEvent
@@ -199,7 +198,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
                 sendPaymentTracker()
-                getEntryPointInfo()
+                getEntryPointInfo(result.orderPromo.lastApply)
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
@@ -240,39 +239,69 @@ class OrderSummaryPageViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getEntryPointInfo() {
-        if (isPromoRevamp == true) {
-            var newOrderPromo = orderPromo.value
-            withContext(executorDispatchers.main) {
-                newOrderPromo = newOrderPromo.copy(
-                    isPromoRevamp = true,
-                    state = OccButtonState.LOADING
-                )
-                orderPromo.value = newOrderPromo
-            }
+    fun getEntryPointInfo(
+        lastApply: LastApplyUiModel,
+        oldLastApply: LastApplyUiModel? = null,
+        onSuccess: (() -> Unit)? = null
+    ) {
+        launchCatchError(
+            context = executorDispatchers.immediate,
+            block = {
+                val isPromoRevamp = orderPromo.value.isPromoRevamp
+                if (isPromoRevamp) {
+                    var newOrderPromo = orderPromo.value
+                    withContext(executorDispatchers.main) {
+                        newOrderPromo = newOrderPromo.copy(
+                            lastApply = lastApply,
+                            isDisabled = false,
+                            state = OccButtonState.LOADING
+                        )
+                        orderPromo.value = newOrderPromo
+                    }
+                    val entryPointInfo = promoProcessor.getEntryPointInfo(generatePromoRequest())
 
-            val isUsingGlobalPromo = newOrderPromo.lastApply.codes.isNotEmpty()
-            val isUsingPromo = newOrderPromo.lastApply.voucherOrders
-                .any { it.code.isNotBlank() && it.message.state == "red" }
-            if (!isUsingGlobalPromo && !isUsingPromo) {
-                val entryPointInfo = promoProcessor.getEntryPointInfo(generatePromoRequest())
-                withContext(executorDispatchers.main) {
-                    newOrderPromo = newOrderPromo.copy(
-                        entryPointInfo = entryPointInfo,
-                        state = OccButtonState.NORMAL
-                    )
-                    orderPromo.value = newOrderPromo
+                    val isAnimateWording = if (oldLastApply != null) {
+                        val oldTotalPromoAmount =
+                            oldLastApply.additionalInfo.usageSummaries.sumOf { it.amount }
+                        val newTotalPromoAmount =
+                            lastApply.additionalInfo.usageSummaries.sumOf { it.amount }
+                        newTotalPromoAmount > oldTotalPromoAmount
+                    } else {
+                        false
+                    }
+                    withContext(executorDispatchers.main) {
+                        val state = if (entryPointInfo.isSuccess) {
+                            OccButtonState.NORMAL
+                        } else {
+                            OccButtonState.DISABLE
+                        }
+                        newOrderPromo = newOrderPromo.copy(
+                            isDisabled = false,
+                            isAnimateWording = isAnimateWording,
+                            entryPointInfo = entryPointInfo,
+                            state = state
+                        )
+                        orderPromo.value = newOrderPromo
+                    }
+                } else {
+                    withContext(executorDispatchers.main) {
+                        orderPromo.value = orderPromo.value.copy(
+                            lastApply = lastApply,
+                            isDisabled = false,
+                            state = OccButtonState.NORMAL
+                        )
+                    }
                 }
-            } else {
+                onSuccess?.invoke()
+            },
+            onError = {
                 withContext(executorDispatchers.main) {
-                    newOrderPromo = newOrderPromo.copy(
-                        entryPointInfo = null,
-                        state = OccButtonState.NORMAL
+                    orderPromo.value = orderPromo.value.copy(
+                        state = OccButtonState.DISABLE
                     )
-                    orderPromo.value = newOrderPromo
                 }
             }
-        }
+        )
     }
 
     private fun generateOspEeBody(promoCodes: List<String> = emptyList()): OrderSummaryPageEnhanceECommerce {
@@ -465,7 +494,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 }
                 sendViewShippingErrorMessage(result.shippingErrorId)
                 calculateTotal()
-                getEntryPointInfo()
+                // todo: hit entry point?
             }
         }
         updateCart()
@@ -525,7 +554,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                 globalEvent.value = OccGlobalEvent.Normal
                 updatePromoState(resultValidateUse.promoUiModel)
                 // todo: hit entry point -> BO not applied
-                getEntryPointInfo()
                 updateCart()
                 sendViewOspEe()
                 sendPreselectedCourierOption(ratesResult.preselectedSpId)
@@ -693,7 +721,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                     }
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
-                    // todo: hit entry point -> BO applied
                     globalEvent.value = newEvent
                     updateCart()
                     return@launch
@@ -951,7 +978,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 }
                 resultValidateUse != null -> {
                     validateUsePromoRevampUiModel = resultValidateUse
-                    updatePromoState(resultValidateUse.promoUiModel)
+                    updatePromoState(resultValidateUse.promoUiModel, orderPromo.value.lastApply)
                     if (newGlobalEvent != null) {
                         globalEvent.value = newGlobalEvent
                     }
@@ -982,20 +1009,20 @@ class OrderSummaryPageViewModel @Inject constructor(
         orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
     }
 
-    private fun updatePromoState(promoUiModel: PromoUiModel) {
-        orderPromo.value = orderPromo.value.copy(
+    private fun updatePromoState(promoUiModel: PromoUiModel, oldLastApply: LastApplyUiModel? = null) {
+        getEntryPointInfo(
             lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
-            isDisabled = false,
-            state = OccButtonState.NORMAL
+            oldLastApply = oldLastApply,
+            onSuccess = {
+                calculateTotal()
+            }
         )
-        calculateTotal()
     }
 
-    fun updatePromoStateWithoutCalculate(promoUiModel: PromoUiModel) {
-        orderPromo.value = orderPromo.value.copy(
+    fun updatePromoStateWithoutCalculate(promoUiModel: PromoUiModel, oldLastApply: LastApplyUiModel? = null) {
+        getEntryPointInfo(
             lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
-            isDisabled = false,
-            state = OccButtonState.NORMAL
+            oldLastApply = oldLastApply
         )
     }
 
@@ -1443,7 +1470,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     }
 
     fun useNewPromoPage(): Boolean {
-        return isPromoRevamp == true
+        return orderPromo.value.isPromoRevamp
     }
 
     companion object {
