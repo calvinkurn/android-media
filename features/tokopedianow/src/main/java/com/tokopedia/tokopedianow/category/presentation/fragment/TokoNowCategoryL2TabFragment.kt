@@ -226,6 +226,10 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             }
         }
 
+        observe(viewModel.clickWishlistTracker) {
+            trackClickWishlistButton(it.first, it.second)
+        }
+
         observe(viewModel.updateToolbarNotification) {
             updateToolbarNotification()
         }
@@ -484,6 +488,11 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         val warehouseIds = viewModel.getWarehouseIds()
         categoryL2Analytic.quickFilterAnalytic
             .sendClickFullFilterButtonEvent(categoryIdL1, warehouseIds)
+    }
+
+    private fun trackClickWishlistButton(index: Int, productId: String) {
+        categoryL2Analytic.productAnalytic
+            .sendClickWishlistButtonOosEvent(index, data.categoryIdL1, productId)
     }
 
     private fun directToSeeMorePage(appLink: String) {

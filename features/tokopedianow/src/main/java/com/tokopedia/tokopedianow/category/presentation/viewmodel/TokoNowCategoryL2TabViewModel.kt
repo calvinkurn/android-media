@@ -122,6 +122,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val _routeAppLinkLiveData = MutableLiveData<String>()
     private val _updateToolbarNotification = MutableLiveData<Unit>()
     private val _atcDataTracker = MutableLiveData<CategoryAtcTrackerModel>()
+    private val _clickWishlistTracker = MutableLiveData<Pair<Int, String>>()
 
     val filterProductCountLiveData: LiveData<String> = _filterProductCountLiveData
     val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = _dynamicFilterModelLiveData
@@ -129,6 +130,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     val routeAppLinkLiveData: LiveData<String> = _routeAppLinkLiveData
     val updateToolbarNotification: LiveData<Unit> = _updateToolbarNotification
     val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
+    val clickWishlistTracker: LiveData<Pair<Int, String>> = _clickWishlistTracker
 
     private val filterController = FilterController()
     private val visitableList = mutableListOf<Visitable<*>>()
@@ -213,10 +215,11 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     fun updateWishlistStatus(productId: String, hasBeenWishlist: Boolean) {
         launch {
-            visitableList.updateProductItem(
+            val index = visitableList.updateProductItem(
                 productId = productId,
                 hasBeenWishlist = hasBeenWishlist
             )
+            trackClickWishlistButton(index, productId)
             updateVisitableListLiveData()
         }
     }
@@ -768,5 +771,9 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             )
             _atcDataTracker.postValue(trackerModel)
         }
+    }
+
+    private fun trackClickWishlistButton(index: Int, productId: String) {
+        _clickWishlistTracker.postValue(Pair(index, productId))
     }
 }
