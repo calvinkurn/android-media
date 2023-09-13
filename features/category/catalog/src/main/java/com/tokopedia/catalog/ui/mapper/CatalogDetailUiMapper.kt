@@ -31,6 +31,7 @@ import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import javax.inject.Inject
@@ -175,7 +176,7 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToStickyNavigation(): StickyNavigationUiModel {
         return StickyNavigationUiModel(
             content = data?.navigation?.map {
-                StickyNavigationUiModel.StickyNavigationItemData(it.title)
+                StickyNavigationUiModel.StickyNavigationItemData(it.title, it.eligibleNames.getOrNull(Int.ONE).orEmpty())
             }.orEmpty()
         )
     }

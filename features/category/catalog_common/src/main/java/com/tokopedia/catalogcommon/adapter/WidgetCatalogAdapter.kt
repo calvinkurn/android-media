@@ -1,7 +1,6 @@
 package com.tokopedia.catalogcommon.adapter
 
 import android.os.Handler
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.catalogcommon.OnStickySingleHeaderListener
 import com.tokopedia.catalogcommon.StickySingleHeaderView
+import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 
@@ -16,7 +16,7 @@ class WidgetCatalogAdapter(
     private val baseListAdapterTypeFactory: CatalogAdapterFactoryImpl
 ) : BaseAdapter<CatalogAdapterFactoryImpl>(
     baseListAdapterTypeFactory
-), StickySingleHeaderView.OnStickySingleHeaderAdapter  {
+), StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     private var recyclerView: RecyclerView? = null
     private val differ = CatalogDifferImpl()
@@ -64,8 +64,8 @@ class WidgetCatalogAdapter(
     override fun updateEtalaseListViewHolderData() {
         if (recyclerView?.isComputingLayout == false) {
             Handler().post {
-                val positionNavigation  = findPositionNavigation()
-                if (positionNavigation != -1){
+                val positionNavigation = findPositionNavigation()
+                if (positionNavigation != -1) {
                     notifyItemChanged(positionNavigation)
                 }
             }
@@ -82,7 +82,14 @@ class WidgetCatalogAdapter(
         super.onDetachedFromRecyclerView(recyclerView)
     }
 
-    private fun findPositionNavigation() : Int{
+    fun findPositionWidget(widgetName: String) : Int {
+        return visitables.indexOfFirst {
+            val uiModel = it as BaseCatalogUiModel
+            uiModel.widgetName == widgetName
+        }
+    }
+
+    private fun findPositionNavigation(): Int {
         val index = visitables.indexOfFirst {
             it is StickyNavigationUiModel
         }

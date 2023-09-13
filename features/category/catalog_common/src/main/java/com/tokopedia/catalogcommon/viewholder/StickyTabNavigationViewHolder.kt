@@ -5,13 +5,15 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetStickyNavigationBinding
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.utils.view.binding.viewBinding
 
-class StickyTabNavigationViewHolder(itemView: View) :
+class StickyTabNavigationViewHolder(itemView: View, val listener: StickyNavigationListener?) :
     AbstractViewHolder<StickyNavigationUiModel>(itemView) {
 
     companion object {
@@ -24,7 +26,10 @@ class StickyTabNavigationViewHolder(itemView: View) :
     override fun bind(element: StickyNavigationUiModel?) {
         binding?.let {
             it.catalogTabsUnify.tabLayout.removeAllTabs()
-            setupTabs(element?.content.orEmpty(), element?.widgetBackgroundColor ?: Color.TRANSPARENT)
+            setupTabs(
+                element?.content.orEmpty(),
+                element?.widgetBackgroundColor ?: Color.TRANSPARENT
+            )
         }
     }
 
@@ -44,9 +49,27 @@ class StickyTabNavigationViewHolder(itemView: View) :
                 R.drawable.shape_showcase_tab_indicator_color
             )
             catalogTabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
-            catalogTabsUnify.tabLayout.setTabTextColors(Color.BLUE,Color.BLACK)
+            catalogTabsUnify.tabLayout.setTabTextColors(Color.BLUE, Color.BLACK)
+            catalogTabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    listener?.onNavigateWidget(tabs[tab?.position.orZero()].anchorTo)
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+
+                }
+
+            })
 
         }
     }
 
+}
+
+interface StickyNavigationListener {
+
+    fun onNavigateWidget(anchorTo: String)
 }

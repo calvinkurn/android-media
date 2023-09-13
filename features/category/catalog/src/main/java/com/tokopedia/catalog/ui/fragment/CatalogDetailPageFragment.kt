@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.util.DrawableExtension
+import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -33,7 +35,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
+class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
+    StickyNavigationListener {
 
     @Inject
     lateinit var viewModel: CatalogDetailPageViewModel
@@ -43,7 +46,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
     private val widgetAdapter by lazy {
         WidgetCatalogAdapter(
             CatalogAdapterFactoryImpl(
-                heroBannerListener = this
+                heroBannerListener = this,
+                navListener = this
             )
         )
     }
@@ -218,6 +222,13 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             it.containerPriceCta.setBackgroundColor(bgColor)
             it.tgpCatalogName.setTextColor(fontColor)
             it.tgpPriceRanges.setTextColor(fontColor)
+        }
+    }
+
+    override fun onNavigateWidget(anchorTo: String) {
+        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
+        if (anchorToPosition >= Int.ZERO){
+            binding?.rvContent?.smoothScrollToPosition(anchorToPosition)
         }
     }
 }
