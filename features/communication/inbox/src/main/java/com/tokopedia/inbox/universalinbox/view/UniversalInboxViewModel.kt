@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view
 
 import android.content.Intent
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.channel.ConversationsChannel
@@ -88,7 +89,8 @@ class UniversalInboxViewModel @Inject constructor(
     )
     val errorUiState = _errorUiState.asSharedFlow()
 
-    private var driverJob: Job? = null
+    @VisibleForTesting
+    var driverJob: Job? = null
 
     private var page = 1
 
@@ -321,7 +323,7 @@ class UniversalInboxViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // Fetch inbox menu & widget from remote
-                getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta(Unit)
+                getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta()
                 refreshCounter()
             } catch (throwable: Throwable) {
                 setFallbackInboxMenu()

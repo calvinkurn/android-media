@@ -57,13 +57,13 @@ class UniversalInboxGetInboxMenuAndWidgetMetaUseCase @Inject constructor(
 
     fun observe(): Flow<Result<UniversalInboxWrapperResponse?>> = menuFlow
 
-    suspend fun fetchInboxMenuAndWidgetMeta(params: Unit) {
+    suspend fun fetchInboxMenuAndWidgetMeta() {
         withContext(dispatcher.io) {
             menuFlow.emit(Result.Loading)
             try {
                 val result = repository.request<Unit, UniversalInboxWrapperResponse>(
                     graphqlQuery(),
-                    params
+                    Unit
                 )
                 menuFlow.emit(Result.Success(result))
                 updateCache(result)
