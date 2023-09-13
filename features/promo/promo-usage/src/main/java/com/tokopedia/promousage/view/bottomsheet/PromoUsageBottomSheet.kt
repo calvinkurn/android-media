@@ -68,6 +68,7 @@ import com.tokopedia.promousage.view.adapter.PromoRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.ApplyPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.AttemptPromoUiAction
+import com.tokopedia.promousage.view.viewmodel.AutoScrollUiAction
 import com.tokopedia.promousage.view.viewmodel.ClearPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.ClosePromoPageUiAction
 import com.tokopedia.promousage.view.viewmodel.GetPromoRecommendationUiAction
@@ -96,9 +97,8 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.max
 import com.tokopedia.promousage.R as promousageR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
-
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
@@ -278,7 +278,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         val boPromoCodes: List<String> = arguments?.getStringArrayList(BUNDLE_KEY_BO_PROMO_CODES)
             ?: emptyList()
 
-        binding?.tpgBottomSheetHeaderTitle?.text = context?.getString(R.string.promo_usage_label_promo)
+        binding?.tpgBottomSheetHeaderTitle?.text =
+            context?.getString(R.string.promo_usage_label_promo)
         binding?.btnBottomSheetHeaderClose?.setOnClickListener {
             renderLoadingDialog(true)
             viewModel.onClosePromoPage(
@@ -381,7 +382,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             delay(100L)
             val promoRecommendation = items.getRecommendationItem()
             if (promoRecommendation != null) {
-                val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                val firstVisibleItemPosition =
+                    layoutManager.findFirstCompletelyVisibleItemPosition()
                 if (firstVisibleItemPosition == 0) {
                     val promoRecommendationHeight = List(promoRecommendation.codes.size) { index ->
                         layoutManager.getChildAt(index + 1)?.height ?: 0
@@ -492,6 +494,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         observeClearPromoUiAction()
         observeApplyPromoUiAction()
         observeClosePromoPageUiAction()
+        observeAutoScrollUiAction()
     }
 
     private fun observePromoRecommendationUiAction() {
@@ -543,7 +546,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun observePromoPageState() {
         viewModel.promoPageUiState.observe(viewLifecycleOwner) { state ->
             when (state) {
-
                 is PromoPageUiState.Initial -> {
                     renderHeader(false)
                     renderContent(false)
@@ -604,7 +606,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         binding?.clBottomSheetContent?.clipToOutline = true
         binding?.clBottomSheetContent?.clipChildren = true
         binding?.ivPromoRecommendationBackground?.loadImage(promoRecommendation.backgroundUrl)
-        binding?.ivPromoRecommendationBackground?.setBackgroundColor(Color.parseColor(promoRecommendation.backgroundColor))
+        binding?.ivPromoRecommendationBackground?.setBackgroundColor(
+            Color.parseColor(promoRecommendation.backgroundColor)
+        )
         binding?.ivPromoRecommendationBackground?.visible()
         dummyAnchorPosition = if (promoRecommendation.codes.isNotEmpty()) {
             promoRecommendation.codes.size + 1
@@ -618,8 +622,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun renderTickerInfo(tickerInfo: PromoPageTickerInfo) {
-        val hasTickerInfo = tickerInfo.message.isNotBlank() && tickerInfo.iconUrl.isNotBlank()
-            && tickerInfo.backgroundUrl.isNotBlank()
+        val hasTickerInfo = tickerInfo.message.isNotBlank() && tickerInfo.iconUrl.isNotBlank() &&
+            tickerInfo.backgroundUrl.isNotBlank()
         if (hasTickerInfo) {
             binding?.ivTickerInfoBackground?.loadImage(
                 url = tickerInfo.backgroundUrl,
@@ -906,6 +910,32 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    private fun observeAutoScrollUiAction() {
+        viewModel.autoScrollUiAction.observe(viewLifecycleOwner) { uiAction ->
+            when (uiAction) {
+                is AutoScrollUiAction.ScrollTo -> {
+                    try {
+                        val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                        val lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+                        val itemPosition = getItemPosition(uiAction.itemId)
+
+                        val isVisibleInCurrentScreen = itemPosition in (firstVisibleItemPosition + 1) until lastVisibleItemPosition
+                        val isIdle = binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
+                        if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
+                            binding?.rvPromo?.smoothScrollToPosition(itemPosition)
+                        }
+                    } catch (ignored: Exception) {
+                        // no-op
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getItemPosition(itemId: String): Int {
+        return recyclerViewAdapter.items.indexOfFirst { it.id == itemId }
+    }
+
     private fun showPromoTncBottomSheet(item: PromoTncItem) {
         val tncBottomSheet = PromoUsageTncBottomSheet.newInstance(
             promoCodes = item.selectedPromoCodes,
@@ -979,7 +1009,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             chosenAddress = chosenAddress,
             attemptedPromoCode = attemptedPromoCode,
             onSuccess = {
-
             }
         )
     }
@@ -1037,7 +1066,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             entryPoint: PromoPageEntryPoint,
             clearPromo: ClearPromoUiModel,
             lastValidateUsePromoRequest: ValidateUsePromoRequest,
-            isFlowMvcLockToCourier: Boolean,
+            isFlowMvcLockToCourier: Boolean
         )
 
         fun onClearPromoFailed(throwable: Throwable)

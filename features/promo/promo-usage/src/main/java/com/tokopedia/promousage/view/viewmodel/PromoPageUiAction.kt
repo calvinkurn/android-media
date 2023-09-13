@@ -100,3 +100,8 @@ sealed class ClosePromoPageUiAction {
         val throwable: Throwable
     ) : ClosePromoPageUiAction()
 }
+
+sealed class AutoScrollUiAction {
+
+    data class ScrollTo(val itemId: String) : AutoScrollUiAction()
+}

@@ -9,10 +9,10 @@ class CompositeAdapter(
     private val delegates: SparseArray<DelegateAdapter<DelegateAdapterItem, RecyclerView.ViewHolder>>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val items = mutableListOf<DelegateAdapterItem>()
+    val items = mutableListOf<DelegateAdapterItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-            delegates[viewType].createViewHolder(parent)
+        delegates[viewType].createViewHolder(parent)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val delegateAdapter = delegates[getItemViewType(position)]
@@ -78,7 +78,7 @@ class CompositeAdapter(
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return  oldProductList[oldItemPosition] == newProductList[newItemPosition]
+            return oldProductList[oldItemPosition] == newProductList[newItemPosition]
         }
     }
 }
