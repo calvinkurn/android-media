@@ -105,7 +105,7 @@ object BmgmMiniCartTracker {
     ) {
         val eventLabel = "$offerId - $warehouseId - $lastOfferMessage"
         Tracker.Builder()
-            .setEvent("viewPGIris")
+            .setEvent(IMPRESSION_EVENT)
             .setEventAction("impression upselling")
             .setEventCategory("olp bmgm")
             .setEventLabel(eventLabel)
@@ -132,7 +132,7 @@ object BmgmMiniCartTracker {
     ) {
         val eventLabel = "$offerId - $warehouseId - $lastOfferMessage"
         Tracker.Builder()
-            .setEvent("clickPG")
+            .setEvent(CLICK_EVENT)
             .setEventAction("click upseling")
             .setEventCategory("olp bmgm")
             .setEventLabel(eventLabel)
