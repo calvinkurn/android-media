@@ -158,7 +158,7 @@ class StoriesDetailFragment @Inject constructor(
         ) return
 
         mAdapter.setItems(state.groupHeader)
-        mAdapter.notifyItemRangeInserted(0, state.groupHeader.size)
+        mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
         binding.layoutDetailLoading.categoriesLoader.hide()
     }
 

@@ -199,7 +199,7 @@ class StoriesGroupFragment @Inject constructor(
         }
 
         pagerAdapter.setStoriesGroup(state)
-        pagerAdapter.notifyItemRangeChanged(0, state.groupItems.size)
+        pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
         selectGroupPosition(state.selectedGroupPosition, false)
 
         showPageLoading(false)
