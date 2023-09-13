@@ -319,31 +319,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding?.buttonBackToShipment?.gone()
             }
 
-            PromoPageEntryPoint.OCC_PAGE -> {
-                binding?.tpgTotalAmountLabel?.visible()
-                binding?.tpgTotalAmount?.text = context?.getString(
-                    R.string.promo_usage_label_total_price,
-                    totalAmount.splitByThousand()
-                )
-                binding?.tpgTotalAmount?.visible()
-                binding?.cvTotalAmount?.visible()
-                val icon = ContextCompat.getDrawable(
-                    context ?: return, R.drawable.promo_usage_ic_protection_check
-                )
-                binding?.buttonBuy?.setDrawable(icon)
-                binding?.buttonBuy?.setOnClickListener {
-                    renderLoadingDialog(true)
-                    viewModel.onClickBuy(
-                        entryPoint = entryPoint,
-                        validateUsePromoRequest = validateUsePromoRequest,
-                        boPromoCodes = boPromoCodes
-                    )
-                }
-                binding?.buttonBuy?.visible()
-                binding?.buttonBackToShipment?.gone()
-            }
-
-            PromoPageEntryPoint.CHECKOUT_PAGE -> {
+            PromoPageEntryPoint.CHECKOUT_PAGE, PromoPageEntryPoint.OCC_PAGE -> {
                 binding?.tpgTotalAmountLabel?.gone()
                 binding?.tpgTotalAmount?.gone()
                 binding?.buttonBuy?.gone()
