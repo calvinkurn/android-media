@@ -51,7 +51,7 @@ class CategoryL2ProductAnalytic(private val userSession: UserSessionInterface) {
                 price = product.price,
                 dimension40 = ""
             ).apply {
-                putString(KEY_DIMENSION_56, "")
+                putString(KEY_DIMENSION_56, product.warehouseId)
                 putBoolean(KEY_DIMENSION_98, isAvailable)
             }
         )
@@ -95,7 +95,7 @@ class CategoryL2ProductAnalytic(private val userSession: UserSessionInterface) {
                 price = product.price,
                 dimension40 = ""
             ).apply {
-                putString(KEY_DIMENSION_56, "")
+                putString(KEY_DIMENSION_56, product.warehouseId)
                 putBoolean(KEY_DIMENSION_98, isAvailable)
             }
         )
