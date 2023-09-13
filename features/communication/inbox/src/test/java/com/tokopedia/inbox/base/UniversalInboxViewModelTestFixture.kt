@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.gojek.conversations.channel.ConversationsChannel
+import com.gojek.conversations.channelMember.ChannelMember
 import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMenuMapper
 import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMiscMapper
 import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxWidgetMetaMapper
@@ -123,7 +124,18 @@ abstract class UniversalInboxViewModelTestFixture {
         unreadCount,
         null,
         null,
-        listOf(),
+        listOf(
+            ChannelMember(
+                id = "",
+                phone = "",
+                countryCode = "",
+                profileUrl = "",
+                lastSeenAt = 0,
+                name = "",
+                ownerType = "driver",
+                userMetadata = null
+            )
+        ),
         false,
         0,
         expiredAt,
