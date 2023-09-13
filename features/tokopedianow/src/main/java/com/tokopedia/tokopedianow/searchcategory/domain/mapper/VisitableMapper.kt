@@ -22,11 +22,13 @@ object VisitableMapper {
         val product = productList.find { it.productCardModel.productId == productId }
 
         product?.let {
-            it.productCardModel = it.productCardModel.copy(
-                hasBeenWishlist = hasBeenWishlist
+            val updatedProduct = it.copy(
+                productCardModel = it.productCardModel.copy(
+                    hasBeenWishlist = hasBeenWishlist
+                )
             )
             val index = indexOf(it)
-            this[index] = it
+            this[index] = updatedProduct
         }
 
         return productList.indexOf(product)
