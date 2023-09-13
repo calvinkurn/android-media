@@ -72,7 +72,7 @@
     <string name="checkout_error_shipping_description">Atur ulang pesananmu di keranjang, ya.</string>
 
 <!--    cart checkout revamp-->
-    <string name="checkout_bebas_ongkir_view_holder_description_template"><![CDATA[  •  <u>%1$s</u>]]></string>
+    <string name="checkout_bebas_ongkir_view_holder_description_template">•  %1$s</string>
     <string name="checkout_product_shipment_detail_view_holder_description_template">Dikirim dari %1$s  •  Berat %2$s</string>
 
 <!--    shipping insurance-->
