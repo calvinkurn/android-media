@@ -5,6 +5,7 @@ import com.tokopedia.productcard.compact.productcard.presentation.uimodel.Produc
 data class CategoryAtcTrackerModel(
     val index: Int = 0,
     val categoryIdL1: String = "",
+    val categoryIdL2: String = "",
     val warehouseId: String = "",
     val headerName: String = "",
     val quantity: Int = 0,

@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.category.presentation.fragment
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,15 +13,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
-import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryComponent
@@ -62,7 +53,9 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             queryParamMap: HashMap<String, String>
         ): TokoNowCategoryFragment {
             return TokoNowCategoryFragment().apply {
-                this.categoryIdL1 = categoryL1
+                arguments = Bundle().apply {
+                    putString(EXTRA_CATEGORY_ID_L1, categoryL1)
+                }
                 this.currentCategoryId = categoryL1
                 this.queryParamMap = queryParamMap
             }

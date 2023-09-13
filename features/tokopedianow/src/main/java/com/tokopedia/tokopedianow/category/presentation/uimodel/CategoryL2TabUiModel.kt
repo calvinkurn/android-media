@@ -6,10 +6,10 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.list
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 
 data class CategoryL2TabUiModel(
-    val id: String,
+    val id: String = "",
     val titleList: List<String> = emptyList(),
     val tabList: List<CategoryL2TabData> = emptyList(),
-    val selectedTabPosition: Int = 0,
+    var selectedTabPosition: Int = 0,
     @TokoNowLayoutState val state: Int = TokoNowLayoutState.LOADING
 ) : Visitable<CategoryL2TypeFactory> {
 

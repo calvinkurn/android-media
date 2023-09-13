@@ -20,6 +20,7 @@ import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseC
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2ShimmerUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -65,10 +66,15 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     override val tickerPage: String
         get() = GetTargetedTickerUseCase.CATEGORY_L2
 
-    val categoryTab: LiveData<CategoryL2TabUiModel>
-        get() = _categoryTab
+    val categoryTabLiveData: LiveData<CategoryL2TabUiModel>
+        get() = _categoryTabLiveData
+    val onTabSelectedLiveData: LiveData<CategoryL2TabUiModel>
+        get() = _onTabSelectedLiveData
 
-    private val _categoryTab = MutableLiveData<CategoryL2TabUiModel>()
+    private val _categoryTabLiveData = MutableLiveData<CategoryL2TabUiModel>()
+    private val _onTabSelectedLiveData = MutableLiveData<CategoryL2TabUiModel>()
+
+    private var categoryTab = CategoryL2TabUiModel()
 
     override suspend fun loadFirstPage(tickerData: GetTickerData) {
         val warehouses = addressData.getWarehousesData()
@@ -82,7 +88,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
             getCategoryDetailResponse
         )
 
-        val categoryTab = CategoryL2Mapper.mapToCategoryTab(
+        categoryTab = CategoryL2Mapper.mapToCategoryTab(
             categoryIdL1 = categoryIdL1,
             categoryIdL2 = categoryIdL2,
             tickerData = tickerData,
@@ -142,6 +148,18 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         updateVisitableListLiveData()
     }
 
+    fun getWarehouseIds(): String {
+        val localCacheModel = addressData.getAddressData()
+        return AddressMapper.mapToWarehouseIds(localCacheModel)
+    }
+
+    fun onTabSelected(position: Int) {
+        val categoryL2TabData = categoryTab.tabList[position]
+        categoryIdL2 = categoryL2TabData.categoryIdL2
+        categoryTab.selectedTabPosition = position
+        _onTabSelectedLiveData.postValue(categoryTab)
+    }
+
     private fun trackOpenScreen(getCategoryDetailResponse: CategoryDetailResponse) {
         sendOpenScreenTracker(
             id = getCategoryDetailResponse.categoryDetail.data.id,
@@ -151,6 +169,6 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     }
 
     private fun updateCategoryTab(categoryTab: CategoryL2TabUiModel) {
-        _categoryTab.postValue(categoryTab)
+        _categoryTabLiveData.postValue(categoryTab)
     }
 }

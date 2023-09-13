@@ -11,6 +11,9 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 object CategoryProductMapper {
 
     private const val ADDITIONAL_POSITION = 1
+    private const val SHOP_TYPE_GOLD = "gold"
+    private const val SHOP_TYPE_OS = "os"
+    private const val SHOP_TYPE_PM = "pm"
 
     private fun mapAceSearchProductToProductCard(
         product: AceSearchProductModel.Product,
@@ -41,7 +44,8 @@ object CategoryProductMapper {
                 imageUrl = it.url
             )
         },
-        hasBlockedAddToCart = hasBlockedAddToCard
+        hasBlockedAddToCart = hasBlockedAddToCard,
+        warehouseId = product.warehouseIdDefault
     )
 
     fun mapResponseToProductItem(
@@ -57,8 +61,10 @@ object CategoryProductMapper {
             id = product.shop.id,
             name = product.shop.name
         ),
+        shopType = getShopType(product.shop),
+        categoryBreadcrumbs = product.categoryBreadcrumb,
         position = index + ADDITIONAL_POSITION,
-        productCardModel = mapAceSearchProductToProductCard(product, miniCart, hasBlockedAddToCard)
+        productCardModel = mapAceSearchProductToProductCard(product, miniCart, hasBlockedAddToCard),
     )
 
     fun MutableList<Visitable<*>>.updateProductCardItems(
@@ -117,4 +123,14 @@ object CategoryProductMapper {
             hasBlockedAddToCart = hasBlockedAddToCart
         )
     )
+
+    private fun getShopType(shop: AceSearchProductModel.ProductShop): String {
+        return if (shop.isOfficial) {
+            SHOP_TYPE_OS
+        } else if (shop.isPowerBadge) {
+            SHOP_TYPE_PM
+        } else {
+            SHOP_TYPE_GOLD
+        }
+    }
 }

@@ -38,15 +38,19 @@ import com.tokopedia.productcard.compact.similarproduct.presentation.listener.Pr
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.category.analytic.CategoryL2Analytic
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryL2TabComponent
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryL2TabAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2TabDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2TabAdapterTypeFactory
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2View
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2TabViewModel
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_CARD_ITEM
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
@@ -76,7 +80,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-open class TokoNowCategoryL2TabFragment : Fragment() {
+class TokoNowCategoryL2TabFragment : Fragment() {
 
     companion object {
         fun newInstance(data: CategoryL2TabData): TokoNowCategoryL2TabFragment {
@@ -93,6 +97,9 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var categoryL2Analytic: CategoryL2Analytic
 
     private var adapterTypeFactory: CategoryL2TabAdapterTypeFactory? = null
     private var categoryAdapter: CategoryL2TabAdapter? = null
@@ -211,6 +218,13 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 }
             }
         }
+        
+        observe(viewModel.atcDataTracker) {
+            when(it.layoutType) {
+                PRODUCT_ADS_CAROUSEL -> trackProductAdsAddToCart(it)
+                PRODUCT_CARD_ITEM -> trackProductAddToCart(it)
+            }
+        }
 
         observe(viewModel.updateToolbarNotification) {
             updateToolbarNotification()
@@ -259,27 +273,11 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
-                addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        super.onScrolled(recyclerView, dx, dy)
-                        val isAtTheBottomOfThePage =
-                            !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
-                        viewModel.onScroll(isAtTheBottomOfThePage)
-                    }
-                })
+                addOnScrollListener(createOnScrollListener())
                 spanSizeLookup = createSpanSizeLookup()
             }
             adapter = categoryAdapter
             addProductItemDecoration()
-        }
-    }
-
-    private fun createSpanSizeLookup() = object : GridLayoutManager.SpanSizeLookup() {
-        override fun getSpanSize(position: Int): Int {
-            return when (categoryAdapter?.getItemViewType(position)) {
-                ProductItemViewHolder.LAYOUT -> SPAN_FULL_SPACE
-                else -> SPAN_COUNT
-            }
         }
     }
 
@@ -502,7 +500,36 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         }
     }
 
+    private fun trackProductAdsAddToCart(atcData: CategoryAtcTrackerModel) {
+        val title = getString(R.string.tokopedianow_product_ads_carousel_title)
+        categoryL2Analytic.adsProductAnalytic.trackProductAdsAddToCart(title, atcData)
+    }
+
+    private fun trackProductAddToCart(atcData: CategoryAtcTrackerModel) {
+        categoryL2Analytic.productAnalytic.trackProductAddToCart(atcData)
+    }
+
+    private fun createSpanSizeLookup() = object : GridLayoutManager.SpanSizeLookup() {
+        override fun getSpanSize(position: Int): Int {
+            return when (categoryAdapter?.getItemViewType(position)) {
+                ProductItemViewHolder.LAYOUT -> SPAN_FULL_SPACE
+                else -> SPAN_COUNT
+            }
+        }
+    }
+
+    private fun createOnScrollListener() = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val isAtTheBottomOfThePage =
+                !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
+            viewModel.onScroll(isAtTheBottomOfThePage)
+        }
+    }
+
     private fun createProductAdsCarouselListener(): ProductAdsCarouselListener {
+        val analytic = categoryL2Analytic.adsProductAnalytic
+
         return object : ProductAdsCarouselListener {
             override fun onProductCardClicked(
                 position: Int,
@@ -513,6 +540,12 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                     product.getProductId(),
                     product.appLink
                 )
+                analytic.trackProductAdsClick(
+                    position,
+                    title,
+                    data.categoryIdL1,
+                    product
+                )
             }
 
             override fun onProductCardImpressed(
@@ -520,6 +553,12 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 title: String,
                 product: ProductCardCompactCarouselItemUiModel
             ) {
+                analytic.trackProductAdsImpression(
+                    position,
+                    title,
+                    data.categoryIdL1,
+                    product
+                )
             }
 
             override fun onProductCardQuantityChanged(
@@ -530,7 +569,8 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 viewModel.onCartQuantityChanged(
                     product = product.productCardModel,
                     shopId = product.shopId,
-                    quantity = quantity
+                    quantity = quantity,
+                    layoutType = PRODUCT_ADS_CAROUSEL
                 )
             }
 
@@ -547,13 +587,17 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     private fun createProductItemListener(): ProductItemListener {
+        val analytic = categoryL2Analytic.productAnalytic
+
         return object : ProductItemListener {
             override fun onProductImpressed(productItemDataView: ProductItemDataView) {
+                analytic.trackProductImpression(data.categoryIdL1, productItemDataView)
             }
 
             override fun onProductClick(productItemDataView: ProductItemDataView) {
                 val productId = productItemDataView.productCardModel.productId
                 viewModel.createProductDetailAppLink(productId)
+                analytic.trackProductClick(data.categoryIdL1, productItemDataView)
             }
 
             override fun onProductNonVariantQuantityChanged(
@@ -563,7 +607,8 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 viewModel.onCartQuantityChanged(
                     product = productItemDataView.productCardModel,
                     shopId = productItemDataView.shop.id,
-                    quantity = quantity
+                    quantity = quantity,
+                    layoutType = PRODUCT_CARD_ITEM
                 )
             }
 

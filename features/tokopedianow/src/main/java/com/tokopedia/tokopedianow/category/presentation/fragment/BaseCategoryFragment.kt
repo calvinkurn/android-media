@@ -88,13 +88,19 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         private const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = TokopediaImageUrl.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
 
         private const val TOKONOW_DIRECTORY = "tokonow_directory"
+
+        const val EXTRA_CATEGORY_ID_L1 = "extra_category_id_l1"
+        const val EXTRA_CATEGORY_ID_L2 = "extra_category_id_l2"
     }
 
     @Inject
     lateinit var analytic: CategoryAnalytic
 
-    protected var categoryIdL1 = String.EMPTY
-    protected var categoryIdL2 = String.EMPTY
+    protected val categoryIdL1
+        get() = viewModel.categoryIdL1
+    protected val categoryIdL2
+        get() = viewModel.categoryIdL2
+
     protected var currentCategoryId = String.EMPTY
     protected var queryParamMap: HashMap<String, String>? = hashMapOf()
 
@@ -617,8 +623,8 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
 
     private fun setCategoryViewModelData() {
         viewModel.apply {
-            categoryIdL1 = this@BaseCategoryFragment.categoryIdL1
-            categoryIdL2 = this@BaseCategoryFragment.categoryIdL2
+            categoryIdL1 = arguments?.getString(EXTRA_CATEGORY_ID_L1).orEmpty()
+            categoryIdL2 = arguments?.getString(EXTRA_CATEGORY_ID_L2).orEmpty()
             currentCategoryId = this@BaseCategoryFragment.currentCategoryId
             queryParamMap = this@BaseCategoryFragment.queryParamMap
         }

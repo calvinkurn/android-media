@@ -14,10 +14,13 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.category.analytic.CategoryL2Analytic
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryL2Component
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2Differ
@@ -25,7 +28,9 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.Cate
 import com.tokopedia.tokopedianow.category.presentation.adapter.viewpager.CategoryL2TabViewPagerAdapter
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2View
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2HeaderViewHolder.CategoryL2HeaderListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2ViewModel
+import com.tokopedia.tokopedianow.common.util.addViewOnScreenObserver
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryL2Binding
@@ -43,8 +48,10 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
             queryParamMap: HashMap<String, String>?
         ): TokoNowCategoryL2Fragment {
             return TokoNowCategoryL2Fragment().apply {
-                this.categoryIdL1 = categoryL1
-                this.categoryIdL2 = categoryL2
+                arguments = Bundle().apply {
+                    putString(EXTRA_CATEGORY_ID_L1, categoryL1)
+                    putString(EXTRA_CATEGORY_ID_L2, categoryL2)
+                }
                 this.currentCategoryId = categoryL2
                 this.queryParamMap = queryParamMap
             }
@@ -53,6 +60,9 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var categoryL2Analytic: CategoryL2Analytic
 
     private var binding by autoClearedNullable<FragmentTokopedianowCategoryL2Binding>()
 
@@ -74,6 +84,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
     override fun createAdapterTypeFactory(): CategoryL2AdapterTypeFactory {
         return CategoryL2AdapterTypeFactory(
             tokoNowView = createTokoNowViewCallback(),
+            headerListener = createHeaderListener(),
             chooseAddressListener = createChooseAddressWidgetCallback()
         )
     }
@@ -90,7 +101,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
         observeLiveData()
         setupAppBarLayout()
         setupViewPager()
-        setupTabsUnify()
+        setupTracker()
         onViewCreated()
     }
 
@@ -137,11 +148,18 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
     }
 
     private fun observeLiveData() {
-        observe(viewModel.categoryTab) { data ->
+        observe(viewModel.categoryTabLiveData) { data ->
             clearAllCategoryTabs()
             addTabFragments(data)
             setupTabsUnifyMediator(data)
             setSelectedTabPosition(data)
+            setupTabsUnify()
+        }
+
+        observe(viewModel.onTabSelectedLiveData) {
+            val position = it.selectedTabPosition
+            setViewPagerCurrentItem(position)
+            trackClickCategoryTab(it)
         }
     }
 
@@ -168,7 +186,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
             tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
             tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    viewPager.setCurrentItem(tab.position, false)
+                    viewModel.onTabSelected(tab.position)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -188,7 +206,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
                 fragment.categoryL2View = this@TokoNowCategoryL2Fragment
                 viewPagerAdapter.addFragment(fragment)
             }
-            viewPager.currentItem = selectedTabPosition + 1
+            setViewPagerCurrentItem(selectedTabPosition + 1)
         }
     }
 
@@ -211,6 +229,10 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
         }
     }
 
+    private fun setViewPagerCurrentItem(position: Int) {
+        binding?.viewPager?.setCurrentItem(position, false)
+    }
+
     private fun clearAllCategoryTabs() {
         binding?.apply {
             tabsUnify.tabLayout.removeAllTabs()
@@ -218,8 +240,48 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
         }
     }
 
+    private fun setupTracker() {
+        binding?.tabsUnify?.addViewOnScreenObserver {
+            categoryL2Analytic.sendImpressionLCategoryNavigationEvent(
+                categoryIdL1, categoryIdL2, viewModel.getWarehouseIds()
+            )
+        }
+    }
+
+    private fun openAllCategoryPage() {
+        RouteManager.route(
+            context,
+            ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
+        )
+    }
+
+    private fun trackClickOtherCategory() {
+        categoryL2Analytic.sendClickOtherCategoriesEvent(
+            categoryIdL1, viewModel.getWarehouseIds()
+        )
+    }
+
+    private fun trackClickCategoryTab(tab: CategoryL2TabUiModel) {
+        val selectedTabPosition = tab.selectedTabPosition
+        val categoryIdL2 = tab.tabList[selectedTabPosition].categoryIdL2
+        categoryL2Analytic.sendClickLCategoryNavigationEvent(
+            categoryIdL1,
+            categoryIdL2,
+            viewModel.getWarehouseIds()
+        )
+    }
+
     private fun onViewCreated() {
         viewModel.onViewCreated()
+    }
+
+    private fun createHeaderListener(): CategoryL2HeaderListener {
+        return object : CategoryL2HeaderListener {
+            override fun onClickOtherCategory() {
+                openAllCategoryPage()
+                trackClickOtherCategory()
+            }
+        }
     }
 
     private fun createOnPageChangeCallback(): OnPageChangeCallback {

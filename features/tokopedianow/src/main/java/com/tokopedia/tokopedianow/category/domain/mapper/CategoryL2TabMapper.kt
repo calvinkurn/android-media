@@ -34,6 +34,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 
 object CategoryL2TabMapper {
@@ -102,6 +103,12 @@ object CategoryL2TabMapper {
     ) {
         response.searchProduct.data.productList.forEachIndexed { index, product ->
             add(mapResponseToProductItem(index, product, miniCartData, hasBlockedAddToCart))
+        }
+    }
+
+    fun MutableList<Visitable<*>>.findProductCardItem(productId: String): ProductItemDataView? {
+        return filterIsInstance<ProductItemDataView>().find {
+            it.productCardModel.productId == productId
         }
     }
 

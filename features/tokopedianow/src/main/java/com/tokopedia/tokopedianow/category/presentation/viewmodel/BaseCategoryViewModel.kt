@@ -120,7 +120,7 @@ abstract class BaseCategoryViewModel(
         categoryL2Model: CategoryL2Model
     ): Deferred<Unit?> = asyncCatchError(block = {
         val response = getCategoryProductUseCase.execute(
-            queryParams = createRequestQueryParams()
+            queryParams = createRequestQueryParams(categoryL2Model.id)
         )
         onSuccessGetCategoryProduct(response, categoryL2Model)
     }) {
@@ -212,10 +212,10 @@ abstract class BaseCategoryViewModel(
         _refreshState.postValue(Unit)
     }
 
-    private fun createRequestQueryParams(): Map<String?, Any?> {
+    private fun createRequestQueryParams(categoryId: String): Map<String?, Any?> {
         return aceSearchParamMapper.createRequestParams(
             source = CATEGORY_TOKONOW_DIRECTORY,
-            srpPageId = categoryIdL1
+            srpPageId = categoryId
         )
     }
 

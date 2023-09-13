@@ -35,6 +35,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.add
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.findProductCardItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToCategoryTabLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToQuickFilter
@@ -44,12 +45,17 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.upd
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_CARD_ITEM
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapCategoryMenuData
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
@@ -60,7 +66,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.mapCategoryMenuData
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateProductItem
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFeedbackFieldToggleUseCase
@@ -116,12 +121,14 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val _visitableListLiveData = MutableLiveData<List<Visitable<*>>>()
     private val _routeAppLinkLiveData = MutableLiveData<String>()
     private val _updateToolbarNotification = MutableLiveData<Unit>()
+    private val _atcDataTracker = MutableLiveData<CategoryAtcTrackerModel>()
 
     val filterProductCountLiveData: LiveData<String> = _filterProductCountLiveData
     val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = _dynamicFilterModelLiveData
     val visitableListLiveData: LiveData<List<Visitable<*>>> = _visitableListLiveData
     val routeAppLinkLiveData: LiveData<String> = _routeAppLinkLiveData
     val updateToolbarNotification: LiveData<Unit> = _updateToolbarNotification
+    val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
 
     private val filterController = FilterController()
     private val visitableList = mutableListOf<Visitable<*>>()
@@ -151,7 +158,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         updateVisitableListLiveData()
     }
 
-    fun onViewCreated(data: CategoryL2TabData, ) {
+    fun onViewCreated(data: CategoryL2TabData) {
         setCategoryData(data)
         initAffiliateCookie()
         loadFirstPage()
@@ -160,7 +167,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     fun onCartQuantityChanged(
         product: ProductCardCompactUiModel,
         shopId: String,
-        quantity: Int
+        quantity: Int,
+        layoutType: String = "",
     ) {
         val productId = product.productId
         val isVariant = product.isVariant
@@ -173,6 +181,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             stock = stock,
             isVariant = isVariant,
             onSuccessAddToCart = {
+                trackAddToCart(product, quantity, layoutType)
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = { _, _ ->
@@ -699,5 +708,60 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun updateToolbarNotification() {
         _updateToolbarNotification.postValue(Unit)
+    }
+
+    private fun trackAddToCart(
+        product: ProductCardCompactUiModel,
+        quantity: Int,
+        layoutType: String
+    ) {
+        when (layoutType) {
+            PRODUCT_ADS_CAROUSEL -> trackProductAdsAddToCart(product, quantity)
+            PRODUCT_CARD_ITEM -> trackProductAddToCart(product, quantity)
+        }
+    }
+
+    private fun trackProductAdsAddToCart(
+        product: ProductCardCompactUiModel,
+        quantity: Int
+    ) {
+        visitableList.findAdsProductCarousel(product.productId)?.let { item ->
+            val trackerModel = CategoryAtcTrackerModel(
+                index = item.position,
+                categoryIdL1 = categoryIdL1,
+                categoryIdL2 = categoryIdL2,
+                warehouseId = product.warehouseId,
+                quantity = quantity,
+                shopId = item.shopId,
+                shopName = item.shopName,
+                shopType = item.shopType,
+                categoryBreadcrumbs = item.categoryBreadcrumbs,
+                product = item.productCardModel,
+                layoutType = PRODUCT_ADS_CAROUSEL
+            )
+            _atcDataTracker.postValue(trackerModel)
+        }
+    }
+
+    private fun trackProductAddToCart(
+        product: ProductCardCompactUiModel,
+        quantity: Int
+    ) {
+        visitableList.findProductCardItem(product.productId)?.let { item ->
+            val trackerModel = CategoryAtcTrackerModel(
+                index = item.position,
+                categoryIdL1 = categoryIdL1,
+                categoryIdL2 = categoryIdL2,
+                warehouseId = product.warehouseId,
+                quantity = quantity,
+                shopId = item.shop.id,
+                shopName = item.shop.name,
+                shopType = item.shopType,
+                categoryBreadcrumbs = item.categoryBreadcrumbs,
+                product = item.productCardModel,
+                layoutType = PRODUCT_CARD_ITEM
+            )
+            _atcDataTracker.postValue(trackerModel)
+        }
     }
 }

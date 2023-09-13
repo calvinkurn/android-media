@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2Header
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2ShimmerUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2HeaderViewHolder
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2HeaderViewHolder.CategoryL2HeaderListener
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2ShimmerViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2TabViewHolder
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
@@ -16,6 +17,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 
 class CategoryL2AdapterTypeFactory(
     private var tokoNowView: TokoNowView? = null,
+    private var headerListener: CategoryL2HeaderListener? = null,
     chooseAddressListener: TokoNowChooseAddressWidgetListener? = null,
     productAdsCarouselListener: ProductAdsCarouselListener? = null
 ) : BaseCategoryAdapterTypeFactory(chooseAddressListener, productAdsCarouselListener, tokoNowView),
@@ -30,7 +32,7 @@ class CategoryL2AdapterTypeFactory(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             CategoryL2HeaderViewHolder.LAYOUT -> {
-                CategoryL2HeaderViewHolder(view)
+                CategoryL2HeaderViewHolder(view, headerListener)
             }
             CategoryL2TabViewHolder.LAYOUT -> {
                 CategoryL2TabViewHolder(view, tokoNowView)
@@ -38,5 +40,10 @@ class CategoryL2AdapterTypeFactory(
             CategoryL2ShimmerViewHolder.LAYOUT -> CategoryL2ShimmerViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        headerListener = null
     }
 }
