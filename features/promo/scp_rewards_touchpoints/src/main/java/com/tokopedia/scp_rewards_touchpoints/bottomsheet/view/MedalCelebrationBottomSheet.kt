@@ -63,7 +63,6 @@ import com.tokopedia.unifycomponents.toPx
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.design.R as designR
 import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -695,7 +694,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
                     (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
                 }
                 errorSecondaryAction.text = context?.getString(R.string.go_back_text)
-                val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                val buttonColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
                 errorSecondaryAction.setBackgroundColor(buttonColor)
                 setSecondaryActionClickListener {
                     activity?.finish()

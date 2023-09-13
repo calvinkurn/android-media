@@ -16,10 +16,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.FragmentCouponListBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.CouponListViewModel
+import com.tokopedia.scp_rewards_common.utils.launchLink
 import com.tokopedia.scp_rewards_widgets.coupon_list.CouponListViewTypeFactory
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.unifycomponents.Toaster

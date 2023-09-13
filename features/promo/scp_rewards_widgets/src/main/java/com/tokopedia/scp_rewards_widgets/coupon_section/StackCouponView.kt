@@ -11,7 +11,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.scp_rewards_common.dpToPx
+import com.tokopedia.scp_rewards_common.utils.dpToPx
 import com.tokopedia.scp_rewards_widgets.databinding.StackCouponLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR

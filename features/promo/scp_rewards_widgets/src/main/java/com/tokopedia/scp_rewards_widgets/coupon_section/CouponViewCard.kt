@@ -14,9 +14,9 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.scp_rewards_common.dpToPx
-import com.tokopedia.scp_rewards_common.grayScaleFilter
-import com.tokopedia.scp_rewards_common.parseColorOrFallback
+import com.tokopedia.scp_rewards_common.utils.dpToPx
+import com.tokopedia.scp_rewards_common.utils.grayScaleFilter
+import com.tokopedia.scp_rewards_common.utils.parseColorOrFallback
 import com.tokopedia.scp_rewards_widgets.databinding.ItemCouponLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.scp_rewards_widgets.R as scp_rewards_widgetsR

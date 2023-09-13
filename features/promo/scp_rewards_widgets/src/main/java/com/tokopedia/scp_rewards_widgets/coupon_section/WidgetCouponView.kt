@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.scp_rewards_common.loadImageOrFallback
-import com.tokopedia.scp_rewards_common.parseColor
+import com.tokopedia.scp_rewards_common.utils.loadImageOrFallback
+import com.tokopedia.scp_rewards_common.utils.parseColor
 import com.tokopedia.scp_rewards_widgets.constants.CouponState
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetCouponViewBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
