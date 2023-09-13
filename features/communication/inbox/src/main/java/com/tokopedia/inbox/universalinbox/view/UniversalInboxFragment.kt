@@ -291,7 +291,6 @@ class UniversalInboxFragment @Inject constructor(
                     inboxMenuResultLauncher.launch(intent)
                 }
             }
-            viewModel.processAction(UniversalInboxAction.ResetNavigation)
         }
     }
 
@@ -308,16 +307,26 @@ class UniversalInboxFragment @Inject constructor(
 
     private suspend fun observeProductRecommendation() {
         viewModel.productRecommendationUiState.collectLatest {
-            // Toggle Loading
-            toggleLoadingProductRecommendation(it.isLoading)
+            // Scroll to top when it is loading & empty product list
+            // It means refresh / re-shuffle products
+            if (it.isLoading && it.productRecommendation.isEmpty()) {
+                adapter.getProductRecommendationFirstPosition()?.let { position ->
+                    binding?.inboxRv?.scrollToPosition(position)
+                }
+            }
 
-            if (!it.isLoading) {
+            // Update view only when not loading (not waiting for network)
+            // Or product recommendation is empty (refresh / re-shuffle)
+            if (!it.isLoading || it.productRecommendation.isEmpty()) {
                 // Set title & update product recommendation
                 updateProductRecommendation(
                     title = it.title,
                     newList = it.productRecommendation
                 )
             }
+
+            // Add / Remove loading view
+            toggleLoadingProductRecommendation(it.isLoading)
         }
     }
 
@@ -788,7 +797,7 @@ class UniversalInboxFragment @Inject constructor(
     private val inboxMenuResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        onRefreshWidgetMeta()
+        viewModel.processAction(UniversalInboxAction.RefreshCounter)
         refreshRecommendations()
     }
 
@@ -865,7 +874,7 @@ class UniversalInboxFragment @Inject constructor(
     private fun refreshRecommendations() {
         // Refresh controlled by rollence
         if (shouldRefreshProductRecommendation(abTestPlatform)) {
-            loadWidgetMetaAndCounter()
+            viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
             recommendationWidgetViewModel?.refresh()
         }
     }

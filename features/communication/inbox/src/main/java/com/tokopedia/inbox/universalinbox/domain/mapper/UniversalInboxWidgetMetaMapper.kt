@@ -14,6 +14,8 @@ import com.tokopedia.inbox.universalinbox.util.Result as Result
 
 class UniversalInboxWidgetMetaMapper @Inject constructor() {
 
+    private val driver = "driver"
+
     fun mapWidgetMetaToUiModel(
         widgetMetaResponse: List<UniversalInboxWidgetDataResponse>,
         counterResponse: UniversalInboxAllCounterResponse,
@@ -110,7 +112,10 @@ class UniversalInboxWidgetMetaMapper @Inject constructor() {
             var activeChannel = 0
             var unreadTotal = 0
             channelList.forEach { channel ->
-                if (channel.expiresAt > System.currentTimeMillis()) {
+                val driverMember = channel.members.find {
+                    it.ownerType == driver
+                }
+                if (channel.expiresAt > System.currentTimeMillis() && driverMember != null) {
                     activeChannel++
                     unreadTotal += channel.unreadCount
                 }

@@ -6,11 +6,11 @@ sealed class UniversalInboxAction {
 
     // General Actions
     object RefreshPage : UniversalInboxAction()
+    object RefreshCounter : UniversalInboxAction()
 
     // Navigation Actions
     data class NavigateWithIntent(val intent: Intent) : UniversalInboxAction()
     data class NavigateToPage(val applink: String) : UniversalInboxAction()
-    object ResetNavigation : UniversalInboxAction()
 
     // Widget Actions
     object RefreshDriverWidget : UniversalInboxAction()
