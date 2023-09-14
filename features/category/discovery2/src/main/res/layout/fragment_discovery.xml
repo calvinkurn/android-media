@@ -86,15 +86,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <include
-                    android:id="@+id/oldToolbar"
-                    layout="@layout/item_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:layout_height="56dp"
-                    tools:visibility="visible" />
-
                 <com.tokopedia.searchbar.navigation_component.NavToolbar
                     android:id="@+id/navToolbar"
                     android:layout_width="match_parent"

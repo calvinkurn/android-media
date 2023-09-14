@@ -52,6 +52,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.HIDE_NAV_FEATURES
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
@@ -442,25 +443,26 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getMapOfQueryParameter(intentUri: Uri): Map<String, String?> {
         return mapOf(
-                SOURCE to intentUri.getQueryParameter(SOURCE),
-                COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
-                ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
-                TARGET_COMP_ID to intentUri.getQueryParameter(TARGET_COMP_ID),
-                PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID),
-                PIN_PRODUCT to intentUri.getQueryParameter(PIN_PRODUCT),
-                CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
-                EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY),
-                RECOM_PRODUCT_ID to intentUri.getQueryParameter(RECOM_PRODUCT_ID),
-                DYNAMIC_SUBTITLE to intentUri.getQueryParameter(DYNAMIC_SUBTITLE),
-                TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
-                CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
-                VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
-                SHOP_ID to intentUri.getQueryParameter(SHOP_ID),
-                QUERY_PARENT to intentUri.query,
-                AFFILIATE_UNIQUE_ID to intentUri.getQueryParameter(AFFILIATE_UNIQUE_ID),
-                CHANNEL to intentUri.getQueryParameter(CHANNEL),
+            SOURCE to intentUri.getQueryParameter(SOURCE),
+            COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
+            ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
+            HIDE_NAV_FEATURES to intentUri.getQueryParameter(HIDE_NAV_FEATURES),
+            TARGET_COMP_ID to intentUri.getQueryParameter(TARGET_COMP_ID),
+            PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID),
+            PIN_PRODUCT to intentUri.getQueryParameter(PIN_PRODUCT),
+            CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
+            EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY),
+            RECOM_PRODUCT_ID to intentUri.getQueryParameter(RECOM_PRODUCT_ID),
+            DYNAMIC_SUBTITLE to intentUri.getQueryParameter(DYNAMIC_SUBTITLE),
+            TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
+            CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
+            VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
+            SHOP_ID to intentUri.getQueryParameter(SHOP_ID),
+            QUERY_PARENT to intentUri.query,
+            AFFILIATE_UNIQUE_ID to intentUri.getQueryParameter(AFFILIATE_UNIQUE_ID),
+            CHANNEL to intentUri.getQueryParameter(CHANNEL),
 
-                )
+            )
     }
 
     fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedComponentId: String?): Pair<Int,Boolean> {
@@ -492,6 +494,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 SOURCE to bundle?.getString(SOURCE, ""),
                 COMPONENT_ID to bundle?.getString(COMPONENT_ID, ""),
                 ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
+                HIDE_NAV_FEATURES to bundle?.getString(HIDE_NAV_FEATURES, ""),
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
                 PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),

@@ -221,6 +221,7 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "q"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "r"
         every { bundle.getString(DiscoveryActivity.FORCED_NAVIGATION, "") } returns "s"
+        every { bundle.getString(DiscoveryActivity.HIDE_NAV_FEATURES, "") } returns "t"
 
         val discoComponentQuery: MutableMap<String, String?> =
             mutableMapOf(DiscoveryActivity.CATEGORY_ID to "p")
@@ -244,7 +245,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "q",
             DiscoveryActivity.CHANNEL to "r",
-            DiscoveryActivity.FORCED_NAVIGATION to "s"
+            DiscoveryActivity.FORCED_NAVIGATION to "s",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "t"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -278,7 +280,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.QUERY_PARENT to null,
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
             DiscoveryActivity.CHANNEL to null,
-            DiscoveryActivity.FORCED_NAVIGATION to null
+            DiscoveryActivity.FORCED_NAVIGATION to null,
+            DiscoveryActivity.HIDE_NAV_FEATURES to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
@@ -308,6 +311,7 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "p"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "q"
         every { bundle.getString(DiscoveryActivity.FORCED_NAVIGATION, "") } returns "r"
+        every { bundle.getString(DiscoveryActivity.HIDE_NAV_FEATURES, "") } returns "s"
 
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
@@ -327,7 +331,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
             DiscoveryActivity.CHANNEL to "q",
-            DiscoveryActivity.FORCED_NAVIGATION to "r"
+            DiscoveryActivity.FORCED_NAVIGATION to "r",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "s"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -357,6 +362,7 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "p"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "q"
         every { bundle.getString(DiscoveryActivity.FORCED_NAVIGATION, "") } returns "r"
+        every { bundle.getString(DiscoveryActivity.HIDE_NAV_FEATURES, "") } returns "s"
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
             DiscoveryActivity.COMPONENT_ID to "b",
@@ -375,7 +381,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
             DiscoveryActivity.CHANNEL to "q",
-            DiscoveryActivity.FORCED_NAVIGATION to "r"
+            DiscoveryActivity.FORCED_NAVIGATION to "r",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "s"
         )
         val discoComponentQuery: MutableMap<String, String?> = mutableMapOf()
         com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
@@ -408,7 +415,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.QUERY_PARENT to null,
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
             DiscoveryActivity.CHANNEL to null,
-            DiscoveryActivity.FORCED_NAVIGATION to null
+            DiscoveryActivity.FORCED_NAVIGATION to null,
+            DiscoveryActivity.HIDE_NAV_FEATURES to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
@@ -439,6 +447,7 @@ class DiscoveryViewModelTest {
         every { uri.query } returns "o"
         every { uri.getQueryParameter(DiscoveryActivity.AFFILIATE_UNIQUE_ID) } returns "p"
         every { uri.getQueryParameter(DiscoveryActivity.CHANNEL) } returns "q"
+        every { uri.getQueryParameter(DiscoveryActivity.HIDE_NAV_FEATURES) } returns "r"
         mockkStatic(Uri::class)
         every { Uri.parse(any()) } returns uri
 
@@ -459,7 +468,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to "n",
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
-            DiscoveryActivity.CHANNEL to "q"
+            DiscoveryActivity.CHANNEL to "q",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "r"
         )
 
         TestCase.assertEquals(viewModel.getQueryParameterMapFromBundle(bundle), map)
@@ -769,6 +779,7 @@ class DiscoveryViewModelTest {
         every { uri.query } returns "o"
         every { uri.getQueryParameter(DiscoveryActivity.AFFILIATE_UNIQUE_ID) } returns "p"
         every { uri.getQueryParameter(DiscoveryActivity.CHANNEL) } returns "q"
+        every { uri.getQueryParameter(DiscoveryActivity.HIDE_NAV_FEATURES) } returns "t"
 
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
@@ -787,7 +798,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to "n",
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
-            DiscoveryActivity.CHANNEL to "q"
+            DiscoveryActivity.CHANNEL to "q",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "t"
         )
 
         viewModel.getMapOfQueryParameter(uri)

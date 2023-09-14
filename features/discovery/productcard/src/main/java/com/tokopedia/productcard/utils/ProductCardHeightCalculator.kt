@@ -258,7 +258,7 @@ private fun ProductCardModel.getPromoSectionHeight(context: Context): Int {
         labelDiscountHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_discount_height)
     }
 
-    if (labelPrice != null && labelPrice.title.isNotEmpty() && !isShowDiscountOrSlashPrice()) {
+    if (labelPrice != null && labelPrice.title.isNotEmpty() && isShowLabelPrice()) {
         labelPriceMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_label_price_margin_top)
         labelPriceHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_price_height)
     }

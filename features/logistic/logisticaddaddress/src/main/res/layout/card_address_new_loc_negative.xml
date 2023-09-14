@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/ic_location"
-            app:layout_constraintEnd_toStartOf="@id/btn_arrow"
+            app:layout_constraintEnd_toStartOf="@id/btn_change_negative"
             android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3" />
 
