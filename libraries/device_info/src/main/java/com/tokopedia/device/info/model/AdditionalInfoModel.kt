@@ -1,5 +1,6 @@
 package com.tokopedia.device.info.model
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.MediaDrm
 import android.os.Build
@@ -27,9 +28,29 @@ data class AdditionalInfoModel(
         private const val UNKNOWN = "unknown"
 
         fun generate(context: Context): AdditionalInfoModel {
+
+            return AdditionalInfoModel(
+                time = System.currentTimeMillis().toString(),
+                brand = Build.BRAND,
+                product = Build.PRODUCT,
+                board = Build.BOARD,
+                cpuAbi = Build.CPU_ABI,
+                device = Build.DEVICE,
+                versionName = GlobalConfig.VERSION_NAME,
+                advertisingId = DeviceInfo.getAdsId(context),
+                wideVineId = getWidevineId()
+            )
+        }
+
+        fun generateJson(context: Context): String {
+            return Gson().toJson(generate(context))
+        }
+
+        @SuppressLint("DeprecatedMethod")
+        private fun getWidevineId(): String {
             var widevineMediaDrm: MediaDrm? = null
 
-            val widevineId: String = try {
+            return try {
                 // This UUID bits are for widevine DRM
                 widevineMediaDrm = MediaDrm(UUID(-0x121074568629b532L, -0x5c37d8232ae2de13L))
                 val wideVineId =
@@ -56,22 +77,6 @@ data class AdditionalInfoModel(
                     }
                 }
             }
-
-            return AdditionalInfoModel(
-                time = System.currentTimeMillis().toString(),
-                brand = Build.BRAND,
-                product = Build.PRODUCT,
-                board = Build.BOARD,
-                cpuAbi = Build.CPU_ABI,
-                device = Build.DEVICE,
-                versionName = GlobalConfig.VERSION_NAME,
-                advertisingId = DeviceInfo.getAdsId(context),
-                wideVineId = widevineId
-            )
-        }
-
-        fun generateJson(context: Context): String {
-            return Gson().toJson(generate(context))
         }
     }
 }
