@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.BottomSheetProductDescBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.ProductDescAdapter
@@ -31,6 +32,7 @@ class ProductDescBottomSheet : BottomSheetUnify() {
     private var layoutType: DenomWidgetEnum? = null
     private var productListTitle: String? = null
     private var position: Int? = null
+    private var multiCheckoutButtons: List<MultiCheckoutButtons> = listOf()
 
     private var binding by autoClearedNullable<BottomSheetProductDescBinding>()
 
@@ -70,6 +72,10 @@ class ProductDescBottomSheet : BottomSheetUnify() {
 
     fun setDenomData(denomData: DenomData) {
         this.denomData = denomData
+    }
+
+    fun setMultiCheckoutButtons(multiCheckoutButtons: List<MultiCheckoutButtons>) {
+        this.multiCheckoutButtons = multiCheckoutButtons
     }
 
     fun setListener(listenerBuyWidget: RechargeBuyWidgetListener) {
@@ -135,7 +141,7 @@ class ProductDescBottomSheet : BottomSheetUnify() {
                 }
 
                 listener?.let { listener ->
-                    buyWidgetProductDesc.renderBuyWidget(denomData, listener, listOf()) //TODO Change Button
+                    buyWidgetProductDesc.renderBuyWidget(denomData, listener, multiCheckoutButtons) //TODO Change Button
                 }
                 position?.let { position ->
                     listenerProductDesc?.let { listenerProductDesc ->

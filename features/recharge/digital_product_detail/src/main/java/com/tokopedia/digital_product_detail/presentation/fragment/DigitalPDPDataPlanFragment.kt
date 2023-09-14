@@ -1696,6 +1696,7 @@ class DigitalPDPDataPlanFragment :
         childFragmentManager?.let {
             productDescBottomSheet = ProductDescBottomSheet.getInstance()
             productDescBottomSheet.setDenomData(denomFull)
+            productDescBottomSheet.setMultiCheckoutButtons(viewModel.multiCheckoutButtons)
             productDescBottomSheet.setLayoutType(layoutType)
             productDescBottomSheet.setProductListTitle(productListTitle)
             productDescBottomSheet.setPosition(position)
