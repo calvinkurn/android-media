@@ -13,7 +13,7 @@ import dagger.assisted.AssistedInject
  * @author by astidhiyaa on 05/09/23
  */
 class StoriesSharingAnalyticsImpl @AssistedInject constructor(
-    @Assisted val shopId: String,
+    @Assisted private val shopId: String,
     private val userSession: UserSessionInterface
 ) : StoriesSharingAnalytics {
 
