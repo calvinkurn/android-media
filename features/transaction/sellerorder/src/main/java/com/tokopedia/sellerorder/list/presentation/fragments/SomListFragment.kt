@@ -637,8 +637,8 @@ open class SomListFragment :
         SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
     }
 
-    override fun onTrackButtonClicked(orderId: String, url: String) {
-        goToTrackingPage(context, orderId, url)
+    override fun onTrackButtonClicked(url: String) {
+        goToTrackingPage(context, url)
     }
 
     override fun onConfirmShippingButtonClicked(

@@ -21,7 +21,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
-import java.net.URLDecoder
 
 object SomNavigator {
 
@@ -42,19 +41,9 @@ object SomNavigator {
         }
     }
 
-    fun goToTrackingPage(context: Context?, orderId: String, url: String) {
+    fun goToTrackingPage(context: Context?, url: String) {
         context?.run {
-            var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId)
-            val uriBuilder = Uri.Builder()
-            val decodedUrl = if (url.startsWith(SomConsts.PREFIX_HTTPS)) {
-                url
-            } else {
-                URLDecoder.decode(url, SomConsts.ENCODING_UTF_8)
-            }
-            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
-            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, SomConsts.PARAM_SELLER)
-            routingAppLink += uriBuilder.toString()
-            RouteManager.route(this, routingAppLink)
+            RouteManager.route(this, url)
         }
     }
 
@@ -103,13 +92,15 @@ object SomNavigator {
 
     fun goToFindNewDriver(fragment: Fragment, orderId: String, invoice: String?) {
         fragment.run {
-            startActivityForResult(RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalLogistic.FIND_NEW_DRIVER
-            ).apply {
+            startActivityForResult(
+                RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalLogistic.FIND_NEW_DRIVER
+                ).apply {
                     putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                     putExtra(SomConsts.PARAM_INVOICE, invoice.orEmpty())
-                }, REQUEST_FIND_NEW_DRIVER
+                },
+                REQUEST_FIND_NEW_DRIVER
             )
         }
     }

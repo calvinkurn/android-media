@@ -10,10 +10,10 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -359,7 +359,7 @@ open class SomListOrderViewHolder(
     private fun onQuickActionButtonClicked(element: SomListOrderUiModel) {
         element.buttons.firstOrNull()?.let { button ->
             when (button.key) {
-                KEY_TRACK_SELLER -> listener.onTrackButtonClicked(element.orderId, button.url)
+                KEY_TRACK_SELLER -> listener.onTrackButtonClicked(button.url)
                 KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_REQUEST_PICKUP -> listener.onRequestPickupButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
@@ -451,7 +451,7 @@ open class SomListOrderViewHolder(
         fun onCheckChanged()
         fun onCheckBoxClickedWhenDisabled()
         fun onOrderClicked(order: SomListOrderUiModel)
-        fun onTrackButtonClicked(orderId: String, url: String)
+        fun onTrackButtonClicked(url: String)
         fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onRequestPickupButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)

@@ -90,7 +90,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INVOICE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
@@ -139,7 +138,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
-import java.net.URLDecoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -601,7 +599,7 @@ open class SomDetailFragment :
                                 binding?.btnPrimary?.isLoading = true
                                 setActionAcceptOrder(buttonResp.displayName, orderId, skipOrderValidation())
                             }
-                            buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
+                            buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackShipmentPage(buttonResp)
                             buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> {
                                 binding?.btnPrimary?.isLoading = true
                                 setActionRequestPickup(buttonResp.displayName)
@@ -746,18 +744,8 @@ open class SomDetailFragment :
         }
     }
 
-    private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
-        var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse?.orderId.orEmpty())
-        val uriBuilder = Uri.Builder()
-        val decodedUrl = if (buttonResp.url.startsWith(SomConsts.PREFIX_HTTPS)) {
-            buttonResp.url
-        } else {
-            URLDecoder.decode(buttonResp.url, SomConsts.ENCODING_UTF_8)
-        }
-        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
-        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)
-        routingAppLink += uriBuilder.toString()
-        RouteManager.route(context, routingAppLink)
+    private fun setActionGoToTrackShipmentPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+        RouteManager.route(context, buttonResp.url)
     }
 
     private fun setActionRequestPickup(actionName: String) {
@@ -820,7 +808,7 @@ open class SomDetailFragment :
                         userSession.shopId
                     )
                     when {
-                        key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(it)
+                        key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackShipmentPage(it)
                         key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                         key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                         key.equals(KEY_UBAH_NO_RESI, true) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(this)
