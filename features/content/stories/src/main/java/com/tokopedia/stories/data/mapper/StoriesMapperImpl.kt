@@ -2,15 +2,15 @@ package com.tokopedia.stories.data.mapper
 
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.Meta
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContent
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.VIDEO
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.Meta
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesGroupHeader
-import com.tokopedia.stories.view.model.StoriesGroupItemUiModel
+import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import javax.inject.Inject
 
@@ -27,12 +27,12 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                 StoriesGroupHeader(
                     groupId = group.value,
                     image = group.image,
-                    title = group.name,
+                    groupName = group.name,
                     isSelected = dataGroup.data.meta.selectedGroupIndex == indexGroupHeader,
                 )
             },
             groupItems = dataGroup.data.groups.mapIndexed { indexGroupItem, group ->
-                StoriesGroupItemUiModel(
+                StoriesGroupItem(
                     groupId = group.value,
                     groupName = group.name,
                     detail = if (dataGroup.data.meta.selectedGroupIndex == indexGroupItem) {
@@ -40,19 +40,19 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                             selectedGroupId = group.value,
                             dataDetail = dataDetail,
                         )
-                    } else StoriesDetailUiModel()
+                    } else StoriesDetail()
                 )
             }
         )
     }
 
-    override fun mapStoriesDetailRequest(selectedGroupId: String, dataDetail: StoriesDetailsResponseModel): StoriesDetailUiModel {
-        return StoriesDetailUiModel(
+    override fun mapStoriesDetailRequest(selectedGroupId: String, dataDetail: StoriesDetailsResponseModel): StoriesDetail {
+        return StoriesDetail(
             selectedGroupId = selectedGroupId,
             selectedDetailPosition = dataDetail.data.meta.selectedStoriesIndex,
             selectedDetailPositionCached = dataDetail.data.meta.selectedStoriesIndex,
             detailItems = dataDetail.data.stories.map { stories ->
-                StoriesDetailItemUiModel(
+                StoriesDetailItem(
                     id = stories.id,
                     event = StoriesDetailItemUiEvent.PAUSE,
                     content = StoriesItemContent(

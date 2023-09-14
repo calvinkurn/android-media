@@ -34,6 +34,7 @@ class StoriesGroupAdapter(
 
     interface Listener {
         fun onClickGroup(position: Int, data: StoriesGroupHeader)
+        fun onGroupImpressed(data: StoriesGroupHeader)
     }
 
     internal class StoriesGroupAdapterDelegate {
@@ -48,6 +49,7 @@ class StoriesGroupAdapter(
                 holder: StoriesGroupViewHolder
             ) {
                 holder.bind(item)
+                listener.onGroupImpressed(item)
             }
 
             override fun onCreateViewHolder(
@@ -66,7 +68,7 @@ class StoriesGroupAdapter(
 
         fun bind(data: StoriesGroupHeader) {
             binding.imgGroupImage.setImageUrl(data.image)
-            binding.txtGroupTitle.text = data.title
+            binding.txtGroupTitle.text = data.groupName
 
             if (data.isSelected) selectedView()
             else unSelectedView()

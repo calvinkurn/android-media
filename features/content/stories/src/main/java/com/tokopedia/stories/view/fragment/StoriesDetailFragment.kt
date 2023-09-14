@@ -23,9 +23,9 @@ import com.tokopedia.stories.analytic.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.VIDEO
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.STORY_GROUP_ID
@@ -66,17 +66,21 @@ class StoriesDetailFragment @Inject constructor(
                 analytic.sendClickStoryCircleEvent(
                     entryPoint = mParentPage.entryPoint,
                     partnerId = mParentPage.authorId,
-                    currentCircle = data.title,
+                    currentCircle = data.groupName,
                     promotions = listOf(
                         StoriesEEModel(
                             creativeName = "",
                             creativeSlot = position.plus(1).toString(),
-                            itemId = "${data.groupId} - ${data.title} - ${mParentPage.authorId}",
+                            itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.authorId}",
                             itemName = "/ - stories"
                         ),
                     ),
                 )
                 viewModelAction(StoriesUiAction.SelectGroup(position, false))
+            }
+
+            override fun onGroupImpressed(data: StoriesGroupHeader) {
+                viewModelAction(StoriesUiAction.CollectImpressedGroup(data))
             }
         })
     }
@@ -163,11 +167,11 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderStoriesDetail(
-        prevState: StoriesDetailUiModel?,
-        state: StoriesDetailUiModel
+        prevState: StoriesDetail?,
+        state: StoriesDetail
     ) {
         if (prevState == state ||
-            state == StoriesDetailUiModel() ||
+            state == StoriesDetail() ||
             state.selectedGroupId != groupId
         ) return
 
@@ -212,7 +216,7 @@ class StoriesDetailFragment @Inject constructor(
         showPageLoading(false)
     }
 
-    private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
+    private fun storiesDetailsTimer(state: StoriesDetail) {
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

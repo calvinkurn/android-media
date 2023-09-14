@@ -1,7 +1,7 @@
 package com.tokopedia.stories.view.model
 
 import android.os.Parcelable
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -9,34 +9,34 @@ data class StoriesUiModel(
     val selectedGroupId: String = "",
     val selectedGroupPosition: Int = -1,
     val groupHeader: List<StoriesGroupHeader> = emptyList(),
-    val groupItems: List<StoriesGroupItemUiModel> = emptyList(),
+    val groupItems: List<StoriesGroupItem> = emptyList(),
 ): Parcelable
 
 @Parcelize
 data class StoriesGroupHeader(
     val groupId: String = "",
+    val groupName: String = "",
     val image: String = "",
-    val title: String = "",
     val isSelected: Boolean = false,
 ): Parcelable
 
 @Parcelize
-data class StoriesGroupItemUiModel(
+data class StoriesGroupItem(
     val groupId: String = "",
     val groupName: String = "",
-    val detail: StoriesDetailUiModel = StoriesDetailUiModel(),
+    val detail: StoriesDetail = StoriesDetail(),
 ): Parcelable
 
 @Parcelize
-data class StoriesDetailUiModel(
+data class StoriesDetail(
     val selectedGroupId: String = "",
     val selectedDetailPosition: Int = -1,
     val selectedDetailPositionCached: Int = -1,
-    val detailItems: List<StoriesDetailItemUiModel> = emptyList(),
+    val detailItems: List<StoriesDetailItem> = emptyList(),
 ): Parcelable
 
 @Parcelize
-data class StoriesDetailItemUiModel(
+data class StoriesDetailItem(
     val id: String = "",
     val event: StoriesDetailItemUiEvent = StoriesDetailItemUiEvent.PAUSE,
     val content: StoriesItemContent = StoriesItemContent(),

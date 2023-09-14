@@ -14,12 +14,13 @@ import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.PAUSE
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.RESUME
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
-import com.tokopedia.stories.view.model.StoriesGroupItemUiModel
+import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
+import com.tokopedia.stories.view.model.StoriesGroupHeader
+import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.getRandomNumber
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -55,18 +56,22 @@ class StoriesViewModel @AssistedInject constructor(
     private val _detailPos = MutableStateFlow(-1)
     private val _resetValue = MutableStateFlow(-1)
 
-    val mGroup: StoriesGroupItemUiModel
+    val mGroup: StoriesGroupItem
         get() {
             val groupPosition = _groupPos.value
             return _storiesMainData.value.groupItems[groupPosition]
         }
 
-    val mDetail: StoriesDetailItemUiModel
+    val mDetail: StoriesDetailItem
         get() {
             val groupPosition = _groupPos.value
             val detailPosition = _detailPos.value
             return _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
         }
+
+    private val _impressedGroupHeader = mutableListOf<StoriesGroupHeader>()
+    val impressedGroupHeader: List<StoriesGroupHeader>
+        get() = _impressedGroupHeader
 
     private val mStoriesMainData: StoriesUiModel
         get() = _storiesMainData.value
@@ -80,10 +85,10 @@ class StoriesViewModel @AssistedInject constructor(
     private val mGroupSize: Int
         get() = _storiesMainData.value.groupItems.size
 
-    private val mGroupItem: StoriesGroupItemUiModel
+    private val mGroupItem: StoriesGroupItem
         get() {
             val groupPosition = _groupPos.value
-            return if (groupPosition < 0) StoriesGroupItemUiModel()
+            return if (groupPosition < 0) StoriesGroupItem()
             else _storiesMainData.value.groupItems[groupPosition]
         }
 
@@ -105,6 +110,7 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.GetSavedInstanceStateData -> handleGetSavedInstanceStateData(action.bundle)
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
             is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
+            is StoriesUiAction.CollectImpressedGroup -> handleCollectImpressedGroup(action.data)
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
@@ -162,6 +168,12 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.SelectGroup(position, showAnimation))
         }
+    }
+
+    private fun handleCollectImpressedGroup(data: StoriesGroupHeader) {
+        val isExist = impressedGroupHeader.find { it.groupId == data.groupId }!= null
+        if (isExist) return
+        _impressedGroupHeader.add(data)
     }
 
     private fun handleNext() {
@@ -254,7 +266,7 @@ class StoriesViewModel @AssistedInject constructor(
         } catch (_: Throwable) { }
     }
 
-    private fun updateMainData(detail: StoriesDetailUiModel, groupPosition: Int) {
+    private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
         val sameDetail = mStoriesMainData.groupItems[groupPosition].detail == detail
         if (sameDetail) return
 
@@ -335,7 +347,7 @@ class StoriesViewModel @AssistedInject constructor(
         return repository.getStoriesInitialData(request)
     }
 
-    private suspend fun requestStoriesDetailData(sourceId: String): StoriesDetailUiModel {
+    private suspend fun requestStoriesDetailData(sourceId: String): StoriesDetail {
         val request = StoriesRequestModel(
             authorID = authorId,
             authorType = StoriesAuthorType.SHOP.value,

@@ -137,6 +137,7 @@ class StoriesGroupFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         viewModelAction(PauseStories)
+        sendImpressedGroupTracker()
     }
 
     override fun onResume() {
@@ -239,20 +240,6 @@ class StoriesGroupFragment @Inject constructor(
         selectGroupPosition(state.selectedGroupPosition, false)
 
         showPageLoading(false)
-
-        analytic.sendViewStoryCircleEvent(
-            entryPoint = entryPoint,
-            partnerId = authorId,
-            currentCircle = state.groupHeader[state.selectedGroupPosition].groupId,
-            promotions = state.groupHeader.mapIndexed { index, storiesGroupHeader ->
-                StoriesEEModel(
-                    creativeName = "",
-                    creativeSlot = index.plus(1).toString(),
-                    itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.title} - $authorId",
-                    itemName = "/ - stories"
-                )
-            },
-        )
     }
 
     private fun selectGroupPosition(position: Int, showAnimation: Boolean) = with(binding.storiesGroupViewPager) {
@@ -264,6 +251,22 @@ class StoriesGroupFragment @Inject constructor(
     private fun showPageLoading(isShowLoading: Boolean) = with(binding) {
         layoutGroupLoading.container.showWithCondition(isShowLoading)
         storiesGroupViewPager.showWithCondition(!isShowLoading)
+    }
+
+    private fun sendImpressedGroupTracker() {
+        analytic.sendViewStoryCircleEvent(
+            entryPoint = entryPoint,
+            partnerId = authorId,
+            currentCircle = viewModel.mGroup.groupId,
+            promotions = viewModel.impressedGroupHeader.mapIndexed { index, storiesGroupHeader ->
+                StoriesEEModel(
+                    creativeName = "",
+                    creativeSlot = index.plus(1).toString(),
+                    itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.groupName} - $authorId",
+                    itemName = "/ - stories"
+                )
+            },
+        )
     }
 
     override fun onDestroyView() {

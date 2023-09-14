@@ -7,7 +7,7 @@ import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
 import com.tokopedia.stories.domain.usecase.StoriesDetailsUseCase
 import com.tokopedia.stories.domain.usecase.StoriesGroupsUseCase
 import com.tokopedia.stories.domain.usecase.StoriesTrackActivityUseCase
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -26,7 +26,7 @@ class StoriesRepositoryImpl @Inject constructor(
         return@withContext mapper.mapStoriesInitialData(storiesGroupData, storiesDetailData)
     }
 
-    override suspend fun getStoriesDetailData(data: StoriesRequestModel): StoriesDetailUiModel = withContext(dispatchers.io) {
+    override suspend fun getStoriesDetailData(data: StoriesRequestModel): StoriesDetail = withContext(dispatchers.io) {
         val storiesDetailData = storiesDetailsUSeCase(data)
         return@withContext mapper.mapStoriesDetailRequest("", storiesDetailData)
     }
