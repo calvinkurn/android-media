@@ -92,7 +92,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="top"
                     android:minHeight="?actionBarSize"
-                    android:visibility="gone"
                     app:contentInsetLeft="0dp"
                     app:contentInsetStart="0dp"
                     app:toolbarBackButton="back"
@@ -100,8 +99,7 @@
                     app:toolbarDefaultHint="@string/discovery_default_search_title"
                     app:toolbarInitialFillColor="transparent"
                     app:toolbarInitialTheme="light"
-                    app:toolbarPageName="@string/discovery_page_name"
-                    tools:visibility="visible" />
+                    app:toolbarPageName="@string/discovery_page_name" />
 
             </com.google.android.material.appbar.AppBarLayout>
 
