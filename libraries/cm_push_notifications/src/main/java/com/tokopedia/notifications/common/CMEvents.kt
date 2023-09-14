@@ -40,6 +40,7 @@ object IrisAnalyticsEvents {
     const val PUSH_DISMISSED = "pushDismissed"
     const val PUSH_CANCELLED = "pushCancelled"
     const val PUSH_DELETED = "pushDeleted"
+    const val PUSH_EXPIRED = "pushExpired"
     const val INAPP_RECEIVED = "inappReceived"
     const val INAPP_CLICKED = "inappClicked"
     const val INAPP_DISMISSED = "inappDismissed"
@@ -270,6 +271,7 @@ object IrisAnalyticsEvents {
             PUSH_CLICKED,
             PUSH_RENDERED,
             PUSH_DISMISSED,
+            PUSH_EXPIRED,
             DEVICE_NOTIFICATION_OFF
         )
 
@@ -292,7 +294,8 @@ object IrisAnalyticsEvents {
             PUSH_CLICKED,
             PUSH_RENDERED,
             PUSH_DISMISSED,
-            PUSH_CANCELLED
+            PUSH_CANCELLED,
+            PUSH_EXPIRED
         )
 
         if (!shopId.isNullOrBlank() && (eventName in allowedEvents)) {
