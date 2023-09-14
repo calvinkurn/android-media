@@ -517,7 +517,6 @@ internal class PromoUsageViewModel @Inject constructor(
                         )
 
                         // Autoscroll to clicked promo
-                        delay(100)
                         if (newClickedItem.state is PromoItemState.Selected) {
                             _autoScrollUiAction.postValue(AutoScrollUiAction.ScrollTo(newClickedItem.id))
                         }

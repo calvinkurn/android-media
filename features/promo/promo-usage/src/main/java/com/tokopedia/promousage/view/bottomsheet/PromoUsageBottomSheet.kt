@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Outline
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -922,7 +923,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         val isVisibleInCurrentScreen = itemPosition in (firstVisibleItemPosition + 1) until lastVisibleItemPosition
                         val isIdle = binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
                         if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
-                            binding?.rvPromo?.smoothScrollToPosition(itemPosition)
+                            Handler().postDelayed({
+                                binding?.rvPromo?.smoothScrollToPosition(itemPosition)
+                            }, 300)
                         }
                     } catch (ignored: Exception) {
                         // no-op
