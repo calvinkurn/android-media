@@ -136,8 +136,9 @@ class MainEditorViewModel @Inject constructor(
             videoFlattenRepository
                 .flatten(param)
                 .flowOn(dispatchers.computation)
-                .onCompletion { setAction(MainEditorEffect.HideLoading) }
-                .onEach {
+                .collect {
+                    setAction(MainEditorEffect.HideLoading)
+
                     if (it.isNotEmpty()) {
                         setAction(MainEditorEffect.FinishEditorPage(it))
                     } else {
@@ -145,7 +146,6 @@ class MainEditorViewModel @Inject constructor(
                         setAction(MainEditorEffect.ShowToastErrorMessage(message))
                     }
                 }
-                .collect()
         }
     }
 
@@ -155,11 +155,16 @@ class MainEditorViewModel @Inject constructor(
         viewModelScope.launch {
             imageFlattenRepository.flattenImage(imageBitmap, canvasText)
                 .flowOn(dispatchers.computation)
-                .onCompletion { setAction(MainEditorEffect.HideLoading) }
-                .onEach {
-                    setAction(MainEditorEffect.FinishEditorPage(it))
+                .collect {
+                    setAction(MainEditorEffect.HideLoading)
+
+                    if (it.isNotEmpty()) {
+                        setAction(MainEditorEffect.FinishEditorPage(it))
+                    } else {
+                        val message = resourceProvider.getString(R.string.universal_editor_flatten_error)
+                        setAction(MainEditorEffect.ShowToastErrorMessage(message))
+                    }
                 }
-                .collect()
         }
     }
 
