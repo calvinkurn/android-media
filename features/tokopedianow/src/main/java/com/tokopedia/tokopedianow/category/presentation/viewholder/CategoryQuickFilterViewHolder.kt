@@ -10,11 +10,13 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryQuickFilterBinding
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryQuickFilterViewHolder(
     itemView: View,
-    private val listener: CategoryQuickFilterListener?
+    private val listener: CategoryQuickFilterListener?,
+    private val tracker: CategoryQuickFilterTrackerListener? = null
 ): AbstractViewHolder<CategoryQuickFilterUiModel>(itemView) {
 
     companion object {
@@ -39,12 +41,18 @@ class CategoryQuickFilterViewHolder(
                     sortFilterItem.listener = {
                         listener?.applyFilter(filter, option)
                     }
+                    val isActive = it.chipType == ChipsUnify.TYPE_SELECTED
+                    trackQuickFilterChipImpression(option, isActive)
                 } else {
                     val listener = {
                         openL3FilterPage(filter)
                     }
                     sortFilterItem.chevronListener = listener
                     sortFilterItem.listener = listener
+                    options.forEach { option ->
+                        val isActive = option.name == filter.title
+                        trackQuickFilterChipImpression(option, isActive)
+                    }
                 }
                 sortFilterItem
             }
@@ -66,9 +74,17 @@ class CategoryQuickFilterViewHolder(
         listener?.openL3FilterPage(filter)
     }
 
+    private fun trackQuickFilterChipImpression(option: Option, isActive: Boolean) {
+        tracker?.onImpressQuickFilterChip(option, isActive)
+    }
+
     interface CategoryQuickFilterListener {
         fun openFilterPage()
         fun openL3FilterPage(filter: Filter)
         fun applyFilter(filter: Filter, option: Option)
+    }
+
+    interface CategoryQuickFilterTrackerListener {
+        fun onImpressQuickFilterChip(option: Option, isActive: Boolean)
     }
 }

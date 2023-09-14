@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryEmpty
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryProductListViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterTrackerListener
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowAdsCarouselTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
@@ -49,14 +50,15 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNow
 class CategoryL2TabAdapterTypeFactory(
     private var adsCarouselListener: ProductAdsCarouselListener?,
     private var quickFilterListener: CategoryQuickFilterListener?,
+    private var quickFilterTrackerListener: CategoryQuickFilterTrackerListener?,
     private var productItemListener: ProductItemListener?,
     private var productCardCompactListener: ProductCardCompactListener?,
     private var similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?,
-    private var emptyStateNoResultListener: TokoNowEmptyStateNoResultListener? = null,
-    private var productRecommendationListener: TokoNowProductRecommendationListener? = null,
-    private var categoryMenuListener: TokoNowCategoryMenuListener? = null,
-    private var feedbackWidgetListener: FeedbackWidgetListener? = null,
-    private var tickerTrackerListener: TokoNowTickerTrackerListener? = null
+    private var emptyStateNoResultListener: TokoNowEmptyStateNoResultListener?,
+    private var productRecommendationListener: TokoNowProductRecommendationListener? ,
+    private var categoryMenuListener: TokoNowCategoryMenuListener?,
+    private var feedbackWidgetListener: FeedbackWidgetListener?,
+    private var tickerTrackerListener: TokoNowTickerTrackerListener?
 ) : BaseAdapterTypeFactory(),
     TokoNowTickerTypeFactory,
     CategoryL2TabAdapterFactory,
@@ -131,7 +133,8 @@ class CategoryL2TabAdapterTypeFactory(
             CategoryQuickFilterViewHolder.LAYOUT -> {
                 CategoryQuickFilterViewHolder(
                     itemView = view,
-                    listener = quickFilterListener
+                    listener = quickFilterListener,
+                    tracker = quickFilterTrackerListener
                 )
             }
             ProductItemViewHolder.LAYOUT -> {
@@ -152,6 +155,7 @@ class CategoryL2TabAdapterTypeFactory(
     fun onDestroy() {
         adsCarouselListener = null
         quickFilterListener = null
+        quickFilterTrackerListener = null
         productItemListener = null
         productCardCompactListener = null
         similarProductTrackerListener = null

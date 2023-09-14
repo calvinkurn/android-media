@@ -48,6 +48,7 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTracker
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2View
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2TabViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_CARD_ITEM
@@ -266,6 +267,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         adapterTypeFactory = CategoryL2TabAdapterTypeFactory(
             adsCarouselListener = createProductAdsCarouselListener(),
             quickFilterListener = createQuickFilterListener(),
+            quickFilterTrackerListener = createQuickFilterTrackerListener(),
             productItemListener = createProductItemListener(),
             productCardCompactListener = createProductCardCompactListener(),
             similarProductTrackerListener = createSimilarProductTrackerListener(),
@@ -802,6 +804,25 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             override fun applyFilter(filter: Filter, option: Option) {
                 viewModel.applyQuickFilter(filter, option)
                 trackClickFilterButton()
+            }
+        }
+    }
+
+    private fun createQuickFilterTrackerListener(): CategoryQuickFilterTrackerListener {
+        return object : CategoryQuickFilterTrackerListener {
+            override fun onImpressQuickFilterChip(option: Option, isActive: Boolean) {
+                if(isActive) {
+                    val categoryIdL2 = data.categoryIdL2
+                    val filterType = option.inputType
+                    val filterName = option.name
+                    val warehouseIds = viewModel.getWarehouseIds()
+                    categoryL2Analytic.quickFilterAnalytic.sendImpressionActiveQuickFilterEvent(
+                        categoryIdL2 = categoryIdL2,
+                        filterType = filterType,
+                        filterName = filterName,
+                        warehouseIds = warehouseIds
+                    )
+                }
             }
         }
     }
