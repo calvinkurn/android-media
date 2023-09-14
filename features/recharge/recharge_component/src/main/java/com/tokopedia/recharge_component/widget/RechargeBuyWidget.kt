@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getDimens
@@ -25,6 +28,7 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
     private var rechargeBuyWidgetBinding = WidgetRechargeBuyWidgetBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderBuyWidget(denom: DenomData, listener: RechargeBuyWidgetListener, multiCheckoutButtons: List<MultiCheckoutButtons>){
+        val localCacheHandler = LocalCacheHandler(context, PREFERENCE_MULTICHECKOUT)
         with(rechargeBuyWidgetBinding){
             tgBuyWidgetTotalPrice.run {
                 text = denom.price
@@ -66,13 +70,21 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
 
             if (multiCheckoutButtons.size > Int.ONE) {
                 val (leftButton, rightButton)  = multiCheckoutButtonSeparator(multiCheckoutButtons)
-
+                val coachMarkList = arrayListOf<CoachMark2Item>()
                 if (leftButton.position.isNotEmpty() && leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.type.isNotEmpty()) {
                     btnBuyLeft.show()
                     btnBuyLeft.text = leftButton.text
                     btnBuyLeft.buttonVariant = variantButton(leftButton.color)
                     btnBuyLeft.setOnClickListener {
                         chooseListenerAction(listener, denom,  leftButton.type)
+                    }
+
+                    if (leftButton.coachmark.isNotEmpty()) {
+                        coachMarkList.add(
+                            CoachMark2Item(
+                                btnBuyLeft, "", leftButton.coachmark
+                            )
+                        )
                     }
                 } else {
                     btnBuyLeft.hide()
@@ -84,8 +96,24 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                     btnBuyRight.setOnClickListener {
                         chooseListenerAction(listener, denom, rightButton.type)
                     }
+
+                    if (rightButton.coachmark.isNotEmpty()) {
+                        coachMarkList.add(CoachMark2Item(
+                            btnBuyRight, "", rightButton.coachmark
+                        ))
+                    }
                 }
 
+                val isCoachMarkClosed = localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
+
+                if (!isCoachMarkClosed) {
+                    val coachmark = CoachMark2(context)
+                    coachmark.showCoachMark(coachMarkList)
+                    coachmark.setOnDismissListener {
+                        localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
+                        localCacheHandler.applyEditor()
+                    }
+                }
             } else {
                 btnBuyRight.setOnClickListener {
                     chooseListenerAction(listener, denom, "")
@@ -128,5 +156,7 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
         private const val POSITION_RIGHT = "right"
         private const val ACTION_MULTIPLE = "multiple"
         private const val WHITE_COLOR = "#FFFFFF"
+        private const val PREFERENCE_MULTICHECKOUT = "pdp_dg_multichekout"
+        private const val SHOW_COACH_MARK_MULTICHECKOUT_KEY = "pdp_dg_multichekout_is_coachmark_closed"
     }
 }
