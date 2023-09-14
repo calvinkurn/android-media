@@ -159,7 +159,12 @@ class StoriesGroupFragment @Inject constructor(
 
         layoutGroupLoading.icCloseLoading.setOnClickListener {
             analytic.sendClickExitStoryRoomEvent(
-                eventLabel = "$entryPoint - $authorId - ${viewModel.mDetail.id} - asgc - ${viewModel.mDetail.content.type.value} - nextStoriesId - ${viewModel.mGroup.groupName}"
+                entryPoint = entryPoint,
+                partnerId = authorId,
+                storiesId = viewModel.mDetail.id,
+                creatorType = "asgc",
+                contentType = viewModel.mDetail.content.type.value,
+                currentCircle = viewModel.mGroup.groupName,
             )
             activity?.finish()
         }
@@ -199,7 +204,12 @@ class StoriesGroupFragment @Inject constructor(
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     StoriesUiEvent.FinishedAllStories -> {
                         analytic.sendClickExitStoryRoomEvent(
-                            eventLabel = "$entryPoint - $authorId - ${viewModel.mDetail.id} - asgc - ${viewModel.mDetail.content.type.value} - nextStoriesId - ${viewModel.mGroup.groupName}"
+                            entryPoint = entryPoint,
+                            partnerId = authorId,
+                            storiesId = viewModel.mDetail.id,
+                            creatorType = "asgc",
+                            contentType = viewModel.mDetail.content.type.value,
+                            currentCircle = viewModel.mGroup.groupName,
                         )
                         activity?.finish()
                     }

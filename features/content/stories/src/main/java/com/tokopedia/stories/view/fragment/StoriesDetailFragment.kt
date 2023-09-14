@@ -236,7 +236,12 @@ class StoriesDetailFragment @Inject constructor(
 
         icClose.setOnClickListener {
             analytic.sendClickExitStoryRoomEvent(
-                eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - ${viewModel.mDetail.id} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName}"
+                entryPoint = mParentPage.entryPoint,
+                partnerId = mParentPage.authorId,
+                storiesId = viewModel.mDetail.id,
+                creatorType = "asgc",
+                contentType = viewModel.mDetail.content.type.value,
+                currentCircle = viewModel.mGroup.groupName,
             )
             activity?.finish()
         }

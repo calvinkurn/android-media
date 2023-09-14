@@ -349,12 +349,19 @@ class StoriesAnalyticImpl @Inject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46062
-    override fun sendClickExitStoryRoomEvent(eventLabel: String) {
+    override fun sendClickExitStoryRoomEvent(
+        entryPoint: String,
+        partnerId: String,
+        storiesId: String,
+        creatorType: String,
+        contentType: String,
+        currentCircle: String
+    ) {
         Tracker.Builder()
             .setEvent("clickContent")
             .setEventAction("click - exit story room")
             .setEventCategory("stories room")
-            .setEventLabel(eventLabel)
+            .setEventLabel("$entryPoint - $partnerId - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty("trackerId", "46062")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
