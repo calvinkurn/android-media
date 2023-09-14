@@ -151,17 +151,7 @@ class StoriesGroupFragment @Inject constructor(
     private fun setupViews() = with(binding) {
         showPageLoading(true)
 
-        layoutGroupLoading.icCloseLoading.setOnClickListener {
-            analytic.sendClickExitStoryRoomEvent(
-                entryPoint = entryPoint,
-                partnerId = authorId,
-                storiesId = viewModel.mDetail.id,
-                creatorType = "asgc",
-                contentType = viewModel.mDetail.content.type.value,
-                currentCircle = viewModel.mGroup.groupName,
-            )
-            activity?.finish()
-        }
+        layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
         if (storiesGroupViewPager.adapter != null) return@with
         storiesGroupViewPager.adapter = pagerAdapter
         storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
@@ -196,17 +186,7 @@ class StoriesGroupFragment @Inject constructor(
             viewModel.storiesEvent.collect { event ->
                 when (event) {
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
-                    StoriesUiEvent.FinishedAllStories -> {
-                        analytic.sendClickExitStoryRoomEvent(
-                            entryPoint = entryPoint,
-                            partnerId = authorId,
-                            storiesId = viewModel.mDetail.id,
-                            creatorType = "asgc",
-                            contentType = viewModel.mDetail.content.type.value,
-                            currentCircle = viewModel.mGroup.groupName,
-                        )
-                        activity?.finish()
-                    }
+                    StoriesUiEvent.FinishedAllStories -> { activity?.finish() }
                     is StoriesUiEvent.ErrorGroupPage -> {
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
@@ -275,6 +255,14 @@ class StoriesGroupFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        analytic.sendClickExitStoryRoomEvent(
+            entryPoint = entryPoint,
+            partnerId = authorId,
+            storiesId = viewModel.mDetail.id,
+            creatorType = "asgc",
+            contentType = viewModel.mDetail.content.type.value,
+            currentCircle = viewModel.mGroup.groupName,
+        )
         binding.storiesGroupViewPager.unregisterOnPageChangeCallback(pagerListener)
         _binding = null
     }

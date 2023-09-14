@@ -321,7 +321,7 @@ class StoriesAnalyticImpl @Inject constructor(
     ) {
         Tracker.Builder()
             .setEvent("clickContent")
-            .setEventAction("click - swipe next content")
+            .setEventAction("click - move to other group")
             .setEventCategory("stories room")
             .setEventLabel("$entryPoint - $partnerId")
             .setCustomProperty("trackerId", "46059")

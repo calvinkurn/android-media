@@ -234,17 +234,7 @@ class StoriesDetailFragment @Inject constructor(
     private fun setupStoriesView() = with(binding) {
         showPageLoading(true)
 
-        icClose.setOnClickListener {
-            analytic.sendClickExitStoryRoomEvent(
-                entryPoint = mParentPage.entryPoint,
-                partnerId = mParentPage.authorId,
-                storiesId = viewModel.mDetail.id,
-                creatorType = "asgc",
-                contentType = viewModel.mDetail.content.type.value,
-                currentCircle = viewModel.mGroup.groupName,
-            )
-            activity?.finish()
-        }
+        icClose.setOnClickListener { activity?.finish() }
 
         rvStoriesCategory.apply {
             adapter = mAdapter
