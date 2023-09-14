@@ -4,20 +4,20 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder.Companion.PRODUCT_THREE
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -27,7 +27,8 @@ import com.tokopedia.unifyprinciples.Typography
 class ShopHomeV4TerlarisAdapter(
     private val listener: ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     private val isOverrideTheme: Boolean,
-    private val colorSchema: ShopPageColorSchema
+    private val colorSchema: ShopPageColorSchema,
+    private val element: ShopHomeCarousellProductUiModel
 ) : RecyclerView.Adapter<ShopHomeV4TerlarisAdapter.TerlarisWidgetViewHolder>() {
 
     private var productListData: List<List<ShopHomeProductUiModel>> = listOf()
@@ -103,19 +104,30 @@ class ShopHomeV4TerlarisAdapter(
 
         fun bindData(productListData: List<ShopHomeProductUiModel>, rank: List<Int>) {
             if (!productListData.size.isZero() && productListData.size == PRODUCT_THREE) {
+                setupImpressionListener(productListData)
+
                 if (isOverrideTheme) {
                     overrideWidgetTheme()
                 }
 
                 productContainer1?.setOnClickListener {
-                    listener.onProductClick(productId = productListData[0].id)
+                    listener.onProductClick(
+                        ShopHomeTerlarisWidgetTrackerDataModel(
+                            productId = productListData[0].id,
+                            productName = productListData[0].name,
+                            productPrice = productListData[0].displayedPrice,
+                            position = rank[0],
+                            widgetId = element.widgetId
+                        )
+                    )
                 }
                 ImageHandler.loadImageRounded2(itemView.context, productImg1, productListData[0].imageUrl.orEmpty(), 8.toPx().toFloat())
                 productName1?.text = productListData[0].name
                 productPrice1?.text = productListData[0].displayedPrice
                 productRank1?.text = rank[0].toString()
                 if (!productListData[0].discountPercentage.isNullOrEmpty() &&
-                    !productListData[0].originalPrice.isNullOrEmpty()) {
+                    !productListData[0].originalPrice.isNullOrEmpty()
+                ) {
                     terlarisContainerDiscount1?.visibility = View.VISIBLE
                     labelDiscount1?.text = productListData[0].discountPercentage
                     productOriginalPrice1?.text = productListData[0].originalPrice
@@ -125,14 +137,23 @@ class ShopHomeV4TerlarisAdapter(
                 }
 
                 productContainer2?.setOnClickListener {
-                    listener.onProductClick(productId = productListData[1].id)
+                    listener.onProductClick(
+                        ShopHomeTerlarisWidgetTrackerDataModel(
+                            productId = productListData[1].id,
+                            productName = productListData[1].name,
+                            productPrice = productListData[1].displayedPrice,
+                            position = rank[1],
+                            widgetId = element.widgetId
+                        )
+                    )
                 }
                 ImageHandler.loadImageRounded2(itemView.context, productImg2, productListData[1].imageUrl.orEmpty(), 8.toPx().toFloat())
                 productName2?.text = productListData[1].name
                 productPrice2?.text = productListData[1].displayedPrice
                 productRank2?.text = rank[1].toString()
                 if (!productListData[1].discountPercentage.isNullOrEmpty() &&
-                    !productListData[1].originalPrice.isNullOrEmpty()) {
+                    !productListData[1].originalPrice.isNullOrEmpty()
+                ) {
                     terlarisContainerDiscount2?.visibility = View.VISIBLE
                     labelDiscount2?.text = productListData[1].discountPercentage
                     productOriginalPrice2?.text = productListData[1].originalPrice
@@ -142,14 +163,23 @@ class ShopHomeV4TerlarisAdapter(
                 }
 
                 productContainer3?.setOnClickListener {
-                    listener.onProductClick(productId = productListData[2].id)
+                    listener.onProductClick(
+                        ShopHomeTerlarisWidgetTrackerDataModel(
+                            productId = productListData[2].id,
+                            productName = productListData[2].name,
+                            productPrice = productListData[2].displayedPrice,
+                            position = rank[2],
+                            widgetId = element.widgetId
+                        )
+                    )
                 }
                 ImageHandler.loadImageRounded2(itemView.context, productImg3, productListData[2].imageUrl.orEmpty(), 8.toPx().toFloat())
                 productName3?.text = productListData[2].name
                 productPrice3?.text = productListData[2].displayedPrice
                 productRank3?.text = rank[2].toString()
                 if (!productListData[2].discountPercentage.isNullOrEmpty() &&
-                    !productListData[2].originalPrice.isNullOrEmpty()) {
+                    !productListData[2].originalPrice.isNullOrEmpty()
+                ) {
                     terlarisContainerDiscount3?.visibility = View.VISIBLE
                     labelDiscount3?.text = productListData[2].discountPercentage
                     productOriginalPrice3?.text = productListData[2].originalPrice
@@ -167,6 +197,12 @@ class ShopHomeV4TerlarisAdapter(
             productPrice2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
             productName3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
             productPrice3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        }
+
+        private fun setupImpressionListener(carouselData: List<ShopHomeProductUiModel>) {
+            itemView.addOnImpressionListener(element.impressHolder) {
+                listener.onProductImpression(carouselData, bindingAdapterPosition, element.widgetId)
+            }
         }
     }
 }

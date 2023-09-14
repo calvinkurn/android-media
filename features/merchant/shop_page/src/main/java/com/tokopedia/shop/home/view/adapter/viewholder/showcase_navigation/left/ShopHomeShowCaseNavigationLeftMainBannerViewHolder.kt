@@ -102,6 +102,14 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     private fun setupTitle(model: ShowcaseNavigationUiModel, tabs: List<ShowcaseTab>) {
         viewBinding?.tpgTitle?.text = model.appearance.title
         viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && tabs.isNotEmpty()
+
+
+        val highEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
+            model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        } else {
+            ContextCompat.getColor(viewBinding?.tpgTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
+        }
+        viewBinding?.tpgTitle?.setTextColor(highEmphasizeColor)
     }
 
     private fun setupTabs(
