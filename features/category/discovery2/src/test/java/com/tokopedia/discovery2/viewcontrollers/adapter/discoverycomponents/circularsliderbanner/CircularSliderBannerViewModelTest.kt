@@ -94,6 +94,28 @@ class CircularSliderBannerViewModelTest {
     }
 
     @Test
+    fun `test is disabled auto slide`() {
+        // properties has disabled auto slide is null
+        val propertyAutoSlideDisabledNull = Properties(isDisabledAutoSlide = null)
+        every { componentsItem.properties } returns propertyAutoSlideDisabledNull
+        assertEquals(false, viewModel.isDisabledAutoSlide())
+
+        // properties has disabled auto slide is false
+        val propertyAutoSlideDisabledFalse = Properties(isDisabledAutoSlide = false)
+        every { componentsItem.properties } returns propertyAutoSlideDisabledFalse
+        assertEquals(false, viewModel.isDisabledAutoSlide())
+
+        // properties has disabled auto slide is true
+        val propertyAutoSlideDisabledTrue = Properties(isDisabledAutoSlide = true)
+        every { componentsItem.properties } returns propertyAutoSlideDisabledTrue
+        assertEquals(true, viewModel.isDisabledAutoSlide())
+
+        // properties is null
+        every { componentsItem.properties } returns null
+        assertEquals(false, viewModel.isDisabledAutoSlide())
+    }
+
+    @Test
     fun `test banner changed need to sync`() {
         // properties has atf banner value
         val propertyAtfBanner = Properties(type = Constant.PropertyType.ATF_BANNER)

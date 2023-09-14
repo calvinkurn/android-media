@@ -40,7 +40,7 @@ class CircularSliderBannerViewModel(application: Application, val components: Co
 
     fun isExpandableIndicatorNeeded(): Boolean = getPropertyType() == ATF_BANNER || getPropertyType() == TARGETING_BANNER
 
-    fun isDisabledAutoSlide() = components.properties?.isDisabledAutoSlide.orFalse()
+    fun isDisabledAutoSlide(): Boolean = components.properties?.isDisabledAutoSlide.orFalse()
 
     fun onBannerChanged(position: Int) {
         components.itemPosition = position
