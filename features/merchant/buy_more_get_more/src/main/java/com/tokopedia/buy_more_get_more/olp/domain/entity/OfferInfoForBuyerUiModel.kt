@@ -99,6 +99,8 @@ data class OfferInfoForBuyerUiModel(
 
         data class SetTncData(val tnc: List<String>) : OlpEvent()
 
+        data class SetEndDate(val endDate: String) : OlpEvent()
+
         object GetNotification : OlpEvent()
 
         object GetSharingData : OlpEvent()

@@ -55,6 +55,7 @@ import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.bmgm.common.utils.MiniCartUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -214,6 +215,7 @@ class OfferLandingPageFragment :
                     viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.offerings.firstOrNull()?.shopData))
                     viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
                     viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
+                    viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.offerings.firstOrNull()?.endDate.orEmpty()))
                     setupTncBottomSheet()
                     fetchMiniCart()
                     setMiniCartOnOfferEnd(offerInfoForBuyer)
@@ -637,7 +639,9 @@ class OfferLandingPageFragment :
             if (product.isVbs) {
                 openAtcVariant(product)
             } else {
-                addToCartProduct(product)
+                if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+                    addToCartProduct(product)
+                }
             }
         } else {
             redirectToLoginPage(REQUEST_CODE_USER_LOGIN)
