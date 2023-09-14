@@ -11,6 +11,8 @@ object Event {
 
     const val viewGroupChatIris = "viewGroupChatIris"
 
+    const val clickHomepage = "clickHomepage"
+
     const val clickContent = "clickContent"
     const val viewContentIris = "viewContentIris"
 

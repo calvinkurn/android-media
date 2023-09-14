@@ -122,6 +122,7 @@ import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -255,12 +256,11 @@ open class DiscoveryFragment :
     val trackingQueue: TrackingQueue by lazy {
         provideTrackingQueue()
     }
-
+    var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     open fun provideTrackingQueue(): TrackingQueue {
         return (context as DiscoveryActivity).trackingQueue
     }
 
-    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: LoaderUnify
     var pageEndPoint = ""
     private var componentPosition: Int? = null
@@ -285,6 +285,8 @@ open class DiscoveryFragment :
     private var isLightThemeStatusBar: Boolean? = null
 
     companion object {
+        private const val FIRST_POSITION = 0
+
         fun getInstance(
             endPoint: String?,
             queryParameterMap: Map<String, String?>?
@@ -427,7 +429,7 @@ open class DiscoveryFragment :
         miniCartWidget = view.findViewById(R.id.miniCartWidget)
 
         mProgressBar.show()
-        mSwipeRefreshLayout.setOnRefreshListener(this)
+        mSwipeRefreshLayout?.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             var dy = 0
@@ -464,6 +466,7 @@ open class DiscoveryFragment :
                         }
                     }
                 }
+                enableRefreshWhenFirstItemCompletelyVisible()
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -559,6 +562,13 @@ open class DiscoveryFragment :
             activity?.let {
                 navToolbar.setupToolbarWithStatusBar(it)
             }
+        }
+    }
+
+    private fun enableRefreshWhenFirstItemCompletelyVisible() {
+        if (mSwipeRefreshLayout?.isRefreshing == false) {
+            val firstPosition: Int = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(FIRST_POSITION).orZero()
+            mSwipeRefreshLayout?.isEnabled = firstPosition == FIRST_POSITION
         }
     }
 
@@ -756,7 +766,7 @@ open class DiscoveryFragment :
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
-                        if (mSwipeRefreshLayout.isRefreshing) setAdapter()
+                        if (mSwipeRefreshLayout?.isRefreshing == true) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isEmpty()) {
                             discoveryAdapter.addDataList(ArrayList())
@@ -780,7 +790,8 @@ open class DiscoveryFragment :
                     setPageErrorState(it)
                 }
             }
-            mSwipeRefreshLayout.isRefreshing = false
+            mSwipeRefreshLayout?.isEnabled = true
+            mSwipeRefreshLayout?.isRefreshing = false
         }
 
         discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner) {
@@ -1139,7 +1150,7 @@ open class DiscoveryFragment :
         setCartAndNavIcon()
         setSearchBar(null)
         mProgressBar.hide()
-        mSwipeRefreshLayout.isRefreshing = false
+        mSwipeRefreshLayout?.isRefreshing = false
     }
 
     private fun settingUpNavBar(data: PageInfo?) {
@@ -1415,6 +1426,22 @@ open class DiscoveryFragment :
 
     override fun screenShotTaken(path: String) {
         showUniversalShareBottomSheet(pageInfoHolder, path)
+    }
+
+    private fun setupSearchBar(data: PageInfo?) {
+        navToolbar.setupSearchbar(
+            hints = listOf(
+                HintData(
+                    placeholder = data?.searchTitle
+                        ?: getString(R.string.discovery_default_search_title)
+                )
+            ),
+            searchbarClickCallback = {
+                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
+                handleSearchClick(data)
+            },
+            disableDefaultGtmTracker = true
+        )
     }
 
     private fun handleSearchClick(data: PageInfo?) {

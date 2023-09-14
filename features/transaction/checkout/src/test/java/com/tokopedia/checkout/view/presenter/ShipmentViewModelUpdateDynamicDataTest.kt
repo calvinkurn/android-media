@@ -131,7 +131,6 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
 
         // Then
         verify {
-            eligibleForAddressUseCase.cancelJobs()
             updateDynamicDataPassingUseCase.cancelJobs()
         }
     }

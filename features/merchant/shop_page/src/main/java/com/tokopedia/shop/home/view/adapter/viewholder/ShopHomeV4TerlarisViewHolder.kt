@@ -123,10 +123,10 @@ class ShopHomeV4TerlarisViewHolder(
         val title = element.header.title
         val subTitle = element.header.subtitle
         widgetTitle?.shouldShowWithAction(title.isNotEmpty()) {
-            widgetTitle?.text = title
+            widgetTitle?.text = subTitle
         }
         widgetSubtitle?.shouldShowWithAction(subTitle.isNotEmpty()) {
-            widgetSubtitle?.text = subTitle
+            widgetSubtitle?.text = title
         }
     }
 
@@ -279,8 +279,8 @@ class ShopHomeV4TerlarisViewHolder(
     }
 
     private fun overrideWidgetTheme(colorSchema: ShopPageColorSchema) {
-        widgetTitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
-        widgetSubtitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS))
+        widgetTitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS))
+        widgetSubtitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productName1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productPrice1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productName2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
