@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
 import kotlinx.coroutines.delay
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -32,7 +32,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 fun StoriesDetailTimer(
     currentPosition: Int,
     itemCount: Int,
-    data: StoriesDetailItemUiModel,
+    data: StoriesDetailItem,
     timerFinished: () -> Unit,
 ) {
     val anim = remember(
@@ -110,7 +110,7 @@ internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
         currentPosition = 0,
         itemCount = 3,
-        data = StoriesDetailItemUiModel()
+        data = StoriesDetailItem()
     ) { }
 }
 

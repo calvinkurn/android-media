@@ -21,9 +21,9 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.VIDEO
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.STORY_GROUP_ID
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
@@ -143,11 +143,11 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun renderStoriesDetail(
-        prevState: StoriesDetailUiModel?,
-        state: StoriesDetailUiModel
+        prevState: StoriesDetail?,
+        state: StoriesDetail
     ) {
         if (prevState == state ||
-            state == StoriesDetailUiModel() ||
+            state == StoriesDetail() ||
             state.selectedGroupId != groupId
         ) return
 
@@ -190,7 +190,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
         }
     }
 
-    private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
+    private fun storiesDetailsTimer(state: StoriesDetail) {
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
