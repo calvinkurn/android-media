@@ -40,6 +40,7 @@ class ProductBundlingViewHolder(
     private var bundlingNameText: Typography? = null
     private var bundlingIconImage: ImageUnify? = null
     private var bundlingItemRecyclerView: RecyclerView? = null
+    private var bundlingPriceText: Typography? = null
 
     init {
         bindViews()
@@ -49,6 +50,7 @@ class ProductBundlingViewHolder(
     override fun bind(element: ProductListUiModel.ProductBundlingUiModel) {
         setupBundleHeader(element.bundleName, element.bundleIconUrl)
         setupBundleItems(element.bundleItemList)
+        setupBundleTotalPrice(element.totalPriceText)
     }
 
     override fun bind(
@@ -65,6 +67,9 @@ class ProductBundlingViewHolder(
                     }
                     if (oldItem.bundleItemList != newItem.bundleItemList) {
                         setupBundleItems(newItem.bundleItemList)
+                    }
+                    if (oldItem.totalPriceText != newItem.totalPriceText) {
+                        setupBundleTotalPrice(newItem.totalPriceText)
                     }
                     containerLayout?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
@@ -99,6 +104,7 @@ class ProductBundlingViewHolder(
             bundlingNameText = findViewById(R.id.tv_bom_detail_bundling_name)
             bundlingIconImage = findViewById(R.id.iv_bom_detail_bundling_icon)
             bundlingItemRecyclerView = findViewById(R.id.rv_bom_detail_bundling)
+            bundlingPriceText = findViewById(R.id.tv_bom_detail_bundling_price_value)
         }
     }
 
@@ -108,6 +114,10 @@ class ProductBundlingViewHolder(
             adapter = bundleItemAdapter
             bundleItemDecoration?.let { addItemDecoration(it) }
         }
+    }
+
+    private fun setupBundleTotalPrice(price: String) {
+        bundlingPriceText?.text = price
     }
 
     private fun setupBundleHeader(bundleName: String, bundleIconUrl: String) {

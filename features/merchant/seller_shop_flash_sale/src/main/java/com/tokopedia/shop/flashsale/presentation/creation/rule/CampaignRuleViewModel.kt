@@ -36,8 +36,7 @@ class CampaignRuleViewModel @Inject constructor(
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
     private val validateCampaignCreationEligibilityUseCase: ValidateCampaignCreationEligibilityUseCase,
     private val tracker: ShopFlashSaleTracker,
-    private val dispatchers: CoroutineDispatchers,
-    private val getRollenceGradualRolloutUseCase: RolloutFeatureVariantsUseCase
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -55,10 +54,6 @@ class CampaignRuleViewModel @Inject constructor(
     val selectedPaymentType: LiveData<PaymentType?>
         get() = _selectedPaymentType
     private val selectedPaymentTypeFlow = selectedPaymentType.asFlow()
-
-    private val _isGetGradualRollout = MutableLiveData<Result<RollenceGradualRollout>>()
-    val isGetGradualRollout: LiveData<Result<RollenceGradualRollout>>
-        get() = _isGetGradualRollout
 
     private val _selectedOosState = MutableLiveData<Boolean>()
     val selectedOosState: LiveData<Boolean>
@@ -425,25 +420,6 @@ class CampaignRuleViewModel @Inject constructor(
                     )
                 )
                 resetIsInSaveOrCreateAction()
-            }
-        )
-    }
-
-    fun getRollenceGradualRollout(shopId: String, irisSessionId: String) {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val params = RolloutFeatureVariantsUseCase.Param(
-                    iris_session_id = irisSessionId,
-                    id = shopId,
-                    rev = 0,
-                    client_id = AbTestPlatform.ANDROID_CLIENTID
-                )
-                val result = getRollenceGradualRolloutUseCase.execute(params)
-                _isGetGradualRollout.postValue(Success(result))
-            },
-            onError = { error ->
-                _isGetGradualRollout.postValue(Fail(error))
             }
         )
     }
