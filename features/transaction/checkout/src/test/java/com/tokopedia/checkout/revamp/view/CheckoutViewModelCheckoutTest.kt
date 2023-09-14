@@ -589,7 +589,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
-    fun checkoutWithNoPrescription_ShouldShowErrorAndToaster() {
+    fun checkoutWithNoPrescription_ShouldShowError() {
         // Given
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
@@ -646,6 +646,10 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             true,
             (viewModel.listData.value[6] as CheckoutEpharmacyModel).epharmacy.isError
+        )
+        assertEquals(
+            false,
+            (viewModel.listData.value[6] as CheckoutEpharmacyModel).epharmacy.isIncompletePrescriptionError
         )
     }
 

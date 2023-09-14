@@ -56,15 +56,7 @@ object CheckoutCrossSellItemView {
         itemBinding.cbCheckoutCrossSellItem.isChecked = crossSellModel.isChecked
         itemBinding.cbCheckoutCrossSellItem.skipAnimation()
         var title = crossSellModel.crossSellModel.info.title
-        val startUnderline = title.indexOf(CROSS_SELL_UNDERLINE_TEXT, ignoreCase = true)
-        if (startUnderline >= 0) {
-            val underlineText = title.substring(startUnderline, startUnderline + CROSS_SELL_UNDERLINE_TEXT.length)
-            title = title.replaceRange(
-                startUnderline,
-                startUnderline + CROSS_SELL_UNDERLINE_TEXT.length,
-                "<u>$underlineText</u>"
-            )
-        }
+        title = generateCustomUnderLine(title)
         val text = HtmlLinkHelper(itemBinding.root.context, title).spannedString
         itemBinding.ivCheckoutCrossSellItem.setImageUrl(crossSellModel.crossSellModel.info.iconUrl)
         itemBinding.tvCheckoutCrossSellItem.text = text
@@ -74,6 +66,23 @@ object CheckoutCrossSellItemView {
         itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, isChecked ->
             listener.onCrossSellItemChecked(isChecked, crossSellModel)
         }
+    }
+
+    private fun generateCustomUnderLine(title: String): String {
+        val startUnderline = title.indexOf(CROSS_SELL_UNDERLINE_TEXT, ignoreCase = true)
+        if (startUnderline >= 0) {
+            val underlineText =
+                title.substring(
+                    startUnderline,
+                    startUnderline + CROSS_SELL_UNDERLINE_TEXT.length
+                )
+            return title.replaceRange(
+                startUnderline,
+                startUnderline + CROSS_SELL_UNDERLINE_TEXT.length,
+                "<u>$underlineText</u>"
+            )
+        }
+        return title
     }
 
     private fun showCrossSellBottomSheet(
