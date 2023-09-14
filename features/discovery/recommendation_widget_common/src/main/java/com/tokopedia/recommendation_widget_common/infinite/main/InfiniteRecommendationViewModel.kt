@@ -37,19 +37,16 @@ class InfiniteRecommendationViewModel @Inject constructor(
     }
 
     fun fetchComponents(
-        productId: String,
-        pageName: String
+        requestParam: GetRecommendationRequestParam
     ) {
         if (currentPage == nextPage) return
         currentPage = nextPage
 
         viewModelScope.launch(Dispatchers.IO) {
-            val requestParams = GetRecommendationRequestParam(
-                pageNumber = nextPage,
-                pageName = pageName,
-                productIds = listOf(productId)
+            val overrideRequestParam = requestParam.copy(
+                pageNumber = nextPage
             )
-            val recommendationResponse = getRecommendationUseCase.getData(requestParams)
+            val recommendationResponse = getRecommendationUseCase.getData(overrideRequestParam)
             val recommendationWidget = recommendationResponse.firstOrNull()
 
             val components = recommendationWidget.toComponents()

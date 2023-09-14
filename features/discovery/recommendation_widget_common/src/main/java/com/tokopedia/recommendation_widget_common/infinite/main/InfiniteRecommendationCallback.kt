@@ -1,5 +1,5 @@
 package com.tokopedia.recommendation_widget_common.infinite.main
 
-interface InfiniteRecommendationCallback{
+interface InfiniteRecommendationCallback {
     fun fetchRecommendation()
 }

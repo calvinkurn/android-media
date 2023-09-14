@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.infinite.main
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationViewModelDelegate
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 
@@ -12,18 +13,14 @@ class InfiniteRecommendationManager(
     val adapter: InfiniteRecommendationAdapter by getAdapter()
     private val viewModel: InfiniteRecommendationViewModel? by getViewModel()
 
-    private var productId: String = ""
-    private var pageName: String = ""
+    var requestParam: GetRecommendationRequestParam = GetRecommendationRequestParam()
+        set(value) {
+            field = value
+            viewModel?.init()
+        }
 
     init {
         observeRecommendationProducts()
-    }
-
-    fun init(productId: String, pageName: String) {
-        this.productId = productId
-        this.pageName = pageName
-
-        viewModel?.init()
     }
 
     private fun observeRecommendationProducts() {
@@ -42,6 +39,6 @@ class InfiniteRecommendationManager(
     }
 
     override fun fetchRecommendation() {
-        viewModel?.fetchComponents(productId, pageName)
+        viewModel?.fetchComponents(requestParam)
     }
 }
