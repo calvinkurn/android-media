@@ -70,6 +70,7 @@ import com.tokopedia.utils.resources.isDarkMode
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
@@ -460,7 +461,11 @@ class OfferLandingPageFragment :
     }
 
     private fun setupTncBottomSheet() {
-        tncBottomSheet = TncBottomSheet.newInstance(currentState.tnc)
+        tncBottomSheet = TncBottomSheet.newInstance(
+            tnc = currentState.tnc,
+            offerId = currentState.offerIds.toSafeString(),
+            warehouseId = currentState.warehouseIds.toSafeString()
+        )
     }
 
     private fun setViewState(viewState: Int, status: Status = Status.SUCCESS) {
@@ -708,6 +713,12 @@ class OfferLandingPageFragment :
                 )
                 dismiss()
             }
+            setImpressionListener {
+                tracker.sendImpressSnkEvent(
+                    currentState.offerIds.toSafeString(),
+                    currentState.warehouseIds.toSafeString()
+                )
+            }
             show(this@OfferLandingPageFragment)
         }
     }
@@ -809,4 +820,14 @@ class OfferLandingPageFragment :
     private fun List<Long>.toSafeString(): String {
         return this.firstOrNull()?.orZero().toString()
     }
+
+//    override fun onClickedTncUrl(url: String) {
+//        RouteManager.route(
+//            context,
+//            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
+//        )
+//    }
+//
+//    override fun onImpressTnc() {
+//    }
 }
