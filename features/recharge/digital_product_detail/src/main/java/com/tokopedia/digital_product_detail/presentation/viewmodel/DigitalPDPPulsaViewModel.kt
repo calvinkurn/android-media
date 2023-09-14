@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
@@ -56,6 +57,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
     var recomCheckoutUrl = ""
+    var multiCheckoutButtons: List<MultiCheckoutButtons> = listOf()
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -333,6 +335,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun isEmptyDenomMCCM(listDenomData: List<DenomData>, listMCCMData: List<DenomData>): Boolean {
         return listDenomData.isEmpty() && listMCCMData.isEmpty()
+    }
+
+    fun updateMultiCheckoutButtons(multiCheckoutButtons: List<MultiCheckoutButtons>) {
+        this.multiCheckoutButtons = multiCheckoutButtons
     }
 
     fun runThrottleJob(

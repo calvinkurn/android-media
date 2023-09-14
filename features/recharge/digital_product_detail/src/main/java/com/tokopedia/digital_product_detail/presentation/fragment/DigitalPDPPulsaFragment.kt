@@ -473,6 +473,7 @@ class DigitalPDPPulsaFragment :
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        viewModel.updateMultiCheckoutButtons(data.multiCheckoutButtons)
         getFavoriteNumbers(
             listOf(
                 FavoriteNumberType.PREFILL,
@@ -761,7 +762,7 @@ class DigitalPDPPulsaFragment :
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.show()
-            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this, listOf()) //TODO Change Button
+            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this, viewModel.multiCheckoutButtons)
         }
     }
 
