@@ -37,11 +37,10 @@ data class MedalItem(
     val isDisabled: Boolean? = false,
     val progression: Int? = 0,
     val cta: Cta? = null,
-    val medalType: String = "",
     val isPlaceHolder: Boolean = false
 ) : Visitable<MedalViewTypeFactory> {
 
-    fun isEarned() = medalType == EARNED_BADGE
+    fun isEarned() = isDisabled == false
 
     fun isNewlyEarned() = isEarned() && showConfetti == true
     override fun type(typeFactory: MedalViewTypeFactory): Int = typeFactory.type(this)

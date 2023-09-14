@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase
-import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetUserMedalisResponse
+import com.tokopedia.scp_rewards.cabinet.mappers.MedaliListMapper
 import com.tokopedia.scp_rewards.common.constants.SUCCESS_CODE
+import com.tokopedia.scp_rewards.common.utils.MEDALI_SLUG_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGESIZE_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
+import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.GetMedalBenefitUseCase
@@ -20,16 +22,13 @@ import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
 import com.tokopedia.scp_rewards_common.parseJsonKey
 import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
+import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
 import javax.inject.Inject
 
 const val MDP_SECTION_TYPE_BENEFIT = "benefit"
 const val MDP_SECTION_TYPE_BRAND_RECOMMENDATIONS = "brand-related"
-private const val PAGE_SIZE_JSON_KEY = "page_size"
-private const val PAGE_NAME_JSON_KEY = "page_name"
-private const val MEDALI_SLUG_JSON_KEY = "medaliSlug"
-private const val TYPE_JSON_KEY = "type"
 
 class MedalDetailViewModel @Inject constructor(
     private val medalDetailUseCase: MedalDetailUseCase,
@@ -120,14 +119,14 @@ class MedalDetailViewModel @Inject constructor(
 
     private suspend fun getMedalRecommendations(
         mdpResponse: MedalDetailResponseModel
-    ): List<ScpRewardsGetUserMedalisResponse.ScpRewardsGetUserMedalisByType.Medal>? {
+    ): List<MedalItem>? {
         val section =
             mdpResponse.detail?.medaliDetailPage?.section?.find { it.type == MDP_SECTION_TYPE_BRAND_RECOMMENDATIONS }
         return if (section != null) {
             try {
                 val response =
                     userMedaliUseCase.getUserMedalis(getRecommendationParams(section.jsonParameter))
-                response?.scpRewardsGetUserMedalisByType?.medaliList
+                MedaliListMapper.getMedalList(response, false)
             } catch (exp: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(exp)
                 emptyList()
@@ -138,16 +137,16 @@ class MedalDetailViewModel @Inject constructor(
     }
 
     private fun getRecommendationParams(json: String?): RequestParams {
-        val pageSize = json?.parseJsonKey<Int>(PAGE_SIZE_JSON_KEY) ?: 3
-        val pageName = json?.parseJsonKey<String>(PAGE_NAME_JSON_KEY).orEmpty()
-        val medaliSlug = json?.parseJsonKey<String>(MEDALI_SLUG_JSON_KEY).orEmpty()
-        val type = json?.parseJsonKey<String>(TYPE_JSON_KEY).orEmpty()
+        val pageSize = json?.parseJsonKey<Int>(PAGESIZE_PARAM) ?: 3
+        val pageName = json?.parseJsonKey<String>(PAGE_NAME_PARAM).orEmpty()
+        val medaliSlug = json?.parseJsonKey<String>(MEDALI_SLUG_PARAM).orEmpty()
+        val type = json?.parseJsonKey<String>(TYPE_PARAM).orEmpty()
 
         return RequestParams().apply {
-            putObject(MEDALI_SLUG_JSON_KEY, arrayOf(medaliSlug))
+            putObject(MEDALI_SLUG_PARAM, arrayOf(medaliSlug))
             putString(PAGE_NAME_PARAM, pageName)
             putInt(PAGE_PARAM, 1)
-            putString(TYPE_JSON_KEY, type)
+            putString(TYPE_PARAM, type)
             putInt(PAGESIZE_PARAM, pageSize)
         }
     }
@@ -196,7 +195,7 @@ class MedalDetailViewModel @Inject constructor(
         class Success(
             val data: MedalDetailResponseModel,
             val benefitData: MedaliBenefitList?,
-            val medalRecommendations: List<ScpRewardsGetUserMedalisResponse.ScpRewardsGetUserMedalisByType.Medal>?
+            val medalRecommendations: List<MedalItem>?
         ) : MdpState()
 
         class Error(val error: Throwable, val errorCode: String = "") : MdpState()
