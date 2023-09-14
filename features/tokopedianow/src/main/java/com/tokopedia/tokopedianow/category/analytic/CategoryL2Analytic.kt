@@ -32,6 +32,7 @@ class CategoryL2Analytic @Inject constructor(userSession: UserSessionInterface) 
     val quickFilterAnalytic = CategoryL2QuickFilterAnalytic()
     val sortFilterAnalytic = CategoryL2SortFilterAnalytic()
     val tickerAnalytic = CategoryL2TickerAnalytic()
+    val similarProductAnalytic = CategoryL2SimilarProductAnalytic(userSession)
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 43878
@@ -39,7 +40,6 @@ class CategoryL2Analytic @Inject constructor(userSession: UserSessionInterface) 
         categoryIdL1: String,
         warehouseIds: String
     ) {
-
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
             .setEventAction(EVENT_ACTION_CLICK_OTHER_CATEGORIES)

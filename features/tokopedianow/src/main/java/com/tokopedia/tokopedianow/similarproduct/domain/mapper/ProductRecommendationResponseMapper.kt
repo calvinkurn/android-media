@@ -30,7 +30,8 @@ object ProductRecommendationResponseMapper {
                             discountPercentage = formatFloatToString(product.discountPercentage),
                             categoryId = product.departmentId.toString(),
                             categoryName = categoryName,
-                            position = position
+                            position = position,
+                            warehouseIds = product.warehouseIds.orEmpty()
                         )
                     }
                 }

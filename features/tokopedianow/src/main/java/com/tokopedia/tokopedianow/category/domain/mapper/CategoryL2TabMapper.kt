@@ -114,6 +114,12 @@ object CategoryL2TabMapper {
         }
     }
 
+    fun MutableList<Visitable<*>>.getProductIndex(productId: String): Int {
+        return filterIsInstance<ProductItemDataView>().indexOfFirst {
+            it.productCardModel.productId == productId
+        }
+    }
+
     fun MutableList<Visitable<*>>.findProductCardItem(productId: String): ProductItemDataView? {
         return filterIsInstance<ProductItemDataView>().find {
             it.productCardModel.productId == productId

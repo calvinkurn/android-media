@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.add
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.findProductCardItem
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.getProductIndex
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToCategoryTabLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToQuickFilter
@@ -123,6 +124,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val _updateToolbarNotification = MutableLiveData<Unit>()
     private val _atcDataTracker = MutableLiveData<CategoryAtcTrackerModel>()
     private val _clickWishlistTracker = MutableLiveData<Pair<Int, String>>()
+    private val _clickSimilarProductTracker = MutableLiveData<Pair<Int, String>>()
 
     val filterProductCountLiveData: LiveData<String> = _filterProductCountLiveData
     val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = _dynamicFilterModelLiveData
@@ -131,6 +133,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     val updateToolbarNotification: LiveData<Unit> = _updateToolbarNotification
     val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
     val clickWishlistTracker: LiveData<Pair<Int, String>> = _clickWishlistTracker
+    val clickSimilarProductTracker: LiveData<Pair<Int, String>> = _clickSimilarProductTracker
 
     private val filterController = FilterController()
     private val visitableList = mutableListOf<Visitable<*>>()
@@ -333,6 +336,11 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     fun getWarehouseIds(): String {
         val localCacheModel = addressData.getAddressData()
         return AddressMapper.mapToWarehouseIds(localCacheModel)
+    }
+
+    fun onClickSimilarProduct(productId: String) {
+        val index = visitableList.getProductIndex(productId)
+        _clickSimilarProductTracker.postValue(Pair(index, productId))
     }
 
     fun onResume() {

@@ -25,7 +25,8 @@ data class ProductCardCompactSimilarProductUiModel(
     val similarProducts: List<ProductCardCompactSimilarProductUiModel> = emptyList(),
     val categoryId: String = "",
     val categoryName: String = "",
-    val position: Int = 0
+    val position: Int = 0,
+    val warehouseIds: String = ""
 ) : Visitable<ProductCardCompactSimilarProductTypeFactory>, Parcelable {
 
     val impressHolder

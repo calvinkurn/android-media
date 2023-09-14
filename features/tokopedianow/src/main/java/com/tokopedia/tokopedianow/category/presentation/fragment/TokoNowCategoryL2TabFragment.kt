@@ -232,6 +232,10 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             trackClickWishlistButton(it.first, it.second)
         }
 
+        observe(viewModel.clickSimilarProductTracker) {
+            trackClickSimilarProduct(it.first, it.second)
+        }
+
         observe(viewModel.updateToolbarNotification) {
             updateToolbarNotification()
         }
@@ -512,6 +516,12 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             .sendClickFilterBottomSheetApplyFilterEvent(categoryIdL2, warehouseIds)
     }
 
+    private fun trackClickSimilarProduct(index: Int, productId: String) {
+        val categoryIdL2 = data.categoryIdL2
+        categoryL2Analytic.similarProductAnalytic
+            .sendClickSimilarProductDropdownEvent(index, productId, categoryIdL2)
+    }
+
     private fun directToSeeMorePage(appLink: String) {
         val categoryIdTracking = viewModel.getCategoryIdForTracking()
         val newAppLink = modifySeeMoreAppLink(appLink)
@@ -724,6 +734,9 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 similarProduct: ProductCardCompactSimilarProductUiModel,
                 productIdTriggered: String
             ) {
+                val categoryIdL2 = data.categoryIdL2
+                categoryL2Analytic.similarProductAnalytic
+                    .sendProductImpressionEvent(categoryIdL2, similarProduct)
             }
 
             override fun trackClickProduct(
@@ -741,6 +754,9 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 productIdTriggered: String,
                 newQuantity: Int
             ) {
+                val categoryIdL2 = data.categoryIdL2
+                categoryL2Analytic.similarProductAnalytic
+                    .sendProductAddToCartEvent(categoryIdL2, newQuantity, similarProduct)
             }
 
             override fun trackClickCloseBottomsheet(
@@ -748,6 +764,10 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 warehouseId: String,
                 productIdTriggered: String
             ) {
+                val categoryIdL2 = data.categoryIdL2
+                val warehouseIds = viewModel.getWarehouseIds()
+                categoryL2Analytic.similarProductAnalytic
+                    .sendClickCloseOnSimilarProductEvent(categoryIdL2, warehouseIds)
             }
 
             override fun trackClickSimilarProductBtn(
@@ -755,6 +775,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 warehouseId: String,
                 productIdTriggered: String
             ) {
+                viewModel.onClickSimilarProduct(productIdTriggered)
             }
 
             override fun trackImpressionEmptyState(
