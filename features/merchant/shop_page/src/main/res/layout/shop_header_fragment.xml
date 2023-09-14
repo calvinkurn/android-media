@@ -75,14 +75,6 @@
             app:sticky_left_icon="@drawable/ic_toped_widget_login"
             tools:visibility="visible" />
 
-        <View
-            android:id="@+id/tab_layout_top_shadow"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/Unify_NN400_20"
-            app:layout_constraintBottom_toTopOf="@id/shop_page_header_content"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
