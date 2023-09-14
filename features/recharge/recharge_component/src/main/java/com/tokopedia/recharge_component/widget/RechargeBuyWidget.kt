@@ -68,9 +68,10 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                 listener.onClickedChevron(denom)
             }
 
+            val coachMarkList = arrayListOf<CoachMark2Item>()
+
             if (multiCheckoutButtons.size > Int.ONE) {
                 val (leftButton, rightButton)  = multiCheckoutButtonSeparator(multiCheckoutButtons)
-                val coachMarkList = arrayListOf<CoachMark2Item>()
                 if (leftButton.position.isNotEmpty() && leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.type.isNotEmpty()) {
                     btnBuyLeft.show()
                     btnBuyLeft.text = leftButton.text
@@ -104,19 +105,33 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                     }
                 }
 
-                val isCoachMarkClosed = localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
+            } else if(multiCheckoutButtons.size == Int.ONE) {
+                val button = multiCheckoutButtons.first()
+                btnBuyRight.text = button.text
+                btnBuyRight.buttonVariant = variantButton(button.color)
+                btnBuyRight.setOnClickListener {
+                    chooseListenerAction(listener, denom, button.type)
+                }
 
-                if (!isCoachMarkClosed) {
-                    val coachmark = CoachMark2(context)
-                    coachmark.showCoachMark(coachMarkList)
-                    coachmark.setOnDismissListener {
-                        localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
-                        localCacheHandler.applyEditor()
-                    }
+                if (button.coachmark.isNotEmpty()) {
+                    coachMarkList.add(CoachMark2Item(
+                        btnBuyRight, "", button.coachmark
+                    ))
                 }
             } else {
                 btnBuyRight.setOnClickListener {
                     chooseListenerAction(listener, denom, "")
+                }
+            }
+
+            val isCoachMarkClosed = localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
+
+            if (!isCoachMarkClosed) {
+                val coachmark = CoachMark2(context)
+                coachmark.showCoachMark(coachMarkList)
+                coachmark.setOnDismissListener {
+                    localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
+                    localCacheHandler.applyEditor()
                 }
             }
         }
