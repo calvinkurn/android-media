@@ -292,7 +292,7 @@ object BuyerOrderDetailTracker {
             eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
             eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_CLAIM_WARRANTY,
-            eventLabel = "$orderId"
+            eventLabel = orderId
         ).apply {
             put(BuyerOrderDetailTrackerConstant.EVENT_KEY_TRACKER_ID, BuyerOrderDetailTrackerConstant.TRACKER_ID_47433)
         }.appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
