@@ -16,6 +16,8 @@ class AudioStateUiComponent constructor(
 
     private val icAudio: IconUnify = findViewById(R.id.ic_audio_state)
 
+    private val handler = Handler(Looper.getMainLooper())
+    private var dismissRunnable: Runnable? = null
 
     fun onShowOrHideAudioState(isRemoved: Boolean) {
         if (isRemoved) muteState() else unMuteState()
@@ -43,8 +45,11 @@ class AudioStateUiComponent constructor(
     private fun waitToDismiss() {
         icAudio.show()
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            icAudio.hide()
-        }, 2_000)
+        dismissRunnable?.let { handler.removeCallbacks(it) } // cancel previous task
+        val newRunnable = Runnable { icAudio.hide() } // create a new runnable task
+        handler.postDelayed(newRunnable, 2_000) // Schedule the task
+
+        // store a runnable reference
+        dismissRunnable = newRunnable
     }
 }
