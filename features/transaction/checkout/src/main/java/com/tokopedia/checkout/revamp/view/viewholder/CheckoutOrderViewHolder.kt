@@ -84,8 +84,7 @@ class CheckoutOrderViewHolder(
             binding.shippingWidget.renderErrorCourierState(
                 ShippingWidgetUiModel(
                     currentAddress = RecipientAddressModel(),
-                    courierErrorTitle = order.courierSelectionErrorTitle,
-                    courierErrorDescription = order.courierSelectionErrorDescription
+                    courierErrorTitle = order.courierSelectionErrorTitle
                 )
             )
         } else if (order.shipment.isLoading) {
@@ -228,7 +227,7 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
-                binding.shippingWidget.renderNormalShippingWithoutChooseCourierCard(
+                binding.shippingWidget.renderWhitelabelKurirRekomendasiService(
                     ShippingWidgetUiModel(
                         // showNormalShippingCourier
                         currentAddress = RecipientAddressModel(),
