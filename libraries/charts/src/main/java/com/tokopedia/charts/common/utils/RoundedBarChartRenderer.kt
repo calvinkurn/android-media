@@ -17,7 +17,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler
  * Created By @ilhamsuaib on 10/07/20
  */
 
-open class RoundedBarChartRenderer internal constructor(chart: BarDataProvider?, animator: ChartAnimator?, viewPortHandler: ViewPortHandler?, private val mRadius: Int) : BarChartRenderer(chart, animator, viewPortHandler) {
+internal class RoundedBarChartRenderer internal constructor(chart: BarDataProvider?, animator: ChartAnimator?, viewPortHandler: ViewPortHandler?, private val mRadius: Int) : BarChartRenderer(chart, animator, viewPortHandler) {
 
     private val mBarShadowRectBuffer = RectF()
 

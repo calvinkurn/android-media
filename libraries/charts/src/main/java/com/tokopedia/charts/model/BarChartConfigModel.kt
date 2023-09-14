@@ -18,6 +18,5 @@ data class BarChartConfigModel(
     override val tooltip: ChartTooltip?,
     val isRoundedBarEnabled: Boolean,
     val barBorderRadius: Int,
-    val highLightAlpha: Int,
-    val isStackedBar: Boolean
+    val highLightAlpha: Int
 ) : BaseChartConfigModel

@@ -11,7 +11,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.MultiComponentTabAdapter
 import com.tokopedia.utils.view.binding.viewBinding
 
-class MultiComponentTabViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class MultiComponentTabViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var viewBinding: ShcMultiComponentViewBinding? by viewBinding()
 
@@ -22,7 +22,7 @@ class MultiComponentTabViewHolder(itemView: View): RecyclerView.ViewHolder(itemV
     fun bind(tab: MultiComponentTab) {
         if (tab.isLoaded) {
             if (tab.isError) {
-
+                // TODO: Show error page
             } else {
                 viewBinding?.rvShcMultiComponentView?.gone()
                 viewBinding?.rvShcMultiComponentView?.run {
@@ -34,7 +34,6 @@ class MultiComponentTabViewHolder(itemView: View): RecyclerView.ViewHolder(itemV
                     isNestedScrollingEnabled = false
                 }
 
-
                 val componentData = tab.components.flatMap { it.data.orEmpty() }
 
                 tabAdapter.setData(componentData)
@@ -42,10 +41,6 @@ class MultiComponentTabViewHolder(itemView: View): RecyclerView.ViewHolder(itemV
         } else {
             viewBinding?.rvShcMultiComponentView?.gone()
             viewBinding?.loaderShcMultiComponentView?.visible()
-
         }
     }
-
 }
-
-

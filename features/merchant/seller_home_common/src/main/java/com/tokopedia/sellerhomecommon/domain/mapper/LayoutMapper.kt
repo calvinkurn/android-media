@@ -11,8 +11,6 @@ import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
-import com.tokopedia.sellerhomecommon.domain.model.TooltipModel
-import com.tokopedia.sellerhomecommon.domain.model.WidgetEmptyStateModel
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
@@ -57,33 +55,10 @@ class LayoutMapper @Inject constructor(
         response: GetLayoutResponse,
         isFromCache: Boolean
     ): WidgetLayoutUiModel {
-
-        val widgets: MutableList<WidgetModel> = response.layout.widget.orEmpty().toMutableList()
-
-        val dummyWidgets = widgets.apply {
-            add(
-                0,
-                WidgetModel(
-                    id = null,
-                    appLink = null,
-                    ctaText = null,
-                    gridSize = null,
-                    dataKey = "",
-                    subtitle = null,
-                    tooltip = TooltipModel(null, null, true, null),
-                    title = null,
-                    widgetType = "multiComponent",
-                    isShowEmpty = null,
-                    postFilter = null,
-                    emptyStateModel = WidgetEmptyStateModel(),
-                    searchTableColumnFilters = null,
-                )
-            )
-        }
-
-        if (dummyWidgets.isNotEmpty()) {
+        val widgets = response.layout.widget.orEmpty()
+        if (widgets.isNotEmpty()) {
             val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
-            dummyWidgets.forEach { widget ->
+            widgets.forEach { widget ->
                 val widgetType = widget.widgetType.orEmpty()
                 if (WidgetType.isValidWidget(widgetType)) {
                     val mappedWidget = getWidgetByWidgetType(widgetType, widget, isFromCache)

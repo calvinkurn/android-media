@@ -9,11 +9,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.MultiComponentMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetMultiComponentDataResponse
-import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentData
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.delay
 
 @GqlQuery("GetMultiComponentDataQuery", GetMultiComponentDataUseCase.QUERY)
 class GetMultiComponentDataUseCase(
@@ -21,51 +18,13 @@ class GetMultiComponentDataUseCase(
     mapper: MultiComponentMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetMultiComponentDataResponse, List<MultiComponentDataUiModel>>(
-    gqlRepository, mapper, dispatchers, GetMultiComponentDataQuery()
+    gqlRepository,
+    mapper,
+    dispatchers,
+    GetMultiComponentDataQuery()
 ) {
 
     override suspend fun executeOnBackground(): List<MultiComponentDataUiModel> {
-        delay(1500)
-        return listOf(
-            MultiComponentDataUiModel(
-                tabs = listOf(
-                    MultiComponentTab(
-                        id = "tab_plus",
-                        title = "PLUS",
-                        components = listOf(
-                            MultiComponentData(
-                                componentType = "pieChart",
-                                dataKey = "plusSelling",
-                                configuration = "",
-                                metricParam = "",
-                                data = null
-                            )
-                        ),
-                        isSelected = false,
-                        isError = false,
-                        isLoaded = false
-                    ),
-                    MultiComponentTab(
-                        id = "tab_bebas_ongkir",
-                        title = "Bebas Ongkir",
-                        components = listOf(
-                            MultiComponentData(
-                                componentType = "pieChart",
-                                dataKey = "bebasOngkirSelling",
-                                configuration = "",
-                                metricParam = "",
-                                data = null
-                            )
-                        ),
-                        isSelected = false,
-                        isError = false,
-                        isLoaded = false
-                    )
-                )
-            )
-        )
-
-
         val gqlRequest = GraphqlRequest(graphqlQuery, classType, params.parameters)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
@@ -83,6 +42,7 @@ class GetMultiComponentDataUseCase(
         get() = GetMultiComponentDataResponse::class.java
 
     companion object {
+        // TODO: Update the query
         internal const val QUERY = """
           query GetMultiComponentDataQuery(${'$'}dataKeys: [dataKey!]!) {
             fetchMultiComponentWidget(dataKeys:${'$'}dataKeys) {
@@ -115,5 +75,4 @@ class GetMultiComponentDataUseCase(
             putObject(DATA_KEYS, dataKeys)
         }
     }
-
 }

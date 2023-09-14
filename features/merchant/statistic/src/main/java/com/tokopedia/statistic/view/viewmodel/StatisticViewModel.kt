@@ -141,174 +141,200 @@ class StatisticViewModel @Inject constructor(
 
     fun getWidgetLayout(pageSource: String) {
         launchCatchError(context = dispatcher.io, block = {
-            val result = Success(withContext(dispatcher.io) {
-                getLayoutUseCase.get().params =
-                    GetLayoutUseCase.getRequestParams(shopId, pageSource)
-                return@withContext getLayoutUseCase.get().executeOnBackground().widgetList
-            })
+            val result = Success(
+                withContext(dispatcher.io) {
+                    getLayoutUseCase.get().params =
+                        GetLayoutUseCase.getRequestParams(shopId, pageSource)
+                    return@withContext getLayoutUseCase.get().executeOnBackground().widgetList
+                }
+            )
             _widgetLayout.postValue(result)
         }, onError = {
-            _widgetLayout.postValue(Fail(it))
-        })
+                _widgetLayout.postValue(Fail(it))
+            })
     }
 
     fun getTickers(tickerPageName: String) {
         launchCatchError(block = {
-            val result: Success<List<TickerItemUiModel>> = Success(withContext(dispatcher.io) {
-                getTickerUseCase.get().params = GetTickerUseCase.createParams(tickerPageName)
-                return@withContext getTickerUseCase.get().executeOnBackground()
-            })
+            val result: Success<List<TickerItemUiModel>> = Success(
+                withContext(dispatcher.io) {
+                    getTickerUseCase.get().params = GetTickerUseCase.createParams(tickerPageName)
+                    return@withContext getTickerUseCase.get().executeOnBackground()
+                }
+            )
             _tickers.postValue(result)
         }, onError = {
-            _tickers.postValue(Fail(it))
-        })
+                _tickers.postValue(Fail(it))
+            })
     }
 
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<CardDataUiModel>> = Success(withContext(dispatcher.io) {
-                getCardDataUseCase.get().params =
-                    GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-                return@withContext getCardDataUseCase.get().executeOnBackground()
-            })
+            val result: Success<List<CardDataUiModel>> = Success(
+                withContext(dispatcher.io) {
+                    getCardDataUseCase.get().params =
+                        GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                    return@withContext getCardDataUseCase.get().executeOnBackground()
+                }
+            )
             _cardWidgetData.postValue(result)
         }, onError = {
-            _cardWidgetData.postValue(Fail(it))
-        })
+                _cardWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<LineGraphDataUiModel>> = Success(withContext(dispatcher.io) {
-                getLineGraphDataUseCase.get().params = GetLineGraphDataUseCase.getRequestParams(
-                    dataKey = dataKeys,
-                    dynamicParam = dynamicParameter
-                )
-                return@withContext getLineGraphDataUseCase.get().executeOnBackground()
-            })
+            val result: Success<List<LineGraphDataUiModel>> = Success(
+                withContext(dispatcher.io) {
+                    getLineGraphDataUseCase.get().params = GetLineGraphDataUseCase.getRequestParams(
+                        dataKey = dataKeys,
+                        dynamicParam = dynamicParameter
+                    )
+                    return@withContext getLineGraphDataUseCase.get().executeOnBackground()
+                }
+            )
             _lineGraphWidgetData.postValue(result)
         }, onError = {
-            _lineGraphWidgetData.postValue(Fail(it))
-        })
+                _lineGraphWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<MultiLineGraphDataUiModel>> =
-                Success(withContext(dispatcher.io) {
-                    val useCase = getMultiLineGraphUseCase.get()
-                    useCase.params = GetMultiLineGraphUseCase.getRequestParams(
-                        dataKey = dataKeys,
-                        dynamicParam = dynamicParameter
-                    )
-                    return@withContext useCase.executeOnBackground()
-                })
+                Success(
+                    withContext(dispatcher.io) {
+                        val useCase = getMultiLineGraphUseCase.get()
+                        useCase.params = GetMultiLineGraphUseCase.getRequestParams(
+                            dataKey = dataKeys,
+                            dynamicParam = dynamicParameter
+                        )
+                        return@withContext useCase.executeOnBackground()
+                    }
+                )
             _multiLineGraphWidgetData.value = result
         }, onError = {
-            _multiLineGraphWidgetData.value = Fail(it)
-        })
+                _multiLineGraphWidgetData.value = Fail(it)
+            })
     }
 
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<ProgressDataUiModel>> = Success(withContext(dispatcher.io) {
-                val today: String = DateTimeUtil.format(Date().time, DATE_FORMAT)
-                getProgressDataUseCase.get().params =
-                    GetProgressDataUseCase.getRequestParams(today, dataKeys)
-                return@withContext getProgressDataUseCase.get().executeOnBackground()
-            })
+            val result: Success<List<ProgressDataUiModel>> = Success(
+                withContext(dispatcher.io) {
+                    val today: String = DateTimeUtil.format(Date().time, DATE_FORMAT)
+                    getProgressDataUseCase.get().params =
+                        GetProgressDataUseCase.getRequestParams(today, dataKeys)
+                    return@withContext getProgressDataUseCase.get().executeOnBackground()
+                }
+            )
             _progressWidgetData.postValue(result)
         }, onError = {
-            _progressWidgetData.postValue(Fail(it))
-        })
+                _progressWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getPostWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
-            val result: Success<List<PostListDataUiModel>> = Success(withContext(dispatcher.io) {
-                getPostDataUseCase.get().params = GetPostDataUseCase.getRequestParams(
-                    dataKey = dataKeys,
-                    startDate = dynamicParameter.startDate,
-                    endDate = dynamicParameter.endDate
-                )
-                return@withContext getPostDataUseCase.get().executeOnBackground()
-            })
+            val result: Success<List<PostListDataUiModel>> = Success(
+                withContext(dispatcher.io) {
+                    getPostDataUseCase.get().params = GetPostDataUseCase.getRequestParams(
+                        dataKey = dataKeys,
+                        startDate = dynamicParameter.startDate,
+                        endDate = dynamicParameter.endDate
+                    )
+                    return@withContext getPostDataUseCase.get().executeOnBackground()
+                }
+            )
             _postListWidgetData.postValue(result)
         }, onError = {
-            _postListWidgetData.postValue(Fail(it))
-        })
+                _postListWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<CarouselDataUiModel>> = Success(withContext(dispatcher.io) {
-                getCarouselDataUseCase.get().params =
-                    GetCarouselDataUseCase.getRequestParams(dataKeys)
-                return@withContext getCarouselDataUseCase.get().executeOnBackground()
-            })
+            val result: Success<List<CarouselDataUiModel>> = Success(
+                withContext(dispatcher.io) {
+                    getCarouselDataUseCase.get().params =
+                        GetCarouselDataUseCase.getRequestParams(dataKeys)
+                    return@withContext getCarouselDataUseCase.get().executeOnBackground()
+                }
+            )
             _carouselWidgetData.postValue(result)
         }, onError = {
-            _carouselWidgetData.postValue(Fail(it))
-        })
+                _carouselWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getTableWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
-            val result: Success<List<TableDataUiModel>> = Success(withContext(dispatcher.io) {
-                return@withContext getTableData(dataKeys)
-            })
+            val result: Success<List<TableDataUiModel>> = Success(
+                withContext(dispatcher.io) {
+                    return@withContext getTableData(dataKeys)
+                }
+            )
             _tableWidgetData.postValue(result)
         }, onError = {
-            _tableWidgetData.postValue(Fail(it))
-        })
+                _tableWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getPieChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<PieChartDataUiModel>> = Success(withContext(dispatcher.io) {
-                return@withContext getPieChartData(dataKeys)
-            })
+            val result: Success<List<PieChartDataUiModel>> = Success(
+                withContext(dispatcher.io) {
+                    return@withContext getPieChartData(dataKeys)
+                }
+            )
             _pieChartWidgetData.postValue(result)
         }, onError = {
-            _pieChartWidgetData.postValue(Fail(it))
-        })
+                _pieChartWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getBarChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<BarChartDataUiModel>> = Success(withContext(dispatcher.io) {
-                return@withContext getBarChartData(dataKeys)
-            })
+            val result: Success<List<BarChartDataUiModel>> = Success(
+                withContext(dispatcher.io) {
+                    return@withContext getBarChartData(dataKeys)
+                }
+            )
             _barChartWidgetData.postValue(result)
         }, onError = {
-            _barChartWidgetData.postValue(Fail(it))
-        })
+                _barChartWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getAnnouncementWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             getAnnouncementDataUseCase.get().params =
                 GetAnnouncementDataUseCase.createRequestParams(dataKeys)
-            val result = Success(withContext(dispatcher.io) {
-                return@withContext getAnnouncementDataUseCase.get().executeOnBackground()
-            })
+            val result = Success(
+                withContext(dispatcher.io) {
+                    return@withContext getAnnouncementDataUseCase.get().executeOnBackground()
+                }
+            )
             _announcementWidgetData.postValue(result)
         }, onError = {
-            _announcementWidgetData.postValue(Fail(it))
-        })
+                _announcementWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getMultiComponentWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             getMultiComponentDataUseCase.get().params =
                 GetMultiComponentDataUseCase.createRequestParams(dataKeys)
-            val result = Success(withContext(dispatcher.io) {
-                return@withContext getMultiComponentDataUseCase.get().executeOnBackground()
-            })
+            val result = Success(
+                withContext(dispatcher.io) {
+                    return@withContext getMultiComponentDataUseCase.get().executeOnBackground()
+                }
+            )
             _multiComponentWidgetData.postValue(result)
         }, onError = {
-            _multiComponentWidgetData.postValue(Fail(it))
-        })
+                _multiComponentWidgetData.postValue(Fail(it))
+            })
     }
 
     fun getMultiComponentInfoWidgetData(tab: MultiComponentTab) {
@@ -324,12 +350,12 @@ class StatisticViewModel @Inject constructor(
                 _multiComponentTabsData.postValue(updatedTab)
             }
         }, onError = {
-            val updatedTab = tab.copy(
-                isLoaded = true,
-                isError = true
-            )
-            _multiComponentTabsData.postValue(updatedTab)
-        })
+                val updatedTab = tab.copy(
+                    isLoaded = true,
+                    isError = true
+                )
+                _multiComponentTabsData.postValue(updatedTab)
+            })
     }
 
     private suspend fun getLoadedMultiComponents(tab: MultiComponentTab): List<MultiComponentData> {
@@ -341,9 +367,7 @@ class StatisticViewModel @Inject constructor(
                     val data = componentData?.mapNotNull {
                         multiComponentMapper.get().mapToMultiComponentData(it)
                     }
-                    it.copy(
-                        data = listOf(multiComponentMapper.get().getDummyData())
-                    )
+                    it.copy(data = data)
                 }
             }.awaitAll()
         }
@@ -351,6 +375,7 @@ class StatisticViewModel @Inject constructor(
 
     private suspend fun getComponentData(component: MultiComponentData): List<BaseDataUiModel>? {
         return when (component.componentType) {
+            // TODO: Get line chart data according to tab values
             WidgetType.BAR_CHART -> getBarChartData(listOf(component.dataKey))
             WidgetType.PIE_CHART -> getPieChartData(listOf(component.dataKey))
             WidgetType.TABLE -> {
@@ -395,5 +420,4 @@ class StatisticViewModel @Inject constructor(
             )
         )
     }
-
 }

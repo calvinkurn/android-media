@@ -17,7 +17,6 @@ class BarChartConfig : BaseChartConfig() {
     }
 
     private var isRoundedBarEnabled: Boolean = true
-    private var isStackedBar: Boolean = false
     private var barBorderRadius: Int = 8
     private var highLightAlpha: Int = 25
 
@@ -33,10 +32,6 @@ class BarChartConfig : BaseChartConfig() {
         highLightAlpha = lambda()
     }
 
-    fun stackedBar(lambda: () -> Boolean) {
-        isStackedBar = lambda()
-    }
-
     internal fun build(): BarChartConfigModel {
         return BarChartConfigModel(
             isTooltipEnabled = isTooltipEnabled,
@@ -50,8 +45,7 @@ class BarChartConfig : BaseChartConfig() {
             tooltip = tooltip,
             isRoundedBarEnabled = isRoundedBarEnabled,
             barBorderRadius = barBorderRadius,
-            highLightAlpha = highLightAlpha,
-            isStackedBar = isStackedBar
+            highLightAlpha = highLightAlpha
         )
     }
 }
