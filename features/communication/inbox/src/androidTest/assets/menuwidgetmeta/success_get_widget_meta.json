@@ -64,8 +64,8 @@
         "title": "Testing",
         "appLink": "",
         "label": {
-          "color": "",
-          "text": ""
+          "color": "5",
+          "text": "BARU"
         },
         "type": "testNotif"
       }
