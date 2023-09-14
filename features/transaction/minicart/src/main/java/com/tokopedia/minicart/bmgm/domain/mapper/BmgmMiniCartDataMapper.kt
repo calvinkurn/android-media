@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.bmgm.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
@@ -25,7 +26,9 @@ class BmgmMiniCartDataMapper @Inject constructor() {
         val shoppingSummary = data.data.shoppingSummary
         data.data.availableSection.availableGroup.forEach { group ->
             val detail = group.cartDetails.firstOrNull { detail ->
-                detail.cartDetailInfo.cartDetailType.equals(CART_DETAIL_TYPE, true)
+                val cartDetailInfo = detail.cartDetailInfo
+                cartDetailInfo.cartDetailType.equals(CART_DETAIL_TYPE, true) &&
+                        cartDetailInfo.bmgmData.offerId != Long.ZERO
             }
             if (detail != null) {
                 bmgm = detail.cartDetailInfo.bmgmData
