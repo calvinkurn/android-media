@@ -4,11 +4,12 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -31,9 +32,11 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     StickyNavigationListener {
@@ -47,6 +50,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         WidgetCatalogAdapter(
             CatalogAdapterFactoryImpl(
                 heroBannerListener = this,
+
                 navListener = this
             )
         )
@@ -55,6 +59,21 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     var title = ""
 
     var productSortingStatus = 0
+
+
+    private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+
+                val indexVisible = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
+                binding?.rvContent?.post {
+                    widgetAdapter.autoSelectNavigation(indexVisible)
+                }
+            }
+        }
+    }
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -132,7 +151,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
                 productSortingStatus = productSortingStatus
-                widgetAdapter.addMoreData(it.data.widgets)
+                widgetAdapter.addWidget(it.data.widgets)
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
@@ -153,6 +172,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         val layoutManager = LinearLayoutManager(context)
         rvContent.layoutManager = layoutManager
         rvContent.adapter = widgetAdapter
+        rvContent.addOnScrollListener(recyclerViewScrollListener)
         rvContent.setBackgroundColor(navigationProperties.bgColor)
         rvContent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -225,10 +245,29 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
     }
 
-    override fun onNavigateWidget(anchorTo: String) {
-        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
+
+    override fun onNavigateWidget(anchorTo: String, tabPosition: Int) {
+        val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
+        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo) - 1
+
+        val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
         if (anchorToPosition >= Int.ZERO){
-            binding?.rvContent?.smoothScrollToPosition(anchorToPosition)
+            smoothScroller.targetPosition = anchorToPosition
+            layoutManager?.startSmoothScroll(smoothScroller)
+            Handler().postDelayed({
+
+                val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPosition().orZero()
+                val lastVisibleItemPosition = layoutManager?.findLastVisibleItemPosition().orZero()
+
+                if (anchorToPosition !in firstVisibleItemPosition..lastVisibleItemPosition) {
+                    layoutManager?.scrollToPositionWithOffset(anchorToPosition, 0)
+
+                }
+            }, 500)
         }
     }
 }

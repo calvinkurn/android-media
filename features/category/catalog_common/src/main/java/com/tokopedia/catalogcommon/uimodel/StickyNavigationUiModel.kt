@@ -8,7 +8,8 @@ data class StickyNavigationUiModel(
     override var widgetType: String = "",
     override var widgetName: String = "",
     override var widgetBackgroundColor: Int? = null,
-    val content: List<StickyNavigationItemData>
+    val content: List<StickyNavigationItemData>,
+    var currentSelectTab:Int = 0
 ) : BaseCatalogUiModel(idWidget, widgetType, widgetName) {
 
     data class StickyNavigationItemData(

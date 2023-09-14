@@ -23,22 +23,23 @@ class StickyTabNavigationViewHolder(itemView: View, val listener: StickyNavigati
 
     private val binding by viewBinding<WidgetStickyNavigationBinding>()
 
+
     override fun bind(element: StickyNavigationUiModel?) {
         binding?.let {
             it.catalogTabsUnify.tabLayout.removeAllTabs()
             setupTabs(
-                element?.content.orEmpty(),
+                element,
                 element?.widgetBackgroundColor ?: Color.TRANSPARENT
             )
         }
     }
 
     private fun setupTabs(
-        tabs: List<StickyNavigationUiModel.StickyNavigationItemData>,
+        element: StickyNavigationUiModel?,
         widgetBackgroundColor: Int
     ) {
         binding?.run {
-            tabs.forEach {
+            element?.content?.forEach {
                 catalogTabsUnify.addNewTab(it.title)
             }
             catalogTabsUnify.customTabMode = TabLayout.MODE_FIXED
@@ -48,18 +49,21 @@ class StickyTabNavigationViewHolder(itemView: View, val listener: StickyNavigati
                 catalogTabsUnify.tabLayout.context,
                 R.drawable.shape_showcase_tab_indicator_color
             )
+            catalogTabsUnify.tabLayout.getTabAt(element?.currentSelectTab.orZero())?.select()
             catalogTabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
             catalogTabsUnify.tabLayout.setTabTextColors(Color.BLUE, Color.BLACK)
             catalogTabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    listener?.onNavigateWidget(tabs[tab?.position.orZero()].anchorTo)
+                    element?.currentSelectTab = tab?.position.orZero()
+                    listener?.onNavigateWidget(element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(), element?.currentSelectTab.orZero())
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
-
+                    element?.currentSelectTab = tab?.position.orZero()
+                    listener?.onNavigateWidget(element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(), element?.currentSelectTab.orZero())
                 }
 
             })
@@ -71,5 +75,5 @@ class StickyTabNavigationViewHolder(itemView: View, val listener: StickyNavigati
 
 interface StickyNavigationListener {
 
-    fun onNavigateWidget(anchorTo: String)
+    fun onNavigateWidget(anchorTo: String, tabPosition: Int)
 }

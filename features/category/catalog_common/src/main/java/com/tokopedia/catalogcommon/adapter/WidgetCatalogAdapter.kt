@@ -1,6 +1,7 @@
 package com.tokopedia.catalogcommon.adapter
 
 import android.os.Handler
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,7 @@ import com.tokopedia.catalogcommon.StickySingleHeaderView
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 class WidgetCatalogAdapter(
     private val baseListAdapterTypeFactory: CatalogAdapterFactoryImpl
@@ -82,7 +84,28 @@ class WidgetCatalogAdapter(
         super.onDetachedFromRecyclerView(recyclerView)
     }
 
-    fun findPositionWidget(widgetName: String) : Int {
+    fun autoSelectNavigation(position: Int) {
+        val indexNavigation = visitables.indexOfFirst {
+            it is StickyNavigationUiModel
+        }
+
+        val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
+
+        val currentWidget = visitables[position] as BaseCatalogUiModel
+        navigation?.let { stickyNav ->
+            val indexPartOfNavigation = stickyNav.content.indexOfFirst {
+                it.anchorTo == currentWidget.widgetName
+            }
+            if (indexPartOfNavigation >= Int.ZERO){
+                navigation.currentSelectTab = indexPartOfNavigation
+                notifyItemChanged(indexNavigation, navigation)
+            }
+
+        }
+
+    }
+
+    fun findPositionWidget(widgetName: String): Int {
         return visitables.indexOfFirst {
             val uiModel = it as BaseCatalogUiModel
             uiModel.widgetName == widgetName
@@ -96,5 +119,6 @@ class WidgetCatalogAdapter(
 
         return index
     }
+
 
 }

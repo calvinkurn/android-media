@@ -232,6 +232,9 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
           }
         }
         ... on CatalogCompAccordion {
+          section {
+            title
+          }
           accordion {
             title
             desc

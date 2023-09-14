@@ -9,6 +9,7 @@ data class SupportFeaturesUiModel(
     override var widgetBackgroundColor: Int? = null,
     override var widgetTextColor: Int? = null,
     override var darkMode: Boolean = false,
+    val titleSection: String,
     val items: List<ItemSupportFeaturesUiModel>
 ) : BaseCatalogUiModel(
     idWidget,

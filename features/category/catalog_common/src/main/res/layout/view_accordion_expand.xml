@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN600"
         app:typographyType="paragraph_3"
-        android:maxLength="200" />
-
+        android:ellipsize="end"
+        android:maxLength="2000" />
 
 </LinearLayout>
