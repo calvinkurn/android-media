@@ -3,6 +3,7 @@ package com.tokopedia.cartrevamp.view.processor
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartModel
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
@@ -28,6 +29,7 @@ class CartCalculator @Inject constructor() {
         val subtotalWholesaleCashbackMap = HashMap<String, Double>()
         val cartItemParentIdMap = HashMap<String, CartItemHolderData>()
         val calculatedBundlingGroupId = HashSet<String>()
+        val totalDiscountBmGmMap = HashMap<Long, Double>()
 
         for (cartItemHolderData in allCartItemDataList) {
             var itemQty =
@@ -100,6 +102,10 @@ class CartCalculator @Inject constructor() {
                     }
                 }
             }
+
+            if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.bmGmCartInfoData.bmGmData.totalDiscount > 0.0) {
+                totalDiscountBmGmMap[cartItemHolderData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.bmGmCartInfoData.bmGmData.totalDiscount
+            }
         }
 
         if (subtotalWholesaleBeforeSlashedPriceMap.isNotEmpty()) {
@@ -117,6 +123,12 @@ class CartCalculator @Inject constructor() {
         if (subtotalWholesaleCashbackMap.isNotEmpty()) {
             for ((_, value) in subtotalWholesaleCashbackMap) {
                 subtotalCashback += value
+            }
+        }
+
+        if (totalDiscountBmGmMap.isNotEmpty()) {
+            for ((_, value) in totalDiscountBmGmMap) {
+                subtotalPrice -= value
             }
         }
 

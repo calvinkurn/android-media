@@ -2272,9 +2272,15 @@ class CartRevampFragment :
         binding?.checkboxGlobal?.checks()?.debounce(DELAY_CHECK_BOX_GLOBAL)?.onEach { pair ->
             handleCheckboxGlobalChangeEvent()
             if (pair.first) {
-                val listCartGroupHolderDataWithBmGm = CartDataHelper.getListCartGroupHolderDataWithBmgm(viewModel.cartDataList.value)
-                listCartGroupHolderDataWithBmGm.forEach { cartGroupHolderData ->
-                    getGroupProductTicker(cartGroupHolderData)
+                val listOfferId = CartDataHelper.getListOfferId(viewModel.cartDataList.value)
+                if (listOfferId.isNotEmpty()) {
+                    listOfferId.forEach { offerId ->
+                        val (index, cartItem) = CartDataHelper.getCartItemHolderDataAndIndexByOfferId(viewModel.cartDataList.value, offerId)
+                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+                        cartAdapter?.notifyItemChanged(index)
+
+                        getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, offerId))
+                    }
                 }
             }
         }?.launchIn(lifecycleScope)
@@ -2804,9 +2810,7 @@ class CartRevampFragment :
                             listOfferMessage.add(s.text)
                         }
                         cartItem.bmGmCartInfoData.bmGmData.offerMessage = listOfferMessage
-
-                        val cartGroupHolderData = cartItem.let { CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, it) }
-                        cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.discountAmount
+                        cartItem.bmGmCartInfoData.bmGmData.totalDiscount = data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.discountAmount
                         viewModel.reCalculateSubTotal()
                     }
                     cartAdapter?.notifyItemChanged(index)
@@ -4938,18 +4942,21 @@ class CartRevampFragment :
         )
     }
 
-    private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData) {
-        viewModel.getBmGmGroupProductTicker(
-            cartGroupHolderData.cartGroupBmGmHolderData.offerId,
-            BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
-                cartGroupHolderData.productUiModelList,
-                cartGroupHolderData.cartGroupBmGmHolderData.bundleId,
-                cartGroupHolderData.cartGroupBmGmHolderData.bundleGroupId,
-                cartGroupHolderData.cartGroupBmGmHolderData.offerId,
-                cartGroupHolderData.cartGroupBmGmHolderData.offerJsonData,
-                cartGroupHolderData.cartGroupBmGmHolderData.cartStringOrder
+    private fun getGroupProductTicker(listProduct: List<CartItemHolderData>) {
+        if (listProduct.isNotEmpty()) {
+            val cartItemData = listProduct.first()
+            viewModel.getBmGmGroupProductTicker(
+                cartItemData.bmGmCartInfoData.bmGmData.offerId,
+                BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
+                    listProduct,
+                    cartItemData.bundleId.toLongOrZero(),
+                    cartItemData.bundleGroupId,
+                    cartItemData.bmGmCartInfoData.bmGmData.offerId,
+                    cartItemData.bmGmCartInfoData.bmGmData.offerJsonData,
+                    cartItemData.cartStringOrder
+                )
             )
-        )
+        }
     }
 
     override fun onBmGmChevronRightClicked(offerLandingPageLink: String) {

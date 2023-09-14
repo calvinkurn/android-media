@@ -13,6 +13,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 
 object CartDataHelper {
 
@@ -502,21 +503,23 @@ object CartDataHelper {
         return true
     }
 
-    fun getListCartGroupHolderDataWithBmgm(cartDataList: ArrayList<Any>): List<CartGroupHolderData> {
-        val listCartGroupHolderData = arrayListOf<CartGroupHolderData>()
+    fun getListOfferId(cartDataList: ArrayList<Any>): List<Long> {
+        val listOfferId = arrayListOf<Long>()
         loop@ for (data in cartDataList) {
             when (data) {
-                is CartGroupHolderData -> {
+                is CartItemHolderData -> {
                     if (!data.isError) {
-                        if (data.cartGroupBmGmHolderData.hasBmGmOffer) {
-                            listCartGroupHolderData.add(data)
+                        if (data.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+                            if (!listOfferId.contains(data.bmGmCartInfoData.bmGmData.offerId)) {
+                                listOfferId.add(data.bmGmCartInfoData.bmGmData.offerId)
+                            }
                         }
                     }
                 }
             }
         }
 
-        return listCartGroupHolderData
+        return listOfferId
     }
 
     fun getCartItemHolderDataAndIndexByOfferId(cartDataList: ArrayList<Any>, offerId: Long): Pair<Int, CartItemHolderData> {

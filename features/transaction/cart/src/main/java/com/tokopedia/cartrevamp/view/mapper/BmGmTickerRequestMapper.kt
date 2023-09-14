@@ -24,7 +24,7 @@ object BmGmTickerRequestMapper {
                     productId = product.productId,
                     warehouseId = product.warehouseId,
                     qty = product.quantity,
-                    finalPrice = product.productPrice.toString().removeSingleDecimalSuffix(),
+                    finalPrice = if (product.wholesalePrice > 0.0) product.wholesalePrice.toString().removeSingleDecimalSuffix() else product.productPrice.toString().removeSingleDecimalSuffix(),
                     checkboxState = product.isSelected
                 )
             )
