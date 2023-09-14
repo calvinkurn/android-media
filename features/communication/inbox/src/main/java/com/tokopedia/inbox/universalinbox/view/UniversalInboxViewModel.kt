@@ -100,6 +100,7 @@ class UniversalInboxViewModel @Inject constructor(
         observeDriverChannelFlow()
         observeInboxMenuWidgetMetaAndCounterFlow()
         observeProductRecommendationFlow()
+        loadInboxMenuAndWidgetMeta()
     }
 
     fun processAction(action: UniversalInboxAction) {

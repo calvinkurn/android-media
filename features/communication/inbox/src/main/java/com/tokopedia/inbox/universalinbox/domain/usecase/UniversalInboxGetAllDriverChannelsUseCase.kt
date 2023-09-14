@@ -18,13 +18,13 @@ open class UniversalInboxGetAllDriverChannelsUseCase @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
-    private val channelFlow = MutableStateFlow<Result<List<ConversationsChannel>>>(
+    protected val channelFlow = MutableStateFlow<Result<List<ConversationsChannel>>>(
         Result.Loading
     )
 
     fun observe(): Flow<Result<List<ConversationsChannel>>> = channelFlow
 
-    suspend fun observeDriverChannelFlow() {
+    open suspend fun observeDriverChannelFlow() {
         try {
             repository.getConversationRepository()?.getAllChannels(
                 listOf(ChannelType.GroupBooking)

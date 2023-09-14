@@ -60,7 +60,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -131,8 +130,6 @@ class UniversalInboxFragment @Inject constructor(
 
     private var trackingQueue: TrackingQueue? = null
 
-    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -176,7 +173,6 @@ class UniversalInboxFragment @Inject constructor(
         setupRecyclerViewLoadMore()
         setupObservers()
         setupListeners()
-        loadWidgetMetaAndCounter()
     }
 
     private fun setupRecyclerView() {
@@ -443,7 +439,6 @@ class UniversalInboxFragment @Inject constructor(
     override fun loadWidgetMetaAndCounter() {
         shouldTopAdsAndLoadRecommendation = true
         endlessRecyclerViewScrollListener?.resetState()
-        adapter
         viewModel.processAction(UniversalInboxAction.RefreshPage)
     }
 
@@ -875,7 +870,6 @@ class UniversalInboxFragment @Inject constructor(
         // Refresh controlled by rollence
         if (shouldRefreshProductRecommendation(abTestPlatform)) {
             viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
-            recommendationWidgetViewModel?.refresh()
         }
     }
 
