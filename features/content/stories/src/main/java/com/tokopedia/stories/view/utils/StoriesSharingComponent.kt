@@ -7,6 +7,7 @@ import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 15/08/23
@@ -15,7 +16,9 @@ class StoriesSharingComponent (rootView: View) {
     private var mListener : Listener? = null
     private val sharingSheet = UniversalShareBottomSheet.createInstance(rootView).apply {
         init(object : ShareBottomsheetListener {
-            override fun onShareOptionClicked(shareModel: ShareModel) {}
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                mListener?.onShareChannel(shareModel)
+            }
 
             override fun onCloseOptionClicked() {
                 mListener?.onDismissEvent(this@StoriesSharingComponent)
@@ -51,5 +54,6 @@ class StoriesSharingComponent (rootView: View) {
 
     interface Listener {
         fun onDismissEvent(view: StoriesSharingComponent)
+        fun onShareChannel(shareModel: ShareModel)
     }
 }

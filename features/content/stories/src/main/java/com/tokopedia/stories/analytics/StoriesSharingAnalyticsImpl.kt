@@ -24,7 +24,6 @@ class StoriesSharingAnalyticsImpl @AssistedInject constructor(
         ): StoriesSharingAnalyticsImpl
     }
 
-
     private val role: String
         get() {
             val isOwner = userSession.shopId == shopId
@@ -37,7 +36,7 @@ class StoriesSharingAnalyticsImpl @AssistedInject constructor(
     private val irisSession: String
         get() = TrackApp.getInstance().gtm.irisSessionId
 
-    override fun onClickShareIcon(storyId: String) {
+    override fun onClickShareIcon(storyId: String, ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 Key.event to KEY_TRACK_CLICK_COMMUNICATION,
