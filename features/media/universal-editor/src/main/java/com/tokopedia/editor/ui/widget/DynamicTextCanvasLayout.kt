@@ -92,7 +92,6 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
     override fun onRemoveView(view: View) {
         models.remove(view.id)
         removeView(view)
-        listener?.onTextRemoved()
     }
 
     private fun editText(id: Int, model: InputTextModel) {
@@ -172,7 +171,6 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
 
     interface Listener {
         fun onTextClick(text: View, model: InputTextModel?)
-        fun onTextRemoved()
     }
 
     companion object {

@@ -130,12 +130,6 @@ open class MainEditorActivity : AppCompatActivity()
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
-    // TODO: Remove it
-    override fun onTextRemoved() {
-        val hasTextAdded = binding.container.hasTextAdded()
-        viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
-    }
-
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton())

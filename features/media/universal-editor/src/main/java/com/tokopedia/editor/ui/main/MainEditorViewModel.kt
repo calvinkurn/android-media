@@ -103,7 +103,7 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.ClickHeaderCloseButton -> {
                 val currentState = mainEditorState.value
 
-                val isPlacementEdited = currentState.imagePlacementModel?.path != null
+                val isPlacementEdited = currentState.hasPlacementEdited()
                 val isTextAdded = currentState.hasTextAdded
 
                 if ((isPlacementEdited || isTextAdded) && !event.isSkipConfirmation) {

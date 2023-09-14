@@ -14,4 +14,9 @@ data class MainEditorUiModel(
     val imagePlacementModel: ImagePlacementModel? = null,
     val hasTextAdded: Boolean = false,
     val isRemoveAudio: Boolean = false,
-)
+) {
+
+    fun hasPlacementEdited(): Boolean {
+        return imagePlacementModel?.path != null && imagePlacementModel.path.isNotEmpty()
+    }
+}
