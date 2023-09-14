@@ -201,9 +201,8 @@ class UniversalInboxViewModel @Inject constructor(
 
             // Handle error case for menu
             (result.menu is Result.Error) -> {
-                setFallbackInboxMenu()
+                setFallbackInboxMenu(true)
                 setLoadingInboxMenu(false)
-                setErrorWidgetMeta()
                 showErrorMessage(
                     Pair(result.menu.throwable, ::handleGetMenuAndCounterResult.name)
                 )
@@ -237,14 +236,16 @@ class UniversalInboxViewModel @Inject constructor(
             if (inboxResponse == null) {
                 // If cache is null, it means new user or error
                 // create the default menu first
-                setFallbackInboxMenu()
+                setFallbackInboxMenu(false)
                 return
             }
             val widgetMeta = widgetMetaMapper.mapWidgetMetaToUiModel(
                 widgetMetaResponse = inboxResponse.chatInboxMenu.widgetMenu,
                 counterResponse = counterResponse,
                 driverCounter = driverResponse
-            )
+            ).apply {
+                this.isError = inboxResponse.chatInboxMenu.shouldShowLocalLoad
+            }
             val menuList = inboxMenuMapper.mapToInboxMenu(
                 userSession = userSession,
                 inboxMenuResponse = inboxResponse.chatInboxMenu.inboxMenu,
@@ -261,15 +262,15 @@ class UniversalInboxViewModel @Inject constructor(
                 )
             }
         } catch (throwable: Throwable) {
-            setFallbackInboxMenu()
+            setFallbackInboxMenu(false)
             showErrorMessage(Pair(throwable, ::onSuccessGetMenuAndCounter.name))
         }
     }
 
-    private fun setFallbackInboxMenu() {
+    private fun setFallbackInboxMenu(shouldShowLocalLoad: Boolean) {
         viewModelScope.launch {
             try {
-                val fallbackResult = inboxMenuMapper.generateFallbackMenu()
+                val fallbackResult = inboxMenuMapper.generateFallbackMenu(shouldShowLocalLoad)
                 getInboxMenuAndWidgetMetaUseCase.updateCache(fallbackResult) // Update the cache to fallback
             } catch (throwable: Throwable) {
                 // If the fallback error, nothing we can do
@@ -327,7 +328,7 @@ class UniversalInboxViewModel @Inject constructor(
                 getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta()
                 refreshCounter()
             } catch (throwable: Throwable) {
-                setFallbackInboxMenu()
+                setFallbackInboxMenu(true)
                 showErrorMessage(Pair(throwable, ::loadInboxMenuAndWidgetMeta.name))
             }
         }

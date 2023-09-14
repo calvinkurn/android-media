@@ -91,13 +91,15 @@ class UniversalInboxMenuMapper @Inject constructor(
     }
 
     // Edge case - Fallback menu generator
-    fun generateFallbackMenu(): UniversalInboxWrapperResponse {
+    fun generateFallbackMenu(shouldShowLocalLoad: Boolean): UniversalInboxWrapperResponse {
         val chatSectionList = getFallbackChatSectionList()
         val othersSectionList = getOthersSectionList()
         return UniversalInboxWrapperResponse(
             UniversalInboxMenuAndWidgetMetaResponse(
                 inboxMenu = chatSectionList + othersSectionList
-            )
+            ).apply {
+                this.shouldShowLocalLoad = shouldShowLocalLoad
+            }
         )
     }
 

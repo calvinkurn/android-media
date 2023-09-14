@@ -14,7 +14,9 @@ data class UniversalInboxMenuAndWidgetMetaResponse(
 
     @SerializedName("inboxMenu")
     var inboxMenu: List<UniversalInboxMenuDataResponse> = listOf()
-)
+) {
+    var shouldShowLocalLoad = false
+}
 
 data class UniversalInboxWidgetDataResponse(
     @SerializedName("icon")
