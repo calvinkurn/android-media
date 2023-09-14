@@ -127,7 +127,7 @@ object CartUiModelMapper {
             availableGroup.groupShopCartData.forEachIndexed { shopIndex, availableShop ->
                 val shopUiModel = mapGroupShop(availableShop.shop, availableShop.cartDetails)
                 availableShop.cartDetails.forEachIndexed { cartDetailIndex, cartDetail ->
-                    cartDetail.products.forEach { product ->
+                    cartDetail.products.forEachIndexed { productIndex, product ->
                         val productUiModel = mapProductUiModel(
                             cartData = cartData,
                             cartDetail = cartDetail,
@@ -137,7 +137,7 @@ object CartUiModelMapper {
                             availableShop = availableShop,
                             shopData = shopUiModel
                         ).apply {
-                            isShopShown = availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0
+                            isShopShown = availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0 && productIndex == 0
                         }
                         productUiModelList.add(productUiModel)
                     }
