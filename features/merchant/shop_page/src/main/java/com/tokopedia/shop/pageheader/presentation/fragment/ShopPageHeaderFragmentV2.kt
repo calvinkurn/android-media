@@ -586,7 +586,7 @@ class ShopPageHeaderFragmentV2 :
                 is Success -> {
                     onSuccessGetShopPageP1Data(result.data)
                     initMiniCart()
-                    //TODO sendTrackerImpressionShopHeader()
+                    sendTrackerImpressionShopHeader()
                     sendTrackerImpressionShopBottomNav()
                 }
 
@@ -797,6 +797,25 @@ class ShopPageHeaderFragmentV2 :
                 updateShareIcon(it.data.eligibleCommission?.isEligible.orFalse())
             }
         }
+    }
+
+    private fun sendTrackerImpressionShopHeader() {
+        val listDynamicUspText = shopPageHeaderP1Data?.getShopHeaderComponentByName<ShopPageHeaderBadgeTextValueComponentUiModel>(
+            ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO,
+            BaseShopPageHeaderComponentUiModel.ComponentName.SHOP_DYNAMIC_USP
+        )?.text?.map { it.textHtml }.orEmpty()
+        val shopStaticUspImageUrl = shopPageHeaderP1Data?.getShopHeaderComponentByName<ShopPageHeaderImageOnlyComponentUiModel>(
+            ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE,
+            BaseShopPageHeaderComponentUiModel.ComponentName.FREE_SHIPPING
+        )?.image.orEmpty()
+        shopPageTracking?.impressionShopHeader(
+            listDynamicUspText,
+            shopStaticUspImageUrl,
+            getShopBodyConfig(),
+            isOverrideTheme(),
+            shopId,
+            userId
+        )
     }
 
     private fun sendTrackerImpressionShopBottomNav() {

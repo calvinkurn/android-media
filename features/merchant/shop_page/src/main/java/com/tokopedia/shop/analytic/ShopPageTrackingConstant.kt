@@ -353,6 +353,10 @@ object ShopPageTrackingConstant {
     const val HIGHLIGHT_WIDGET = "highlight widget"
     const val HOME_ANCHOR = "home anchor"
     const val PLAY_WIDGET = "play widget"
+    const val VALUE_SHOP_HEADER_BACKGROUND_VIDEO = "video"
+    const val VALUE_SHOP_HEADER_BACKGROUND_IMAGE = "image"
+    const val VALUE_SHOP_HEADER_BACKGROUND_COLOR = "color"
+    const val VALUE_SHOP_HEADER_BACKGROUND_STANDARD = "standard"
 
     // trackerId
     const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"
@@ -451,6 +455,7 @@ object ShopPageTrackingConstant {
         const val CLICK_CTA_SLIDER_BANNER_HIGHLIGHT = "campaign tab - click jelajahi home anchor"
         const val IMPRESSION_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - impression product play"
         const val CLICK_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - click product play"
+        const val REIMAGINED_IMPRESSION_SHOP_HEADER = "reimagined - impression shop header"
         const val REIMAGINED_CLICK_HEADER_SHOP_NAME = "reimagined - click header shop name"
         const val REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "reimagined - click header shop review"
         const val REIMAGINED_CLICK_HEADER_SHOP_USP = "reimagined - click header shop usp"
@@ -570,6 +575,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45950"
         const val TRACKER_ID_CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45951"
         const val TRACKER_ID_CLICK_REIMAGINED_PRODUCT_CAROUSEL = "45952"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_HEADER_SHOP = "45906"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME = "45907"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "45908"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_USP = "45909"

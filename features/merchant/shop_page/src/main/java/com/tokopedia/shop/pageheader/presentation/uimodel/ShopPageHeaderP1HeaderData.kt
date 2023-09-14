@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation.uimodel
 
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 
 data class ShopPageHeaderP1HeaderData(
@@ -16,4 +17,12 @@ data class ShopPageHeaderP1HeaderData(
     val listShopPageHeaderWidget: List<ShopPageHeaderWidgetUiModel> = listOf(),
     val listDynamicTabData: List<ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData> = listOf(),
     val shopHeaderLayoutData: ShopPageHeaderLayoutUiModel = ShopPageHeaderLayoutUiModel(),
-)
+){
+    inline fun <reified T: BaseShopPageHeaderComponentUiModel> getShopHeaderComponentByName(widgetType: String, componentName: String): T? {
+        return (listShopPageHeaderWidget.firstOrNull {
+            it.type == widgetType
+        }?.componentPages?.firstOrNull {
+            it.name == componentName
+        }) as? T
+    }
+}
