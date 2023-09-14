@@ -30,5 +30,11 @@
     <color name="dms_static_Unify_RN100_light">#FFDBE2</color>
     <color name="dms_static_NN400">#9FA6B0</color>
     <color name="dms_static_Unify_Y300_light">#FFC400</color>
+
+    <!--Home Tab Shop Reimagine - Product carousel override to always use light mode-->
     <color name="dms_static_white">#FFFFFF</color>
+    <color name="dms_static_light_NN950_44">#70212121</color>
+    <color name="dms_static_light_NN950_68">#AD212121</color>
+    <color name="dms_static_light_YN400">#FFA617</color>
+
 </resources>
