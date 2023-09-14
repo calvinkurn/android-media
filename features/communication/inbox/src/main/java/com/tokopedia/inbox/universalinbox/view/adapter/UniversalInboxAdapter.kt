@@ -159,7 +159,7 @@ class UniversalInboxAdapter(
         notifyDataSetChanged()
     }
 
-    private fun isWidgetMetaAdded(): Boolean {
+    fun isWidgetMetaAdded(): Boolean {
         return visitables.firstOrNull() is UniversalInboxWidgetMetaUiModel
     }
 
