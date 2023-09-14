@@ -1185,11 +1185,12 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun setSortFilterIndicatorCounter() {
         val searchParameter = searchParameter ?: return
         val sortFilterCount = getSortFilterCount(searchParameter.getSearchParameterMap())
+        val filterCount = sortFilterCount - (if (isAnySortActive) 1 else 0)
 
         if (isReimagineQuickFilter())
             searchSortFilterReimagine?.setSortFilterIndicatorCounter(
                 isAnySortActive,
-                sortFilterCount
+                filterCount,
             )
         else
             searchSortFilter?.indicatorCounter = sortFilterCount
