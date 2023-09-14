@@ -270,7 +270,7 @@ class UniversalInboxFragment @Inject constructor(
         // Widget has meaning to be shown
         if (widget.widgetList.isNotEmpty() || widget.isError) {
             adapter.tryUpdateWidgetMeta(widget)
-        } else {
+        } else if (adapter.isWidgetMetaAdded()) { // if widget is exist in the list
             adapter.tryRemoveItemAtPosition(0)
         }
     }
