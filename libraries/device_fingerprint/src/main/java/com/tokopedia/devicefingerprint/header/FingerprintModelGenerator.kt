@@ -85,20 +85,24 @@ object FingerprintModelGenerator {
         val now = (System.currentTimeMillis() / 1000)
         if (fingerprintCache.isEmpty() || isFingerprintExpired(context, now) ||
             adsIdAlreadyRetrieved(context)) {
-            if (FirebaseRemoteConfigImpl(context).getBoolean(ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA, true)) {
-                val fp = generateNewFingerprintData(context)
-                fingerprintHasAdsId = fp.hasUniqueId()
-                fingerprintCache = Gson().toJson(fp)
-            } else {
-                val fp = generateFingerprintData(context)
-                fingerprintHasAdsId = fp.hasUniqueId()
-                fingerprintCache = Gson().toJson(fp)
-            }
+            setFingerprintData(context)
             getFingerprintSharedPref(context).edit().putString(FINGERPRINT_USE_CASE, fingerprintCache)
                 .putLong(FINGERPRINT_TS, now).apply()
             fingerprintLastTs = now
         }
         return fingerprintCache
+    }
+
+    private fun setFingerprintData(context: Context) {
+        if (FirebaseRemoteConfigImpl(context).getBoolean(ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA, true)) {
+            val fp = generateNewFingerprintData(context)
+            fingerprintHasAdsId = fp.hasUniqueId()
+            fingerprintCache = Gson().toJson(fp)
+        } else {
+            val fp = generateFingerprintData(context)
+            fingerprintHasAdsId = fp.hasUniqueId()
+            fingerprintCache = Gson().toJson(fp)
+        }
     }
 
     private fun adsIdAlreadyRetrieved(context: Context): Boolean{
@@ -199,20 +203,8 @@ object FingerprintModelGenerator {
         val deviceAvailableProcessor = getAvailableProcessor(context.applicationContext)
         val deviceMemoryClass = getDeviceMemoryClassCapacity(context.applicationContext)
         val deviceDpi = getDeviceDpi(context.applicationContext)
-        val deviceTime = System.currentTimeMillis().toString()
-        val brand = Build.BRAND
-        val product = Build.PRODUCT
-        val board = Build.BOARD
-        val cpuAbi = Build.CPU_ABI
-        val device = Build.DEVICE
-        val versionName = GlobalConfig.VERSION_NAME
-        val advertisingId = DeviceInfo.getAdsId(context)
-        val widevineMediaDrm = MediaDrm(UUID(
-            AdditionalInfoModel.MOST_SIG_BITS,
-            AdditionalInfoModel.LEAST_SIG_BITS
-        ))
-        val wideVineId = widevineMediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
-        val wideVineIdBase64 = Base64.encodeToString(wideVineId, Base64.DEFAULT).trim()
+        val additionalInfoModel = AdditionalInfoModel.generate(context)
+
         val fp = FingerPrintNew(
             unique_id = DeviceInfo.getAdsId(context),
             device_name = deviceName,
@@ -242,15 +234,15 @@ object FingerprintModelGenerator {
             pid = imei,
             uuid = uuid,
             inval = VisorFingerprintInstance.getDVToken(context),
-            time = deviceTime,
-            brand = brand,
-            product = product,
-            board = board,
-            cpuAbi = cpuAbi,
-            device = device,
-            versionName = versionName,
-            advertisingId = advertisingId,
-            wideVineId = wideVineIdBase64,
+            time = additionalInfoModel.time.toString(),
+            brand = additionalInfoModel.brand,
+            product = additionalInfoModel.product,
+            board = additionalInfoModel.board,
+            cpuAbi = additionalInfoModel.cpuAbi,
+            device = additionalInfoModel.device,
+            versionName = additionalInfoModel.versionName,
+            advertisingId = additionalInfoModel.advertisingId,
+            wideVineId = additionalInfoModel.wideVineId,
             installer = context.packageManager.getInstallerPackageName(context.packageName)?: "")
         return fp
     }
