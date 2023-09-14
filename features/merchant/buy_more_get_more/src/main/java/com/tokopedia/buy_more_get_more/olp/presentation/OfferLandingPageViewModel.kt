@@ -4,17 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam.UserLocation
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
+import com.tokopedia.buy_more_get_more.olp.data.request.GetSharingDataByOfferIDParam
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.*
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
+import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -32,12 +37,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getOfferInfoForBuyerUseCase: GetOfferInfoForBuyerUseCase,
     private val getOfferProductListUseCase: GetOfferProductListUseCase,
+    private val getSharingDataByOfferIDUseCase: GetSharingDataByOfferIDUseCase,
     private val getNotificationUseCase: GetNotificationUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val userSession: UserSessionInterface
@@ -58,6 +65,10 @@ class OfferLandingPageViewModel @Inject constructor(
     private val _productList = MutableLiveData<OfferProductListUiModel>()
     val productList: LiveData<OfferProductListUiModel>
         get() = _productList
+
+    private val _sharingData = MutableLiveData<Result<SharingDataByOfferIdUiModel>>()
+    val sharingData: LiveData<Result<SharingDataByOfferIdUiModel>>
+        get() = _sharingData
 
     private val _navNotificationModel = MutableLiveData(TopNavNotificationModel())
     val navNotificationLiveData: LiveData<TopNavNotificationModel>
@@ -81,6 +92,7 @@ class OfferLandingPageViewModel @Inject constructor(
             is OlpEvent.SetInitialUiState -> {
                 setInitialUiState(
                     offerIds = event.offerIds,
+                    offerTypeId = event.offerTypeId,
                     shopId = event.shopIds,
                     productIds = event.productIds,
                     warehouseIds = event.warehouseIds,
@@ -104,6 +116,10 @@ class OfferLandingPageViewModel @Inject constructor(
                 getNotification()
             }
 
+            is OlpEvent.GetSharingData -> {
+                getSharingDataByOfferId()
+            }
+
             is OlpEvent.AddToCart -> {
                 validateOffering(event.product) // validate offering before addToCart
             }
@@ -119,6 +135,7 @@ class OfferLandingPageViewModel @Inject constructor(
 
     private fun setInitialUiState(
         offerIds: List<Long>,
+        offerTypeId: Long,
         shopId: Long,
         productIds: List<Long> = emptyList(),
         warehouseIds: List<Long> = emptyList(),
@@ -127,6 +144,7 @@ class OfferLandingPageViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 offerIds = offerIds,
+                offerTypeId = offerTypeId,
                 shopData = ShopData(shopId = shopId),
                 productIds = productIds,
                 warehouseIds = warehouseIds,
@@ -139,7 +157,8 @@ class OfferLandingPageViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam())
+                val result =
+                    getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam())
                 _offeringInfo.postValue(result)
             },
             onError = {
@@ -258,6 +277,23 @@ class OfferLandingPageViewModel @Inject constructor(
         )
     }
 
+    private fun getSharingDataByOfferId() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val param = GetSharingDataByOfferIDParam(
+                    offerId = currentState.offerIds.firstOrNull().orZero(),
+                    shopId = currentState.shopData.shopId
+                )
+                val result = getSharingDataByOfferIDUseCase.execute(param)
+                _sharingData.postValue(Success(result))
+            },
+            onError = {
+                _sharingData.postValue(Fail(it))
+            }
+        )
+    }
+
     private fun setSort(sortId: String, sortName: String) {
         _uiState.update {
             it.copy(
@@ -299,5 +335,19 @@ class OfferLandingPageViewModel @Inject constructor(
                 tnc = tnc
             )
         }
+    }
+
+    fun getPageIdForSharing(): String {
+        return "BMGM-${userSession.userId}-${currentState.shopData.shopId}-${currentState.offerIds.firstOrNull()}-${currentState.offerTypeId}-${Date()}-default"
+    }
+
+    fun getDeeplink(): String {
+        return UriUtil.buildUri(
+            ApplinkConst.BUY_MORE_GET_MORE_OLP,
+            currentState.offerIds.firstOrNull().toString(),
+            currentState.warehouseIds.firstOrNull().toString(),
+            currentState.productIds.firstOrNull().toString(),
+            currentState.shopData.shopId.toString()
+        )
     }
 }

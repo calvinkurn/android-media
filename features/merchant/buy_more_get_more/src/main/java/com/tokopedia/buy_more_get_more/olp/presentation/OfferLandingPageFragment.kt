@@ -25,6 +25,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiMode
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
@@ -59,7 +60,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -69,6 +70,7 @@ import com.tokopedia.utils.resources.isDarkMode
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
@@ -130,6 +132,7 @@ class OfferLandingPageFragment :
     private val olpAdapterTypeFactory by lazy {
         OlpAdapterTypeFactoryImpl(this, this, this)
     }
+
     private var sortId = ""
     private var sortName = ""
     private var tncBottomSheet: TncBottomSheet? = null
@@ -236,6 +239,18 @@ class OfferLandingPageFragment :
             updateCartCounter(notification.totalCart)
         }
 
+        viewModel.sharingData.observe(viewLifecycleOwner) { sharingData ->
+            when (sharingData) {
+                is Success -> {
+                    openShareBottomSheet(sharingData.data)
+                }
+
+                is Fail -> {
+                    binding?.miniCartView.showToaster(sharingData.throwable.localizedMessage)
+                }
+            }
+        }
+
         viewModel.miniCartAdd.observe(viewLifecycleOwner) { atc ->
             when (atc) {
                 is Success -> {
@@ -303,12 +318,12 @@ class OfferLandingPageFragment :
             }
             showShareButton = true
             shareButton?.setOnClickListener {
-                //get sharing data
+                // get sharing data
                 tracker.sendClickShareButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
                     offerInfoForBuyer.nearestWarehouseIds.toSafeString()
                 )
-                openShareBottomSheet()
+                viewModel.processEvent(OlpEvent.GetSharingData)
             }
             cartButton?.setOnClickListener {
                 tracker.sendClickKeranjangButtonEvent(
@@ -446,7 +461,11 @@ class OfferLandingPageFragment :
     }
 
     private fun setupTncBottomSheet() {
-        tncBottomSheet = TncBottomSheet.newInstance(currentState.tnc)
+        tncBottomSheet = TncBottomSheet.newInstance(
+            tnc = currentState.tnc,
+            offerId = currentState.offerIds.toSafeString(),
+            warehouseId = currentState.warehouseIds.toSafeString()
+        )
     }
 
     private fun setViewState(viewState: Int, status: Status = Status.SUCCESS) {
@@ -692,6 +711,13 @@ class OfferLandingPageFragment :
                     currentState.offerIds.toSafeString(),
                     currentState.warehouseIds.toSafeString()
                 )
+                dismiss()
+            }
+            setImpressionListener {
+                tracker.sendImpressSnkEvent(
+                    currentState.offerIds.toSafeString(),
+                    currentState.warehouseIds.toSafeString()
+                )
             }
             show(this@OfferLandingPageFragment)
         }
@@ -738,7 +764,7 @@ class OfferLandingPageFragment :
         }
     }
 
-    private fun openShareBottomSheet() {
+    private fun openShareBottomSheet(sharingData: SharingDataByOfferIdUiModel) {
         UniversalShareBottomSheet.createInstance().apply {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -749,17 +775,25 @@ class OfferLandingPageFragment :
             })
             enableDefaultShareIntent()
             setMetaData(
-                tnTitle = "",
-                tnImage = ""
+                tnTitle = sharingData.offerData.title,
+                tnImage = sharingData.offerData.imageUrl
+            )
+            setLinkProperties(
+                LinkProperties(
+                    ogTitle = sharingData.offerData.title,
+                    ogDescription = sharingData.offerData.description,
+                    ogImageUrl = sharingData.offerData.imageUrl,
+                    deeplink = viewModel.getDeeplink(),
+                    desktopUrl = sharingData.offerData.deeplink
+                )
             )
             setUtmCampaignData(
-                "",
-                "",
-                "",
-                ""
+                pageName = "BMGM",
+                userId = userSession.userId.toString(),
+                pageId = viewModel.getPageIdForSharing(),
+                feature = "share"
             )
-            enableAffiliateCommission(AffiliateInput())
-        }.show(childFragmentManager, "")
+        }.show(childFragmentManager, this)
     }
 
     private fun setDefaultErrorSelection(throwable: Throwable) {
@@ -786,4 +820,14 @@ class OfferLandingPageFragment :
     private fun List<Long>.toSafeString(): String {
         return this.firstOrNull()?.orZero().toString()
     }
+
+//    override fun onClickedTncUrl(url: String) {
+//        RouteManager.route(
+//            context,
+//            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
+//        )
+//    }
+//
+//    override fun onImpressTnc() {
+//    }
 }
