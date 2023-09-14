@@ -33,7 +33,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -50,11 +49,11 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getCelebrationBottomsheetDeeplink
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpCelebration
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinet
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinetSeeMore
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalDetail
-import com.tokopedia.applink.promo.DeeplinkMapperPromo.getCelebrationBottomsheetDeeplink
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.invokeScpToasterUniversalAppLink
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
@@ -633,10 +632,7 @@ object DeeplinkMainApp {
                 ApplinkConstInternalCategory.getDiscoveryDeeplink(ApplinkConst.DISCOVERY_DEALS)
             },
             DLP.matchPattern("{slug}") { _, _, _, idList ->
-                UriUtil.buildUri(
-                    ApplinkConstInternalPromo.PROMO_DETAIL,
-                    idList?.getOrNull(0)
-                )
+                ApplinkConstInternalCategory.getDiscoveryDeeplink(ApplinkConst.DISCOVERY_DEALS)
             }
         ),
         "promoNative" to mutableListOf(
