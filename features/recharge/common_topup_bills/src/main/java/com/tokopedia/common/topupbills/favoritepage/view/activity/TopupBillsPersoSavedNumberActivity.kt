@@ -119,7 +119,6 @@ open class TopupBillsPersoSavedNumberActivity :
             extras.putSerializable(EXTRA_FAVORITE_NUMBER_PAGE_CONFIG, favoriteNumberPageConfig)
 
             intent.putExtras(extras)
-            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             return intent
         }
         const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"

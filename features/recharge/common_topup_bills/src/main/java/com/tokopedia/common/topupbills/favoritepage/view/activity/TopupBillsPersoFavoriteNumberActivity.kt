@@ -112,7 +112,6 @@ class TopupBillsPersoFavoriteNumberActivity :
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
             extras.putSerializable(EXTRA_FAVORITE_NUMBER_PAGE_CONFIG, favoriteNumberPageConfig)
             intent.putExtras(extras)
-            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             return intent
         }
 
