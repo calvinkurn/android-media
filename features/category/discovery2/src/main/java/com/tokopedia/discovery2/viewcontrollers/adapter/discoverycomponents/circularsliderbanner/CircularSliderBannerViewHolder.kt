@@ -23,10 +23,10 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder.Companion.FLING_DURATION
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 
 class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), CircularListener {
@@ -36,12 +36,12 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     private val bannerCircularAdapter: BannerCircularAdapter = BannerCircularAdapter(listOf(), this)
     private val cvSliderBanner: CircularViewPager = itemView.findViewById(R.id.circular_slider_banner)
     private val sliderIndicator: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
-    private val sliderExpandableIndicator: BannerIndicator = itemView.findViewById(R.id.expandable_indicator_banner)
+    private val sliderExpandableIndicator: BannerIndicator = itemView.findViewById(R.id.expandable_indicator_banner_turned_on)
+    private val sliderTargetingIndicator: PageControl = itemView.findViewById(R.id.expandable_indicator_banner_turned_off)
     private var isDraggingWithExpandableIndicator = false
     private var expandableIndicatorPosition = 0
     private var debounceHandler = Handler(Looper.getMainLooper())
     private var debounceRunnable = Runnable {
-        sliderBannerViewModel?.onBannerChanged(expandableIndicatorPosition)
         sliderExpandableIndicator.startIndicatorByPosition(expandableIndicatorPosition)
         isDraggingWithExpandableIndicator = false
     }
@@ -87,10 +87,20 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
 
     private fun setUpIndicator(item: ArrayList<CircularModel>) {
         if (item.size > 1) {
-            if (sliderBannerViewModel?.isExpandableIndicatorNeeded().orFalse()) {
-                setBannerExpandableIndicatorAnimation(item)
-            } else {
-                setBannerIndicatorAnimation()
+            sliderBannerViewModel?.apply {
+                if (isExpandableIndicatorNeeded()) {
+                    if (isDisabledAutoSlide()) {
+                        setBannerExpandableIndicatorAnimationTurnedOff(
+                            size = item.size
+                        )
+                    } else {
+                        setBannerExpandableIndicatorAnimationTurnedOn(
+                            size = item.size
+                        )
+                    }
+                } else {
+                    setBannerIndicatorAnimation()
+                }
             }
         } else {
             sliderIndicator.hide()
@@ -98,15 +108,37 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
         }
     }
 
-    private fun setBannerExpandableIndicatorAnimation(item: ArrayList<CircularModel>) {
-        setupExpandableIndicator(item)
-        setupBannerWithExpandableIndicator()
+    private fun setBannerExpandableIndicatorAnimationTurnedOff(
+        size: Int
+    ) {
+        setupExpandableIndicatorTurnedOff(
+            size = size
+        )
+        setupBannerWithExpandableIndicatorTurnedOff()
     }
 
-    private fun setupExpandableIndicator(item: ArrayList<CircularModel>) {
+    private fun setBannerExpandableIndicatorAnimationTurnedOn(
+        size: Int
+    ) {
+        setupExpandableIndicatorTurnedOn(
+            size = size
+        )
+        setupBannerWithExpandableIndicatorTurnedOn()
+    }
+
+    private fun setupExpandableIndicatorTurnedOff(size: Int) {
+        sliderTargetingIndicator.show()
+        sliderTargetingIndicator.setIndicator(
+            size = size
+        )
+    }
+
+    private fun setupExpandableIndicatorTurnedOn(
+        size: Int
+    ) {
         sliderIndicator.hide()
         sliderExpandableIndicator.show()
-        sliderExpandableIndicator.setBannerIndicators(item.size)
+        sliderExpandableIndicator.setBannerIndicators(size)
         sliderExpandableIndicator.setBannerListener(
             object : BannerIndicatorListener {
                 override fun onChangePosition(position: Int) { /* nothing to do */ }
@@ -119,7 +151,26 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
             }
         )
     }
-    private fun setupBannerWithExpandableIndicator() {
+
+    private fun setupBannerWithExpandableIndicatorTurnedOff() {
+        /**
+         * disable auto-scroll on banner and let the slider banner determines the position of the indicator
+         */
+        disableBannerAutoScroll()
+        cvSliderBanner.setIndicatorPageChangeListener(
+            object : IndicatorPageChangeListener {
+                override fun onIndicatorPageChange(newIndicatorPosition: Int) {
+                    /**
+                     * re-synchronize the component below this widget
+                     */
+                    sliderBannerViewModel?.onBannerChanged(newIndicatorPosition)
+                    sliderTargetingIndicator.setCurrentIndicator(newIndicatorPosition)
+                }
+            }
+        )
+    }
+
+    private fun setupBannerWithExpandableIndicatorTurnedOn() {
         /**
          * disable auto-scroll on banner and let the expandable indicator determines the position of the banner
          */

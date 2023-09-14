@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.kotlin.extensions.orFalse
 
 class CircularSliderBannerViewModel(application: Application, val components: ComponentsItem,private val position: Int) : DiscoveryBaseViewModel() {
     private val title: MutableLiveData<String> = MutableLiveData()
@@ -38,6 +39,8 @@ class CircularSliderBannerViewModel(application: Application, val components: Co
     }
 
     fun isExpandableIndicatorNeeded(): Boolean = getPropertyType() == ATF_BANNER || getPropertyType() == TARGETING_BANNER
+
+    fun isDisabledAutoSlide() = components.properties?.isDisabledAutoSlide.orFalse()
 
     fun onBannerChanged(position: Int) {
         components.itemPosition = position
