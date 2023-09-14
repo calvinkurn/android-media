@@ -43,7 +43,8 @@ private const val SCP_REWARDS_MEDAL_BENEFIT_QUERY = """
         ${'$'}medaliSlug:String, 
         ${'$'}type:String, 
         ${'$'}page:Int, 
-        ${'$'}pageSize:Int
+        ${'$'}pageSize:Int,
+        ${'$'}apiVersion:String
     ) {
       scpRewardsGetMedaliBenefitList(input:{
         type:${'$'}type,
@@ -51,7 +52,8 @@ private const val SCP_REWARDS_MEDAL_BENEFIT_QUERY = """
         pageSize:${'$'}pageSize,
         medaliSlug:${'$'}medaliSlug,
         pageName:${'$'}pageName,
-        sourceName:${'$'}sourceName
+        sourceName:${'$'}sourceName,
+        apiVersion:${'$'}apiVersion,
       }){
         resultStatus {
           code
