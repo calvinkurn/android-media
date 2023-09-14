@@ -729,7 +729,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     override fun clickSuggestionMPS(item: BaseSuggestionDataView) {
-        viewModel?.onKeywordAdded(item.title)
+        viewModel?.onKeywordAdd(item)
     }
 
     companion object {

@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.util.CoachMarkLocalCache
 import com.tokopedia.autocompletecomponent.util.clearSearchQuery
 import com.tokopedia.autocompletecomponent.util.hasQuery
@@ -134,6 +135,7 @@ class SearchBarViewModel @Inject constructor(
             _searchBarKeywords.value = keywordList.toList()
             activeKeyword = SearchBarKeyword(keywordList.size)
             _activeKeywordLiveData.value = activeKeyword
+            updateSearchBarState()
         }
     }
 
@@ -183,9 +185,21 @@ class SearchBarViewModel @Inject constructor(
 
     fun onKeywordAdded(query: String?) {
         if (!query.isNullOrBlank()) {
-            val currentKeywords = _searchBarKeywords.value ?: emptyList()
             val cleanedQuery = activeKeyword.keyword.trim()
-            val lowerCaseQuery = cleanedQuery.lowercase()
+            updateSearchQuery(cleanedQuery)
+        } else {
+            _searchBarKeywordErrorEvent.value = SearchBarKeywordError.Empty
+        }
+    }
+
+    fun onKeywordAdd(selectedSuggestion: BaseSuggestionDataView) {
+        updateSearchQuery(selectedSuggestion.title)
+    }
+
+    private fun updateSearchQuery(query: String?){
+        if (!query.isNullOrBlank()) {
+            val currentKeywords = _searchBarKeywords.value ?: emptyList()
+            val lowerCaseQuery = query.lowercase()
             val hasMaxKeywords = currentKeywords.size > 2
             val hasSameKeyword = currentKeywords.any { lowerCaseQuery == it.keyword.lowercase() }
             if (hasSameKeyword) _searchBarKeywordErrorEvent.value = SearchBarKeywordError.Duplicate
@@ -193,10 +207,10 @@ class SearchBarViewModel @Inject constructor(
             val addedKeyword = if (coachMarkLocalCache.shouldShowAddedKeywordCoachMark()) {
                 coachMarkLocalCache.markShowAddedKeywordCoachMark()
                 activeKeyword.copy(
-                    keyword = cleanedQuery,
+                    keyword = query,
                     shouldShowCoachMark = true,
                 )
-            } else activeKeyword.copy(keyword = cleanedQuery)
+            } else activeKeyword.copy(keyword = query)
             val keywords = currentKeywords + addedKeyword
             val sortedKeywords = keywords.sortWithNewIndex()
             val newKeyword = SearchBarKeyword(
@@ -311,9 +325,8 @@ class SearchBarViewModel @Inject constructor(
         val allowKeyboardDismiss = searchBarKeywordSize == 0
         val shouldDisplayMpsPlaceHolder = searchBarKeywordSize != 0
         val shouldShowMpsCoachMark = coachMarkLocalCache.shouldShowPlusIconCoachMark()
-        val isMpsAnimationEnabled = mpsLocalCache.shouldAnimatePlusIcon() && shouldEnableAddButton
         val mpsState = currentState.copy(
-            isMpsAnimationEnabled = isMpsAnimationEnabled,
+            isMpsAnimationEnabled = false,
             shouldShowCoachMark = shouldShowMpsCoachMark,
             isAddButtonEnabled = shouldEnableAddButton,
             isKeyboardDismissEnabled = allowKeyboardDismiss,
@@ -354,6 +367,7 @@ class SearchBarViewModel @Inject constructor(
         _searchParameterLiveData.value =
             searchParameter.setSearchQueries(newKeywords.map { it.keyword })
         _searchBarKeywords.value = newKeywords
+        updateSearchBarState()
     }
 
     fun markCoachMarkIconPlusAlreadyDisplayed() {
