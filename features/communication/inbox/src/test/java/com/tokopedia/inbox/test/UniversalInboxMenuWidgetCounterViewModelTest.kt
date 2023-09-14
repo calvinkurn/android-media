@@ -47,7 +47,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
 
             // Then
             verify(exactly = 1) {
-                inboxMenuMapper.generateFallbackMenu()
+                inboxMenuMapper.generateFallbackMenu(any())
             }
             coVerify(exactly = 1) {
                 getWidgetMetaUseCase.updateCache(any())
@@ -214,11 +214,9 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             viewModel.inboxMenuUiState.test {
                 // When initial state
                 viewModel.setupViewModelObserver()
-                // Then skip
+                // Then skip loading
                 skipItems(1)
 
-                // When update state
-                viewModel.processAction(UniversalInboxAction.RefreshPage)
                 // Then updated state
                 val updatedState = awaitItem()
                 assert(!updatedState.isLoading)
@@ -229,7 +227,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
 
             // Then
             verify(exactly = 1) {
-                inboxMenuMapper.generateFallbackMenu()
+                inboxMenuMapper.generateFallbackMenu(any())
             }
             coVerify(exactly = 1) {
                 getWidgetMetaUseCase.updateCache(any())
@@ -420,7 +418,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
 
             // Then
             verify(exactly = 1) {
-                inboxMenuMapper.generateFallbackMenu()
+                inboxMenuMapper.generateFallbackMenu(any())
             }
             coVerify(exactly = 1) {
                 getWidgetMetaUseCase.updateCache(any())
@@ -482,7 +480,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
 
             // Then
             verify(exactly = 1) {
-                inboxMenuMapper.generateFallbackMenu()
+                inboxMenuMapper.generateFallbackMenu(any())
             }
             coVerify(exactly = 1) {
                 getWidgetMetaUseCase.updateCache(any())
@@ -533,6 +531,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
 
                 // When update state
                 viewModel.processAction(UniversalInboxAction.RefreshPage)
+                // Then update state
                 val updatedState = awaitItem()
                 Assert.assertEquals(
                     0,
@@ -543,6 +542,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
                     this.chatUnread.unreadBuyer = 1
                 }
                 counterFlow.emit(Result.Success(counterResponse))
+
                 // When update state 2
                 viewModel.processAction(UniversalInboxAction.RefreshCounter)
                 // Then updated state 2
@@ -561,7 +561,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
     fun `observe inbox menu and fail fetch inbox, get fallback menu and error message`() {
         runTest {
             // Given
-            val expectedResponse = inboxMenuMapper.generateFallbackMenu()
+            val expectedResponse = inboxMenuMapper.generateFallbackMenu(true)
             val expectedResponseCounter = UniversalInboxAllCounterResponse().also {
                 it.chatUnread.unreadBuyer = 1
                 it.notifCenterUnread.notifUnread = "3"
@@ -626,7 +626,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             mockCounter(Result.Loading)
             mockDriverCounter(Result.Success(listOf()))
             every {
-                inboxMenuMapper.generateFallbackMenu()
+                inboxMenuMapper.generateFallbackMenu(any())
             } throws dummyThrowable
 
             viewModel.errorUiState.test {

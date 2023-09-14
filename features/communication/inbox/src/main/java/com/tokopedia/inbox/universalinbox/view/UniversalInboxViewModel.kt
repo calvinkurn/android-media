@@ -100,7 +100,6 @@ class UniversalInboxViewModel @Inject constructor(
         observeDriverChannelFlow()
         observeInboxMenuWidgetMetaAndCounterFlow()
         observeProductRecommendationFlow()
-        loadInboxMenuAndWidgetMeta()
     }
 
     fun processAction(action: UniversalInboxAction) {
@@ -203,6 +202,7 @@ class UniversalInboxViewModel @Inject constructor(
             (result.menu is Result.Error) -> {
                 setFallbackInboxMenu(true)
                 setLoadingInboxMenu(false)
+                setErrorWidgetMeta()
                 showErrorMessage(
                     Pair(result.menu.throwable, ::handleGetMenuAndCounterResult.name)
                 )
