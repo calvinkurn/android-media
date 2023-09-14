@@ -8,7 +8,7 @@
     <string name="pdp_post_atc_fallback_title">Produk berhasil ditambahkan</string>
     <string name="pdp_post_atc_fallback_button">Lihat Keranjang</string>
     <string name="pdp_post_atc_footer_button">Cek Keranjang</string>
-    <string name="pdp_post_atc_footer_description">Produk berhasil ditambah!</string>
+    <string name="pdp_post_atc_footer_description">Masuk ke Keranjang!</string>
     <string name="pdp_post_atc_footer_info_added">Dilengkapi %s tambahan</string>
     <string name="pdp_post_atc_footer_info_loading">Produk lagi disesuikan...</string>
 </resources>
