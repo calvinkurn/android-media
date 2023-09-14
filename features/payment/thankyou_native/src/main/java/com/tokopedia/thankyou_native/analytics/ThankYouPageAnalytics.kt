@@ -293,7 +293,7 @@ class ThankYouPageAnalytics @Inject constructor(
             putParcelableArrayList(KEY_PROMOTION, arrayListOf(promotionBundle))
         }
 
-        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
+        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_VIEW_ITEM, bundle)
     }
 
     private fun getEnhancedECommerceBanner(
@@ -433,6 +433,8 @@ object ParentTrackingKey {
     val KEY_PAYMENT_TYPE = "payment_type"
     val KEY_EVENT_VIEW_ITEM = "view_item"
     val KEY_EVENT_SELECT_CONTENT = "select_content"
+    val PROMO_CLICK = "promoClick"
+    val PROMO_VIEW = "promoView"
 
     val KEY_SHOP_ID = "shopId"
     val KEY_SHOP_TYPE = "shopType"
