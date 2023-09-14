@@ -16,8 +16,8 @@
     <string name="bmgm_description_error_ended_promo">tapi tenang, kamu masih bisa beli barang di halaman ini tanpa promo.</string>
     <string name="bmgm_cta_text_error_ended_promo">Ke Halaman Sebelumnya</string>
 
-    <string name="bmgm_title_error_out_of_stock">Barang promosi sudah habis</string>
-    <string name="bmgm_description_error_out_of_stock">Kamu bisa cek barang lain di toko %s atau cek barang di bawah ini.</string>
+    <string name="bmgm_title_error_out_of_stock">Oops, barang di halaman ini sudah habis</string>
+    <string name="bmgm_description_error_out_of_stock">Kamu bisa cek promosi atau barang lain di halaman toko</string>
     <string name="bmgm_cta_text_error_out_of_stock">Ke Halaman Sebelumnya</string>
 
     <string name="bmgm_title_error_no_internet_connection">Koneksi Internetmu terganggu</string>

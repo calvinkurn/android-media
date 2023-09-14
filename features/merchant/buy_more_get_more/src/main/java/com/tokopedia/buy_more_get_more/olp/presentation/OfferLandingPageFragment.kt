@@ -20,7 +20,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
 import com.tokopedia.buy_more_get_more.olp.di.component.DaggerBuyMoreGetMoreComponent
-import com.tokopedia.buy_more_get_more.olp.domain.entity.EmptyStateUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
@@ -71,7 +70,6 @@ import com.tokopedia.utils.resources.isDarkMode
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
@@ -519,10 +517,7 @@ class OfferLandingPageFragment :
                     Status.OOS -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),
-                            description = getString(
-                                R.string.bmgm_description_error_out_of_stock,
-                                currentState.shopData.shopName
-                            ),
+                            description = getString(R.string.bmgm_description_error_out_of_stock),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
                             primaryCtaAction = { activity?.finish() },
