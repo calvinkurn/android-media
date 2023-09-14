@@ -26,9 +26,9 @@ import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.FACEBOOK_DEFAULT
 import com.tokopedia.affiliate.INSTAGRAM_DEFAULT
 import com.tokopedia.affiliate.PAGE_TYPE_CAMPAIGN
-import com.tokopedia.affiliate.PAGE_TYPE_KOLEKSI
 import com.tokopedia.affiliate.PAGE_TYPE_PDP
 import com.tokopedia.affiliate.PAGE_TYPE_SHOP
+import com.tokopedia.affiliate.PAGE_TYPE_WISHLIST
 import com.tokopedia.affiliate.TIKTOK_DEFAULT
 import com.tokopedia.affiliate.TWITTER_DEFAULT
 import com.tokopedia.affiliate.WWW
@@ -220,7 +220,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 type = params?.type ?: bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
                 productName.text =
                     params?.itemName ?: bundle.getString(KEY_PRODUCT_NAME)
-                if (type == PAGE_TYPE_KOLEKSI) {
+                if (type == PAGE_TYPE_WISHLIST) {
                     glCollectionItem.show()
                     productImage.hide()
                     setCollectionImages(params?.imageArray)

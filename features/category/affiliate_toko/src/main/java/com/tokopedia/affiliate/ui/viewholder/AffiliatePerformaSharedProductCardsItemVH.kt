@@ -12,9 +12,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_TYPE_CAMPAIGN
-import com.tokopedia.affiliate.PAGE_TYPE_KOLEKSI
 import com.tokopedia.affiliate.PAGE_TYPE_PDP
 import com.tokopedia.affiliate.PAGE_TYPE_SHOP
+import com.tokopedia.affiliate.PAGE_TYPE_WISHLIST
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -83,7 +83,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
         private const val PRODUCT_ITEM = 0
         private const val SHOP_ITEM = 1
         private const val CAMPAIGN_ITEM = 3
-        private const val KOLEKSI_ITEM = 4
+        private const val WISHLIST_ITEM = 4
         private val COLLECTION_MARGIN_1_5 = 1.5f.dp.value.toInt()
         private val COLLECTION_MARGIN_3 = 1.5f.dp.value.toInt()
         private const val COLLECTION_PARAM_SIZE = 4
@@ -117,7 +117,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
 
     private fun setItemData(element: AffiliatePerformaSharedProductCardsModel?) {
         element?.product?.let { product ->
-            if (product.itemType == KOLEKSI_ITEM) {
+            if (product.itemType == WISHLIST_ITEM) {
                 glCollectionItem.show()
                 productImage.hide()
                 setCollectionImages(product.imageArray)
@@ -156,7 +156,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                     PRODUCT_ITEM -> PAGE_TYPE_PDP
                     SHOP_ITEM -> PAGE_TYPE_SHOP
                     CAMPAIGN_ITEM -> PAGE_TYPE_CAMPAIGN
-                    KOLEKSI_ITEM -> PAGE_TYPE_KOLEKSI
+                    WISHLIST_ITEM -> PAGE_TYPE_WISHLIST
                     else -> null
                 }
                 productClickInterface?.onProductClick(
