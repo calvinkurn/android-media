@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 class SliderView: ScrollView {
 
     companion object {
-        private const val VERTICAL_PADDING = 12
+        private const val VERTICAL_PADDING = 4
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -93,15 +93,9 @@ class SliderView: ScrollView {
     fun setItems(views: List<View>) {
         if (views.isEmpty()) return
 
-        val lastView = views.last()
-        lastView.post {
-            layoutParams.height = lastView.height
-            requestLayout()
-        }
-
         views.forEachIndexed { index, view ->
-            if (index == 0) view.setMargin(0, VERTICAL_PADDING.toPx(), 0, 0)
-            if (index == views.size - 1) view.setMargin(0, 0, 0, VERTICAL_PADDING.toPx())
+            if (index == 0) view.setPadding(0, VERTICAL_PADDING.toPx(), 0, 0)
+            if (index == views.size - 1) view.setPadding(0, 0, 0, VERTICAL_PADDING.toPx())
             binding?.container?.addView(view)
         }
 
@@ -110,41 +104,70 @@ class SliderView: ScrollView {
 
     private fun animateScrollToViews(views: List<View>) {
         views.last().post {
-            val delayDuration = 2000L
-            val animDuration = UnifyMotion.T3
+//            val delayDuration = 5000L
+//            val animDuration = 10000L
+//
+//            val animators = mutableListOf<ObjectAnimator>()
+//            var delay = 0L
+//
+//            for (view in views) {
+//                val scrollAnimator = ObjectAnimator.ofInt(
+//                    this,
+//                    "scrollY",
+//                    view.top
+//                )
+//                scrollAnimator.duration = animDuration
+//                scrollAnimator.interpolator = UnifyMotion.EASE_OVERSHOOT
+//                scrollAnimator.startDelay = delay
+//
+//                animators.add(scrollAnimator)
+//
+//                delay += delayDuration
+//            }
+//
+//            val animatorSet = AnimatorSet()
+//            animatorSet.playSequentially(animators as List<Animator>?)
+//            animatorSet.addListener(object : AnimatorListenerAdapter() {
+//                override fun onAnimationEnd(animation: Animator) {
+//                    GlobalScope.launch(Dispatchers.Main) {
+//                        delay(delayDuration)
+//                        smoothScrollToTop {
+//                            animatorSet.start()
+//                        }
+//                    }
+//                }
+//            })
+//
+//            animatorSet.start()
 
-            val animators = mutableListOf<ObjectAnimator>()
-            var delay = 0L
+            layoutParams.height = views.last().height - VERTICAL_PADDING.toPx()
+            requestLayout()
+            val totalDuration = 10900L
 
-            for (view in views) {
-                val scrollAnimator = ObjectAnimator.ofInt(
-                    this,
-                    "scrollY",
-                    view.top
-                )
-                scrollAnimator.duration = animDuration
-                scrollAnimator.interpolator = UnifyMotion.EASE_OVERSHOOT
-                scrollAnimator.startDelay = delay
+            val kf0 = Keyframe.ofInt(0f, VERTICAL_PADDING.toPx())
+            val kf1 = Keyframe.ofInt(5000f / totalDuration, VERTICAL_PADDING.toPx())
+            val kf2 = Keyframe.ofInt(5300f / totalDuration, views.last().top + VERTICAL_PADDING.toPx())
+            val kf3 = Keyframe.ofInt(5450f / totalDuration, views.last().top)
+            val kf4 = Keyframe.ofInt(10450f / totalDuration, views.last().top)
+            val kf5 = Keyframe.ofInt(10750f / totalDuration, 0)
+            val kf6 = Keyframe.ofInt(10900f / totalDuration, VERTICAL_PADDING.toPx())
+            val pvhScrollY = PropertyValuesHolder.ofKeyframe("scrollY", kf0, kf1, kf2, kf3, kf4, kf5, kf6)
+            val scrollAnim = ObjectAnimator.ofPropertyValuesHolder(this, pvhScrollY)
 
-                animators.add(scrollAnimator)
-
-                delay += delayDuration
-            }
-
-            val animatorSet = AnimatorSet()
-            animatorSet.playSequentially(animators as List<Animator>?)
-            animatorSet.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    GlobalScope.launch(Dispatchers.Main) {
-                        delay(delayDuration)
-                        smoothScrollToTop {
-                            animatorSet.start()
-                        }
-                    }
-                }
-            })
-
-            animatorSet.start()
+//            val a = ValueAnimator.ofPropertyValuesHolder(pvhScrollY)
+//
+//            a.addUpdateListener {
+//                this.scrollY = it.animatedValue as Int
+//            }
+//
+//            a.duration = 5000L
+//
+//            a.start()
+            scrollAnim.interpolator = UnifyMotion.LINEAR
+            scrollAnim.startDelay = 0
+            scrollAnim.duration = totalDuration
+            scrollAnim.repeatCount = ValueAnimator.INFINITE
+            scrollAnim.start()
         }
     }
 

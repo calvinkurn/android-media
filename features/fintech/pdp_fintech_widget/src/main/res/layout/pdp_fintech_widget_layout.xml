@@ -22,6 +22,7 @@
         android:layout_marginTop="@dimen/pdp_fintech_widget_14_dp"
         android:layout_marginEnd="@dimen/pdp_fintech_widget_16_dp"
         android:textColor="@color/Unify_NN950_96"
+        android:visibility="gone"
         app:typographyWeight="bold"
         app:typographyType="display_2"
         tools:text = "Demo Title kjdfnv fkjdsng dlkjfng jfskng kjxfng kjfng"
@@ -54,16 +55,31 @@
         android:layout_marginBottom="@dimen/pdp_fintech_widget_12_dp"
         android:clipToPadding="false"
         android:paddingLeft="10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/slider_view"
         app:layout_constraintTop_toBottomOf="@id/quickText"
         />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/installment_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycler_items"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <com.tokopedia.pdp.fintech.view.SliderView
         android:id="@+id/slider_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycler_items"/>
+        android:layout_marginStart="4dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="@id/installment_icon"
+        app:layout_constraintStart_toEndOf="@id/installment_icon"
+        app:layout_constraintTop_toTopOf="@id/installment_icon"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

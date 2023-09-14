@@ -1,6 +1,7 @@
 package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.AttrRes
@@ -72,11 +73,11 @@ class PdpFintechWidget @JvmOverloads constructor(
         initRecycler()
 
         val v1 = Typography(context).apply {
-            text = "First Row"
+            text = Html.fromHtml("<span style=\"color:#212121;\">Bisa cicil mulai </span> <b>Rp474.916/bulan! <span style=\"color:#00AA5B\">Lihat Cicilan</span></b>")
         }
 
         val v2 = Typography(context).apply {
-            text = "Second Row"
+            text = Html.fromHtml("<span style=\"color: #009F92\">+ Diskon 25% s.d. Rp100.000</span>")
         }
 
         val v3 = Typography(context).apply {
@@ -86,6 +87,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         val v4 = Typography(context).apply {
             text = "Fourth Row"
         }
+        binding.installmentIcon.setImageUrl("https://images.tokopedia.net/img/fintech/paylater/gopay-later-pdp-logo.png")
         binding.sliderView.setItems(arrayListOf(v1, v2))
     }
 
@@ -135,7 +137,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun setSeeMoreButton(chips: ArrayList<ChipsData>) {
         if(chips[chips.size-1].gatewayId == LIHAT_SEMU_GATEWAY_ID)
         {
-            binding.pdpFintechWidgetSeeMore.visibility = VISIBLE
+//            binding.pdpFintechWidgetSeeMore.visibility = VISIBLE
             binding.pdpFintechWidgetSeeMore.text = chips[chips.size-1].header?.parseAsHtml()
             setSeeMoreListner(chips[chips.size-1])
         }
