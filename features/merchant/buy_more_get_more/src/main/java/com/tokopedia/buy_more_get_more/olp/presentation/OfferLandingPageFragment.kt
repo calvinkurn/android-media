@@ -747,10 +747,12 @@ class OfferLandingPageFragment :
 
     private fun redirectToShopPage(shopId: Long) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId.toString())
+        activity?.finish()
     }
 
     private fun redirectToPDP(productId: Long, productUrl: String) {
         RouteManager.route(context, productUrl)
+        activity?.finish()
     }
 
     private fun redirectToMainMenu() {
@@ -820,14 +822,4 @@ class OfferLandingPageFragment :
     private fun List<Long>.toSafeString(): String {
         return this.firstOrNull()?.orZero().toString()
     }
-
-//    override fun onClickedTncUrl(url: String) {
-//        RouteManager.route(
-//            context,
-//            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
-//        )
-//    }
-//
-//    override fun onImpressTnc() {
-//    }
 }
