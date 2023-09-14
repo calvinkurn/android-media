@@ -2,68 +2,77 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:visibility="visible"
-    app:cardElevation="@dimen/spacing_lvl3"
-    android:layout_marginTop="@dimen/spacing_lvl2"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl2"
+    app:cardElevation="@dimen/spacing_lvl3"
+    tools:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@color/Unify_Background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_buy_widget_total_price_title"
-            android:layout_width="@dimen/unify_space_0"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_price"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_12"
-            android:text="@string/buy_widget_total_price"
-            android:textColor="@color/Unify_NN950"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_buy_widget_total_price"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl1"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tg_buy_widget_total_price_title"
-            app:layout_constraintBottom_toTopOf="@+id/tg_buy_widget_slash_price"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            tools:text="Rp35.000" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_buy_widget_total_price_title"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:text="@string/buy_widget_total_price"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:id="@+id/tg_buy_widget_slash_price"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl1"
-            android:layout_marginBottom="@dimen/unify_space_12"
-            android:textColor="@color/Unify_NN600"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tg_buy_widget_total_price"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            tools:text="Rp55.000" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_buy_widget_total_price"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl1"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintBottom_toTopOf="@+id/tg_buy_widget_slash_price"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tg_buy_widget_total_price_title"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                tools:text="Rp35.000" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/icon_buy_widget_chevron"
-            android:layout_width="@dimen/spacing_lvl5"
-            android:layout_height="@dimen/spacing_lvl5"
-            app:icon_color_light_enable="@color/Unify_NN950"
-            app:icon_name="CHEVRON_UP"
-            app:layout_constraintBottom_toBottomOf="@+id/tg_buy_widget_total_price"
-            app:layout_constraintLeft_toRightOf="@+id/tg_buy_widget_total_price"
-            app:layout_constraintTop_toTopOf="@+id/tg_buy_widget_total_price" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_buy_widget_slash_price"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl1"
+                android:layout_marginBottom="@dimen/unify_space_12"
+                android:textColor="@color/Unify_NN600"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tg_buy_widget_total_price"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="Rp55.000"
+                tools:visibility="visible" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_buy_widget_chevron"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:icon_color_light_enable="@color/Unify_NN950"
+                app:icon_name="CHEVRON_UP"
+                app:layout_constraintBottom_toBottomOf="@+id/tg_buy_widget_total_price"
+                app:layout_constraintLeft_toRightOf="@+id/tg_buy_widget_total_price"
+                app:layout_constraintTop_toTopOf="@+id/tg_buy_widget_total_price" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_buy_left"
@@ -71,14 +80,14 @@
             android:layout_height="@dimen/layout_lvl5"
             android:layout_marginEnd="4dp"
             android:text="@string/buy_widget_total_price_btn"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/btn_buy_right"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"
-            tools:visibility="visible"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="ghost" />
+            app:unifyButtonVariant="ghost"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_buy_right"

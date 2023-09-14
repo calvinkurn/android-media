@@ -64,7 +64,7 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                 }
             }
 
-            iconBuyWidgetChevron.setOnClickListener {
+            containerPrice.setOnClickListener {
                 listener.onClickedChevron(denom)
             }
 
