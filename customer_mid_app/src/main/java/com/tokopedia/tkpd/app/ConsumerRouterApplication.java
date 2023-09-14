@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-
+import com.scp.auth.GotoSdk;
 import androidx.annotation.NonNull;
 import androidx.core.app.TaskStackBuilder;
 import androidx.preference.PreferenceManager;
@@ -140,6 +140,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GraphqlClient.setContextData(getApplicationContext());
         GraphqlClient.init(getApplicationContext(), getAuthenticator());
         NetworkClient.init(getApplicationContext());
+        initGotoSDK();
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
@@ -148,6 +149,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private TkpdAuthenticatorGql getAuthenticator() {
         return new TkpdAuthenticatorGql(this, this, userSession, new RefreshTokenGql());
+    }
+
+    private void initGotoSDK() {
+        GotoSdk.init(this);
     }
 
     private void warmUpGQLClient() {

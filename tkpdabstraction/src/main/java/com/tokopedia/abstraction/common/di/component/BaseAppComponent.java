@@ -3,7 +3,6 @@ package com.tokopedia.abstraction.common.di.component;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.scp.login.init.contracts.LSdkProvider;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -51,6 +50,4 @@ public interface BaseAppComponent {
     GraphqlUseCaseInterface graphqlInterface();
 
     UserSessionDataStore userSessionDataStore();
-
-    LSdkProvider gotoLoginSdk();
 }

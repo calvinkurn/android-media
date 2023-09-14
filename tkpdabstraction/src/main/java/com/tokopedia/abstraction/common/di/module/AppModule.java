@@ -1,10 +1,7 @@
 package com.tokopedia.abstraction.common.di.module;
 
-import android.app.Application;
 import android.content.Context;
 
-import com.scp.auth.GotoSdkInitializer;
-import com.scp.login.init.contracts.LSdkProvider;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.net.NetModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -80,11 +77,5 @@ public class AppModule {
     @Provides
     public UserSessionDataStore provideUserSessionDataStore(@ApplicationContext Context context) {
         return UserSessionDataStoreClient.getInstance(context);
-    }
-
-    @ApplicationScope
-    @Provides
-    public LSdkProvider provideLsdkProvider(@ApplicationContext Context context) {
-        return GotoSdkInitializer.initLoginSDK((Application) context);
     }
 }

@@ -17,6 +17,6 @@ class VerificationSdkConfig : VerificationSDKConfigs {
     }
 
     override fun getAuthConfigs(): VerificationAuthConfig {
-        return VerificationAuthConfig(clientID = "clientId", clientSecret = "clientSecret")
+        return VerificationAuthConfig(clientID = "tokopedia:consumer:app", clientSecret = "qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu")
     }
 }

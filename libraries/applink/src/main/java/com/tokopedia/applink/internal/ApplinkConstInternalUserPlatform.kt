@@ -305,6 +305,13 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val PROFILE_COMPLETION = "$NEW_INTERNAL_USER/profile-completion"
 
+
+    /**
+     * ScpAuthActivity
+     * @Applink : tokopedia-android-internal://user/scp-login
+     **/
+    const val SCP_LOGIN = "$NEW_INTERNAL_USER/scp-login"
+
     /**
      * AddNameActivity
      * @Applink : tokopedia-android-internal://user/manage-name

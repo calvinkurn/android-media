@@ -16,18 +16,13 @@ import com.scp.verification.core.data.common.services.LocalCVAnalyticsService
 import com.scp.verification.core.data.common.services.LocalCVLogService
 import com.scp.verification.core.data.common.services.VerificationServices
 
-object GotoSdkInitializer {
+object GotoSdk {
+    var LSDKINSTANCE: LSdkProvider? = null
+    var CVSDKINSTANCE: CvSdkProvider? = null
 
-//    fun getLSDK(application: Application): LSdkProvider {
-//        if (LSDKINSTANCE == null){
-//            return initLoginSDK(application)
-//        } else {
-//            return LSDKINSTANCE
-//        }
-//    }
     @JvmStatic
-    fun initLoginSDK(application: Application): LSdkProvider {
-        return GotoLogin.getInstance(
+    fun init(application: Application): LSdkProvider? {
+        LSDKINSTANCE = GotoLogin.getInstance(
             cvSdkProvider = getCvSdkProvider(application),
             application = application,
             configurations = SampleLoginSDKConfigs(),
@@ -37,6 +32,7 @@ object GotoSdkInitializer {
                 analyticsService = LocalCVAnalyticsService()
             )
         )
+        return LSDKINSTANCE
     }
 
     private fun getCvSdkProvider(application: Application): CvSdkProvider {
@@ -52,22 +48,20 @@ object GotoSdkInitializer {
 class SampleLoginSDKConfigs : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
         return LSdkAppConfig(
-            environment = LSdkEnvironment.DEV,
+            environment = LSdkEnvironment.INTEGRATION,
             isLogsEnabled = false,
-            appLocale = "EN",
-            userLang = "en",
-            userType = "customer"
+            appLocale = "ID",
+            userLang = "id",
+            userType = "toko_user"
         )
     }
 
     override fun getAuthConfigs(): LSdkAuthConfig {
-        return LSdkAuthConfig(clientID = "clientId", clientSecret = "clientSecret")
+        return LSdkAuthConfig(clientID = "tokopedia:consumer:app", clientSecret = "qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu")
     }
 
 
     companion object {
-        var LSDKINSTANCE: LSdkProvider? = null
-        var CVSDKINSTANCE: CvSdkProvider? = null
     }
 }
 
