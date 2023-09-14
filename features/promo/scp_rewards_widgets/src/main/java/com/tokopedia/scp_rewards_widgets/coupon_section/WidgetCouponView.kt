@@ -48,7 +48,6 @@ class WidgetCouponView @JvmOverloads constructor(
         ) { filteredList ->
             if (filteredList.isNullOrEmpty()) {
                 binding.stackCoupon.hide()
-                binding.btnViewMore.hide()
                 binding.cardEmptyCoupon.hide()
                 binding.ivErrorState.visible()
             } else {
@@ -145,7 +144,6 @@ class WidgetCouponView @JvmOverloads constructor(
             }
 
             else -> {
-                binding.btnViewMore.hide()
                 binding.ivErrorState.hide()
                 binding.cardEmptyCoupon.hide()
                 binding.stackCoupon.visible()
@@ -156,7 +154,7 @@ class WidgetCouponView @JvmOverloads constructor(
                     onCardTap
                 )
 
-                if (benefitList.size > 1 && benefitSectionModel.cta?.text.isNullOrEmpty().not()) {
+                if (benefitSectionModel.cta?.text.isNullOrEmpty().not()) {
                     binding.btnViewMore.visible()
                     binding.btnViewMore.text = benefitSectionModel.cta?.text
                     binding.btnViewMore.applyStyle(benefitSectionModel.cta?.style)

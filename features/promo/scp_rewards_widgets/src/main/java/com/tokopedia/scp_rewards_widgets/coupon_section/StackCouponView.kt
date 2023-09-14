@@ -9,8 +9,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.dpToPx
 import com.tokopedia.scp_rewards_widgets.databinding.StackCouponLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
@@ -40,10 +40,13 @@ class StackCouponView @JvmOverloads constructor(
                 onCardTap(it, list.size == 1)
             }
             if (list.size == 1) {
-                cardMore.gone()
-                cardMiddle.gone()
-                cardBack.gone()
+                cardMore.hide()
+                cardMiddle.hide()
+                cardBack.hide()
             } else {
+                cardMiddle.visible()
+                cardBack.visible()
+
                 val duplicate = list.first().copy().apply { statusBadgeEnabled = false }
                 cardMiddle.setData(duplicate)
                 cardBack.setData(duplicate)
@@ -51,6 +54,7 @@ class StackCouponView @JvmOverloads constructor(
                 if (benefitInfo.isNullOrEmpty()) {
                     cardMore.hide()
                 } else {
+                    cardMore.visible()
                     cardMore.apply {
                         shapeAppearanceModel = ShapeAppearanceModel.Builder()
                             .setAllCornerSizes(0f)
@@ -63,7 +67,7 @@ class StackCouponView @JvmOverloads constructor(
                         }
                     }
 
-                    tvMore.text = benefitInfo.replace("[number]","${list.size}")
+                    tvMore.text = benefitInfo.replace("[number]", "${list.size}")
                 }
             }
         }
