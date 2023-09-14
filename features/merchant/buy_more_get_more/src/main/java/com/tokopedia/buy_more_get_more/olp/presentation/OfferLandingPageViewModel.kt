@@ -92,6 +92,7 @@ class OfferLandingPageViewModel @Inject constructor(
             is OlpEvent.SetInitialUiState -> {
                 setInitialUiState(
                     offerIds = event.offerIds,
+                    offerTypeId = event.offerTypeId,
                     shopId = event.shopIds,
                     productIds = event.productIds,
                     warehouseIds = event.warehouseIds,
@@ -134,6 +135,7 @@ class OfferLandingPageViewModel @Inject constructor(
 
     private fun setInitialUiState(
         offerIds: List<Long>,
+        offerTypeId: Long,
         shopId: Long,
         productIds: List<Long> = emptyList(),
         warehouseIds: List<Long> = emptyList(),
@@ -142,6 +144,7 @@ class OfferLandingPageViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 offerIds = offerIds,
+                offerTypeId = offerTypeId,
                 shopData = ShopData(shopId = shopId),
                 productIds = productIds,
                 warehouseIds = warehouseIds,
@@ -335,7 +338,7 @@ class OfferLandingPageViewModel @Inject constructor(
     }
 
     fun getPageIdForSharing(): String {
-        return "BMGM-${userSession.userId}-${currentState.shopData.shopId}-${currentState.offerIds.firstOrNull()}-${Date()}-default"
+        return "BMGM-${userSession.userId}-${currentState.shopData.shopId}-${currentState.offerIds.firstOrNull()}-${currentState.offerTypeId}-${Date()}-default"
     }
 
     fun getDeeplink(): String {

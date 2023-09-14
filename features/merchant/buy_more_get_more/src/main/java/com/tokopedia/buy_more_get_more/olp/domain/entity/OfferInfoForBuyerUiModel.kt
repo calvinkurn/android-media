@@ -62,6 +62,7 @@ data class OfferInfoForBuyerUiModel(
 
     data class OlpUiState(
         val offerIds: List<Long> = emptyList(),
+        val offerTypeId: Long = 0,
         val shopData: ShopData = ShopData(),
         val productIds: List<Long> = emptyList(),
         val warehouseIds: List<Long> = emptyList(),
@@ -77,6 +78,7 @@ data class OfferInfoForBuyerUiModel(
     sealed class OlpEvent {
         data class SetInitialUiState(
             val offerIds: List<Long> = emptyList(),
+            val offerTypeId: Long = 0,
             val shopIds: Long,
             val productIds: List<Long> = emptyList(),
             val warehouseIds: List<Long> = emptyList(),
