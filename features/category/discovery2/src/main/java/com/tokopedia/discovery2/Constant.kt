@@ -15,7 +15,7 @@ object Constant {
         const val RECTANGLE_DESIGN = "v2"
     }
 
-    object MultipleShopMVCCarousel{
+    object MultipleShopMVCCarousel {
         const val SINGLE_ITEM_DESIGN = "s1"
         const val CAROUSEL_ITEM_DESIGN = "s2"
     }
@@ -31,7 +31,7 @@ object Constant {
     }
 
     object ProductTemplate {
-        const val GRID =  "grid"
+        const val GRID = "grid"
         const val LIST = "list"
     }
 
@@ -40,7 +40,7 @@ object Constant {
         const val GENERAL_CART = "general_atc"
     }
 
-    object ProductCardModel{
+    object ProductCardModel {
         const val SALE_PRODUCT_STOCK = 100
         const val PRODUCT_STOCK = 0
         const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
@@ -48,12 +48,12 @@ object Constant {
         const val PDP_VIEW_THRESHOLD = 1000
     }
 
-    object Dimensions{
+    object Dimensions {
         const val HEIGHT = "height"
         const val WIDTH = "width"
     }
 
-    object EmptyStateTexts{
+    object EmptyStateTexts {
         const val TITLE = "Awas keduluan pembeli lain!"
         const val DESCRIPTION = "Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!"
         const val EMPTY_IMAGE = "ic_product_empty_state.png"
@@ -64,7 +64,7 @@ object Constant {
         const val FILTER_EMPTY_IMAGE = "filtered_product_empty_state.png"
     }
 
-    object ChooseAddressQueryParams{
+    object ChooseAddressQueryParams {
         const val RPC_USER_ADDRESS_ID = "rpc_UserAddressId"
         const val RPC_USER_CITY_ID = "rpc_UserCityId"
         const val RPC_USER_DISTRICT_ID = "rpc_UserDistrictId"
@@ -77,7 +77,7 @@ object Constant {
         const val USER_ADDRESS_KEY = "user_address"
     }
 
-    object ChooseAddressGTMSSource{
+    object ChooseAddressGTMSSource {
         const val HOST_SOURCE = "discovery"
         const val HOST_TRACKING_SOURCE = "discovery page"
 
@@ -85,7 +85,7 @@ object Constant {
         const val CATEGORY_HOST_TRACKING_SOURCE = "category page"
     }
 
-    object Calendar{
+    object Calendar {
         const val CAROUSEL = "carousel"
         const val DYNAMIC = "dynamic"
         const val STATIC = "static"
@@ -95,9 +95,7 @@ object Constant {
         const val TRIPLE = "triple"
     }
 
-    object QueryParamConstants{
-        const val RPC_DYNAMIC_SUBTITLE = "rpc_DynamicSubtitle"
-        const val RPC_TARGET_TITLE_ID = "rpc_TargetTitleId"
+    object QueryParamConstants {
         const val QUERY_PARAMS_KEY = "query_params_key"
     }
 
@@ -110,13 +108,23 @@ object Constant {
         const val HOME = "home"
     }
 
-    object TopAdsSdk{
+    object TopAdsSdk {
         const val TOP_ADS_GSLP_TDN = "topads gslp"
+    }
+
+    object ChipSize {
+        const val LARGE = "large"
+        const val SMALL = "small"
+    }
+
+    object FullFilterType {
+        const val CATEGORY = "category"
+        const val ALL_ATTRIBUTES = "all_attributes"
     }
 
     const val RESETTING_SELECTED_TAB = -1
 
-    object ProductHighlight{
+    object ProductHighlight {
         const val SINGLE = "single"
         const val DOUBLE = "double"
         const val TRIPLE = "triple"
@@ -129,4 +137,6 @@ object Constant {
 
     const val REDIRECTION = "redirection"
     const val NAVIGATION = "navigation"
+    const val TAB_BACKGROUND =
+        "https://images.tokopedia.net/img/android/res/default_recom_tab_background.png"
 }

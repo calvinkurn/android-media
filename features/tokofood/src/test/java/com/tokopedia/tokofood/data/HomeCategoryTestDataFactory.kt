@@ -10,9 +10,11 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.ChosenAddressDataResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
-import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
+import com.tokopedia.tokofood.common.domain.response.KeroEditAddress
+import com.tokopedia.tokofood.common.domain.response.KeroEditAddressData
+import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
+import com.tokopedia.tokofood.common.domain.response.Merchant
+import com.tokopedia.tokofood.common.domain.response.TokoFoodMerchantList
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
@@ -44,11 +46,6 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPU
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddress
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddressData
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
-import com.tokopedia.tokofood.common.domain.response.Merchant
-import com.tokopedia.tokofood.common.domain.response.TokoFoodMerchantList
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 
@@ -118,16 +115,6 @@ fun createLoadMoreState(): TokoFoodListUiModel {
     )
 }
 
-fun createKeroAddrIsEligibleForAddressFeature(): KeroAddrIsEligibleForAddressFeatureResponse {
-    return KeroAddrIsEligibleForAddressFeatureResponse(
-        data = KeroAddrIsEligibleForAddressFeatureData (
-            eligibleForRevampAna = EligibleForAddressFeature (
-                eligible = true
-                    )
-                )
-    )
-}
-
 fun createKeroEditAddressResponse(): KeroEditAddressResponse {
     return KeroEditAddressResponse(
         keroEditAddress = KeroEditAddress(
@@ -163,7 +150,7 @@ fun createTickerData(
 }
 
 fun createTicker(): TokoFoodHomeTickerResponse {
-    return  TokoFoodHomeTickerResponse(
+    return TokoFoodHomeTickerResponse(
         ticker = Tickers(
             tickerList = listOf(
                 TickerItem(
@@ -190,7 +177,7 @@ fun createHomeLayoutList(): TokoFoodHomeLayoutResponse {
                     header = Header(
                         name = "",
                         serverTimeUnix = 0
-                    ),
+                    )
                 ),
                 HomeLayoutResponse(
                     id = "22222",
@@ -224,12 +211,14 @@ fun createHomeLayoutList(): TokoFoodHomeLayoutResponse {
 fun createUSPResponse(): TokoFoodHomeUSPResponse {
     return TokoFoodHomeUSPResponse(
         response = USPResponse(
-            list = listOf(USP(
-                iconUrl = "lalala.jpg",
-                title = "Title USP",
-                description = "Desc USP",
-                formatted = "Title USP & Desc USP"
-            )),
+            list = listOf(
+                USP(
+                    iconUrl = "lalala.jpg",
+                    title = "Title USP",
+                    description = "Desc USP",
+                    formatted = "Title USP & Desc USP"
+                )
+            ),
             footer = "Footer",
             imageUrl = "lalala.jpg"
         )
@@ -239,10 +228,12 @@ fun createUSPResponse(): TokoFoodHomeUSPResponse {
 fun createDynamicIconsResponse(): TokoFoodHomeDynamicIconsResponse {
     return TokoFoodHomeDynamicIconsResponse(
         dynamicIcon = DynamicHomeIcon(
-            listDynamicIcon = listOf(DynamicIcon(
-                applinks = "tokopedia://food/home",
-                imageUrl = "lalala.jpg"
-            ))
+            listDynamicIcon = listOf(
+                DynamicIcon(
+                    applinks = "tokopedia://food/home",
+                    imageUrl = "lalala.jpg"
+                )
+            )
         )
     )
 }
@@ -286,7 +277,7 @@ fun createSliderBannerDataModel(
     return BannerDataModel(channelModel = channelModel)
 }
 
-fun createUSPModel(uspResponse: TokoFoodHomeUSPResponse? = null, state: Int): TokoFoodHomeUSPUiModel{
+fun createUSPModel(uspResponse: TokoFoodHomeUSPResponse? = null, state: Int): TokoFoodHomeUSPUiModel {
     return TokoFoodHomeUSPUiModel(
         id = "11111",
         uspModel = uspResponse,
@@ -310,9 +301,9 @@ fun createMerchantListResponse(): TokoFoodMerchantListResponse {
         data = TokoFoodMerchantList(
             merchants = listOf(
                 Merchant(
-                   id = "abcdef",
-                   name = "Toko 1",
-                   isClosed = false
+                    id = "abcdef",
+                    name = "Toko 1",
+                    isClosed = false
                 ),
                 Merchant(
                     id = "abcdeg",

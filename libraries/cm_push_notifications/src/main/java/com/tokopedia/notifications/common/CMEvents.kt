@@ -33,6 +33,7 @@ object PersistentEvent {
 
 object IrisAnalyticsEvents {
     const val PUSH_RECEIVED = "pushReceived"
+    const val PUSH_RENDERED = "pushRendered"
     const val DEVICE_NOTIFICATION_OFF = "device_notification_off"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
@@ -305,6 +306,7 @@ object IrisAnalyticsEvents {
             INAPP_DISMISSED,
             PUSH_RECEIVED,
             PUSH_CLICKED,
+            PUSH_RENDERED,
             PUSH_DISMISSED,
             PUSH_EXPIRED,
             DEVICE_NOTIFICATION_OFF
@@ -326,6 +328,7 @@ object IrisAnalyticsEvents {
             INAPP_DISMISSED,
             PUSH_RECEIVED,
             PUSH_CLICKED,
+            PUSH_RENDERED,
             PUSH_DISMISSED,
             PUSH_CANCELLED,
             PUSH_EXPIRED

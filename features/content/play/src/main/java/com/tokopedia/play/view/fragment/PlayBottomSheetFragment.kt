@@ -134,7 +134,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        analytic.getTrackingQueue().sendAll()
     }
 
     override fun onDestroyView() {
