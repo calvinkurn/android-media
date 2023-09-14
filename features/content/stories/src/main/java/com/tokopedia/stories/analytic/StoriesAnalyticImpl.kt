@@ -267,12 +267,19 @@ class StoriesAnalyticImpl @Inject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46057
-    override fun sendClickTapNextContentEvent(eventLabel: String) {
+    override fun sendClickTapNextContentEvent(
+        entryPoint: String,
+        partnerId: String,
+        storiesId: String,
+        creatorType: String,
+        contentType: String,
+        currentCircle: String,
+    ) {
         Tracker.Builder()
             .setEvent("clickContent")
             .setEventAction("click - tap next content")
             .setEventCategory("stories room")
-            .setEventLabel(eventLabel)
+            .setEventLabel("$entryPoint - $partnerId - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty("trackerId", "46057")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
@@ -284,12 +291,19 @@ class StoriesAnalyticImpl @Inject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46058
-    override fun sendClickTapPreviousContentEvent(eventLabel: String) {
+    override fun sendClickTapPreviousContentEvent(
+        entryPoint: String,
+        partnerId: String,
+        storiesId: String,
+        creatorType: String,
+        contentType: String,
+        currentCircle: String,
+    ) {
         Tracker.Builder()
             .setEvent("clickContent")
             .setEventAction("click - tap previous content")
             .setEventCategory("stories room")
-            .setEventLabel(eventLabel)
+            .setEventLabel("$entryPoint - $partnerId - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty("trackerId", "46058")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)

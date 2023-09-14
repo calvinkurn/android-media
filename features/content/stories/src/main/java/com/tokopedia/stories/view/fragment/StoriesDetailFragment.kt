@@ -236,7 +236,7 @@ class StoriesDetailFragment @Inject constructor(
 
         icClose.setOnClickListener {
             analytic.sendClickExitStoryRoomEvent(
-                eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - ${viewModel.mDetail.id} - asgc - ${viewModel.mDetail.content.type.value} - nextStoriesId - ${viewModel.mGroup.groupName}"
+                eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - ${viewModel.mDetail.id} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName}"
             )
             activity?.finish()
         }
@@ -264,7 +264,12 @@ class StoriesDetailFragment @Inject constructor(
 
                 TouchEventStories.NEXT_PREV -> {
                     analytic.sendClickTapPreviousContentEvent(
-                        eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - ${viewModel.mDetail.id} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - prevStoriesId"
+                        entryPoint = mParentPage.entryPoint,
+                        partnerId = mParentPage.authorId,
+                        storiesId = viewModel.mDetail.id,
+                        creatorType = "asgc",
+                        contentType = viewModel.mDetail.content.type.value,
+                        currentCircle = viewModel.mGroup.groupName,
                     )
                     viewModelAction(PreviousDetail)
                 }
@@ -288,7 +293,12 @@ class StoriesDetailFragment @Inject constructor(
 
                 TouchEventStories.NEXT_PREV -> {
                     analytic.sendClickTapNextContentEvent(
-                        eventLabel = "${mParentPage.entryPoint} - ${mParentPage.authorId} - ${viewModel.mDetail.id} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - nextStoriesId"
+                        entryPoint = mParentPage.entryPoint,
+                        partnerId = mParentPage.authorId,
+                        storiesId = viewModel.mDetail.id,
+                        creatorType = "asgc",
+                        contentType = viewModel.mDetail.content.type.value,
+                        currentCircle = viewModel.mGroup.groupName,
                     )
                     viewModelAction(NextDetail)
                 }
