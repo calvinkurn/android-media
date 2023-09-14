@@ -1961,6 +1961,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                 viewModel.validateUsePromo(forceValidateUse = true)
             }
 
+            override fun onClickRetryEntryPointInfo(lastApply: LastApplyUiModel) {
+                viewModel.getEntryPointInfo(lastApply)
+            }
+
             override fun onClickPromo() {
                 viewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
                     if (viewModel.useNewPromoPage()) {

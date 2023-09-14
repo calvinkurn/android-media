@@ -13,6 +13,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryIte
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
@@ -103,20 +104,16 @@ class OrderPromoCard(
             }
 
             else -> {
-                val isUsingGlobalPromo = orderPromo.lastApply.codes.isNotEmpty() &&
-                        orderPromo.lastApply.message.state != "red"
-                val isUsingPromo = orderPromo.lastApply.voucherOrders
-                    .any { it.code.isNotBlank() && it.message.state != "red" }
-                val hasSummaries = orderPromo.lastApply.additionalInfo.usageSummaries.isNotEmpty()
-
+                val isUsingPromo = orderPromo.lastApply.additionalInfo.usageSummaries.isNotEmpty()
                 val entryPointInfo = orderPromo.entryPointInfo
 
-                if (!isUsingGlobalPromo && !isUsingPromo && !hasSummaries) {
+                if (!isUsingPromo) {
                     if (entryPointInfo != null) {
                         if (!entryPointInfo.isSuccess) {
-                            if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED
-                                || entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED
-                                || entryPointInfo.statusCode == ResultStatus.STATUS_COUPON_LIST_EMPTY) {
+                            if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED ||
+                                entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED ||
+                                entryPointInfo.statusCode == ResultStatus.STATUS_COUPON_LIST_EMPTY
+                            ) {
                                 val message = entryPointInfo.messages.firstOrNull().ifNull { "" }
                                 if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
                                     binding.btnPromoEntryPoint.showActiveNew(
@@ -142,7 +139,7 @@ class OrderPromoCard(
                                 }
                             } else {
                                 binding.btnPromoEntryPoint.showError {
-                                    listener.onClickRetryValidatePromo()
+                                    listener.onClickRetryEntryPointInfo(orderPromo.lastApply)
                                 }
                             }
                         } else {
@@ -172,7 +169,7 @@ class OrderPromoCard(
                         }
                     } else {
                         binding.btnPromoEntryPoint.showError {
-                            listener.onClickRetryValidatePromo()
+                            listener.onClickRetryEntryPointInfo(orderPromo.lastApply)
                         }
                     }
                 } else {
@@ -211,9 +208,9 @@ class OrderPromoCard(
                     } else {
                         ""
                     }
-                    val isSecondaryTextEnabled = otherPromoSummaries.isEmpty()
-                            && secondaryText.isNotEmpty()
-                            && entryPointInfo?.color == PromoEntryPointInfo.COLOR_GREEN
+                    val isSecondaryTextEnabled = otherPromoSummaries.isEmpty() &&
+                        secondaryText.isNotEmpty() &&
+                        entryPointInfo?.color == PromoEntryPointInfo.COLOR_GREEN
                     val isExpanded = boPromoSummaries.isNotEmpty() && isSecondaryTextEnabled
                     binding.btnPromoEntryPoint.showActiveNewExpandable(
                         leftImageUrl = ICON_URL_ENTRY_POINT_APPLIED,
@@ -237,6 +234,8 @@ class OrderPromoCard(
     interface OrderPromoCardListener {
 
         fun onClickRetryValidatePromo()
+
+        fun onClickRetryEntryPointInfo(lastApply: LastApplyUiModel)
 
         fun onClickPromo()
     }
