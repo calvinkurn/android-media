@@ -51,6 +51,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
@@ -1311,6 +1312,7 @@ class ShipmentMapper @Inject constructor() {
                         quantity = bmgmProduct.quantity,
                         priceBeforeBenefit = bmgmProduct.priceBeforeBenefit,
                         priceAfterBenefit = bmgmProduct.priceAfterBenefit,
+                        wholesalePrice = matchedProduct?.productWholesalePrice.orZero(),
                         cartId = bmgmProduct.cartId
                     )
                 }

@@ -12,5 +12,6 @@ data class CheckoutBmgmProductModel(
     val quantity: Int = 0,
     val priceBeforeBenefit: Double = 0.0,
     val priceAfterBenefit: Double = 0.0,
+    val wholesalePrice: Double = 0.0,
     val cartId: String = ""
 ) : Parcelable
