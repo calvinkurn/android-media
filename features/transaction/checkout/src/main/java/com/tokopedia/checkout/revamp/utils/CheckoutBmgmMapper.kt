@@ -25,12 +25,13 @@ object CheckoutBmgmMapper {
                     priceBeforeBenefit = bmgmTier.priceBeforeBenefit,
                     priceAfterBenefit = bmgmTier.priceAfterBenefit,
                     products = bmgmTier.listProduct.map { bmgmProduct ->
+                        val productPrice = if (bmgmProduct.wholesalePrice != 0.0) bmgmProduct.wholesalePrice else bmgmProduct.priceBeforeBenefit
                         BmgmCommonDataModel.ProductModel(
                             productId = bmgmProduct.productId,
                             warehouseId = bmgmProduct.warehouseId.toString(),
                             productName = bmgmProduct.productName,
                             productImage = bmgmProduct.imageUrl,
-                            productPrice = bmgmProduct.priceBeforeBenefit,
+                            productPrice = productPrice,
                             quantity = bmgmProduct.quantity,
                             cartId = bmgmProduct.cartId
                         )
