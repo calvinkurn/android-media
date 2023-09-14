@@ -61,8 +61,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.homeComponent)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
-    implementation projectOrAar(rootProject.ext.features.loyalty)
-    implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.productCard)
