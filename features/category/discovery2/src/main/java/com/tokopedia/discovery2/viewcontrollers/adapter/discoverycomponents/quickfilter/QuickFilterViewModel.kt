@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
@@ -11,7 +12,11 @@ import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.QuickFilterUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
-import com.tokopedia.filter.common.data.*
+import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSession
@@ -77,12 +82,39 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     private fun addFilterOptions(filters: ArrayList<Filter>) {
         quickFilterList.clear()
-        for (item in filters) {
-            if (!item.options.isNullOrEmpty()) {
-                quickFilterList.add(item)
+        if (components.properties?.chipSize == Constant.ChipSize.LARGE) {
+            addSelectedSortedFilterOptions(filters)
+        } else {
+            for (item in filters) {
+                if (!item.options.isNullOrEmpty()) {
+                    quickFilterList.add(item)
+                }
             }
         }
         quickFiltersLiveData.value = quickFilterList
+    }
+
+    private fun addSelectedSortedFilterOptions(filters: ArrayList<Filter>) {
+        val listSelected: ArrayList<Filter> = ArrayList()
+        val listUnSelected: ArrayList<Filter> = ArrayList()
+        for (item in filters) {
+            if (!item.options.isNullOrEmpty()) {
+                var optionSelected = false
+                for (option in item.options) {
+                    if (isQuickFilterSelected(option)) {
+                        optionSelected = true
+                        break
+                    }
+                }
+                if (optionSelected) {
+                    listSelected.add(item)
+                } else {
+                    listUnSelected.add(item)
+                }
+            }
+        }
+        quickFilterList.addAll(listSelected)
+        quickFilterList.addAll(listUnSelected)
     }
 
     fun getTargetComponent(): ComponentsItem? {
