@@ -286,6 +286,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_FLASH_SALE_TOKOPEDIA = "df_flash_sale_tokopedia"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
+    const val DF_PROMO_SCP = "df_promo_scp"
     const val DF_PROMO_CHECKOUT = "df_promo_checkout"
     const val DF_GAMIFICATION = "df_gamification"
     const val DF_SHOP_SETTINGS_SELLER_APP = "df_shop_settings_sellerapp"
@@ -634,6 +635,12 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_GIFT)
                 }, DF_PROMO_GAMIFICATION, R.string.internet_title_gamification)
             )
+            add(DFP(
+                { it.startsWith(ApplinkConstInternalPromo.INTERNAL_SCP_REWARDS) },
+                DF_PROMO_SCP,
+                R.string.title_scp_rewards
+            ))
+
 
             add(
                 DFP({

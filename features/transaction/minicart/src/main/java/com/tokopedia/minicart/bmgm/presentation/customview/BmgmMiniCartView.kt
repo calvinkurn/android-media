@@ -393,7 +393,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             }
         }
         val numOfDiscountTier = data.tiersApplied.count { it.isDiscountTier() }
-        val hasReachMaxDiscount = numOfDiscountTier == offerCount
+        val hasReachMaxDiscount = numOfDiscountTier >= offerCount
         if (!hasReachMaxDiscount) {
             productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
         }

@@ -45,7 +45,7 @@ class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<BuyerCance
             bundle.putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, false)
             bundle.putString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, "")
             bundle.putString(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED, "")
-            bundle.putInt(BuyerConsts.PARAM_SHOP_ID, -1)
+            bundle.putString(BuyerConsts.PARAM_SHOP_ID, "")
             bundle.putString(BuyerConsts.PARAM_BOUGHT_DATE, "")
             bundle.putString(BuyerConsts.PARAM_INVOICE_URL, "")
             bundle.putString(BuyerConsts.PARAM_STATUS_ID, "")
@@ -59,8 +59,8 @@ class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<BuyerCance
 
     override fun getComponent(): BuyerCancellationOrderComponent {
         return DaggerBuyerCancellationOrderComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun onBackPressed() {

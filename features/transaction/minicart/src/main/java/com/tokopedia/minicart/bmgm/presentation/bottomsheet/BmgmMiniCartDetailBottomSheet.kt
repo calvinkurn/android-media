@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -267,10 +266,6 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
             if (!isOfferEnded) {
                 viewModel.setCartListCheckboxState(getCartIds(model.tiersApplied))
             } else {
-                val appLink = UriUtil.buildUri(
-                    uriPattern = ApplinkConst.BUY_MORE_GET_MORE_OLP, model.offerId.toString()
-                )
-                RouteManager.route(it, appLink)
                 activity?.finish()
             }
         }
