@@ -181,6 +181,7 @@ class PartialProductItemViewHolder(
 
     private fun goToWarrantyClaim() {
         navigator.openAppLink(element.button.url, true)
+        BuyerOrderDetailTracker.eventClickWarrantyClaim(element.orderId)
     }
 
     private fun seeSimilarProducts() {
