@@ -1,10 +1,13 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
 import android.app.PendingIntent
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
+import androidx.documentfile.provider.DocumentFile
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -36,6 +39,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.net.URL
+
 
 /**
  * Created by faisalramd on 2020-04-05.
@@ -233,25 +237,46 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         }
     }
 
-    private fun downloadFile(url: String, filename: String) {
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-        val path = "$downloadsDir/$filename"
-        URL(url).openStream().use { input ->
-            FileOutputStream(File(path), false).use { output ->
-                input.copyTo(output)
+    private fun downloadFile(imageWebUrl: String, fileName: String): String {
+        try {
+            val imageUrl = URL(imageWebUrl)
+            val directory =
+                File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString())
+            val outputFile = File(directory, fileName)
+            imageUrl.openStream().use { input ->
+                FileOutputStream(outputFile, false).use { output ->
+                    input.copyTo(output)
+                }
             }
+
+            // Add the downloaded image to the MediaStore
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                put(MediaStore.Images.Media.MIME_TYPE, getMimeTypeForFile(outputFile))
+            }
+
+            contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues
+            )
+
+            return outputFile.absolutePath
+        } catch (e: Exception) {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
+            return ""
         }
     }
 
+    fun getMimeTypeForFile(finalFile: File): String =
+        DocumentFile.fromFile(finalFile).type ?: "application/octet-stream"
+
     private fun reDownloadProductImages(productDetail: DetailInputModel) {
         val productImageData = productDetail.pictureList
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         productImageData.forEach { data ->
             // new added images have no url. therefore there is no need to filter the list
             if (data.urlOriginal.isNotBlank() && data.fileName.isNotBlank()) {
                 filename = data.fileName // logging purpose
-                val path = downloadsDir + "/" + data.fileName
-                downloadFile(url = data.urlOriginal, filename = data.fileName)
+                val path = downloadFile(data.urlOriginal, data.fileName)
                 data.picID = String.EMPTY
                 data.filePath = path
             } else if (data.urlOriginal.isBlank()) {
@@ -271,13 +296,11 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     }
 
     private fun reDownloadProductVariantImages(productVariant: List<ProductVariantInputModel>) {
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         productVariant.forEach { data ->
             data.pictures.forEach { picture ->
                 if (picture.urlOriginal.isNotBlank() && picture.fileName.isNotBlank()) {
                     filename = picture.fileName // logging purpose
-                    val path = downloadsDir + "/" + picture.fileName
-                    downloadFile(url = picture.urlOriginal, filename = picture.fileName)
+                    val path = downloadFile(picture.urlOriginal, picture.fileName)
                     picture.picID = String.EMPTY
                     picture.urlOriginal = path
                 } else if (picture.urlOriginal.isBlank()) {
@@ -294,13 +317,10 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     }
 
     private fun reDownloadVariantSizeChart(variantSizeChart: PictureVariantInputModel) {
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-        val path = downloadsDir + "/" + variantSizeChart.fileName
         if (variantSizeChart.urlOriginal.isNotBlank() && variantSizeChart.fileName.isNotBlank()) {
             filename = variantSizeChart.fileName // logging purpose
-            downloadFile(url = variantSizeChart.urlOriginal, filename = variantSizeChart.fileName)
             variantSizeChart.picID = String.EMPTY
-            variantSizeChart.urlOriginal = path
+            variantSizeChart.urlOriginal = downloadFile(variantSizeChart.urlOriginal, variantSizeChart.fileName)
         } else if (variantSizeChart.urlOriginal.isBlank()) {
             val picId = variantSizeChart.picID
             AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE - $DESC_ERROR_NO_IMAGE_URL - $picId")

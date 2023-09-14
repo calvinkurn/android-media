@@ -2041,7 +2041,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun checkDownloadPermission() {
-        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.P) {
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
             viewModel.productInputModel.value?.let { productInputModel ->
                 productInputModel.isDuplicate = true
                 startProductAddService(productInputModel)
