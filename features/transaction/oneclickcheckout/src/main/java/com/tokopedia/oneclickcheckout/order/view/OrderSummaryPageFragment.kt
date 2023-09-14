@@ -160,7 +160,6 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
@@ -1959,10 +1958,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         return object : OrderPromoCard.OrderPromoCardListener {
             override fun onClickRetryValidatePromo() {
                 viewModel.validateUsePromo(forceValidateUse = true)
-            }
-
-            override fun onClickRetryEntryPointInfo(lastApply: LastApplyUiModel) {
-                viewModel.getEntryPointInfo(lastApply)
             }
 
             override fun onClickPromo() {

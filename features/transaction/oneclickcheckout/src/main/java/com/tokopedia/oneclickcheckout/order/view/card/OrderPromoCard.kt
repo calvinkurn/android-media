@@ -13,7 +13,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryIte
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
@@ -186,7 +185,7 @@ class OrderPromoCard(
                                         wording = message,
                                         rightIcon = IconUnify.CHEVRON_RIGHT,
                                         onClickListener = {
-                                            if (entryPointInfo.isClickable) {
+                                            if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
                                                 listener.onClickPromo()
                                             }
                                         }
@@ -196,7 +195,7 @@ class OrderPromoCard(
                                         leftImageUrl = entryPointInfo.iconUrl,
                                         wording = message,
                                         onClickListener = {
-                                            if (entryPointInfo.isClickable) {
+                                            if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
                                                 listener.onClickPromo()
                                             }
                                         }
@@ -204,7 +203,7 @@ class OrderPromoCard(
                                 }
                             } else {
                                 binding.btnPromoEntryPoint.showError {
-                                    listener.onClickRetryEntryPointInfo(orderPromo.lastApply)
+                                    listener.onClickRetryValidatePromo()
                                 }
                             }
                         } else {
@@ -215,7 +214,7 @@ class OrderPromoCard(
                                     wording = message,
                                     rightIcon = IconUnify.CHEVRON_RIGHT,
                                     onClickListener = {
-                                        if (entryPointInfo.isClickable) {
+                                        if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
                                             listener.onClickPromo()
                                         }
                                     }
@@ -225,7 +224,7 @@ class OrderPromoCard(
                                     leftImageUrl = entryPointInfo.iconUrl,
                                     wording = message,
                                     onClickListener = {
-                                        if (entryPointInfo.isClickable) {
+                                        if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
                                             listener.onClickPromo()
                                         }
                                     }
@@ -234,7 +233,7 @@ class OrderPromoCard(
                         }
                     } else {
                         binding.btnPromoEntryPoint.showError {
-                            listener.onClickRetryEntryPointInfo(orderPromo.lastApply)
+                            listener.onClickRetryValidatePromo()
                         }
                     }
                 } else {
@@ -287,7 +286,9 @@ class OrderPromoCard(
                         isExpanded = isExpanded,
                         animateWording = orderPromo.isAnimateWording,
                         onClickListener = {
-                            listener.onClickPromo()
+                            if (!orderPromo.isDisabled) {
+                                listener.onClickPromo()
+                            }
                         }
                     )
                 }
@@ -299,8 +300,6 @@ class OrderPromoCard(
     interface OrderPromoCardListener {
 
         fun onClickRetryValidatePromo()
-
-        fun onClickRetryEntryPointInfo(lastApply: LastApplyUiModel)
 
         fun onClickPromo()
     }

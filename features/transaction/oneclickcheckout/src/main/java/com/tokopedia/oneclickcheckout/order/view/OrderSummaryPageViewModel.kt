@@ -498,7 +498,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                 }
                 sendViewShippingErrorMessage(result.shippingErrorId)
                 calculateTotal()
-                // todo: hit entry point?
             }
         }
         updateCart()
@@ -557,7 +556,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                 validateUsePromoRevampUiModel = resultValidateUse
                 globalEvent.value = OccGlobalEvent.Normal
                 updatePromoState(resultValidateUse.promoUiModel)
-                // todo: hit entry point -> BO not applied
                 updateCart()
                 sendViewOspEe()
                 sendPreselectedCourierOption(ratesResult.preselectedSpId)
@@ -737,7 +735,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                 }
                 globalEvent.value = newGlobalEvent
                 updateCart()
-                // todo: hit entry point ? -> BO not applied
             }
         }
     }
@@ -994,15 +991,9 @@ class OrderSummaryPageViewModel @Inject constructor(
                 }
                 else -> {
                     validateUsePromoRevampUiModel = null
-                    var promo = orderPromo.value
-                    if (promo.lastApply.additionalInfo.usageSummaries.isNotEmpty()) {
-                        promo = promo.copy(lastApply = LastApplyUiModel())
-                    }
-                    orderPromo.value = promo.copy(state = OccButtonState.NORMAL)
-                    calculateTotal()
+                    updatePromoState(LastApplyUiModel())
                 }
             }
-            // todo: get entry point after validate use?
             updateCart()
         }
     }
@@ -1013,14 +1004,19 @@ class OrderSummaryPageViewModel @Inject constructor(
         orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
     }
 
+    private fun updatePromoState(lastApply: LastApplyUiModel, oldLastApply: LastApplyUiModel? = null) {
+        getEntryPointInfo(lastApply, oldLastApply) {
+            calculateTotal()
+        }
+    }
+
     private fun updatePromoState(promoUiModel: PromoUiModel, oldLastApply: LastApplyUiModel? = null) {
         getEntryPointInfo(
-            lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
-            oldLastApply = oldLastApply,
-            onSuccess = {
-                calculateTotal()
-            }
-        )
+            LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
+            oldLastApply
+        ) {
+            calculateTotal()
+        }
     }
 
     fun updatePromoStateWithoutCalculate(promoUiModel: PromoUiModel, oldLastApply: LastApplyUiModel? = null) {
