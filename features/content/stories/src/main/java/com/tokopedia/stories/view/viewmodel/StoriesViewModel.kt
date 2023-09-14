@@ -61,7 +61,7 @@ class StoriesViewModel @AssistedInject constructor(
             return _storiesMainData.value.groupItems[groupPosition]
         }
 
-    val mStories: StoriesDetailItemUiModel
+    val mDetail: StoriesDetailItemUiModel
         get() {
             val groupPosition = _groupPos.value
             val detailPosition = _detailPos.value
@@ -96,7 +96,7 @@ class StoriesViewModel @AssistedInject constructor(
     private val mResetValue: Int
         get() = _resetValue.value
 
-    private var latestTrackStoriesPosition = -1
+    private var mLatestTrackPosition = -1
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
@@ -148,7 +148,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleMainData(selectedGroup: Int) {
-        latestTrackStoriesPosition = -1
+        mLatestTrackPosition = -1
         _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
             setInitialData()
@@ -318,9 +318,9 @@ class StoriesViewModel @AssistedInject constructor(
     private fun checkAndHitTrackActivity() {
         viewModelScope.launchCatchError(block = {
             val detailItem = mGroupItem.detail
-            if (mDetailPos <= latestTrackStoriesPosition) return@launchCatchError
-            latestTrackStoriesPosition = mDetailPos
-            val trackerId = detailItem.detailItems[mDetailPos].meta.activityTracker
+            if (mDetailPos <= mLatestTrackPosition) return@launchCatchError
+            mLatestTrackPosition = mDetailPos
+            val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker
             requestSetStoriesTrackActivity(trackerId)
         }) {}
     }

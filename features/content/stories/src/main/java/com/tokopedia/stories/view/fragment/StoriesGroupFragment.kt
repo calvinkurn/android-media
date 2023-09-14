@@ -56,11 +56,47 @@ class StoriesGroupFragment @Inject constructor(
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
+    private var mCurrentPos = -1
+
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             showSelectedGroupHighlight(position)
             viewModelAction(StoriesUiAction.SetMainData(position))
             super.onPageSelected(position)
+        }
+
+        override fun onPageScrollStateChanged(state: Int) {
+            super.onPageScrollStateChanged(state)
+            val currentPage = binding.storiesGroupViewPager.currentItem
+            when (state) {
+                ViewPager2.SCROLL_STATE_DRAGGING -> {
+                    mCurrentPos = currentPage
+                }
+                ViewPager2.SCROLL_STATE_IDLE -> {
+                    when {
+                        mCurrentPos > currentPage -> {
+                            analytic.sendClickSwipePreviousContentEvent(
+                                eventLabel = "$entryPoint - $authorId - " +
+                                    "${viewModel.mDetail.id} - asgc - " +
+                                    "${viewModel.mDetail.content.type.value} - " +
+                                    "${viewModel.mGroup.groupName} - " +
+                                    "prevStoriesId"
+                            )
+                        }
+                        mCurrentPos < currentPage -> {
+                            analytic.sendClickSwipeNextContentEvent(
+                                eventLabel = "$entryPoint - $authorId - " +
+                                    "${viewModel.mDetail.id} - asgc - " +
+                                    "${viewModel.mDetail.content.type.value} - " +
+                                    "${viewModel.mGroup.groupName} - " +
+                                    "prevStoriesId"
+                            )
+                        }
+                        else -> return
+                    }
+                }
+                else -> return
+            }
         }
     }
 
@@ -122,7 +158,7 @@ class StoriesGroupFragment @Inject constructor(
 
         layoutGroupLoading.icCloseLoading.setOnClickListener {
             analytic.sendClickExitStoryRoomEvent(
-                eventLabel = "$entryPoint - $authorId - ${viewModel.mStories.id} - asgc - ${viewModel.mStories.content.type.value} - nextStoriesId - ${viewModel.mGroup.groupName}"
+                eventLabel = "$entryPoint - $authorId - ${viewModel.mDetail.id} - asgc - ${viewModel.mDetail.content.type.value} - nextStoriesId - ${viewModel.mGroup.groupName}"
             )
             activity?.finish()
         }
@@ -162,7 +198,7 @@ class StoriesGroupFragment @Inject constructor(
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     StoriesUiEvent.FinishedAllStories -> {
                         analytic.sendClickExitStoryRoomEvent(
-                            eventLabel = "$entryPoint - $authorId - ${viewModel.mStories.id} - asgc - ${viewModel.mStories.content.type.value} - nextStoriesId - ${viewModel.mGroup.groupName}"
+                            eventLabel = "$entryPoint - $authorId - ${viewModel.mDetail.id} - asgc - ${viewModel.mDetail.content.type.value} - nextStoriesId - ${viewModel.mGroup.groupName}"
                         )
                         activity?.finish()
                     }
