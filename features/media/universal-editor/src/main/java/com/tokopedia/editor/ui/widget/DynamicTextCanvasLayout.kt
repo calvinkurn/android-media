@@ -181,6 +181,6 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         const val VIEW_DELETION_BUTTON_ID = 456
 
         private const val DEFAULT_TEXT_MARGIN = 20
-        private const val DELETION_BOTTOM_MARGIN = 24
+        private const val DELETION_BOTTOM_MARGIN = 32
     }
 }
