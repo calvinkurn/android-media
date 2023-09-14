@@ -638,12 +638,12 @@ class ShopPageHeaderFragmentV2 :
         }
 
         shopHeaderViewModel?.followStatusData?.observe(owner) {
-            setFragmentTabContentWrapperFollowButtonLoading(false)
             when (it) {
                 is Success -> {
                     it.data.followStatus.apply {
                         setFragmentTabContentWrapperFollowButtonUsingFollowStatusData(this)
                         isFollowing = this?.status?.userIsFollowing == true
+                        setFragmentTabContentWrapperFollowButtonLoading(false)
                     }
                 }
 
@@ -656,11 +656,11 @@ class ShopPageHeaderFragmentV2 :
         }
 
         shopHeaderViewModel?.followShopData?.observe(owner) {
-            setFragmentTabContentWrapperFollowButtonLoading(false)
             when (it) {
                 is Success -> {
                     it.data.followShop?.let { followShop ->
                         onSuccessUpdateFollowStatus(followShop)
+                        setFragmentTabContentWrapperFollowButtonLoading(false)
                     }
                 }
 

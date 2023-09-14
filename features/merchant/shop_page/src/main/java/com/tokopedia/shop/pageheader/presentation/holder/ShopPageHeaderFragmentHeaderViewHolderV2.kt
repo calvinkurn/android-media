@@ -1,11 +1,16 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewPropertyAnimator
 import android.widget.ImageView
@@ -31,19 +36,18 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant.ShopTickerType
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
@@ -520,15 +524,19 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             buttonVariant = UnifyButton.Variant.FILLED.takeIf { !isFollowing } ?: UnifyButton.Variant.GHOST
             buttonType = UnifyButton.Type.MAIN
             val isShowLoading = model.isShowLoading
-            isLoading = isShowLoading
-            if (!isShowLoading)
+            if (!isShowLoading) {
+                if (isFollowing) {
+                    removeCompoundDrawableFollowButton()
+                    model.leftDrawableUrl = ""
+                } else {
+                    setDrawableLeft(this, model.leftDrawableUrl, model.isNeverFollow)
+                }
                 text = model.textLabel
-            if (isFollowing) {
-                removeCompoundDrawableFollowButton(model.textLabel)
-                model.leftDrawableUrl = ""
-            } else {
-                setDrawableLeft(this, model.leftDrawableUrl, model.isNeverFollow, model.textLabel)
+            }else{
+                removeCompoundDrawableFollowButton()
+                text = ""
             }
+            isLoading = isShowLoading
             setOnClickListener {
                 if (!isLoading)
                     listenerHeader?.onFollowButtonClicked()
@@ -539,8 +547,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private fun setDrawableLeft(
         button: UnifyButton,
         leftDrawableUrl: String,
-        isUserNeverFollow: Boolean,
-        textLabel: String
+        isUserNeverFollow: Boolean
     ) {
         if (leftDrawableUrl.isNotBlank() && isUserNeverFollow) {
             convertUrlToBitmapAndLoadImage(
@@ -548,15 +555,29 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 leftDrawableUrl,
                 16.toPx()
             ) {
+                applyWhiteTintColorToVoucherFollowerImage(it)
                 button.setDrawable(BitmapDrawable(context.resources, it))
             }
         } else {
-            removeCompoundDrawableFollowButton(textLabel)
+            removeCompoundDrawableFollowButton()
         }
     }
 
-    private fun removeCompoundDrawableFollowButton(textLabel: String) {
-        buttonFollow?.text = textLabel
+    private fun applyWhiteTintColorToVoucherFollowerImage(voucherFollowerBitmap: Bitmap) {
+        val tintColor = MethodChecker.getColor (context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White) // Replace with your desired tint color
+        val canvas = Canvas(voucherFollowerBitmap)
+        val paint = Paint()
+        val filter = PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN)
+        paint.colorFilter = filter
+        canvas.drawBitmap(voucherFollowerBitmap, 0f, 0f, paint)
+    }
+
+    private fun removeCompoundDrawableFollowButton() {
+        val spannableText = SpannableString(buttonFollow?.text)
+        val spanList = spannableText.getSpans(0, spannableText.length, ImageSpan::class.java)
+        if(spanList.isNotEmpty()) {
+            buttonFollow?.setDrawable(null)
+        }
     }
 
     fun updateShopTicker(headerTickerData: ShopPageHeaderTickerData, isMyShop: Boolean) {
@@ -791,9 +812,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     ): CoachMark2Item? {
         val buttonFollowView = buttonFollow
         val coachMarkText = followStatusData?.followButton?.coachmarkText.orEmpty()
-//        return if (coachMarkText.isNotBlank() && listenerHeader?.isFirstTimeVisit() == false && buttonFollowView != null) {
-        return if (coachMarkText.isNotBlank() && buttonFollowView != null) {
-
+        return if (coachMarkText.isNotBlank() && listenerHeader?.isFirstTimeVisit() == false && buttonFollowView != null) {
             CoachMark2Item(
                 anchorView = buttonFollowView,
                 title = "",
