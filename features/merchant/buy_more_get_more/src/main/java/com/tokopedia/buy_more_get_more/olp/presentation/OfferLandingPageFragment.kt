@@ -20,7 +20,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
 import com.tokopedia.buy_more_get_more.olp.di.component.DaggerBuyMoreGetMoreComponent
-import com.tokopedia.buy_more_get_more.olp.domain.entity.EmptyStateUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
@@ -55,6 +54,7 @@ import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.bmgm.common.utils.MiniCartUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -70,7 +70,6 @@ import com.tokopedia.utils.resources.isDarkMode
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
@@ -214,6 +213,7 @@ class OfferLandingPageFragment :
                     viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.offerings.firstOrNull()?.shopData))
                     viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
                     viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
+                    viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.offerings.firstOrNull()?.endDate.orEmpty()))
                     setupTncBottomSheet()
                     fetchMiniCart()
                     setMiniCartOnOfferEnd(offerInfoForBuyer)
@@ -505,10 +505,7 @@ class OfferLandingPageFragment :
                     Status.OFFER_ALREADY_FINISH -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
-                            description = getString(
-                                R.string.bmgm_description_error_ended_promo,
-                                currentState.shopData.shopName
-                            ),
+                            description = getString(R.string.bmgm_description_error_ended_promo),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
                             primaryCtaAction = { activity?.finish() },
@@ -520,10 +517,7 @@ class OfferLandingPageFragment :
                     Status.OOS -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),
-                            description = getString(
-                                R.string.bmgm_description_error_out_of_stock,
-                                currentState.shopData.shopName
-                            ),
+                            description = getString(R.string.bmgm_description_error_out_of_stock),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
                             primaryCtaAction = { activity?.finish() },
@@ -586,30 +580,15 @@ class OfferLandingPageFragment :
         binding?.apply {
             loadingStateOlp.root.gone()
             headerBackground.gone()
-            when (isShowProductList) {
-                true -> {
-                    stickyContent.visible()
-                    errorPageLarge.gone()
-                    val emptyStateUiModel = EmptyStateUiModel(
-                        title = title,
-                        description = description,
-                        imageUrl = imageUrl
-                    )
-                    olpAdapter?.submitList(listOf(emptyStateUiModel))
-                }
-
-                false -> {
-                    stickyContent.gone()
-                    errorPageLarge.apply {
-                        visible()
-                        setType(errorType)
-                        errorTitle.text = title
-                        errorDescription.text = description
-                        errorAction.text = primaryCtaText
-                        setActionClickListener {
-                            primaryCtaAction.invoke()
-                        }
-                    }
+            stickyContent.gone()
+            errorPageLarge.apply {
+                visible()
+                setType(errorType)
+                errorTitle.text = title
+                errorDescription.text = description
+                errorAction.text = primaryCtaText
+                setActionClickListener {
+                    primaryCtaAction.invoke()
                 }
             }
             miniCartView.gone()
@@ -637,7 +616,9 @@ class OfferLandingPageFragment :
             if (product.isVbs) {
                 openAtcVariant(product)
             } else {
-                addToCartProduct(product)
+                if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+                    addToCartProduct(product)
+                }
             }
         } else {
             redirectToLoginPage(REQUEST_CODE_USER_LOGIN)
@@ -747,10 +728,12 @@ class OfferLandingPageFragment :
 
     private fun redirectToShopPage(shopId: Long) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId.toString())
+        activity?.finish()
     }
 
     private fun redirectToPDP(productId: Long, productUrl: String) {
         RouteManager.route(context, productUrl)
+        activity?.finish()
     }
 
     private fun redirectToMainMenu() {
@@ -820,14 +803,4 @@ class OfferLandingPageFragment :
     private fun List<Long>.toSafeString(): String {
         return this.firstOrNull()?.orZero().toString()
     }
-
-//    override fun onClickedTncUrl(url: String) {
-//        RouteManager.route(
-//            context,
-//            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
-//        )
-//    }
-//
-//    override fun onImpressTnc() {
-//    }
 }

@@ -121,15 +121,14 @@ class OfferLandingPageViewModel @Inject constructor(
             }
 
             is OlpEvent.AddToCart -> {
-                validateOffering(event.product) // validate offering before addToCart
+                addToCart(event.product)
             }
 
             is OlpEvent.SetWarehouseIds -> setWarehouseIds(event.warehouseIds)
             is OlpEvent.SetShopData -> setShopData(event.shopData)
             is OlpEvent.SetOfferingJsonData -> setOfferingJsonData(event.offeringJsonData)
-            is OlpEvent.SetTncData -> {
-                setTncData(event.tnc)
-            }
+            is OlpEvent.SetTncData -> setTncData(event.tnc)
+            is OlpEvent.SetEndDate -> setEndDate(event.endDate)
         }
     }
 
@@ -242,21 +241,6 @@ class OfferLandingPageViewModel @Inject constructor(
         )
     }
 
-    private fun validateOffering(product: OfferProductListUiModel.Product) {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                mutex.withLock {
-                    getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam())
-                    addToCart(product)
-                }
-            },
-            onError = {
-                _error.postValue(it)
-            }
-        )
-    }
-
     private fun addToCart(product: OfferProductListUiModel.Product) {
         launchCatchError(
             dispatchers.io,
@@ -333,6 +317,14 @@ class OfferLandingPageViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 tnc = tnc
+            )
+        }
+    }
+
+    private fun setEndDate(endDate: String) {
+        _uiState.update {
+            it.copy(
+                endDate = endDate
             )
         }
     }
