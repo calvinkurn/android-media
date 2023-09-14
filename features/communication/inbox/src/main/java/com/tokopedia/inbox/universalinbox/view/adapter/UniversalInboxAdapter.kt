@@ -108,7 +108,7 @@ class UniversalInboxAdapter(
         } ?: false
     }
 
-    fun getRecommendationWidgetPosition(): Int? {
+    private fun getRecommendationWidgetPosition(): Int? {
         return if (checkCachedRecommendationWidgetPosition()) {
             recommendationWidgetPosition
         } else {

@@ -25,12 +25,13 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(7)
+            scrollToPosition(8)
         }
 
         // Then
-        assertPrePurchaseRecommendation(7)
-        assertProductRecommendation(9)
+        assertPrePurchaseRecommendation(8)
+        // 9 is title product recommendation
+        assertProductRecommendation(10)
     }
 
     @Test
@@ -45,7 +46,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertInboxRvTotalItem(8)
+        assertInboxRvTotalItem(9)
     }
 
     @Test
@@ -56,12 +57,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(7)
+            scrollToPosition(8)
         }
 
         // Then
-        assertPrePurchaseRecommendation(7)
-        assertPrePurchaseRecommendationGone(7)
+        assertPrePurchaseRecommendation(8)
+        assertPrePurchaseRecommendationGone(8)
     }
 
     @Test
@@ -73,12 +74,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(7)
+            scrollToPosition(8)
         }
 
         // Then
-        assertPrePurchaseRecommendation(7)
-        assertPrePurchaseRecommendationGone(7)
+        assertPrePurchaseRecommendation(8)
+        assertPrePurchaseRecommendationGone(8)
     }
 
     @Test
@@ -87,7 +88,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(10)
         }
 
         // Given
@@ -102,15 +103,15 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
         // When
         recommendationRobot {
-            clickProductOnPosition(9) // trigger refresh
+            clickProductOnPosition(10) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(10)
         }
 
         // Then
-        assertProductRecommendationName(9, "Product Refresh 1")
+        assertProductRecommendationName(10, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -124,7 +125,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 //        launchActivity()
 //        stubAllIntents()
 //        generalRobot {
-//            scrollToPosition(9)
+//            scrollToPosition(10)
 //        }
 //
 //        // Given
@@ -143,11 +144,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 //        }
 //        Thread.sleep(300) // wait for rv to populate
 //        generalRobot {
-//            scrollToPosition(9)
+//            scrollToPosition(10)
 //        }
 //
 //        // Then
-//        assertProductRecommendationName(9, "Product Refresh 1")
+//        assertProductRecommendationName(10, "Product Refresh 1")
 //        assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
 //    }
 
@@ -173,11 +174,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(10)
         }
 
         // Then
-        assertProductRecommendationName(9, "Product Refresh 1")
+        assertProductRecommendationName(10, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -203,11 +204,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(10)
         }
 
         // Then
-        assertProductRecommendationName(9, "Product Refresh 1")
+        assertProductRecommendationName(10, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -233,11 +234,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(10)
         }
 
         // Then
-        assertProductRecommendationName(9, "Product Refresh 1")
+        assertProductRecommendationName(10, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -264,12 +265,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(10)
         }
 
         // Then
         assertProductRecommendationName(
-            9,
+            10,
             "Tumbler Japan Hook Termos Travel 500 ml"
         )
         assertProductWidgetRecommendationName(
