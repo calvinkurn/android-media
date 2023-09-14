@@ -223,6 +223,7 @@ class CartListPresenter @Inject constructor(
             for (entry in updatedAddOnSummary) {
                 totalAddOnPrice += entry.priceValue.toLong()
             }
+            //
             summaryTransactionUiModel?.listSummaryAddOns = updatedAddOnSummary
         }
         return summaryTransactionUiModel
