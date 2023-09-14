@@ -553,7 +553,7 @@ class DigitalPDPTokenListrikFragment :
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
             it.rechargePdpTokenListrikBuyWidget.show()
-            it.rechargePdpTokenListrikBuyWidget.renderBuyWidget(denomGrid, this, listOf()) //TODO Change Button
+            it.rechargePdpTokenListrikBuyWidget.renderBuyWidget(denomGrid, this, listOf()) // set empty field to token listrik flow
         }
     }
 
@@ -1080,7 +1080,7 @@ class DigitalPDPTokenListrikFragment :
     }
 
     override fun onClickedButtonMultiCheckout(denom: DenomData) {
-        //TODO("Not yet implemented")
+        //no process
     }
 
     override fun onClickedChevron(denom: DenomData) {
