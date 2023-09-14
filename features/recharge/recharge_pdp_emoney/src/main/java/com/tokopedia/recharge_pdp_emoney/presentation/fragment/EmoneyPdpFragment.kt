@@ -206,6 +206,7 @@ open class EmoneyPdpFragment :
                         trackEventViewPdp(it.data.catalog.label)
                         renderRecommendationsAndPromoList(it.data.recommendations, it.data.promos)
                         renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
+                        topUpBillsViewModel.updateMultiCheckoutButtons(it.data.multiCheckoutButtons)
                     }
                     is Fail -> {
                         renderFullPageError(it.throwable)
@@ -717,6 +718,7 @@ open class EmoneyPdpFragment :
 
         binding.emoneyBuyWidgetLayout.show()
         binding.emoneyBuyWidget.setVisibilityLayout(true)
+        binding.emoneyBuyWidget.showMulticheckoutButtonSupport(topUpBillsViewModel.multiCheckoutButtons)
         binding.emoneyBuyWidgetLayout.invalidate()
         binding.emoneyPdpProductWidget.showPaddingBottom(
             kotlin.math.max(
@@ -749,6 +751,10 @@ open class EmoneyPdpFragment :
                 categoryIdFromPDP = detailPassData.categoryId
             )
         )
+    }
+
+    override fun onClickMultiCheckoutButton() {
+        //TODO("Not yet implemented")
     }
 
     private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {

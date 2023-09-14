@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
@@ -52,6 +53,8 @@ class TopupBillsViewModel @Inject constructor(
     private val rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
+
+    var multiCheckoutButtons: List<MultiCheckoutButtons> = listOf()
 
     private val _enquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
     val enquiryData: LiveData<Result<TopupBillsEnquiryData>>
@@ -348,6 +351,10 @@ class TopupBillsViewModel @Inject constructor(
 
     private fun createExpressCheckoutFieldParam(key: String, value: String): Map<String, String> {
         return mapOf(EXPRESS_PARAM_NAME to key, EXPRESS_PARAM_VALUE to value)
+    }
+
+    fun updateMultiCheckoutButtons(multiCheckoutButtons: List<MultiCheckoutButtons>) {
+        this.multiCheckoutButtons = multiCheckoutButtons
     }
 
     companion object {

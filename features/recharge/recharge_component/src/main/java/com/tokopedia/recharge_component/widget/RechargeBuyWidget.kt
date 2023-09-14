@@ -8,6 +8,12 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.ACTION_MULTIPLE
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_LEFT
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_RIGHT
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.PREFERENCE_MULTICHECKOUT
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.SHOW_COACH_MARK_MULTICHECKOUT_KEY
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.WHITE_COLOR
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -164,14 +170,5 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
         } else {
             UnifyButton.Variant.FILLED
         }
-    }
-
-    companion object {
-        private const val POSITION_LEFT = "left"
-        private const val POSITION_RIGHT = "right"
-        private const val ACTION_MULTIPLE = "multiple"
-        private const val WHITE_COLOR = "#FFFFFF"
-        private const val PREFERENCE_MULTICHECKOUT = "pdp_dg_multichekout"
-        private const val SHOW_COACH_MARK_MULTICHECKOUT_KEY = "pdp_dg_multichekout_is_coachmark_closed"
     }
 }
