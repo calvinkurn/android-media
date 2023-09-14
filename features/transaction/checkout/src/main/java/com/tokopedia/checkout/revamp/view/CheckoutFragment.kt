@@ -1515,8 +1515,7 @@ class CheckoutFragment :
                     viewModel.setSelectedCourier(
                         cartPosition,
                         courierItemData,
-                        shippingCourierUiModels,
-                        selectedCourier.productData.insurance
+                        shippingCourierUiModels
                     )
                 }
             }
@@ -1558,8 +1557,7 @@ class CheckoutFragment :
                 cartString,
                 promoCode,
                 true,
-                courierItemData,
-                courierData.productData.insurance
+                courierItemData
             )
         }
     }
@@ -1699,8 +1697,7 @@ class CheckoutFragment :
             viewModel.setSelectedCourier(
                 cartPosition,
                 courierItemData,
-                shippingCourierList,
-                shippingCourierUiModel.productData.insurance
+                shippingCourierList
             )
         }
     }

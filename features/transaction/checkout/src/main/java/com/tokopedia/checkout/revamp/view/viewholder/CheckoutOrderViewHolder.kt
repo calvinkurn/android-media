@@ -140,7 +140,7 @@ class CheckoutOrderViewHolder(
                         // CourierItemData.name
                         courierName = courierItemData.name ?: "",
                         // CourierItemData.shipperPrice
-                        courierShipperPrice = courierItemData.selectedShipper.shipperPrice,
+                        courierShipperPrice = courierItemData.shipperPrice,
 
                         currentAddress = RecipientAddressModel(),
 
