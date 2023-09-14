@@ -6,7 +6,7 @@
         <activity
             android:name=".RewardsTouchPointActionsActivity"
             android:exported="false"
-            android:theme="@style/TransParentTheme"
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent"
             >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

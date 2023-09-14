@@ -1403,7 +1403,7 @@ class CartItemViewHolder constructor(
                     binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.bmGmCartInfoData.bmGmData.offerIcon
                     binding.itemCartBmgm.bmgmWidgetView.offerId = data.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
-                        actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId, data.shopHolderData.shopId)
+                        actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerLandingPageLink)
                     }
                 }
                 2 -> {

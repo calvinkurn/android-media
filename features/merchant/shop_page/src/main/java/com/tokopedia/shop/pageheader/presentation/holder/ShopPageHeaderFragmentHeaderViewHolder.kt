@@ -198,6 +198,7 @@ class ShopPageHeaderFragmentHeaderViewHolder(
         tickerShopStatus?.tickerType = when (shopTickerType) {
             ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
             ShopTickerType.WARNING -> Ticker.TYPE_WARNING
+            ShopTickerType.DANGER -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_WARNING
         }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()

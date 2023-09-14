@@ -47,7 +47,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
@@ -1152,9 +1151,13 @@ class CartRevampFragment :
 
     override fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean) {
         if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
-            val (index, cartItemByOfferId) = CartDataHelper.getCartItemHolderDataAndIndexByOfferId(viewModel.cartDataList.value, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
-            cartItemByOfferId.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
-            cartAdapter?.notifyItemChanged(index)
+            val selected = !cartItemHolderData.isSelected
+            viewModel.setItemSelected(position, cartItemHolderData, selected)
+            updateStateAfterCheckChanged(selected)
+
+            cartItemHolderData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            cartItemHolderData.isSelected = isChecked
+            cartAdapter?.notifyItemChanged(position)
             getGroupProductTicker(cartItemHolderData)
         }
     }
@@ -4920,33 +4923,37 @@ class CartRevampFragment :
 
     private fun getGroupProductTicker(cartItemHolderData: CartItemHolderData) {
         viewModel.getBmGmGroupProductTicker(
+            cartItemHolderData.bmGmCartInfoData.bmGmData.offerId,
+            BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
+                CartDataHelper.getListProductByOfferId(
+                    viewModel.cartDataList.value,
+                    cartItemHolderData.bmGmCartInfoData.bmGmData.offerId
+                ),
+                cartItemHolderData.bundleId.toLongOrZero(),
+                cartItemHolderData.bundleGroupId,
                 cartItemHolderData.bmGmCartInfoData.bmGmData.offerId,
-                BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
-                        CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value,
-                                cartItemHolderData.bmGmCartInfoData.bmGmData.offerId),
-                        cartItemHolderData.bundleId.toLongOrZero(),
-                        cartItemHolderData.bundleGroupId,
-                        cartItemHolderData.bmGmCartInfoData.bmGmData.offerId,
-                        cartItemHolderData.bmGmCartInfoData.bmGmData.offerJsonData,
-                        cartItemHolderData.cartStringOrder)
+                cartItemHolderData.bmGmCartInfoData.bmGmData.offerJsonData,
+                cartItemHolderData.cartStringOrder
+            )
         )
     }
 
     private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData) {
-            viewModel.getBmGmGroupProductTicker(
-                    cartGroupHolderData.cartGroupBmGmHolderData.offerId,
-                    BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
-                            cartGroupHolderData.productUiModelList,
-                            cartGroupHolderData.cartGroupBmGmHolderData.bundleId,
-                            cartGroupHolderData.cartGroupBmGmHolderData.bundleGroupId,
-                            cartGroupHolderData.cartGroupBmGmHolderData.offerId,
-                            cartGroupHolderData.cartGroupBmGmHolderData.offerJsonData,
-                            cartGroupHolderData.cartGroupBmGmHolderData.cartStringOrder)
+        viewModel.getBmGmGroupProductTicker(
+            cartGroupHolderData.cartGroupBmGmHolderData.offerId,
+            BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
+                cartGroupHolderData.productUiModelList,
+                cartGroupHolderData.cartGroupBmGmHolderData.bundleId,
+                cartGroupHolderData.cartGroupBmGmHolderData.bundleGroupId,
+                cartGroupHolderData.cartGroupBmGmHolderData.offerId,
+                cartGroupHolderData.cartGroupBmGmHolderData.offerJsonData,
+                cartGroupHolderData.cartGroupBmGmHolderData.cartStringOrder
             )
+        )
     }
 
-    override fun onBmGmChevronRightClicked(offerId: Long, shopId: String) {
-        val productIds = arrayListOf<String>()
+    override fun onBmGmChevronRightClicked(offerLandingPageLink: String) {
+        /*val productIds = arrayListOf<String>()
         val warehouseIds = arrayListOf<String>()
 
         CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, offerId).forEach {
@@ -4962,7 +4969,9 @@ class CartRevampFragment :
                 productIds.joinToString(","),
                 shopId
         )
-        context?.startActivity(intent)
+        context?.startActivity(intent)*/
+
+        RouteManager.route(context, offerLandingPageLink)
     }
 
     override fun onBmGmTickerReloadClicked() {
