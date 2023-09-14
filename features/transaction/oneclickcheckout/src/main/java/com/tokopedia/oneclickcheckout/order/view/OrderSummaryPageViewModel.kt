@@ -163,6 +163,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             val isCartReimagine = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
             globalEvent.value = OccGlobalEvent.Normal
             val result = cartProcessor.getOccCart(source, gatewayCode, tenor, isCartReimagine)
+            val isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
             val isPromoRevamp = PromoUsageRollenceManager().isRevamp(result.orderPromo.lastApply.userGroupMetadata)
             addressState.value = result.addressState
             orderCart = result.orderCart
@@ -182,7 +183,10 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderPayment.value = result.orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
-            orderPromo.value = result.orderPromo.copy(isPromoRevamp = isPromoRevamp)
+            orderPromo.value = result.orderPromo.copy(
+                isCartCheckoutRevamp = isCartCheckoutRevamp,
+                isPromoRevamp = isPromoRevamp
+            )
             when {
                 result.globalEvent != null -> {
                     globalEvent.value = result.globalEvent

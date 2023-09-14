@@ -33,8 +33,12 @@ class OrderPromoCard(
     }
 
     fun setupButtonPromo(orderPromo: OrderPromo) {
-        if (orderPromo.isPromoRevamp) {
-            renderNewButtonPromo(orderPromo)
+        if (orderPromo.isCartCheckoutRevamp) {
+            if (orderPromo.isPromoRevamp) {
+                renderNewButtonPromoWithNewBehavior(orderPromo)
+            } else {
+                renderNewButtonPromoWithOldBehavior(orderPromo)
+            }
         } else {
             renderOldButtonPromo(orderPromo)
         }
@@ -94,7 +98,68 @@ class OrderPromoCard(
         binding.root.alpha = if (orderPromo.isDisabled) DISABLE_ALPHA else ENABLE_ALPHA
     }
 
-    private fun renderNewButtonPromo(orderPromo: OrderPromo) {
+    private fun renderNewButtonPromoWithOldBehavior(orderPromo: OrderPromo) {
+        binding.btnPromoCheckout.gone()
+        binding.btnPromoEntryPoint.visible()
+        binding.dividerPromoEntryPointBottom.visible()
+        when (orderPromo.state) {
+            OccButtonState.LOADING -> {
+                binding.btnPromoEntryPoint.showLoading()
+            }
+
+            OccButtonState.DISABLE -> {
+                binding.btnPromoEntryPoint.showError {
+                    if (!orderPromo.isDisabled) {
+                        listener.onClickRetryValidatePromo()
+                    }
+                }
+            }
+
+            else -> {
+                val lastApply = orderPromo.lastApply
+                var title = binding.root.context.getString(purchase_platformcommonR.string.promo_funnel_label)
+                if (lastApply.additionalInfo.messageInfo.message.isNotEmpty()) {
+                    title = lastApply.additionalInfo.messageInfo.message
+                } else if (lastApply.defaultEmptyPromoMessage.isNotBlank()) {
+                    title = lastApply.defaultEmptyPromoMessage
+                }
+                val summaries = lastApply.additionalInfo.usageSummaries.map {
+                    PromoEntryPointSummaryItem(
+                        title = it.description,
+                        value = it.amountStr,
+                        subValue = it.currencyDetailsStr
+                    )
+                }
+                if (summaries.isNotEmpty()) {
+                    analytics.eventViewPromoAlreadyApplied()
+                    binding.btnPromoEntryPoint.showApplied(
+                        title = title,
+                        desc = lastApply.additionalInfo.messageInfo.detail,
+                        rightIcon = IconUnify.CHEVRON_RIGHT,
+                        summaries = summaries,
+                        onClickListener = {
+                            if (!orderPromo.isDisabled) {
+                                listener.onClickPromo()
+                            }
+                        }
+                    )
+                } else {
+                    binding.btnPromoEntryPoint.showActive(
+                        wording = title,
+                        rightIcon = IconUnify.CHEVRON_RIGHT,
+                        onClickListener = {
+                            if (!orderPromo.isDisabled) {
+                                listener.onClickPromo()
+                            }
+                        }
+                    )
+                }
+            }
+        }
+        binding.root.alpha = if (orderPromo.isDisabled) DISABLE_ALPHA else ENABLE_ALPHA
+    }
+
+    private fun renderNewButtonPromoWithNewBehavior(orderPromo: OrderPromo) {
         binding.btnPromoCheckout.gone()
         binding.btnPromoEntryPoint.visible()
         binding.dividerPromoEntryPointBottom.visible()

@@ -10,6 +10,7 @@ data class OrderPromo(
     var entryPointInfo: PromoEntryPointInfo? = null,
     var state: OccButtonState = OccButtonState.DISABLE,
 
+    var isCartCheckoutRevamp: Boolean = false,
     var isPromoRevamp: Boolean = false,
     var isDisabled: Boolean = false,
     var isAnimateWording: Boolean = false

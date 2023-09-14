@@ -34,6 +34,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Clear
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -251,6 +253,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(
         promoRequest.orders = listOf(ordersItem)
         promoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         promoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
+        promoRequest.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
 
         if (lastValidateUsePromoRequest != null) {
             promoRequest.codes = ArrayList(lastValidateUsePromoRequest.codes)
@@ -331,6 +334,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(
         }
         validateUsePromoRequest.skipApply = 0
         validateUsePromoRequest.isSuggested = 0
+        validateUsePromoRequest.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
 
         return validateUsePromoRequest
     }
