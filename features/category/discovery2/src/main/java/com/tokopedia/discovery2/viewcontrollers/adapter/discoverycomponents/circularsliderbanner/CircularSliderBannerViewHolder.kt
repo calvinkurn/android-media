@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.PageControl.Companion.COLOR_INVERTED
 import com.tokopedia.unifyprinciples.Typography
 
 class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), CircularListener {
@@ -128,6 +129,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
 
     private fun setupExpandableIndicatorTurnedOff(size: Int) {
         sliderTargetingIndicator.show()
+        sliderTargetingIndicator.indicatorColorType = COLOR_INVERTED
         sliderTargetingIndicator.setIndicator(
             size = size
         )

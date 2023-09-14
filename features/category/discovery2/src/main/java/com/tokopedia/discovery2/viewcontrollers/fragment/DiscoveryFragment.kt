@@ -1065,6 +1065,7 @@ open class DiscoveryFragment :
 
             // set appbar background to transparent
             appBarLayout.setBackgroundColor(Color.TRANSPARENT)
+            appBarLayout.stateListAnimator = null
 
             // update color widget and hide divider
             if (discoveryViewModel.getAddressVisibilityValue() && isLightThemeStatusBar != false) {
@@ -1488,22 +1489,6 @@ open class DiscoveryFragment :
 
     override fun screenShotTaken(path: String) {
         showUniversalShareBottomSheet(pageInfoHolder, path)
-    }
-
-    private fun setupSearchBar(data: PageInfo?) {
-        navToolbar.setupSearchbar(
-            hints = listOf(
-                HintData(
-                    placeholder = data?.searchTitle
-                        ?: getString(R.string.discovery_default_search_title)
-                )
-            ),
-            searchbarClickCallback = {
-                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
-                handleSearchClick(data)
-            },
-            disableDefaultGtmTracker = true
-        )
     }
 
     private fun handleSearchClick(data: PageInfo?) {
