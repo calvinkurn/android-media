@@ -616,8 +616,8 @@ class OrderSummaryPageViewModel @Inject constructor(
         }
     }
 
-    fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel, needPinpoint: Boolean) {
-        val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, orderShipment.value, needPinpoint)
+    fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
+        val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, orderShipment.value)
         newOrderShipment?.let {
             val isBoExist = clearBboIfExist()
             orderShipment.value = it

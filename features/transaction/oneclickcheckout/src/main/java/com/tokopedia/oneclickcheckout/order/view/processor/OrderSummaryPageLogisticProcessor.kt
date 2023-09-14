@@ -784,8 +784,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
 
     fun chooseCourier(
         chosenShippingCourierViewModel: ShippingCourierUiModel,
-        shipping: OrderShipment,
-        needPinpoint: Boolean
+        shipping: OrderShipment
     ): OrderShipment? {
         val shippingRecommendationData = shipping.shippingRecommendationData
         if (shippingRecommendationData != null) {
@@ -808,6 +807,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     }
                     if (selectedShippingCourierUiModel != null) {
                         selectedShippingCourierUiModel.isSelected = true
+                        val flagNeedToSetPinpoint = selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                         return shipping.copy(
                             shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                             ratesId = selectedShippingCourierUiModel.ratesId,
@@ -822,7 +822,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                             logisticPromoShipping = null,
                             isShowLogisticPromoTickerMessage = false,
                             isApplyLogisticPromo = false,
-                            needPinpoint = needPinpoint
+                            needPinpoint = flagNeedToSetPinpoint,
+                            serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else null
                         )
                     }
                 }
