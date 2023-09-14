@@ -12,17 +12,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.ConfigUpdate;
 import com.google.firebase.remoteconfig.ConfigUpdateListener;
+import com.google.firebase.remoteconfig.ConfigUpdateListenerRegistration;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.tokopedia.config.GlobalConfig;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import timber.log.Timber;
 
 /**
  * Created by okasurya on 9/11/17.
@@ -38,65 +36,18 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
 
-    private RealTimeUpdateListener realTimeUpdateListener;
-
     public FirebaseRemoteConfigImpl(Context context) {
         try {
             this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        } catch (Exception ignored) { } // FirebaseApp is not intialized, ignoring the error and handle it with default value
+        } catch (Exception ignored) {} // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
 //        if (GlobalConfig.isAllowDebuggingTools() && context != null) {
 //            this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
 //        }
     }
 
-    public void setRealtimeUpdateListener(@Nullable RealTimeUpdateListener realTimeUpdateListener) {
-        this.realTimeUpdateListener = realTimeUpdateListener;
-    }
-
     private boolean isDebug() {
         return GlobalConfig.isAllowDebuggingTools() && sharedPrefs != null;
-    }
-
-    private void setRealTimeUpdates() {
-        try {
-            if (firebaseRemoteConfig != null) {
-                firebaseRemoteConfig.addOnConfigUpdateListener(new ConfigUpdateListener() {
-                    @Override
-                    public void onUpdate(@NonNull ConfigUpdate configUpdate) {
-                        Log.d(REMOTE_CONFIG_REAL_TIME, String.format("Updated keys: %s", configUpdate.getUpdatedKeys()));
-
-                        firebaseRemoteConfig.activate()
-                                .addOnCompleteListener(task -> {
-                                    if (realTimeUpdateListener != null) {
-                                        realTimeUpdateListener.onUpdate(configUpdate.getUpdatedKeys());
-                                    }
-                                })
-                                .addOnFailureListener(exception -> {
-                                    Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Activate onFailureListener: %s", exception.getStackTrace()));
-                                    if (realTimeUpdateListener != null) {
-                                        realTimeUpdateListener.onError(exception);
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onError(FirebaseRemoteConfigException error) {
-                        Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Config update error with stacktrace: %s", error.getStackTrace()));
-
-                        if (realTimeUpdateListener != null) {
-                            realTimeUpdateListener.onError(error);
-                        }
-                    }
-                });
-            }
-        } catch (Exception e) {
-            if (realTimeUpdateListener != null) {
-                realTimeUpdateListener.onError(e);
-            }
-            Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Remote config error: %s", e.getStackTrace()));
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -106,11 +57,11 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
             if (isDebug()) {
                 Map<String, ?> map = sharedPrefs.getAll();
                 String key = "";
-                for (Map.Entry<String,?> entry : map.entrySet())
+                for (Map.Entry<String, ?> entry : map.entrySet())
                     key = entry.getKey();
-                    if (key.startsWith(prefix)){
-                        set.add(key);
-                    }
+                if (key.startsWith(prefix)) {
+                    set.add(key);
+                }
             }
             return set;
         }
@@ -248,10 +199,53 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                             }
                         });
 
-                setRealTimeUpdates();
+                setRealtimeUpdate(null);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public ConfigUpdateListenerRegistration setRealtimeUpdate(@Nullable RealTimeUpdateListener realTimeUpdateListener) {
+        try {
+            if (firebaseRemoteConfig != null) {
+                return firebaseRemoteConfig.addOnConfigUpdateListener(getConfigUpdateListener(realTimeUpdateListener));
+            }
+        } catch (Exception e) {
+            Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Remote config error: %s", e.getStackTrace()));
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private ConfigUpdateListener getConfigUpdateListener(@Nullable RealTimeUpdateListener realTimeUpdateListener) {
+        return new ConfigUpdateListener() {
+            @Override
+            public void onUpdate(@NonNull ConfigUpdate configUpdate) {
+                Log.d(REMOTE_CONFIG_REAL_TIME, String.format("Updated keys: %s", configUpdate.getUpdatedKeys()));
+                firebaseRemoteConfig.activate().addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (realTimeUpdateListener != null) {
+                            realTimeUpdateListener.onUpdate(configUpdate.getUpdatedKeys());
+                        }
+                    }
+                }).addOnFailureListener(e -> {
+                    if (realTimeUpdateListener != null) {
+                        realTimeUpdateListener.onError(e);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(FirebaseRemoteConfigException error) {
+                Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Config update error with stacktrace: %s", error.getStackTrace()));
+
+                if (realTimeUpdateListener != null) {
+                    realTimeUpdateListener.onError(error);
+                }
+            }
+        };
     }
 }

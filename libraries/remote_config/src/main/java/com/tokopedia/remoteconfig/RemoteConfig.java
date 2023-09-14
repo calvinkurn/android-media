@@ -1,6 +1,8 @@
 package com.tokopedia.remoteconfig;
 
-import com.google.firebase.remoteconfig.ConfigUpdate;
+import androidx.annotation.Nullable;
+
+import com.google.firebase.remoteconfig.ConfigUpdateListenerRegistration;
 
 import java.util.Set;
 
@@ -88,6 +90,8 @@ public interface RemoteConfig {
      *                 or if any error happened
      */
     void fetch(Listener listener);
+
+    @Nullable ConfigUpdateListenerRegistration setRealtimeUpdate(RealTimeUpdateListener param);
 
     interface Listener {
         void onComplete(RemoteConfig remoteConfig);
