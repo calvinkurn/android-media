@@ -13,6 +13,8 @@ import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterDataView
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordDataView
+import com.tokopedia.search.result.mps.violationstate.TypeViolation
+import com.tokopedia.search.result.mps.violationstate.ViolationStateDataView
 import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterState
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterState
@@ -30,8 +32,8 @@ data class MPSState(
     val loadMoreThrowable: Throwable? = null,
     val paginationState: PaginationState = PaginationState(),
     val addToCartState: AddToCartState = AddToCartState(),
-    val bottomSheetFilterState: BottomSheetFilterState = BottomSheetFilterState(),
-): SearchUiState {
+    val bottomSheetFilterState: BottomSheetFilterState = BottomSheetFilterState()
+) : SearchUiState {
 
     private val shopIdSet: Set<String>
         get() = (result.data?.filterIsInstance<MPSShopWidgetDataView>() ?: emptyList())
@@ -61,17 +63,24 @@ data class MPSState(
     private fun updatePageStates(mpsModel: MPSModel): MPSState = copy(
         filterState = filterState.from(
             parameter = parameter,
-            filterList = mpsModel.quickFilterList + bottomSheetFilterList,
+            filterList = mpsModel.quickFilterList + bottomSheetFilterList
         ),
-        paginationState = PaginationState(totalData = mpsModel.totalData).incrementStart(),
+        paginationState = PaginationState(totalData = mpsModel.totalData).incrementStart()
     )
 
     private fun updateResult(mpsModel: MPSModel) = copy(
-        result = State.Success(data = successData(mpsModel)),
-        quickFilterState = quickFilterState.success(mpsModel, filterState),
+        result = State.Success(data = createResponseData(mpsModel)),
+        quickFilterState = quickFilterState.success(mpsModel, filterState)
     )
 
-    private fun successData(mpsModel: MPSModel): List<Visitable<*>> =
+    private fun createResponseData(mpsModel: MPSModel): List<Visitable<*>> =
+        if (mpsModel.responseCode == "0") {
+            createSuccessData(mpsModel)
+        } else {
+            restrictedStateVisitableList(mpsModel)
+        }
+
+    private fun createSuccessData(mpsModel: MPSModel): List<Visitable<*>> =
         if (mpsModel.shopList.isNotEmpty())
             listOf(ChooseAddressDataView) +
                 mpsShopWidgetList(mpsModel) +
@@ -85,7 +94,7 @@ data class MPSState(
         }
 
     private fun mpsShopWidgetListLoadMore(
-        mpsModel: MPSModel,
+        mpsModel: MPSModel
     ): List<Visitable<*>> {
         return mpsModel.shopList
             .filterNot { shop -> shop.id in shopIdSet }
@@ -102,11 +111,17 @@ data class MPSState(
         else
             listOf(MPSEmptyStateKeywordDataView)
 
+    private fun restrictedStateVisitableList(mpsModel: MPSModel) =
+        if (mpsModel.responseCode == VIOLATION_BLACKLIST)
+            listOf(ViolationStateDataView(TypeViolation.BLACKLISTED))
+        else
+            listOf(ViolationStateDataView(TypeViolation.BANNED))
+
     fun error(throwable: Throwable) = copy(
         result = State.Error(
             message = "",
             data = null,
-            throwable = throwable,
+            throwable = throwable
         )
     )
 
@@ -119,7 +134,7 @@ data class MPSState(
         chooseAddressModel = chooseAddressModel,
         bottomSheetFilterState = BottomSheetFilterState(
             dynamicFilterModel = bottomSheetFilterModel
-        ),
+        )
     )
 
     fun applyQuickFilter(quickFilterDataView: QuickFilterDataView): MPSState {
@@ -130,7 +145,7 @@ data class MPSState(
 
         return copy(
             parameter = filterStateUpdated.parameter,
-            filterState = filterStateUpdated,
+            filterState = filterStateUpdated
         )
     }
 
@@ -143,7 +158,7 @@ data class MPSState(
     private fun incrementStart() = copy(paginationState = paginationState.incrementStart())
 
     private fun updateResultLoadMore(mpsModel: MPSModel) = copy(
-        result = State.Success(data = successLoadMoreData(mpsModel)),
+        result = State.Success(data = successLoadMoreData(mpsModel))
     )
 
     private fun successLoadMoreData(mpsModel: MPSModel): List<Visitable<*>> =
@@ -179,4 +194,8 @@ data class MPSState(
     fun applyFilter(parameter: Map<String, String>) = copy(parameter = parameter)
 
     fun resetFilter() = copy(parameter = filterState.resetFilters().parameter)
+
+    companion object {
+        private const val VIOLATION_BLACKLIST= "2"
+    }
 }

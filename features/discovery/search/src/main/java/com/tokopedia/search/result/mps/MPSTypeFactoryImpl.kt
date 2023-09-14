@@ -12,6 +12,9 @@ import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterDataView
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterViewHolder
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordDataView
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordViewHolder
+import com.tokopedia.search.result.mps.violationstate.ViolationStateDataView
+import com.tokopedia.search.result.mps.violationstate.ViolationStateViewHolder
+import com.tokopedia.search.result.mps.violationstate.ViolationStateListener
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListener
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetViewHolder
@@ -23,6 +26,7 @@ class MPSTypeFactoryImpl(
     private val chooseAddressListener: ChooseAddressListener,
     private val shopWidgetListener: MPSShopWidgetListener,
     private val emptyStateListener: EmptyStateListener,
+    private val restrictedStateListener: ViolationStateListener,
 ): BaseAdapterTypeFactory(), MPSTypeFactory {
 
     override fun type(mpsShopWidgetDataView: MPSShopWidgetDataView): Int =
@@ -36,6 +40,9 @@ class MPSTypeFactoryImpl(
 
     override fun type(mpsEmptyStateFilterDataView: MPSEmptyStateFilterDataView): Int =
         MPSEmptyStateFilterViewHolder.LAYOUT
+
+    override fun type(violationStateDataView: ViolationStateDataView): Int =
+        ViolationStateViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -56,6 +63,10 @@ class MPSTypeFactoryImpl(
             MPSEmptyStateFilterViewHolder.LAYOUT -> MPSEmptyStateFilterViewHolder(
                 view,
                 emptyStateListener,
+            )
+            ViolationStateViewHolder.LAYOUT -> ViolationStateViewHolder(
+                view,
+                restrictedStateListener,
             )
             else -> super.createViewHolder(view, type)
         }

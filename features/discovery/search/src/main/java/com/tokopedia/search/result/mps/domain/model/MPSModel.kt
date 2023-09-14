@@ -24,6 +24,9 @@ data class MPSModel(
     val quickFilterList
         get() = quickFilterModel.data.filter
 
+    val responseCode
+        get() = searchShopMPS.header.responseCode
+
     data class SearchShopMPS(
         @SerializedName("header")
         @Expose
@@ -42,6 +45,10 @@ data class MPSModel(
             @SerializedName("treatment_code")
             @Expose
             val treatmentCode: String = "0",
+
+            @SerializedName("response_code")
+            @Expose
+            val responseCode: String = "0",
         )
 
         data class Shop(

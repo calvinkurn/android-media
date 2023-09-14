@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.Error
 import com.tokopedia.discovery.common.State.Success
@@ -25,6 +27,7 @@ import com.tokopedia.search.result.SearchViewModel
 import com.tokopedia.search.result.mps.addtocart.AddToCartView
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.mps.emptystate.EmptyStateListener
+import com.tokopedia.search.result.mps.violationstate.ViolationStateListener
 import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListenerDelegate
@@ -49,7 +52,8 @@ class MPSFragment @Inject constructor(
     FragmentProvider,
     BackToTopView,
     ListListener,
-    EmptyStateListener {
+    EmptyStateListener,
+    ViolationStateListener {
 
     private val viewModel: MPSViewModel? by viewModels { viewModelFactory }
     private val searchViewModel: SearchViewModel? by viewModels { viewModelFactory }
@@ -110,6 +114,7 @@ class MPSFragment @Inject constructor(
                 iris,
             ),
             emptyStateListener = this,
+            restrictedStateListener = this
         )
 
         mpsListAdapter = MPSListAdapter(mpsTypeFactory, this)
@@ -215,6 +220,10 @@ class MPSFragment @Inject constructor(
         viewModel?.resetFilter()
     }
 
+    override fun onLearnItButtonClick() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, LEARNLINK)
+    }
+
     companion object {
 
         @JvmStatic
@@ -227,5 +236,6 @@ class MPSFragment @Inject constructor(
                 MPSFragment::class.java.name,
             ) as MPSFragment
         }
+        private const val LEARNLINK = "https://www.tokopedia.com/terms#item"
     }
 }
