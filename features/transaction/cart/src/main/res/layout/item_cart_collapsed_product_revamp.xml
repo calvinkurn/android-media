@@ -21,16 +21,25 @@
 
     </FrameLayout>
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/image_bundle_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+    <FrameLayout
+        android:id="@+id/cv_image_bundle_container"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
-        android:background="@color/icon_bundling_dms_color"
         app:layout_constraintBottom_toBottomOf="@+id/fl_image_product"
         app:layout_constraintEnd_toEndOf="@+id/fl_image_product"
-        app:shapeAppearanceOverlay="@style/roundedImageDisplay" />
+        android:background="@drawable/bg_cart_rounded_collapsed_bundle_container" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/image_bundle_icon"
+        android:layout_width="20dp"
+        android:layout_height="21dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cv_image_bundle_container"
+        app:layout_constraintEnd_toEndOf="@+id/cv_image_bundle_container"
+        app:layout_constraintStart_toStartOf="@id/cv_image_bundle_container"
+        app:layout_constraintTop_toTopOf="@id/cv_image_bundle_container"/>
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_variant_name"

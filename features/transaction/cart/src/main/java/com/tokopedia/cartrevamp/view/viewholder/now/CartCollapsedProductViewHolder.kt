@@ -43,9 +43,26 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
 
     private fun renderBundlingIcon(cartItemHolderData: CartItemHolderData) {
         if (cartItemHolderData.isBundlingItem && !cartItemHolderData.isError) {
-            viewBinding.imageBundleIcon.show()
+            val n50Color = ResourcesCompat.getColor(
+                itemView.resources,
+                unifyprinciplesR.color.Unify_NN50,
+                null
+            )
+            val bundleIconBackground = ResourcesCompat.getDrawable(
+                itemView.resources,
+                R.drawable.bg_cart_rounded_collapsed_bundle_container,
+                null
+            )
+            val n50ColorAlpha = ColorUtils.setAlphaComponent(n50Color, 230)
+            val bundleIconBackgroundDrawable = bundleIconBackground as? GradientDrawable
+            bundleIconBackgroundDrawable?.mutate()
+            bundleIconBackgroundDrawable?.setColor(n50ColorAlpha)
+            viewBinding.cvImageBundleContainer.background = bundleIconBackgroundDrawable
             viewBinding.imageBundleIcon.loadImage(cartItemHolderData.bundleGrayscaleIconUrl)
+            viewBinding.cvImageBundleContainer.show()
+            viewBinding.imageBundleIcon.show()
         } else {
+            viewBinding.cvImageBundleContainer.gone()
             viewBinding.imageBundleIcon.gone()
         }
     }
