@@ -467,8 +467,8 @@ object DeeplinkMainApp {
             DLP.startsWith("qr") { _: String ->
                 ApplinkConstInternalUserPlatform.QR_LOGIN
             },
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.LOGIN
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "marketplace" to mutableListOf(

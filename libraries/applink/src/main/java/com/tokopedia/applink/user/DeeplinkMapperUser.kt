@@ -32,9 +32,18 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
+            deeplink == ApplinkConst.LOGIN -> getLoginApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
             else -> deeplink
+        }
+    }
+
+    private fun getLoginApplink(): String {
+        return if (isGotoLoginEnabled()) {
+            ApplinkConstInternalUserPlatform.SCP_LOGIN
+        } else {
+            ApplinkConst.LOGIN
         }
     }
 
@@ -44,6 +53,14 @@ object DeeplinkMapperUser {
         } else {
             ApplinkConstInternalUserPlatform.SETTING_PROFILE
         }
+    }
+
+    fun isGotoLoginEnabled(): Boolean {
+//        return RemoteConfigInstance.getInstance()
+//            .abTestPlatform
+//            .getString("")
+//            .isNotEmpty()
+        return true
     }
 
     fun isProfileManagementM2Activated(): Boolean {
