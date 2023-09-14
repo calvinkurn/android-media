@@ -1,6 +1,5 @@
 package com.tokopedia.creation.common.domain
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.data.ContentCreationResponse
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
@@ -14,7 +13,7 @@ import javax.inject.Inject
  * Created By : Muhammad Furqan on 08/09/23
  */
 class ContentCreationConfigUseCase @Inject constructor(
-    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Unit, ContentCreationConfigModel>(dispatcher.io) {
 
