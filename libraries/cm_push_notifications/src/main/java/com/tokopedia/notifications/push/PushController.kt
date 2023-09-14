@@ -312,7 +312,7 @@ class PushController(val context: Context) : CoroutineScope {
         context.startActivities(arrayOf(intentHome, intent))
     }
 
-    private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel){
+    private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) return
         if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH &&
             NotificationManagerCompat.from(context).areNotificationsEnabled()
