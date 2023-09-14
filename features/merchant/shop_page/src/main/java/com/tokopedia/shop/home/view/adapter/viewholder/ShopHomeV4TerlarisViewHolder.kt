@@ -110,10 +110,10 @@ class ShopHomeV4TerlarisViewHolder(
         val title = element.header.title
         val subTitle = element.header.subtitle
         widgetTitle?.shouldShowWithAction(title.isNotEmpty()) {
-            widgetTitle?.text = title
+            widgetTitle?.text = subTitle
         }
         widgetSubtitle?.shouldShowWithAction(subTitle.isNotEmpty()) {
-            widgetSubtitle?.text = subTitle
+            widgetSubtitle?.text = title
         }
     }
 
