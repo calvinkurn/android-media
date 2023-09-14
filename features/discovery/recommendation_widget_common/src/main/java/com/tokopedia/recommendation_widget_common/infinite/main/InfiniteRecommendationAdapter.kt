@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.infinite.component.loading.Inf
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductDelegate
 import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.component.title.InfiniteTitleDelegate
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.utils.InfiniteDiffItemCallback
@@ -27,12 +28,26 @@ class InfiniteRecommendationAdapter(
         delegatesManager
             .addDelegate(InfiniteLoadingDelegate())
             .addDelegate(InfiniteProductDelegate())
+            .addDelegate(InfiniteTitleDelegate())
 
         submitList(singleLoadingItem)
     }
 
     fun init() {
         submitList(singleLoadingItem)
+    }
+
+    fun removeLoading() {
+        val modifiedList = currentList.toMutableList().apply {
+            removeLast()
+        }
+        submitList(modifiedList)
+    }
+
+    fun appendComponents(components: List<InfiniteRecommendationUiModel>) {
+        val currentList = currentList.toMutableList()
+        currentList.addAll(currentList.size - 1, components)
+        submitList(currentList)
     }
 
     private fun determineFullSpan(holder: InfiniteRecommendationViewHolder<*>) {

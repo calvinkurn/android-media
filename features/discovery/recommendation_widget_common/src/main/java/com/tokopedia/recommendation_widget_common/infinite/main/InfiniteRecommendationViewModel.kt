@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductUiModel
+import com.tokopedia.recommendation_widget_common.infinite.component.title.InfiniteTitleUiModel
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,9 +23,8 @@ class InfiniteRecommendationViewModel @Inject constructor(
         private const val DEFAULT_NEXT_PAGE = 1
     }
 
-    private val _recommendationProducts = MutableLiveData<List<InfiniteRecommendationUiModel>>()
-    val recommendationProducts: LiveData<List<InfiniteRecommendationUiModel>>
-        get() = _recommendationProducts
+    private val _components = MutableLiveData<List<InfiniteRecommendationUiModel>>()
+    val components: LiveData<List<InfiniteRecommendationUiModel>> = _components
 
     private var currentPage = DEFAULT_CURRENT_PAGE
     private var nextPage = DEFAULT_NEXT_PAGE
@@ -32,38 +34,45 @@ class InfiniteRecommendationViewModel @Inject constructor(
         nextPage = DEFAULT_NEXT_PAGE
     }
 
-    fun getVerticalRecommendationData(
+    fun fetchComponents(
         productId: String,
-        pageName: String,
+        pageName: String
     ) {
         if (currentPage == nextPage) return
-        currentPage.inc()
+        currentPage = nextPage
 
-        viewModelScope.launch {
-            runCatching {
-                val requestParams = GetRecommendationRequestParam(
-                    pageNumber = nextPage,
-                    pageName = pageName,
-                    productIds = arrayListOf(productId)
-                )
-                val recommendationResponse = getRecommendationUseCase.getData(requestParams)
-                val dataResponse = recommendationResponse.firstOrNull()
-                if (dataResponse == null) {
-                    _recommendationProducts.value = emptyList()
-                } else {
-                    val products = dataResponse.recommendationItemList.map {
-                        InfiniteProductUiModel(it)
-                    }
+        viewModelScope.launch(Dispatchers.IO) {
+            val requestParams = GetRecommendationRequestParam(
+                pageNumber = nextPage,
+                pageName = pageName,
+                productIds = listOf(productId)
+            )
+            val recommendationResponse = getRecommendationUseCase.getData(requestParams)
+            val recommendationWidget = recommendationResponse.firstOrNull()
 
-                    if (dataResponse.hasNext) {
-                        nextPage = dataResponse.nextPage
-                    }
-
-                    _recommendationProducts.value = products
-                }
-            }.onFailure {
-                _recommendationProducts.value = emptyList()
+            if (recommendationWidget == null) {
+                _components.postValue(emptyList())
+            } else {
+                _components.postValue(recommendationWidget.toComponents())
             }
         }
+    }
+
+    private fun RecommendationWidget.toComponents(): List<InfiniteRecommendationUiModel> {
+        val components = mutableListOf<InfiniteRecommendationUiModel>()
+
+        /**
+         * Add title only for the first page
+         */
+        if (currentPage == DEFAULT_NEXT_PAGE) {
+            components.add(InfiniteTitleUiModel(title))
+        }
+
+        val products = recommendationItemList.map { InfiniteProductUiModel(it) }
+        components.addAll(products)
+
+        this@InfiniteRecommendationViewModel.nextPage = nextPage
+
+        return components
     }
 }

@@ -19,7 +19,7 @@ class InfiniteRecommendationManager(
         observeRecommendationProducts()
     }
 
-    fun init(productId: String, pageName: String){
+    fun init(productId: String, pageName: String) {
         this.productId = productId
         this.pageName = pageName
 
@@ -29,13 +29,11 @@ class InfiniteRecommendationManager(
 
     private fun observeRecommendationProducts() {
         val lifecycleOwner = context as? LifecycleOwner ?: return
-        viewModel?.recommendationProducts?.observe(lifecycleOwner) { products ->
-            if (products.isEmpty()) {
-                adapter.currentList.removeLast()
+        viewModel?.components?.observe(lifecycleOwner) { components ->
+            if (components.isEmpty()) {
+                adapter.removeLoading()
             } else {
-                val currentList = adapter.currentList.toMutableList()
-                currentList.addAll(currentList.size - 1, products)
-                adapter.submitList(currentList)
+                adapter.appendComponents(components)
             }
         }
     }
@@ -49,6 +47,6 @@ class InfiniteRecommendationManager(
     }
 
     override fun fetchRecommendation() {
-        viewModel?.getVerticalRecommendationData(productId, pageName)
+        viewModel?.fetchComponents(productId, pageName)
     }
 }
