@@ -34,6 +34,7 @@ object NavigationTypeMapper {
     }
 
     fun Triple<Int, Int, Int>.to(invoke: (Int) -> String): NavigationTool {
-        return NavigationTool(first, invoke(second), third)
+        val (type, title, icon) = this
+        return NavigationTool(type, invoke(title), icon)
     }
 }

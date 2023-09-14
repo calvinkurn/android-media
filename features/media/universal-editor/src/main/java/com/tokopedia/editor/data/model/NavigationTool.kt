@@ -6,5 +6,5 @@ data class NavigationTool(
     @ToolType val type: Int,
     val name: String,
     val iconId: Int,
-    val isSelected: Boolean = false
+    var isSelected: Boolean = false
 )

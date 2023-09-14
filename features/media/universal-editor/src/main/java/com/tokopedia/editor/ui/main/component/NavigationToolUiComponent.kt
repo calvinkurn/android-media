@@ -28,6 +28,10 @@ class NavigationToolUiComponent constructor(
         container().showWithCondition(isVisible)
     }
 
+    fun setRemoveAudioUiState(isRemoved: Boolean) {
+        mAdapter?.updateRemoveAudioState(isRemoved)
+    }
+
     private fun setupRecyclerView() {
         lstTool.layoutManager = LinearLayoutManager(
             context,

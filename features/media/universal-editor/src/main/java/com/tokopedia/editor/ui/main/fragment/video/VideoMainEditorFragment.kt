@@ -2,6 +2,7 @@ package com.tokopedia.editor.ui.main.fragment.video
 
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentVodMainEditorBinding
@@ -25,7 +26,13 @@ class VideoMainEditorFragment @Inject constructor(
         setupViewPlayer(viewModel.filePath)
     }
 
-    override fun initObserver() = Unit
+    override fun initObserver() {
+        lifecycleScope.launchWhenCreated {
+            viewModel.mainEditorState.collect {
+                videoPlayer.muteAudio(it.isRemoveAudio)
+            }
+        }
+    }
 
     override fun onStart() {
         super.onStart()

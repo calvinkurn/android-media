@@ -16,6 +16,8 @@ import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
+import com.tokopedia.editor.ui.main.component.AudioStateUiComponent
+import com.tokopedia.editor.ui.main.component.GlobalLoaderUiComponent
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
 import com.tokopedia.editor.ui.model.ImagePlacementModel
@@ -26,8 +28,6 @@ import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -87,6 +87,9 @@ open class MainEditorActivity : AppCompatActivity()
         )
     }
 
+    private val globalLoader by uiComponent { GlobalLoaderUiComponent(it) }
+    private val audioMuteState by uiComponent { AudioStateUiComponent(it) }
+
     private val inputTextIntent = registerForActivityResult(StartActivityForResult()) {
         val result = InputTextActivity.result(it)
         viewModel.onEvent(MainEditorEvent.InputTextResult(result))
@@ -127,6 +130,7 @@ open class MainEditorActivity : AppCompatActivity()
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
+    // TODO: Remove it
     override fun onTextRemoved() {
         val hasTextAdded = binding.container.hasTextAdded()
         viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
@@ -166,12 +170,10 @@ open class MainEditorActivity : AppCompatActivity()
                     is MainEditorEffect.OpenInputText -> {
                         navigateToInputTextTool(it.model)
                     }
-
                     is MainEditorEffect.ParentToolbarVisibility -> {
                         toolbar.setVisibility(it.visible)
                         navigationTool.setVisibility(it.visible)
                     }
-
                     is MainEditorEffect.OpenPlacementPage -> {
                         navigateToPlacementImagePage(it.sourcePath, it.model)
                     }
@@ -191,8 +193,12 @@ open class MainEditorActivity : AppCompatActivity()
                         val hasTextAdded = binding.container.hasTextAdded()
                         viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
                     }
-                    is MainEditorEffect.ShowLoading -> onShowLoading()
-                    is MainEditorEffect.HideLoading -> onHideLoading()
+                    is MainEditorEffect.RemoveAudioState -> {
+                        navigationTool.setRemoveAudioUiState(it.isRemoved)
+                        audioMuteState.onShowOrHideAudioState(it.isRemoved)
+                    }
+                    is MainEditorEffect.ShowLoading -> globalLoader.showLoading()
+                    is MainEditorEffect.HideLoading -> globalLoader.hideLoading()
                 }
             }
         }
@@ -216,7 +222,7 @@ open class MainEditorActivity : AppCompatActivity()
         when (type) {
             ToolType.TEXT -> viewModel.onEvent(MainEditorEvent.AddInputTextPage)
             ToolType.PLACEMENT -> viewModel.onEvent(MainEditorEvent.PlacementImagePage)
-            ToolType.AUDIO_MUTE -> {}
+            ToolType.AUDIO_MUTE -> viewModel.onEvent(MainEditorEvent.ManageVideoAudio)
             else -> Unit
         }
     }
@@ -265,7 +271,7 @@ open class MainEditorActivity : AppCompatActivity()
         val bitmap = binding.container.exportAsBitmap()
         val imageBitmap = pagerContainer.getImageBitmap()
 
-        viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap, imageBitmap = imageBitmap))
+        viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap, imageBitmap))
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {
@@ -306,16 +312,6 @@ open class MainEditorActivity : AppCompatActivity()
 
             show()
         }
-    }
-
-    private fun onShowLoading() {
-        binding.globalLoader.show()
-        binding.overlayLoader.show()
-    }
-
-    private fun onHideLoading() {
-        binding.globalLoader.hide()
-        binding.overlayLoader.hide()
     }
 
     private fun fragmentProvider(): EditorFragmentProvider {
