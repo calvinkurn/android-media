@@ -303,7 +303,8 @@ class CouponListFragment : BaseDaggerFragment() {
                 couponListViewModel.getFilteredData(FilterModel())
             }
             binding.filterList.addItem(list as ArrayList<SortFilterItem>)
-            binding.filterList.textView?.text = ""
+            // Explicitly hiding textview so that only close icon is visible
+            binding.filterList.textView?.hide()
             context?.let {
                 binding.filterList.filterIcon?.background =
                     getIconUnifyDrawable(it, IconUnify.CLOSE)

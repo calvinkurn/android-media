@@ -18,6 +18,7 @@ import com.tokopedia.scp_rewards_widgets.model.MedalBenefitSectionModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -92,6 +93,7 @@ class WidgetCouponView @JvmOverloads constructor(
                     }
                 }
             }
+            setFiltersLeftPadding()
             binding.filterCoupon.addItem(list as ArrayList<SortFilterItem>)
             filterData(benefitList, filters.find { it.isSelected }, setOnFilterListener)
         } else {
@@ -178,6 +180,13 @@ class WidgetCouponView @JvmOverloads constructor(
                     binding.btnViewMore.hide()
                 }
             }
+        }
+    }
+
+    private fun setFiltersLeftPadding() {
+        // Adding padding to the internal view so that the filters can scroll along with padding
+        binding.filterCoupon.sortFilterItems.apply {
+            post { setPadding(16.toPx(), paddingTop, paddingRight, paddingBottom) }
         }
     }
 
