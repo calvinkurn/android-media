@@ -41,11 +41,15 @@ class ImageSlidePagerAdapter(private var imageList: List<SliderImageTextUiModel.
 
         imageList[position].let { item ->
             binding.ivImage.loadImageRounded(item.image)
-        }
+            binding.tvHighlight.text = item.textHighlight
+            binding.tvTitle.text = item.textTitle
+            binding.tvDescription.text = item.textDescription
 
-        val vp = container as ViewPager
-        views.add(binding.root)
-        vp.addView(binding.root, 0)
+            binding.tvHighlight.setTextColor(item.textHighlightColor)
+            binding.tvTitle.setTextColor(item.textTitleColor)
+            binding.tvDescription.setTextColor(item.textDescriptionColor)
+        }
+        container.addView(binding.root, 0)
         return binding.root
     }
 
@@ -53,26 +57,8 @@ class ImageSlidePagerAdapter(private var imageList: List<SliderImageTextUiModel.
         container.removeView(`object` as View)
     }
 
-    override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
-        setSelectedItemColor(position)
-        super.setPrimaryItem(container, position, `object`)
-    }
-
     override fun getPageWidth(position: Int): Float {
         return SEVENTY_FIVE_PERCENT_TRANSPARANT
-    }
-
-    private fun setSelectedItemColor(currentSelectionPosition: Int) {
-        val view = views[currentSelectionPosition]
-        view.alpha = NOT_TRANSPARANT
-        view.requestLayout()
-    }
-
-    fun resetAlphaView(){
-        views.forEach {view ->
-            view.alpha = THIRTY_PERCENT_TRANSPARANT
-            view.requestLayout()
-        }
     }
 
 }

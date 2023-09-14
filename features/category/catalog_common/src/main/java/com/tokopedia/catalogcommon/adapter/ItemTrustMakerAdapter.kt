@@ -2,9 +2,11 @@ package com.tokopedia.catalogcommon.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalogcommon.databinding.ItemTrustmakerBinding
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.loadImage
 
 class ItemTrustMakerAdapter(private val itemList: List<TrustMakerUiModel.ItemTrustMakerUiModel>) :
@@ -37,11 +39,13 @@ class ItemTrustMakerAdapter(private val itemList: List<TrustMakerUiModel.ItemTru
         private val tvTitle = itemView.tvTitle
 
         init {
-            val widthPercentage = 0.60
-            val recyclerViewWidth = itemView.root.resources.displayMetrics.widthPixels
+            if (itemList.size > Int.ONE){
+                val widthPercentage = 0.60
+                val recyclerViewWidth = itemView.root.resources.displayMetrics.widthPixels
 
-            val desiredWidth = (recyclerViewWidth * widthPercentage).toInt()
-            itemView.root.layoutParams.width = desiredWidth
+                val desiredWidth = (recyclerViewWidth * widthPercentage).toInt()
+                itemView.root.layoutParams.width = desiredWidth
+            }
         }
 
         fun bindToView(itemUiModel: TrustMakerUiModel.ItemTrustMakerUiModel) {

@@ -1,6 +1,8 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +16,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.FragmentCatalogProductListBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.domain.model.CatalogProductItem
 import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapterFactoryImpl
 import com.tokopedia.catalog.ui.adapter.ProductListAdapterListener
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
@@ -29,6 +33,7 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -45,8 +50,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.oldcatalog.model.util.CatalogConstant
 import com.tokopedia.oldcatalog.model.util.CatalogSearchApiConst
+import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.sortfilter.SortFilterItem
@@ -65,6 +72,8 @@ class CatalogProductListFragment :
     ChooseAddressWidget.ChooseAddressWidgetListener,
     QuickFilterListener, SortFilterBottomSheet.Callback, ProductListAdapterListener, 
     EmptyStateFilterListener {
+
+    private val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
 
     @Inject
     lateinit var viewModel: CatalogProductListViewModel
@@ -435,6 +444,10 @@ class CatalogProductListFragment :
         addToCart(atcModel)
     }
 
+    override fun onClickProductCard(item: CatalogProductItem, adapterPosition: Int) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
+    }
+
     private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {
         if (option.isCategoryOption) {
             viewModel.filterController?.setFilter(option, isQuickFilterSelected, true)
@@ -565,7 +578,7 @@ class CatalogProductListFragment :
 
         searchProductRequestParams.apply {
             putString(CategoryNavConstants.START, (start * PAGING_ROW_COUNT).toString())
-            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE_MOBILE)
             putString(CategoryNavConstants.USER_ID, userSession.userId)
             putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
