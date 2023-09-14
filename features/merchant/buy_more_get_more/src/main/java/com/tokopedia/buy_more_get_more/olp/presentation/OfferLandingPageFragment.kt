@@ -507,10 +507,7 @@ class OfferLandingPageFragment :
                     Status.OFFER_ALREADY_FINISH -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
-                            description = getString(
-                                R.string.bmgm_description_error_ended_promo,
-                                currentState.shopData.shopName
-                            ),
+                            description = getString(R.string.bmgm_description_error_ended_promo),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
                             primaryCtaAction = { activity?.finish() },
@@ -588,30 +585,15 @@ class OfferLandingPageFragment :
         binding?.apply {
             loadingStateOlp.root.gone()
             headerBackground.gone()
-            when (isShowProductList) {
-                true -> {
-                    stickyContent.visible()
-                    errorPageLarge.gone()
-                    val emptyStateUiModel = EmptyStateUiModel(
-                        title = title,
-                        description = description,
-                        imageUrl = imageUrl
-                    )
-                    olpAdapter?.submitList(listOf(emptyStateUiModel))
-                }
-
-                false -> {
-                    stickyContent.gone()
-                    errorPageLarge.apply {
-                        visible()
-                        setType(errorType)
-                        errorTitle.text = title
-                        errorDescription.text = description
-                        errorAction.text = primaryCtaText
-                        setActionClickListener {
-                            primaryCtaAction.invoke()
-                        }
-                    }
+            stickyContent.gone()
+            errorPageLarge.apply {
+                visible()
+                setType(errorType)
+                errorTitle.text = title
+                errorDescription.text = description
+                errorAction.text = primaryCtaText
+                setActionClickListener {
+                    primaryCtaAction.invoke()
                 }
             }
             miniCartView.gone()
