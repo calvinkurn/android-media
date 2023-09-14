@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -31,7 +30,7 @@ class ShopPageHeaderPlayWidgetViewHolder(
         fun onStartLiveStreamingClicked(
             componentModel: ShopPageHeaderPlayWidgetButtonComponentUiModel,
             shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
-            broadcasterConfig: Broadcaster.Config,
+            broadcasterConfig: Broadcaster.Config
         )
 
         fun onImpressionPlayWidgetComponent(
@@ -56,9 +55,9 @@ class ShopPageHeaderPlayWidgetViewHolder(
                 playSgcBtnStartLive?.setOnClickListener {
                     shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
                     listener.onStartLiveStreamingClicked(
-                            modelComponent,
-                            shopPageHeaderWidgetUiModel,
-                            shopPageHeaderDataModel.broadcaster
+                        modelComponent,
+                        shopPageHeaderWidgetUiModel,
+                        shopPageHeaderDataModel.broadcaster
                     )
                 }
             } else {
@@ -78,11 +77,11 @@ class ShopPageHeaderPlayWidgetViewHolder(
     }
 
     private fun allowContentCreation(dataModel: ShopPageHeaderDataModel): Boolean {
-        return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel)) && GlobalConfig.isSellerApp()
+        return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel))
     }
 
     private fun setupTextContentSgcWidget() {
-        if(tvStartCreateContentDesc?.text?.isNotBlank() == true) return
+        if (tvStartCreateContentDesc?.text?.isNotBlank() == true) return
         tvStartCreateContentDesc?.text = MethodChecker.fromHtml(getString(R.string.shop_page_play_widget_desription))
     }
 
