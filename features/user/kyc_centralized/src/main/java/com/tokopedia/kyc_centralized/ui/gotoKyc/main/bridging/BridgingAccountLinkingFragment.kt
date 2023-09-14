@@ -32,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycBridgingAccountLinkingBinding
@@ -67,7 +68,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     lateinit var kycSharedPreference: KycSharedPreference
 
     private val startAccountLinkingForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        viewModel.checkAccountLinkingStatus()
+        viewModel.checkAccountLinkingStatus(args.parameter.projectId.toIntSafely())
     }
 
     private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->

@@ -112,7 +112,7 @@ class UploaderUseCase @Inject constructor(
         withTranscode: Boolean = true,
         isSecure: Boolean = false,
         isRetriable: Boolean = false,
-        shouldCompress: Boolean = false,
+        shouldCompress: Boolean = true,
         extraHeader: Map<String, String> = mapOf(),
         extraBody: Map<String, String> = mapOf()
     ): RequestParams {

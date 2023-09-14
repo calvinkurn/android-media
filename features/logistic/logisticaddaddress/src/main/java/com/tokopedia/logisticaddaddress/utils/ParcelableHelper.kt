@@ -8,7 +8,10 @@ import android.os.Parcelable
 object ParcelableHelper {
     inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getParcelable(key, T::class.java)
-        else -> @Suppress("DEPRECATION") getParcelable(key) as? T
+        else ->
+            @Suppress("DEPRECATION")
+            getParcelable(key)
+                as? T
     }
 
     inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
@@ -16,6 +19,9 @@ object ParcelableHelper {
             key,
             T::class.java
         )
-        else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+        else ->
+            @Suppress("DEPRECATION")
+            getParcelableExtra(key)
+                as? T
     }
 }

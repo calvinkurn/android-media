@@ -29,8 +29,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 157
-        const val SIZE_PATH = 259
+        const val SIZE_HOST = 159
+        const val SIZE_PATH = 263
     }
 
     override fun setup() {
@@ -1848,6 +1848,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check goto kyc webview global appLink then should return tokopedia internal goto kyc webview in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/webview-kyc?url=www.tokopedia.com"
+        val appLink = "tokopedia://webview-kyc?url=www.tokopedia.com"
+
+        assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check goto kyc param global appLink when rollence activated then should return tokopedia internal goto kyc in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://user/goto-kyc?projectId=7&source=Account&callback=url"
@@ -2012,6 +2021,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check deals appLink then should return tokopedia internal deals in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://deals/home-new"
         assertEqualsDeepLinkMapper(ApplinkConst.DEALS_HOME, expectedDeepLink)
+    }
+
+    @Test
+    fun `check notification setting appLink then should return device notification setting in customerapp`() {
+        assertEqualsDeepLinkMapper(ApplinkConst.DEVICE_NOTIFICATION_SETTINGS, "")
     }
 
     @Test
@@ -2970,5 +2984,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
         assertEqualsDeepLinkMapper("tokopedia://content/$postId?source=$source", expectedDeepLink)
         assertEqualsDeepLinkMapper("tokopedia://feed/$postId?source=$source", expectedDeepLink)
+    }
+
+    @Test
+    fun `check feed browse appLink then should return tokopedia internal feed browse in customerapp`() {
+        val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_FEED}/browse"
+        assertEqualsDeepLinkMapper("tokopedia://feed/browse", expectedDeepLink)
     }
 }

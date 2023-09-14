@@ -122,16 +122,18 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                     removeConsentCollectionObserver()
                 }
             }
-            load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
+            load(consentCollectionParam)
         }
     }
 
     fun setProductConsentWidget(
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
-        consentCollectionParam: ConsentCollectionParam
+        consentCollectionParam: ConsentCollectionParam,
+        hasDataElements: Boolean
     ) {
         with(binding.viewProductConsentWidget) {
+            hideWhenAlreadySubmittedConsent = hasDataElements
             setOnCheckedChangeListener { isChecked ->
                 isCheckoutButtonEnabled = isChecked
             }
@@ -153,7 +155,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                     isCheckoutButtonEnabled = true
                 }
             }
-            load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
+            load(consentCollectionParam)
         }
     }
 

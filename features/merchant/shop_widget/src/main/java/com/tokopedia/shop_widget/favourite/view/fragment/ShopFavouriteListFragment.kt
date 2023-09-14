@@ -132,11 +132,6 @@ class ShopFavouriteListFragment : BaseListFragment<ShopFollowerUiModel?, ShopFav
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        shopPageTracking?.sendAllTrackingQueue()
-    }
-
     override fun onEmptyContentItemTextClicked() {
         // no-op
     }

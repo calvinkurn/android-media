@@ -7,9 +7,11 @@ import android.graphics.Color
 import android.util.DisplayMetrics
 import android.util.Property
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.unifyprinciples.UnifyMotion
 import org.json.JSONObject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 fun parseColor(color: String?): Int? {
     return try {
@@ -50,4 +52,8 @@ fun View.animateView(animations: Array<PropertyValuesHolder>, duration: Long, in
     }
 }
 
-fun propertyValueHolder(property: Property<View, Float>, from: Float, to: Float) = PropertyValuesHolder.ofFloat(property, from, to)
+fun propertyValueHolder(property: Property<View, Float>, from: Float, to: Float): PropertyValuesHolder = PropertyValuesHolder.ofFloat(property, from, to)
+
+fun Context.parseColorOrFallback(color: String?, fallback: Int = unifyprinciplesR.color.Unify_NN200): Int {
+    return parseColor(color) ?: ContextCompat.getColor(this, fallback)
+}

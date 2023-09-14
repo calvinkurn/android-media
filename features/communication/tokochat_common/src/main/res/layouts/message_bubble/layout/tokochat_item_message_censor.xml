@@ -8,7 +8,7 @@
     android:gravity="end"
     android:orientation="vertical">
 
-    <com.tokopedia.tokochat_common.view.customview.TokoChatBubbleContainerLayout
+    <com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatBubbleContainerLayout
         android:id="@+id/tokochat_layout_msg_censor_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,6 +96,6 @@
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.tokopedia.tokochat_common.view.customview.TokoChatBubbleContainerLayout>
+    </com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatBubbleContainerLayout>
 
 </LinearLayout>

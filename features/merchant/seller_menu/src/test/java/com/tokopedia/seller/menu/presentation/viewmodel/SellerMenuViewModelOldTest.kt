@@ -14,6 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
@@ -233,6 +234,23 @@ class SellerMenuViewModelOldTest : SellerMenuViewModelOldTestFixture() {
             advanceTimeBy(5100L)
 
             assertEquals(viewModel.isToasterAlreadyShown.value, actualIsToasterAlreadyShown)
+        }
+    }
+
+    @Test
+    fun `given isToasterRetry true when getAllSettingShopInfo should set isToasterAlreadyShown false`() {
+        runTest {
+            val isToasterRetry = true
+
+            viewModel.setIsToasterAlreadyShown(false)
+            viewModel.getAllSettingShopInfo(isToasterRetry, shopAge = 65)
+
+            advanceTimeBy(5100L)
+
+            val expectedIsToasterAlreadyShown = false
+            val actualIsToasterAlreadyShown = viewModel.isToasterAlreadyShown.value
+
+            assertEquals(expectedIsToasterAlreadyShown, actualIsToasterAlreadyShown)
         }
     }
     

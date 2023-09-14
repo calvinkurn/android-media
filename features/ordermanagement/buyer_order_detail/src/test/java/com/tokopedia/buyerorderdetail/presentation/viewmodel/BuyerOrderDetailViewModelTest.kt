@@ -606,7 +606,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 quantity = 1,
                 totalPrice = "500000",
                 totalPriceText = "Rp500.000",
-                isProcessing = false
+                isProcessing = false,
+                productUrl = ""
             )
             val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
                 every { data.productList } returns listOf(
