@@ -32,8 +32,8 @@ class ReviewViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_review_list
-        private const val EDGE_MARGIN = 16f
-        private const val SPACING_BETWEEN = 8f
+        private const val EDGE_MARGIN = 12f
+        private const val SPACING_BETWEEN = 0f
         private const val MAX_CARD_HEIGHT = 80f
     }
 
@@ -55,12 +55,8 @@ class ReviewViewHolder(itemView: View,
         }
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.reviewList.mapIndexed { index, it -> ReviewModel(it, index) })
-        if(visitableList.isEmpty()){
-            visitableList.add(EmptyStateReviewDataModel())
-        } else if(element.showViewAll){
-            visitableList.add(OtherReviewModel())
-            binding?.reviewRv?.setHeightBasedOnCardMaxHeight()
-        }
+        visitableList.add(OtherReviewModel())
+        binding?.reviewRv?.setHeightBasedOnCardMaxHeight()
         adapter.setVisitables(visitableList)
     }
 

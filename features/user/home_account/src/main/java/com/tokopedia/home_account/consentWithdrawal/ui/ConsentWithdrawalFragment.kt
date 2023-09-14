@@ -124,20 +124,22 @@ class ConsentWithdrawalFragment :
             )
         )
 
-        consentWithdrawalAdapter.addItem(
-            TitleDividerUiModel(
-                isTitle = true,
-                title = context?.getString(com.tokopedia.home_account.R.string.consent_withdrawal_secondary_data_usage).orEmpty()
-            )
-        )
-
-        data.optional.sortedBy { it.priority }
-        data.optional.forEach {
+        if (data.optional.isNotEmpty()) {
             consentWithdrawalAdapter.addItem(
-                OptionalPurposeUiModel(
-                    data = it
+                TitleDividerUiModel(
+                    isTitle = true,
+                    title = context?.getString(com.tokopedia.home_account.R.string.consent_withdrawal_secondary_data_usage).orEmpty()
                 )
             )
+
+            data.optional.sortedBy { it.priority }
+            data.optional.forEach {
+                consentWithdrawalAdapter.addItem(
+                    OptionalPurposeUiModel(
+                        data = it
+                    )
+                )
+            }
         }
 
         consentWithdrawalAdapter.notifyNewItems()

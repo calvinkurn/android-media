@@ -20,6 +20,11 @@ object RollenceKey {
     const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
     // end of home component rollence section
 
+    // navigation rollence section
+    const val ME_PAGE_EXP = "GlobalMenuRV"
+    const val ME_PAGE_VARIANT = "Varian1"
+    // end of navigation rollence section
+
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 
@@ -53,6 +58,9 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
+    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_EXPERIMENT = "seg_sp_cb"
+    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_SRP = "sp_cb_srp"
+    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_ALL = "sp_cb_all"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
