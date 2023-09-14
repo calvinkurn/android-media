@@ -13,7 +13,8 @@ class DigitalMenuDetailUiMapper @Inject constructor() {
             catalog = data.catalog,
             userPerso = data.userPerso,
             tickers = data.tickers,
-            banners = data.banners
+            banners = data.banners,
+            multiCheckoutButtons = data.multiCheckoutButtons
         )
     }
 }

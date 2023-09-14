@@ -66,8 +66,23 @@
             app:layout_constraintTop_toTopOf="@+id/tg_buy_widget_total_price" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_buy_widget"
-            android:layout_width="@dimen/layout_lvl8"
+            android:id="@+id/btn_buy_left"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_marginEnd="4dp"
+            android:text="@string/buy_widget_total_price_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/btn_buy_right"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_buy_right"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_lvl5"
             android:text="@string/buy_widget_total_price_btn"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -639,6 +639,7 @@ class DigitalPDPDataPlanFragment :
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        viewModel.updateMultiCheckoutButtons(data.multiCheckoutButtons)
         getFavoriteNumbers(
             listOf(
                 FavoriteNumberType.CHIP,
@@ -1019,7 +1020,7 @@ class DigitalPDPDataPlanFragment :
     private fun onShowBuyWidget(denomFull: DenomData) {
         binding?.let {
             it.rechargePdpPaketDataBuyWidget.show()
-            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this)
+            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this, viewModel.multiCheckoutButtons)
         }
     }
 
@@ -1519,6 +1520,10 @@ class DigitalPDPDataPlanFragment :
                 navigateToLoginPage()
             }
         }
+    }
+
+    override fun onClickedButtonMultiCheckout(denom: DenomData) {
+        //TODO("Not yet implemented")
     }
 
     override fun onClickedChevron(denom: DenomData) {

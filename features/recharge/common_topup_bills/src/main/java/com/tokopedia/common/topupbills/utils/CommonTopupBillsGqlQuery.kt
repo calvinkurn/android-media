@@ -159,6 +159,13 @@ object CommonTopupBillsGqlQuery {
             }
             express_checkout
             menu_label
+            buttons {
+              text
+              color
+              coachmark
+              position
+              type
+            }
           }
         }
     """.trimIndent()

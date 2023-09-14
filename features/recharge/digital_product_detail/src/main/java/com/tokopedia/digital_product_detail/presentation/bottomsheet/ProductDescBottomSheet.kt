@@ -135,7 +135,7 @@ class ProductDescBottomSheet : BottomSheetUnify() {
                 }
 
                 listener?.let { listener ->
-                    buyWidgetProductDesc.renderBuyWidget(denomData, listener)
+                    buyWidgetProductDesc.renderBuyWidget(denomData, listener, listOf()) //TODO Change Button
                 }
                 position?.let { position ->
                     listenerProductDesc?.let { listenerProductDesc ->

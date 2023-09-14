@@ -761,7 +761,7 @@ class DigitalPDPPulsaFragment :
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.show()
-            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this)
+            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this, listOf()) //TODO Change Button
         }
     }
 
@@ -1279,6 +1279,10 @@ class DigitalPDPPulsaFragment :
         } else {
             navigateToLoginPage()
         }
+    }
+
+    override fun onClickedButtonMultiCheckout(denom: DenomData) {
+        //TODO("Not yet implemented")
     }
 
     override fun onClickedChevron(denom: DenomData) {
