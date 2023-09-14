@@ -282,6 +282,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                             )
                         }
                     }
+
                     PAGE_TYPE_SHOP -> findViewById<Layer>(R.id.redirection_group).setOnClickListener {
                         if (originScreen == ORIGIN_PROMO_TOKO_NOW) {
                             findViewById<Layer>(R.id.redirection_group).setOnClickListener {
@@ -300,6 +301,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                             )
                         }
                     }
+
                     PAGE_TYPE_CAMPAIGN -> {
                         findViewById<Layer>(R.id.redirection_group).setOnClickListener {
                             RouteManager.route(
