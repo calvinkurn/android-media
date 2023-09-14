@@ -123,19 +123,13 @@ class CheckoutOrderViewHolder(
                 // todo selly
                 binding.shippingWidget.renderScheduleDeliveryWidget(
                     ShippingWidgetUiModel(
-                        // CourierItemData.etaErrorCode
-                        etaErrorCode = courierItemData.selectedShipper.etaErrorCode,
-                        // CourierItemData.etaText
-                        estimatedTimeArrival = courierItemData.selectedShipper.etaText ?: "",
-
                         // Bebas ongkir & NOW Shipment
-                        hideShipperName = courierItemData.selectedShipper.isHideShipperName,
                         freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
                         // Now Shipment
                         // label
                         logPromoDesc = courierItemData.logPromoDesc ?: "",
                         voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
-                        isHasShownCourierError = false,
+                        isHasShownCourierError = false, // todo: analytics
 
                         // CourierItemData.name
                         courierName = courierItemData.name ?: "",
@@ -162,13 +156,7 @@ class CheckoutOrderViewHolder(
                 // todo now
                 binding.shippingWidget.renderSingleShippingCourier(
                     ShippingWidgetUiModel(
-                        // CourierItemData.etaErrorCode
-                        etaErrorCode = courierItemData.etaErrorCode,
-                        // CourierItemData.etaText
-                        estimatedTimeArrival = courierItemData.etaText ?: "",
-
                         // Bebas ongkir & NOW Shipment
-                        hideShipperName = courierItemData.isHideShipperName,
                         freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
                         // Now Shipment
                         // label
@@ -212,15 +200,6 @@ class CheckoutOrderViewHolder(
                 }
                 binding.shippingWidget.renderFreeShippingCourier(
                     ShippingWidgetUiModel(
-                        courierErrorTitle = order.courierSelectionErrorTitle,
-                        // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorDescription
-                        courierErrorDescription = order.courierSelectionErrorDescription,
-
-                        // renderShippingVibrationAnimation
-                        isShippingBorderRed = false,
-                        // renderShippingVibrationAnimation
-                        isTriggerShippingVibrationAnimation = false,
-
                         // CourierItemData.etaErrorCode
                         etaErrorCode = courierItemData.etaErrorCode,
                         // CourierItemData.etaText
@@ -230,30 +209,11 @@ class CheckoutOrderViewHolder(
                         hideShipperName = courierItemData.isHideShipperName,
                         freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
                         freeShippingLogo = courierItemData.freeShippingChosenImage,
-                        // Now Shipment
-                        // label
-                        logPromoDesc = "",
-                        voucherLogisticExists = false,
-                        isHasShownCourierError = false,
 
                         // showNormalShippingCourier
                         currentAddress = RecipientAddressModel(),
-                        // CourierItemData.estimatedTimeDelivery
-                        estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
-
-                        // CourierItemData.name
-                        courierName = courierItemData.name ?: "",
-                        // CourierItemData.shipperPrice
-                        courierShipperPrice = courierItemData.shipperPrice,
-
-                        merchantVoucher = courierItemData.merchantVoucherProductModel,
-                        ontimeDelivery = courierItemData.ontimeDelivery,
                         cashOnDelivery = courierItemData.codProductData,
 
-                        // CourierItemData.durationCardDescription
-                        whitelabelEtaText = courierItemData.durationCardDescription,
-
-                        scheduleDeliveryUiModel = null,
                         insuranceData = InsuranceWidgetUiModel(
                             useInsurance = insurance.isCheckInsurance,
                             insuranceType = courierItemData.selectedShipper.insuranceType,
@@ -270,47 +230,19 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.showContainerShippingExperience()
                 binding.shippingWidget.renderNormalShippingWithoutChooseCourierCard(
                     ShippingWidgetUiModel(
-                        courierErrorTitle = order.courierSelectionErrorTitle,
-                        // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorDescription
-                        courierErrorDescription = order.courierSelectionErrorDescription,
-
-                        // renderShippingVibrationAnimation
-                        isShippingBorderRed = false,
-                        // renderShippingVibrationAnimation
-                        isTriggerShippingVibrationAnimation = false,
-
-                        // CourierItemData.etaErrorCode
-                        etaErrorCode = courierItemData.etaErrorCode,
-                        // CourierItemData.etaText
-                        estimatedTimeArrival = courierItemData.etaText ?: "",
-
-                        // Bebas ongkir & NOW Shipment
-                        hideShipperName = false,
-                        freeShippingTitle = "",
-                        // Now Shipment
-                        // label
-                        logPromoDesc = "",
-                        voucherLogisticExists = false,
-                        isHasShownCourierError = false,
-
                         // showNormalShippingCourier
                         currentAddress = RecipientAddressModel(),
                         // CourierItemData.estimatedTimeDelivery
                         estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
 
-                        // CourierItemData.name
-                        courierName = courierItemData.name ?: "",
                         // CourierItemData.shipperPrice
                         courierShipperPrice = courierItemData.shipperPrice,
 
-                        merchantVoucher = courierItemData.merchantVoucherProductModel,
                         ontimeDelivery = courierItemData.ontimeDelivery,
-                        cashOnDelivery = courierItemData.codProductData,
 
                         // CourierItemData.durationCardDescription
                         whitelabelEtaText = courierItemData.durationCardDescription,
 
-                        scheduleDeliveryUiModel = null,
                         insuranceData = InsuranceWidgetUiModel(
                             useInsurance = insurance.isCheckInsurance,
                             insuranceType = courierItemData.selectedShipper.insuranceType,
@@ -327,28 +259,10 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.showContainerShippingExperience()
                 binding.shippingWidget.renderNormalShippingCourier(
                     ShippingWidgetUiModel(
-                        courierErrorTitle = order.courierSelectionErrorTitle,
-                        // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorDescription
-                        courierErrorDescription = order.courierSelectionErrorDescription,
-
-                        // renderShippingVibrationAnimation
-                        isShippingBorderRed = false,
-                        // renderShippingVibrationAnimation
-                        isTriggerShippingVibrationAnimation = false,
-
                         // CourierItemData.etaErrorCode
                         etaErrorCode = courierItemData.etaErrorCode,
                         // CourierItemData.etaText
                         estimatedTimeArrival = courierItemData.etaText ?: "",
-
-                        // Bebas ongkir & NOW Shipment
-                        hideShipperName = false,
-                        freeShippingTitle = "",
-                        // Now Shipment
-                        // label
-                        logPromoDesc = "",
-                        voucherLogisticExists = false,
-                        isHasShownCourierError = false,
 
                         // showNormalShippingCourier
                         currentAddress = RecipientAddressModel(),
@@ -361,13 +275,8 @@ class CheckoutOrderViewHolder(
                         courierShipperPrice = courierItemData.shipperPrice,
 
                         merchantVoucher = courierItemData.merchantVoucherProductModel,
-                        ontimeDelivery = courierItemData.ontimeDelivery,
                         cashOnDelivery = courierItemData.codProductData,
 
-                        // CourierItemData.durationCardDescription
-                        whitelabelEtaText = courierItemData.durationCardDescription,
-
-                        scheduleDeliveryUiModel = null,
                         insuranceData = InsuranceWidgetUiModel(
                             useInsurance = insurance.isCheckInsurance,
                             insuranceType = courierItemData.selectedShipper.insuranceType,
