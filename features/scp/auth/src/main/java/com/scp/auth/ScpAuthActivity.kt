@@ -155,7 +155,7 @@ class ScpAuthActivity: BaseActivity() {
     fun postLoginAction() {
         registerPushNotif()
         submitIntegrityApi()
-
+        viewModel.updateSsoHostData(this, GotoSdk.LSDKINSTANCE?.getAccessToken() ?: "")
 //        setTrackingUserId(userSession.userId)
 //        setFCM()
         SubmitDeviceWorker.scheduleWorker(this, true)
