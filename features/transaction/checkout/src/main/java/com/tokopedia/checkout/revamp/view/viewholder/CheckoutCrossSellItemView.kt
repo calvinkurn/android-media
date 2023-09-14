@@ -58,10 +58,10 @@ object CheckoutCrossSellItemView {
         var title = crossSellModel.crossSellModel.info.title
         val startUnderline = title.indexOf(CROSS_SELL_UNDERLINE_TEXT, ignoreCase = true)
         if (startUnderline >= 0) {
-            val underlineText = title.substring(startUnderline, CROSS_SELL_UNDERLINE_TEXT.length)
+            val underlineText = title.substring(startUnderline, startUnderline + CROSS_SELL_UNDERLINE_TEXT.length)
             title = title.replaceRange(
                 startUnderline,
-                CROSS_SELL_UNDERLINE_TEXT.length,
+                startUnderline + CROSS_SELL_UNDERLINE_TEXT.length,
                 "<u>$underlineText</u>"
             )
         }
@@ -69,9 +69,7 @@ object CheckoutCrossSellItemView {
         itemBinding.ivCheckoutCrossSellItem.setImageUrl(crossSellModel.crossSellModel.info.iconUrl)
         itemBinding.tvCheckoutCrossSellItem.text = text
         itemBinding.tvCheckoutCrossSellItem.setOnClickListener {
-            if (startUnderline >= 0) {
-                showCrossSellBottomSheet(crossSellModel, itemBinding, listener)
-            }
+            showCrossSellBottomSheet(crossSellModel, itemBinding, listener)
         }
         itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, isChecked ->
             listener.onCrossSellItemChecked(isChecked, crossSellModel)
