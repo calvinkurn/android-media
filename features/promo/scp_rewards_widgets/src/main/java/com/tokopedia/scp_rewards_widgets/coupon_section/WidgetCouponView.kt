@@ -18,6 +18,10 @@ import com.tokopedia.scp_rewards_widgets.model.MedalBenefitSectionModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.tokopedia.scp_rewards_widgets.R as scp_rewards_widgetsR
 
 class WidgetCouponView @JvmOverloads constructor(
@@ -101,14 +105,20 @@ class WidgetCouponView @JvmOverloads constructor(
         filter: FilterModel?,
         setOnFilterListener: (List<MedalBenefitModel>?) -> Unit
     ) {
-        var filteredList = benefitList.filter { benefit ->
-            benefit.categoryIds?.contains(filter?.id) ?: false
+        CoroutineScope(Dispatchers.Default).launch {
+            var filteredList = benefitList.filter { benefit ->
+                benefit.categoryIds?.contains(filter?.id) ?: false
+            }
+
+            if (filteredList.isEmpty()) {
+                filteredList = benefitList
+            }
+
+            withContext(Dispatchers.Main) {
+                setOnFilterListener(filteredList)
+            }
         }
 
-        if (filteredList.isEmpty()) {
-            filteredList = benefitList
-        }
-        setOnFilterListener(filteredList)
     }
 
     fun updateLoadingStatus(showLoader: Boolean) {
