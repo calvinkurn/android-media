@@ -3,8 +3,6 @@ package com.tokopedia.checkout.view
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analyticconstant.DataLayer
@@ -37,6 +35,7 @@ import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEV
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.getAddOnFromSAF
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
@@ -66,6 +65,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
@@ -83,17 +83,16 @@ import com.tokopedia.fingerprint.util.FingerPrintUtil.getPublicKey
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.domain.param.EditAddressParam
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticCommon.data.request.EditPinpointParam
+import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -109,10 +108,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.network.authentication.AuthHelper.Companion.generateParamsNetwork
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler.Companion.getErrorMessage
-import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -121,25 +118,28 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingTickerModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
@@ -177,13 +177,13 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
 
 class ShipmentViewModel @Inject constructor(
     private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
     private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
     private val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
-    private val editAddressUseCase: EditAddressUseCase,
+    private val updatePinpointUseCase: UpdatePinpointUseCase,
     private val ratesUseCase: GetRatesUseCase,
     private val ratesApiUseCase: GetRatesApiUseCase,
     private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
@@ -195,6 +195,7 @@ class ShipmentViewModel @Inject constructor(
     private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
     private val getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase,
     private val checkoutGqlUseCase: CheckoutUseCase,
+    private val saveAddOnProductUseCase: SaveAddOnStateUseCase,
     private val shipmentDataConverter: ShipmentDataConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
     private val stateConverter: RatesResponseStateConverter,
@@ -295,6 +296,15 @@ class ShipmentViewModel @Inject constructor(
 
     var isTradeIn: Boolean = false
 
+    var isAnyProductHasAddOnsProduct: Boolean = false
+
+    // add ons product
+    // list summary add on - ready to render
+    var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
+
+    // list summary default
+    private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
+
     val isTradeInByDropOff: Boolean
         get() {
             val recipientAddressModel = this.recipientAddressModel
@@ -317,7 +327,6 @@ class ShipmentViewModel @Inject constructor(
 
     fun detachView() {
         viewModelScope.coroutineContext.cancelChildren()
-        eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
         getPaymentFeeCheckoutUseCase.cancelJobs()
@@ -350,7 +359,12 @@ class ShipmentViewModel @Inject constructor(
         var insuranceFee = 0.0
         var totalBookingFee = 0
         var hasAddOnSelected = false
-        var totalAddOnPrice = 0.0
+        var totalAddOnGiftingPrice = 0.0
+        var totalAddOnProductServicePrice = 0.0
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
+        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
+        val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         for (shipmentData in shipmentCartItemModelList) {
             if (shipmentData is ShipmentCartItemModel) {
                 val cartItemModels = shipmentData.cartItemModels
@@ -372,11 +386,38 @@ class ShipmentViewModel @Inject constructor(
                         } else {
                             totalItemPrice += cartItem.quantity * cartItem.price
                         }
-                        if (cartItem.addOnProductLevelModel.status == 1) {
-                            if (cartItem.addOnProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
-                                for (addOnsData in cartItem.addOnProductLevelModel.addOnsDataItemModelList) {
-                                    totalAddOnPrice += addOnsData.addOnPrice
+                        if (cartItem.addOnGiftingProductLevelModel.status == 1) {
+                            if (cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
+                                for (addOnsData in cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
+                                    totalAddOnGiftingPrice += addOnsData.addOnPrice
                                     hasAddOnSelected = true
+                                }
+                            }
+                        }
+                        if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                            for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
+                                if (addOnProductService.status == ADD_ON_PRODUCT_STATUS_CHECK || addOnProductService.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                                    totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
+                                    qtyAddOn =
+                                        if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                            countMapSummaries[addOnProductService.type]?.second?.plus(
+                                                cartItem.quantity
+                                            ) ?: cartItem.quantity
+                                        } else {
+                                            cartItem.quantity
+                                        }
+
+                                    val addOnPrice = cartItem.quantity * addOnProductService.price
+                                    totalPriceAddOn =
+                                        if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                            countMapSummaries[addOnProductService.type]?.first?.plus(
+                                                addOnPrice
+                                            ) ?: addOnPrice
+                                        } else {
+                                            addOnPrice
+                                        }
+                                    countMapSummaries[addOnProductService.type] =
+                                        totalPriceAddOn to qtyAddOn
                                 }
                             }
                         }
@@ -417,7 +458,7 @@ class ShipmentViewModel @Inject constructor(
                 val addOnsDataModel = shipmentData.addOnsOrderLevelModel
                 if (addOnsDataModel.status == 1 && addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
                     for ((addOnPrice) in addOnsDataModel.addOnsDataItemModelList) {
-                        totalAddOnPrice += addOnPrice
+                        totalAddOnGiftingPrice += addOnPrice
                         hasAddOnSelected = true
                     }
                 }
@@ -430,7 +471,7 @@ class ShipmentViewModel @Inject constructor(
         }
         totalPrice =
             totalItemPrice + finalShippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnPrice
+            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice
         shipmentCost.totalWeight = totalWeight
         shipmentCost.additionalFee = additionalFee
         shipmentCost.totalItemPrice = totalItemPrice
@@ -440,7 +481,7 @@ class ShipmentViewModel @Inject constructor(
         shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
         shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice
         shipmentCost.tradeInPrice = tradeInPrice
-        shipmentCost.totalAddOnPrice = totalAddOnPrice
+        shipmentCost.totalAddOnPrice = totalAddOnGiftingPrice
         shipmentCost.hasAddOn = hasAddOnSelected
         if (shipmentDonationModel != null && shipmentDonationModel!!.isChecked) {
             shipmentCost.donation = shipmentDonationModel!!.donation.nominal.toDouble()
@@ -485,6 +526,27 @@ class ShipmentViewModel @Inject constructor(
             }
         }
         shipmentCost.bookingFee = totalBookingFee
+
+        for (entry in countMapSummaries) {
+            val addOnWording = summariesAddOnUiModel[entry.key]?.replace(
+                CartConstant.QTY_ADDON_REPLACE,
+                entry.value.second.toString()
+            )
+            val addOnPrice =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false)
+                    .removeDecimalSuffix()
+            val summaryAddOn = ShipmentAddOnSummaryModel(
+                wording = addOnWording ?: "",
+                type = entry.key,
+                qty = entry.value.second,
+                priceLabel = addOnPrice,
+                priceValue = entry.value.first.toLong()
+            )
+            listShipmentAddOnSummary.add(summaryAddOn)
+        }
+
+        listSummaryAddOnModel = listShipmentAddOnSummary
+        shipmentCost.listAddOnSummary = listSummaryAddOnModel
         shipmentCostModel.value = shipmentCost
         updateCheckoutButtonData(shipmentCost)
     }
@@ -567,14 +629,18 @@ class ShipmentViewModel @Inject constructor(
         if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList.size) {
             val priceTotal: Double =
                 if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
-            val platformFee: Double = if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+            val platformFee: Double =
+                if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
             val finalPrice = priceTotal + platformFee
             val priceTotalFormatted =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     finalPrice,
                     false
                 ).removeDecimalSuffix()
-            updateShipmentButtonPaymentModel(enable = !hasLoadingItem, totalPrice = priceTotalFormatted)
+            updateShipmentButtonPaymentModel(
+                enable = !hasLoadingItem,
+                totalPrice = priceTotalFormatted
+            )
         } else {
             updateShipmentButtonPaymentModel(
                 enable = cartItemErrorCounter < shipmentCartItemModelList.size,
@@ -707,6 +773,9 @@ class ShipmentViewModel @Inject constructor(
                     enhancedECommerceProductCartMapData.setDimension118(
                         cartItemModel.bundleId
                     )
+                    enhancedECommerceProductCartMapData.setDimension136(
+                        cartItemModel.cartStringGroup
+                    )
                     enhancedECommerceCheckout.addProduct(
                         enhancedECommerceProductCartMapData.getProduct()
                     )
@@ -756,7 +825,8 @@ class ShipmentViewModel @Inject constructor(
             getPromoFlag(step),
             eventCategory,
             eventAction,
-            eventLabel
+            eventLabel,
+            step
         )
     }
     // endregion
@@ -879,7 +949,7 @@ class ShipmentViewModel @Inject constructor(
         isOneClickShipment: Boolean
     ) {
         if (cartShipmentAddressFormData.errorCode == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS) {
-            checkIsUserEligibleForRevampAna(cartShipmentAddressFormData)
+            checkoutPageNoAddress(cartShipmentAddressFormData)
         } else if (cartShipmentAddressFormData.errorCode == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST) {
             view?.renderCheckoutPageNoMatchedAddress(
                 userAddress?.state ?: 0
@@ -907,6 +977,25 @@ class ShipmentViewModel @Inject constructor(
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp
         dynamicData = cartShipmentAddressFormData.dynamicData
         shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
+        listSummaryAddOnModel =
+            ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData)
+        isAnyProductHasAddOnsProduct = validateNeedSaveAddons(cartShipmentAddressFormData)
+    }
+
+    private fun validateNeedSaveAddons(cartShipmentAddressFormData: CartShipmentAddressFormData): Boolean {
+        var isAnyProductHasAddonsProduct = false
+        cartShipmentAddressFormData.groupAddress.forEach { groupAddress ->
+            groupAddress.groupShop.forEach { groupShop ->
+                groupShop.groupShopData.forEach { groupShopV2 ->
+                    groupShopV2.products.forEach { product ->
+                        if (product.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                            isAnyProductHasAddonsProduct = true
+                        }
+                    }
+                }
+            }
+        }
+        return isAnyProductHasAddonsProduct
     }
 
     internal fun initializePresenterData(cartShipmentAddressFormData: CartShipmentAddressFormData) {
@@ -987,6 +1076,8 @@ class ShipmentViewModel @Inject constructor(
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
         cartDataForRates = cartShipmentAddressFormData.cartData
         shippingCourierViewModelsState = hashMapOf()
+        summariesAddOnUiModel =
+            ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons)
     }
 
     internal fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
@@ -995,20 +1086,8 @@ class ShipmentViewModel @Inject constructor(
     // endregion
 
     // region add new address
-    private fun checkIsUserEligibleForRevampAna(cartShipmentAddressFormData: CartShipmentAddressFormData) {
-        eligibleForAddressUseCase.eligibleForAddressFeature({ response: KeroAddrIsEligibleForAddressFeatureData ->
-            view?.renderCheckoutPageNoAddress(
-                cartShipmentAddressFormData,
-                response.eligibleForRevampAna.eligible
-            )
-        }, { throwable: Throwable ->
-            var errorMessage = throwable.message
-            if (errorMessage == null) {
-                errorMessage =
-                    view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown_short)
-            }
-            view?.showToastError(errorMessage)
-        }, AddressConstant.ANA_REVAMP_FEATURE_ID)
+    private fun checkoutPageNoAddress(cartShipmentAddressFormData: CartShipmentAddressFormData) {
+        view?.renderCheckoutPageNoAddress(cartShipmentAddressFormData)
     }
     // endregion
 
@@ -1081,7 +1160,7 @@ class ShipmentViewModel @Inject constructor(
                                 )
                             } else {
                                 val defaultErrorMessage =
-                                    v.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                                    v.getStringResource(abstractionR.string.default_request_error_unknown)
                                 v.renderCheckoutCartError(defaultErrorMessage)
                                 v.logOnErrorCheckout(
                                     MessageErrorException(defaultErrorMessage),
@@ -1228,6 +1307,7 @@ class ShipmentViewModel @Inject constructor(
     private fun setCheckoutRequestPromoData(data: List<Data>) {
         for (dataCheckoutRequest in data) {
             for (groupOrder in dataCheckoutRequest.groupOrders) {
+                var hasInsertLogisticPromoInGroupOrder = false
                 for (shopOrder in groupOrder.shopOrders) {
                     // reset promo to prevent duplicate bo promo in owoc order
                     shopOrder.promos = emptyList()
@@ -1235,6 +1315,12 @@ class ShipmentViewModel @Inject constructor(
                         if (groupOrder.cartStringGroup == voucherOrder.cartStringGroup && shopOrder.cartStringOrder == voucherOrder.uniqueId) {
                             if (voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
                                 if (!hasInsertPromo(shopOrder.promos, voucherOrder.code)) {
+                                    if (voucherOrder.isTypeLogistic() && hasInsertLogisticPromoInGroupOrder) {
+                                        continue
+                                    }
+                                    if (voucherOrder.isTypeLogistic()) {
+                                        hasInsertLogisticPromoInGroupOrder = true
+                                    }
                                     val promoRequest = Promo()
                                     promoRequest.code = voucherOrder.code
                                     promoRequest.type = voucherOrder.type
@@ -1596,10 +1682,15 @@ class ShipmentViewModel @Inject constructor(
                             // ignore this, because there is a new one in the queue
                             continue@loopProcess
                         }
-                        onValidatePromoSuccess(shipmentValidatePromoHolderData, validateUsePromoRevampUiModel)
+                        onValidatePromoSuccess(
+                            shipmentValidatePromoHolderData,
+                            validateUsePromoRevampUiModel
+                        )
                     } catch (t: Throwable) {
-                        promoQueue.remove()
-                        itemToProcess = promoQueue.peek()
+                        if (promoQueue.isNotEmpty()) {
+                            promoQueue.remove()
+                            itemToProcess = promoQueue.peek()
+                        }
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
                             continue@loopProcess
@@ -1608,7 +1699,8 @@ class ShipmentViewModel @Inject constructor(
                     }
                 } else {
                     // do clear
-                    val shipmentCartItem = shipmentCartItemModelList.first { it is ShipmentCartItemModel && it.cartStringGroup == shipmentValidatePromoHolderData.cartString }
+                    val shipmentCartItem =
+                        shipmentCartItemModelList.first { it is ShipmentCartItemModel && it.cartStringGroup == shipmentValidatePromoHolderData.cartString }
                     if ((shipmentCartItem as ShipmentCartItemModel).voucherLogisticItemUiModel?.code != shipmentValidatePromoHolderData.promoCode) {
                         // skip due to clear on non-applied promo, this is due to the queuing system
                         promoQueue.remove()
@@ -1639,8 +1731,10 @@ class ShipmentViewModel @Inject constructor(
                         onCancelPromoSuccess(shipmentValidatePromoHolderData, responseData)
                     } catch (t: Throwable) {
                         Timber.d(t)
-                        promoQueue.remove()
-                        itemToProcess = promoQueue.peek()
+                        if (promoQueue.isNotEmpty()) {
+                            promoQueue.remove()
+                            itemToProcess = promoQueue.peek()
+                        }
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
                             continue@loopProcess
@@ -2037,8 +2131,10 @@ class ShipmentViewModel @Inject constructor(
 
     private fun getBBOCount(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Int {
         var bboCount = 0
+        val cartStrings: MutableSet<String> = mutableSetOf()
         for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-            if (voucherOrder.type.equals("logistic", ignoreCase = true)) {
+            if (voucherOrder.type.equals("logistic", ignoreCase = true) && !cartStrings.contains(voucherOrder.cartStringGroup)) {
+                cartStrings.add(voucherOrder.cartStringGroup)
                 bboCount++
             }
         }
@@ -2071,7 +2167,7 @@ class ShipmentViewModel @Inject constructor(
 
     private fun validateBBO(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
         val updatedCartStringGroup: ArrayList<String> = arrayListOf<String>()
-        voucherLoop@for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+        voucherLoop@ for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
             if (voucherOrder.type.equals(
                     "logistic",
                     ignoreCase = true
@@ -2096,10 +2192,13 @@ class ShipmentViewModel @Inject constructor(
                         }
                     }
                 }
-            } else if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals(
-                    "green",
+            } else if (voucherOrder.type.equals(
+                    "logistic",
                     ignoreCase = true
-                )
+                ) && voucherOrder.messageUiModel.state.equals(
+                        "green",
+                        ignoreCase = true
+                    )
             ) {
                 updatedCartStringGroup.add(voucherOrder.cartStringGroup)
             }
@@ -2110,7 +2209,10 @@ class ShipmentViewModel @Inject constructor(
         for (shipmentCartItemModel in shipmentCartItemModelList) {
             if (shipmentCartItemModel is ShipmentCartItemModel) {
                 val code = shipmentCartItemModel.voucherLogisticItemUiModel?.code
-                if (!code.isNullOrEmpty() && view != null && !updatedCartStringGroup.contains(shipmentCartItemModel.cartStringGroup)) {
+                if (!code.isNullOrEmpty() && view != null && !updatedCartStringGroup.contains(
+                        shipmentCartItemModel.cartStringGroup
+                    )
+                ) {
                     view!!.resetCourier(shipmentCartItemModel)
                     view!!.logOnErrorApplyBo(
                         MessageErrorException("voucher order not found"),
@@ -2232,7 +2334,9 @@ class ShipmentViewModel @Inject constructor(
         val reloadedUniqueIds = ArrayList<String>()
         val unprocessedUniqueIds = ArrayList<String>()
         for (shipmentCartItemModel in shipmentCartItemModelList) {
-            unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+            if (shipmentCartItemModel is ShipmentCartItemModel) {
+                unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+            }
         }
         // loop to list voucher orders to be applied this will be used later
         val toBeAppliedVoucherOrders: MutableList<PromoCheckoutVoucherOrdersItemUiModel> =
@@ -2240,7 +2344,7 @@ class ShipmentViewModel @Inject constructor(
         for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
             // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
             if (voucherOrdersItemUiModel.shippingId > 0 && voucherOrdersItemUiModel.spId > 0 && voucherOrdersItemUiModel.type == "logistic") {
-                if (voucherOrdersItemUiModel.messageUiModel.state == "green") {
+                if (voucherOrdersItemUiModel.messageUiModel.state == "green" && unprocessedUniqueIds.contains(voucherOrdersItemUiModel.cartStringGroup)) {
                     toBeAppliedVoucherOrders.add(voucherOrdersItemUiModel)
                     unprocessedUniqueIds.remove(voucherOrdersItemUiModel.cartStringGroup)
                 }
@@ -2366,19 +2470,18 @@ class ShipmentViewModel @Inject constructor(
     }
 
     fun validateClearAllBoPromo() {
-        if (lastValidateUseRequest != null) {
+        val validateUseRequest = lastValidateUseRequest
+        if (validateUseRequest != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                    for (order in lastValidateUseRequest!!.orders) {
-                        if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && order.codes.contains(
-                                shipmentCartItemModel.voucherLogisticItemUiModel!!.code
-                            )
-                        ) {
+                    for (order in validateUseRequest.orders) {
+                        if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && order.codes.isEmpty()) {
                             doUnapplyBo(
                                 shipmentCartItemModel.cartStringGroup,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.code
                             )
+                            break
                         }
                     }
                 }
@@ -2464,7 +2567,8 @@ class ShipmentViewModel @Inject constructor(
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     shippingCourierUiModel.isSelected = false
                                 }
-                                val shippingCourierUiModel = shippingDurationUiModel.shippingCourierViewModelList.first()
+                                val shippingCourierUiModel =
+                                    shippingDurationUiModel.shippingCourierViewModelList.first()
                                 if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                     view?.renderCourierStateFailed(
                                         itemPosition,
@@ -2591,25 +2695,26 @@ class ShipmentViewModel @Inject constructor(
                                             )
                                             return@launch
                                         } else {
-                                            val courierItemData = if (shipmentCartItemModel.ratesValidationFlow) {
-                                                generateCourierItemDataWithScheduleDelivery(
-                                                    true,
-                                                    shipperId,
-                                                    spId,
-                                                    shipmentCartItemModel,
-                                                    shippingCourierUiModel,
-                                                    shippingRecommendationData
-                                                )
-                                            } else {
-                                                generateCourierItemData(
-                                                    true,
-                                                    shipperId,
-                                                    spId,
-                                                    shipmentCartItemModel,
-                                                    shippingCourierUiModel,
-                                                    shippingRecommendationData
-                                                )
-                                            }
+                                            val courierItemData =
+                                                if (shipmentCartItemModel.ratesValidationFlow) {
+                                                    generateCourierItemDataWithScheduleDelivery(
+                                                        true,
+                                                        shipperId,
+                                                        spId,
+                                                        shipmentCartItemModel,
+                                                        shippingCourierUiModel,
+                                                        shippingRecommendationData
+                                                    )
+                                                } else {
+                                                    generateCourierItemData(
+                                                        true,
+                                                        shipperId,
+                                                        spId,
+                                                        shipmentCartItemModel,
+                                                        shippingCourierUiModel,
+                                                        shippingRecommendationData
+                                                    )
+                                                }
                                             if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
                                                 view?.renderCourierStateFailed(
@@ -3197,8 +3302,10 @@ class ShipmentViewModel @Inject constructor(
                                 v.showToastErrorAkamai(exception.message)
                             }
                         }
-                        ratesQueue.remove()
-                        itemToProcess = ratesQueue.peek()
+                        if (ratesQueue.isNotEmpty()) {
+                            ratesQueue.remove()
+                            itemToProcess = ratesQueue.peek()
+                        }
                     }
                 } else {
                     try {
@@ -3570,8 +3677,10 @@ class ShipmentViewModel @Inject constructor(
                                 v.showToastErrorAkamai(exception.message)
                             }
                         }
-                        ratesQueue.remove()
-                        itemToProcess = ratesQueue.peek()
+                        if (ratesQueue.isNotEmpty()) {
+                            ratesQueue.remove()
+                            itemToProcess = ratesQueue.peek()
+                        }
                     }
                 }
             }
@@ -4252,94 +4361,60 @@ class ShipmentViewModel @Inject constructor(
         longitude: String,
         locationPass: LocationPass?
     ) {
-        if (view != null) {
-            view!!.showLoading()
-            view!!.setHasRunningApiCall(true)
-            val requestParams =
-                generateEditAddressRequestParams(latitude, longitude)
+        view?.let {
+            it.showLoading()
+            it.setHasRunningApiCall(true)
+            val requestParams = generateUpdatePinpointParam(latitude, longitude)
             viewModelScope.launch(dispatchers.immediate) {
                 try {
-                    val stringResponse = withContext(dispatchers.io) {
-                        editAddressUseCase.createObservable(requestParams).toBlocking().single()
-                    }
-                    if (view != null) {
-                        view!!.setHasRunningApiCall(false)
-                        view!!.hideLoading()
-                        var response: JsonObject? = null
-                        var messageError = ""
-                        var statusSuccess: Boolean
-                        try {
-                            response = JsonParser().parse(stringResponse).asJsonObject
-                            val statusCode =
-                                response.asJsonObject.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)[EditAddressUseCase.RESPONSE_IS_SUCCESS].asInt
-                            statusSuccess = statusCode == 1
-                            if (!statusSuccess) {
-                                messageError =
-                                    response.getAsJsonArray("message_error")[0].asString
-                            }
-                        } catch (e: Exception) {
-                            Timber.d(e)
-                            statusSuccess = false
-                        }
-                        if (response != null && statusSuccess) {
-                            recipientAddressModel.latitude = latitude
-                            recipientAddressModel.longitude = longitude
-                            view?.renderEditAddressSuccess(latitude, longitude)
-                        } else {
-                            if (messageError.isEmpty()) {
-                                messageError =
-                                    view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-                                        ?: ""
-                            }
-                            view?.navigateToSetPinpoint(messageError, locationPass)
-                        }
+                    val response = updatePinpointUseCase(requestParams)
+                    it.setHasRunningApiCall(false)
+                    it.hideLoading()
+                    val statusSuccess = response.keroEditAddress.data.isSuccess == 1
+                    if (statusSuccess) {
+                        recipientAddressModel.latitude = latitude
+                        recipientAddressModel.longitude = longitude
+                        it.renderEditAddressSuccess(latitude, longitude)
+                    } else {
+                        val messageError =
+                            it.getStringResource(abstractionR.string.default_request_error_unknown)
+
+                        it.navigateToSetPinpoint(messageError, locationPass)
                     }
                 } catch (t: Throwable) {
-                    val exception = getActualThrowableForRx(t)
-                    Timber.d(exception)
-                    if (view != null) {
-                        view!!.setHasRunningApiCall(false)
-                        view!!.hideLoading()
-                        view!!.showToastError(
-                            getErrorMessage(
-                                view!!.activity,
-                                exception
-                            )
-                        )
-                    }
+                    it.setHasRunningApiCall(false)
+                    it.hideLoading()
+                    it.showToastError(
+                        getErrorMessage(it.activity, t)
+                    )
                 }
             }
         }
     }
 
-    private fun generateEditAddressRequestParams(
+    private fun generateUpdatePinpointParam(
         addressLatitude: String,
         addressLongitude: String
-    ): RequestParams {
-        val params: MutableMap<String, String> = generateParamsNetwork(
-            userSessionInterface.userId,
-            userSessionInterface.deviceId,
-            TKPDMapParam()
+    ): UpdatePinpointParam {
+        val params = EditPinpointParam(
+            addressId = recipientAddressModel.id.toLongOrZero(),
+            addressName = recipientAddressModel.addressName,
+            address1 = recipientAddressModel.street,
+            postalCode = recipientAddressModel.postalCode,
+            district = recipientAddressModel.destinationDistrictId,
+            city = recipientAddressModel.cityId,
+            province = recipientAddressModel.provinceId,
+            address2 = "$addressLatitude, $addressLongitude",
+            receiverName = recipientAddressModel.recipientName,
+            phone = recipientAddressModel.recipientPhoneNumber
         )
-        params[EditAddressParam.ADDRESS_ID] = recipientAddressModel.id
-        params[EditAddressParam.ADDRESS_NAME] = recipientAddressModel.addressName
-        params[EditAddressParam.ADDRESS_STREET] =
-            recipientAddressModel.street
-        params[EditAddressParam.POSTAL_CODE] = recipientAddressModel.postalCode
-        params[EditAddressParam.DISTRICT_ID] = recipientAddressModel.destinationDistrictId
-        params[EditAddressParam.CITY_ID] = recipientAddressModel.cityId
-        params[EditAddressParam.PROVINCE_ID] = recipientAddressModel.provinceId
-        params[EditAddressParam.LATITUDE] = addressLatitude
-        params[EditAddressParam.LONGITUDE] = addressLongitude
-        params[EditAddressParam.RECEIVER_NAME] = recipientAddressModel.recipientName
-        params[EditAddressParam.RECEIVER_PHONE] = recipientAddressModel.recipientPhoneNumber
-        val requestParams = RequestParams.create()
-        requestParams.putAllString(params)
+
+        val requestParams = UpdatePinpointParam(input = params)
         return requestParams
     }
-    // endregion
+// endregion
 
-    // region change address
+// region change address
     fun changeShippingAddress(
         newRecipientAddressModel: RecipientAddressModel?,
         chosenAddressModel: ChosenAddressModel?,
@@ -4442,9 +4517,9 @@ class ShipmentViewModel @Inject constructor(
             }
         }
     }
-    // endregion
+// endregion
 
-    // region campaign
+// region campaign
     fun getCampaignTimer(): CampaignTimerUi? {
         return if (campaignTimer == null || !campaignTimer!!.showTimer) {
             null
@@ -4473,9 +4548,9 @@ class ShipmentViewModel @Inject constructor(
             }
         }
     }
-    // endregion
+// endregion
 
-    // region epharmacy
+// region epharmacy
     fun fetchPrescriptionIds(epharmacyData: EpharmacyData) {
         if (epharmacyData.checkoutId.isNotEmpty() && epharmacyData.showImageUpload && !epharmacyData.consultationFlow) {
             viewModelScope.launch(dispatchers.immediate) {
@@ -4865,10 +4940,10 @@ class ShipmentViewModel @Inject constructor(
         }
         return true
     }
-    // endregion
+// endregion
 
-    // region add ons
-    fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+// region add ons gifting
+    fun updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel) {
@@ -4878,8 +4953,8 @@ class ShipmentViewModel @Inject constructor(
                         val keyProductLevel =
                             "${cartItemModel.cartStringGroup}-${cartItemModel.cartId}"
                         if (keyProductLevel.equals(addOnResult.addOnKey, ignoreCase = true)) {
-                            val addOnsDataModel = cartItemModel.addOnProductLevelModel
-                            setAddOnsData(
+                            val addOnsDataModel = cartItemModel.addOnGiftingProductLevelModel
+                            setAddOnsGiftingData(
                                 addOnsDataModel,
                                 addOnResult,
                                 0,
@@ -4893,7 +4968,7 @@ class ShipmentViewModel @Inject constructor(
         }
     }
 
-    fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+    fun updateAddOnGiftingOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && (shipmentCartItemModel.cartStringGroup + "-0").equals(
@@ -4902,7 +4977,7 @@ class ShipmentViewModel @Inject constructor(
                     )
                 ) {
                     val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
-                    setAddOnsData(
+                    setAddOnsGiftingData(
                         addOnsDataModel,
                         addOnResult,
                         1,
@@ -4914,9 +4989,9 @@ class ShipmentViewModel @Inject constructor(
         }
     }
 
-    // identifier : 0 = product level, 1  = order level
-    private fun setAddOnsData(
-        addOnsDataModel: AddOnsDataModel,
+// identifier : 0 = product level, 1  = order level
+    private fun setAddOnsGiftingData(
+        addOnsDataModel: AddOnGiftingDataModel,
         addOnResult: AddOnResult,
         identifier: Int,
         cartString: String,
@@ -4924,7 +4999,7 @@ class ShipmentViewModel @Inject constructor(
     ) {
         addOnsDataModel.status = addOnResult.status
         val addOnButton = addOnResult.addOnButton
-        addOnsDataModel.addOnsButtonModel = AddOnButtonModel(
+        addOnsDataModel.addOnsButtonModel = AddOnGiftingButtonModel(
             addOnButton.leftIconUrl,
             addOnButton.rightIconUrl,
             addOnButton.description,
@@ -4932,30 +5007,31 @@ class ShipmentViewModel @Inject constructor(
             addOnButton.title
         )
         val addOnBottomSheet = addOnResult.addOnBottomSheet
-        val addOnBottomSheetModel = AddOnBottomSheetModel()
+        val addOnBottomSheetModel = AddOnGiftingBottomSheetModel()
         addOnBottomSheetModel.headerTitle = addOnBottomSheet.headerTitle
         addOnBottomSheetModel.description = addOnBottomSheet.description
-        val addOnTickerModel = AddOnTickerModel()
+        val addOnTickerModel = AddOnGiftingTickerModel()
         addOnTickerModel.text = addOnBottomSheet.ticker.text
         addOnBottomSheetModel.ticker = addOnTickerModel
-        val listProductAddOn = ArrayList<AddOnProductItemModel>()
+        val listProductAddOn = ArrayList<AddOnGiftingProductItemModel>()
         for (product in addOnBottomSheet.products) {
-            val addOnProductItemModel = AddOnProductItemModel()
+            val addOnProductItemModel = AddOnGiftingProductItemModel()
             addOnProductItemModel.productName = product.productName
             addOnProductItemModel.productImageUrl = product.productImageUrl
             listProductAddOn.add(addOnProductItemModel)
         }
         addOnBottomSheetModel.products = listProductAddOn
         addOnsDataModel.addOnsBottomSheetModel = addOnBottomSheetModel
-        val listAddOnDataItem = arrayListOf<AddOnDataItemModel>()
+        val listAddOnDataItem = arrayListOf<AddOnGiftingDataItemModel>()
         for (addOnData in addOnResult.addOnData) {
-            val addOnDataItemModel = AddOnDataItemModel()
+            val addOnDataItemModel = AddOnGiftingDataItemModel()
             val addOnNote = addOnData.addOnMetadata.addOnNote
             addOnDataItemModel.addOnId = addOnData.addOnId
+            addOnDataItemModel.addOnUniqueId = addOnData.addOnUniqueId
             addOnDataItemModel.addOnPrice = addOnData.addOnPrice
             addOnDataItemModel.addOnQty = addOnData.addOnQty.toLong()
-            addOnDataItemModel.addOnMetadata = AddOnMetadataItemModel(
-                AddOnNoteItemModel(
+            addOnDataItemModel.addOnMetadata = AddOnGiftingMetadataItemModel(
+                AddOnGiftingNoteItemModel(
                     addOnNote.isCustomNote,
                     addOnNote.to,
                     addOnNote.from,
@@ -4975,9 +5051,9 @@ class ShipmentViewModel @Inject constructor(
             )
         }
     }
-    // endregion
+// endregion
 
-    // region upsell
+// region upsell
     fun cancelUpsell(
         isReloadData: Boolean,
         skipUpdateOnboardingState: Boolean,
@@ -4996,9 +5072,9 @@ class ShipmentViewModel @Inject constructor(
             hitClearAllBo()
         }
     }
-    // endregion
+// endregion
 
-    // region ddp
+// region ddp
     private fun setCurrentDynamicDataParamFromSAF(
         cartShipmentAddressFormData: CartShipmentAddressFormData,
         isOneClickShipment: Boolean
@@ -5030,14 +5106,14 @@ class ShipmentViewModel @Inject constructor(
                 for (groupShopV2 in groupShop.groupShopData) {
                     for (product in groupShopV2.products) {
                         // product level
-                        if (product.addOnProduct.status == 1) {
+                        if (product.addOnGiftingProduct.status == 1) {
                             val dynamicDataParam = DynamicDataParam()
                             dynamicDataParam.level = PRODUCT_LEVEL
                             dynamicDataParam.parentUniqueId = groupShop.cartString
                             dynamicDataParam.uniqueId = product.cartId.toString()
                             dynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
                             dynamicDataParam.addOn =
-                                getAddOnFromSAF(product.addOnProduct, isOneClickShipment)
+                                getAddOnFromSAF(product.addOnGiftingProduct, isOneClickShipment)
                             listDataParam.add(dynamicDataParam)
                         }
                     }
@@ -5097,9 +5173,9 @@ class ShipmentViewModel @Inject constructor(
     fun isUsingDynamicDataPassing(): Boolean {
         return isUsingDdp
     }
-    // endregion
+// endregion
 
-    // region selly rx
+// region selly rx
     private fun getScheduleDeliveryMapData(cartString: String): ShipmentScheduleDeliveryMapData? {
         return scheduleDeliveryMapData[cartString]
     }
@@ -5121,9 +5197,9 @@ class ShipmentViewModel @Inject constructor(
             }
         }
     }
-    // endregion
+// endregion
 
-    // region promo request
+// region promo request
     fun generateValidateUsePromoRequest(): ValidateUsePromoRequest {
         val bboPromoCodes = ArrayList<String>()
         var validateUsePromoRequest = lastValidateUseRequest
@@ -5503,8 +5579,9 @@ class ShipmentViewModel @Inject constructor(
         promoRequest.codes = globalPromoCodes
         return promoRequest
     }
-    // endregion
+// endregion
 
+// region platform fee
     fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
         if (view != null) {
             view?.showPaymentFeeSkeletonLoading()
@@ -5538,6 +5615,59 @@ class ShipmentViewModel @Inject constructor(
     fun setPlatformFeeData(paymentFee: ShipmentPaymentFeeModel) {
         shipmentCostModel.value = shipmentCostModel.value.copy(dynamicPlatformFee = paymentFee)
     }
+// endregion
+
+// region addons product service
+    fun saveAddOnsProduct(cartItemModel: CartItemModel) {
+        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(
+            cartItemModel,
+            isOneClickShipment
+        )
+        saveAddOnProductUseCase.setParams(params, true)
+        saveAddOnProductUseCase.execute(
+            onSuccess = {
+                updateShipmentCostModel()
+            },
+            onError = {
+                updateShipmentCostModel()
+            }
+        )
+    }
+
+    fun saveAddOnsProductBeforeCheckout() {
+        if (shipmentCartItemModelList.isNotEmpty()) {
+            val allShipmentCartItemModel: ArrayList<CartItemModel> = arrayListOf()
+            shipmentCartItemModelList.filterIsInstance<ShipmentCartItemModel>()
+                .forEach { shipmentCartItem ->
+                    shipmentCartItem.cartItemModels.forEach { cartItemModel ->
+                        allShipmentCartItemModel.add(cartItemModel)
+                    }
+                }
+
+            val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(
+                allShipmentCartItemModel,
+                isOneClickShipment
+            )
+            saveAddOnProductUseCase.setParams(params, false)
+            saveAddOnProductUseCase.execute(
+                onSuccess = {
+                    if (it.saveAddOns.status.equals(statusOK, true)) {
+                        view?.handleOnSuccessSaveAddOnProduct()
+                    } else {
+                        if (it.saveAddOns.errorMessage.isNotEmpty()) {
+                            view?.showToastError(it.saveAddOns.errorMessage.first())
+                        } else {
+                            view?.showToastError(view?.getStringResource(R.string.message_error_checkout_empty))
+                        }
+                    }
+                },
+                onError = {
+                    view?.showToastError(getErrorMessage(view?.activity, it))
+                }
+            )
+        }
+    }
+// end region
 
     companion object {
         private const val LAST_THREE_DIGIT_MODULUS: Long = 1000

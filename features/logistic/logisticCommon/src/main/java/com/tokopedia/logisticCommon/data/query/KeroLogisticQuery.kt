@@ -172,7 +172,7 @@ object KeroLogisticQuery {
                 latitude
                 longitude
                 postal_code
-                }
+              }
               tokonow {
                 shop_id
                 warehouse_id
@@ -181,7 +181,7 @@ object KeroLogisticQuery {
                     service_type
                 }
                 service_type
-                }
+              }
             }
             status
             config
@@ -266,23 +266,6 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
-    val eligible_for_address_feature = """
-        query eligibleForAddressFeature(${'$'}feature_id: Int!, ${'$'}device: String!, ${'$'}device_version: String!){ 
-          KeroAddrIsEligibleForAddressFeature(feature_id:${'$'}feature_id, device:${'$'}device, device_version:${'$'}device_version) {
-            data {
-              eligible
-            }
-            kero_addr_error {
-              code
-              detail
-            }
-            status
-            server_process_time
-            config
-          }
-      }
-    """.trimIndent()
-
     val kero_addr_get_district_center = """
         query kero_addr_get_district_center(${'$'}districtId: Int!) {
             kero_addr_get_district_center(districtId:${'$'}districtId) {
@@ -335,6 +318,28 @@ object KeroLogisticQuery {
             data{
               is_success
               is_state_chosen_address_changed
+              chosen_address { 
+                addr_id
+                receiver_name
+                addr_name
+                district
+                city
+                city_name
+                district_name
+                status
+                latitude
+                longitude
+                postal_code
+              }
+              tokonow {
+                shop_id
+                warehouse_id
+                warehouses {
+                    warehouse_id
+                    service_type
+                }
+                service_type
+              }
             }
             status
             config

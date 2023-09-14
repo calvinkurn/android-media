@@ -305,26 +305,14 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check add address v1 appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalLogistic.INTERNAL_LOGISTIC}/addaddress/v1/12345/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check add address v2 appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalLogistic.INTERNAL_LOGISTIC}/addaddress/v2/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
     fun `check district recommendation shop settings then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/district-recommendation-shop-settings"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 
     @Test
-    fun `check geolocation appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/geolocation"
+    fun `check pinpoint appLink then should return DF_BASE in customerapp`() {
+        val appLink = "${ApplinkConstInternalLogistic.INTERNAL_LOGISTIC}/pinpoint"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 
@@ -826,6 +814,18 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check profile management from applink then should return DF_USER_SETTINGS in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/profile-management"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
+    fun `check goto kyc webview from applink then should return DF_USER_SETTINGS in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/webview-kyc?url=tokopedia.com"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
     fun `check goto kyc from applink then should return DF_USER_SETTINGS in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/goto-kyc?projectId=123456"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
@@ -1109,5 +1109,10 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
         val internalApplink =
             "${ApplinkConstInternalCommunication.TOKO_CHAT}?source=$source&orderId=$orderId"
         assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOCHAT)
+    }
+    @Test
+    fun `check affiliate appLink then should return DF_CATEGORY_AFFILIATE in customerapp`() {
+        val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate"
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_CATEGORY_AFFILIATE)
     }
 }

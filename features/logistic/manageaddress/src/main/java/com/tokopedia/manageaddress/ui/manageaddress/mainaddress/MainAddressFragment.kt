@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,22 +26,25 @@ import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
-import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
-import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.response.KeroAddrStateChosenAddressData
+import com.tokopedia.logisticCommon.data.response.KeroAddressRespTokonow
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
 import com.tokopedia.manageaddress.databinding.FragmentMainAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressResponse
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressFragment
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressItemAdapter
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressViewModel
@@ -50,7 +52,6 @@ import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressBott
 import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressConfirmationBottomSheet
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_REF
 import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
@@ -66,14 +67,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -123,7 +122,6 @@ class MainAddressFragment :
     private var bottomSheetConfirmationShareAddress: BottomSheetUnify? = null
 
     private var _selectedAddressItem: RecipientAddressModel? = null
-    private var editedChosenAddress: RecipientAddressModel? = null
 
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
@@ -133,9 +131,6 @@ class MainAddressFragment :
     private var typeRequest: Int? = -1
     private var prevState: Int = -1
     private var localChosenAddr: LocalCacheModel? = null
-    private var isFromEditAddress: Boolean? = false
-    var isFromEditChosenAddress: Boolean? = null
-    private var isFromDeleteAddress: Boolean? = false
     private var isStayOnPageState: Boolean? = false
     private var mainAddressListener: MainAddressListener? = null
     private var leavePageJob: Job? = null
@@ -162,13 +157,11 @@ class MainAddressFragment :
         initView()
         initAdapter()
         initSearch()
-        setOnBackPressed()
         observerListAddress()
         observerSetDefault()
         observerGetChosenAddress()
         observerSetChosenAddress()
         observerRemovedAddress()
-        observerEligibleForAddressFeature()
     }
 
     private fun initArguments() {
@@ -296,24 +289,6 @@ class MainAddressFragment :
                 is Success -> {
                     val data = it.data
                     context?.let { context ->
-                        if (isFromEditAddress == true) {
-                            val newRecipientAddressModel = RecipientAddressModel()
-                            newRecipientAddressModel.apply {
-                                id = data.addressId.toString()
-                                addressStatus = data.status
-                                recipientName = data.receiverName
-                                addressName = data.addressName
-                                latitude = data.latitude
-                                longitude = data.longitude
-                                destinationDistrictId = data.districtId.toString()
-                                postalCode = data.postalCode
-                                cityId = data.cityId.toString()
-                            }
-                            _selectedAddressItem = newRecipientAddressModel
-                            if (isFromEditChosenAddress == true) {
-                                editedChosenAddress = newRecipientAddressModel
-                            }
-                        }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                             context,
                             data.addressId.toString(),
@@ -329,12 +304,6 @@ class MainAddressFragment :
                             data.tokonowModel.serviceType,
                             data.tokonowModel.lastUpdate
                         )
-
-                        if (isFromDeleteAddress == true) {
-                            context?.let {
-                                viewModel.searchAddress("", prevState, data.addressId, true)
-                            }
-                        }
                     }
                 }
 
@@ -406,10 +375,10 @@ class MainAddressFragment :
                 is ManageAddressState.Success ->
                     if (isLocalization == true || isFromCheckoutChangeAddress == true || isFromCheckoutSnippet == true) {
                         bottomSheetLainnya?.dismiss()
-                        setChosenAddress()
+                        setChosenAddressFromDefaultAddress(it.data)
                     } else {
                         bottomSheetLainnya?.dismiss()
-                        viewModel.getStateChosenAddress("address")
+                        setChosenAddressFromChosenAddressResponse(it.data.data.isStateChosenAddressChanged, it.data.data.chosenAddressData, it.data.data.tokonow)
                     }
 
                 is ManageAddressState.Fail -> {
@@ -430,37 +399,21 @@ class MainAddressFragment :
     private fun observerRemovedAddress() {
         viewModel.resultRemovedAddress.observe(viewLifecycleOwner) {
             when (it) {
-                is ManageAddressState.Success -> showToaster(getString(R.string.toaster_remove_address_success))
-                else -> {
-                    // no-op
+                is ManageAddressState.Success -> {
+                    setChosenAddressFromChosenAddressResponse(it.data.isStateChosenAddressChanged, it.data.chosenAddressData, it.data.tokonow)
+                    showToaster(getString(R.string.toaster_remove_address_success))
+                    viewModel.searchAddress(viewModel.savedQuery, prevState, it.data.chosenAddressData.addressId, true)
                 }
-            }
-        }
-    }
 
-    private fun observerEligibleForAddressFeature() {
-        viewModel.eligibleForAddressFeature.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    when (it.data.featureId) {
-                        ANA_REVAMP_FEATURE_ID -> {
-                            goToAddAddress(it.data.eligible)
-                        }
-                        EDIT_ADDRESS_REVAMP_FEATURE_ID -> {
-                            it.data.data?.let { recipientAddressModel ->
-                                goToEditAddress(
-                                    it.data.eligible,
-                                    recipientAddressModel
-                                )
-                            }
-                        }
+                is ManageAddressState.Fail -> {
+                    it.throwable?.run {
+                        showToaster(message.orEmpty(), toastType = Toaster.TYPE_ERROR)
+                        logToCrashlytics(this)
                     }
                 }
-                is Fail -> {
-                    showToaster(
-                        message = it.throwable.message ?: DEFAULT_ERROR_MESSAGE,
-                        toastType = Toaster.TYPE_ERROR
-                    )
+
+                else -> {
+                    // no-op
                 }
             }
         }
@@ -478,15 +431,34 @@ class MainAddressFragment :
                 performSearch(viewModel.savedQuery, null)
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
-            isFromEditAddress = true
-            isFromEditChosenAddress =
-                data?.getBooleanExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, false)
-
             performSearch(viewModel.savedQuery, null)
-            viewModel.getStateChosenAddress("address")
             setButtonEnabled(true)
-            val addressData = data?.getStringExtra(EXTRA_EDIT_ADDRESS)
+            val addressData = data?.getStringExtra(AddressConstant.EXTRA_EDIT_ADDRESS)
             if (addressData != null) {
+                val isEditChosenAddress =
+                    data.getBooleanExtra(LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, false)
+                if (isEditChosenAddress) {
+                    val addressDataModel =
+                        data.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
+                    if (addressDataModel != null) {
+                        context?.let {
+                            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                                it,
+                                addressDataModel.id.toString(),
+                                addressDataModel.cityId.toString(),
+                                addressDataModel.districtId.toString(),
+                                addressDataModel.latitude,
+                                addressDataModel.longitude,
+                                "${addressDataModel.addressName} ${addressDataModel.receiverName}",
+                                addressDataModel.postalCode,
+                                addressDataModel.shopId.toString(),
+                                addressDataModel.warehouseId.toString(),
+                                TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses),
+                                addressDataModel.serviceType
+                            )
+                        }
+                    }
+                }
                 showToaster(message = getString(R.string.edit_address_success))
             }
         }
@@ -506,7 +478,7 @@ class MainAddressFragment :
         }
     }
 
-    private fun goToAddAddress(eligible: Boolean) {
+    private fun goToAddAddress() {
         val token = viewModel.token
         val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
             SCREEN_NAME_CART_EXISTING_USER
@@ -515,39 +487,21 @@ class MainAddressFragment :
         } else {
             SCREEN_NAME_USER_NEW
         }
-        if (eligible) {
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            intent.putExtra(PARAM_SOURCE, viewModel.source)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        } else {
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        }
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+        intent.putExtra(KERO_TOKEN, token)
+        intent.putExtra(EXTRA_REF, screenName)
+        intent.putExtra(PARAM_SOURCE, viewModel.source)
+        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
     }
 
-    private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
-        if (eligibleForEditRevamp) {
-            val intent = RouteManager.getIntent(
-                context,
-                "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}"
-            )
-            intent.putExtra(PARAM_SOURCE, viewModel.source)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-        } else {
-            val token = viewModel.token
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
-            val mapper = AddressModelMapper()
-            intent.putExtra(EDIT_PARAM, mapper.transform(data))
-            intent.putExtra(KERO_TOKEN, token)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-        }
+    private fun goToEditAddress(data: RecipientAddressModel) {
+        val intent = RouteManager.getIntent(
+            context,
+            "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}"
+        )
+        intent.putExtra(PARAM_SOURCE, viewModel.source)
+        startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
     }
 
     private fun initScrollListener() {
@@ -652,10 +606,10 @@ class MainAddressFragment :
 
     private fun openFormAddressView(data: RecipientAddressModel?) {
         if (data == null) {
-            viewModel.checkUserEligibilityForAnaRevamp()
+            goToAddAddress()
         } else {
             ManageAddressAnalytics.sendClickButtonUbahAlamatEvent()
-            viewModel.checkUserEligibilityForEditAddressRevamp(data)
+            goToEditAddress(data)
         }
     }
 
@@ -788,8 +742,8 @@ class MainAddressFragment :
         }
     }
 
-    private fun setChosenAddress(isClickBackButton: Boolean = false) {
-        val addressData = if (isClickBackButton) editedChosenAddress else _selectedAddressItem
+    private fun setChosenAddress() {
+        val addressData = _selectedAddressItem
         if (isStayOnPageState == false) {
             if (isLocalization == true) {
                 val resultIntent = Intent().apply {
@@ -813,6 +767,59 @@ class MainAddressFragment :
             }
         } else if (isFromCheckoutChangeAddress == true) {
             addressData?.let { viewModel.setStateChosenAddress(it) }
+        }
+    }
+
+    private fun setChosenAddressFromDefaultAddress(data: SetDefaultPeopleAddressResponse) {
+        val addressData = _selectedAddressItem
+        if (isStayOnPageState == false) {
+            if (isLocalization == true) {
+                val resultIntent = Intent().apply {
+                    putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, addressData)
+                }
+                activity?.let {
+                    it.setResult(Activity.RESULT_OK, resultIntent)
+                    it.finish()
+                }
+            } else if (viewModel.isNeedToShareAddress) {
+                addressData?.apply {
+                    ShareAddressAnalytics.onClickShareAddress()
+                    showShareAddressConfirmationBottomSheet(
+                        senderAddressId = id,
+                        receiverUserId = viewModel.receiverUserId,
+                        receiverUserName = viewModel.receiverUserName
+                    )
+                }
+            } else {
+                setChosenAddressFromChosenAddressResponse(data.data.isStateChosenAddressChanged, data.data.chosenAddressData, data.data.tokonow)
+            }
+        } else if (isFromCheckoutChangeAddress == true) {
+            setChosenAddressFromChosenAddressResponse(data.data.isStateChosenAddressChanged, data.data.chosenAddressData, data.data.tokonow)
+        }
+    }
+
+    private fun setChosenAddressFromChosenAddressResponse(
+        isStateChosenAddressChanged: Boolean,
+        chosenAddress: KeroAddrStateChosenAddressData,
+        tokonowAddress: KeroAddressRespTokonow
+    ) {
+        if (isStateChosenAddressChanged) {
+            context?.let { ctx ->
+                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = ctx,
+                    addressId = chosenAddress.addressId.toString(),
+                    cityId = chosenAddress.cityId.toString(),
+                    districtId = chosenAddress.districtId.toString(),
+                    lat = chosenAddress.latitude,
+                    long = chosenAddress.longitude,
+                    label = "${chosenAddress.addressName} ${chosenAddress.receiverName}",
+                    postalCode = chosenAddress.postalCode,
+                    shopId = tokonowAddress.shopId.toString(),
+                    warehouseId = tokonowAddress.warehouseId.toString(),
+                    warehouses = tokonowAddress.warehouses.map { LocalWarehouseModel(warehouse_id = it.warehouseId, service_type = it.serviceType) },
+                    serviceType = tokonowAddress.serviceType
+                )
+            }
         }
     }
 
@@ -893,21 +900,6 @@ class MainAddressFragment :
         } else {
             binding?.btnChooseAddress?.isEnabled = false
         }
-    }
-
-    private fun setOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (isFromEditChosenAddress == true) {
-                        setChosenAddress(true)
-                    } else {
-                        activity?.finish()
-                    }
-                }
-            }
-        )
     }
 
     private fun getManageAddressFragment(): ManageAddressFragment? {
@@ -996,24 +988,7 @@ class MainAddressFragment :
         }
     }
 
-    private fun generateUserConsentWidget(): UserConsentWidget? {
-        return try {
-            val userConsent = UserConsentWidget(requireContext())
-            userConsent.load(
-                viewLifecycleOwner,
-                this,
-                ConsentCollectionParam(
-                    collectionId = viewModel.deleteCollectionId
-                )
-            )
-            userConsent
-        } catch (e: Exception) {
-            logToCrashlytics(e)
-            null
-        }
-    }
-
-    private fun logToCrashlytics(exception: Exception) {
+    private fun logToCrashlytics(exception: Throwable) {
         if (!GlobalConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().recordException(exception)
         } else {
@@ -1023,8 +998,6 @@ class MainAddressFragment :
 
     private fun showDeleteAddressDialog(addressId: String) {
         context?.apply {
-            val userConsent = generateUserConsentWidget()
-
             DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.title_delete_address_dialog))
                 setSecondaryCTAText(getString(R.string.action_cancel_delete_address))
@@ -1035,10 +1008,8 @@ class MainAddressFragment :
                 setPrimaryCTAClickListener {
                     dismiss()
                     viewModel.deletePeopleAddress(
-                        id = addressId,
-                        consentJson = userConsent?.generatePayloadData().orEmpty()
+                        id = addressId
                     )
-                    isFromDeleteAddress = true
                 }
             }.show()
         }

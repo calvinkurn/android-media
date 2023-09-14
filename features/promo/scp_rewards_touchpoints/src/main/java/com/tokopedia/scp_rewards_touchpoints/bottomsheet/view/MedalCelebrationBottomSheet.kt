@@ -67,6 +67,9 @@ import com.tokopedia.unifycomponents.toPx
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.design.R as designR
+import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
@@ -214,15 +217,17 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setCloseBtnColor(whiteBtn: Boolean = true) {
-        val iconColor = if (whiteBtn) {
-            ResourcesCompat.getColor(resources, R.color.Unify_NN0, null)
-        } else {
-            ResourcesCompat.getColor(resources, R.color.Unify_NN900, null)
+        context?.let {
+            val iconColor = if (whiteBtn) {
+                ResourcesCompat.getColor(it.resources, unifyprinciplesR.color.Unify_NN0, null)
+            } else {
+                ResourcesCompat.getColor(it.resources, unifyprinciplesR.color.Unify_NN900, null)
+            }
+            binding?.btnClose?.setImage(
+                newLightEnable = iconColor,
+                newDarkEnable = iconColor
+            )
         }
-        binding?.btnClose?.setImage(
-            newLightEnable = iconColor,
-            newDarkEnable = iconColor
-        )
     }
 
     @SuppressLint("DeprecatedMethod")
@@ -406,7 +411,8 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         if (screenSize > MDPI_SCREEN_SIZE) {
             binding?.mainView?.celebrationHeading?.apply {
                 val lp = layoutParams as ConstraintLayout.LayoutParams
-                val topMargin = resources.getDimensionPixelSize(R.dimen.mdpi_device_top_margin)
+                val topMargin =
+                    context.resources.getDimensionPixelSize(R.dimen.mdpi_device_top_margin)
                 lp.setMargins(0, topMargin, 0, 0)
             }
         }
@@ -631,9 +637,8 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun animateBadge() {
         val badgeDrawable = if (isFallbackCase) {
-//            CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
             changeBadgeSize()
-            ResourcesCompat.getDrawable(resources, R.drawable.fallback_badge, null)
+            context?.let { ContextCompat.getDrawable(it, scp_rewards_commonR.drawable.fallback_badge) }
         } else {
             badge_image
         }
@@ -656,7 +661,9 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     private fun animateCoupon() {
         val couponDrawable = if (coupon_image == null) {
             binding?.mainView?.couponUi?.couponImage?.isEdgeControl = false
-            ResourcesCompat.getDrawable(resources, R.drawable.coupon_fallback, null)
+            context?.let {
+                ResourcesCompat.getDrawable(it.resources, R.drawable.coupon_fallback, null)
+            }
         } else {
             binding?.mainView?.couponUi?.couponImage?.isEdgeControl = true
             binding?.mainView?.couponUi?.couponImage?.circularEdgeColor = Color.parseColor(bgColor)
@@ -676,8 +683,8 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun changeBadgeSize() {
         binding?.mainView?.badgeImage?.apply {
-            val newWidth = resources.getDimensionPixelSize(R.dimen.fallback_badge_width)
-            val newHeight = resources.getDimensionPixelSize(R.dimen.fallback_badge_height)
+            val newWidth = context.resources.getDimensionPixelSize(R.dimen.fallback_badge_width)
+            val newHeight = context.resources.getDimensionPixelSize(R.dimen.fallback_badge_height)
             val lp = layoutParams as ConstraintLayout.LayoutParams
             lp.width = newWidth
             lp.height = newHeight
@@ -777,7 +784,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun showErrorView(error: Throwable) {
         context?.let {
-            val defaultBg = ContextCompat.getColor(it, R.color.white)
+            val defaultBg = ContextCompat.getColor(it, designR.color.white)
             binding?.mainFlipper?.backgroundTintList = ColorStateList.valueOf(defaultBg)
         }
         binding?.mainFlipper?.displayedChild = ERROR_STATE

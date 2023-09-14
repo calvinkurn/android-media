@@ -10,6 +10,7 @@ import com.tokopedia.tokopedianow.data.createDynamicLegoBannerDataModel
 import com.tokopedia.tokopedianow.data.createHomeLayoutList
 import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.BundleMapper
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
@@ -60,7 +61,7 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         //prepare model for expectedResult
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 BundleWidgetDataFactory.createBundleUiModel(
                     id = bundleWidgetId,
                     bundleIds = BundleMapper.mapToProductBundleListItemUiModel(
@@ -75,7 +76,7 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetTickerUseCaseCalled()
         verifyGetProductBundleRecomUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+        verifyGetHomeLayoutListSuccess(expectedResult)
     }
 
     @Test
@@ -98,7 +99,7 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         //prepare model for expectedResult
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 createDynamicLegoBannerDataModel(
                     "34923",
                     "",
@@ -122,7 +123,7 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetTickerUseCaseCalled()
         verifyGetProductBundleRecomUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+        verifyGetHomeLayoutListSuccess(expectedResult)
     }
 
     @Test
@@ -138,7 +139,7 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         //prepare model for expectedResult
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 createDynamicLegoBannerDataModel(
                     "34923",
                     "",
@@ -162,6 +163,6 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetTickerUseCaseCalled()
         verifyGetProductBundleRecomUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+        verifyGetHomeLayoutListSuccess(expectedResult)
     }
 }

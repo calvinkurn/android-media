@@ -12,6 +12,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUi
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
@@ -27,7 +28,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
-import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
 open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
@@ -43,6 +45,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
             setupProductListSection(context, uiState.productListUiState.data)
             setupOrderInsuranceSection(context, uiState.orderInsuranceUiState)
             setupEpharmacyInfoSection(context, uiState.epharmacyInfoUiState.data)
+            setupScpRewardsMedalTouchPointSection(uiState.scpRewardsMedalTouchPointWidgetUiState)
             setupShipmentInfoSection(context, uiState.shipmentInfoUiState.data)
             setupPaymentInfoSection(context, uiState.paymentInfoUiState.data)
             setUpPhysicalRecommendationSection(uiState.pgRecommendationWidgetUiState.data)
@@ -113,6 +116,17 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         }
     }
 
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupScpRewardsMedalTouchPointSection(
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
+    ) {
+        if (scpRewardsMedalTouchPointWidgetUiState is ScpRewardsMedalTouchPointWidgetUiState.HasData.Showing) {
+            addThickDividerSection()
+            addScpRewardsMedalTouchPointSection(
+                uiModel = scpRewardsMedalTouchPointWidgetUiState.uiModel
+            )
+        }
+    }
+
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupEpharmacyInfoSection(
         context: Context?,
         epharmacyInfoUiModel: EpharmacyInfoUiModel
@@ -128,6 +142,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         shipmentInfoUiModel: ShipmentInfoUiModel
     ) {
         addThickDividerSection()
+        addOwocSection(context, shipmentInfoUiModel.owocInfoUiModel)
         addPlainHeaderSection(context, shipmentInfoUiModel.headerUiModel)
         addTickerSection(context, shipmentInfoUiModel.ticker)
         addCourierInfoSection(context, shipmentInfoUiModel.courierInfoUiModel)
@@ -188,6 +203,12 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThinDividerSection() {
         add(ThinDividerUiModel())
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addScpRewardsMedalTouchPointSection(
+        uiModel: ScpRewardsMedalTouchPointWidgetUiModel
+    ) {
+        (uiModel as? Visitable<BuyerOrderDetailTypeFactory>)?.let { add(it) }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(
@@ -370,6 +391,15 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlatformFeeInfoSection() {
         add(PlatformFeeInfoUiModel())
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOwocSection(
+        context: Context?,
+        owocBomDetailSectionUiModel: OwocBomDetailSectionUiModel?
+    ) {
+        if (owocBomDetailSectionUiModel?.shouldShow(context = context) == true) {
+            add(owocBomDetailSectionUiModel)
+        }
     }
 
     private inline fun <reified T : Any> removeRecommendationWidget() {

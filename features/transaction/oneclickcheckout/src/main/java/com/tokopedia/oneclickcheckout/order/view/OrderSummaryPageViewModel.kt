@@ -8,12 +8,9 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -38,7 +35,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
-import com.tokopedia.oneclickcheckout.order.view.model.OrderEnableAddressFeature
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
@@ -59,8 +55,9 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePayme
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -87,8 +84,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     val paymentProcessor: Lazy<OrderSummaryPagePaymentProcessor>,
     private val calculator: OrderSummaryPageCalculator,
     private val userSession: UserSessionInterface,
-    private val orderSummaryAnalytics: OrderSummaryAnalytics,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase
+    private val orderSummaryAnalytics: OrderSummaryAnalytics
 ) : BaseViewModel(executorDispatchers.immediate) {
 
     init {
@@ -122,14 +118,13 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     val addressState: OccMutableLiveData<AddressState> = OccMutableLiveData(AddressState())
 
-    val eligibleForAnaRevamp = OccMutableLiveData<OccState<OrderEnableAddressFeature>>(OccState.Loading)
-
     val uploadPrescriptionUiModel: OccMutableLiveData<UploadPrescriptionUiModel> = OccMutableLiveData(UploadPrescriptionUiModel())
 
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
     private var dynamicPaymentFeeJob: Job? = null
+    private val saveAddOnProductStateJobs: MutableMap<String, Job> = mutableMapOf()
 
     private var hasSentViewOspEe = false
 
@@ -612,7 +607,11 @@ class OrderSummaryPageViewModel @Inject constructor(
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
-            val result = logisticProcessor.savePinpoint(orderProfile.value.address, longitude, latitude, userSession.userId, userSession.deviceId)
+            val result = logisticProcessor.savePinpoint(
+                orderProfile.value.address,
+                longitude,
+                latitude
+            )
             globalEvent.value = result
         }
     }
@@ -1014,11 +1013,43 @@ class OrderSummaryPageViewModel @Inject constructor(
                     if (validateSelectedTerm()) {
                         finalUpdateJob?.cancel()
                         finalUpdateJob = launch(executorDispatchers.immediate) {
+                            // if there is at least one addon should follow logic to save all addons
+                            val isAddOnProductAvailable = orderProducts.value.any { it.addOnsProductData.data.isNotEmpty() }
+                            if (isAddOnProductAvailable) {
+                                // before save all addons of all products making sure all jobs canceled
+                                saveAddOnProductStateJobs.values.forEach { it.cancel() }
+                                saveAddOnProductStateJobs.clear()
+
+                                // save all addons of all products
+                                val saveAddOnState = cartProcessor.saveAllAddOnsAllProductsState(
+                                    products = orderProducts.value
+                                )
+
+                                // if save all addons of all products is not successful, execution will not continue and error toaster will be shown
+                                if (!saveAddOnState.isSuccess) {
+                                    globalEvent.value = OccGlobalEvent.Error(
+                                        errorMessage = saveAddOnState.message,
+                                        throwable = saveAddOnState.throwable,
+                                        ctaText = ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT
+                                    )
+                                    return@launch
+                                }
+                            }
+
+                            // if save all addons of all products is successful then do final validation
                             val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
                             if (isSuccess) {
-                                finalValidateUse(orderCart.products, shop, orderProfile.value, onSuccessCheckout, skipCheckIneligiblePromo)
+                                finalValidateUse(
+                                    products = orderCart.products,
+                                    shop = shop,
+                                    profile = orderProfile.value,
+                                    onSuccessCheckout = onSuccessCheckout,
+                                    skipCheckIneligiblePromo = skipCheckIneligiblePromo
+                                )
                                 return@launch
                             }
+
+                            // if final update to cart is failed then show global error
                             globalEvent.value = errorGlobalEvent
                         }
                     }
@@ -1129,18 +1160,6 @@ class OrderSummaryPageViewModel @Inject constructor(
             validateUsePromoRevampUiModel,
             orderPayment.value,
             orderTotal.value
-        )
-    }
-
-    fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
-        eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
-            },
-            {
-                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
-            },
-            AddressConstant.ANA_REVAMP_FEATURE_ID
         )
     }
 
@@ -1273,11 +1292,11 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     private fun setDefaultAddOnState(orderShop: OrderShop, orderProduct: OrderProduct?) {
         if (orderShop.isFulfillment) {
-            orderShop.addOn = AddOnsDataModel()
+            orderShop.addOn = AddOnGiftingDataModel()
             this.orderShop.value = orderShop
         } else {
             orderProduct?.let {
-                it.addOn = AddOnsDataModel()
+                it.addOn = AddOnGiftingDataModel()
                 orderProducts.value = listOf(it)
             }
         }
@@ -1327,12 +1346,48 @@ class OrderSummaryPageViewModel @Inject constructor(
         )
     }
 
+    fun updateAddOnProduct(
+        newAddOnProductData: AddOnsProductDataModel.Data,
+        product: OrderProduct
+    ) {
+        changeAddOnProductStatus(
+            productId = product.productId,
+            addOnProductId = newAddOnProductData.id,
+            status = newAddOnProductData.status
+        )
+
+        val job = launch(executorDispatchers.immediate) {
+            cartProcessor.saveAddOnProductState(
+                newAddOnProductData = newAddOnProductData,
+                product = product
+            )
+        }
+
+        job.invokeOnCompletion {
+            saveAddOnProductStateJobs.remove(newAddOnProductData.id)
+        }
+        saveAddOnProductStateJobs[newAddOnProductData.id] = job
+
+        calculateTotal()
+    }
+
+    private fun changeAddOnProductStatus(
+        productId: String,
+        addOnProductId: String,
+        status: Int
+    ) {
+        orderProducts.value.find { it.productId == productId }?.apply {
+            addOnsProductData.data.find { it.id == addOnProductId }?.status = status
+        }
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
         dynamicPaymentFeeJob?.cancel()
-        eligibleForAddressUseCase.cancelJobs()
+        saveAddOnProductStateJobs.values.forEach { it.cancel() }
+        saveAddOnProductStateJobs.clear()
         super.onCleared()
     }
 
@@ -1358,6 +1413,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         const val MAXIMUM_AMOUNT_ERROR_MESSAGE = "Belanjaanmu melebihi limit transaksi"
 
         const val CHANGE_PAYMENT_METHOD_MESSAGE = "Ubah"
+        const val ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT = "Oke"
 
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 

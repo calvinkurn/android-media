@@ -145,6 +145,8 @@ public class RemoteConfigKey {
 
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
     public static final String GOTO_ONE_KYC_CLICKSTREAM = "android_one_kyc_clickstream";
+    public static final String GOTO_ONE_KYC_CONFIG = "android_one_kyc_exp_unified_kyc_configs";
+    public static final String GOTO_ONE_KYC_AURORA = "android_one_kyc_release_kyc_aurora_configs";
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_REMOVE_PAGINATION = "android_customer_home_remove_pagination";
@@ -254,4 +256,11 @@ public class RemoteConfigKey {
 
     public static final String IS_TOKOCHAT_BUBBLES_ENABLED = "android_tokochat_bubbles_enabled";
 
+    public static final String HOME_NEW_LEGO_TRACKING = "android_home_enable_new_lego_tracking";
+
+    public static final String CONTACT_US_DISABLE_FORCE_RELOAD_URLS = "android_contact_us_disable_force_reload_urls";
+
+    public static final String ENABLE_BANNER_ENVIRONMENT = "android_enable_banner_environment";
+
+    public static final String FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_fintech_enable_additional_device_info";
 }

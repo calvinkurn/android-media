@@ -115,6 +115,9 @@ data class DataItem(
     @SerializedName("action")
     val action: String? = "",
 
+    @SerializedName("move_action")
+    val moveAction: MoveAction? = null,
+
     @SerializedName("notification_title")
     val notificationTitle: String? = "",
 
@@ -537,6 +540,12 @@ data class DataItem(
     @field:SerializedName("target_section_id")
     val targetSectionID: String? = null,
 
+    @field:SerializedName("icon_image_url")
+    val iconImageUrl: String? = null,
+
+    @field:SerializedName("inactive_icon_image_url")
+    val inactiveIconImageUrl: String? = null,
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",
@@ -574,6 +583,9 @@ data class DataItem(
     var itemWeight: Float? = 1.0f,
 
     var typeProductHighlightComponentCard: String? = "",
+
+    @SerializedName("warehouse_id")
+    var warehouseId: Long? = null
 ) {
     val leftMargin: Int
         get() {

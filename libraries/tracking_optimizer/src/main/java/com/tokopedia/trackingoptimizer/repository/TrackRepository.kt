@@ -24,19 +24,6 @@ class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = Fir
         TrackingEEDataSource(context)
     }
 
-    override fun putScreenName(screenName: String?) {
-        if (screenName.isNullOrEmpty()) {
-            return
-        }
-    }
-
-    override fun putScreenName(screenName: String?, customModel: ScreenCustomModel) {
-        if (screenName.isNullOrEmpty()) {
-            return
-        }
-    }
-
-
     override fun putRegular(event: EventModel, customDimension: HashMap<String, Any>?) {
         TrackApp.getInstance().gtm.sendEvent(event.event, customDimension)
     }
@@ -172,6 +159,10 @@ class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = Fir
     }
 
     override fun getAllEE() = trackingEEDataSource.getAll()
+
+    override fun hasDataToSend(): Boolean {
+        return trackingEEDataSource.hasRowExist()
+    }
 
     override fun deleteEE() {
         trackingEEDataSource.delete()

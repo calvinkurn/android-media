@@ -8,12 +8,13 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.swipeUp
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
@@ -33,17 +34,17 @@ class EditAddressRevampRobot {
     }
 
     fun fillAddress(address: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
             .perform(click(), clearText(), typeText(address), closeSoftKeyboard())
     }
 
     fun fillPhoneNumber(phone: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
             .perform(click(), clearText(), typeText(phone), closeSoftKeyboard())
     }
 
     fun fillReceiver(receiver: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
             .perform(click(), clearText(), typeText(receiver), closeSoftKeyboard())
     }
 
@@ -53,12 +54,12 @@ class EditAddressRevampRobot {
     }
 
     fun onClickCariUlangAlamat() {
-        onView(withId(R.id.chips_search)).perform(click())
+        onView(withId(R.id.chips_search)).perform(scrollTo(), click())
     }
 
     fun searchAddressStreet(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), pressImeActionButton())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText(keyword), pressImeActionButton())
         waitForData()
     }
 
@@ -85,7 +86,7 @@ class EditAddressRevampRobot {
 
     fun searchKotaKecamatan(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
-        onView(withId(R.id.searchbar_textfield))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
             .perform(click(), replaceText(keyword), closeSoftKeyboard())
         waitForData()
     }
@@ -114,13 +115,12 @@ class EditAddressRevampRobot {
     }
 
     fun scrollToBottom() {
-        onView(withId(R.id.nested_scroll_view)).perform(swipeUp());
+        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
     }
 
     private fun waitForData(millis: Long = 1000L) {
         Thread.sleep(millis)
     }
-
 }
 
 class EditAddressResultRobot {
