@@ -75,7 +75,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
-    implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.productShare)
