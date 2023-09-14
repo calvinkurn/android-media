@@ -26,6 +26,8 @@ data class AdditionalInfoModel(
 
     companion object {
         private const val UNKNOWN = "unknown"
+        private const val MOST_SIG_BITS = -0x121074568629b532L
+        private const val LEAST_SIG_BITS = -0x5c37d8232ae2de13L
 
         fun generate(context: Context): AdditionalInfoModel {
 
@@ -51,8 +53,7 @@ data class AdditionalInfoModel(
             var widevineMediaDrm: MediaDrm? = null
 
             return try {
-                // This UUID bits are for widevine DRM
-                widevineMediaDrm = MediaDrm(UUID(-0x121074568629b532L, -0x5c37d8232ae2de13L))
+                widevineMediaDrm = MediaDrm(UUID(MOST_SIG_BITS, LEAST_SIG_BITS))
                 val wideVineId =
                     widevineMediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
                 Base64.encodeToString(wideVineId, Base64.DEFAULT).trim()
