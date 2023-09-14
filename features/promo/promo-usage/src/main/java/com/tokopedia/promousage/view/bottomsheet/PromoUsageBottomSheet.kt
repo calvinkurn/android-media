@@ -110,7 +110,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         private const val BUNDLE_KEY_CHOSEN_ADDRESS = "chosen_address"
         private const val BUNDLE_KEY_VALIDATE_USE = "validate_use"
         private const val BUNDLE_KEY_BO_PROMO_CODES = "bo_promo_codes"
-        private const val BUNDLE_KEY_PROMO_CODE = "promo_code"
         private const val BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER = "is_flow_mvc_lock_to_courier"
 
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
@@ -476,7 +475,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun setFocusOnPromoAttemptTextField(keyboardHeight: Int) {
         val itemCount = recyclerViewAdapter.itemCount
-        binding?.rvPromo?.smoothScrollToPosition(itemCount)
+        Handler().postDelayed({
+            binding?.rvPromo?.smoothScrollToPosition(itemCount)
+        }, 300L)
 
         // Add padding to make voucher code text field displayed above keyboard
         binding?.rvPromo?.setPadding(0, 0, 0, keyboardHeight.toDp())
@@ -801,9 +802,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun openNetworkSettings() {
-        val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
         try {
-            startActivity(intent)
+            val settingsIntent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+            startActivity(settingsIntent)
         } catch (_: Exception) {
             // no-op
         }
@@ -925,7 +926,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
                             Handler().postDelayed({
                                 binding?.rvPromo?.smoothScrollToPosition(itemPosition)
-                            }, 300)
+                            }, 300L)
                         }
                     } catch (ignored: Exception) {
                         // no-op
