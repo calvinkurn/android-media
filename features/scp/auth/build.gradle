@@ -40,6 +40,10 @@ dependencies {
     api rootProject.ext.miscDependencies.gotoLoginSdk
     api rootProject.ext.miscDependencies.gotoCvSdk
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+
+    implementation rootProject.ext.unifyDependencies.global_error
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
@@ -54,7 +58,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
     androidTestUtil rootProject.ext.testDependencies.orchestrator
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
@@ -63,6 +67,21 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
 }
 
 project.ext {

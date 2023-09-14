@@ -24,7 +24,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -35,16 +34,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.scp.login.core.domain.common.UserCredential
-import com.scp.login.core.domain.contracts.configs.LSdkChooseAccountUiConfigs
-import com.scp.login.core.domain.contracts.configs.LSdkSsoUiConfigs
-import com.scp.login.core.domain.contracts.configs.LSdkUiConfig
-import com.scp.login.core.domain.contracts.listener.LSdkClientFlowListener
-import com.scp.login.core.domain.contracts.listener.LSdkLoginFlowListener
-import com.scp.login.core.domain.methods.mapper.MethodsUserNotExistFailure
-import com.scp.login.core.init.contracts.LSdkCoreProvider
-import com.scp.login.init.contracts.LSdkProvider
-import com.scp.verification.core.domain.common.entities.Failure
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -160,8 +149,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    @Inject
-    lateinit var lsdkProvider: LSdkProvider
+//    @Inject
+//    lateinit var lsdkProvider: LSdkProvider
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -411,59 +400,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         autoFillWithDataFromLatestLoggedIn()
 
         initInputType()
-        startGotoLogin()
-    }
-
-    private fun startGotoLogin() {
-        lsdkProvider.startLoginFlow(
-            activity = requireActivity() as LoginActivity,
-            uiConfig = LSdkUiConfig(
-                isHelpCenterVisible = true,
-                shouldManuallyUpdateLanguage = true,
-                ssoUiConfigs = LSdkSsoUiConfigs(
-                    title = "Selamat datang di Tokopedia!",
-                    subtitle = "Masuk atau daftar hanya dalam beberapa langkah mudah"
-                ),
-                chooseAccountConfigs = LSdkChooseAccountUiConfigs(
-                    title = "Select Account to continue"
-                ),
-            ),
-            loginSuccessListener = object : LSdkLoginFlowListener {
-                override fun onLoginSuccessful() {
-
-                }
-
-                override fun onLoginError(failure: Failure) {
-                    if (failure is MethodsUserNotExistFailure) {
-                        Toast.makeText(requireContext(), "User not exist, cred: ${failure.credentials}", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onUserNotRegistered(credential: UserCredential) {
-
-                }
-            },
-            clientFlowListener = object : LSdkClientFlowListener {
-                override fun onHelpCentreClicked(screenType: String) {
-                }
-
-                override fun onAccountRecoverClicked() {
-
-                }
-
-                override fun onTermsServicesClicked() {
-                    Toast.makeText(requireContext(), "On Terms Services Click", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onPrivacyPolicyClicked() {
-                    Toast.makeText(requireContext(), "On Privacy Policy Clicked", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onLanguageSelectorClicked() {
-                    TODO("Not yet implemented")
-                }
-            }
-        )
     }
 
     private fun initInputType() {
