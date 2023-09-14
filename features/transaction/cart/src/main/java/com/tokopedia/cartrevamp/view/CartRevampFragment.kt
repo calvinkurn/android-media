@@ -69,7 +69,6 @@ import com.tokopedia.cartrevamp.view.bottomsheet.CartBundlingBottomSheet
 import com.tokopedia.cartrevamp.view.bottomsheet.CartBundlingBottomSheetListener
 import com.tokopedia.cartrevamp.view.bottomsheet.CartNoteBottomSheet
 import com.tokopedia.cartrevamp.view.bottomsheet.showGlobalErrorBottomsheet
-import com.tokopedia.cartrevamp.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
 import com.tokopedia.cartrevamp.view.decorator.CartItemDecoration
 import com.tokopedia.cartrevamp.view.di.DaggerCartRevampComponent
@@ -2138,8 +2137,6 @@ class CartRevampFragment :
     private fun initViewListener() {
         binding?.apply {
             goToCourierPageButton.setOnClickListener { checkGoToShipment("") }
-            textTotalPaymentLabel.setOnClickListener { onClickChevronSummaryTransaction() }
-            tvTotalPrices.setOnClickListener { onClickChevronSummaryTransaction() }
         }
     }
 
@@ -2792,11 +2789,6 @@ class CartRevampFragment :
             notInWishlistColor
         )
         onNeedToUpdateViewItem(position)
-    }
-
-    private fun onClickChevronSummaryTransaction() {
-        cartPageAnalytics.eventClickDetailTagihan(userSession.userId)
-        showBottomSheetSummaryTransaction()
     }
 
     private fun onDeleteCartDataSuccess(
@@ -3523,8 +3515,6 @@ class CartRevampFragment :
         } else {
             binding?.promoCheckoutTickerCart?.gone()
         }
-
-        viewModel.updatePromoSummaryData(lastApplyData)
     }
 
     private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
@@ -4138,20 +4128,6 @@ class CartRevampFragment :
         }
     }
 
-    private fun showBottomSheetSummaryTransaction() {
-        context?.let { context ->
-            val promoSummaryUiModel = viewModel.cartModel.promoSummaryUiModel
-            viewModel.cartModel.summaryTransactionUiModel?.let { summaryTransactionUiModel ->
-                showSummaryTransactionBottomsheet(
-                    summaryTransactionUiModel,
-                    promoSummaryUiModel,
-                    parentFragmentManager,
-                    context
-                )
-            }
-        }
-    }
-
     private fun setMainFlowCoachMark(cartData: CartData) {
         if (cartData.onboardingData.size > MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX) {
             val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
@@ -4587,7 +4563,6 @@ class CartRevampFragment :
         val lastApplyUiModel =
             LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
         renderPromoCheckoutButton(lastApplyUiModel)
-        viewModel.updatePromoSummaryData(lastApplyUiModel)
         if (promoUiModel.globalSuccess) {
             viewModel.cartModel.lastValidateUseResponse =
                 ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel)

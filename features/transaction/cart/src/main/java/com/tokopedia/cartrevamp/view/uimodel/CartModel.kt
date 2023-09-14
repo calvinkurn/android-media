@@ -17,8 +17,6 @@ data class CartModel(
     var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null,
     var lastUpdateCartAndGetLastApplyResponse: UpdateAndGetLastApplyData? = null,
     var cartListData: CartData? = null,
-    var promoSummaryUiModel: PromoSummaryData? = null,
-    var summaryTransactionUiModel: SummaryTransactionUiModel? = null,
     var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf(),
     var showChoosePromoWidget: Boolean = false,
     var promoTicker: CartPromoTicker = CartPromoTicker(),

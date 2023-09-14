@@ -39,7 +39,6 @@ import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
@@ -76,7 +75,6 @@ import com.tokopedia.cartrevamp.view.uimodel.FollowShopEvent
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
-import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
 import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
 import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
@@ -102,7 +100,6 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
-import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
@@ -113,7 +110,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
@@ -125,7 +121,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
@@ -513,9 +508,6 @@ class CartViewModel @Inject constructor(
             lastValidateUseResponse = null,
             lastUpdateCartAndGetLastApplyResponse = null,
             cartListData = cartData,
-            summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData),
-            summariesAddOnUiModel = CartUiModelMapper.getShoppingSummaryAddOns(cartData.shoppingSummary.summaryAddOnList),
-            promoSummaryUiModel = CartUiModelMapper.mapPromoSummaryUiModel(cartData.promoSummary),
             showChoosePromoWidget = cartData.promo.showChoosePromoWidget,
             promoTicker = cartData.promo.ticker,
             recommendationPage = RECOMMENDATION_START_PAGE
@@ -657,63 +649,12 @@ class CartViewModel @Inject constructor(
         subtotalPrice += returnValueMarketplaceProduct.second.second
         subtotalCashback += returnValueMarketplaceProduct.third
 
-        updateSummaryTransactionUiModel(
-            subtotalBeforeSlashedPrice,
-            subtotalPrice,
-            totalItemQty,
-            subtotalCashback
-        )
-
         _globalEvent.value = CartGlobalEvent.SubTotalUpdated(
             subtotalCashback,
             totalItemQty.toString(),
             subtotalPrice,
             dataList.isEmpty()
         )
-    }
-
-    private fun updateSummaryTransactionUiModel(
-        subtotalBeforeSlashedPrice: Double,
-        subtotalPrice: Double,
-        totalItemQty: Int,
-        subtotalCashback: Double
-    ) {
-        // update summary addons
-        var totalAddonPrice = 0.0
-        for ((key, value) in cartModel.summariesAddOnUiModel) {
-            cartModel.summaryTransactionUiModel?.listSummaryAddOns?.forEach {
-                if (it.type == key) {
-                    it.qty = cartModel.totalQtyWithAddon
-                    it.wording = value.replace(
-                        CartConstant.QTY_ADDON_REPLACE,
-                        cartModel.totalQtyWithAddon.toString()
-                    )
-
-                    totalAddonPrice = cartModel.totalQtyWithAddon * it.priceValue
-                    it.priceLabel =
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(totalAddonPrice, false)
-                            .removeDecimalSuffix()
-                }
-            }
-        }
-
-        val priceAfterAddon = subtotalPrice + totalAddonPrice
-        val priceAfterAddonBeforeSlashedPrice = subtotalBeforeSlashedPrice + totalAddonPrice
-
-        val summaryTransactionUiModel = cartModel.summaryTransactionUiModel
-
-        summaryTransactionUiModel?.qty = totalItemQty.toString()
-        if (priceAfterAddonBeforeSlashedPrice == 0.0) {
-            summaryTransactionUiModel?.totalValue = subtotalPrice.toLong()
-        } else {
-            summaryTransactionUiModel?.totalValue = subtotalBeforeSlashedPrice.toLong()
-        }
-        summaryTransactionUiModel?.discountValue =
-            (priceAfterAddonBeforeSlashedPrice - priceAfterAddon).toLong()
-        summaryTransactionUiModel?.paymentTotal = priceAfterAddon.toLong()
-        summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toLong()
-
-        cartModel = cartModel.copy(summaryTransactionUiModel = summaryTransactionUiModel)
     }
 
     private fun getAvailableCartItemDataList(dataList: List<CartGroupHolderData>): ArrayList<CartItemHolderData> {
@@ -961,25 +902,6 @@ class CartViewModel @Inject constructor(
         } else {
             _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
         }
-    }
-
-    fun updatePromoSummaryData(lastApplyUiModel: LastApplyUiModel) {
-        val promoSummaryUiModel = cartModel.promoSummaryUiModel
-        val summaryTransactionUiModel = cartModel.summaryTransactionUiModel
-        promoSummaryUiModel?.details?.clear()
-        promoSummaryUiModel?.details?.addAll(
-            lastApplyUiModel.additionalInfo.usageSummaries.map {
-                PromoSummaryDetailData(
-                    description = it.description,
-                    type = it.type,
-                    amountStr = it.amountStr,
-                    amount = it.amount.toDouble(),
-                    currencyDetailStr = it.currencyDetailsStr
-                )
-            }.toList()
-        )
-        summaryTransactionUiModel?.promoValue =
-            lastApplyUiModel.benefitSummaryInfo.finalBenefitAmount.toLong()
     }
 
     fun checkForShipmentForm() {
