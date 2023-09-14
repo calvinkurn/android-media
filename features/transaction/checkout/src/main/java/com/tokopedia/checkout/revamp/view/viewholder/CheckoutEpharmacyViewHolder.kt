@@ -114,8 +114,13 @@ class CheckoutEpharmacyViewHolder(
                     }
                 })
                 .start()
-            binding.uploadDescriptionText.text =
-                itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found_new)
+            if (uploadPrescriptionUiModel.isIncompletePrescriptionError && uploadPrescriptionUiModel.productErrorCount > 0) {
+                binding.uploadDescriptionText.text =
+                    itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_complete, uploadPrescriptionUiModel.productErrorCount)
+            } else {
+                binding.uploadDescriptionText.text =
+                    itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found_new)
+            }
             binding.uploadDescriptionText.setTextColorCompat(unifyprinciplesR.color.Unify_RN500)
             binding.uploadDescriptionText.show()
         }

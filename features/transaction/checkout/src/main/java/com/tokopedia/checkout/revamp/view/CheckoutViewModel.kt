@@ -1630,6 +1630,8 @@ class CheckoutViewModel @Inject constructor(
             var hasValidOrder = false
             var hasUnselectedCourier = false
             var isPrescriptionFrontEndValidationError = false
+            var productErrorPrescriptionCount = 0
+            var productSuccessPrescriptionCount = 0
             val checkoutEpharmacy = items.epharmacy()
             items.forEachIndexed { index, checkoutItem ->
                 if (checkoutItem is CheckoutOrderModel) {
@@ -1658,7 +1660,9 @@ class CheckoutViewModel @Inject constructor(
                                         checkoutItem.consultationDataString.isEmpty()
                                 if (prescriptionIdsEmpty && consultationEmpty) {
                                     isPrescriptionFrontEndValidationError = true
-                                    break
+                                    productErrorPrescriptionCount += 1
+                                } else {
+                                    productSuccessPrescriptionCount += 1
                                 }
                             }
                         }
@@ -1667,7 +1671,7 @@ class CheckoutViewModel @Inject constructor(
                 if (checkoutItem is CheckoutEpharmacyModel) {
                     if (isPrescriptionFrontEndValidationError) {
                         items[index] =
-                            checkoutItem.copy(epharmacy = checkoutItem.epharmacy.copy(isError = true))
+                            checkoutItem.copy(epharmacy = checkoutItem.epharmacy.copy(isError = true, productErrorCount = productErrorPrescriptionCount, isIncompletePrescriptionError = productSuccessPrescriptionCount > 0))
                     }
                 }
             }

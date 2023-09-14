@@ -39,7 +39,7 @@ open class ShipmentActivity :
             ?: CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
         val bundle = intent.extras
         val isTradeIn = bundle?.getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "")?.isNotEmpty() ?: false
-        if (!isTradeIn && isRevamp) {
+        if (shouldRedirectToRevamp(isRevamp, isPlusSelected, isOneClickShipment, isTradeIn)) {
             checkoutFragment = CheckoutFragment.newInstance(
                 isOneClickShipment,
                 leasingId,
@@ -58,6 +58,10 @@ open class ShipmentActivity :
             )
             return shipmentFragment
         }
+    }
+
+    private fun shouldRedirectToRevamp(isRevamp: Boolean, isPlusSelected: Boolean, isOneClickShipment: Boolean, isTradeIn: Boolean): Boolean {
+        return isRevamp && !isTradeIn
     }
 
     override fun onBackPressed() {
