@@ -13,6 +13,8 @@ class NotifierViewHolder(private val binding: ItemNotifierBinding) :
     }
 
     fun bindData(data: NotifierModel) {
-        binding.tickerNotifier.setTextDescription(data.text)
+        if (data.text.isNotEmpty()) {
+            binding.tickerNotifier.setTextDescription(data.text)
+        }
     }
 }

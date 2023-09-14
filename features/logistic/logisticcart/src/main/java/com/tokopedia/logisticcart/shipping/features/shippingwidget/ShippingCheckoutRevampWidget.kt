@@ -295,7 +295,6 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         showLayoutSingleShippingCourier()
         binding?.labelSelectedSingleShippingTitle?.text =
             getSingleShippingTitle(shippingWidgetUiModel)
-        showLabelSingleShippingEta(shippingWidgetUiModel)
         doCheckLabelSingleShippingPromo(
             shippingWidgetUiModel
         ) { labelSingleShippingPromo ->
@@ -564,14 +563,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateHasSelectedWhitelabelShipping.gone()
             shippingNowWidget.gone()
             layoutStateHasSelectedSingleShipping.visible()
+            labelSingleShippingEta.gone()
             layoutStateHasSelectedSingleShipping.setOnClickListener { }
-        }
-    }
-
-    private fun showLabelSingleShippingEta(shippingWidgetUiModel: ShippingWidgetUiModel) {
-        binding?.apply {
-            labelSingleShippingEta.visibility = VISIBLE
-            labelSingleShippingEta.text = getSingleShippingLabelEta(shippingWidgetUiModel)
         }
     }
 
