@@ -103,7 +103,7 @@ class CartCalculator @Inject constructor() {
                 }
             }
 
-            if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+            if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.bmGmCartInfoData.bmGmData.totalDiscount > 0.0) {
                 totalDiscountBmGmMap[cartItemHolderData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.bmGmCartInfoData.bmGmData.totalDiscount
             }
         }
