@@ -220,21 +220,10 @@
         },
         {
             "event": "clickContent",
-            "eventAction": "click - swipe next content",
+            "eventAction": "click - move to other group",
             "eventCategory": "stories room",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .*",
+            "eventLabel": ".* - .*",
             "trackerId": "46059",
-            "businessUnit": "content",
-            "currentSite": "(tokopediamarketplace|tokopediaseller)",
-            "sessionIris": ".*",
-            "userId": ".*"
-        },
-        {
-            "event": "clickContent",
-            "eventAction": "click - swipe previous content",
-            "eventCategory": "stories room",
-            "eventLabel": ".* - .* - .* - (asgc|organic) - (image|video) - .*",
-            "trackerId": "46060",
             "businessUnit": "content",
             "currentSite": "(tokopediamarketplace|tokopediaseller)",
             "sessionIris": ".*",

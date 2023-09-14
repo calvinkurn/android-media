@@ -315,30 +315,16 @@ class StoriesAnalyticImpl @Inject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46059
-    override fun sendClickSwipeNextContentEvent(eventLabel: String) {
+    override fun sendClickMoveToOtherGroup(
+        entryPoint: String,
+        partnerId: String,
+    ) {
         Tracker.Builder()
             .setEvent("clickContent")
             .setEventAction("click - swipe next content")
             .setEventCategory("stories room")
-            .setEventLabel(eventLabel)
+            .setEventLabel("$entryPoint - $partnerId")
             .setCustomProperty("trackerId", "46059")
-            .setBusinessUnit("content")
-            .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
-    }
-
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
-    // Tracker ID: 46060
-    override fun sendClickSwipePreviousContentEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent("clickContent")
-            .setEventAction("click - swipe previous content")
-            .setEventCategory("stories room")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46060")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
             .setCustomProperty("sessionIris", sessionIris)

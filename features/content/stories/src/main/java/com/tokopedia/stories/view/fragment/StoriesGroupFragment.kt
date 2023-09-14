@@ -75,21 +75,15 @@ class StoriesGroupFragment @Inject constructor(
                 ViewPager2.SCROLL_STATE_IDLE -> {
                     when {
                         mCurrentPos > currentPage -> {
-                            analytic.sendClickSwipePreviousContentEvent(
-                                eventLabel = "$entryPoint - $authorId - " +
-                                    "${viewModel.mDetail.id} - asgc - " +
-                                    "${viewModel.mDetail.content.type.value} - " +
-                                    "${viewModel.mGroup.groupName} - " +
-                                    "prevStoriesId"
+                            analytic.sendClickMoveToOtherGroup(
+                                entryPoint = entryPoint,
+                                partnerId = authorId,
                             )
                         }
                         mCurrentPos < currentPage -> {
-                            analytic.sendClickSwipeNextContentEvent(
-                                eventLabel = "$entryPoint - $authorId - " +
-                                    "${viewModel.mDetail.id} - asgc - " +
-                                    "${viewModel.mDetail.content.type.value} - " +
-                                    "${viewModel.mGroup.groupName} - " +
-                                    "prevStoriesId"
+                            analytic.sendClickMoveToOtherGroup(
+                                entryPoint = entryPoint,
+                                partnerId = authorId,
                             )
                         }
                         else -> return

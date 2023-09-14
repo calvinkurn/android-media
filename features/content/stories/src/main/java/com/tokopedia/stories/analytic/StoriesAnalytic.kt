@@ -39,8 +39,10 @@ interface StoriesAnalytic {
         contentType: String,
         currentCircle: String,
     )
-    fun sendClickSwipeNextContentEvent(eventLabel: String)
-    fun sendClickSwipePreviousContentEvent(eventLabel: String)
+    fun sendClickMoveToOtherGroup(
+        entryPoint: String,
+        partnerId: String,
+    )
     fun sendClickExitStoryRoomEvent(
         entryPoint: String,
         partnerId: String,
