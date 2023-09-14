@@ -1,0 +1,74 @@
+{
+  "chatInboxWidgetMeta": {
+    "metadata": [
+      {
+        "icon": "330",
+        "title": "Chat Driver",
+        "subtext": "{order_counter} pesanan",
+        "androidApplink": "tokopedia://tokochat/list",
+        "type": 101,
+        "isDynamic": false
+      },
+      {
+        "icon": "81",
+        "title": "Tokopedia Care",
+        "subtext": "Cek pesan bantuan",
+        "androidApplink": "tokopedia://customercare",
+        "type": 1,
+        "isDynamic": true
+      }
+    ],
+    "inboxMenu": [
+      {
+        "icon": "412",
+        "title": "Chat Penjual",
+        "appLink": "tokopedia://topchat?role\u003dbuyer",
+        "label": {
+          "color": "",
+          "text": ""
+        },
+        "type": "unreadsUser"
+      },
+      {
+        "icon": "413",
+        "title": "Chat Pembeli",
+        "appLink": "tokopedia://topchat?role\u003dseller",
+        "label": {
+          "color": "",
+          "text": ""
+        },
+        "type": "unreadsSeller"
+      },
+      {
+        "icon": "63",
+        "title": "Diskusi Produk",
+        "appLink": "tokopedia://talk",
+        "label": {
+          "color": "",
+          "text": ""
+        },
+        "type": "talk"
+      },
+      {
+        "icon": "93",
+        "title": "Ulasan",
+        "appLink": "tokopedia://review?pageSource\u003dreview%20inbox",
+        "label": {
+          "color": "",
+          "text": ""
+        },
+        "type": "review"
+      },
+      {
+        "icon": "",
+        "title": "Testing",
+        "appLink": "",
+        "label": {
+          "color": "",
+          "text": ""
+        },
+        "type": "testNotif"
+      }
+    ]
+  }
+}
