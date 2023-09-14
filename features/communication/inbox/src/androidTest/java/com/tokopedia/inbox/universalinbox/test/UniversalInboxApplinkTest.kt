@@ -22,9 +22,6 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         stubAllIntents()
-        generalRobot {
-            scrollToPosition(0)
-        }
         menuRobot {
             clickMenuOnPosition(1)
         }
@@ -37,9 +34,6 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         stubAllIntents()
-        generalRobot {
-            scrollToPosition(0)
-        }
         menuRobot {
             clickMenuOnPosition(2)
         }
@@ -53,9 +47,6 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         stubAllIntents()
-        generalRobot {
-            scrollToPosition(0)
-        }
         menuRobot {
             clickMenuOnPosition(3)
         }
@@ -69,9 +60,6 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         stubAllIntents()
-        generalRobot {
-            scrollToPosition(0)
-        }
         menuRobot {
             clickMenuOnPosition(4)
         }
@@ -85,9 +73,6 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         stubAllIntents()
-        generalRobot {
-            scrollToPosition(0)
-        }
         widgetRobot {
             clickWidgetOnPosition(1)
         }
@@ -118,9 +103,6 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         stubAllIntents()
-        generalRobot {
-            scrollToPosition(0)
-        }
         widgetRobot {
             clickWidgetOnPosition(0)
         }
