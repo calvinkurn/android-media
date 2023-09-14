@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -88,9 +89,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig.RealTimeUpdateListener
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
+import com.tokopedia.remoteconfig.RemoteConfigRealTimeManager
 import com.tokopedia.scp_rewards_touchpoints.common.BUYER_ORDER_DETAIL_PAGE
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
@@ -117,7 +118,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -215,6 +215,10 @@ open class BuyerOrderDetailFragment :
         FirebaseRemoteConfigImpl(context)
     }
 
+    private val remoteConfigRealTimeManager: RemoteConfigRealTimeManager by lazy {
+        RemoteConfigRealTimeManager(remoteConfig)
+    }
+
     protected val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
             viewModelFactory,
@@ -290,7 +294,8 @@ open class BuyerOrderDetailFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        showOrHideTvRemoteConfigRealTime()
+        showOrHideRemoteConfigRealTime()
+        observeTvRemoteConfigRealTime()
         buyerOrderDetailLoadMonitoring?.startNetworkPerformanceMonitoring()
         if (savedInstanceState == null) {
             loadInitialData(false)
@@ -333,6 +338,7 @@ open class BuyerOrderDetailFragment :
 
     override fun onDestroy() {
         super.onDestroy()
+        remoteConfigRealTimeManager.stopRealTimeUpdates()
         coachMarkManager?.dismissCoachMark()
     }
 
@@ -491,24 +497,26 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    private fun showOrHideTvRemoteConfigRealTime() {
-        context?.let {
-            remoteConfig.setRealtimeUpdateListener(object : RealTimeUpdateListener {
-                override fun onUpdate(updatedKeys: MutableSet<String>?) {
-                    if (updatedKeys?.contains(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL) == true) {
-                        showRemote()
+    private fun observeTvRemoteConfigRealTime() {
+        remoteConfigRealTimeManager.startRealtimeUpdates(this)
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            remoteConfigRealTimeManager.updatedRemoteConfigFlow.collect {
+                when (it) {
+                    is Success -> {
+                        if (it.data.contains(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)) {
+                            showOrHideRemoteConfigRealTime()
+                        }
+                    }
+                    is Fail -> {
+                        // no op
                     }
                 }
-
-                override fun onError(e: Exception?) {
-                }
-            })
+            }
         }
-
-        showRemote()
     }
 
-    private fun showRemote() {
+    private fun showOrHideRemoteConfigRealTime() {
         val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)
         binding?.tvRemoteConfigRealTime?.showWithCondition(isShowRemoteConfigRealTime)
     }
@@ -573,7 +581,6 @@ open class BuyerOrderDetailFragment :
     private fun onSuccessGetBuyerOrderDetail(
         uiState: BuyerOrderDetailUiState.HasData.Showing
     ) {
-        showOrHideTvRemoteConfigRealTime()
         hideLoader()
         showRecyclerView()
         buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()

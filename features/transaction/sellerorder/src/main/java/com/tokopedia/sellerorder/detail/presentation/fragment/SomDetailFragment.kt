@@ -22,6 +22,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -48,8 +49,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RemoteConfigRealTimeManager
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -141,7 +142,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.URLDecoder
 import java.net.UnknownHostException
@@ -202,6 +202,10 @@ open class SomDetailFragment :
 
     private val remoteConfig: FirebaseRemoteConfigImpl by lazy {
         FirebaseRemoteConfigImpl(context)
+    }
+
+    private val remoteConfigRealTimeManager: RemoteConfigRealTimeManager by lazy {
+        RemoteConfigRealTimeManager(remoteConfig)
     }
 
     private fun createChatIcon(context: Context): IconUnify {
@@ -305,6 +309,7 @@ open class SomDetailFragment :
         setupBackgroundColor()
         setupToolbar()
         showOrHideTvRemoteConfigRealTime()
+        observeTvRemoteConfigRealTime()
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
@@ -325,6 +330,7 @@ open class SomDetailFragment :
 
     override fun onDestroy() {
         super.onDestroy()
+        remoteConfigRealTimeManager.stopRealTimeUpdates()
         connectionMonitor?.end()
     }
 
@@ -369,25 +375,27 @@ open class SomDetailFragment :
     }
 
     private fun showOrHideTvRemoteConfigRealTime() {
-        context?.let {
-            remoteConfig.setRealtimeUpdateListener(object : RemoteConfig.RealTimeUpdateListener {
-                override fun onUpdate(updatedKeys: MutableSet<String>?) {
-                    if (updatedKeys?.contains(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL) == true) {
-                        showRemote()
-                    }
-                }
-
-                override fun onError(e: Exception?) {
-                }
-            })
-        }
-
-        showRemote()
-    }
-
-    private fun showRemote() {
         val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL)
         binding?.tvRemoteConfigRealTime?.showWithCondition(isShowRemoteConfigRealTime)
+    }
+
+    private fun observeTvRemoteConfigRealTime() {
+        remoteConfigRealTimeManager.startRealtimeUpdates(this)
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            remoteConfigRealTimeManager.updatedRemoteConfigFlow.collect {
+                when (it) {
+                    is Success -> {
+                        if (it.data.contains(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL)) {
+                            showOrHideTvRemoteConfigRealTime()
+                        }
+                    }
+                    is Fail -> {
+                        // no op
+                    }
+                }
+            }
+        }
     }
 
     private fun checkUserRole() {
