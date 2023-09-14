@@ -55,7 +55,8 @@ class StoriesGroupFragment @Inject constructor(
         StoriesGroupPagerAdapter(
             childFragmentManager,
             requireActivity(),
-            lifecycle
+            lifecycle,
+            shopId,
         )
     }
 

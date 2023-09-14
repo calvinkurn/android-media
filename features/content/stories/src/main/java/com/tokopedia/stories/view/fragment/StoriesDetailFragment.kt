@@ -271,7 +271,6 @@ class StoriesDetailFragment @Inject constructor(
             }
         }
         binding.vStoriesKebabIcon.showWithCondition(currContent.menus.isNotEmpty())
-
         if (analytic == null && shopId.isNotEmpty()) {
             analytic = analyticFactory.create(shopId = shopId, trackingQueue = trackingQueue)
         }

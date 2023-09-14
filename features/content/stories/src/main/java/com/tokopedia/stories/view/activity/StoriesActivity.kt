@@ -4,10 +4,12 @@ import android.content.res.Resources
 import android.os.Bundle
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.utils.SHOP_ID
 import javax.inject.Inject
 
 class StoriesActivity : BaseActivity() {
@@ -46,9 +48,11 @@ class StoriesActivity : BaseActivity() {
             return
         }
 
-        val path = data.pathSegments
+        val id = data.lastPathSegment.ifNullOrBlank {
+            "" //TODO() get from query param
+        }
         bundle = Bundle().apply {
-            putString(SHOP_ID, path[SHOP_ID_INDEX])
+            putString(SHOP_ID, id)
         }
     }
 
@@ -80,10 +84,4 @@ class StoriesActivity : BaseActivity() {
         super.onDestroy()
         _binding = null
     }
-
-    companion object {
-        private const val SHOP_ID = "shop_id"
-        private const val SHOP_ID_INDEX = 1
-    }
-
 }
