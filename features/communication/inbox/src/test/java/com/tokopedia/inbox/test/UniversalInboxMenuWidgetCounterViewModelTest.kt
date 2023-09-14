@@ -214,7 +214,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             viewModel.inboxMenuUiState.test {
                 // When initial state
                 viewModel.setupViewModelObserver()
-                // Then skip loading
+                // Then skip loading (changed to false)
                 skipItems(1)
 
                 // Then updated state
@@ -526,11 +526,8 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
             viewModel.inboxMenuUiState.test {
                 // When initial state
                 viewModel.setupViewModelObserver()
-                // Then skip
+                // Then skip loading (changed to false) & initial state
                 skipItems(1)
-
-                // When update state
-                viewModel.processAction(UniversalInboxAction.RefreshPage)
                 // Then update state
                 val updatedState = awaitItem()
                 Assert.assertEquals(
