@@ -654,6 +654,168 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun checkoutWithIncompletePrescription_ShouldShowError() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                ethicalDrugDataModel = EthicalDrugDataModel(needPrescription = true)
+            ),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = CourierItemData(
+                        shipperId = 1,
+                        shipperProductId = 1
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            CheckoutProductModel(
+                "234",
+                ethicalDrugDataModel = EthicalDrugDataModel(needPrescription = true)
+            ),
+            CheckoutOrderModel(
+                "234",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = CourierItemData(
+                        shipperId = 1,
+                        shipperProductId = 1
+                    )
+                ),
+                hasEthicalProducts = true,
+                tokoConsultationId = "1234",
+                partnerConsultationId = "1234",
+                consultationDataString = "1234"
+            ),
+            CheckoutEpharmacyModel(
+                epharmacy = UploadPrescriptionUiModel(
+                    showImageUpload = true,
+                    frontEndValidation = true,
+                    consultationFlow = true
+                )
+            ),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        var triggerEpharmacyTracker: Boolean? = null
+        viewModel.checkout("", {
+            triggerEpharmacyTracker = it
+        }, {})
+
+        // Then
+        assertEquals(true, triggerEpharmacyTracker)
+        assertEquals(
+            true,
+            (viewModel.listData.value[8] as CheckoutEpharmacyModel).epharmacy.isError
+        )
+        assertEquals(
+            true,
+            (viewModel.listData.value[8] as CheckoutEpharmacyModel).epharmacy.isIncompletePrescriptionError
+        )
+    }
+
+    @Test
+    fun checkoutWithIncompletePrescriptionIds_ShouldShowError() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                ethicalDrugDataModel = EthicalDrugDataModel(needPrescription = true)
+            ),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = CourierItemData(
+                        shipperId = 1,
+                        shipperProductId = 1
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            CheckoutProductModel(
+                "234",
+                ethicalDrugDataModel = EthicalDrugDataModel(needPrescription = true)
+            ),
+            CheckoutOrderModel(
+                "234",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = CourierItemData(
+                        shipperId = 1,
+                        shipperProductId = 1
+                    )
+                ),
+                hasEthicalProducts = true,
+                prescriptionIds = listOf("1234")
+            ),
+            CheckoutEpharmacyModel(
+                epharmacy = UploadPrescriptionUiModel(
+                    showImageUpload = true,
+                    frontEndValidation = true,
+                    consultationFlow = true
+                )
+            ),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        var triggerEpharmacyTracker: Boolean? = null
+        viewModel.checkout("", {
+            triggerEpharmacyTracker = it
+        }, {})
+
+        // Then
+        assertEquals(true, triggerEpharmacyTracker)
+        assertEquals(
+            true,
+            (viewModel.listData.value[8] as CheckoutEpharmacyModel).epharmacy.isError
+        )
+        assertEquals(
+            true,
+            (viewModel.listData.value[8] as CheckoutEpharmacyModel).epharmacy.isIncompletePrescriptionError
+        )
+    }
+
+    @Test
     fun checkoutSuccessWithRedPromo_ShouldGoToPaymentPage() {
         // Given
         viewModel.listData.value = listOf(

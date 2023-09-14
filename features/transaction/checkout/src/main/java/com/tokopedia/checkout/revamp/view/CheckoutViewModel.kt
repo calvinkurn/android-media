@@ -706,15 +706,12 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private fun fetchEpharmacyData() {
-        viewModelScope.launch(dispatchers.immediate) {
-            addOnProcessor.fetchEpharmacyData(listData.value) {
-                if (it != null) {
-                    listData.value = it
-                    pageState.value = CheckoutPageState.EpharmacyCoachMark
-                    calculateTotal()
-                }
-            }
+    private suspend fun fetchEpharmacyData() {
+        val result = addOnProcessor.fetchEpharmacyData(listData.value)
+        if (result != null) {
+            listData.value = result
+            pageState.value = CheckoutPageState.EpharmacyCoachMark
+            calculateTotal()
         }
     }
 

@@ -13,8 +13,7 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
     fun getEPharmacyPrepareProductsGroup(onSuccess: (EPharmacyPrepareProductsGroupResponse) -> Unit,
                                    onError: (Throwable) -> Unit) {
         try {
-            this.setTypeClass(EPharmacyPrepareProductsGroupResponse::class.java)
-            this.setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
+            this.setParams()
             this.execute(
                 { result ->
                     onSuccess(result)
@@ -25,5 +24,10 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
         } catch (throwable: Throwable) {
             onError(throwable)
         }
+    }
+
+    fun setParams() {
+        this.setTypeClass(EPharmacyPrepareProductsGroupResponse::class.java)
+        this.setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
     }
 }

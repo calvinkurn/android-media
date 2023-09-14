@@ -60,11 +60,16 @@ class CheckoutAddOnProcessor @Inject constructor(
         }
     }
 
-    fun fetchEpharmacyData(listData: List<CheckoutItem>, callback: (List<CheckoutItem>?) -> Unit) {
-        epharmacyUseCase.getEPharmacyPrepareProductsGroup({ ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse ->
-            callback.invoke(processEpharmacyData(ePharmacyPrepareProductsGroupResponse, listData))
-        }) { throwable: Throwable? ->
-            Timber.d(throwable)
+    suspend fun fetchEpharmacyData(listData: List<CheckoutItem>): List<CheckoutItem>? {
+        return withContext(dispatchers.io) {
+            try {
+                epharmacyUseCase.setParams()
+                val ePharmacyPrepareProductsGroupResponse = epharmacyUseCase.executeOnBackground()
+                return@withContext processEpharmacyData(ePharmacyPrepareProductsGroupResponse, listData)
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return@withContext null
+            }
         }
     }
 

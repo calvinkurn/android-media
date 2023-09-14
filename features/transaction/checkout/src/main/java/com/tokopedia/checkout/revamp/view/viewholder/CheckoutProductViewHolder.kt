@@ -30,7 +30,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
+import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductRevampBinding
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -370,7 +370,7 @@ class CheckoutProductViewHolder(
             addOnProduct.listAddOnProductData.forEach { addon ->
                 if (addon.name.isNotEmpty()) {
                     val addOnView =
-                        ItemAddOnProductBinding.inflate(
+                        ItemAddOnProductRevampBinding.inflate(
                             layoutInflater,
                             productBinding.llAddonProductItems,
                             false
@@ -467,7 +467,7 @@ class CheckoutProductViewHolder(
             addOnProduct.listAddOnProductData.forEach { addon ->
                 if (addon.name.isNotEmpty()) {
                     val addOnView =
-                        ItemAddOnProductBinding.inflate(
+                        ItemAddOnProductRevampBinding.inflate(
                             layoutInflater,
                             bundleBinding.llAddonProductItemsBundle,
                             false
