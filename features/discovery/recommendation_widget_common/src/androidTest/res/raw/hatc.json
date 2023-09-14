@@ -1,0 +1,926 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "K0F5SBeCknLL7U3CE7709tnYIHs\u003d",
+        "source": "custom",
+        "title": "Lainnya di toko ini",
+        "subtitle": "",
+        "foreignTitle": "Products in this shop",
+        "widgetUrl": "",
+        "pageName": "pdp_1",
+        "seeMoreAppLink": "tokopedia://rekomendasi/616724820/d/?ref\u003dpdp_1_os_4030\u0026product_ids\u003d616724820",
+        "layoutType": "hatc",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": [
+          {
+            "id": 3041429283,
+            "name": "PEDIGREE Makanan Anjing Kering Ras Mini 400gr - isi 3",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-ras-mini-400gr-isi-3-chicken-veg",
+            "appUrl": "tokopedia://product/3041429283",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d3041429283\u0026pos\u003d1\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-ras-mini-400gr-isi-3-chicken-veg?catid4069\u003d%26ref\u003dpdp_1_pa1_po1%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/5/20/68275736-cf0c-4dd7-b95f-a24e817ed473.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/5/20/68275736-cf0c-4dd7-b95f-a24e817ed473.jpg",
+            "price": "Rp 78.660",
+            "priceInt": 78660,
+            "discountPercentage": 8,
+            "slashedPrice": "Rp 85.500",
+            "slashedPriceInt": 85500,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Bekasi",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "eta",
+                "title": "Tiba besok",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 100+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+            },
+            "rating": 5,
+            "countReview": 47,
+            "ratingAverage": "5.0",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 25,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2176001448,
+            "name": "CESAR® Makanan Anjing Basah 100gr - Isi 2",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/cesar-makanan-anjing-basah-100gr-isi-2-tender-lamb",
+            "appUrl": "tokopedia://product/2176001448",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d2176001448\u0026pos\u003d2\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/cesar-makanan-anjing-basah-100gr-isi-2-tender-lamb?catid4069\u003d%26ref\u003dpdp_1_pa1_po2%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/7/a8177e4c-27af-4666-b2f9-df9bbcb29deb.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/7/a8177e4c-27af-4666-b2f9-df9bbcb29deb.jpg",
+            "price": "Rp 39.400",
+            "priceInt": 39400,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 26 - 29 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 206,
+            "ratingAverage": "5.0",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 1070,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2453476179,
+            "name": "Cesar Makanan Anjing Premium Multivariant 100gr - Isi 6",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/cesar-makanan-anjing-premium-multivariant-100gr-isi-6",
+            "appUrl": "tokopedia://product/2453476179",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d2453476179\u0026pos\u003d3\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/cesar-makanan-anjing-premium-multivariant-100gr-isi-6?catid4069\u003d%26ref\u003dpdp_1_pa1_po3%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/4/12/ecee88d7-6bce-4a93-90dd-e72191157c81.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/4/12/ecee88d7-6bce-4a93-90dd-e72191157c81.jpg",
+            "price": "Rp 95.520",
+            "priceInt": 95520,
+            "discountPercentage": 31,
+            "slashedPrice": "Rp 139.100",
+            "slashedPriceInt": 139100,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "gimmick",
+                "title": "Sisa 5",
+                "type": "textDarkRed",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 26 - 29 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 2 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 1020,
+            "ratingAverage": "4.9",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 5,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2977173208,
+            "name": "CESAR® Makanan Anjing Basah 100gr - Isi 3",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/cesar-makanan-anjing-basah-100gr-isi-3-chicken-veg",
+            "appUrl": "tokopedia://product/2977173208",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d2977173208\u0026pos\u003d4\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/cesar-makanan-anjing-basah-100gr-isi-3-chicken-veg?catid4069\u003d%26ref\u003dpdp_1_pa1_po4%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/4/5/bee5e657-b0c3-4f0b-9003-f707609128e6.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/4/5/bee5e657-b0c3-4f0b-9003-f707609128e6.jpg",
+            "price": "Rp 59.700",
+            "priceInt": 59700,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 26 - 29 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 122,
+            "ratingAverage": "5.0",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 714,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 5446606579,
+            "name": "PEDIGREE® Makanan Anjing Kering 1.5kg - Isi 2",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-1-5kg-isi-2-chicken-veg",
+            "appUrl": "tokopedia://product/5446606579",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d5446606579\u0026pos\u003d5\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-1-5kg-isi-2-chicken-veg?catid4069\u003d%26ref\u003dpdp_1_pa1_po5%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/21/780c5a93-989f-4537-97d2-b83d4d3bfdac.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/21/780c5a93-989f-4537-97d2-b83d4d3bfdac.png",
+            "price": "Rp 137.700",
+            "priceInt": 137700,
+            "discountPercentage": 10,
+            "slashedPrice": "Rp 153.000",
+            "slashedPriceInt": 153000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 26 - 29 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 250+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 137,
+            "ratingAverage": "5.0",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 85,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2175815025,
+            "name": "PEDIGREE® Makanan Anjing Kering Ras Mini 1.3kg",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-ras-mini-1-3kg-chicken-veg",
+            "appUrl": "tokopedia://product/2175815025",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d2175815025\u0026pos\u003d6\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-ras-mini-1-3kg-chicken-veg?catid4069\u003d%26ref\u003dpdp_1_pa1_po6%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/4/12/22ffed8d-f73f-4225-b18f-14a6381d9456.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/4/12/22ffed8d-f73f-4225-b18f-14a6381d9456.jpg",
+            "price": "Rp 70.380",
+            "priceInt": 70380,
+            "discountPercentage": 28,
+            "slashedPrice": "Rp 98.350",
+            "slashedPriceInt": 98350,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 26 - 29 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 7 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 3579,
+            "ratingAverage": "4.9",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 660,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 5446516640,
+            "name": "Pedigree Makanan Anjing Kering Puppy rasa Chicken \u0026 Egg 1.3kg - Isi 2",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-puppy-rasa-chicken-egg-1-3kg-isi-2",
+            "appUrl": "tokopedia://product/5446516640",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d5446516640\u0026pos\u003d7\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-puppy-rasa-chicken-egg-1-3kg-isi-2?catid4069\u003d%26ref\u003dpdp_1_pa1_po7%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/6/82f11f57-2dec-4859-88b6-5e30f8e7e388.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/6/82f11f57-2dec-4859-88b6-5e30f8e7e388.jpg",
+            "price": "Rp 137.700",
+            "priceInt": 137700,
+            "discountPercentage": 10,
+            "slashedPrice": "Rp 153.000",
+            "slashedPriceInt": 153000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 26 - 29 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 250+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 102,
+            "ratingAverage": "5.0",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 430,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 3041402792,
+            "name": "PEDIGREE Makanan Anjing Kering 500gr - isi 3",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-500gr-isi-3-chicken-veg",
+            "appUrl": "tokopedia://product/3041402792",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d3041402792\u0026pos\u003d8\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-500gr-isi-3-chicken-veg?catid4069\u003d%26ref\u003dpdp_1_pa1_po8%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/11/10/d5054ed0-d6ea-4916-b291-d104ff5cb560.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/11/10/d5054ed0-d6ea-4916-b291-d104ff5cb560.jpg",
+            "price": "Rp 83.790",
+            "priceInt": 83790,
+            "discountPercentage": 2,
+            "slashedPrice": "Rp 85.500",
+            "slashedPriceInt": 85500,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Bekasi",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "eta",
+                "title": "Tiba besok",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 100+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+            },
+            "rating": 5,
+            "countReview": 98,
+            "ratingAverage": "5.0",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 4,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 3987025327,
+            "name": "PEDIGREE® Makanan Anjing Kering 20 Kg",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-20-kg-beef-veg",
+            "appUrl": "tokopedia://product/3987025327",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d3987025327\u0026pos\u003d9\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/pedigree-makanan-anjing-kering-20-kg-beef-veg?catid4069\u003d%26ref\u003dpdp_1_pa1_po9%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/6/7e4aaf09-b3b6-4c89-af54-739c24071f84.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/6/7e4aaf09-b3b6-4c89-af54-739c24071f84.jpg",
+            "price": "Rp 725.900",
+            "priceInt": 725900,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 26 - 29 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 100+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 68,
+            "ratingAverage": "4.8",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 21,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 314058263,
+            "name": "Pedigree Pouch Puppy 80gr Makanan Anjing Basah - Isi 6",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/pedigree-pouch-puppy-80gr-makanan-anjing-basah-isi-6",
+            "appUrl": "tokopedia://product/314058263",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d314058263\u0026pos\u003d10\u0026recommendation\u003dshop_by_product_category_cluster\u0026rectype\u003dshop_by_product_category_cluster\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/pedigree-pouch-puppy-80gr-makanan-anjing-basah-isi-6?catid4069\u003d%26ref\u003dpdp_1_pa1_po10%26src\u003dr3shop_by_product_category_cluster\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/6/6/5ad5e623-208d-4562-a7d6-111f7c2b86a3.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/6/6/5ad5e623-208d-4562-a7d6-111f7c2b86a3.jpg",
+            "price": "Rp 43.650",
+            "priceInt": 43650,
+            "discountPercentage": 3,
+            "slashedPrice": "Rp 45.000",
+            "slashedPriceInt": 45000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 26 - 29 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 497,
+            "ratingAverage": "5.0",
+            "recommendationType": "shop_by_product_category_cluster",
+            "stock": 77,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2176028722,
+            "name": "PEDIGREE® Makanan Anjing Basah Kaleng 1.15kg",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/pedigree-makanan-anjing-basah-kaleng-1-15kg-beef",
+            "appUrl": "tokopedia://product/2176028722",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d2176028722\u0026pos\u003d11\u0026recommendation\u003dshop_by_product_category\u0026rectype\u003dshop_by_product_category\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/pedigree-makanan-anjing-basah-kaleng-1-15kg-beef?catid4069\u003d%26ref\u003dpdp_1_pa1_po11%26src\u003dr3shop_by_product_category\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/4/12/6a75b057-7f68-4365-b8a5-e74e266be1c2.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/4/12/6a75b057-7f68-4365-b8a5-e74e266be1c2.jpg",
+            "price": "Rp 62.130",
+            "priceInt": 62130,
+            "discountPercentage": 5,
+            "slashedPrice": "Rp 65.400",
+            "slashedPriceInt": 65400,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 26 - 29 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 4 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 1381,
+            "ratingAverage": "5.0",
+            "recommendationType": "shop_by_product_category",
+            "stock": 364,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 784749387,
+            "name": "Pedigree Can 700gr Makanan Anjing Basah rasa Beef (2pcs)",
+            "categoryBreadcrumbs": "Perawatan Hewan/Perawatan Anjing/Makanan Anjing",
+            "url": "https://www.tokopedia.com/pedigree/pedigree-can-700gr-makanan-anjing-basah-rasa-beef-2pcs",
+            "appUrl": "tokopedia://product/784749387",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4069\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_1\u0026pid\u003d784749387\u0026pos\u003d12\u0026recommendation\u003dshop_by_product_category\u0026rectype\u003dshop_by_product_category\u0026redirect\u003dhttps://www.tokopedia.com/pedigree/pedigree-can-700gr-makanan-anjing-basah-rasa-beef-2pcs?catid4069\u003d%26ref\u003dpdp_1_pa1_po12%26src\u003dr3shop_by_product_category\u0026tid\u003dK0F5SBeCknLL7U3CE7709tnYIHs\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684901740\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.222",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/6/8/b00f1088-df02-4808-a843-b7697388e2a1.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/6/8/b00f1088-df02-4808-a843-b7697388e2a1.jpg",
+            "price": "Rp 82.368",
+            "priceInt": 82368,
+            "discountPercentage": 4,
+            "slashedPrice": "Rp 85.800",
+            "slashedPriceInt": 85800,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3597383,
+              "name": "Pedigree Official Store",
+              "city": "Jakarta Timur",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4069,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "eta",
+                "title": "Tiba besok",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 750+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+            },
+            "rating": 5,
+            "countReview": 241,
+            "ratingAverage": "4.9",
+            "recommendationType": "shop_by_product_category",
+            "stock": 46,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -73,4 +73,6 @@
 
     <string name="gami_remote_image_user_no_reward">https://images.tokopedia.net/android/res/xxhdpi/user_no_reward.png</string>
 
+    <string name="apply_coupon_success_toast_message">Kupon sudah otomatis dipilih. Kini kamu bisa langsung belanja dengan hemat!</string>
+
 </resources>

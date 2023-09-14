@@ -13,6 +13,7 @@ import com.tokopedia.tokochat.test.base.BaseTokoChatRoomTest
 import com.tokopedia.tokochat.test.chatroom.robot.consent.ConsentResult
 import com.tokopedia.tokochat.test.chatroom.robot.consent.ConsentRobot
 import com.tokopedia.tokochat.test.chatroom.robot.header.HeaderResult
+import com.tokopedia.tokochat.test.chatroom.robot.message_bubble.MessageBubbleResult
 import com.tokopedia.tokochat.test.chatroom.robot.reply_area.ReplyAreaResult
 import com.tokopedia.tokochat.test.chatroom.robot.reply_area.ReplyAreaRobot
 import com.tokopedia.tokochat_common.R
@@ -185,6 +186,15 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
             merchantName = "TokoFood Outlet Test 1",
             timeDelivery = "17:35 - 17:38"
         )
+        MessageBubbleResult.assertMessageBubbleVisibility(
+            position = 0,
+            isVisible = true
+        )
+        HeaderResult.assertHeaderDisplayed(
+            interlocutorName = "Tokofood Driver 13",
+            licensePlate = "***1OAH"
+        )
+        HeaderResult.assertCallButtonHeader(isDisabled = false)
     }
 
     @Test
@@ -200,5 +210,14 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
 
         // Then
         HeaderResult.assertOrderHistoryLocalLoad()
+        MessageBubbleResult.assertMessageBubbleVisibility(
+            position = 0,
+            isVisible = true
+        )
+        HeaderResult.assertHeaderDisplayed(
+            interlocutorName = "Tokofood Driver 13",
+            licensePlate = "***1OAH"
+        )
+        HeaderResult.assertCallButtonHeader(isDisabled = true)
     }
 }

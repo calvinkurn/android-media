@@ -1,11 +1,11 @@
 package com.tokopedia.chat_common.domain.pojo.attachmentmenu
 
-import com.tokopedia.chat_common.R
+import com.tokopedia.iconunify.IconUnify
 
 class VideoMenu : AttachmentMenu(
-    R.drawable.ic_video_upload,
-    "Video",
-    "video"
+    icon = IconUnify.VIDEO,
+    title = "Video",
+    label = "video"
 ) {
     override fun onClick(listener: AttachmentMenuListener) {
         listener.onClickAttachVideo(this)

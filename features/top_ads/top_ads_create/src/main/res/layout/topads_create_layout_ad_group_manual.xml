@@ -207,7 +207,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="16dp"
         android:enabled="true"
-        android:text="@string/manage_ads_group"
+        android:text="@string/topads_common_manage_ads_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lihat_pengaturan_grup_barrier"

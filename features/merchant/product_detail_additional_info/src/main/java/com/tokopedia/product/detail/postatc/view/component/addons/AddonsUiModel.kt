@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.postatc.view.component.addons
 
 import com.tokopedia.addon.presentation.uimodel.AddOnParam
+import com.tokopedia.common.ProductServiceWidgetConstant.ADDON_PAGE_SOURCE_PDP
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import kotlin.math.roundToLong
@@ -44,7 +45,8 @@ data class AddonsUiModel(
                 quantity = quantity,
                 price = price.roundToLong(),
                 discountedPrice = discountedPrice.roundToLong(),
-                condition = condition
+                condition = condition,
+                pageSource = ADDON_PAGE_SOURCE_PDP
             )
     }
 }

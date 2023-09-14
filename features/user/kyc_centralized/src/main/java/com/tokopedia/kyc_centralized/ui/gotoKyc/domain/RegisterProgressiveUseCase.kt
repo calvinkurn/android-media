@@ -5,6 +5,7 @@ import android.content.Context
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GqlParam
@@ -23,8 +24,8 @@ class RegisterProgressiveUseCase @Inject constructor(
 ) : CoroutineUseCase<RegisterProgressiveParam, RegisterProgressiveResult>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-            mutation kycRegisterProgressive(${'$'}param: kycRegisterProgressiveRequest!) {
-              kycRegisterProgressive(param: ${'$'}param) {
+            mutation kycRegisterProgressive(${'$'}param: kycRegisterProgressiveRequest!, ${'$'}xDatavisor: String) {
+              kycRegisterProgressive(param: ${'$'}param, xDatavisor: ${'$'}xDatavisor) {
                 errorMessages
                 errorCode
                 data {
@@ -41,6 +42,8 @@ class RegisterProgressiveUseCase @Inject constructor(
         """.trimIndent()
 
     override suspend fun execute(params: RegisterProgressiveParam): RegisterProgressiveResult {
+        params.xDatavisor = VisorFingerprintInstance.getDVToken(context = context)
+
         val response : RegisterProgressiveKYC =
             repository.request<RegisterProgressiveParam, RegisterProgressiveResponse>(
                 graphqlQuery(),
@@ -109,7 +112,10 @@ sealed class RegisterProgressiveResult {
 
 data class RegisterProgressiveParam (
     @SerializedName("param")
-    val param: RegisterProgressiveData = RegisterProgressiveData()
+    val param: RegisterProgressiveData = RegisterProgressiveData(),
+
+    @SerializedName("xDatavisor")
+    var xDatavisor: String = ""
 ): GqlParam
 
 data class RegisterProgressiveData (
