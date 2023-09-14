@@ -28,13 +28,19 @@ class StoriesSharingComponent (rootView: View) {
         mListener = listener
     }
 
-    fun show (fg: FragmentManager, data: StoriesDetailItemUiModel.Sharing) {
+    fun show (fg: FragmentManager, data: StoriesDetailItemUiModel.Sharing, userId: String, storyId: String) {
         if (sharingSheet.isAdded) return
         sharingSheet.setMetaData(
             tnImage = data.metadata.ogImageUrl,
             tnTitle = data.metadata.ogTitle,
         )
         sharingSheet.setLinkProperties(data.metadata)
+        sharingSheet.setUtmCampaignData(
+            pageName = "Story",
+            userId = userId,
+            pageId = storyId,
+            feature = "share",
+        )
         sharingSheet.setOnDismissListener { mListener?.onDismissEvent(this@StoriesSharingComponent) }
         sharingSheet.show(fg, TAG)
     }

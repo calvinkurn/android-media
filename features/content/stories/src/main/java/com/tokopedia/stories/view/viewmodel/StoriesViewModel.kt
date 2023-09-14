@@ -121,6 +121,9 @@ class StoriesViewModel @AssistedInject constructor(
         )
     }
 
+    val userId : String
+        get() = userSession.userId.ifEmpty { "0" }
+
     fun submitAction(action: StoriesUiAction) {
         when (action) {
             is StoriesUiAction.SetArgumentsData -> handleSetInitialData(action.data)

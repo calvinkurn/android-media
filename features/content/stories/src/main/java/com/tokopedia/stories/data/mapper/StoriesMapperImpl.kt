@@ -1,6 +1,6 @@
 package com.tokopedia.stories.data.mapper
 
-import com.tokopedia.content.common.R
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.IconUnify
@@ -17,6 +17,7 @@ import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.stories.R as storiesR
 
 class StoriesMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :
     StoriesMapper {
@@ -57,7 +58,15 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                                         badgeUrl = stories.author.badgeURL
                                     ),
                                     menus = buildMenu(stories.interaction, stories.author),
-                                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription)),
+                                    share = StoriesDetailItemUiModel.Sharing(
+                                        isShareable = stories.interaction.shareable, metadata =
+                                        LinkProperties(
+                                            ogTitle = stories.meta.shareTitle,
+                                            ogImageUrl = stories.meta.shareImage,
+                                            ogDescription = stories.meta.shareDescription,
+                                            desktopUrl = stories.webLink
+                                        )
+                                    ),
                                     productCount = stories.totalProductsFmt.ifEmpty { "0" },
                                 )
                             }
@@ -82,7 +91,14 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     isSameContent = false,
                     author = buildAuthor(stories.author),
                     menus = buildMenu(stories.interaction, stories.author),
-                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription)),
+                    share = StoriesDetailItemUiModel.Sharing(
+                        isShareable = stories.interaction.shareable,
+                        metadata = LinkProperties(
+                            ogTitle = stories.meta.shareTitle,
+                            ogImageUrl = stories.meta.shareImage,
+                            ogDescription = stories.meta.shareDescription
+                        )
+                    ),
                     productCount = stories.totalProductsFmt.ifEmpty { "0" },
                 )
             }
@@ -101,7 +117,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                 !isOwner(author) && template.reportable -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.WARNING,
-                        name = R.string.content_common_menu_report,
+                        name = contentcommonR.string.content_common_menu_report,
                         type = ContentMenuIdentifier.Report
                     )
                 )
@@ -109,7 +125,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                 isOwner(author) && template.deletable -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.DELETE,
-                        name = com.tokopedia.stories.R.string.stories_delete_story_title,
+                        name = storiesR.string.stories_delete_story_title,
                         type = ContentMenuIdentifier.Delete,
                     )
                 )

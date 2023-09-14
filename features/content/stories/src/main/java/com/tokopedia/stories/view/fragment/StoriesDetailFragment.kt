@@ -175,7 +175,7 @@ class StoriesDetailFragment @Inject constructor(
                                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
                             }
                         })
-                        sheet.show(childFragmentManager, event.metadata)
+                        sheet.show(childFragmentManager, event.metadata, viewModel.userId, viewModel.storyId)
                     }
                     is StoriesUiEvent.ShowErrorEvent -> {
                         if (viewModel.isAnyBottomSheetShown) return@collectLatest
