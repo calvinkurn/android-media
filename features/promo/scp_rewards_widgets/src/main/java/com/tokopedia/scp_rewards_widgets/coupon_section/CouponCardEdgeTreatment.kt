@@ -21,14 +21,12 @@ import com.tokopedia.scp_rewards_common.utils.dpToPx
  * - In CouponCardEdgeTreatment, isLeftEdge flag has been introduced. This flag is used to find
  * the correct notch position depending on whether the edge is left or right.
  */
-class CouponCardEdgeTreatment(
-    private val context: Context,
-    private val scallopMargin: Float = 0f,
-    private val roundedCornerRadius: Float = 0f,
-    cradleVerticalOffset: Float = 0f,
-    horizontalOffset: Float = 0f,
-    isLeftEdge: Boolean = false
-) : EdgeTreatment(), Cloneable {
+class CouponCardEdgeTreatment(private val context: Context,
+                              private val scallopMargin: Float = 0f,
+                              private val roundedCornerRadius: Float = 0f,
+                              cradleVerticalOffset: Float = 0f,
+                              horizontalOffset: Float = 0f,
+                              isLeftEdge: Boolean = false) : EdgeTreatment(), Cloneable {
     /**
      * Returns current scallop diameter in pixels.
      *
@@ -53,11 +51,7 @@ class CouponCardEdgeTreatment(
     }
 
     override fun getEdgePath(
-        length: Float,
-        center: Float,
-        interpolation: Float,
-        shapePath: ShapePath
-    ) {
+        length: Float, center: Float, interpolation: Float, shapePath: ShapePath) {
         if (scallopDiameter == 0f) {
             // There is no cutout to draw.
             shapePath.lineTo(length, 0f)
@@ -86,7 +80,7 @@ class CouponCardEdgeTreatment(
             // Vertical offset is so high that there's no curve to draw in the edge, i.e., the fab is
             // actually above the edge so just draw a straight line.
             shapePath.lineTo(length, 0f)
-            return // Early exit.
+            return  // Early exit.
         }
 
         // Calculate the path of the cutout by calculating the location of two adjacent circles. One
@@ -111,8 +105,7 @@ class CouponCardEdgeTreatment(
         // Draw the starting line up to the left rounded corner.
         shapePath.lineTo(
             /* x= */leftRoundedCornerCircleX,
-            /* y= */0f
-        )
+            /* y= */0f)
 
         // Draw the arc for the left rounded corner circle. The bounding box is the area around the
         // circle's center which is at `(leftRoundedCornerCircleX, roundedCornerOffset)`.
@@ -122,8 +115,7 @@ class CouponCardEdgeTreatment(
             /* right= */leftRoundedCornerCircleX + roundedCornerOffset,
             /* bottom= */roundedCornerOffset * 2,
             /* startAngle= */ANGLE_UP.toFloat(),
-            /* sweepAngle= */cornerRadiusArcLength
-        )
+            /* sweepAngle= */cornerRadiusArcLength)
 
         // Draw the cutout circle.
         shapePath.addArc(
@@ -132,8 +124,7 @@ class CouponCardEdgeTreatment(
             /* right= */cradlePosition + cradleRadius,
             /* bottom= */cradleRadius - verticalOffset,
             /* startAngle= */ANGLE_LEFT - cutoutArcOffset,
-            /* sweepAngle= */cutoutArcOffset * 2 - ARC_HALF
-        )
+            /* sweepAngle= */cutoutArcOffset * 2 - ARC_HALF)
 
         // Draw an arc for the right rounded corner circle. The bounding box is the area around the
         // circle's center which is at `(rightRoundedCornerCircleX, roundedCornerOffset)`.
@@ -143,14 +134,12 @@ class CouponCardEdgeTreatment(
             /* right= */rightRoundedCornerCircleX + roundedCornerOffset,
             /* bottom= */roundedCornerOffset * 2,
             /* startAngle= */ANGLE_UP - cornerRadiusArcLength,
-            /* sweepAngle= */cornerRadiusArcLength
-        )
+            /* sweepAngle= */cornerRadiusArcLength)
 
         // Draw the ending line after the right rounded corner.
         shapePath.lineTo(
             /* x= */length,
-            /* y= */0f
-        )
+            /* y= */0f)
     }
 
     /**
