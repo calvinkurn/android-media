@@ -838,7 +838,8 @@ class DigitalPDPDataPlanFragment :
             if (checkBalanceData.campaignLabelText.isNotEmpty()) {
                 showCheckBalanceWarning(
                     checkBalanceData.campaignLabelText,
-                    checkBalanceData.campaignLabelTextColor
+                    checkBalanceData.campaignLabelTextColor,
+                    isClickable = checkBalanceData.products.isNotEmpty()
                 )
                 removeClientNumberBottomPadding()
             } else {
@@ -868,7 +869,8 @@ class DigitalPDPDataPlanFragment :
                             showCheckBalanceWarning(
                                 it.campaignLabelText,
                                 it.campaignLabelTextColor,
-                                isShowOnlyWarning = true
+                                isShowOnlyWarning = true,
+                                isClickable = it.products.isNotEmpty()
                             )
                         }
                     }

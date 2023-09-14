@@ -681,7 +681,8 @@ class DigitalPDPPulsaFragment :
             if (checkBalanceData.campaignLabelText.isNotEmpty()) {
                 showCheckBalanceWarning(
                     checkBalanceData.campaignLabelText,
-                    checkBalanceData.campaignLabelTextColor
+                    checkBalanceData.campaignLabelTextColor,
+                    isClickable = checkBalanceData.products.isNotEmpty()
                 )
                 removeClientNumberBottomPadding()
             } else {
@@ -709,7 +710,8 @@ class DigitalPDPPulsaFragment :
                     showCheckBalanceWarning(
                         checkBalanceData?.campaignLabelText.orEmpty(),
                         checkBalanceData?.campaignLabelTextColor.orEmpty(),
-                        isShowOnlyWarning = true
+                        isShowOnlyWarning = true,
+                        isClickable = !checkBalanceData?.products.isNullOrEmpty()
                     )
                     setupDynamicScrollViewPadding()
                 } else {

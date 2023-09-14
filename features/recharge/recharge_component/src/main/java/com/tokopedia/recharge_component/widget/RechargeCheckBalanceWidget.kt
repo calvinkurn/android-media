@@ -70,8 +70,11 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    fun showWarningMessage(message: String) {
-        showWidgetMessage(message)
+    fun showWarningMessage(
+        message: String,
+        isClickable: Boolean
+    ) {
+        showWidgetMessage(message, isClickable)
         binding.run {
             checkBalanceWarningIcon.run {
                 setImage(
@@ -96,8 +99,8 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    fun showCriticalMessage(message: String) {
-        showWidgetMessage(message)
+    fun showCriticalMessage(message: String, isClickable: Boolean) {
+        showWidgetMessage(message, isClickable)
         binding.run {
             checkBalanceWarningIcon.run {
                 setImage(
@@ -122,8 +125,8 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    fun showInformationMessage(message: String) {
-        showWidgetMessage(message)
+    fun showInformationMessage(message: String, isClickable: Boolean) {
+        showWidgetMessage(message, isClickable)
         binding.run {
             checkBalanceWarningIcon.hide()
             checkBalanceWarningContainer.background = MethodChecker.getDrawable(
@@ -139,12 +142,17 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    private fun showWidgetMessage(message: String) {
+    private fun showWidgetMessage(message: String, isClickable: Boolean) {
         binding.run {
             checkBalanceWarningContainer.show()
             checkBalanceWarningTxt.text = MethodChecker.fromHtml(message)
-            checkBalanceWarningContainer.setOnClickListener {
-                checkBalanceWidgetListener?.onClickWidget()
+            if (isClickable) {
+                checkBalanceWarningChevron.show()
+                checkBalanceWarningContainer.setOnClickListener {
+                    checkBalanceWidgetListener?.onClickWidget()
+                }
+            } else {
+                checkBalanceWarningChevron.hide()
             }
         }
     }

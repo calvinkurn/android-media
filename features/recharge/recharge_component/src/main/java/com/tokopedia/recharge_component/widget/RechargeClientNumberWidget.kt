@@ -14,7 +14,6 @@ import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
@@ -447,7 +446,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     fun showCheckBalanceWarning(
         message: String,
         type: String,
-        isShowOnlyWarning: Boolean = false
+        isShowOnlyWarning: Boolean = false,
+        isClickable: Boolean = false
     ) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
             if (isShowOnlyWarning) {
@@ -457,9 +457,9 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
                 setWarningContainerMargin()
             }
             when (type) {
-                CHECK_BALANCE_WARNING -> showWarningMessage(message)
-                CHECK_BALANCE_CRITICAL -> showCriticalMessage(message)
-                CHECK_BALANCE_INFORMATION -> showInformationMessage(message)
+                CHECK_BALANCE_WARNING -> showWarningMessage(message, isClickable)
+                CHECK_BALANCE_CRITICAL -> showCriticalMessage(message, isClickable)
+                CHECK_BALANCE_INFORMATION -> showInformationMessage(message, isClickable)
             }
         }
     }
