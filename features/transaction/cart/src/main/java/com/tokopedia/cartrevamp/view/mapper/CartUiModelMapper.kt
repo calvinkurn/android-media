@@ -126,8 +126,8 @@ object CartUiModelMapper {
             val groupShopCount = availableGroup.groupShopCartData.count()
             availableGroup.groupShopCartData.forEachIndexed { shopIndex, availableShop ->
                 val shopUiModel = mapGroupShop(availableShop.shop, availableShop.cartDetails)
-                availableShop.cartDetails.forEach { cartDetail ->
-                    cartDetail.products.forEachIndexed { cartDetailIndex, product ->
+                availableShop.cartDetails.forEachIndexed { cartDetailIndex, cartDetail ->
+                    cartDetail.products.forEach { product ->
                         val productUiModel = mapProductUiModel(
                             cartData = cartData,
                             cartDetail = cartDetail,
