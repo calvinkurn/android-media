@@ -13,6 +13,13 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 /**
  * Created By : Jonathan Darwin on December 01, 2022
  */
+@Deprecated(
+    replaceWith = ReplaceWith(
+        "",
+        "com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet"
+    ),
+    message = ""
+)
 class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
 
     private var mListener: Listener? = null
@@ -78,7 +85,7 @@ class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        if(!isAdded) show(fragmentManager, TAG)
+        if (!isAdded) show(fragmentManager, TAG)
     }
 
     fun setListener(listener: Listener?) {
@@ -108,9 +115,10 @@ class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): ShopPageHeaderContentCreationOptionBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ShopPageHeaderContentCreationOptionBottomSheet
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG) as? ShopPageHeaderContentCreationOptionBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ShopPageHeaderContentCreationOptionBottomSheet::class.java.name
@@ -123,5 +131,4 @@ class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
         fun onBroadcastCreationClicked()
         fun onPerformanceDashboardEntryClicked()
     }
-
 }

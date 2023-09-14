@@ -86,6 +86,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
             if (shouldShowPerformanceAction) {
                 setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
+                    listener?.trackViewPerformanceClicked()
                     RouteManager.route(
                         it,
                         viewModel?.getPerformanceDashboardApplink()
@@ -113,6 +114,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     interface ContentCreationBottomSheetListener {
         fun onCreationItemSelected(data: ContentCreationItemModel)
         fun onCreationNextClicked(data: ContentCreationItemModel)
+        fun trackViewPerformanceClicked()
     }
 
     companion object {
