@@ -18,6 +18,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.model.NavigationProperties
+import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
@@ -132,10 +133,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
-                setPriceCtaWidgetTheme(
-                    it.data.priceCtaProperties.textColor,
-                    it.data.priceCtaProperties.bgColor
-                )
+                setupPriceCtaWidget(it.data.priceCtaProperties)
             }
         }
         viewModel.totalCartItem.observe(viewLifecycleOwner) {
@@ -213,11 +211,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
     }
 
     // Call this methods if you want to override the CTA & Price widget's theme
-    private fun setPriceCtaWidgetTheme(fontColor: Int, bgColor: Int) {
+    private fun setupPriceCtaWidget(properties: PriceCtaProperties) {
         binding?.let {
-            it.containerPriceCta.setBackgroundColor(bgColor)
-            it.tgpCatalogName.setTextColor(fontColor)
-            it.tgpPriceRanges.setTextColor(fontColor)
+            it.containerPriceCta.setBackgroundColor(properties.bgColor)
+            it.tgpCatalogName.setTextColor(properties.textColor)
+            it.tgpPriceRanges.setTextColor(properties.textColor)
+
+            it.tgpCatalogName.text = properties.productName
+            it.tgpPriceRanges.text = properties.price
         }
     }
 }
