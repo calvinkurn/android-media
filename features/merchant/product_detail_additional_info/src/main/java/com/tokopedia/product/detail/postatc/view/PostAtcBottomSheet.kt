@@ -141,6 +141,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     }
 
     private fun setupView(binding: PostAtcBottomSheetBinding) = binding.apply {
+        val itemDecoration = PostAtcItemDecoration(root.context)
+        postAtcRv.addItemDecoration(itemDecoration)
+
         postAtcRv.layoutManager = PostAtcLayoutManager()
         postAtcRv.adapter = adapter
     }
@@ -170,8 +173,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             adapter.replaceComponents(it.data)
             updateFooter()
         }, fail = {
-                showError(it)
-            })
+            showError(it)
+        })
         PostAtcTracking.impressionPostAtcBottomSheet(
             trackingQueue,
             userSession.userId,
@@ -188,8 +191,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
                     widget = data
                 }
             }, fail = {
-                    adapter.removeComponent(uiModelId)
-                })
+                adapter.removeComponent(uiModelId)
+            })
         }
 
     /**
@@ -242,6 +245,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             .postAtcModule(PostAtcModule())
             .build()
     }
+
+    override fun rootView(): View? = dialog?.window?.decorView
 
     private fun getViewModel() = lazy {
         ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]

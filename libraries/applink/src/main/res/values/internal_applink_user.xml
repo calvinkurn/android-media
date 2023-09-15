@@ -120,6 +120,7 @@
     <string name="path_liveness_detection">/liveness-detection</string>
 
     <string name="path_goto_kyc">/goto-kyc.*</string>
+    <string name="path_goto_kyc_webview">/webview-kyc</string>
 
     <!--Privacy Center-->
     <string name="path_search_history">/search-history</string>

@@ -1,8 +1,8 @@
 package com.tokopedia.affiliate.usecase
 
-import com.tokopedia.affiliate.model.response.AffiliateGenerateLinkData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Generate_Link
 import com.tokopedia.affiliate.model.request.GenerateLinkRequest
+import com.tokopedia.affiliate.model.response.AffiliateGenerateLinkData
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
 
@@ -48,11 +48,10 @@ class AffiliateGenerateLinkUseCase @Inject constructor(
             GQL_Affiliate_Generate_Link,
             AffiliateGenerateLinkData::class.java,
             createRequestParams(id, pageType, itemId, url, identifier, type)
-        ).affiliateGenerateLink.data?.firstOrNull()
+        ).affiliateGenerateLink.generateLinkData?.firstOrNull()
     }
 
     companion object {
         private const val PARAM_INPUT = "input"
-        private const val PARAM_PDP = "pdp"
     }
 }

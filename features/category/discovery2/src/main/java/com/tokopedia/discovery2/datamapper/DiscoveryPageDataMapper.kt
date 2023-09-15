@@ -10,8 +10,11 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.analytics.EMPTY_STRING
-import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.AdditionalInfo
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
+import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
@@ -24,10 +27,12 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.*
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -112,7 +117,9 @@ class DiscoveryPageDataMapper(
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         component.position = position
         when (component.name) {
-            ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
+            ComponentNames.Tabs.componentName, ComponentNames.TabsIcon.componentName -> listComponents.addAll(
+                parseTab(component, position)
+            )
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> {
                 addRecomQueryProdID(component)
@@ -287,8 +294,22 @@ class DiscoveryPageDataMapper(
             }
         }
         if (component.getComponentsItem().isNullOrEmpty()) {
-            component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName), component.tabName)
-        } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") { //this is for the forced redirection case only, whenever tabs position is change using the product click from one tab to other
+            if (component.name == ComponentNames.TabsIcon.componentName) {
+                component.setComponentsItem(
+                    DiscoveryDataMapper.mapTabsListToComponentList(
+                        component,
+                        ComponentNames.TabsIconItem.componentName
+                    ), component.tabName
+                )
+            } else {
+                component.setComponentsItem(
+                    DiscoveryDataMapper.mapTabsListToComponentList(
+                        component,
+                        ComponentNames.TabsItem.componentName
+                    ), component.tabName
+                )
+            }
+        } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") { // this is for the forced redirection case only, whenever tabs position is change using the product click from one tab to other
             val activeTabIndex = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
             if (activeTabIndex != null) {
                 component.getComponentsItem()?.forEachIndexed { index, it ->
@@ -584,7 +605,8 @@ class DiscoveryPageDataMapper(
         return listComponents
     }
 
-    private fun handleQuickFilter(component: ComponentsItem) {
+    private fun handleQuickFilter(component: ComponentsItem){
+        component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
         if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(

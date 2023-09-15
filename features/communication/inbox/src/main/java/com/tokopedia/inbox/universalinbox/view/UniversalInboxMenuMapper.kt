@@ -9,6 +9,8 @@ import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataRe
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_REPLACE_TEXT
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_KEY
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_REVIEW_INBOX
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WIDGET_PAGE_NAME
@@ -26,6 +28,9 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.global.Recomme
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -122,12 +127,13 @@ open class UniversalInboxMenuMapper @Inject constructor(
 
     fun mapWidgetMetaToUiModel(
         widgetMeta: UniversalInboxWidgetMetaResponse?,
-        allCounter: UniversalInboxAllCounterResponse?
+        allCounter: UniversalInboxAllCounterResponse?,
+        driverCounter: Result<Pair<Int, Int>>?
     ): UniversalInboxWidgetMetaUiModel {
         val result = UniversalInboxWidgetMetaUiModel()
         if (widgetMeta != null) {
             widgetMeta.metaData.forEach {
-                it.mapToUiModel(allCounter)?.let { uiModel ->
+                it.mapToUiModel(allCounter, driverCounter)?.let { uiModel ->
                     result.widgetList.add(uiModel)
                 }
             }
@@ -138,15 +144,18 @@ open class UniversalInboxMenuMapper @Inject constructor(
     }
 
     private fun UniversalInboxWidgetDataResponse.mapToUiModel(
-        allCounter: UniversalInboxAllCounterResponse? = null
+        allCounter: UniversalInboxAllCounterResponse? = null,
+        driverCounter: Result<Pair<Int, Int>>? = null
     ): UniversalInboxWidgetUiModel? {
-        val counter = when (this.type) {
+        return when (this.type) {
             CHATBOT_TYPE -> {
-                allCounter?.othersUnread?.helpUnread ?: Int.ZERO
+                this.mapToWidget(allCounter?.othersUnread?.helpUnread ?: Int.ZERO)
             }
-            else -> Int.ZERO
+            GOJEK_TYPE -> {
+                this.mapToDriverWidget(driverCounter)
+            }
+            else -> this.mapToWidget() // Default
         }
-        return this.mapToWidget(counter)
     }
 
     private fun UniversalInboxWidgetDataResponse.mapToWidget(
@@ -164,6 +173,48 @@ open class UniversalInboxMenuMapper @Inject constructor(
                 counter = counter,
                 type = this.type
             )
+        }
+    }
+
+    private fun UniversalInboxWidgetDataResponse.mapToDriverWidget(
+        driverCounter: Result<Pair<Int, Int>>?
+    ): UniversalInboxWidgetUiModel? {
+        return if (driverCounter != null) {
+            when (driverCounter) {
+                is Success -> {
+                    if (!this.isDynamic && driverCounter.data.first < Int.ONE) {
+                        null
+                    } else {
+                        // Show when only active channel is not zero or dynamic from BE
+                        UniversalInboxWidgetUiModel(
+                            icon = this.icon.toIntOrZero(),
+                            title = this.title,
+                            subtext = this.subtext.replace(
+                                oldValue = GOJEK_REPLACE_TEXT,
+                                newValue = "${driverCounter.data.first}",
+                                ignoreCase = true
+                            ),
+                            applink = this.applink,
+                            counter = driverCounter.data.second,
+                            type = this.type
+                        )
+                    }
+                }
+                is Fail -> {
+                    // Return widget error with data
+                    UniversalInboxWidgetUiModel(
+                        icon = this.icon.toIntOrZero(),
+                        title = this.title,
+                        subtext = this.subtext,
+                        applink = this.applink,
+                        counter = Int.ZERO,
+                        type = this.type,
+                        isError = true
+                    )
+                }
+            }
+        } else {
+            null // Return null if driver counter is null
         }
     }
 

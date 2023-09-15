@@ -7,4 +7,6 @@
     <dimen name="nav_user_profile_icon_retry_size">25dp</dimen>
     <dimen name="nav_card_me_page_size">254dp</dimen>
 
+    <dimen name="nav_control_divider_height">1dp</dimen>
+    <dimen name="nav_mepage_divider_height">8dp</dimen>
 </resources>

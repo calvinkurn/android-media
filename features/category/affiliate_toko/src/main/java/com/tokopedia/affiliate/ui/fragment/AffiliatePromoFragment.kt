@@ -423,17 +423,17 @@ class AffiliatePromoFragment :
             onGetValidateUserData(validateUserdata)
         }
         affiliatePromoViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
-            if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+            if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType != TICKER_BOTTOM_SHEET) {
                 sendTickerImpression(
-                    announcementData.getAffiliateAnnouncementV2?.data?.type,
-                    announcementData.getAffiliateAnnouncementV2?.data?.id
+                    announcementData.getAffiliateAnnouncementV2?.announcementData?.type,
+                    announcementData.getAffiliateAnnouncementV2?.announcementData?.id
                 )
                 binding?.affiliateAnnouncementTicker?.setAnnouncementData(
                     announcementData,
                     activity,
                     source = PAGE_ANNOUNCEMENT_PROMO_PERFORMA
                 )
-            } else if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET && isAffiliatePromoteHomeEnabled()) {
+            } else if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType == TICKER_BOTTOM_SHEET && isAffiliatePromoteHomeEnabled()) {
                 context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
                     if (it.getString(
                             USER_ID,
@@ -441,12 +441,12 @@ class AffiliatePromoFragment :
                         ) != userSessionInterface?.userId.orEmpty() || it.getLong(
                                 TICKER_ID,
                                 -1
-                            ) != announcementData.getAffiliateAnnouncementV2?.data?.id
+                            ) != announcementData.getAffiliateAnnouncementV2?.announcementData?.id
                     ) {
                         it.edit().apply {
                             putLong(
                                 TICKER_ID,
-                                announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0
+                                announcementData.getAffiliateAnnouncementV2?.announcementData?.id ?: 0
                             )
                             putString(
                                 USER_ID,
@@ -456,8 +456,8 @@ class AffiliatePromoFragment :
                         }
 
                         AffiliateBottomSheetInfo.newInstance(
-                            announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0,
-                            announcementData.getAffiliateAnnouncementV2?.data?.tickerData?.first()
+                            announcementData.getAffiliateAnnouncementV2?.announcementData?.id ?: 0,
+                            announcementData.getAffiliateAnnouncementV2?.announcementData?.tickerData?.first()
                         ).show(childFragmentManager, "")
                     }
                 }

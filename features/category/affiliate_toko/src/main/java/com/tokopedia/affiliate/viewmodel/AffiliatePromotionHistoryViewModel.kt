@@ -9,37 +9,43 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCar
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import java.util.ArrayList
 import javax.inject.Inject
 
-class AffiliatePromotionHistoryViewModel@Inject constructor(
+class AffiliatePromotionHistoryViewModel @Inject constructor(
     private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase
-)
-    :BaseViewModel() {
+) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
-    private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
+    private var affiliateDataList =
+        MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<Throwable>()
-    private val pageLimit = 10
 
-    fun getAffiliatePerformance(page : Int) {
+    fun getAffiliatePerformance(page: Int) {
         shimmerVisibility.value = true
-        launchCatchError(block = {
-            affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
-                totalItemsCount.value = it.itemTotalCount
-                convertDataToVisitables(it)?.let { visitables ->
-                    affiliateDataList.value = visitables
-                }
+        launchCatchError(
+            block = {
+                affiliatePerformanceUseCase.affiliatePerformance(page, PAGE_LIMIT)
+                    .getAffiliateItemsPerformanceList?.itemPerformanceListData?.sectionData?.let {
+                        totalItemsCount.value = it.itemTotalCount.orZero()
+                        convertDataToVisitable(it)?.let { visitable ->
+                            affiliateDataList.value = visitable
+                        }
+                    }
+            },
+            onError = {
+                shimmerVisibility.value = false
+                it.printStackTrace()
+                errorMessage.value = it
             }
-        }, onError = {
-            shimmerVisibility.value = false
-            it.printStackTrace()
-            errorMessage.value = it
-        })
+        )
     }
 
-     fun convertDataToVisitables(data : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
-        val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+    fun convertDataToVisitable(
+        data: AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData
+    ): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
+        val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         data.items?.let { items ->
             for (product in items) {
                 product?.let {
@@ -54,6 +60,10 @@ class AffiliatePromotionHistoryViewModel@Inject constructor(
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
-    fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
+    fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> =
+        affiliateDataList
 
+    companion object {
+        private const val PAGE_LIMIT = 10
+    }
 }

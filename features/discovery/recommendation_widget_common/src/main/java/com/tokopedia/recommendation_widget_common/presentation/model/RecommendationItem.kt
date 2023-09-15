@@ -200,6 +200,8 @@ data class RecommendationItem(
             isVariant = isProductHasParentID(),
             stockQty = currentQuantity
         )
+
+    fun isUseQuantityEditor(): Boolean = addToCartType == AddToCartType.QuantityEditor
 }
 
 data class RecommendationSpecificationLabels(

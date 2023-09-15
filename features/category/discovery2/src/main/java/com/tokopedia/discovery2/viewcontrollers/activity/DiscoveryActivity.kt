@@ -52,6 +52,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val SOURCE = "source"
         const val COMPONENT_ID = "componentID"
         const val ACTIVE_TAB = "activeTab"
+        const val HIDE_NAV_FEATURES = "hide_nav_features"
         const val TARGET_COMP_ID = "targetcompID"
         const val PRODUCT_ID = "product_id"
         const val RECOM_PRODUCT_ID = "recomProdId"
