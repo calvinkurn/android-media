@@ -681,14 +681,11 @@ class OfferLandingPageFragment :
     }
 
     private fun fetchMiniCart() {
-        val offeringInfo = viewModel.offeringInfo.value
-        val offerCount = offeringInfo?.offerings?.firstOrNull()?.tierList?.size.orZero()
         binding?.miniCartView?.fetchData(
             shopIds = listOf(currentState.shopData.shopId),
             offerIds = currentState.offerIds,
             offerJsonData = currentState.offeringJsonData,
-            warehouseIds = currentState.warehouseIds,
-            offerCount = offerCount
+            warehouseIds = currentState.warehouseIds
         )
     }
 
