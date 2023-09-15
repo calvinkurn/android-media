@@ -11,6 +11,7 @@ import dagger.Component
 /**
  * Created By : Muhammad Furqan on 09/02/23
  */
+@FeedMainScope
 @Component(
     modules = [
         FeedMainModule::class,
