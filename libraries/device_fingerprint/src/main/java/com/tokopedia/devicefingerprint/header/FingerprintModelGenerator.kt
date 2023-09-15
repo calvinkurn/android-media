@@ -2,6 +2,10 @@ package com.tokopedia.devicefingerprint.header
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaDrm
+import android.os.Build
+import android.text.TextUtils
+import android.util.Base64
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceConnectionInfo.getCarrierName
@@ -33,6 +37,7 @@ import com.tokopedia.devicefingerprint.location.LocationCache
 import com.tokopedia.encryption.security.toBase64
 import com.tokopedia.network.data.model.FingerprintModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
