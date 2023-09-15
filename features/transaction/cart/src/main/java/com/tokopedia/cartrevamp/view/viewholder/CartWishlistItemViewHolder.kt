@@ -7,9 +7,9 @@ import com.tokopedia.cart.databinding.ItemProductWishlistBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.Utils
 
 /**
