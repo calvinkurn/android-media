@@ -77,6 +77,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.URLEncoder
 import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.topads.sdk.R as topadssdkR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by milhamj on 28/11/18.
@@ -243,7 +245,7 @@ open class DynamicPostViewHolder(
                     authorImage.setImageDrawable(
                         MethodChecker.getDrawable(
                             itemView.context,
-                            com.tokopedia.topads.sdk.R.drawable.error_drawable
+                            topadssdkR.drawable.error_drawable
                         )
                     )
                 }
@@ -413,7 +415,7 @@ open class DynamicPostViewHolder(
             val tagCaption = FeedCaption.Tag(
                 colorRes = MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 ),
                 clickListener = {
                     onHashtagClicked(it, trackingPostModel)
@@ -429,7 +431,7 @@ open class DynamicPostViewHolder(
                 label = caption.buttonName,
                 colorRes = MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 ),
                 clickListener = {
                     tvCaption.setText(captionBody, TextView.BufferType.SPANNABLE)
@@ -615,7 +617,7 @@ open class DynamicPostViewHolder(
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 )
             }
@@ -625,7 +627,7 @@ open class DynamicPostViewHolder(
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
+                        unifyprinciplesR.color.Unify_NN950_44
                     )
                 )
             }
@@ -641,7 +643,7 @@ open class DynamicPostViewHolder(
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
+                        unifyprinciplesR.color.Unify_NN950_44
                     )
                 )
             }
@@ -649,8 +651,8 @@ open class DynamicPostViewHolder(
     }
 
     private fun updateLikeButton(isLiked: Boolean) {
-        val likedColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        val dislikeColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+        val likedColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_GN500)
+        val dislikeColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN300)
         if (isLiked) {
             likeIcon.setImage(
                 newIconId = IconUnify.THUMB_FILLED,
@@ -700,7 +702,6 @@ open class DynamicPostViewHolder(
             }
             if (postTag.totalItems > 0) {
                 rvPostTag.show()
-                rvPostTag.setHasFixedSize(true)
                 val layoutManager: RecyclerView.LayoutManager = when (feedType) {
                     SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
                     else -> LinearLayoutManager(

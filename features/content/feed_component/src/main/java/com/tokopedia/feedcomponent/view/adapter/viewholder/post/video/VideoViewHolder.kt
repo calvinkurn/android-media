@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.videoplayer.view.widget.VideoPlayerView
+import com.tokopedia.design.R as designR
 
 /**
  * @author by yfsx on 20/03/19.
@@ -40,7 +41,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
 
     override fun bind(element: VideoModel) {
         if (!element.url.contains(STRING_DEFAULT_TRANSCODING)) {
-            ivImage.setImageResource(com.tokopedia.design.R.drawable.ic_loading_image)
+            ivImage.setImageResource(designR.drawable.ic_loading_image)
             ivImage.setOnClickListener {
                 if (element.url.isNotBlank()) {
                     listener.onVideoPlayerClicked(
