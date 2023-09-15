@@ -132,15 +132,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 )
                 val inActiveBackground = ResourcesCompat.getDrawable(
                     resources,
-                    R.drawable.background_promo_checkout_teal_rounded,
+                    R.drawable.background_promo_checkout_inactive_grey_rounded,
                     null
-                )
-                (inActiveBackground as? GradientDrawable)?.setColor(
-                    ResourcesCompat.getColor(
-                        resources,
-                        unifyprinciplesR.color.Unify_NN50,
-                        null
-                    )
                 )
                 inActiveViewFrame?.background = inActiveBackground
                 errorView?.background = ResourcesCompat.getDrawable(
