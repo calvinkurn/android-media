@@ -34,18 +34,37 @@
                     android:layout_height="wrap_content"
                     app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <include layout="@layout/topads_dash_saran_topads_top_widget_layout" />
-                        <androidx.legacy.widget.Space
-                            android:layout_width="match_parent"
-                            android:layout_height="4dp"/>
+                        android:layout_height="wrap_content">
+
+                        <include
+                            android:id="@+id/saranTopadsWidget"
+                            layout="@layout/topads_dash_saran_topads_top_widget_layout"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"/>
+
                         <include
                             android:id="@+id/topads_insight_center_product_widget_potential"
-                            layout = "@layout/topads_insight_center_product_widget"/>
-                    </LinearLayout>
+                            layout = "@layout/topads_insight_center_product_widget"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            app:layout_constraintTop_toBottomOf="@id/saranTopadsWidget"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/topads_insight_center_product_out_of_stock_widget"
+                            android:layout_marginTop="4dp"/>
+
+                        <include
+                            android:id="@+id/topads_insight_center_product_out_of_stock_widget"
+                            layout = "@layout/topads_insight_center_product_out_of_stock_widget"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            app:layout_constraintTop_toBottomOf="@id/saranTopadsWidget"
+                            app:layout_constraintStart_toEndOf="@id/topads_insight_center_product_widget_potential"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginTop="4dp"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
@@ -98,7 +117,8 @@
 
                 <include
                     android:id="@+id/bottomShimmerRecommendation"
-                    layout="@layout/shimmer_layout_bottom_level_recommendation" />
+                    layout="@layout/shimmer_layout_bottom_level_recommendation"
+                    android:visibility="gone"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

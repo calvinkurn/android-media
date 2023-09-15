@@ -168,14 +168,13 @@ class CampaignRuleFragment :
     }
 
     private fun setUpView() {
-        getRollenceGradualRollout()
         handlePageMode()
         setUpToolbar()
         setUpClickListeners()
         setUpUniqueAccountTips()
         setUpTNCText()
         setUpRelatedCampaignRecyclerView()
-        observeOutOfStockStatus()
+        setupOosHandler()
         observeCampaign()
         observeSelectedPaymentMethod()
         observeSelectedOosState()
@@ -307,17 +306,13 @@ class CampaignRuleFragment :
         binding.checkboxCampaignRuleTnc.text = getTNCText()
     }
 
-    private fun setupOosHandler(isShowOosSection: Boolean) {
+    private fun setupOosHandler() {
         val binding = binding ?: return
-        if (isShowOosSection) {
-            binding.viewGroupOosHandling.visible()
-            binding.tgCampaignFsOosTitle.apply {
-                val txtOosWording: String = getText(R.string.campaign_rule_fs_out_of_stock_title).toString()
-                text = getOosSpan(txtOosWording)
-                movementMethod = LinkMovementMethod.getInstance()
-            }
-        } else {
-            binding.viewGroupOosHandling.gone()
+        binding.viewGroupOosHandling.visible()
+        binding.tgCampaignFsOosTitle.apply {
+            val txtOosWording: String = getText(R.string.campaign_rule_fs_out_of_stock_title).toString()
+            text = getOosSpan(txtOosWording)
+            movementMethod = LinkMovementMethod.getInstance()
         }
     }
 
@@ -355,16 +350,6 @@ class CampaignRuleFragment :
     private fun observeSelectedOosState() {
         viewModel.selectedOosState.observe(viewLifecycleOwner) { it ->
             showOosStateRadioSelected(it)
-        }
-    }
-
-    // Get Rollence Gradual Rollout to check whether the new feature is available to user or not
-    private fun getRollenceGradualRollout() {
-        irisSession?.let { iris_session ->
-            viewModel.getRollenceGradualRollout(
-                shopId = userSession.shopId,
-                irisSessionId = iris_session.getSessionId()
-            )
         }
     }
 
@@ -690,33 +675,18 @@ class CampaignRuleFragment :
         }
     }
 
-    private fun observeOutOfStockStatus() {
-        viewModel.isGetGradualRollout.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    val isFeatureAvailable = isUserGetGradualRollout(result.data)
-                    setupOosHandler(isShowOosSection = isFeatureAvailable)
-                }
-                is Fail -> {
-                    // Disable UI OOS
-                    setupOosHandler(isShowOosSection = false)
-                }
-            }
-        }
-    }
-
-    private fun isUserGetGradualRollout(data: RollenceGradualRollout): Boolean {
+    private fun isUserGetGradualRollout(data: RollenceGradualRollout, rollenceKey: String): Boolean {
         // Validate the list if it's not empty
         // If it's not empty, get the index 0 & read the value
         // Update the liveData based on the value is empty or not
 
         val rollenceList = FlashSaleTokoUtil().getKeysByPrefix(
-            prefix = RollenceKey.FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT,
+            prefix = rollenceKey,
             dataRollout = data.dataRollout
         )
 
         return if (rollenceList.isNotEmpty()) {
-            val rollenceValue = rollenceList[RollenceKey.FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT]
+            val rollenceValue = rollenceList[rollenceKey]
             val isGettingRollenceGradualRollout = rollenceValue != ""
             isGettingRollenceGradualRollout
         } else {

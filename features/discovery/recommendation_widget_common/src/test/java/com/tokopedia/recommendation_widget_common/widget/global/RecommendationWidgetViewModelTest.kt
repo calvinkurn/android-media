@@ -25,6 +25,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.jsonToObject
 import com.tokopedia.recommendation_widget_common.mvvm.ViewModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.cart.CartService
@@ -157,9 +158,7 @@ class RecommendationWidgetViewModelTest {
         val metadata = RecommendationWidgetMetadata(pageName = "pageName")
         val model = RecommendationWidgetModel(
             metadata = metadata,
-            widget = RecommendationWidget(
-                layoutType = TYPE_COMPARISON_BPC_WIDGET,
-            ),
+            widget = "carousel_hatc.json".jsonToRecommendationWidgetList().first(),
         )
 
         viewModel.bind(model)
@@ -168,8 +167,27 @@ class RecommendationWidgetViewModelTest {
         assertEquals(1, viewModel.stateFlow.value.widgetMap.size)
         assertThat(
             viewModel.stateValue.widgetMap[model.id]!!.first(),
-            `is`(instanceOf(RecommendationComparisonBpcModel::class.java))
+            `is`(instanceOf(RecommendationCarouselModel::class.java))
         )
+    }
+
+    @Test
+    fun `use case return empty recommendation list will set empty visitable list`() {
+        val viewModel = ViewModel()
+
+        val recommendationWidgetList = "empty_recom.json".jsonToRecommendationWidgetList()
+        coEvery { getRecommendationWidgetUseCase.getData(any()) } returns recommendationWidgetList
+
+        val metadata = RecommendationWidgetMetadata(pageName = "pageName")
+        val trackingModel = RecommendationWidgetTrackingModel(androidPageName = "pageName")
+        val model = RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
+
+        viewModel.bind(model)
+
+        assertEquals(1, viewModel.stateValue.widgetMap.size)
+
+        val expectedVisitableList = viewModel.stateValue.widgetMap[model.id]!!
+        assertEquals(expectedVisitableList, emptyList<RecommendationVisitable>())
     }
 
     @Test

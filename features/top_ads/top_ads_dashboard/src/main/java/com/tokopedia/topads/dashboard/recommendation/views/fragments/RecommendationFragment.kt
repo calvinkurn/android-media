@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
@@ -46,6 +47,7 @@ import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.htmltags.HtmlUtil
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
@@ -64,6 +66,7 @@ class RecommendationFragment : BaseDaggerFragment() {
     private var emptyStateRecyclerView: RecyclerView? = null
     private var pageControlEmptyState: PageControl? = null
     private var potentialProductCard: View? = null
+    private var productOutOfStockCard: View? = null
 
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
     private var collapseStateCallBack: TopAdsHeadlineBaseFragment.AppBarActionHeadline? = null
@@ -131,6 +134,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         emptyStateRecyclerView = view.findViewById(R.id.emptyStateView)
         pageControlEmptyState = view.findViewById(R.id.pageControlEmptyState)
         potentialProductCard = view.findViewById(R.id.topads_insight_center_product_widget_potential)
+        productOutOfStockCard = view.findViewById(R.id.topads_insight_center_product_out_of_stock_widget)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -144,6 +148,7 @@ class RecommendationFragment : BaseDaggerFragment() {
     override fun onResume() {
         super.onResume()
         viewModel?.fetchRecommendationStatistics()
+        viewModel?.getOutOfStockProducts()
     }
 
     private fun setAppBarListener() {
@@ -180,6 +185,10 @@ class RecommendationFragment : BaseDaggerFragment() {
 
         potentialProductCard?.setOnClickListener {
             RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_PRODUCT_RECOMMENDATION)
+        }
+
+        productOutOfStockCard?.setOnClickListener {
+            RouteManager.route(activity, "${ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST}?filter=isEmptyStockOnly")
         }
     }
 
@@ -220,15 +229,36 @@ class RecommendationFragment : BaseDaggerFragment() {
                 is Success -> {
                     if(it.data.productRecommendationStats.count > CONST_0) {
                         potentialProductCard?.showWithCondition(true)
-                        potentialProductCard?.findViewById<com.tokopedia.unifyprinciples.Typography>(
+                        potentialProductCard?.findViewById<Typography>(
                             R.id.title
-                        )?.text = String.format(getString(R.string.topads_insight_centre_suggestion_insight_count),it.data.productRecommendationStats.count)
+                        )?.text = HtmlUtil.fromHtml(String.format(getString(R.string.topads_insight_centre_suggestion_insight_count),it.data.productRecommendationStats.count))
                     } else {
                         potentialProductCard?.showWithCondition(false)
                     }
                 }
                 is Fail -> {
                     potentialProductCard?.showWithCondition(false)
+                }
+            }
+        }
+
+        viewModel?.productInsightLiveData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.topadsInsightProducts?.data?.product.isNullOrEmpty()) {
+                        productOutOfStockCard?.showWithCondition(false)
+                    } else {
+                        productOutOfStockCard?.showWithCondition(true)
+                        productOutOfStockCard?.findViewById<Typography>(
+                            R.id.title
+                        )?.text = HtmlUtil.fromHtml(String.format(
+                            getString(R.string.topads_insight_centre_out_of_products),
+                            it.data.topadsInsightProducts?.data?.product?.size
+                        ))
+                    }
+                }
+                is Fail -> {
+                    productOutOfStockCard?.showWithCondition(false)
                 }
             }
         }
