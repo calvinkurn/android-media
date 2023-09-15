@@ -70,7 +70,6 @@ import com.tokopedia.utils.resources.isDarkMode
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
@@ -683,14 +682,11 @@ class OfferLandingPageFragment :
     }
 
     private fun fetchMiniCart() {
-        val offeringInfo = viewModel.offeringInfo.value
-        val offerCount = offeringInfo?.offerings?.firstOrNull()?.tierList?.size.orZero()
         binding?.miniCartView?.fetchData(
             shopIds = listOf(currentState.shopData.shopId),
             offerIds = currentState.offerIds,
             offerJsonData = currentState.offeringJsonData,
-            warehouseIds = currentState.warehouseIds,
-            offerCount = offerCount
+            warehouseIds = currentState.warehouseIds
         )
     }
 

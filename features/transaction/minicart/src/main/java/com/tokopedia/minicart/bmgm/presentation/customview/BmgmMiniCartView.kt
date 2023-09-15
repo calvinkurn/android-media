@@ -72,7 +72,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private var param = BmgmParamModel()
     private var shopIds = listOf<Long>()
-    private var offerCount: Int = Int.ZERO
     private var messageIndex = Int.ZERO
     private var latestOfferMessage = ""
 
@@ -128,14 +127,12 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         shopIds: List<Long>,
         offerIds: List<Long>,
         offerJsonData: String,
-        warehouseIds: List<Long>,
-        offerCount: Int
+        warehouseIds: List<Long>
     ) {
         this.param = BmgmParamModel(
             offerIds = offerIds, offerJsonData = offerJsonData, warehouseIds = warehouseIds
         )
         this.shopIds = shopIds
-        this.offerCount = offerCount
 
         viewModel.getMiniCartData(shopIds = shopIds, param = param, showLoadingState = false)
     }
@@ -392,9 +389,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 }
             }
         }
-        val numOfDiscountTier = data.tiersApplied.count { it.isDiscountTier() }
-        val hasReachMaxDiscount = numOfDiscountTier >= offerCount
-        if (!hasReachMaxDiscount) {
+        if (!data.hasReachMaxDiscount) {
             productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
         }
         return productList
@@ -426,7 +421,8 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     private fun sendMiniCartTrackingOnLastMessageChanged(currentLastMessage: String) {
-        val shouldSendTracker = currentLastMessage.isNotBlank() && currentLastMessage != latestOfferMessage
+        val shouldSendTracker =
+            currentLastMessage.isNotBlank() && currentLastMessage != latestOfferMessage
         if (shouldSendTracker) {
             latestOfferMessage = currentLastMessage
 
