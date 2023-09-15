@@ -460,6 +460,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
                 CHECK_BALANCE_WARNING -> showWarningMessage(message, isClickable)
                 CHECK_BALANCE_CRITICAL -> showCriticalMessage(message, isClickable)
                 CHECK_BALANCE_INFORMATION -> showInformationMessage(message, isClickable)
+                else -> showInformationMessage(message, isClickable)
             }
         }
     }
