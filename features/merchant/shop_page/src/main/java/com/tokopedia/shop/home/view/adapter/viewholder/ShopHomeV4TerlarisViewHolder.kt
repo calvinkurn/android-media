@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
 import com.tokopedia.shop.home.view.adapter.ShopHomeV4TerlarisAdapter
@@ -95,13 +96,13 @@ class ShopHomeV4TerlarisViewHolder(
                 layoutManager = linearLayoutManager
                 adapter = terlarisWidgetAdapter
             }
-
+            overrideWidgetHeaderTheme(colorSchema)
             val productCarouselData = getProductCarouselData(productList = it.productList)
             productCarouselData?.let { carouselData ->
                 val sanitizedProductListCarouselData = getCarouselData(carouselData)
                 if (sanitizedProductListCarouselData.size == PRODUCT_ONE) {
                     if (isOverrideTheme) {
-                        overrideWidgetTheme(colorSchema = colorSchema)
+                        overrideWidgetContentTheme(colorSchema = colorSchema)
                     }
                     showThreeItemLayout(
                         productList = sanitizedProductListCarouselData,
@@ -117,6 +118,11 @@ class ShopHomeV4TerlarisViewHolder(
                 }
             }
         }
+    }
+
+    private fun overrideWidgetHeaderTheme(colorSchema: ShopPageColorSchema) {
+        widgetTitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS))
+        widgetSubtitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
     }
 
     private fun setHeaderSection(element: ShopHomeCarousellProductUiModel) {
@@ -278,15 +284,16 @@ class ShopHomeV4TerlarisViewHolder(
         terlarisWidgetContainer?.visibility = View.VISIBLE
     }
 
-    private fun overrideWidgetTheme(colorSchema: ShopPageColorSchema) {
-        widgetTitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS))
-        widgetSubtitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+    private fun overrideWidgetContentTheme(colorSchema: ShopPageColorSchema) {
         productName1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productPrice1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        productOriginalPrice1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR))
         productName2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productPrice2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        productOriginalPrice2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR))
         productName3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
         productPrice3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        productOriginalPrice3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR))
     }
 
     private fun setupImpressionListener(element: ShopHomeCarousellProductUiModel, carouselData: List<ShopHomeProductUiModel>) {

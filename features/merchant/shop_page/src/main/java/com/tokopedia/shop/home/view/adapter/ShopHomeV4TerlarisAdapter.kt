@@ -107,7 +107,7 @@ class ShopHomeV4TerlarisAdapter(
                 setupImpressionListener(productListData)
 
                 if (isOverrideTheme) {
-                    overrideWidgetTheme()
+                    overrideWidgetContentTheme()
                 }
 
                 productContainer1?.setOnClickListener {
@@ -190,13 +190,16 @@ class ShopHomeV4TerlarisAdapter(
             }
         }
 
-        private fun overrideWidgetTheme() {
+        private fun overrideWidgetContentTheme() {
             productName1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
             productPrice1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+            productOriginalPrice1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR))
             productName2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
             productPrice2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+            productOriginalPrice2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR))
             productName3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
             productPrice3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+            productOriginalPrice3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR))
         }
 
         private fun setupImpressionListener(carouselData: List<ShopHomeProductUiModel>) {
