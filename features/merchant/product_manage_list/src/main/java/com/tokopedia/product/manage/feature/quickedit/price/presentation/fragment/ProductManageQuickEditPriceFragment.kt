@@ -157,7 +157,7 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
             }
         }
         binding?.quickEditPriceTextField?.requestFocus()
-        binding?.btnLayout?.setOnClickListener {
+        binding?.quickEditPriceSaveButton?.setOnClickListener {
             isPriceValid()
             ProductManageTracking.eventEditPriceSave(product?.id.orEmpty())
         }
