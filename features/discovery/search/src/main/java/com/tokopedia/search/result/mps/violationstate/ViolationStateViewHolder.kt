@@ -46,7 +46,7 @@ class ViolationStateViewHolder(
     }
 
     private fun renderDescViolation(text : String) {
-        binding?.mpsResultViolationProductsStateMessage?.text = text
+        binding?.mpsResultViolationProductsStateDescription?.text = text
     }
 
     private fun renderButtonMpsViolation() {
