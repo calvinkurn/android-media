@@ -85,6 +85,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
                     delayShimmerLabel?.cancel()
                     delayShimmerLabel = GlobalScope.launch(Dispatchers.Main) {
                         delay(DELAY_CHANGE_LABEL)
+                        tvLabelSchedule.gone()
                         shimmerChangeSchedule.gone()
                         tvLabelSchedule.text = selectedShipment.label
                         tvLabelSchedule.visible()

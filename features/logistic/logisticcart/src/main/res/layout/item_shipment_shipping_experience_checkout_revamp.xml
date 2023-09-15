@@ -17,6 +17,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/item_shipment_trade_in_pickup"
         tools:visibility="visible" />
 
     <!--Shipping: Trade In Pickup-->
@@ -29,6 +30,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/purchase_platform_partial_shimmering_list"
+        app:layout_constraintBottom_toTopOf="@id/layout_state_no_selected_shipping"
         tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -76,9 +78,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_state_no_selected_shipping"
+        app:layout_constraintBottom_toTopOf="@id/layout_state_has_selected_free_shipping"
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -175,9 +179,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_state_has_selected_normal_shipping"
+        app:layout_constraintBottom_toTopOf="@id/layout_state_has_selected_whitelabel_shipping"
         tools:visibility="visible">
 
         <ImageView
@@ -255,9 +261,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_state_has_selected_free_shipping"
+        app:layout_constraintBottom_toTopOf="@id/layout_state_has_selected_single_shipping"
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -311,9 +319,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_state_has_selected_whitelabel_shipping"
+        app:layout_constraintBottom_toTopOf="@id/shipping_now_widget"
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -391,10 +401,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         tools:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_state_has_selected_single_shipping" />
+        app:layout_constraintTop_toBottomOf="@id/layout_state_has_selected_single_shipping"
+        app:layout_constraintBottom_toTopOf="@id/layout_state_has_error_shipping"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_state_has_error_shipping"
@@ -443,6 +455,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_state_has_error_shipping"
+        app:layout_constraintBottom_toTopOf="@id/layout_shipment_insurance"
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -485,7 +498,6 @@
             android:id="@+id/divider_insurance"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -528,5 +540,13 @@
             app:unify_checkbox_type="type_default" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/spacing_insurance_normal_shipping"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_shipment_insurance"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
