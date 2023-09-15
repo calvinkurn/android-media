@@ -8,6 +8,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.VoucherOrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
@@ -77,7 +78,11 @@ object LastApplyMapper {
                     it.amount,
                     it.currencyDetailsStr
                 )
-            }
+            },
+            bebasOngkirInfo = LastApplyBebasOngkirInfoUiModel(
+                isUseBebasOngkirOnly = additionalInfo.bebasOngkirInfo.isUseBebasOngkirOnly,
+                isBoUnstackEnabled = additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
+            )
         )
     }
 
