@@ -193,7 +193,7 @@ class RegisterInitialFragment :
             mGoogleSignInClient = GoogleSignIn.getClient(it, gso)
         }
 
-        phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
+        phoneNumber = getParamString(ApplinkConstInternalUserPlatform.PHONE_NUMBER, arguments, savedInstanceState, "")
         source = getParamString(
             ApplinkConstInternalGlobal.PARAM_SOURCE,
             arguments,
@@ -1472,7 +1472,7 @@ class RegisterInitialFragment :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(PHONE_NUMBER, phoneNumber)
+        outState.putString(ApplinkConstInternalUserPlatform.PHONE_NUMBER, phoneNumber)
         outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         super.onSaveInstanceState(outState)
     }
@@ -1688,8 +1688,6 @@ class RegisterInitialFragment :
         private const val ABTEST_REDEFINE_REGISTER_EMAIL_KEY = "android_newregister"
         private const val ABTEST_REDEFINE_REGISTER_EMAIL_VARIANT_MANDATORY = "mandatory_variant"
         private const val ABTEST_REDEFINE_REGISTER_EMAIL_VARIANT_OPTIONAL = "optional_variant"
-
-        private const val PHONE_NUMBER = "phonenumber"
 
         private const val REGISTER_BUTTON_CORNER_SIZE = 10
         private const val SOCMED_BUTTON_MARGIN_SIZE = 10
