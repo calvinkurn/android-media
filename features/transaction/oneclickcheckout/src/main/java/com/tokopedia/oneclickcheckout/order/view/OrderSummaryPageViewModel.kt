@@ -257,7 +257,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                     withContext(executorDispatchers.main) {
                         newOrderPromo = newOrderPromo.copy(
                             lastApply = lastApply,
-                            isDisabled = false,
                             state = OccButtonState.LOADING
                         )
                         orderPromo.value = newOrderPromo
@@ -280,7 +279,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                             OccButtonState.DISABLE
                         }
                         newOrderPromo = newOrderPromo.copy(
-                            isDisabled = false,
                             isAnimateWording = isAnimateWording,
                             entryPointInfo = entryPointInfo,
                             state = state
@@ -291,7 +289,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                     withContext(executorDispatchers.main) {
                         orderPromo.value = orderPromo.value.copy(
                             lastApply = lastApply,
-                            isDisabled = false,
                             state = OccButtonState.NORMAL
                         )
                     }

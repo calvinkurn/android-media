@@ -7,7 +7,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 data class OrderPromo(
     var lastApply: LastApplyUiModel = LastApplyUiModel(),
     var promoErrorDefault: PromoCheckoutErrorDefault = PromoCheckoutErrorDefault(),
-    var entryPointInfo: PromoEntryPointInfo? = null,
+    var entryPointInfo: PromoEntryPointInfo = PromoEntryPointInfo(),
     var state: OccButtonState = OccButtonState.DISABLE,
 
     var isCartCheckoutRevamp: Boolean = false,
