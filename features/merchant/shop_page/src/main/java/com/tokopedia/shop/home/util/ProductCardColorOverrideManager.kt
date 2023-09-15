@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.util
 
 import android.graphics.PorterDuff
 import android.util.TypedValue
+import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
@@ -45,8 +46,16 @@ class ProductCardColorOverrideManager {
             val gimmick = productCard.findViewById<Typography>(productcardR.id.textViewGimmick)
             gimmick.setTextColor(ContextCompat.getColor(gimmick.context, shopR.color.dms_static_light_YN400))
 
+            //Divider bottom sold count
+            val salesRatingFloatLine = productCard.findViewById<View>(productcardR.id.salesRatingFloatLine)
+            salesRatingFloatLine.setBackgroundColor(ContextCompat.getColor(salesRatingFloatLine.context, shopR.color.dms_static_light_NN950_32))
+
+            //Bottom sold count
             val textViewIntegrity = productCard.findViewById<Typography>(productcardR.id.textViewIntegrity)
-            textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, shopR.color.dms_static_Unify_NN600_light))
+            textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, shopR.color.dms_static_light_NN950_68))
+
+            val textViewFulfillment = productCard.findViewById<Typography>(productcardR.id.textViewFulfillment)
+            textViewFulfillment.setTextColor(ContextCompat.getColor(textViewFulfillment.context, shopR.color.dms_static_light_NN950_68))
         }
     }
 
@@ -76,8 +85,16 @@ class ProductCardColorOverrideManager {
             val gimmick = productCard.findViewById<Typography>(productcardR.id.textViewGimmick)
             gimmick.setTextColor(ContextCompat.getColor(gimmick.context, shopR.color.dms_static_light_YN400))
 
+            //Divider bottom sold count
+            val salesRatingFloatLine = productCard.findViewById<Typography>(productcardR.id.salesRatingFloatLine)
+            salesRatingFloatLine.setBackgroundColor(ContextCompat.getColor(salesRatingFloatLine.context, shopR.color.dms_static_light_NN950_32))
+
+            //Bottom sold count
             val textViewIntegrity = productCard.findViewById<Typography>(productcardR.id.textViewIntegrity)
-            textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, shopR.color.dms_static_Unify_NN600_light))
+            textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, shopR.color.dms_static_light_NN950_68))
+
+            val textViewFulfillment = productCard.findViewById<Typography>(productcardR.id.textViewFulfillment)
+            textViewFulfillment.setTextColor(ContextCompat.getColor(textViewFulfillment.context, shopR.color.dms_static_light_NN950_68))
         }
     }
 
