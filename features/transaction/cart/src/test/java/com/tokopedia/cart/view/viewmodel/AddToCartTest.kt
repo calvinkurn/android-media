@@ -7,7 +7,6 @@ import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -27,7 +26,14 @@ class AddToCartTest : BaseCartViewModelTest() {
     @Test
     fun `WHEN add to cart wishlist item success THEN should render success`() {
         // GIVEN
-        val productModel = CartWishlistItemHolderData(id = "0", shopId = "0")
+        val productModel = CartWishlistItemHolderData(
+            id = "0",
+            shopId = "0",
+            name = "a",
+            category = "s",
+            price = "1",
+            minOrder = 1
+        )
         val successMessage = "Success message add to cart"
         val addToCartDataModel = AddToCartDataModel().apply {
             status = AddToCartDataModel.STATUS_OK
@@ -58,7 +64,6 @@ class AddToCartTest : BaseCartViewModelTest() {
     fun `WHEN add to cart wishlist item failed THEN should render error`() {
         // GIVEN
         val errorMessage = "Add to cart error"
-        val exception = ResponseErrorException(errorMessage)
         val addToCartDataModel = AddToCartDataModel().apply {
             this.status = AddToCartDataModel.STATUS_ERROR
             this.data = DataModel()
@@ -101,7 +106,15 @@ class AddToCartTest : BaseCartViewModelTest() {
     @Test
     fun `WHEN add to cart recent view item success THEN should render success`() {
         // GIVEN
-        val productModel = CartRecentViewItemHolderData(id = "0", shopId = "0")
+        val productModel = CartRecentViewItemHolderData(
+            id = "0",
+            shopId = "0",
+            name = "a",
+            price = "1",
+            minOrder = 1,
+            clickUrl = "https://",
+            isTopAds = true
+        )
         val addToCartDataModel = AddToCartDataModel().apply {
             status = AddToCartDataModel.STATUS_OK
             data = DataModel().apply {
@@ -132,7 +145,6 @@ class AddToCartTest : BaseCartViewModelTest() {
     fun `WHEN add to cart recent view item failed THEN should render error`() {
         // GIVEN
         val errorMessage = "Add to cart error"
-        val exception = ResponseErrorException(errorMessage)
         val addToCartDataModel = AddToCartDataModel().apply {
             this.status = AddToCartDataModel.STATUS_ERROR
             this.data = DataModel()
@@ -177,7 +189,18 @@ class AddToCartTest : BaseCartViewModelTest() {
     fun `WHEN add to cart recommendation item success THEN should render success`() {
         // GIVEN
         val productModel =
-            CartRecommendationItemHolderData(false, RecommendationItem(productId = 0, shopId = 0))
+            CartRecommendationItemHolderData(
+                false,
+                RecommendationItem(
+                    productId = 0,
+                    shopId = 0,
+                    name = "a",
+                    categoryBreadcrumbs = "s",
+                    price = "1",
+                    minOrder = 1,
+                    clickUrl = "https://"
+                )
+            )
         val addToCartDataModel = AddToCartDataModel().apply {
             status = AddToCartDataModel.STATUS_OK
             data = DataModel().apply {
@@ -209,7 +232,6 @@ class AddToCartTest : BaseCartViewModelTest() {
     fun `WHEN add to cart recommendation item failed THEN should render error`() {
         // GIVEN
         val errorMessage = "Add to cart error"
-        val exception = ResponseErrorException(errorMessage)
         val productModel =
             CartRecommendationItemHolderData(false, RecommendationItem(productId = 0, shopId = 0))
         val addToCartDataModel = AddToCartDataModel().apply {
@@ -268,7 +290,7 @@ class AddToCartTest : BaseCartViewModelTest() {
                 ProductCardModel(),
                 "",
                 "",
-                ""
+                "https://"
             )
         productModel.apply {
             productId = "1"
@@ -308,7 +330,6 @@ class AddToCartTest : BaseCartViewModelTest() {
     fun `WHEN add to cart shop ads item failed THEN should render error`() {
         // GIVEN
         val errorMessage = "Add to cart error"
-        val exception = ResponseErrorException(errorMessage)
         val productModel =
             BannerShopProductUiModel(
                 CpmData(),

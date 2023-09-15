@@ -20,7 +20,6 @@ import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.scheduledelivery.domain.model.DeliveryProduct
 import com.tokopedia.logisticcart.scheduledelivery.domain.model.PromoStacking
@@ -193,8 +192,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         viewModel.setSelectedCourier(
             5,
             courierItemData,
-            listOf(ShippingCourierUiModel()),
-            InsuranceData()
+            listOf(ShippingCourierUiModel())
         )
 
         // then
@@ -240,8 +238,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         viewModel.setSelectedCourier(
             5,
             courierItemData,
-            listOf(ShippingCourierUiModel()),
-            InsuranceData()
+            listOf(ShippingCourierUiModel())
         )
 
         // then
@@ -1609,6 +1606,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             )
         )
 
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
         // when
         viewModel.prepareFullCheckoutPage()
 
@@ -1644,7 +1643,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                     shipperProductId = 1,
                     shipperId = 1
                 ),
-                shippingCourierUiModels = listOf(shippingCourierUiModel)
+                shippingCourierUiModels = listOf(shippingCourierUiModel),
+                insurance = CheckoutOrderInsurance()
             ),
             (viewModel.listData.value[5] as CheckoutOrderModel).shipment
         )
@@ -1962,8 +1962,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             "123",
             "boCode",
             true,
-            CourierItemData(logPromoCode = "boCode", etaText = ""),
-            InsuranceData()
+            CourierItemData(logPromoCode = "boCode", etaText = "")
         )
 
         // then
@@ -2022,8 +2021,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             "123",
             "boCode",
             true,
-            CourierItemData(logPromoCode = "boCode", etaText = ""),
-            InsuranceData()
+            CourierItemData(logPromoCode = "boCode", etaText = "")
         )
 
         // then
@@ -2085,8 +2083,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             "123",
             "boCode",
             true,
-            CourierItemData(logPromoCode = "boCode", etaText = ""),
-            InsuranceData()
+            CourierItemData(logPromoCode = "boCode", etaText = "")
         )
 
         // then

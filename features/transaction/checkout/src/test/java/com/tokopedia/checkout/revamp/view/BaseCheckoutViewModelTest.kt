@@ -98,7 +98,7 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine
 
-    @MockK
+    @MockK(relaxUnitFun = true)
     lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     @MockK(relaxUnitFun = true)

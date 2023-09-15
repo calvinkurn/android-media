@@ -9,6 +9,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMiniCart
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetView
 
 class GlobalRecommendationViewHolder(
     private val binding: ItemGlobalRecommendationBinding,
@@ -19,7 +20,8 @@ class GlobalRecommendationViewHolder(
         binding.apply {
             postAtcGlobalRecom.bind(
                 model = recommendationWidgetModel(element),
-                parentRootView = callback.rootView()
+                parentRootView = callback.rootView(),
+                callback = recommendationWidgetCallback(element)
             )
 
             root.addOnImpressionListener(element.impressHolder) {
@@ -45,4 +47,11 @@ class GlobalRecommendationViewHolder(
                 warehouseId = element.warehouseId
             )
         )
+
+    private fun recommendationWidgetCallback(element: RecommendationUiModel) =
+        object : RecommendationWidgetView.Callback {
+            override fun onError() {
+                callback.removeComponent(element.id)
+            }
+        }
 }

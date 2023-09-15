@@ -95,7 +95,8 @@ sealed interface DeleteCartEvent {
         val forceExpandCollapsedUnavailableItems: Boolean,
         val addWishList: Boolean,
         val isFromGlobalCheckbox: Boolean,
-        val isFromEditBundle: Boolean
+        val isFromEditBundle: Boolean,
+        val cartBmGmTickerData: CartBmGmTickerData
     ) : DeleteCartEvent
 
     data class Failed(
