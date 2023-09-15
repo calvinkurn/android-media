@@ -39,47 +39,15 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
     private fun processNewEntryPointInfo(model: CheckoutPromoModel) {
         val lastApply = model.promo
         val entryPointInfo = model.entryPointInfo
-
-        val isUsingGlobalPromo = lastApply.codes.isNotEmpty() && lastApply.message.state != "red"
-        val isUsingBoPromo = lastApply.voucherOrders
-            .any { it.code.isNotEmpty() && it.message.state != "red" }
-        val hasSummaries = lastApply.additionalInfo.usageSummaries.isNotEmpty()
-        if (!isUsingGlobalPromo && !isUsingBoPromo && !hasSummaries) {
-            if (entryPointInfo != null && !model.isLoading) {
-                if (!entryPointInfo.isSuccess) {
-                    if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED
-                        || entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED
-                        || entryPointInfo.statusCode == ResultStatus.STATUS_COUPON_LIST_EMPTY) {
-                        val message = entryPointInfo.messages.firstOrNull().ifNull { "" }
-                        if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
-                            binding.btnCheckoutPromo.showActiveNew(
-                                leftImageUrl = entryPointInfo.iconUrl,
-                                wording = message,
-                                rightIcon = IconUnify.CHEVRON_RIGHT,
-                                onClickListener = {
-                                    if (entryPointInfo.isClickable) {
-                                        listener.onClickPromoCheckout(lastApply)
-                                    }
-                                }
-                            )
-                        } else {
-                            binding.btnCheckoutPromo.showInactiveNew(
-                                leftImageUrl = entryPointInfo.iconUrl,
-                                wording = message,
-                                onClickListener = {
-                                    if (entryPointInfo.isClickable) {
-                                        listener.onClickPromoCheckout(lastApply)
-                                    }
-                                }
-                            )
-                        }
-                    } else {
-                        binding.btnCheckoutPromo.showError {
-                            listener.onClickReloadPromoWidget()
-                        }
-                    }
-                } else {
-                    val message = entryPointInfo.messages.firstOrNull().ifNull { "" }
+        if (!model.isLoading) {
+            val defaultMessage = itemView.context.getString(purchase_platformcommonR.string.promo_funnel_label)
+            if (!entryPointInfo.isSuccess) {
+                if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED ||
+                    entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED ||
+                    entryPointInfo.statusCode == ResultStatus.STATUS_COUPON_LIST_EMPTY
+                ) {
+                    val message = entryPointInfo.messages.firstOrNull()
+                        .ifNull { defaultMessage }
                     if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
                         binding.btnCheckoutPromo.showActiveNew(
                             leftImageUrl = entryPointInfo.iconUrl,
@@ -102,62 +70,94 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                             }
                         )
                     }
+                } else {
+                    binding.btnCheckoutPromo.showError {
+                        listener.onClickReloadPromoWidget()
+                    }
                 }
             } else {
-                binding.btnCheckoutPromo.showLoading()
+                val isUsingPromo = lastApply.additionalInfo.usageSummaries.isNotEmpty()
+                if (!isUsingPromo) {
+                    val message = entryPointInfo.messages.firstOrNull()
+                        .ifNull { defaultMessage }
+                    if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
+                        binding.btnCheckoutPromo.showActiveNew(
+                            leftImageUrl = entryPointInfo.iconUrl,
+                            wording = message,
+                            rightIcon = IconUnify.CHEVRON_RIGHT,
+                            onClickListener = {
+                                if (entryPointInfo.isClickable) {
+                                    listener.onClickPromoCheckout(lastApply)
+                                }
+                            }
+                        )
+                    } else {
+                        binding.btnCheckoutPromo.showInactiveNew(
+                            leftImageUrl = entryPointInfo.iconUrl,
+                            wording = message,
+                            onClickListener = {
+                                if (entryPointInfo.isClickable) {
+                                    listener.onClickPromoCheckout(lastApply)
+                                }
+                            }
+                        )
+                    }
+                } else {
+                    val message = when {
+                        lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
+                            lastApply.additionalInfo.messageInfo.message
+                        }
+
+                        lastApply.defaultEmptyPromoMessage.isNotBlank() -> {
+                            lastApply.defaultEmptyPromoMessage
+                        }
+
+                        else -> {
+                            defaultMessage
+                        }
+                    }
+                    val boPromoSummaries = lastApply.additionalInfo.usageSummaries
+                        .filter { it.type == PROMO_TYPE_BEBAS_ONGKIR }
+                        .map {
+                            PromoEntryPointSummaryItem(
+                                title = it.description,
+                                value = it.amountStr
+                            )
+                        }
+                    val otherPromoSummaries = lastApply.additionalInfo.usageSummaries
+                        .filter { it.type != PROMO_TYPE_BEBAS_ONGKIR }
+                        .map {
+                            PromoEntryPointSummaryItem(
+                                title = it.description,
+                                value = it.amountStr
+                            )
+                        }
+                    val secondaryText = if (otherPromoSummaries.isEmpty()) {
+                        entryPointInfo.messages.firstOrNull().ifNull { "" }
+                    } else {
+                        ""
+                    }
+                    val isSecondaryTextEnabled = otherPromoSummaries.isEmpty() &&
+                        secondaryText.isNotEmpty() &&
+                        entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN
+                    val isExpanded = boPromoSummaries.isNotEmpty() && isSecondaryTextEnabled
+                    binding.btnCheckoutPromo.showActiveNewExpandable(
+                        leftImageUrl = ICON_URL_ENTRY_POINT_APPLIED,
+                        wording = message,
+                        firstLevelSummary = boPromoSummaries,
+                        groupedSummary = otherPromoSummaries,
+                        secondaryText = secondaryText,
+                        isSecondaryTextEnabled = isSecondaryTextEnabled,
+                        isExpanded = isExpanded,
+                        animateWording = model.isAnimateWording,
+                        onClickListener = {
+                            listener.onClickPromoCheckout(lastApply)
+                        }
+                    )
+                }
             }
         } else {
-            val message = when {
-                lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
-                    lastApply.additionalInfo.messageInfo.message
-                }
-
-                lastApply.defaultEmptyPromoMessage.isNotBlank() -> {
-                    lastApply.defaultEmptyPromoMessage
-                }
-
-                else -> {
-                    ""
-                }
-            }
-            val boPromoSummaries = lastApply.additionalInfo.usageSummaries
-                .filter { it.type == PROMO_TYPE_BEBAS_ONGKIR }
-                .map {
-                    PromoEntryPointSummaryItem(
-                        title = it.description,
-                        value = it.amountStr
-                    )
-                }
-            val otherPromoSummaries = lastApply.additionalInfo.usageSummaries
-                .filter { it.type != PROMO_TYPE_BEBAS_ONGKIR }
-                .map {
-                    PromoEntryPointSummaryItem(
-                        title = it.description,
-                        value = it.amountStr
-                    )
-                }
-            val secondaryText = if (otherPromoSummaries.isEmpty()) {
-                entryPointInfo?.messages?.firstOrNull().ifNull { "" }
-            } else {
-                ""
-            }
-            val isSecondaryTextEnabled = otherPromoSummaries.isEmpty()
-                && secondaryText.isNotEmpty()
-                && entryPointInfo?.color == PromoEntryPointInfo.COLOR_GREEN
-            val isExpanded = boPromoSummaries.isNotEmpty() && isSecondaryTextEnabled
-            binding.btnCheckoutPromo.showActiveNewExpandable(
-                leftImageUrl = ICON_URL_ENTRY_POINT_APPLIED,
-                wording = message,
-                firstLevelSummary = boPromoSummaries,
-                groupedSummary = otherPromoSummaries,
-                secondaryText = secondaryText,
-                isSecondaryTextEnabled = isSecondaryTextEnabled,
-                isExpanded = isExpanded,
-                animateWording = model.isAnimateWording,
-                onClickListener = {
-                    listener.onClickPromoCheckout(lastApply)
-                }
-            )
+            binding.btnCheckoutPromo.showLoading()
         }
     }
 

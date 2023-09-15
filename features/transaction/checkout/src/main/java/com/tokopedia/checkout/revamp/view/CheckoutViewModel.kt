@@ -736,7 +736,6 @@ class CheckoutViewModel @Inject constructor(
                     listData.value = currentListData.map { model ->
                         if (model is CheckoutPromoModel) {
                             return@map checkoutModel.copy(
-                                entryPointInfo = null,
                                 isLoading = true
                             )
                         } else {
@@ -744,25 +743,19 @@ class CheckoutViewModel @Inject constructor(
                         }
                     }
                 }
-                val isUsingGlobalPromo = checkoutModel.promo
-                    .codes.isNotEmpty()
-                val isUsingPromo = checkoutModel
-                    .promo.voucherOrders.any { it.code.isNotBlank() && it.message.state != "red" }
-                if (!isUsingGlobalPromo && !isUsingPromo) {
-                    val entryPointInfo = promoProcessor.getEntryPointInfo(
-                        generateCouponListRecommendationRequest()
-                    )
-                    withContext(dispatchers.main) {
-                        val currentListData = listData.value
-                        listData.value = currentListData.map { model ->
-                            if (model is CheckoutPromoModel) {
-                                return@map checkoutModel.copy(
-                                    entryPointInfo = entryPointInfo,
-                                    isLoading = false
-                                )
-                            } else {
-                                return@map model
-                            }
+                val entryPointInfo = promoProcessor.getEntryPointInfo(
+                    generateCouponListRecommendationRequest()
+                )
+                withContext(dispatchers.main) {
+                    val currentListData = listData.value
+                    listData.value = currentListData.map { model ->
+                        if (model is CheckoutPromoModel) {
+                            return@map checkoutModel.copy(
+                                entryPointInfo = entryPointInfo,
+                                isLoading = false
+                            )
+                        } else {
+                            return@map model
                         }
                     }
                 }
@@ -772,17 +765,30 @@ class CheckoutViewModel @Inject constructor(
 
     private suspend fun getEntryPointInfo(
         checkoutItems: List<CheckoutItem>,
-        oldCheckoutItems: List<CheckoutItem>?
+        oldCheckoutItems: List<CheckoutItem>
     ): List<CheckoutItem> {
+        withContext(dispatchers.main) {
+            listData.value.promo()?.let {
+                val currentListData = listData.value
+                listData.value = currentListData.map { model ->
+                    if (model is CheckoutPromoModel) {
+                        return@map it.copy(
+                            isLoading = true
+                        )
+                    } else {
+                        return@map model
+                    }
+                }
+            }
+        }
+
         val checkoutModel =
             checkoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
         val oldCheckoutModel =
-            oldCheckoutItems?.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
+            oldCheckoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
 
         if (checkoutModel != null && oldCheckoutModel != null) {
-            if (isPromoRevamp == null || isPromoRevamp == false) {
-                return checkoutItems
-            } else {
+            if (isPromoRevamp == true) {
                 val oldTotalPromoAmount =
                     oldCheckoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
                 val newTotalPromoAmount =
@@ -810,7 +816,7 @@ class CheckoutViewModel @Inject constructor(
     fun reloadEntryPointInfo() {
         viewModelScope.launch(dispatchers.immediate) {
             val data = listData.value
-            val newData = getEntryPointInfo(data, null)
+            val newData = getEntryPointInfo(data, data)
             withContext(dispatchers.main) {
                 listData.value = newData
             }
