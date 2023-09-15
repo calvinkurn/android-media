@@ -33,8 +33,8 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 internal class NavToolbarIconAdapter(
     private var iconConfig: IconConfig,
     private val topNavComponentListener: TopNavComponentListener,
-    private val navToolbarIconCustomLightColor: Int?,
-    private val navToolbarIconCustomDarkColor: Int?
+    private val getNavToolbarIconCustomLightColor: () ->Int?,
+    private val getNavToolbarIconCustomDarkColor: () -> Int?
 ) :
     RecyclerView.Adapter<IconHolder>() {
     companion object {
@@ -53,7 +53,7 @@ internal class NavToolbarIconAdapter(
         when (viewType) {
             VIEW_TYPE_IMAGE -> {
                 val view = inflater.inflate(R.layout.toolbar_viewholder_icon, parent, false)
-                return ImageIconHolder(view, topNavComponentListener, navToolbarIconCustomLightColor, navToolbarIconCustomDarkColor)
+                return ImageIconHolder(view, topNavComponentListener, getNavToolbarIconCustomLightColor, getNavToolbarIconCustomDarkColor)
             }
             VIEW_TYPE_LOTTIE -> {
                 val view = inflater.inflate(R.layout.toolbar_viewholder_icon_lottie, parent, false)
@@ -65,7 +65,7 @@ internal class NavToolbarIconAdapter(
             }
         }
         val view = inflater.inflate(R.layout.toolbar_viewholder_icon, parent, false)
-        return ImageIconHolder(view, topNavComponentListener, navToolbarIconCustomLightColor, navToolbarIconCustomDarkColor)
+        return ImageIconHolder(view, topNavComponentListener, getNavToolbarIconCustomLightColor, getNavToolbarIconCustomDarkColor)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -186,8 +186,8 @@ internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
 internal class ImageIconHolder(
     view: View,
     val topNavComponentListener: TopNavComponentListener,
-    private val navToolbarIconCustomLightColor: Int?,
-    private val navToolbarIconCustomDarkColor: Int?
+    private val getNavToolbarIconCustomLightColor: () -> Int?,
+    private val getNavToolbarIconCustomDarkColor: () -> Int?
 ) : IconHolder(view) {
     val iconImage = view.findViewById<IconNotification>(R.id.nav_icon_image)
     val iconImageContainer = view.findViewById<View>(R.id.nav_icon_container)
@@ -297,6 +297,7 @@ internal class ImageIconHolder(
     }
 
     private fun getLightIconColor(): Int {
+        val navToolbarIconCustomLightColor = getNavToolbarIconCustomLightColor.invoke()
         return if (navToolbarIconCustomLightColor != null) {
             navToolbarIconCustomLightColor
         } else {
@@ -310,9 +311,10 @@ internal class ImageIconHolder(
     }
 
     private fun getDarkIconColor(): Int {
-        return if(navToolbarIconCustomDarkColor != null) {
+        val navToolbarIconCustomDarkColor = getNavToolbarIconCustomDarkColor.invoke()
+        return if (navToolbarIconCustomDarkColor != null) {
             navToolbarIconCustomDarkColor
-        }else {
+        } else {
             val unifyColor = if (itemView.context.isDarkMode()) {
                 ContextCompat.getColor(
                     context,

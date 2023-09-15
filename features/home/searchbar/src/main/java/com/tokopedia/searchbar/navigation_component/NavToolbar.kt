@@ -257,7 +257,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         val iconConfig = iconBuilder.build()
         viewModel?.setRegisteredIconList(iconConfig)
         this.useCentralizedIconNotification = iconConfig.useCentralizedIconNotification
-        navIconAdapter = NavToolbarIconAdapter(iconConfig, this, navToolbarIconCustomLightColor, navToolbarIconCustomDarkColor)
+        navIconAdapter = NavToolbarIconAdapter(iconConfig, this, {navToolbarIconCustomLightColor}, {navToolbarIconCustomDarkColor})
         navIconAdapter?.setHasStableIds(true)
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.itemAnimator = null
