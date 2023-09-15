@@ -1,26 +1,97 @@
 package com.tokopedia.discovery2.analytics
 
+// IMPRESSION
+
+// "{
+// ""event"": ""view_item"",
+// ""eventAction"": ""coupon impression"",
+// ""eventCategory"": ""discovery page"",
+// ""eventLabel"": """",
+//  ""trackerId"": ""2725"",
+//  ""businessUnit"": ""home & browse"",
+//  ""currentSite"": ""tokopediamarketplace"",
+//  ""pageDestination"": ""{page_source_name}.{banner_component_name}.{banner_name}.{category_id}"",
+//  ""pagePath"": ""{Page Path}"",
+//  ""pageType"": ""{Page Type}"",
+//  ""promotions"": [
+//    {
+//      ""creative_name"": ""{creative_name}"",
+//      ""creative_slot"": ""{position index}"",
+//      ""item_id"": ""{banner_id} - {promo_code}"",
+//      ""item_name"": ""/discovery/{page_path} - {page_type} - {position of component on page} - {functional_name} - {header_name} - {section_id} - {mega_tab_value} - {component_name}""
+//    },
+//    {
+//      ""creative_name"": ""{creative_name}"",
+//      ""creative_slot"": ""{position index}"",
+//      ""item_id"": ""{banner_id} - {promo_code}"",
+//      ""item_name"": ""/discovery/{page_path} - {page_type} - {position of component on page} - {functional_name} - {header_name} - {section_id} - {mega_tab_value} - {component_name}""
+//    }
+//  ],
+//  ""userId"": ""{user id}""
+// }"
+
+// CLICK
+
+// "{
+// ""event"": ""select_content"",
+// ""eventAction"": ""click on banner coupon"",
+// ""eventCategory"": ""discovery page"",
+// ""eventLabel"": ""{component_name} - {promo_code}"",
+// ""trackerId"": ""2727"",
+// ""businessUnit"": ""home & browse"",
+// ""currentSite"": ""tokopediamarketplace"",
+// ""pageDestination"": ""{page_source_name}.{banner_component_name}.{banner_name}.{category_id}"",
+// ""pagePath"": ""{Page Path}"",
+// ""pageType"": ""{Page Type}"",
+// ""promotions"": [
+// {
+//    ""creative_name"": ""{creative_name}"",
+//    ""creative_slot"": ""{position index}"",
+//    ""item_id"": ""{banner_id} - {promo_code}"",
+//    ""item_name"": ""/discovery/{page_path} - {page_type} - {position of component on page} - {functional_name} - {header_name} - {section_id} - {mega_tab_value} - {component_name}""
+// }
+// ],
+// ""userId"": ""{user id}""
+// }"
+
+// Click CTA
+// "{
+// ""event"": ""clickHomepage"",
+// ""eventAction"": ""click on button cta coupon"",
+// ""eventCategory"": ""discovery page"",
+// ""eventLabel"": ""{component_name} - {action_type} - {mega_tab_value} - {creative_name} - {promo_code}"",
+// ""trackerId"": ""2726"",
+// ""businessUnit"": ""home & browse"",
+// ""currentSite"": ""tokopediamarketplace"",
+// ""pageDestination"": ""{page_source_name}.{banner_component_name}.{banner_name}.{category_id}"",
+// ""pagePath"": ""{Page Path}"",
+// ""pageType"": ""{Page Type}""
+// }"
+
 const val EVENT_CLICK_DISCOVERY = "clickDiscovery"
 const val EVENT_CLICK_COUPON = "select_content"
 const val EVENT_PROMO_VIEW = "promoView"
 const val EVENT_PRODUCT_VIEW = "productView"
 const val EVENT_PRODUCT_ATC = "addToCart"
 const val EVENT_PROMO_CLICK = "promoClick"
+
 const val KEY_EVENT = "event"
 const val KEY_EVENT_CATEGORY = "eventCategory"
 const val KEY_EVENT_ACTION = "eventAction"
 const val KEY_EVENT_LABEL = "eventLabel"
 const val KEY_E_COMMERCE = "ecommerce"
+const val KEY_CREATIVE_NAME = "creative_name"
+const val KEY_CREATIVE_SLOT = "creative_slot"
+const val KEY_ITEM_ID = "item_id"
+const val KEY_ITEM_NAME = "item_name"
+
 const val EMPTY_STRING = ""
 const val CLICK_SOCIAL_SHARE_ACTION = "click social share"
 const val CLICK_VIEW_ALL = "click view all"
 const val CLICK_OTHER_CONTENT = "click other content"
 const val CLICK_BACK_BUTTON_ACTION = "click back button"
 const val CLICK_BUTTON_CLAIM_COUPON_ACTION = "click on button cta coupon"
-const val CLAIM_COUPON_IMPRESSION = "coupon impression"
-const val CLAIM_COUPON_TRACKER_ID = "2725"
 const val TOP_ADS_HEADLINE_IMPRESSION = "impression - cpm shop page"
-const val CLAIM_COUPON_CLICK = "click on banner coupon"
 const val CLICK_DYNAMIC_BANNER = "dynamic banner click"
 const val CLICK_TDN_BANNER = "click - tdn banner"
 const val BANNER_CAROUSEL_SEE_ALL_CLICK = "click view all on banner carousel"
@@ -31,7 +102,6 @@ const val QUICK_FILTER_CLICK = "click quick filter"
 const val DETAILED_FILTER_CLICK = "click on detailed filter"
 const val APPLY_FILTER_CLICK = "click on apply filter"
 const val TIMER_SPRINT_SALE_CLICK = "click reminder notification"
-const val IMPRESSION_ICON_DYNAMIC_COMPONENT = "impression on icon"
 const val IMPRESSION_DYNAMIC_BANNER = "dynamic banner impression"
 const val IMPRESSION_MV_SINGLE = "merchant voucher single - view coupon"
 const val IMPRESSION_MV_MULTIPLE = "merchant voucher multiple - view coupon"
@@ -237,7 +307,6 @@ const val ACTION_SHOP_CARD_CLICK = "shop card click"
 const val SHOP_CARD_BANNER = "shop_card_banner"
 const val SHOP_CARD_INFINITE = "shop_card_infinite"
 const val MIX_LEFT_BANNER = "mix left banner"
-const val KEY_CREATIVE_SLOT = "creative_slot"
 const val KEY_UNIQUE_SHOP_CARD_IMPRESSION = "shop_card_rilisan_spesial"
 
 const val ANCHOR_TAB_COMPONENT = "anchor_tab"
@@ -251,6 +320,9 @@ const val ACTION_CLICK_MY_COUPON = "click coupon"
 
 const val ACTION_VIEW_COUPON_BANNER = "coupon impression"
 const val ACTION_CLICK_COUPON_BANNER = "click on banner coupon"
+const val COUPON_IMPRESSION_TRACKER_ID = "2725"
+const val COUPON_CLICK_CTA_TRACKER_ID = "2726"
+const val COUPON_CLICK_TRACKER_ID = "2727"
 
 const val CAMPAIGN_ID = "campaign_id"
 const val VARIANT_ID = "variantId"

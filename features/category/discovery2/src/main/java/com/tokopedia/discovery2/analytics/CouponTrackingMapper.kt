@@ -1,0 +1,75 @@
+package com.tokopedia.discovery2.analytics
+
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
+import com.tokopedia.discovery2.data.mycoupon.MyCoupon
+
+object CouponTrackingMapper {
+
+    //region Image Banner
+    fun List<DataItem>.toTrackingProps() = map {
+        it.toTrackingProps()
+    }
+
+    fun DataItem.toTrackingProps() = CouponTrackingProperties(
+        parentComponentName.orEmpty(),
+        name.orEmpty(),
+        id.orEmpty(),
+        code.orEmpty(),
+        creativeName.orEmpty(),
+        positionForParentItem,
+        action.orEmpty(),
+        gtmItemName.orEmpty()
+    )
+    //endregion
+
+    //region My Coupon
+    fun List<MyCoupon>.toTrackingProps(component: ComponentsItem): List<CouponTrackingProperties> {
+        val catalogSlug = component.data?.first()?.catalogSlug.orEmpty()
+
+        return map { item ->
+
+            val couponName = catalogSlug
+                .filter { !it.isNullOrEmpty() }
+                .find { slug -> item.code?.contains(slug!!) == true }
+
+            CouponTrackingProperties(
+                component.parentComponentName.orEmpty(),
+                couponName.orEmpty(),
+                component.parentComponentId,
+                item.code.orEmpty(),
+                component.creativeName.orEmpty(),
+                component.position,
+                EMPTY_STRING,
+                EMPTY_STRING // TODO("Consume $gtm_item_name from server response")
+            )
+        }
+    }
+    //endregion
+
+    //region Claim Coupon
+    fun ComponentsItem.toTrackingProps(): List<CouponTrackingProperties> {
+        if (claimCouponList.isNullOrEmpty()) return emptyList()
+
+        return claimCouponList!!.map { item ->
+            toTrackingProperties(item)!!
+        }
+    }
+
+    fun ComponentsItem.toTrackingProperties(
+        claimCouponItem: CatalogWithCouponList?
+    ) = claimCouponItem?.let {
+        CouponTrackingProperties(
+            parentComponentName.orEmpty(),
+            it.slug.orEmpty(),
+            parentComponentId,
+            it.couponCode.orEmpty(),
+            creativeName.orEmpty(),
+            position,
+            it.buttonStr.orEmpty(),
+            EMPTY_STRING // TODO("Consume $gtm_item_name from server response")
+        )
+    }
+    //endregion
+}
