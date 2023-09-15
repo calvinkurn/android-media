@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.shop.R as shopR
 
-class ProductCardColorOverrider {
+class ProductCardColorOverrideManager {
 
     private val horizontalPaddingPx by lazy { 4.toPx() }
     private val verticalPaddingPx by lazy { 3.toPx() }
