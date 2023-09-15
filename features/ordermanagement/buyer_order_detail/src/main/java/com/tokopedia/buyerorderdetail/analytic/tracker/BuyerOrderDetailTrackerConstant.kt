@@ -52,6 +52,7 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_SEE_COMPLAINT = "click on lihat complain"
     const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT = "click on product serupa"
     const val EVENT_ACTION_CLICK_BUY_AGAIN = "attempt click beli lagi"
+    const val EVENT_ACTION_CLICK_CLAIM_WARRANTY = "click klaim garansi"
     const val EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS = "click beli lagi success"
     const val EVENT_ACTION_IMPRESSION_INSURANCE_WIDGET = "impression - proteksi transaksi"
     const val EVENT_ACTION_CLICK_INSURANCE_WIDGET = "click on insurance button"
@@ -130,6 +131,7 @@ object BuyerOrderDetailTrackerConstant {
     const val TRACKER_ID_45654 = "45654"
     const val TRACKER_ID_45655 = "45655"
     const val TRACKER_ID_45656 = "45656"
+    const val TRACKER_ID_47433 = "47433"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
