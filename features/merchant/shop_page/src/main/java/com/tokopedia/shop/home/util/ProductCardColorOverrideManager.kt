@@ -9,6 +9,7 @@ import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -54,8 +55,14 @@ class ProductCardColorOverrideManager {
             val textViewIntegrity = productCard.findViewById<Typography>(productcardR.id.textViewIntegrity)
             textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, shopR.color.dms_static_light_NN950_68))
 
+            //Dilayani tokopedia textView
             val textViewFulfillment = productCard.findViewById<Typography>(productcardR.id.textViewFulfillment)
             textViewFulfillment.setTextColor(ContextCompat.getColor(textViewFulfillment.context, shopR.color.dms_static_light_NN950_68))
+
+            val textViewStockLabel = productCard.findViewById<Typography>(productcardR.id.textViewStockLabel)
+            textViewStockLabel.setTextColor(ContextCompat.getColor(textViewStockLabel.context, shopR.color.dms_static_light_NN950_68))
+
+
         }
     }
 
@@ -93,8 +100,14 @@ class ProductCardColorOverrideManager {
             val textViewIntegrity = productCard.findViewById<Typography>(productcardR.id.textViewIntegrity)
             textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, shopR.color.dms_static_light_NN950_68))
 
+            //Dilayani tokopedia textView
             val textViewFulfillment = productCard.findViewById<Typography>(productcardR.id.textViewFulfillment)
             textViewFulfillment.setTextColor(ContextCompat.getColor(textViewFulfillment.context, shopR.color.dms_static_light_NN950_68))
+
+            val textViewStockLabel = productCard.findViewById<Typography>(productcardR.id.textViewStockLabel)
+            textViewStockLabel.setTextColor(ContextCompat.getColor(textViewStockLabel.context, shopR.color.dms_static_light_NN950_68))
+
+
         }
     }
 

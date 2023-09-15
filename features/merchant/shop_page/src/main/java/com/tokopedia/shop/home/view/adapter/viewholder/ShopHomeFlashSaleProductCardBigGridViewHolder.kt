@@ -13,6 +13,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
+import com.tokopedia.shop.home.util.ProductCardColorOverrideManager
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
@@ -39,6 +40,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     private var uiModel: ShopHomeProductUiModel? = null
     private var fsUiModel: ShopHomeFlashSaleUiModel? = null
     private var productCardBigGrid: ProductCardGridView? = itemView.findViewById(R.id.fs_product_card_big_grid)
+    private val colorOverrideManager = ProductCardColorOverrideManager()
 
     init {
         adjustProductCardWidth()
@@ -110,6 +112,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         productCardBigGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
         setProductImpressionListener(productCardModel, listener)
+        colorOverrideManager.forceLightModeColor(productCardBigGrid)
     }
 
     fun getHeightOfImageProduct(action: (Int) -> Unit){
