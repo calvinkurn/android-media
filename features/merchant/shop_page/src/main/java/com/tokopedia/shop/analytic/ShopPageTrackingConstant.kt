@@ -29,6 +29,7 @@ object ShopPageTrackingConstant {
     const val VIEW_ITEM_LIST = "view_item_list"
     const val SELECT_CONTENT = "select_content"
     const val BUNDLING_ADD_TO_CART = "add_to_cart"
+    const val VIEW_PG_IRIS = "viewPGIris"
 
     // category
     const val SHOP_PAGE_SELLER = "shop page - seller"
@@ -135,7 +136,8 @@ object ShopPageTrackingConstant {
     const val PACKAGE_VARIANT = "package variant"
     const val CLICK_SHARE_CHIPS = "click - share contextual chip"
     const val VIEW_SHARE_CHIPS = "view - share contextual chip"
-
+    const val IMPRESSION_BMGM_BANNER = "impression bmgm banner"
+    const val CLICK_BMGM_BANNER = "click bmgm banner"
 
     // label
     const val CLICK_SHARE = "click share"
@@ -222,6 +224,7 @@ object ShopPageTrackingConstant {
     const val CLICK_SHOP_BANNER_LABEL = "click - shop banner - campaign tab - %1s - %2s"
     const val CLICK_SHARE_REGULER = "general"
     const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
+    const val LABEL_BMGM_BANNER = "%1s-%2s-%3s"
 
     // key
     const val EVENT = "event"
@@ -444,7 +447,6 @@ object ShopPageTrackingConstant {
         const val CLICK_CTA_SLIDER_BANNER_HIGHLIGHT = "campaign tab - click jelajahi home anchor"
         const val IMPRESSION_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - impression product play"
         const val CLICK_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - click product play"
-
     }
 
     object EventCategory {
@@ -517,7 +519,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44365"
         const val TRACKER_ID_CLICK_PRODUCT_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44366"
         const val TRACKER_ID_CLICK_EXPLORE_SHOP_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44368"
-
+        const val TRACKER_ID_CLICK_BMGM_BANNER = "46750"
     }
 
     object Key {

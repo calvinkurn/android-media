@@ -197,7 +197,7 @@ class OfferLandingPageFragment :
             isEnabled = true
             setOnRefreshListener { loadInitialData() }
         }
-        tracker.sendOpenScreenEvent()
+        tracker.sendOpenScreenEvent(currentState.shopData.shopId.toString())
     }
 
     private fun initMiniCart() {
@@ -312,7 +312,8 @@ class OfferLandingPageFragment :
             setNavigationOnClickListener {
                 tracker.sendClickBackButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 activity?.finish()
             }
@@ -321,21 +322,24 @@ class OfferLandingPageFragment :
                 // get sharing data
                 tracker.sendClickShareButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 viewModel.processEvent(OlpEvent.GetSharingData)
             }
             cartButton?.setOnClickListener {
                 tracker.sendClickKeranjangButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 redirectToCartPage()
             }
             moreMenuButton?.setOnClickListener {
                 tracker.sendClickBurgerButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 redirectToMainMenu()
             }
@@ -394,7 +398,8 @@ class OfferLandingPageFragment :
                 if (resultCode == Activity.RESULT_OK) {
                     tracker.sendClickFilterButtonEvent(
                         currentState.offerIds.toSafeString(),
-                        currentState.warehouseIds.toSafeString()
+                        currentState.warehouseIds.toSafeString(),
+                        currentState.shopData.shopId.toString()
                     )
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
@@ -420,13 +425,19 @@ class OfferLandingPageFragment :
                 binding?.miniCartView.showToaster(atcMessage)
             }
             fetchMiniCart()
+            tracker.sendClickCloseVariantEvent(
+                currentState.offerIds.toSafeString(),
+                currentState.warehouseIds.toSafeString(),
+                currentState.shopData.shopId.toString()
+            )
         }
     }
 
     override fun onSortChipClicked() {
         tracker.sendClickFilterDropdownButtonEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         context?.run {
             val intent = ShopProductSortActivity.createIntent(activity, currentState.sortId)
@@ -628,7 +639,8 @@ class OfferLandingPageFragment :
     override fun onProductCardClicked(productId: Long, productUrl: String) {
         tracker.sendClickProductCardEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         redirectToPDP(productId, productUrl)
     }
@@ -636,7 +648,8 @@ class OfferLandingPageFragment :
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
         tracker.sendClickAtcEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         viewModel.processEvent(OlpEvent.AddToCart(product))
     }
@@ -684,20 +697,23 @@ class OfferLandingPageFragment :
     override fun onTncClicked() {
         tracker.sendClickSnkButtonEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         tncBottomSheet?.apply {
             setCloseClickListener {
                 tracker.sendClickCloseSnkButtonEvent(
                     currentState.offerIds.toSafeString(),
-                    currentState.warehouseIds.toSafeString()
+                    currentState.warehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 dismiss()
             }
             setImpressionListener {
                 tracker.sendImpressSnkEvent(
                     currentState.offerIds.toSafeString(),
-                    currentState.warehouseIds.toSafeString()
+                    currentState.warehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
             }
             show(this@OfferLandingPageFragment)
@@ -707,7 +723,8 @@ class OfferLandingPageFragment :
     override fun onShopNameClicked(shopId: Long) {
         tracker.sendClickShopCtaButtonEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         redirectToShopPage(shopId)
     }
