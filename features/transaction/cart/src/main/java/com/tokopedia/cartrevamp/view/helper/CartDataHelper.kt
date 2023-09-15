@@ -509,9 +509,9 @@ object CartDataHelper {
             when (data) {
                 is CartItemHolderData -> {
                     if (!data.isError) {
-                        if (data.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
-                            if (!listOfferId.contains(data.bmGmCartInfoData.bmGmData.offerId)) {
-                                listOfferId.add(data.bmGmCartInfoData.bmGmData.offerId)
+                        if (data.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+                            if (!listOfferId.contains(data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)) {
+                                listOfferId.add(data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
                             }
                         }
                     }
@@ -526,7 +526,7 @@ object CartDataHelper {
         var indexReturned = RecyclerView.NO_POSITION
         var itemReturned = CartItemHolderData()
         for ((index, data) in cartDataList.withIndex()) {
-            if (data is CartItemHolderData && data.bmGmCartInfoData.bmGmData.offerId == offerId) {
+            if (data is CartItemHolderData && data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId) {
                 indexReturned = index
                 itemReturned = data
                 break
@@ -538,7 +538,7 @@ object CartDataHelper {
     fun getListProductByOfferId(cartDataList: ArrayList<Any>, offerId: Long): ArrayList<CartItemHolderData> {
         val listProductByOfferId = arrayListOf<CartItemHolderData>()
         loop@ for (data in cartDataList) {
-            if (data is CartItemHolderData && data.bmGmCartInfoData.bmGmData.offerId == offerId) {
+            if (data is CartItemHolderData && data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId) {
                 listProductByOfferId.add(data)
             }
         }

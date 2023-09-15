@@ -103,8 +103,8 @@ class CartCalculator @Inject constructor() {
                 }
             }
 
-            if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.bmGmCartInfoData.bmGmData.totalDiscount > 0.0) {
-                totalDiscountBmGmMap[cartItemHolderData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.bmGmCartInfoData.bmGmData.totalDiscount
+            if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount > 0.0) {
+                totalDiscountBmGmMap[cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount
             }
         }
 

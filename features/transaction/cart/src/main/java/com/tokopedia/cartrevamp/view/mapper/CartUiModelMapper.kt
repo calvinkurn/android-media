@@ -27,6 +27,7 @@ import com.tokopedia.cartrevamp.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnData
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnWidgetData
+import com.tokopedia.cartrevamp.view.uimodel.CartBmGmTickerData
 import com.tokopedia.cartrevamp.view.uimodel.CartDetailInfo
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupBmGmHolderData
@@ -573,10 +574,7 @@ object CartUiModelMapper {
             bundleIds = product.bundleIds
             addOnsProduct = mapCartAddOnData(product.addOn)
             showBundlePrice = cartData.showBundlePrice
-            bmGmCartInfoData = mapBmGmProductData(cartDetail, shopData)
-            isShowTickerBmGm = checkNeedToShowTickerBmGm(cartDetail, productId)
-            stateTickerBmGm = if (isShowTickerBmGm) CART_BMGM_STATE_TICKER_ACTIVE else CART_BMGM_STATE_TICKER_INACTIVE
-            isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId)
+            cartBmGmTickerData = mapCartBmGmTickerData(cartDetail, shopData, productId)
         }
     }
 
@@ -863,6 +861,15 @@ object CartUiModelMapper {
             true
         }
         return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM && !isLastIndexProduct
+    }
+
+    private fun mapCartBmGmTickerData(cartDetail: CartDetail, shopData: CartShopHolderData, productId: String): CartBmGmTickerData {
+        return CartBmGmTickerData(
+                bmGmCartInfoData = mapBmGmProductData(cartDetail, shopData),
+                isShowTickerBmGm = checkNeedToShowTickerBmGm(cartDetail, productId),
+                stateTickerBmGm = if (checkNeedToShowTickerBmGm(cartDetail, productId)) CART_BMGM_STATE_TICKER_ACTIVE else CART_BMGM_STATE_TICKER_INACTIVE,
+                isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId)
+        )
     }
 
     private fun mapBmGmProductData(cartDetail: CartDetail, shopData: CartShopHolderData): CartDetailInfo {

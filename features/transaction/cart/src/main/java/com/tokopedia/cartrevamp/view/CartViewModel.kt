@@ -48,6 +48,7 @@ import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
+import com.tokopedia.cartrevamp.view.uimodel.CartBmGmTickerData
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
@@ -2060,6 +2061,9 @@ class CartViewModel @Inject constructor(
                         }
                     }
                     if (toBeDeletedProducts.isNotEmpty()) {
+                        if (data.cartGroupBmGmHolderData.hasBmGmOffer) {
+                            updateBmGmTickerData(toBeDeletedProducts)
+                        }
                         data.productUiModelList.removeAll(toBeDeletedProducts)
                         if (data.productUiModelList.isEmpty()) {
                             val previousIndex = index - 1
@@ -2227,6 +2231,24 @@ class CartViewModel @Inject constructor(
             }
             groupPromoHolderDataMap.forEach { (_, value) ->
                 value.firstOrNull()?.isShopShown = true
+            }
+        }
+    }
+
+    fun updateBmGmTickerData(toBeDeletedProducts: List<CartItemHolderData>) {
+        toBeDeletedProducts.forEach { cartItemToBeDeleted ->
+            val productListByOfferId = CartDataHelper.getListProductByOfferId(cartDataList.value, cartItemToBeDeleted.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
+            productListByOfferId.forEachIndexed { index, cartItemHolderData ->
+                if (index == 0
+                        && cartItemToBeDeleted.cartBmGmTickerData.isShowTickerBmGm
+                        && cartItemToBeDeleted.productId == cartItemHolderData.productId
+                        && productListByOfferId.size > 1) {
+                    productListByOfferId[index+1].cartBmGmTickerData = cartItemToBeDeleted.cartBmGmTickerData
+                    var isShowBmGmDivider = false
+                    if (productListByOfferId.size > 2) isShowBmGmDivider = true
+                    productListByOfferId[index+1].cartBmGmTickerData.isShowBmGmDivider = isShowBmGmDivider
+                    return@forEach
+                }
             }
         }
     }
@@ -2438,7 +2460,8 @@ class CartViewModel @Inject constructor(
         addWishList: Boolean,
         forceExpandCollapsedUnavailableItems: Boolean = false,
         isFromGlobalCheckbox: Boolean = false,
-        isFromEditBundle: Boolean = false
+        isFromEditBundle: Boolean = false,
+        cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData()
     ) {
         _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
         val allCartItemData = CartDataHelper.getAllCartItemData(
@@ -2461,7 +2484,8 @@ class CartViewModel @Inject constructor(
                     forceExpandCollapsedUnavailableItems,
                     addWishList,
                     isFromGlobalCheckbox,
-                    isFromEditBundle
+                    isFromEditBundle,
+                    cartBmGmTickerData
                 )
             },
             onError = { throwable ->
