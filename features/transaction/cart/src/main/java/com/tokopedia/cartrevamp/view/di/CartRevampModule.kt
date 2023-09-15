@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
-import com.tokopedia.graphql.coroutines.data.Interactor
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
@@ -80,7 +80,7 @@ class CartRevampModule {
     @ActivityScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository {
-        return Interactor.getInstance().graphqlRepository
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
 
     @ActivityScope

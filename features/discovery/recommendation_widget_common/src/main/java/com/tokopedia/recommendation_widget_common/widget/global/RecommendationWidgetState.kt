@@ -28,7 +28,7 @@ data class RecommendationWidgetState(
         widget: List<RecommendationWidget>,
     ): RecommendationWidgetState = copy(
         widgetMap = widgetMap + mapOf(
-            model.id to widget.map { recommendationVisitable(model, it) }
+            model.id to recommendationVisitableList(widget, model)
         ),
         miniCartShopId = firstShopId(widget),
         miniCartSource = model.miniCart.miniCartSource,
@@ -44,6 +44,14 @@ data class RecommendationWidgetState(
         widget.recommendationItemList
             .filter(RecommendationItem::isUseQuantityEditor)
             .map(RecommendationItem::shopId)
+
+    private fun recommendationVisitableList(
+        widget: List<RecommendationWidget>,
+        model: RecommendationWidgetModel,
+    ): List<RecommendationVisitable> {
+        return if (widget.all { it.recommendationItemList.isEmpty() }) emptyList()
+        else widget.map { recommendationVisitable(model, it) }
+    }
 
     private fun recommendationVisitable(
         model: RecommendationWidgetModel,

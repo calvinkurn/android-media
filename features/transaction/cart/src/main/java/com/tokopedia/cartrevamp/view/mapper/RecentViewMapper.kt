@@ -13,16 +13,16 @@ class RecentViewMapper @Inject constructor() {
 
     private fun convertToViewHolderModel(recentView: RecommendationItem): CartRecentViewItemHolderData {
         val cartRecentViewItemHolderData = CartRecentViewItemHolderData()
-        cartRecentViewItemHolderData.id = recentView.productId.toString() ?: ""
-        cartRecentViewItemHolderData.name = recentView.name ?: ""
-        cartRecentViewItemHolderData.price = recentView.price ?: ""
-        cartRecentViewItemHolderData.imageUrl = recentView.imageUrl ?: ""
+        cartRecentViewItemHolderData.id = recentView.productId.toString()
+        cartRecentViewItemHolderData.name = recentView.name
+        cartRecentViewItemHolderData.price = recentView.price
+        cartRecentViewItemHolderData.imageUrl = recentView.imageUrl
         cartRecentViewItemHolderData.isWishlist = recentView.isWishlist
         cartRecentViewItemHolderData.rating = recentView.rating
         cartRecentViewItemHolderData.reviewCount = recentView.countReview
-        cartRecentViewItemHolderData.shopLocation = recentView.location ?: ""
-        cartRecentViewItemHolderData.shopId = recentView.shopId.toString() ?: ""
-        cartRecentViewItemHolderData.shopName = recentView.shopName ?: ""
+        cartRecentViewItemHolderData.shopLocation = recentView.location
+        cartRecentViewItemHolderData.shopId = recentView.shopId.toString()
+        cartRecentViewItemHolderData.shopName = recentView.shopName
         cartRecentViewItemHolderData.minOrder = 1
         cartRecentViewItemHolderData.isTopAds = recentView.isTopAds
         cartRecentViewItemHolderData.discountPercentage = recentView.discountPercentage

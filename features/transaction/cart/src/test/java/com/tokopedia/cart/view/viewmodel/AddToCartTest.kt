@@ -7,7 +7,6 @@ import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -233,7 +232,6 @@ class AddToCartTest : BaseCartViewModelTest() {
     fun `WHEN add to cart recommendation item failed THEN should render error`() {
         // GIVEN
         val errorMessage = "Add to cart error"
-        val exception = ResponseErrorException(errorMessage)
         val productModel =
             CartRecommendationItemHolderData(false, RecommendationItem(productId = 0, shopId = 0))
         val addToCartDataModel = AddToCartDataModel().apply {
@@ -332,7 +330,6 @@ class AddToCartTest : BaseCartViewModelTest() {
     fun `WHEN add to cart shop ads item failed THEN should render error`() {
         // GIVEN
         val errorMessage = "Add to cart error"
-        val exception = ResponseErrorException(errorMessage)
         val productModel =
             BannerShopProductUiModel(
                 CpmData(),

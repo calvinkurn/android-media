@@ -537,7 +537,8 @@ class CheckoutPromoProcessor @Inject constructor(
                             checkoutItems[item.index] = value.copy(
                                 shipment = value.shipment.copy(
                                     isLoading = false,
-                                    courierItemData = courierItemData
+                                    courierItemData = courierItemData,
+                                    insurance = generateCheckoutOrderInsuranceFromCourier(courierItemData, value)
                                 ),
                                 boUniqueId = voucherOrder.uniqueId,
                                 isShippingBorderRed = false

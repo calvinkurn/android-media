@@ -256,12 +256,11 @@ open class DiscoveryFragment :
     val trackingQueue: TrackingQueue by lazy {
         provideTrackingQueue()
     }
-
+    var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     open fun provideTrackingQueue(): TrackingQueue {
         return (context as DiscoveryActivity).trackingQueue
     }
 
-    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: LoaderUnify
     var pageEndPoint = ""
     private var componentPosition: Int? = null
@@ -430,7 +429,7 @@ open class DiscoveryFragment :
         miniCartWidget = view.findViewById(R.id.miniCartWidget)
 
         mProgressBar.show()
-        mSwipeRefreshLayout.setOnRefreshListener(this)
+        mSwipeRefreshLayout?.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             var dy = 0
@@ -567,9 +566,9 @@ open class DiscoveryFragment :
     }
 
     private fun enableRefreshWhenFirstItemCompletelyVisible() {
-        if (!mSwipeRefreshLayout.isRefreshing) {
+        if (mSwipeRefreshLayout?.isRefreshing == false) {
             val firstPosition: Int = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(FIRST_POSITION).orZero()
-            mSwipeRefreshLayout.isEnabled = firstPosition == FIRST_POSITION
+            mSwipeRefreshLayout?.isEnabled = firstPosition == FIRST_POSITION
         }
     }
 
@@ -767,7 +766,7 @@ open class DiscoveryFragment :
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
-                        if (mSwipeRefreshLayout.isRefreshing) setAdapter()
+                        if (mSwipeRefreshLayout?.isRefreshing == true) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isEmpty()) {
                             discoveryAdapter.addDataList(ArrayList())
@@ -791,7 +790,8 @@ open class DiscoveryFragment :
                     setPageErrorState(it)
                 }
             }
-            mSwipeRefreshLayout.isRefreshing = false
+            mSwipeRefreshLayout?.isEnabled = true
+            mSwipeRefreshLayout?.isRefreshing = false
         }
 
         discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner) {
@@ -1150,7 +1150,7 @@ open class DiscoveryFragment :
         setCartAndNavIcon()
         setSearchBar(null)
         mProgressBar.hide()
-        mSwipeRefreshLayout.isRefreshing = false
+        mSwipeRefreshLayout?.isRefreshing = false
     }
 
     private fun settingUpNavBar(data: PageInfo?) {
@@ -1426,6 +1426,22 @@ open class DiscoveryFragment :
 
     override fun screenShotTaken(path: String) {
         showUniversalShareBottomSheet(pageInfoHolder, path)
+    }
+
+    private fun setupSearchBar(data: PageInfo?) {
+        navToolbar.setupSearchbar(
+            hints = listOf(
+                HintData(
+                    placeholder = data?.searchTitle
+                        ?: getString(R.string.discovery_default_search_title)
+                )
+            ),
+            searchbarClickCallback = {
+                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
+                handleSearchClick(data)
+            },
+            disableDefaultGtmTracker = true
+        )
     }
 
     private fun handleSearchClick(data: PageInfo?) {

@@ -695,7 +695,7 @@ class CartItemViewHolder constructor(
 
     private fun renderProductName(data: CartItemHolderData) {
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
-        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
+        if (data.isBundlingItem && data.bundleLabelQuantity > 0) {
             val textProductNameLayoutParams =
                 binding.textProductName.layoutParams as MarginLayoutParams
             textProductNameLayoutParams.topMargin = marginTop
@@ -771,6 +771,25 @@ class CartItemViewHolder constructor(
                 data
             )
         )
+        if (data.isError && data.isBundlingItem) {
+            binding.flImageProduct.layoutParams.width =
+                66.dpToPx(binding.root.resources.displayMetrics)
+            binding.flImageProduct.layoutParams.height =
+                66.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.width =
+                66.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.height =
+                66.dpToPx(binding.root.resources.displayMetrics)
+        } else {
+            binding.flImageProduct.layoutParams.width =
+                80.dpToPx(binding.root.resources.displayMetrics)
+            binding.flImageProduct.layoutParams.height =
+                80.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.width =
+                80.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.height =
+                80.dpToPx(binding.root.resources.displayMetrics)
+        }
     }
 
     private fun renderProductAddOns(data: CartItemHolderData) {
