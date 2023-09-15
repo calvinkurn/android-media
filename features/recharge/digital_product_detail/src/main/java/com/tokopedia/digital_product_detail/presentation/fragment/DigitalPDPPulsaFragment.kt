@@ -674,6 +674,7 @@ class DigitalPDPPulsaFragment :
                 }
                 INDOSAT_CHECK_BALANCE_TYPE_ERROR -> {
                     onFailedGetCheckBalance(checkBalanceData = checkBalanceData)
+                    return
                 }
                 else -> return
             }
@@ -687,6 +688,8 @@ class DigitalPDPPulsaFragment :
                 removeClientNumberBottomPadding()
             } else {
                 hideCheckBalanceWarning()
+                resetCheckBalanceWarningText()
+                showClientNumberBottomPadding()
             }
             setupDynamicScrollViewPadding()
         }
@@ -700,6 +703,7 @@ class DigitalPDPPulsaFragment :
             hideCheckBalanceWidgetShimmering()
             hideCheckBalanceOtpWidget()
             hideCheckBalanceWarning()
+            resetCheckBalanceWarningText()
             setupDynamicScrollViewPadding()
             showCheckBalanceWidget()
             showCheckBalanceWidgetLocalLoad {
@@ -707,12 +711,16 @@ class DigitalPDPPulsaFragment :
                 if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
                     hideCheckBalanceWidgetLocalLoad()
                     removeClientNumberBottomPadding()
-                    showCheckBalanceWarning(
-                        checkBalanceData?.campaignLabelText.orEmpty(),
-                        checkBalanceData?.campaignLabelTextColor.orEmpty(),
-                        isShowOnlyWarning = true,
-                        isClickable = !checkBalanceData?.products.isNullOrEmpty()
-                    )
+                    checkBalanceData?.let {
+                        if (it.campaignLabelText.isNotEmpty()) {
+                            showCheckBalanceWarning(
+                                it.campaignLabelText,
+                                it.campaignLabelTextColor,
+                                isShowOnlyWarning = true,
+                                isClickable = it.products.isNotEmpty()
+                            )
+                        }
+                    }
                     setupDynamicScrollViewPadding()
                 } else {
                     getIndosatCheckBalance()
@@ -725,6 +733,8 @@ class DigitalPDPPulsaFragment :
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             hideCheckBalanceOtpWidget()
             hideCheckBalanceWidgetLocalLoad()
+            resetCheckBalanceWarningText()
+            showClientNumberBottomPadding()
             showCheckBalanceWidget()
             showCheckBalanceWidgetShimmering()
             setupDynamicScrollViewPadding()

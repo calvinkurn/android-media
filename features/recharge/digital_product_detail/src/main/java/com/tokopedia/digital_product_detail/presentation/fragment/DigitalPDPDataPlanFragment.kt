@@ -831,6 +831,7 @@ class DigitalPDPDataPlanFragment :
                 }
                 INDOSAT_CHECK_BALANCE_TYPE_ERROR -> {
                     onFailedGetCheckBalance(checkBalanceData = checkBalanceData)
+                    return
                 }
                 else -> return
             }
@@ -844,6 +845,8 @@ class DigitalPDPDataPlanFragment :
                 removeClientNumberBottomPadding()
             } else {
                 hideCheckBalanceWarning()
+                resetCheckBalanceWarningText()
+                showClientNumberBottomPadding()
             }
             setupDynamicScrollViewPadding()
         }
@@ -857,6 +860,7 @@ class DigitalPDPDataPlanFragment :
             hideCheckBalanceWidgetShimmering()
             hideCheckBalanceOtpWidget()
             hideCheckBalanceWarning()
+            resetCheckBalanceWarningText()
             setupDynamicScrollViewPadding()
             showCheckBalanceWidget()
             showCheckBalanceWidgetLocalLoad {
@@ -886,6 +890,8 @@ class DigitalPDPDataPlanFragment :
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             hideCheckBalanceOtpWidget()
             hideCheckBalanceWidgetLocalLoad()
+            resetCheckBalanceWarningText()
+            showClientNumberBottomPadding()
             showCheckBalanceWidget()
             showCheckBalanceWidgetShimmering()
             setupDynamicScrollViewPadding()

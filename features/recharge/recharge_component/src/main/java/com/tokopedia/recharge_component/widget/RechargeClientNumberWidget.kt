@@ -468,6 +468,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hideWidgetMessage()
     }
 
+    fun resetCheckBalanceWarningText() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.resetWidgetMessage()
+    }
+
     fun removeClientNumberBottomPadding() {
         binding.clientNumberWidgetMainLayout.root.setPadding(
             Int.ZERO,

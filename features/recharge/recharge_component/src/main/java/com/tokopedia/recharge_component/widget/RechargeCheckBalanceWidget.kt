@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -86,10 +87,12 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                 )
                 show()
             }
-            checkBalanceWarningContainer.background = MethodChecker.getDrawable(
-                context,
-                R.drawable.bg_client_number_check_balance_warning_shadow
-            )
+            checkBalanceWarningContainer.run {
+                background = MethodChecker.getDrawable(
+                    context,
+                    R.drawable.bg_client_number_check_balance_warning_shadow
+                )
+            }
             checkBalanceWarningTxt.setTextColor(
                 MethodChecker.getColor(
                     context,
@@ -112,10 +115,12 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                 )
                 show()
             }
-            checkBalanceWarningContainer.background = MethodChecker.getDrawable(
-                context,
-                R.drawable.bg_client_number_check_balance_error_shadow
-            )
+            checkBalanceWarningContainer.run {
+                background = MethodChecker.getDrawable(
+                    context,
+                    R.drawable.bg_client_number_check_balance_error_shadow
+                )
+            }
             checkBalanceWarningTxt.setTextColor(
                 MethodChecker.getColor(
                     context,
@@ -129,10 +134,12 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         showWidgetMessage(message, isClickable)
         binding.run {
             checkBalanceWarningIcon.hide()
-            checkBalanceWarningContainer.background = MethodChecker.getDrawable(
-                context,
-                R.drawable.bg_client_number_check_balance_information_shadow
-            )
+            checkBalanceWarningContainer.run {
+                background = MethodChecker.getDrawable(
+                    context,
+                    R.drawable.bg_client_number_check_balance_information_shadow
+                )
+            }
             checkBalanceWarningTxt.setTextColor(
                 MethodChecker.getColor(
                     context,
@@ -175,6 +182,10 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
 
     fun hideWidgetMessage() {
         binding.checkBalanceWarningContainer.hide()
+    }
+
+    fun resetWidgetMessage() {
+        binding.checkBalanceWarningTxt.text = ""
     }
 
     fun showLocalLoad(onClick: () -> Unit) {
