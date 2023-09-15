@@ -27,9 +27,9 @@ class ShopModule(val context: Context) {
     fun provideActivityContext() = context
 
     @Provides
-    fun provideGqlRepository(): GraphqlRepository {
-        return getInstance().graphqlRepository
-    }
+    fun provideGqlRepository(
+        @ApplicationContext graphqlRepository: GraphqlRepository
+    ): GraphqlRepository = graphqlRepository
 
     @Provides
     fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase {
