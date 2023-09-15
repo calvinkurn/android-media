@@ -72,6 +72,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    api rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation rootProject.ext.dbDependencies.dbRoomKtx
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
 }
 
 project.ext {
