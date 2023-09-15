@@ -3,6 +3,7 @@ package com.tokopedia.buy_more_get_more.olp.presentation
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -629,6 +631,8 @@ class OfferLandingPageFragment :
             } else {
                 if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
                     addToCartProduct(product)
+                } else {
+                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
                 }
             }
         } else {
@@ -793,6 +797,10 @@ class OfferLandingPageFragment :
                 pageId = viewModel.getPageIdForSharing(),
                 feature = "share"
             )
+
+            val shareText = sharingData.offerData.description.replace("%", "%%")
+            val shareTextEncodedToHtmlSymbol = TextUtils.htmlEncode(shareText)
+            setShareText("${MethodChecker.fromHtml(shareTextEncodedToHtmlSymbol)} %s")
         }.show(childFragmentManager, this)
     }
 
