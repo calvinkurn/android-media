@@ -50,6 +50,10 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.design.R as designR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by yfsx on 23/03/19.
@@ -296,7 +300,7 @@ class VideoDetailFragment :
                 MediaPlayer.MEDIA_ERROR_SERVER_DIED -> {
                     Toast.makeText(
                         requireContext(),
-                        getString(com.tokopedia.abstraction.R.string.default_request_error_internal_server),
+                        getString(abstractionR.string.default_request_error_internal_server),
                         Toast.LENGTH_SHORT
                     ).show()
                     activity?.finish()
@@ -306,7 +310,7 @@ class VideoDetailFragment :
                 else -> {
                     Toast.makeText(
                         requireContext(),
-                        getString(com.tokopedia.abstraction.R.string.default_request_error_timeout),
+                        getString(abstractionR.string.default_request_error_timeout),
                         Toast.LENGTH_SHORT
                     ).show()
                     activity?.finish()
@@ -393,7 +397,7 @@ class VideoDetailFragment :
                 binding.authorImage.setImageDrawable(
                     MethodChecker.getDrawable(
                         requireActivity(),
-                        com.tokopedia.design.R.drawable.error_drawable
+                        designR.drawable.error_drawable
                     )
                 )
             }
@@ -401,17 +405,17 @@ class VideoDetailFragment :
                 binding.authorBadge.show()
                 binding.authorBadge.loadImage(it.badgeURL)
                 binding.authorTitle.setMargin(
-                    binding.authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
+                    binding.authorTitle.getDimens(unifyprinciplesR.dimen.unify_space_4),
                     0,
-                    binding.authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    binding.authorTitle.getDimens(unifyprinciplesR.dimen.unify_space_8),
                     0
                 )
             } else {
                 binding.authorBadge.hide()
                 binding.authorTitle.setMargin(
-                    binding.authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    binding.authorTitle.getDimens(unifyprinciplesR.dimen.unify_space_8),
                     0,
-                    binding.authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    binding.authorTitle.getDimens(unifyprinciplesR.dimen.unify_space_8),
                     0
                 )
             }
@@ -458,7 +462,7 @@ class VideoDetailFragment :
             binding.shareIcon.show()
             binding.shareText.show()
             val desc = requireContext().getString(
-                com.tokopedia.content.common.R.string.feed_share_default_text,
+                contentcommonR.string.feed_share_default_text,
                 feedXCard.author.name
             )
 
@@ -490,7 +494,7 @@ class VideoDetailFragment :
                 binding.likeText.setTextColor(
                     MethodChecker.getColor(
                         binding.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 )
             }
@@ -501,18 +505,18 @@ class VideoDetailFragment :
                 binding.likeText.setTextColor(
                     MethodChecker.getColor(
                         binding.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        unifyprinciplesR.color.Unify_NN0
                     )
                 )
             }
 
             else -> {
                 updateLikeButton(false)
-                binding.likeText.setText(com.tokopedia.content.common.R.string.kol_action_like)
+                binding.likeText.setText(contentcommonR.string.kol_action_like)
                 binding.likeText.setTextColor(
                     MethodChecker.getColor(
                         binding.likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        unifyprinciplesR.color.Unify_NN0
                     )
                 )
             }
@@ -520,8 +524,8 @@ class VideoDetailFragment :
     }
 
     private fun updateLikeButton(isLiked: Boolean) {
-        val likedColor = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        val dislikeColor = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        val likedColor = MethodChecker.getColor(requireContext(), unifyprinciplesR.color.Unify_GN500)
+        val dislikeColor = MethodChecker.getColor(requireContext(), unifyprinciplesR.color.Unify_Static_White)
         if (isLiked) {
             binding.likeIcon.setImage(
                 newIconId = IconUnify.THUMB_FILLED,
@@ -543,7 +547,7 @@ class VideoDetailFragment :
 
     private fun bindComment(comments: FeedXComments) {
         binding.commentText.text =
-            if (comments.count == 0) getString(com.tokopedia.content.common.R.string.kol_action_comment)
+            if (comments.count == 0) getString(contentcommonR.string.kol_action_comment)
             else comments.countFmt
     }
 
@@ -570,7 +574,7 @@ class VideoDetailFragment :
                 message,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.title_try_again),
+                getString(abstractionR.string.title_try_again),
                 it
             ).show()
         }
