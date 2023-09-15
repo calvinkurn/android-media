@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home.beranda.data.newatf.AtfContent
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class DynamicHomeIcon (
@@ -9,29 +10,7 @@ data class DynamicHomeIcon (
     @SerializedName("dynamicIcon", alternate = ["icons"])
     val dynamicIcon: List<DynamicIcon> = listOf(),
     var type: Int = 1
-){
-    data class UseCaseIcon(
-        @Expose
-        @SerializedName("id")
-        val id: String = "-1",
-
-        @Expose
-        @SerializedName("applinks")
-        val applinks: String = "",
-
-        @Expose
-        @SerializedName("imageUrl")
-        val imageUrl: String = "",
-
-        @Expose
-        @SerializedName("name")
-        val name: String = "",
-
-        @Expose
-        @SerializedName("url")
-        val url: String = ""
-    )
-
+): AtfContent {
     data class DynamicIcon(
         @Expose
         @SerializedName("id")

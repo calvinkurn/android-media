@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.domain.model.banner
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home.beranda.data.newatf.AtfContent
 
 data class BannerDataModel(
     @SerializedName("slides", alternate = ["banners"])
@@ -10,4 +11,4 @@ data class BannerDataModel(
     @SerializedName("timestamp")
     @Expose
     var timestamp: String = ""
-)
+): AtfContent

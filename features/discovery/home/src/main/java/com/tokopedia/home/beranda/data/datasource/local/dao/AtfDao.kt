@@ -15,4 +15,6 @@ abstract class AtfDao {
 
     @Query("DELETE FROM AtfCacheEntity")
     abstract fun deleteAtfTable()
+
+    abstract fun saveAtf()
 }
