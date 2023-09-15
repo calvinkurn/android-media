@@ -695,7 +695,7 @@ class CartItemViewHolder constructor(
 
     private fun renderProductName(data: CartItemHolderData) {
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
-        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
+        if (data.isBundlingItem && data.bundleLabelQuantity > 0) {
             val textProductNameLayoutParams =
                 binding.textProductName.layoutParams as MarginLayoutParams
             textProductNameLayoutParams.topMargin = marginTop
