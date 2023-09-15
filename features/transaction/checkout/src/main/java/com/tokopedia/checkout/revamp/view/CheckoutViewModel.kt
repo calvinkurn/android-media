@@ -1411,7 +1411,7 @@ class CheckoutViewModel @Inject constructor(
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel
     ) {
         // need to apply promo
-        if (courierItemData.selectedShipper.logPromoCode != newCourierItemData.selectedShipper.logPromoCode) {
+        if (!courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && courierItemData.selectedShipper.logPromoCode != newCourierItemData.selectedShipper.logPromoCode) {
             // clear old promo before applying new one
             promoProcessor.clearPromo(
                 ClearPromoOrder(
