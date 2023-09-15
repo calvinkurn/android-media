@@ -16,7 +16,8 @@
     <!-- Navigation Editor Tool -->
     <string name="universal_editor_nav_tool_text">Teks</string>
     <string name="universal_editor_nav_tool_placement">Atur</string>
-    <string name="universal_editor_nav_tool_audio_mute">Mute</string>
+    <string name="universal_editor_nav_tool_audio_mute">Hening</string>
+    <string name="universal_editor_nav_tool_audio_unmute">Bunyikan</string>
     <string name="universal_editor_nav_tool_trim">Trim</string>
 
     <!-- Input Text -->

@@ -92,7 +92,6 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
     override fun onRemoveView(view: View) {
         models.remove(view.id)
         removeView(view)
-        listener?.onTextRemoved()
     }
 
     private fun editText(id: Int, model: InputTextModel) {
@@ -172,7 +171,6 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
 
     interface Listener {
         fun onTextClick(text: View, model: InputTextModel?)
-        fun onTextRemoved()
     }
 
     companion object {
@@ -183,6 +181,6 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         const val VIEW_DELETION_BUTTON_ID = 456
 
         private const val DEFAULT_TEXT_MARGIN = 20
-        private const val DELETION_BOTTOM_MARGIN = 24
+        private const val DELETION_BOTTOM_MARGIN = 32
     }
 }

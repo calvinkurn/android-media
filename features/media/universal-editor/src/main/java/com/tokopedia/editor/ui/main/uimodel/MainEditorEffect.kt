@@ -8,7 +8,7 @@ import com.tokopedia.editor.ui.model.InputTextModel
  * Global State Changes, Navigate with Intent, Network Changes, etc.
  */
 sealed class MainEditorEffect {
-    // Intent
+    // Intent action
     data class OpenInputText(val model: InputTextModel) : MainEditorEffect()
     data class FinishEditorPage(val filePath: String) : MainEditorEffect()
     data class OpenPlacementPage(val sourcePath: String, val model: ImagePlacementModel?) : MainEditorEffect()
@@ -20,6 +20,7 @@ sealed class MainEditorEffect {
     // Visibility handler
     data class ShowToastErrorMessage(val message: String) : MainEditorEffect()
     data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()
+    data class RemoveAudioState(val isRemoved: Boolean) : MainEditorEffect()
 
     // Global loader
     object ShowLoading : MainEditorEffect()

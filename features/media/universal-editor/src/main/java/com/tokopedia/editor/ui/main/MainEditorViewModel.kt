@@ -8,6 +8,7 @@ import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.data.repository.VideoFlattenRepository
 import com.tokopedia.editor.R
 import com.tokopedia.editor.data.repository.ImageFlattenRepository
+import com.tokopedia.editor.data.repository.FlattenParam
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
@@ -93,13 +94,16 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.InputTextResult -> {
                 getInputTextResult(event.model)
             }
+            is MainEditorEvent.ManageVideoAudio -> {
+                removeVideoAudio()
+            }
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextParam.reset()
             }
             is MainEditorEvent.ClickHeaderCloseButton -> {
                 val currentState = mainEditorState.value
 
-                val isPlacementEdited = currentState.imagePlacementModel?.path != null
+                val isPlacementEdited = currentState.hasPlacementEdited()
                 val isTextAdded = currentState.hasTextAdded
 
                 if ((isPlacementEdited || isTextAdded) && !event.isSkipConfirmation) {
@@ -118,19 +122,23 @@ class MainEditorViewModel @Inject constructor(
         val path = file.path ?: return
 
         if (file.isImage()) {
-            flattenImageFileWithTextCanvas(path, canvasText, imageBitmap)
+            flattenImageFileWithTextCanvas(imageBitmap, canvasText)
         } else {
             flattenVideoFileWithTextCanvas(path, canvasText)
         }
     }
 
     private fun flattenVideoFileWithTextCanvas(videoPath: String, canvasText: Bitmap) {
+        val isAudioRemoved = mainEditorState.value.isRemoveAudio
+        val param = FlattenParam(videoPath, canvasText, isAudioRemoved)
+
         viewModelScope.launch {
             videoFlattenRepository
-                .flatten(videoPath, canvasText)
+                .flatten(param)
                 .flowOn(dispatchers.computation)
-                .onCompletion { setAction(MainEditorEffect.HideLoading) }
-                .onEach {
+                .collect {
+                    setAction(MainEditorEffect.HideLoading)
+
                     if (it.isNotEmpty()) {
                         setAction(MainEditorEffect.FinishEditorPage(it))
                     } else {
@@ -138,21 +146,25 @@ class MainEditorViewModel @Inject constructor(
                         setAction(MainEditorEffect.ShowToastErrorMessage(message))
                     }
                 }
-                .collect()
         }
     }
 
-    private fun flattenImageFileWithTextCanvas(imagePath: String, canvasText: Bitmap, imageBitmap: Bitmap?) {
+    private fun flattenImageFileWithTextCanvas(imageBitmap: Bitmap?, canvasText: Bitmap) {
         if (imageBitmap == null) return
 
         viewModelScope.launch {
-            imageFlattenRepository.flattenImage(imageBitmap = imageBitmap, textBitmap = canvasText)
+            imageFlattenRepository.flattenImage(imageBitmap, canvasText)
                 .flowOn(dispatchers.computation)
-                .onCompletion { setAction(MainEditorEffect.HideLoading) }
-                .onEach {
-                    setAction(MainEditorEffect.FinishEditorPage(it))
+                .collect {
+                    setAction(MainEditorEffect.HideLoading)
+
+                    if (it.isNotEmpty()) {
+                        setAction(MainEditorEffect.FinishEditorPage(it))
+                    } else {
+                        val message = resourceProvider.getString(R.string.universal_editor_flatten_error)
+                        setAction(MainEditorEffect.ShowToastErrorMessage(message))
+                    }
                 }
-                .collect()
         }
     }
 
@@ -218,6 +230,13 @@ class MainEditorViewModel @Inject constructor(
         param.firstFile.path?.let {
             setActiveEditableFilePath(it)
         }
+    }
+
+    private fun removeVideoAudio() {
+        val isAudio = !mainEditorState.value.isRemoveAudio
+
+        _mainEditorState.setValue { copy(isRemoveAudio = isAudio) }
+        setAction(MainEditorEffect.RemoveAudioState(isAudio))
     }
 
     private fun setActiveEditableFilePath(path: String) {

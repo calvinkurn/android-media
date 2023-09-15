@@ -68,6 +68,11 @@ class EditorVideoPlayer constructor(
         exoPlayer.playWhenReady = true
     }
 
+    fun muteAudio(isMute: Boolean) {
+        val value = if (isMute) 0 else 1
+        exoPlayer.volume = value.toFloat()
+    }
+
     fun release() {
         try {
             exoPlayer.release()
