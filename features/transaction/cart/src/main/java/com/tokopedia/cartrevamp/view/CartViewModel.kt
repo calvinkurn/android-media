@@ -39,6 +39,7 @@ import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
+import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.processor.CartPromoEntryPointProcessor
@@ -656,6 +657,8 @@ class CartViewModel @Inject constructor(
         subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
         subtotalPrice += returnValueMarketplaceProduct.second.second
         subtotalCashback += returnValueMarketplaceProduct.third
+
+        cartModel.latestCartTotalAmount = subtotalPrice
 
         _globalEvent.value = CartGlobalEvent.SubTotalUpdated(
             subtotalCashback,

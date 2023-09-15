@@ -1760,7 +1760,7 @@ class CartRevampFragment :
     }
 
     private fun getCurrentTotalPrice(): Double {
-        return viewModel.cartModel.summaryTransactionUiModel?.totalValue?.toDouble() ?: 0.0
+        return viewModel.cartModel.latestCartTotalAmount
     }
 
     private fun getMultipleDisabledItemsDialogDeleteConfirmation(count: Int): DialogUnify? {
