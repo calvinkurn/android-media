@@ -8,27 +8,17 @@ data class StickyNavigationUiModel(
     override var widgetType: String = "",
     override var widgetName: String = "",
     override var widgetBackgroundColor: Int? = null,
-    val content: List<StickyNavigationItemData>
+    val content: List<StickyNavigationItemData>,
+    var currentSelectTab:Int = 0
 ) : BaseCatalogUiModel(idWidget, widgetType, widgetName) {
 
     data class StickyNavigationItemData(
-        val title: String
+        val title: String,
+        val anchorTo: String
     )
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
         return typeFactory.type(this)
-    }
-
-    companion object {
-
-        fun dummyNavigation() = StickyNavigationUiModel(
-            "", "", "", "#FFFFFF".stringHexColorParseToInt(),
-            content = listOf(
-                StickyNavigationItemData("Sorotan"),
-                StickyNavigationItemData("Informasi Detail"),
-                StickyNavigationItemData("Ulasan Pembeli")
-            )
-        )
     }
 
 }

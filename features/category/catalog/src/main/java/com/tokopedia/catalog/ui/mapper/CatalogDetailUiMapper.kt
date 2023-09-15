@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.ui.mapper
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -10,8 +11,16 @@ import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.WidgetTypes
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_01
+import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_ACCORDION_01
+import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_ACCORDION_02
+import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_ACCORDION_ARROW
+import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_SUPPORT_FEATURE_01
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_01
+import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_ACCORDION_01
+import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_ACCORDION_02
+import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_ACCORDION_ARROW
+import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_SUPPORT_FEATURE_01
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
@@ -31,6 +40,7 @@ import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import javax.inject.Inject
@@ -180,7 +190,7 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToStickyNavigation(): StickyNavigationUiModel {
         return StickyNavigationUiModel(
             content = data?.navigation?.map {
-                StickyNavigationUiModel.StickyNavigationItemData(it.title)
+                StickyNavigationUiModel.StickyNavigationItemData(it.title, it.eligibleNames.firstOrNull().orEmpty())
             }.orEmpty()
         )
     }
@@ -241,16 +251,16 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToAccordion(
         isDarkMode: Boolean
     ): AccordionInformationUiModel {
-        val textColor = getTextColor(isDarkMode)
         return AccordionInformationUiModel(
             titleWidget = data?.section?.title.orEmpty(),
+            widgetTextColor =  colorMapping(isDarkMode, DARK_COLOR_ACCORDION_01, LIGHT_COLOR_ACCORDION_01),
             contents = data?.accordion.orEmpty().map {
                 AccordionInformationUiModel.ItemAccordionInformationUiModel(
                     title = it.title,
                     description = it.desc,
-                    arrowColor = textColor,
-                    textTitleColor = textColor,
-                    textDescriptionColor = textColor
+                    arrowColor = colorMapping(isDarkMode, DARK_COLOR_ACCORDION_ARROW, LIGHT_COLOR_ACCORDION_ARROW),
+                    textTitleColor = colorMapping(isDarkMode, DARK_COLOR_ACCORDION_01, LIGHT_COLOR_ACCORDION_01),
+                    textDescriptionColor = colorMapping(isDarkMode, DARK_COLOR_ACCORDION_02, LIGHT_COLOR_ACCORDION_02)
                 )
             }
         )
@@ -331,6 +341,8 @@ class CatalogDetailUiMapper @Inject constructor(
     ): SupportFeaturesUiModel {
         val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
         return SupportFeaturesUiModel(
+            titleSection = data?.section?.title.orEmpty(),
+            widgetTextColor = colorMapping(isDarkMode, DARK_COLOR_SUPPORT_FEATURE_01, LIGHT_COLOR_SUPPORT_FEATURE_01),
             items = data?.supportFeature?.map {
                 SupportFeaturesUiModel.ItemSupportFeaturesUiModel(
                     id = it.desc,
@@ -338,8 +350,8 @@ class CatalogDetailUiMapper @Inject constructor(
                     title = it.title,
                     description = it.desc,
                     backgroundColor = colorMapping(isDarkMode, DARK_COLOR, LIGHT_COLOR, 20),
-                    descColor = colorMapping(isDarkMode, "#AEB2BF", "#6D7588"),
-                    titleColor = colorMapping(isDarkMode, "#F5F6FF", "#212121"),
+                    descColor = colorMapping(isDarkMode, DARK_COLOR_01, LIGHT_COLOR_01),
+                    titleColor = colorMapping(isDarkMode, DARK_COLOR_SUPPORT_FEATURE_01, LIGHT_COLOR_SUPPORT_FEATURE_01),
                 )
             }.orEmpty()
         )

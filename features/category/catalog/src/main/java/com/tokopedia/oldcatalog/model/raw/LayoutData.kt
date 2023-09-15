@@ -49,7 +49,7 @@ data class LayoutData(
 
     data class Style(
         @SerializedName("isHidden")
-        val isHidden: Boolean = false,
+        val isHidden: Boolean = true,
         @SerializedName("isPremium")
         val isPremium: Boolean = false,
         @SerializedName("columnType")
@@ -211,6 +211,10 @@ data class LayoutData(
         @SerializedName("desc"    ) var desc    : String = ""
     )
 
+    data class AccordionComponent (
+        @SerializedName("title"   ) var title   : String = "",
+        @SerializedName("desc"    ) var desc    : String = ""
+    )
     data class Accordion (
         @SerializedName("title"   ) var title   : String = "",
         @SerializedName("desc"    ) var desc    : String = ""

@@ -79,8 +79,6 @@ class CatalogProductListViewModel @Inject constructor(
     private val _productList = MutableLiveData<Result<List<CatalogProductItem>>>()
 
 
-    val mProductCount = MutableLiveData<Int>()
-
     var comparisonCardIsAdded = false
 
     var pageCount = 0

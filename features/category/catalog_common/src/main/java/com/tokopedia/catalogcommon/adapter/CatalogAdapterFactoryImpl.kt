@@ -29,6 +29,7 @@ import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
 import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
+import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 import com.tokopedia.catalogcommon.viewholder.SupportFeatureViewHolder
 import com.tokopedia.catalogcommon.viewholder.TextDescriptionViewHolder
@@ -38,7 +39,8 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 
 class CatalogAdapterFactoryImpl(
-    private val heroBannerListener: HeroBannerListener? = null
+    private val heroBannerListener: HeroBannerListener? = null,
+    private val navListener: StickyNavigationListener? = null
 ): BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -47,7 +49,7 @@ class CatalogAdapterFactoryImpl(
             CharacteristicViewHolder.LAYOUT -> CharacteristicViewHolder(view)
             HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view, heroBannerListener)
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
-            StickyTabNavigationViewHolder.LAYOUT -> StickyTabNavigationViewHolder(view)
+            StickyTabNavigationViewHolder.LAYOUT -> StickyTabNavigationViewHolder(view,navListener)
             SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
             TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view)

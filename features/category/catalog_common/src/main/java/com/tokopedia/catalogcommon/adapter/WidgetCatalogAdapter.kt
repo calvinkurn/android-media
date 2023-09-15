@@ -9,14 +9,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.catalogcommon.OnStickySingleHeaderListener
 import com.tokopedia.catalogcommon.StickySingleHeaderView
+import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 class WidgetCatalogAdapter(
     private val baseListAdapterTypeFactory: CatalogAdapterFactoryImpl
 ) : BaseAdapter<CatalogAdapterFactoryImpl>(
     baseListAdapterTypeFactory
-), StickySingleHeaderView.OnStickySingleHeaderAdapter  {
+), StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     private var recyclerView: RecyclerView? = null
     private val differ = CatalogDifferImpl()
@@ -64,8 +66,8 @@ class WidgetCatalogAdapter(
     override fun updateEtalaseListViewHolderData() {
         if (recyclerView?.isComputingLayout == false) {
             Handler().post {
-                val positionNavigation  = findPositionNavigation()
-                if (positionNavigation != -1){
+                val positionNavigation = findPositionNavigation()
+                if (positionNavigation != -1) {
                     notifyItemChanged(positionNavigation)
                 }
             }
@@ -82,12 +84,41 @@ class WidgetCatalogAdapter(
         super.onDetachedFromRecyclerView(recyclerView)
     }
 
-    private fun findPositionNavigation() : Int{
+    fun autoSelectNavigation(position: Int) {
+        val indexNavigation = visitables.indexOfFirst {
+            it is StickyNavigationUiModel
+        }
+
+        val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
+
+        val currentWidget = visitables[position] as BaseCatalogUiModel
+        navigation?.let { stickyNav ->
+            val indexPartOfNavigation = stickyNav.content.indexOfFirst {
+                it.anchorTo == currentWidget.widgetName
+            }
+            if (indexPartOfNavigation >= Int.ZERO){
+                navigation.currentSelectTab = indexPartOfNavigation
+                notifyItemChanged(indexNavigation, navigation)
+            }
+
+        }
+
+    }
+
+    fun findPositionWidget(widgetName: String): Int {
+        return visitables.indexOfFirst {
+            val uiModel = it as BaseCatalogUiModel
+            uiModel.widgetName == widgetName
+        }
+    }
+
+    private fun findPositionNavigation(): Int {
         val index = visitables.indexOfFirst {
             it is StickyNavigationUiModel
         }
 
         return index
     }
+
 
 }
