@@ -29,13 +29,15 @@ object ProductAdsMapper {
     private const val ADDITIONAL_POSITION = 1
 
     fun MutableList<Visitable<*>>.addProductAdsCarousel(
-        id: String = PRODUCT_ADS_CAROUSEL
+        id: String = PRODUCT_ADS_CAROUSEL,
+        enableTouchListener: Boolean = false
     ) {
         add(
             TokoNowAdsCarouselUiModel(
                 id = id,
                 items = emptyList(),
-                state = TokoNowLayoutState.LOADING
+                state = TokoNowLayoutState.LOADING,
+                enableTouchListener = enableTouchListener
             )
         )
     }
@@ -68,7 +70,8 @@ object ProductAdsMapper {
         return TokoNowAdsCarouselUiModel(
             id = id,
             items = productList,
-            state = TokoNowLayoutState.LOADED
+            state = TokoNowLayoutState.LOADED,
+            enableTouchListener = true
         )
     }
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -166,6 +167,10 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
     fun scrollToPosition(position: Int) {
         binding.productCardCarousel.scrollToPosition(position)
+    }
+
+    fun addOnTouchListener(listener: RecyclerView.OnItemTouchListener) {
+        binding.productCardCarousel.addOnTouchListener(listener)
     }
 
     interface TokoNowProductRecommendationListener {

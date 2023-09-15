@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.listener.HorizontalItemTouchListener
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
@@ -30,6 +31,11 @@ class TokoNowProductRecommendationViewHolder(
             productRecommendation.setListener(
                 productRecommendationListener = listener
             )
+            if(element.enableTouchListener) {
+                productRecommendation.addOnTouchListener(
+                    listener = HorizontalItemTouchListener()
+                )
+            }
             realTimeRecommendationCarousel.hide()
         }
     }

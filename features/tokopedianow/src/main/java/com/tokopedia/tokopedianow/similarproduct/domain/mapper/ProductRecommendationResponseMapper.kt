@@ -31,7 +31,7 @@ object ProductRecommendationResponseMapper {
                             categoryId = product.departmentId.toString(),
                             categoryName = categoryName,
                             position = position,
-                            warehouseIds = product.warehouseIds.orEmpty()
+                            warehouseIds = product.warehouseId.orEmpty()
                         )
                     }
                 }

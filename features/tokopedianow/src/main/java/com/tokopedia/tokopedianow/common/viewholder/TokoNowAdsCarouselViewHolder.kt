@@ -57,7 +57,7 @@ class TokoNowAdsCarouselViewHolder(
             header.setModel(TokoNowDynamicHeaderUiModel(title = title))
             productCardCarousel.setListener(createProductCardListener(title))
             productCardCarousel.bindItems(uiModel.items)
-            setupItemTouchListener()
+            setupItemTouchListener(uiModel)
 
             containerBackground.show()
             productCardCarousel.show()
@@ -66,10 +66,12 @@ class TokoNowAdsCarouselViewHolder(
         }
     }
 
-    private fun setupItemTouchListener() {
-        binding?.productCardCarousel
-            ?.findViewById<RecyclerView>(R.id.recycler_view)
-            ?.addOnItemTouchListener(HorizontalItemTouchListener())
+    private fun setupItemTouchListener(uiModel: TokoNowAdsCarouselUiModel) {
+        if(uiModel.enableTouchListener) {
+            binding?.productCardCarousel
+                ?.findViewById<RecyclerView>(R.id.recycler_view)
+                ?.addOnItemTouchListener(HorizontalItemTouchListener())
+        }
     }
 
     private fun createProductCardListener(title: String): ProductCardCompactCarouselListener {

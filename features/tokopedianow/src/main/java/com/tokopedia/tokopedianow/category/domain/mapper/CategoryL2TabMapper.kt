@@ -51,7 +51,7 @@ object CategoryL2TabMapper {
             when (it.type) {
                 PRODUCT_LIST_FILTER -> addQuickFilter(it)
                 PRODUCT_LIST_INFINITE_SCROLL -> addProductList(it)
-                FEATURED_PRODUCT -> addProductAdsCarousel(it.id)
+                FEATURED_PRODUCT -> addProductAdsCarousel(it.id, true)
             }
         }
     }
@@ -208,7 +208,8 @@ object CategoryL2TabMapper {
                 keywords = emptyList(),
                 xDevice = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
             ),
-            tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE
+            tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE,
+            enableTouchListener = true
         )
         add(recommendationUiModel)
     }

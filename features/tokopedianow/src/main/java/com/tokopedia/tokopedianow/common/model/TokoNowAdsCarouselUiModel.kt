@@ -9,7 +9,8 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 data class TokoNowAdsCarouselUiModel(
     val id: String,
     val items: List<ProductCardCompactCarouselItemUiModel>,
-    @TokoNowLayoutState val state: Int
+    @TokoNowLayoutState val state: Int,
+    val enableTouchListener: Boolean = false
 ): Visitable<TokoNowAdsCarouselTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: TokoNowAdsCarouselTypeFactory): Int {
         return typeFactory.type(this)
