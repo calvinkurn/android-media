@@ -232,7 +232,7 @@ class CheckoutCostViewHolder(
     }
 
     private fun renderOtherFee(cost: CheckoutCostModel) {
-        val insuranceCourierList = if (cost.shippingInsuranceFee > 0.0) listOf(cost.shippingInsuranceFee) else emptyList()
+        val insuranceCourierList = if (cost.hasInsurance) listOf(cost.shippingInsuranceFee) else emptyList()
         val giftingList = if (cost.hasAddOn) listOf(cost.totalAddOnPrice) else emptyList()
         val egoldList = if (cost.emasPrice > 0.0) listOf(cost.emasPrice) else emptyList()
         val donationList = if (cost.donation > 0.0) listOf(cost.donation) else emptyList()
