@@ -219,15 +219,18 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private fun setupAppBarLayout() {
         appBarLayout?.addOnOffsetChangedListener { _, verticalOffset ->
             refreshLayout?.isEnabled = (verticalOffset == 0)
+            val isOverrideTheme = shopHeaderLayoutData.isOverrideTheme
             setNavToolbarScrollColorTransition(verticalOffset)
-            if (appbarOffsetRatio < Int.ONE.toFloat()) {
-                resumeHeaderVideo()
-                setToolbarColorFromHeaderConfig()
-                setStatusBarColor(getShopHeaderConfig()?.patternColorType.orEmpty())
-            } else {
-                pauseHeaderVideo()
-                setToolbarColorFromBodyConfig()
-                setStatusBarColor(getShopBodyConfig()?.patternColorType.orEmpty())
+            if(isOverrideTheme) {
+                if (appbarOffsetRatio < Int.ONE.toFloat()) {
+                    resumeHeaderVideo()
+                    setToolbarColorFromHeaderConfig()
+                    setStatusBarColor(getShopHeaderConfig()?.patternColorType.orEmpty())
+                } else {
+                    pauseHeaderVideo()
+                    setToolbarColorFromBodyConfig()
+                    setStatusBarColor(getShopBodyConfig()?.patternColorType.orEmpty())
+                }
             }
         }
     }
