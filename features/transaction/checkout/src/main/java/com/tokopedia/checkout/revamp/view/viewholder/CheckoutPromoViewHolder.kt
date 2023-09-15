@@ -151,7 +151,9 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                         isExpanded = isExpanded,
                         animateWording = model.isAnimateWording,
                         onClickListener = {
-                            listener.onClickPromoCheckout(lastApply)
+                            if (entryPointInfo.isClickable) {
+                                listener.onClickPromoCheckout(lastApply)
+                            }
                         }
                     )
                 }
