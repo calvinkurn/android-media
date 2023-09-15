@@ -10,7 +10,9 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConst
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
@@ -24,7 +26,8 @@ class PartialProductItemViewHolder(
     partialProductItemViewStub: View?,
     private val listener: ProductViewListener,
     private val navigator: BuyerOrderDetailNavigator,
-    private var element: ProductListUiModel.ProductUiModel
+    private var element: ProductListUiModel.ProductUiModel,
+    private val bottomSheetListener: ShareProductBottomSheetListener
 ) : View.OnClickListener {
 
     companion object {
@@ -50,6 +53,8 @@ class PartialProductItemViewHolder(
         itemView?.findViewById<View>(R.id.itemBomDetailProductViewStub)
     private val btnBuyerOrderDetailBuyProductAgain =
         partialProductItemViewStub?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
+    private val btnShareProduct =
+        partialProductItemViewStub?.findViewById<IconUnify>(R.id.btnShareProduct)
 
     private val context = itemView?.context
 
@@ -61,11 +66,17 @@ class PartialProductItemViewHolder(
         setupProductNote(element.productNote)
         setupTotalPrice(element.totalPriceText)
         setupInsurance(element.insurance)
+        setupShareButton(element.productUrl)
+    }
+
+    private fun setupShareButton(productUrl: String?) {
+        if (productUrl?.isEmpty() == true) {
+            btnShareProduct?.hide()
+        }
     }
 
     fun bindProductItemPayload(
-        oldItem: ProductListUiModel.ProductUiModel,
-        newItem: ProductListUiModel.ProductUiModel
+        oldItem: ProductListUiModel.ProductUiModel, newItem: ProductListUiModel.ProductUiModel
     ) {
         container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         this.element = newItem
@@ -118,6 +129,7 @@ class PartialProductItemViewHolder(
     private fun setupClickListeners() {
         itemBomDetailProductViewStub?.setOnClickListener(this)
         btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this)
+        btnShareProduct?.setOnClickListener(this)
     }
 
     private fun setupProductName(productName: String) {
@@ -196,10 +208,19 @@ class PartialProductItemViewHolder(
         when (v?.id) {
             R.id.itemBomDetailProductViewStub -> goToProductSnapshotPage()
             R.id.btnBuyerOrderDetailBuyProductAgain -> onActionButtonClicked()
+            R.id.btnShareProduct -> openShareBottomSheet()
         }
+    }
+
+    private fun openShareBottomSheet() {
+        bottomSheetListener.onShareButtonClicked(element)
     }
 
     interface ProductViewListener {
         fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel)
+    }
+
+    interface ShareProductBottomSheetListener {
+        fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel)
     }
 }

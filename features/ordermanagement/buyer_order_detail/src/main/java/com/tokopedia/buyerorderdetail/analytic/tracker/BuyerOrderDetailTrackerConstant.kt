@@ -27,9 +27,12 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_NAME_ADD_TO_CART = "add_to_cart"
     const val EVENT_NAME_CLICK_PG = "clickPG"
     const val EVENT_NAME_VIEW_PG_IRIS = "viewPGIris"
+    const val EVENT_NAME_CLICK_COMMUNICATION = "clickCommunication"
+    const val EVENT_NAME_VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
 
     // event categories
     const val EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP = "my purchase list detail - mp"
+    const val EVENT_ORDER_DETAIL_HISTORY = "order detail history"
 
     // event actions
     const val EVENT_ACTION_PARTIAL_CLICK = "click"
@@ -59,6 +62,10 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_ESTIMATE_ICON_POF_BOM_DETAIL = "click icon estimasi dana dikembalikan"
     const val EVENT_ACTION_CLICK_ON_ORDER_WIDGET = "click on order group widget"
     const val EVENT_ACTION_CLICK_VIEW_DETAIL_ORDER_GROUP = "click lihat detail on order group detail"
+    const val EVENT_ACTION_CLICK_SHARE_BUTTON = "click - share button"
+    const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
+    const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
+    const val EVENT_ACTION_IMPRESSION_SHARE_BOTTOM_SHEET = "view on sharing channel"
 
     // pof
     const val EVENT_ACTION_CLICK_TOTAL_AVAILABLE_ITEM_POF = "click jumlah barang tersedia - popup pof"
@@ -76,6 +83,7 @@ object BuyerOrderDetailTrackerConstant {
     // business unit
     const val BUSINESS_UNIT_MARKETPLACE = "Seller Order Management"
     const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
+    const val BUSINESS_UNIT_SHARING_EXPERIENCE = "sharingexperience"
 
     // current site
     const val CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
@@ -119,6 +127,10 @@ object BuyerOrderDetailTrackerConstant {
     const val TRACKER_ID_41156 = "41156"
     const val TRACKER_ID_44136 = "44136"
     const val TRACKER_ID_44137 = "44137"
+    const val TRACKER_ID_45653 = "45653"
+    const val TRACKER_ID_45654 = "45654"
+    const val TRACKER_ID_45655 = "45655"
+    const val TRACKER_ID_45656 = "45656"
     const val TRACKER_ID_47433 = "47433"
 
     // others

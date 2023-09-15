@@ -118,8 +118,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TALK_REPLY_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TALK_SELLER_SETTINGS
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V1
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V3
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
@@ -132,7 +130,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_PRO
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.GEOLOCATION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.INBOX
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
@@ -235,6 +232,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SEARCH_HI
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SHARING_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.GOTO_KYC
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
@@ -287,6 +285,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_FLASH_SALE_TOKOPEDIA = "df_flash_sale_tokopedia"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
+    const val DF_PROMO_SCP = "df_promo_scp"
     const val DF_PROMO_CHECKOUT = "df_promo_checkout"
     const val DF_GAMIFICATION = "df_gamification"
     const val DF_SHOP_SETTINGS_SELLER_APP = "df_shop_settings_sellerapp"
@@ -420,10 +419,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(DROPOFF_PICKER) }, DF_BASE, R.string.dropoff_title))
             add(DFP({ it.startsWithPattern(ORDER_TRACKING) }, DF_BASE, R.string.path_order_tracking))
             add(DFP({ it.startsWith(MANAGE_ADDRESS) }, DF_BASE, R.string.path_manage_address))
-            add(DFP({ it.startsWithPattern(ADD_ADDRESS_V1) }, DF_BASE, R.string.path_add_address_v1))
-            add(DFP({ it.startsWith(ADD_ADDRESS_V2) }, DF_BASE, R.string.path_add_address_v2))
             add(DFP({ it.startsWith(DISTRICT_RECOMMENDATION_SHOP_SETTINGS) }, DF_BASE, R.string.path_district_recommendation_shop_settings))
-            add(DFP({ it.startsWith(GEOLOCATION) }, DF_BASE, R.string.path_geolocation))
             add(DFP({ it.startsWith(SHOP_EDIT_ADDRESS) }, DF_BASE, R.string.path_edit_shop_address))
             add(DFP({ it.startsWith(SELLER_WAREHOUSE_DATA) }, DF_BASE, R.string.path_shop_settings_address))
             add(DFP({ it.startsWith(ADD_ADDRESS_V3) }, DF_BASE, R.string.path_add_address_v3))
@@ -637,6 +633,12 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_GIFT)
                 }, DF_PROMO_GAMIFICATION, R.string.internet_title_gamification)
             )
+            add(DFP(
+                { it.startsWith(ApplinkConstInternalPromo.INTERNAL_SCP_REWARDS) },
+                DF_PROMO_SCP,
+                R.string.title_scp_rewards
+            ))
+
 
             add(
                 DFP({
@@ -710,6 +712,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_USER_SETTINGS, R.string.user_identification_form_title))
             add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_USER_SETTINGS, R.string.user_identification_info_simple))
             add(DFP({ it.startsWithPattern(GOTO_KYC) }, DF_USER_SETTINGS, R.string.goto_kyc_title))
+            add(DFP({ it.startsWithPattern(GOTO_KYC_WEBVIEW) }, DF_USER_SETTINGS, R.string.goto_kyc_title))
             add(DFP({ it.startsWith(ORDER_HISTORY) || it.startsWithPattern(ApplinkConstInternalMarketplace.ORDER_HISTORY) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
             add(
                 DFP({

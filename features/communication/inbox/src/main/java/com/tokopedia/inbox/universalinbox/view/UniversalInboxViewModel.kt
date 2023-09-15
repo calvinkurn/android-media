@@ -201,7 +201,7 @@ class UniversalInboxViewModel @Inject constructor(
                     _firstPageRecommendation.postValue(Success(recommendationWidget))
                 } catch (throwable: Throwable) {
                     _firstPageRecommendation.postValue(Fail(throwable))
-                    _error.value = Pair(throwable, ::loadFirstPageRecommendation.name)
+                    _error.postValue(Pair(throwable, ::loadFirstPageRecommendation.name))
                 }
             }
         }
@@ -215,7 +215,7 @@ class UniversalInboxViewModel @Inject constructor(
                     _morePageRecommendation.postValue(Success(recommendationWidget.recommendationItemList))
                 } catch (throwable: Throwable) {
                     _morePageRecommendation.postValue(Fail(throwable))
-                    _error.value = Pair(throwable, ::loadMoreRecommendation.name)
+                    _error.postValue(Pair(throwable, ::loadMoreRecommendation.name))
                 }
             }
         }

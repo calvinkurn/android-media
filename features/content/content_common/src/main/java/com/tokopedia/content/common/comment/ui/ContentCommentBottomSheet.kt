@@ -382,7 +382,7 @@ class ContentCommentBottomSheet @Inject constructor(
             binding.commentGlobalError.setType(GlobalError.NO_CONNECTION)
             binding.commentGlobalError.errorSecondaryAction.show()
             binding.commentGlobalError.errorSecondaryAction.text =
-                getString(R.string.content_comment_error_secondary)
+                getString(R.string.content_global_error_secondary_text)
             binding.commentGlobalError.setSecondaryActionClickListener {
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 router.route(requireActivity(), intent)

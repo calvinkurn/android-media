@@ -3,13 +3,8 @@ package com.tokopedia.topchat.chatroom.view.activity.base
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.view.View
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.gson.Gson
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -18,14 +13,11 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplate
 import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
 import com.tokopedia.topchat.chattemplate.domain.pojo.TopchatChatTemplates
-import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.websocket.WebSocketResponse
-import org.hamcrest.Matcher
 
 open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
 
@@ -116,70 +108,6 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
             "seller/success_get_chat_attachments_with_product_variant_parentid.json",
             ChatAttachmentResponse::class.java
         )
-    }
-
-    protected fun assertStockCountVisibilityAt(
-        recyclerViewId: Int,
-        productCardPosition: Int,
-        viewMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                productCardPosition,
-                R.id.tp_seller_stock_count
-            )
-        ).check(matches(viewMatcher))
-    }
-
-    protected fun assertStockCountValueAt(
-        recyclerViewId: Int,
-        productCardPosition: Int,
-        stockCount: Int
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                productCardPosition,
-                R.id.tp_seller_stock_count
-            )
-        ).check(matches(withText("$stockCount")))
-    }
-
-    protected fun assertStockCountBtnVisibilityAt(
-        recyclerViewId: Int,
-        productCardPosition: Int,
-        viewMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                productCardPosition,
-                R.id.btn_update_stock
-            )
-        ).check(matches(viewMatcher))
-    }
-
-    protected fun clickChangeStockBtn(
-        recyclerViewId: Int,
-        atPosition: Int
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition,
-                R.id.btn_update_stock
-            )
-        ).perform(ViewActions.click())
-    }
-
-    protected fun assertTokoCabangVisibility(
-        recyclerViewId: Int,
-        productCardPosition: Int,
-        viewMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                productCardPosition,
-                R.id.ll_seller_fullfilment
-            )
-        ).check(matches(viewMatcher))
     }
 
     protected fun createSuccessUpdateStockIntentResult(

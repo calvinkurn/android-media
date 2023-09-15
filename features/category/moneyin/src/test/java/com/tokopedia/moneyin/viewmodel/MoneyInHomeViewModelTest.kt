@@ -1,10 +1,9 @@
 package com.tokopedia.moneyin.viewmodel
 
 import android.content.Intent
-import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.laku6.tradeinsdk.api.Laku6TradeIn
+import com.laku6.tradeinsdk.api.TradeInApiService
 import com.tokopedia.common_tradein.model.DeviceDiagInputResponse
 import com.tokopedia.common_tradein.model.DeviceDiagnostics
 import com.tokopedia.common_tradein.model.HomeResult
@@ -13,7 +12,6 @@ import com.tokopedia.common_tradein.usecase.ProcessMessageUseCase
 import com.tokopedia.moneyin.MoneyinConstants
 import com.tokopedia.moneyin.usecase.CheckMoneyInUseCase
 import com.tokopedia.moneyin.viewcontrollers.ContextInterface
-import com.tokopedia.moneyin.viewmodel.MoneyInHomeViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import io.mockk.*
@@ -30,7 +28,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 @ExperimentalCoroutinesApi
 class MoneyInHomeViewModelTest {
@@ -57,7 +54,7 @@ class MoneyInHomeViewModelTest {
     lateinit var androidIntent: Intent
 
     @RelaxedMockK
-    lateinit var laku6TradeIn: Laku6TradeIn
+    lateinit var laku6TradeIn: TradeInApiService
 
     private val tradeInType = 1
 
@@ -77,7 +74,7 @@ class MoneyInHomeViewModelTest {
     /**************************** doOnCreate() *******************************************/
 
     @Test
-    fun doOnCreate(){
+    fun doOnCreate() {
         every { tradeInHomeViewModel.checkLogin() } returns Unit
 
         tradeInHomeViewModel.doOnCreate()
@@ -278,7 +275,6 @@ class MoneyInHomeViewModelTest {
 
         verify(exactly = 1) { tradeInHomeViewModel.checkMoneyIn(any(), any()) }
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
-
     }
 
     /**************************** onFinished() *******************************************/
@@ -304,7 +300,7 @@ class MoneyInHomeViewModelTest {
 
         tradeInHomeViewModel.onError(jsonObject)
 
-        assertEquals(tradeInHomeViewModel.imeiResponseLiveData.value , "Error tradein")
+        assertEquals(tradeInHomeViewModel.imeiResponseLiveData.value, "Error tradein")
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
     }
 
@@ -349,11 +345,9 @@ class MoneyInHomeViewModelTest {
 
     @Test
     fun setContextInterface() {
-        val contextInterface : ContextInterface = mockk()
+        val contextInterface: ContextInterface = mockk()
         tradeInHomeViewModel.setContextInterface(contextInterface)
     }
 
     /**************************** setContextInterface() *******************************************/
-
 }
-
