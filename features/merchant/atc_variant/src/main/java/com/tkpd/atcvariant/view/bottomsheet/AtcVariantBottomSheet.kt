@@ -787,7 +787,8 @@ class AtcVariantBottomSheet :
         if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY) return
         adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
         viewModel.onVariantClicked(
-            sharedViewModel.aggregatorParams.value?.showQtyEditor ?: false,
+            sharedViewModel.aggregatorParams.value?.isTokoNow ?: false ||
+                    sharedViewModel.aggregatorParams.value?.showQtyEditor ?: false,
             variantOptions.variantCategoryKey,
             variantOptions.variantId,
             variantOptions.imageOriginal,
