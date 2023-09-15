@@ -72,6 +72,10 @@ object FakeLoginModule : LoginModule() {
             override fun fetch(listener: RemoteConfig.Listener?) {
                 TODO("Not yet implemented")
             }
+
+            override fun setRealtimeUpdate(realTimeUpdateListener: RemoteConfig.RealTimeUpdateListener?) {
+                // no op
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.topchat.stub.common
 
 import com.tokopedia.remoteconfig.RemoteConfig
 
-class RemoteConfigStub: RemoteConfig {
+class RemoteConfigStub : RemoteConfig {
 
     private var stringResult: String = ""
     private var longResult: Long = 0
@@ -64,4 +64,7 @@ class RemoteConfigStub: RemoteConfig {
     override fun setString(key: String?, value: String?) {}
 
     override fun fetch(listener: RemoteConfig.Listener?) {}
+    override fun setRealtimeUpdate(realTimeUpdateListener: RemoteConfig.RealTimeUpdateListener?) {
+        // no op
+    }
 }

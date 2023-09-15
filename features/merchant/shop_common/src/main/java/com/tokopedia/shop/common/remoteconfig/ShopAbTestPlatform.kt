@@ -17,8 +17,8 @@ import rx.schedulers.Schedulers
 import java.lang.Exception
 import java.util.*
 
-class ShopAbTestPlatform (
-        context: Context
+class ShopAbTestPlatform(
+    context: Context
 ) : RemoteConfig {
     private var irisSession: IrisSession = IrisSession(context)
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
@@ -32,7 +32,7 @@ class ShopAbTestPlatform (
 
     override fun getBoolean(key: String?, defaultValue: Boolean): Boolean {
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue.toString())
-                ?: defaultValue.toString()
+            ?: defaultValue.toString()
         if (cacheValue.equals(defaultValue.toString(), ignoreCase = true) && cacheValue.isNotEmpty()) {
             return cacheValue.equals("true", ignoreCase = true)
         }
@@ -82,28 +82,32 @@ class ShopAbTestPlatform (
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map { graphqlResponse ->
-                    gqlResponseHandler(graphqlResponse)
-                    listener?.onComplete(this@ShopAbTestPlatform)
-                }
-                .doOnError { error ->
-                    Log.d("doOnError", error.toString())
-                    listener?.onError(Exception(error))
-                }
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe {
-                    object : Subscriber<GraphqlResponse>() {
-                        override fun onNext(t: GraphqlResponse?) {
-                        }
+            .map { graphqlResponse ->
+                gqlResponseHandler(graphqlResponse)
+                listener?.onComplete(this@ShopAbTestPlatform)
+            }
+            .doOnError { error ->
+                Log.d("doOnError", error.toString())
+                listener?.onError(Exception(error))
+            }
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .subscribe {
+                object : Subscriber<GraphqlResponse>() {
+                    override fun onNext(t: GraphqlResponse?) {
+                    }
 
-                        override fun onCompleted() {
-                        }
+                    override fun onCompleted() {
+                    }
 
-                        override fun onError(e: Throwable) {
-                        }
+                    override fun onError(e: Throwable) {
                     }
                 }
+            }
+    }
+
+    override fun setRealtimeUpdate(realTimeUpdateListener: RemoteConfig.RealTimeUpdateListener?) {
+        // no op
     }
 
     private fun gqlResponseHandler(graphqlResponse: GraphqlResponse): ShopRolloutFeatureVariants {
@@ -139,15 +143,15 @@ class ShopAbTestPlatform (
         private const val SHARED_PREFERENCE_SHOP_AB_TEST_PLATFORM = "tkpd-shop-ab-test-platform"
 
         fun createRequestParam(
-                listExperimentName: List<String>,
-                shopId: String
+            listExperimentName: List<String>,
+            shopId: String
         ): Map<String, Any> {
             return mapOf(
-                    KEY_INPUT to ShopAbTestInputParamModel(
-                            listExperimentName,
-                            shopId,
-                            ANDROID_CLIENT_ID.toString()
-                    )
+                KEY_INPUT to ShopAbTestInputParamModel(
+                    listExperimentName,
+                    shopId,
+                    ANDROID_CLIENT_ID.toString()
+                )
             )
         }
     }

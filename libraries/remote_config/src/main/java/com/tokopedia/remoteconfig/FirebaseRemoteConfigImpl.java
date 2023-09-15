@@ -12,7 +12,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.ConfigUpdate;
 import com.google.firebase.remoteconfig.ConfigUpdateListener;
-import com.google.firebase.remoteconfig.ConfigUpdateListenerRegistration;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -207,16 +206,15 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     }
 
     @Override
-    public ConfigUpdateListenerRegistration setRealtimeUpdate(@Nullable RealTimeUpdateListener realTimeUpdateListener) {
+    public void setRealtimeUpdate(@Nullable RealTimeUpdateListener realTimeUpdateListener) {
         try {
             if (firebaseRemoteConfig != null) {
-                return firebaseRemoteConfig.addOnConfigUpdateListener(getConfigUpdateListener(realTimeUpdateListener));
+                firebaseRemoteConfig.addOnConfigUpdateListener(getConfigUpdateListener(realTimeUpdateListener));
             }
         } catch (Exception e) {
             Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Remote config error: %s", e.getStackTrace()));
             e.printStackTrace();
         }
-        return null;
     }
 
     private ConfigUpdateListener getConfigUpdateListener(@Nullable RealTimeUpdateListener realTimeUpdateListener) {
