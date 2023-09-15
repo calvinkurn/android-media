@@ -15,4 +15,7 @@
 
     <string name="content_creation_story_description_text">Pamerin tentang bagusnya suatu produk dengan update Story singkat &amp; memikat. </string>
     <string name="content_creation_story_description_click_label">Tips Bikin Story.</string>
+
+    <string name="content_creation_post_as_label">Post sebagai</string>
+
 </resources>

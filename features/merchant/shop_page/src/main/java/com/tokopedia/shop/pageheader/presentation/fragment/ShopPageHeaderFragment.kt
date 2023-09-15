@@ -61,8 +61,8 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
-import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.creation.common.consts.ContentCreationConsts
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
@@ -245,7 +245,7 @@ import java.io.File
 import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.creation.common.R as creationcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragment :
@@ -515,23 +515,23 @@ class ShopPageHeaderFragment :
                                             ApplinkConst.IMAGE_PICKER_V2
                                         ).apply {
                                             putExtra(
-                                                BundleData.IS_CREATE_POST_AS_BUYER,
+                                                ContentCreationConsts.IS_CREATE_POST_AS_BUYER,
                                                 data.authorType.asBuyer
                                             )
                                             putExtra(
-                                                BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
+                                                ContentCreationConsts.APPLINK_AFTER_CAMERA_CAPTURE,
                                                 ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
                                             )
                                             putExtra(
-                                                BundleData.MAX_MULTI_SELECT_ALLOWED,
-                                                BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
+                                                ContentCreationConsts.MAX_MULTI_SELECT_ALLOWED,
+                                                ContentCreationConsts.VALUE_MAX_MULTI_SELECT_ALLOWED
                                             )
                                             putExtra(
-                                                BundleData.TITLE,
-                                                getString(contentcommonR.string.feed_post_sebagai)
+                                                ContentCreationConsts.TITLE,
+                                                getString(creationcommonR.string.content_creation_post_as_label)
                                             )
                                             putExtra(
-                                                BundleData.APPLINK_FOR_GALLERY_PROCEED,
+                                                ContentCreationConsts.APPLINK_FOR_GALLERY_PROCEED,
                                                 ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
                                             )
                                         }
