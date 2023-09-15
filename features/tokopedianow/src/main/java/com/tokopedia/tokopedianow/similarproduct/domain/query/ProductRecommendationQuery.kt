@@ -78,7 +78,7 @@ internal object ProductRecommendationQuery: GqlQueryInterface {
                     rating
                     countReview
                     recommendationType
-                    warehouse_ids
+                    warehouseID
                     stock
                     minOrder
                     maxOrder

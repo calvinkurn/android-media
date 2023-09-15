@@ -132,9 +132,9 @@ data class ProductRecommendationResponse(
                 @field:SerializedName("categoryBreadcrumbs")
                 val categoryBreadcrumbs: String? = null,
 
-                @SerializedName("warehouse_ids")
+                @SerializedName("warehouseID")
                 @Expose
-                val warehouseIds: String? = null,
+                val warehouseId: String? = null,
 
                 @field:SerializedName("id")
                 val id: Long? = null,

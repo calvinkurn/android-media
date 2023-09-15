@@ -75,7 +75,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
-import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
+import com.tokopedia.tokopedianow.similarproduct.presentation.fragment.TokoNowSimilarProductBottomSheetFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -718,12 +718,10 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 productId: String,
                 similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?
             ) {
-                val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(
-                    requireContext(),
-                    productId,
-                    similarProductTrackerListener
-                )
-                startActivity(intent)
+                val fragment = TokoNowSimilarProductBottomSheetFragment.newInstance(productId)
+                fragment.setListener(similarProductTrackerListener)
+                fragment.finishActivityOnDismiss = false
+                categoryL2View?.showFragment(fragment)
             }
         }
     }

@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -145,6 +146,14 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
 
     override fun updateToolbarNotificationCounter() {
         updateToolbarNotification()
+    }
+
+    override fun showFragment(fragment: Fragment) {
+        binding?.root?.let { container ->
+            childFragmentManager.beginTransaction()
+                .add(container.id, fragment)
+                .commit()
+        }
     }
 
     private fun observeLiveData() {
