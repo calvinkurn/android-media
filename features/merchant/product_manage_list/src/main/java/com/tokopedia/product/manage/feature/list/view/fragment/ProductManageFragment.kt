@@ -475,7 +475,8 @@ open class ProductManageFragment :
         get() = binding?.layoutFragmentProductManage?.recyclerView
     private val progressBar: LoaderUnify?
         get() = binding?.layoutFragmentProductManage?.progressBar
-
+    private val interceptor: FrameLayout?
+        get() = binding?.layoutFragmentProductManage?.interceptor
     private val searchBar: SearchBarUnify?
         get() = binding?.layoutFragmentProductManage?.searchBarProductManage
 
@@ -596,7 +597,7 @@ open class ProductManageFragment :
     override fun getRecyclerView(view: View?): RecyclerView? = recyclerView
 
     private fun initView() {
-//        setupInterceptor()
+        setupInterceptor()
         setupSearchBar()
         setupProductList()
         setupProgressDialogVariant()
@@ -1174,16 +1175,16 @@ open class ProductManageFragment :
         return searchKeyword.isEmpty() && selectedFilters?.selectedFilterCount.orZero() == 0 && filterTab?.isFilterActive() == false
     }
 
-//    @SuppressLint("ClickableViewAccessibility")
-//    private fun setupInterceptor() {
-//        interceptor?.setOnTouchListener { v, event ->
-//            searchBar?.clearFocus()
-//            if (event?.action == MotionEvent.ACTION_UP) {
-//                v?.performClick()
-//            }
-//            false
-//        }
-//    }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupInterceptor() {
+        interceptor?.setOnTouchListener { v, event ->
+            searchBar?.clearFocus()
+            if (event?.action == MotionEvent.ACTION_UP) {
+                v?.performClick()
+            }
+            false
+        }
+    }
 
     private fun setupSearchBar() {
         searchBar?.run {
