@@ -62,7 +62,10 @@ class ProductCardColorOverrideManager {
             val textViewStockLabel = productCard.findViewById<Typography>(productcardR.id.textViewStockLabel)
             textViewStockLabel.setTextColor(ContextCompat.getColor(textViewStockLabel.context, shopR.color.dms_static_light_NN950_68))
 
-
+            val progressBarStock = productCard.findViewById<ProgressBarUnify>(productcardR.id.progressBarStock)
+            progressBarStock.trackDrawable.apply {
+                setColor(ContextCompat.getColor(progressBarStock.context, shopR.color.dms_static_light_NN100))
+            }
         }
     }
 
@@ -107,7 +110,10 @@ class ProductCardColorOverrideManager {
             val textViewStockLabel = productCard.findViewById<Typography>(productcardR.id.textViewStockLabel)
             textViewStockLabel.setTextColor(ContextCompat.getColor(textViewStockLabel.context, shopR.color.dms_static_light_NN950_68))
 
-
+            val progressBarStock = productCard.findViewById<ProgressBarUnify>(productcardR.id.progressBarStock)
+            progressBarStock.trackDrawable.apply {
+                setColor(ContextCompat.getColor(progressBarStock.context, shopR.color.dms_static_light_NN100))
+            }
         }
     }
 

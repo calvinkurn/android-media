@@ -33,9 +33,15 @@
 
     <!--Home Tab Shop Reimagine - Product carousel override to always use light mode-->
     <color name="dms_static_white">#FFFFFF</color>
+    <color name="dms_static_light_NN100">#E4EBF5</color>
     <color name="dms_static_light_NN950_44">#70212121</color>
     <color name="dms_static_light_NN950_68">#AD212121</color>
     <color name="dms_static_light_YN400">#FFA617</color>
     <color name="dms_static_light_NN950_32">#52212121</color>
+    <color name="dms_static_light_YN500">#FF7F17</color>
+    <color name="dms_static_light_YN300">#FFC400</color>
 
+
+    WORDING_TERSEDIA -> R.color.Unify_YN300
+    else -> R.color.Unify_RN500
 </resources>
