@@ -61,6 +61,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            app:layout_goneMarginStart="12dp"
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
             android:textColor="@color/Unify_RN500"
