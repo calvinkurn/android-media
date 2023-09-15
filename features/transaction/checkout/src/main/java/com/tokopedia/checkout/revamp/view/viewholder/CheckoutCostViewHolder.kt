@@ -287,7 +287,7 @@ class CheckoutCostViewHolder(
                     false
                 )
                 itemBinding.tvCheckoutCostItemTitle.text = it.crossSellModel.orderSummary.title
-                itemBinding.tvCheckoutCostItemValue.text = it.crossSellModel.orderSummary.priceWording
+                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.crossSellModel.price, false).removeDecimalSuffix()
                 (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
             }
