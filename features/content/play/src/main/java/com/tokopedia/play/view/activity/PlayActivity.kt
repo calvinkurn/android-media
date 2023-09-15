@@ -136,7 +136,7 @@ class PlayActivity :
      */
     private val startChannelId: String
         get() {
-            return if (lastPathSegment == PLAY_KEY_CHANNEL_RECOMMENDATION) "0" else intent?.data?.lastPathSegment.orEmpty()
+            return if (lastPathSegment == PLAY_KEY_CHANNEL_RECOMMENDATION) "0" else lastPathSegment
         }
 
     private val lastPathSegment: String
