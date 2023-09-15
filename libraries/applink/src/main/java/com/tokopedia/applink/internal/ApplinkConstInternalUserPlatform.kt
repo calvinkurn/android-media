@@ -5,7 +5,8 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalUserPlatform {
 
-    private const val HOST_USER = "user"
+    const val HOST_USER = "user"
+    const val HOST_PEOPLE = "people"
 
 //    private const val INTERNAL_USER = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalGlobal.HOST_GLOBAL}"
 
