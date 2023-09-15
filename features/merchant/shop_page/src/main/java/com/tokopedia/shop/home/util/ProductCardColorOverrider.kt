@@ -17,6 +17,7 @@ class ProductCardColorOverrider {
 
     private val horizontalPaddingPx by lazy { 4.toPx() }
     private val verticalPaddingPx by lazy { 3.toPx() }
+    private val smallTextSizePx by lazy { 10.toPx().toFloat() }
 
     fun forceLightModeColor(productCard: ProductCardGridView?) {
         productCard?.let {
@@ -27,37 +28,26 @@ class ProductCardColorOverrider {
             productName.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_Unify_Unify_NN950_96_light))
 
             val productPrice = productCard.findViewById<Typography>(productcardR.id.textViewPrice)
-            productPrice.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_Unify_Unify_NN950_96_light))
+            productPrice.setTextColor(ContextCompat.getColor(productPrice.context, shopR.color.dms_static_Unify_Unify_NN950_96_light))
 
             val labelDiscount = productCard.findViewById<Label>(productcardR.id.labelDiscount)
-            labelDiscount.lightRed()
+            labelDiscount.forceLightRed()
 
             val productSlashPrice = productCard.findViewById<Typography>(productcardR.id.textViewSlashedPrice)
-            productSlashPrice.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_light_NN950_44))
+            productSlashPrice.setTextColor(ContextCompat.getColor(productSlashPrice.context, shopR.color.dms_static_light_NN950_44))
 
             val soldCount = productCard.findViewById<Typography>(productcardR.id.textViewSales)
-            soldCount.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_light_NN950_68))
+            soldCount.setTextColor(ContextCompat.getColor(soldCount.context, shopR.color.dms_static_light_NN950_68))
 
             val rating = productCard.findViewById<Typography>(productcardR.id.salesRatingFloat)
-            rating.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_light_NN950_68))
+            rating.setTextColor(ContextCompat.getColor(rating.context, shopR.color.dms_static_light_NN950_68))
 
             val gimmick = productCard.findViewById<Typography>(productcardR.id.textViewGimmick)
-            gimmick.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_light_YN400))
+            gimmick.setTextColor(ContextCompat.getColor(gimmick.context, shopR.color.dms_static_light_YN400))
+
+            val textViewIntegrity = productCard.findViewById<Typography>(productcardR.id.textViewIntegrity)
+            textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, shopR.color.dms_static_Unify_NN600_light))
         }
-    }
-
-    private fun Label.lightRed() {
-        val textSize = 10.toPx()
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.toFloat())
-        typeface = Typography.getFontType(context, true, Typography.SMALL)
-        setTextColor(ContextCompat.getColor(context, shopR.color.dms_static_Unify_RN500_light))
-
-        setPadding(horizontalPaddingPx, verticalPaddingPx, horizontalPaddingPx, verticalPaddingPx)
-
-        val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
-        drawable?.setColorFilter(context.resources.getColor(shopR.color.dms_static_Unify_RN100_light), PorterDuff.Mode.SRC_ATOP)
-
-        setBackgroundDrawable(drawable)
     }
 
     fun forceLightModeColor(productCard: ProductCardListView?) {
@@ -69,23 +59,38 @@ class ProductCardColorOverrider {
             productName.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_Unify_Unify_NN950_96_light))
 
             val productPrice = productCard.findViewById<Typography>(productcardR.id.textViewPrice)
-            productPrice.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_Unify_Unify_NN950_96_light))
+            productPrice.setTextColor(ContextCompat.getColor(productPrice.context, shopR.color.dms_static_Unify_Unify_NN950_96_light))
 
             val labelDiscount = productCard.findViewById<Label>(productcardR.id.labelDiscount)
-            labelDiscount.lightRed()
+            labelDiscount.forceLightRed()
 
             val productSlashPrice = productCard.findViewById<Typography>(productcardR.id.textViewSlashedPrice)
-            productSlashPrice.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_light_NN950_44))
+            productSlashPrice.setTextColor(ContextCompat.getColor(productSlashPrice.context, shopR.color.dms_static_light_NN950_44))
 
             val soldCount = productCard.findViewById<Typography>(productcardR.id.textViewSales)
-            soldCount.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_light_NN950_68))
+            soldCount.setTextColor(ContextCompat.getColor(soldCount.context, shopR.color.dms_static_light_NN950_68))
 
             val rating = productCard.findViewById<Typography>(productcardR.id.salesRatingFloat)
-            rating.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_light_NN950_68))
+            rating.setTextColor(ContextCompat.getColor(rating.context, shopR.color.dms_static_light_NN950_68))
 
             val gimmick = productCard.findViewById<Typography>(productcardR.id.textViewGimmick)
-            gimmick.setTextColor(ContextCompat.getColor(productName.context, shopR.color.dms_static_light_YN400))
+            gimmick.setTextColor(ContextCompat.getColor(gimmick.context, shopR.color.dms_static_light_YN400))
+
+            val textViewIntegrity = productCard.findViewById<Typography>(productcardR.id.textViewIntegrity)
+            textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, shopR.color.dms_static_Unify_NN600_light))
         }
     }
 
+    private fun Label.forceLightRed() {
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, smallTextSizePx)
+        typeface = Typography.getFontType(context, true, Typography.SMALL)
+        setTextColor(ContextCompat.getColor(context, shopR.color.dms_static_Unify_RN500_light))
+
+        setPadding(horizontalPaddingPx, verticalPaddingPx, horizontalPaddingPx, verticalPaddingPx)
+
+        val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
+        drawable?.setColorFilter(context.resources.getColor(shopR.color.dms_static_Unify_RN100_light), PorterDuff.Mode.SRC_ATOP)
+
+        setBackgroundDrawable(drawable)
+    }
 }
