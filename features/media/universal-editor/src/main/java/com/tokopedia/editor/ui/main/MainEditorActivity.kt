@@ -211,6 +211,9 @@ open class MainEditorActivity : AppCompatActivity()
         // listeners
         binding.container.setListener(this)
 
+        // set global canvas variable
+        setCanvasSize()
+
         isPageInitialize = true
     }
 
@@ -273,6 +276,15 @@ open class MainEditorActivity : AppCompatActivity()
         val imageBitmap = pagerContainer.getImageBitmap()
 
         viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap, imageBitmap))
+    }
+
+    private fun setCanvasSize() {
+        val canvasContainer = binding.canvasContainer
+
+        viewModel.onEvent(MainEditorEvent.GlobalCanvasSize(
+            width = canvasContainer.width,
+            height = canvasContainer.height
+        ))
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {
