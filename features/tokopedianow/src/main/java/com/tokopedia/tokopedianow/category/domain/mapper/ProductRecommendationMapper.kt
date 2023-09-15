@@ -10,7 +10,12 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiMod
 object ProductRecommendationMapper {
     fun createProductRecommendation(categoryIds: List<String>) = TokoNowProductRecommendationUiModel(
         id = CategoryLayoutType.PRODUCT_RECOMMENDATION.name,
-        requestParam = GetRecommendationRequestParam(
+        requestParam = createRequestParam(categoryIds),
+        tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE
+    )
+
+    fun createRequestParam(categoryIds: List<String>): GetRecommendationRequestParam {
+        return GetRecommendationRequestParam(
             queryParam = RecomPageConstant.TOKONOW_CLP,
             pageName = RecomPageConstant.TOKONOW_CLP,
             categoryIds = categoryIds,
@@ -18,7 +23,6 @@ object ProductRecommendationMapper {
             isTokonow = true,
             pageNumber = RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET,
             xDevice = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
-        ),
-        tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE
-    )
+        )
+    }
 }

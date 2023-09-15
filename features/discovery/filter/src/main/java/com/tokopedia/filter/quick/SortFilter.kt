@@ -2,21 +2,19 @@ package com.tokopedia.filter.quick
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.tokopedia.filter.R
 import com.tokopedia.filter.databinding.SortFilterQuickLayoutBinding
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.NotificationUnify
-import com.tokopedia.unifycomponents.toPx
 
 class SortFilter: ConstraintLayout {
 
@@ -71,6 +69,7 @@ class SortFilter: ConstraintLayout {
         binding?.sortFilterQuickRecyclerView?.run {
             layoutManager = this@SortFilter.layoutManager
             adapter = this@SortFilter.adapter
+            itemAnimator = null
 
             if (itemDecorationCount == 0)
                 addItemDecoration(SortFilterItemDecoration())
@@ -80,19 +79,26 @@ class SortFilter: ConstraintLayout {
     private fun initSortButton() {
         binding?.sortFilterSortChips?.run {
             val chipsLayout = View.inflate(context, R.layout.sort_filter_sort_chips_layout, null)
-            addCustomView(chipsLayout)
+            addChipsCustomView(chipsLayout)
 
             setOnClickListener { listener?.onSortClicked() }
         }
     }
 
+    private fun ChipsUnify.addChipsCustomView(chipsLayout: View?) {
+        chip_container.removeAllViews()
+        chip_container.addView(chipsLayout)
+        chip_container.gravity = Gravity.CENTER
+    }
+
     private fun initFilterButton() {
         binding?.sortFilterFilterChips?.run {
             val chipsLayout = View.inflate(context, R.layout.sort_filter_filter_chips_layout, null)
-            addCustomView(chipsLayout)
+            addChipsCustomView(chipsLayout)
 
             chipsLayout.findViewById<IconUnify>(R.id.sortFilterFilterIcon)?.visible()
-            chipsLayout.findViewById<NotificationUnify>(R.id.sortFilterFilterNotification).gone()
+            chipsLayout.findViewById<NotificationUnify>(R.id.sortFilterFilterNotification)
+                ?.clearAnimationAndGone()
 
             setOnClickListener { listener?.onFilterClicked() }
         }
@@ -129,7 +135,7 @@ class SortFilter: ConstraintLayout {
             ?.findViewById<NotificationUnify>(R.id.sortFilterFilterNotification)
 
         filterIcon?.showWithCondition(filterCount == 0)
-        filterCountIndicator?.shouldShowWithAction(filterCount > 0) {
+        filterCountIndicator?.showWithCondition(filterCount > 0) {
             filterCountIndicator.setNotification(
                 notif = filterCount.toString(),
                 notificationType = NotificationUnify.COUNTER_TYPE,
@@ -144,6 +150,21 @@ class SortFilter: ConstraintLayout {
 
     fun scrollToPosition(position: Int) {
         binding?.sortFilterQuickRecyclerView?.post { layoutManager.scrollToPosition(position) }
+    }
+
+    private fun NotificationUnify.showWithCondition(isShow: Boolean, action: () -> Unit = { }) {
+        visibility = if (isShow) {
+            action()
+            View.VISIBLE
+        } else {
+            clearAnimation()
+            View.GONE
+        }
+    }
+
+    private fun NotificationUnify.clearAnimationAndGone() {
+        clearAnimation()
+        gone()
     }
 
     interface Listener {

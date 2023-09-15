@@ -38,5 +38,4 @@ class DistrictRecommendationMapperTest {
         Assert.assertTrue(actual.addresses[0].zipCodes.isEmpty())
         Assert.assertEquals(t.keroDistrictRecommendation.nextAvailable, actual.isNextAvailable)
     }
- }
-
+}

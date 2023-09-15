@@ -93,6 +93,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         if (!getFragment().isAdded) return
         this.callback = callback
 
+        applyActiveSort(dynamicFilterModel)
+
         sortBottomSheet = FilterGeneralDetailBottomSheet().also {
             it.show(
                 fragmentManager = getFragment().parentFragmentManager,
@@ -154,8 +156,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         sortBottomSheet?.setOptionHolder(createSortModel(dynamicFilterModel))
     }
 
-    private fun applyActiveSort(dynamicFilterModel: DynamicFilterModel) {
-        dynamicFilterModel.data.sort.forEach {
+    private fun applyActiveSort(dynamicFilterModel: DynamicFilterModel?) {
+        dynamicFilterModel?.data?.sort?.forEach {
             it.inputState = (getSearchParameter()?.get(it.key) == it.value).toString()
         }
     }

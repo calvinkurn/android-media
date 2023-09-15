@@ -43,7 +43,6 @@ import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
 import com.tokopedia.manageaddress.databinding.FragmentMainAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressResponse
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressFragment
@@ -53,7 +52,6 @@ import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressBott
 import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressConfirmationBottomSheet
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_REF
 import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
@@ -164,7 +162,6 @@ class MainAddressFragment :
         observerGetChosenAddress()
         observerSetChosenAddress()
         observerRemovedAddress()
-        observerEligibleForAddressFeature()
     }
 
     private fun initArguments() {
@@ -422,34 +419,6 @@ class MainAddressFragment :
         }
     }
 
-    private fun observerEligibleForAddressFeature() {
-        viewModel.eligibleForAddressFeature.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    when (it.data.featureId) {
-                        ANA_REVAMP_FEATURE_ID -> {
-                            goToAddAddress(it.data.eligible)
-                        }
-                        EDIT_ADDRESS_REVAMP_FEATURE_ID -> {
-                            it.data.data?.let { recipientAddressModel ->
-                                goToEditAddress(
-                                    it.data.eligible,
-                                    recipientAddressModel
-                                )
-                            }
-                        }
-                    }
-                }
-                is Fail -> {
-                    showToaster(
-                        message = it.throwable.message ?: DEFAULT_ERROR_MESSAGE,
-                        toastType = Toaster.TYPE_ERROR
-                    )
-                }
-            }
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PARAM_CREATE) {
@@ -509,7 +478,7 @@ class MainAddressFragment :
         }
     }
 
-    private fun goToAddAddress(eligible: Boolean) {
+    private fun goToAddAddress() {
         val token = viewModel.token
         val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
             SCREEN_NAME_CART_EXISTING_USER
@@ -518,39 +487,21 @@ class MainAddressFragment :
         } else {
             SCREEN_NAME_USER_NEW
         }
-        if (eligible) {
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            intent.putExtra(PARAM_SOURCE, viewModel.source)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        } else {
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        }
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+        intent.putExtra(KERO_TOKEN, token)
+        intent.putExtra(EXTRA_REF, screenName)
+        intent.putExtra(PARAM_SOURCE, viewModel.source)
+        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
     }
 
-    private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
-        if (eligibleForEditRevamp) {
-            val intent = RouteManager.getIntent(
-                context,
-                "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}"
-            )
-            intent.putExtra(PARAM_SOURCE, viewModel.source)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-        } else {
-            val token = viewModel.token
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
-            val mapper = AddressModelMapper()
-            intent.putExtra(EDIT_PARAM, mapper.transform(data))
-            intent.putExtra(KERO_TOKEN, token)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-        }
+    private fun goToEditAddress(data: RecipientAddressModel) {
+        val intent = RouteManager.getIntent(
+            context,
+            "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}"
+        )
+        intent.putExtra(PARAM_SOURCE, viewModel.source)
+        startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
     }
 
     private fun initScrollListener() {
@@ -655,10 +606,10 @@ class MainAddressFragment :
 
     private fun openFormAddressView(data: RecipientAddressModel?) {
         if (data == null) {
-            viewModel.checkUserEligibilityForAnaRevamp()
+            goToAddAddress()
         } else {
             ManageAddressAnalytics.sendClickButtonUbahAlamatEvent()
-            viewModel.checkUserEligibilityForEditAddressRevamp(data)
+            goToEditAddress(data)
         }
     }
 

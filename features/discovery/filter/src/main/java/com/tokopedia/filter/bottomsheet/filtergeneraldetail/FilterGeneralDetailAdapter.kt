@@ -64,9 +64,14 @@ internal class FilterGeneralDetailAdapter(
 
         private fun bindOnClickListener(option: IOption) {
             binding?.filterDetailContainer?.setOnClickListener {
-                callback.onOptionClick(option, !option.isSelected(), adapterPosition)
+                val newIsSelected = getNewIsSelected(option)
+                callback.onOptionClick(option, newIsSelected, adapterPosition)
             }
         }
+
+        private fun getNewIsSelected(option: IOption) =
+            if (option.isSelected() && option.isTypeRadio) option.isSelected()
+            else !option.isSelected()
 
         private fun bindColorSample(option: IOption) {
             val colorSampleImageView = binding?.colorSampleImageView ?: return

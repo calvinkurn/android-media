@@ -10,6 +10,7 @@ data class CarouselProductCardGridModel(
     val impressHolder: (Int) -> ImpressHolder? = { null },
     val onImpressed: () -> Unit = { },
     val onClick: () -> Unit = { },
+    val onAddToCart: () -> Unit = { },
 ): Visitable<CarouselProductCardTypeFactory> {
 
     override fun type(typeFactory: CarouselProductCardTypeFactory?): Int {

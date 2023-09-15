@@ -4,6 +4,16 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/sortFilterFilterNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:notificationColor="color_secondary" />
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/sortFilterFilterIcon"
         android:layout_width="16dp"
@@ -13,16 +23,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
-    
-    <com.tokopedia.unifycomponents.NotificationUnify
-        android:id="@+id/sortFilterFilterNotification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:notificationColor="color_secondary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

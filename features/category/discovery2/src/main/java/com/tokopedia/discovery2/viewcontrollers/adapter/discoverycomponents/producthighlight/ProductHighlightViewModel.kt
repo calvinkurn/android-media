@@ -47,8 +47,8 @@ class ProductHighlightViewModel(val application: Application, val components: Co
                 if (components.data.isNullOrEmpty()) {
                     _hideShimmer.value = true
                 }
-                productHighlightCardList.value = components
             }
+            productHighlightCardList.value = components
         }, onError = {
                 components.noOfPagesLoaded = 1
                 if (it is UnknownHostException || it is SocketTimeoutException) {

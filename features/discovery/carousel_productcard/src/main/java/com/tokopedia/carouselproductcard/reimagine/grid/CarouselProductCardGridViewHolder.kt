@@ -20,6 +20,8 @@ internal class CarouselProductCardGridViewHolder(
             addOnImpressionListener(element)
 
             setOnClickListener { element.onClick() }
+
+            setAddToCartOnClickListener { element.onAddToCart() }
         }
     }
 
