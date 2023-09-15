@@ -154,16 +154,16 @@ class BannerIndicator : LinearLayout {
                     }
                     android.os.Handler(Looper.getMainLooper()).postDelayed(
                         {
-                            val actualPosition = nextTransition % totalBanner
+                            val index = nextTransition % totalBanner
                             bannerAnimatorSet.removeAllListeners()
                             bannerAnimator.removeAllUpdateListeners()
                             minimizeIndicatorBanner(progressIndicator)
-                            getChildProgressBar(actualPosition)?.let {
+                            getChildProgressBar(index)?.let {
                                 maximizeAnimator(it, nextTransition)
                             }
                             listener?.onChangePosition(
-                                actualPosition = actualPosition,
-                                bannerPosition = nextTransition
+                                index = index,
+                                position = nextTransition
                             )
                         },
                         NO_DELAY

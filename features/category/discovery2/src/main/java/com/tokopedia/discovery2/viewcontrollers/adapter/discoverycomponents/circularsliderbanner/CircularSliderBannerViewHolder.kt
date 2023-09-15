@@ -143,8 +143,8 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
         sliderExpandableIndicator.setBannerIndicators(size)
         sliderExpandableIndicator.setBannerListener(
             object : BannerIndicatorListener {
-                override fun onChangePosition(actualPosition: Int, bannerPosition: Int) {
-                    cvSliderBanner.setCurrentPosition(actualPosition.inc(), size)
+                override fun onChangePosition(index: Int, position: Int) {
+                    cvSliderBanner.setCurrentPosition(index.inc(), size)
                 }
 
                 override fun getCurrentPosition(position: Int) { /* nothing to do */ }
