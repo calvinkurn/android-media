@@ -2,7 +2,7 @@ package com.tokopedia.logisticseller.ui.requestpickup.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-object SomConfirmReqPickupQuery: GqlQueryInterface {
+object SomConfirmReqPickupQuery : GqlQueryInterface {
 
     private const val OPERATION_NAME = "MpLogisticPreShipInfo"
     private val SOM_CONFIRM_REQ_QUERY = """
@@ -11,6 +11,10 @@ object SomConfirmReqPickupQuery: GqlQueryInterface {
             status
             message_error
             data{
+              drop_off_location{
+                drop_off_courier
+                drop_off_notes
+              }
               pickup_location{
                 title
                 address
