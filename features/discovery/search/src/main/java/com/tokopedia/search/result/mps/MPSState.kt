@@ -74,11 +74,15 @@ data class MPSState(
     )
 
     private fun createResponseData(mpsModel: MPSModel): List<Visitable<*>> =
-        if (mpsModel.responseCode == "0") {
-            createSuccessData(mpsModel)
-        } else {
+        if (mpsModel.responseCode.isViolationResponseCode()) {
             restrictedStateVisitableList(mpsModel)
+        } else {
+            createSuccessData(mpsModel)
         }
+
+    private fun String.isViolationResponseCode(): Boolean {
+        return this == VIOLATION_BLACKLIST || this ==  VIOLATION_BANNED
+    }
 
     private fun createSuccessData(mpsModel: MPSModel): List<Visitable<*>> =
         if (mpsModel.shopList.isNotEmpty())
@@ -197,5 +201,6 @@ data class MPSState(
 
     companion object {
         private const val VIOLATION_BLACKLIST= "2"
+        private const val VIOLATION_BANNED= "8"
     }
 }
