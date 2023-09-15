@@ -61,7 +61,7 @@ object DeeplinkMapperUser {
         }
     }
 
-    private fun isRollenceGotoKycActivated(): Boolean {
+    fun isRollenceGotoKycActivated(): Boolean {
         val rollenceKey = if (GlobalConfig.isSellerApp()) {
             ROLLENCE_GOTO_KYC_SA
         } else {
@@ -85,7 +85,7 @@ object DeeplinkMapperUser {
         }
     }
 
-    private fun isRollencePrivacyCenterActivated(): Boolean {
+    fun isRollencePrivacyCenterActivated(): Boolean {
         return getAbTestPlatform()
             .getString(ROLLENCE_PRIVACY_CENTER)
             .isNotEmpty()

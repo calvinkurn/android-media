@@ -2802,7 +2802,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check AFFILIATE_DEFAULT_CREATE_POST_V2 customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/create_post_v2/abc/def"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://content/create_post_v2/abc/def"
         assertEqualsDeepLinkMapper(
             ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2 + "/abc/def",
             expectedDeepLink
