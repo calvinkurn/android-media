@@ -74,6 +74,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_AUTO
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_DROP_OFF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ORDER_EXTENSION_REQUEST
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
@@ -610,7 +611,10 @@ open class SomDetailFragment :
                                 binding?.btnPrimary?.isLoading = true
                                 setActionConfirmShipping(buttonResp.displayName)
                             }
-                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) -> {
+                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
+                                KEY_CONFIRM_SHIPPING_DROP_OFF,
+                                true
+                            ) -> {
                                 binding?.btnPrimary?.isLoading = true
                                 setActionConfirmShippingAuto(buttonResp)
                             }
