@@ -2,7 +2,7 @@ package com.tokopedia.remoteconfig.abtest
 
 import android.content.Context
 import android.util.Log
-import com.tokopedia.config.GlobalConfig
+import com.google.firebase.remoteconfig.ConfigUpdateListenerRegistration
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -177,6 +177,11 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
                     override fun onError(e: Throwable?) { }
                 }
             }
+    }
+
+    // the objetive of setRealTimeUpdate to provide make reactive stream like a RemoteConfigRealTimeManager, so in AbTestPlatform is just no op
+    override fun setRealtimeUpdate(param: RemoteConfig.RealTimeUpdateListener?): ConfigUpdateListenerRegistration? {
+        return null
     }
 
     private fun handleDeviceIdless(): Boolean {
