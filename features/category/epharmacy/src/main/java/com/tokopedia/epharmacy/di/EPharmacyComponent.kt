@@ -6,12 +6,14 @@ import com.tokopedia.epharmacy.ui.activity.EPharmacyAttachPrescriptionActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyCheckoutActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyComponentActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyLoadingActivity
+import com.tokopedia.epharmacy.ui.activity.EPharmacyOrderDetailActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyReminderActivity
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyChooserBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.MiniConsultationMasterBottomSheetInfo
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyCheckoutFragment
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyLoadingFragment
+import com.tokopedia.epharmacy.ui.fragment.EPharmacyOrderDetailFragment
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
@@ -37,6 +39,8 @@ interface EPharmacyComponent {
 
     fun inject(ePharmacyComponentActivity: EPharmacyComponentActivity) {}
 
+    fun inject(ePharmacyOrderDetailActivity: EPharmacyOrderDetailActivity) {}
+
     fun inject(uploadPrescriptionFragment: UploadPrescriptionFragment)
 
     fun inject(epharmacyReminderScreenBottomSheet: EPharmacyReminderScreenBottomSheet)
@@ -48,4 +52,6 @@ interface EPharmacyComponent {
     fun inject(chooserBottomSheet: EPharmacyChooserBottomSheet)
 
     fun inject(ePharmacyLoadingFragment: EPharmacyLoadingFragment)
+
+    fun inject(ePharmacyOrderDetailFragment: EPharmacyOrderDetailFragment)
 }

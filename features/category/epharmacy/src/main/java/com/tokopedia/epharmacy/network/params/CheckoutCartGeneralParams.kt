@@ -48,7 +48,7 @@ data class CheckoutCartGeneralParams(
                     val metadata: Metadata?,
                     @SerializedName("price")
                     @Expose
-                    val price: Int?,
+                    val price: String?,
                     @SerializedName("product_id")
                     @Expose
                     val productId: String?,
@@ -62,13 +62,13 @@ data class CheckoutCartGeneralParams(
                     data class Metadata(
                         @SerializedName("enabler_id")
                         @Expose
-                        val enablerId: Int?,
+                        val enablerId: String?,
                         @SerializedName("epharmacy_group_id")
                         @Expose
                         val epharmacyGroupId: String?,
                         @SerializedName("toko_consultation_id")
                         @Expose
-                        val tokoConsultationId: Int?
+                        val tokoConsultationId: String?
                     )
                 }
             }

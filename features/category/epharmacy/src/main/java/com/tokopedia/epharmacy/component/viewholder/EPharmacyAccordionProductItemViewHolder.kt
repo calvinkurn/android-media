@@ -51,6 +51,7 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
         productImageUnify.loadImage(product?.productImage)
     }
 
+    // TODO Optimize
     private fun renderQuantityChangedLayout() {
         if(dataModel?.product?.qtyComparison != null && ePharmacyListener is EPharmacyQuantityChangeFragment){
             if(dataModel?.product?.qtyComparison?.currentQty == 0){
@@ -76,7 +77,7 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
                 itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_subtotal_quantity_change),
                 dataModel?.product?.qtyComparison?.currentQty.toString()
             ))
-            quantityChangedEditor.setValueChangedListener { newValue, oldValue, isOver ->
+            quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
                 if(newValue == 1){
                     ePharmacyListener.onToast(Toaster.TYPE_ERROR,
                         itemView.context.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_minimum_quantity_reached) ?: "")

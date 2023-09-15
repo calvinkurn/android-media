@@ -45,6 +45,7 @@
     <string name="epharmacy_ringkasan_pembayaran">Ringkasan Pembayaran</string>
     <string name="epharmacy_subtotal_tagihan">Subtotal Tagihan</string>
     <string name="epharmacy_checkout_page_title">Checkout</string>
+    <string name="epharmacy_order_detail_title">Detail Pesanan</string>
     <string name="epharmacy_durasi">Durasi</string>
     <string name="epharmacy_biaya_chat_dokter">Biaya Chat Dokter</string>
     <string name="epharmacy_jenis_layanan">Jenis Layanan</string>
@@ -57,7 +58,10 @@
     <string name="epharmacy_minimum_quantity_reached">Jumlah barang tidak boleh melebihi yang sudah diresepkan atau kurang dari 1.</string>
     <string name="epharmacy_subtotal_quantity_change">Subtotal (%s barang)</string>
     <string name="epharmacy_chat_loading_title">Tunggu sebentar, ya!</string>
+    <string name="epharmacy_chat_loading_error_title">Maaf, kamu perlu nunggu lebih lama</string>
     <string name="epharmacy_chat_loading_description">Kamu sedang diarahkan menuju \n chat dokter, ya.</string>
+    <string name="epharmacy_chat_loading_error_description">Permintaan chat sedang diproses. Coba klik `Cek Lagi` dalam beberapa saat.</string>
+    <string name="epharmacy_chat_loading_error_cta_text">Cek Lagi</string>
     <string name="epharmacy_total_harga">Total Harga</string>
     <string name="epharmacy_perbarui_pesanan">Perbarui Pesanan</string>
     <string name="epharmacy_reminder_back_text">Balik ke Home</string>

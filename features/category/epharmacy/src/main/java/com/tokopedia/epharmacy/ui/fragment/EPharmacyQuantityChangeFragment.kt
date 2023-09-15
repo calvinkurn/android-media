@@ -34,6 +34,7 @@ import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewMode
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.totalamount.TotalAmount
@@ -136,8 +137,9 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun removeShimmer() {
-        ePharmacyAttachmentUiUpdater.mapOfData.clear()
         ePharmacyRecyclerView?.hide()
+        qCTotalAmount?.hide()
+        ePharmacyAttachmentUiUpdater.mapOfData.clear()
         updateUi()
     }
 
@@ -162,7 +164,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun observerEPharmacyButtonData() {
-        ePharmacyPrescriptionAttachmentViewModel.buttonSecondaryLiveData.observe(viewLifecycleOwner) { papSecondaryCTA ->
+        ePharmacyPrescriptionAttachmentViewModel.buttonLiveData.observe(viewLifecycleOwner) { papSecondaryCTA ->
             papSecondaryCTA?.let { cta ->
                 qCTotalAmount?.amountCtaView?.text = cta.title
                 when (cta.state) {
@@ -187,6 +189,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun observerPrescriptionError() {
         ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
+
         }
     }
 
@@ -209,7 +212,6 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     private fun updateUi() {
         val newData = ePharmacyAttachmentUiUpdater.mapOfData.values.toList()
         submitList(newData)
-        qCTotalAmount?.setAmount(calculateTotalAmount())
     }
 
     private fun submitList(visitableList: List<BaseEPharmacyDataModel>) {
@@ -252,14 +254,15 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
         qCTotalAmount?.setAmount(calculateTotalAmount())
     }
 
+    // TODO optimize
     private fun calculateTotalAmount(): String {
         var subTotalAmount = 0.0
         ePharmacyAttachmentUiUpdater.mapOfData.values.forEach {
             (it as? EPharmacyAttachmentDataModel)?.let { ePharmacyAttachmentDataModel ->
-                subTotalAmount += ePharmacyAttachmentDataModel.quantityChangedModel?.subTotal ?: 0.0
+                subTotalAmount += ePharmacyAttachmentDataModel.quantityChangedModel?.subTotal.orZero()
                 ePharmacyAttachmentDataModel.subProductsDataModel?.forEach { model ->
                     (model as? EPharmacyAccordionProductDataModel)?.let { pModel ->
-                        subTotalAmount += pModel.product?.qtyComparison?.subTotal ?: 0.0
+                        subTotalAmount += pModel.product?.qtyComparison?.subTotal.orZero()
                     }
                 }
             }

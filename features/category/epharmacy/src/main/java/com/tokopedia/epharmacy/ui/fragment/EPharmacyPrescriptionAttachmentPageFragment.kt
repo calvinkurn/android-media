@@ -70,6 +70,7 @@ import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewMode
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
@@ -284,7 +285,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                     true,
                     group.consultationSource?.operatingSchedule?.daily?.openTime,
                     group.consultationSource?.operatingSchedule?.daily?.closeTime,
-                    group.consultationSource?.id ?: 0L,
+                    group.consultationSource?.id.orZero(),
                     group.epharmacyGroupId,
                     group.consultationSource?.enablerName
                 )

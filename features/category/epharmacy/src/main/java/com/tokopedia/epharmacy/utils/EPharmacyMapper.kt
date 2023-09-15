@@ -4,6 +4,7 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsG
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup as EGroup
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo as EProductInfo
 
@@ -78,7 +79,7 @@ object EPharmacyMapper {
     }
 
     private fun getQuantityChangedModelProduct(product: EGroup.ProductsInfo.Product?) : EGroup.ProductsInfo.Product.QtyComparison?{
-        return product?.qtyComparison
+        return product?.qtyComparison.apply { product?.qtyComparison?.subTotal = product?.price.orZero() *  product?.qtyComparison?.initialQty.orZero()}
     }
 
     private fun getUniqueModelName(ePharmacyGroupId: String?, index: Int): String {

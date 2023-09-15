@@ -6,8 +6,26 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.*
-import com.tokopedia.epharmacy.component.viewholder.*
+import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailHeaderDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailInfoDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailPaymentDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyStaticInfoDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyAccordionProductItemViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyAttachmentViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyOrderDetailHeaderViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyOrderDetailInfoViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyOrderDetailPaymentViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyPrescriptionViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyProductViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyShimmerViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyStaticInfoViewHolder
+import com.tokopedia.epharmacy.component.viewholder.EPharmacyTickerViewHolder
 
 class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListener?) : BaseAdapterTypeFactory(), EPharmacyAdapterFactory {
 
@@ -39,6 +57,18 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
         return EPharmacyAccordionProductItemViewHolder.LAYOUT
     }
 
+    override fun type(data: EPharmacyOrderDetailHeaderDataModel): Int {
+        return EPharmacyOrderDetailHeaderViewHolder.LAYOUT
+    }
+
+    override fun type(data: EPharmacyOrderDetailInfoDataModel): Int {
+        return EPharmacyOrderDetailInfoViewHolder.LAYOUT
+    }
+
+    override fun type(data: EPharmacyOrderDetailPaymentDataModel): Int {
+        return EPharmacyOrderDetailPaymentViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             EPharmacyStaticInfoViewHolder.LAYOUT -> EPharmacyStaticInfoViewHolder(view)
@@ -48,6 +78,9 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
             EPharmacyAccordionProductItemViewHolder.LAYOUT -> EPharmacyAccordionProductItemViewHolder(view, ePharmacyListener)
             EPharmacyTickerViewHolder.LAYOUT -> EPharmacyTickerViewHolder(view)
             EPharmacyShimmerViewHolder.LAYOUT -> EPharmacyShimmerViewHolder(view)
+            EPharmacyOrderDetailHeaderViewHolder.LAYOUT -> EPharmacyOrderDetailHeaderViewHolder(view)
+            EPharmacyOrderDetailInfoViewHolder.LAYOUT -> EPharmacyOrderDetailInfoViewHolder(view)
+            EPharmacyOrderDetailPaymentViewHolder.LAYOUT -> EPharmacyOrderDetailPaymentViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -2,6 +2,7 @@ package com.tokopedia.common_epharmacy.network.response
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -212,8 +213,9 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("qty_comparison")
                         val qtyComparison: QtyComparison?,
                         @SerializedName("price")
-                        val price: Double?,
-                    ) : Parcelable {
+                        val price: Double,
+                        var subTotal: Double? = (qtyComparison?.initialQty.orZero() * qtyComparison?.productPrice.orZero()),
+                        ) : Parcelable {
                         @Parcelize
                         data class QtyComparison(
                             @SerializedName("initial_qty")
@@ -224,8 +226,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                             var currentQty: Int = 0,
                             @SerializedName("price")
                             val productPrice: Double?,
-                            @SerializedName("sub_total")
-                            var subTotal: Double?,
+                            var subTotal: Double? = (initialQty.orZero() * productPrice.orZero()),
                         ) : Parcelable
                     }
                 }

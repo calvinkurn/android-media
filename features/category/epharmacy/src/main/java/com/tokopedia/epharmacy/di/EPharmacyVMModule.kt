@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.basemvvm.viewmodel.ViewModelKey
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
+import com.tokopedia.epharmacy.viewmodel.EPharmacyOrderDetailViewModel
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.epharmacy.viewmodel.EPharmacyReminderBsViewModel
 import com.tokopedia.epharmacy.viewmodel.MiniConsultationMasterBsViewModel
@@ -49,4 +50,10 @@ abstract class EPharmacyVMModule {
     @IntoMap
     @ViewModelKey(EPharmacyLoadingViewModel::class)
     internal abstract fun ePharmacyLoadingViewModel(viewModel: EPharmacyLoadingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EPharmacyOrderDetailViewModel::class)
+    internal abstract fun ePharmacyOrderDetailViewModel(viewModel: EPharmacyOrderDetailViewModel): ViewModel
+
 }

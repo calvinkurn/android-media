@@ -8,10 +8,15 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsG
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailHeaderDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailInfoDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailPaymentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.network.params.CartGeneralAddToCartInstantParams
 import com.tokopedia.epharmacy.network.params.CheckoutCartGeneralParams
 import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
+import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.usecase.BuildConfig
 import java.text.DateFormat
 import java.text.ParseException
@@ -270,7 +275,7 @@ object EPharmacyUtils {
         }
 
     fun getTotalAmount(quantity: Int?, price: Double?): Double {
-        return ((quantity?.toDouble() ?: 0.0) * ((price ?: 0.0)))
+        return ((quantity?.toDouble().orZero()) * ((price.orZero())))
     }
 
     fun getTotalAmountFmt(subTotal: Double?): String {
@@ -279,15 +284,44 @@ object EPharmacyUtils {
 
     fun getChatDokterNote(context: Context?, operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?, note: String?): String {
         if(operatingSchedule?.isClosingHour == true){
-            val openTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.openTime ?: "")
-            val closeTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.closeTime ?: "")
+            val openTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.openTime.orEmpty())
+            val closeTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.closeTime.orEmpty())
             return context?.resources?.getString(
                 com.tokopedia.epharmacy.R.string.epharmacy_chooser_outside,
                 getTimeFromDate(openTimeLocal),
                 getTimeFromDate(closeTimeLocal)
-            ) ?: ""
+            ).orEmpty()
         }
-        return note ?: ""
+        return note.orEmpty()
+    }
+
+    internal fun mapResponseToOrderDetail(orderData: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderData?): EPharmacyDataModel {
+        val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
+        listOfComponents.add(EPharmacyOrderDetailHeaderDataModel(
+            ORDER_HEADER_COMPONENT,ORDER_HEADER_COMPONENT,
+            orderData?.orderStatusDesc,
+            orderData?.ticker?.type,
+            orderData?.ticker?.message,
+            orderData?.invoiceNumber,
+            "",
+            "",
+            ""
+        ))
+        listOfComponents.add(EPharmacyOrderDetailInfoDataModel(
+            ORDER_INFO_COMPONENT, ORDER_INFO_COMPONENT,
+            "",
+            orderData?.consultationSource?.enablerName,
+            orderData?.consultationSource?.operatingSchedule?.duration,
+            orderData?.consultationSource?.priceStr,
+            ""
+        ))
+        listOfComponents.add(EPharmacyOrderDetailPaymentDataModel(
+            ORDER_PAYMENT_COMPONENT, ORDER_PAYMENT_COMPONENT,
+            orderData?.paymentMethod,
+            orderData?.paymentAmountStr,
+            ""
+        ))
+        return EPharmacyDataModel(listOfComponents)
     }
 }
 

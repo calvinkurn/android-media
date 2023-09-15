@@ -17,17 +17,17 @@ import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactoryImpl
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUtil
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.epharmacy.utils.EPHARMACY_FULL_ALPHA
 import com.tokopedia.epharmacy.utils.EPHARMACY_HALF_ALPHA
 import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
-import com.tokopedia.epharmacy.utils.PRODUCT_COMPONENT
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
@@ -37,7 +37,6 @@ import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo as EProductInfo
 
 class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyAttachmentDataModel?>(view) {
 
@@ -118,10 +117,11 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         }
     }
 
+    // TODO Optimize
     private fun renderQuantityChangedLayout() {
         if(dataModel?.quantityChangedModel != null && ePharmacyListener is EPharmacyQuantityChangeFragment){
             if(dataModel?.quantityChangedModel?.currentQty == 0){
-                dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty ?: 0
+                dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty.orZero()
             }
 
             quantityChangedLayout?.show()
@@ -132,8 +132,8 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
             val currentEditorValue = quantityChangedEditor.getValue()
             if(dataModel?.quantityChangedModel?.currentQty != currentEditorValue && currentEditorValue != 1)
-                quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.recommendedQty ?: 0)
-            if(quantityChangedEditor.getValue() >= (dataModel?.quantityChangedModel?.recommendedQty ?: 0)){
+                quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.recommendedQty.orZero())
+            if(quantityChangedEditor.getValue() >= (dataModel?.quantityChangedModel?.recommendedQty.orZero())){
                 quantityChangedEditor.addButton.isEnabled = false
             }
             val subtotal = EPharmacyUtils.getTotalAmount(dataModel?.quantityChangedModel?.currentQty, dataModel?.quantityChangedModel?.productPrice)
@@ -143,8 +143,8 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_subtotal_quantity_change),
                 dataModel?.quantityChangedModel?.currentQty.toString()
             ))
-            quantityChangedEditor.setValueChangedListener { newValue, oldValue, isOver ->
-                ePharmacyListener?.onQuantityChanged()
+            quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
+                ePharmacyListener.onQuantityChanged()
                 if(newValue == 1){
                     ePharmacyListener.onToast(Toaster.TYPE_ERROR,
                         itemView.context.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_minimum_quantity_reached) ?: "")
@@ -209,12 +209,10 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 show()
                 setOnClickListener {}
             }
-            ticker.show()
             productImageCard.alpha = EPHARMACY_HALF_ALPHA
         } else {
             topView.hide()
             bottomView.hide()
-            ticker.hide()
             productImageCard.alpha = EPHARMACY_FULL_ALPHA
         }
     }
@@ -242,7 +240,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             productImageUnify.loadImage(firstProduct.productImage)
         }
 
-        if ((dataModel?.shopInfo?.products?.size ?: 0) > 1) {
+        if ((dataModel?.shopInfo?.products?.size.orZero()) > 1) {
             productAccordionView.show()
 
             if(ePharmacyListener is EPharmacyQuantityChangeFragment){
@@ -254,7 +252,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 productAccordionRV.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
                 productAccordionRV.adapter = ePharmacyAdapter
                 productAccordionViewRL.setOnClickListener {
-                    ePharmacyListener?.onInteractAccordion(bindingAdapterPosition, dataModel?.productsIsExpanded ?: false, dataModel?.name)
+                    ePharmacyListener?.onInteractAccordion(bindingAdapterPosition, dataModel?.productsIsExpanded.orFalse(), dataModel?.name)
                 }
             }
 
@@ -294,7 +292,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderDivider() {
-        if (((((dataModel?.shopInfo?.products?.size ?: 0) == 1) && dataModel?.showUploadWidget == false))) {
+        if (((((dataModel?.shopInfo?.products?.size.orZero()) == 1) && dataModel?.showUploadWidget == false))) {
             divisionSingleProduct.show()
         } else {
             divisionSingleProduct.hide()

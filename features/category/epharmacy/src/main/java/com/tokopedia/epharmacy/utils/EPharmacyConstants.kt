@@ -22,6 +22,7 @@ const val EPHARMACY_CONS_PRICE = "epharmacy_cons_price"
 const val EPHARMACY_NOTE = "epharmacy_note"
 const val EPHARMACY_IS_ONLY_CONSULT = "epharmacy_is_only_consult"
 const val EPHARMACY_IS_OUTSIDE_WORKING_HOURS = "epharmacy_is_outside_working_hours"
+const val EPHARMACY_ORDER_ID = "epharmacy_order_id"
 
 const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"
@@ -32,6 +33,10 @@ const val TICKER_COMPONENT = "ticker component"
 const val SHIMMER_COMPONENT = "shimmer component"
 const val SHIMMER_COMPONENT_1 = "shimmer 1"
 const val SHIMMER_COMPONENT_2 = "shimmer 2"
+const val ORDER_HEADER_COMPONENT = "order header component"
+const val ORDER_INFO_COMPONENT = "order info component"
+const val ORDER_PAYMENT_COMPONENT = "order payment component"
+
 
 const val EPHARMACY_SCREEN_NAME = "epharmacy page"
 
@@ -66,6 +71,7 @@ const val MINI_CONS_CHOOSER_IMAGE_URL_DISABLED = "https://images.tokopedia.net/i
 const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
 const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
 const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://epharmacy/checkout/"
+const val ORDER_LIST_APPLINK = "tokopedia://order-list/"
 
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"

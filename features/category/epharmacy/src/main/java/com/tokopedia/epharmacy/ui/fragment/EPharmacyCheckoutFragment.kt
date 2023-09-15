@@ -178,7 +178,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
             serviceTypeValue.text = cart?.customResponse?.serviceType
             serviceProviderValue.text = cart?.customResponse?.enablerName
             durationValue.text = "${cart?.customResponse?.durationMinutes} Menit"
-            serviceTypeValue.text = cart?.priceFmt
+            feeValue.text = cart?.priceFmt
         }
     }
 

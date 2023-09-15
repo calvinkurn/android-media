@@ -124,4 +124,14 @@
         tools:text="26 Des 2023, 05:00 WIB"
         />
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ep_time_valid_until"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

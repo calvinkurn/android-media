@@ -72,7 +72,7 @@ data class EPharmacyAtcInstantResponse(
                             val metadata: Metadata?,
                             @SerializedName("price")
                             @Expose
-                            val price: Int?,
+                            val price: String?,
                             @SerializedName("price_fmt")
                             @Expose
                             val priceFmt: String?,
@@ -104,13 +104,13 @@ data class EPharmacyAtcInstantResponse(
                             data class Metadata(
                                 @SerializedName("enabler_id")
                                 @Expose
-                                val enablerId: Int?,
+                                val enablerId: String?,
                                 @SerializedName("epharmacy_group_id")
                                 @Expose
                                 val epharmacyGroupId: String?,
                                 @SerializedName("toko_consultation_id")
                                 @Expose
-                                val tokoConsultationId: Int?
+                                val tokoConsultationId: String?
                             )
                         }
                     }
@@ -129,7 +129,7 @@ data class EPharmacyAtcInstantResponse(
                         data class CheckoutAdditionalData(
                             @SerializedName("checkout_business_id")
                             @Expose
-                            val checkoutBusinessId: Int?,
+                            val checkoutBusinessId: String?,
                             @SerializedName("data_type")
                             @Expose
                             val dataType: String?,
@@ -167,7 +167,7 @@ data class EPharmacyAtcInstantResponse(
                             val totalCart: Int?,
                             @SerializedName("total_price")
                             @Expose
-                            val totalPrice: Int?,
+                            val totalPrice: String?,
                             @SerializedName("total_price_fmt")
                             @Expose
                             val totalPriceFmt: String?,

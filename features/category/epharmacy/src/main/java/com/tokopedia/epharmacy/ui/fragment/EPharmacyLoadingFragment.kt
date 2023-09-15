@@ -17,6 +17,7 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyVerifyConsultationResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.ORDER_LIST_APPLINK
 import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -124,36 +125,49 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
             if (pwaLink.isNotBlank()) {
                 routeAction(pwaLink)
             } else {
-                isFirstFail = true
-                invalidPwaLink(it.data.verifyConsultationOrder)
+                handleFail(it.data.verifyConsultationOrder)
             }
         } ?: kotlin.run {
-            isFirstFail = true
-            invalidPwaLink(it.data.verifyConsultationOrder)
+            handleFail(it.data.verifyConsultationOrder)
         }
     }
 
-    private fun invalidPwaLink(verifyConsultationOrder: EPharmacyVerifyConsultationResponse.VerifyConsultationOrder?) {
+    private fun handleFail(verifyConsultationOrder: EPharmacyVerifyConsultationResponse.VerifyConsultationOrder?){
+        if(isFirstFail){
+            isFirstFail = false
+            setErrorData(
+                getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_title),
+                getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_description),
+                getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_cta_text),
+                ORDER_LIST_APPLINK
+            )
+            return
+        }
+        isFirstFail = true
+        invalidPwaLink()
+    }
+
+    private fun invalidPwaLink() {
         if (isFirstFail) {
             getData()
             return
         }
         setErrorData(
-            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_title),
-            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_description),
-            String.EMPTY,
-            String.EMPTY
+            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_title),
+            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_description),
+            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_cta_text),
+            ORDER_LIST_APPLINK
         )
     }
 
     private fun setErrorData(title: String, description: String, ctaText: String, appLink: String) {
-        ePharmacyGlobalError?.errorTitle?.text = title
-        ePharmacyGlobalError?.errorDescription?.text = description
-        illustrationImage?.hide()
-        ePharmacyGlobalError?.errorIllustration?.show()
         ePharmacyGlobalError?.setType(GlobalError.SERVER_ERROR)
         ePharmacyGlobalError?.errorAction?.show()
+        ePharmacyGlobalError?.errorIllustration?.show()
+        illustrationImage?.hide()
+        ePharmacyGlobalError?.errorTitle?.text = title
         ePharmacyGlobalError?.errorAction?.text = ctaText
+        ePharmacyGlobalError?.errorDescription?.text = description
         ePharmacyGlobalError?.setActionClickListener {
             RouteManager.route(context, appLink)
         }
