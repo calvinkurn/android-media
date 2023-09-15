@@ -3,6 +3,7 @@ package com.tokopedia.buy_more_get_more.olp.presentation
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -197,7 +199,7 @@ class OfferLandingPageFragment :
             isEnabled = true
             setOnRefreshListener { loadInitialData() }
         }
-        tracker.sendOpenScreenEvent()
+        tracker.sendOpenScreenEvent(currentState.shopData.shopId.toString())
     }
 
     private fun initMiniCart() {
@@ -312,7 +314,8 @@ class OfferLandingPageFragment :
             setNavigationOnClickListener {
                 tracker.sendClickBackButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 activity?.finish()
             }
@@ -321,21 +324,24 @@ class OfferLandingPageFragment :
                 // get sharing data
                 tracker.sendClickShareButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 viewModel.processEvent(OlpEvent.GetSharingData)
             }
             cartButton?.setOnClickListener {
                 tracker.sendClickKeranjangButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 redirectToCartPage()
             }
             moreMenuButton?.setOnClickListener {
                 tracker.sendClickBurgerButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString()
+                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 redirectToMainMenu()
             }
@@ -394,7 +400,8 @@ class OfferLandingPageFragment :
                 if (resultCode == Activity.RESULT_OK) {
                     tracker.sendClickFilterButtonEvent(
                         currentState.offerIds.toSafeString(),
-                        currentState.warehouseIds.toSafeString()
+                        currentState.warehouseIds.toSafeString(),
+                        currentState.shopData.shopId.toString()
                     )
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
@@ -420,13 +427,19 @@ class OfferLandingPageFragment :
                 binding?.miniCartView.showToaster(atcMessage)
             }
             fetchMiniCart()
+            tracker.sendClickCloseVariantEvent(
+                currentState.offerIds.toSafeString(),
+                currentState.warehouseIds.toSafeString(),
+                currentState.shopData.shopId.toString()
+            )
         }
     }
 
     override fun onSortChipClicked() {
         tracker.sendClickFilterDropdownButtonEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         context?.run {
             val intent = ShopProductSortActivity.createIntent(activity, currentState.sortId)
@@ -618,6 +631,8 @@ class OfferLandingPageFragment :
             } else {
                 if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
                     addToCartProduct(product)
+                } else {
+                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
                 }
             }
         } else {
@@ -628,7 +643,8 @@ class OfferLandingPageFragment :
     override fun onProductCardClicked(productId: Long, productUrl: String) {
         tracker.sendClickProductCardEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         redirectToPDP(productId, productUrl)
     }
@@ -636,7 +652,8 @@ class OfferLandingPageFragment :
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
         tracker.sendClickAtcEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         viewModel.processEvent(OlpEvent.AddToCart(product))
     }
@@ -664,14 +681,11 @@ class OfferLandingPageFragment :
     }
 
     private fun fetchMiniCart() {
-        val offeringInfo = viewModel.offeringInfo.value
-        val offerCount = offeringInfo?.offerings?.firstOrNull()?.tierList?.size.orZero()
         binding?.miniCartView?.fetchData(
             shopIds = listOf(currentState.shopData.shopId),
             offerIds = currentState.offerIds,
             offerJsonData = currentState.offeringJsonData,
-            warehouseIds = currentState.warehouseIds,
-            offerCount = offerCount
+            warehouseIds = currentState.warehouseIds
         )
     }
 
@@ -684,20 +698,23 @@ class OfferLandingPageFragment :
     override fun onTncClicked() {
         tracker.sendClickSnkButtonEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         tncBottomSheet?.apply {
             setCloseClickListener {
                 tracker.sendClickCloseSnkButtonEvent(
                     currentState.offerIds.toSafeString(),
-                    currentState.warehouseIds.toSafeString()
+                    currentState.warehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
                 dismiss()
             }
             setImpressionListener {
                 tracker.sendImpressSnkEvent(
                     currentState.offerIds.toSafeString(),
-                    currentState.warehouseIds.toSafeString()
+                    currentState.warehouseIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
                 )
             }
             show(this@OfferLandingPageFragment)
@@ -707,7 +724,8 @@ class OfferLandingPageFragment :
     override fun onShopNameClicked(shopId: Long) {
         tracker.sendClickShopCtaButtonEvent(
             currentState.offerIds.toSafeString(),
-            currentState.warehouseIds.toSafeString()
+            currentState.warehouseIds.toSafeString(),
+            currentState.shopData.shopId.toString()
         )
         redirectToShopPage(shopId)
     }
@@ -776,6 +794,10 @@ class OfferLandingPageFragment :
                 pageId = viewModel.getPageIdForSharing(),
                 feature = "share"
             )
+
+            val shareText = sharingData.offerData.description.replace("%", "%%")
+            val shareTextEncodedToHtmlSymbol = TextUtils.htmlEncode(shareText)
+            setShareText("${MethodChecker.fromHtml(shareTextEncodedToHtmlSymbol)} %s")
         }.show(childFragmentManager, this)
     }
 

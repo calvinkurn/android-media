@@ -55,6 +55,7 @@ class MiniCartLocalCacheUseCases @Inject constructor(
     ): BmgmCommonDataModel {
         return BmgmCommonDataModel(
             offerId = model.offerId,
+            offerEndDate = offerEndDate,
             warehouseId = warehouseId,
             shopId = shopId.toString(),
             finalPrice = model.finalPrice,

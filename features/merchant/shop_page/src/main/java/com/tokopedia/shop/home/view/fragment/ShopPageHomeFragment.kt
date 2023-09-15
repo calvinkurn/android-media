@@ -104,10 +104,10 @@ import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.analytic.model.ShopHomePersoProductComparisonWidgetImpressionTrackerModel
 import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.analytic.model.ShopHomePersoProductComparisonWidgetImpressionTrackerModel
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
@@ -132,10 +132,10 @@ import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.common.view.viewmodel.ShopBannerTimerSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
-import com.tokopedia.shop.common.view.viewmodel.ShopBannerTimerSharedViewModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
@@ -144,6 +144,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleLis
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
 import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.VIDEO
@@ -157,9 +158,9 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
@@ -397,7 +398,7 @@ open class ShopPageHomeFragment :
             shopHomeProductListSellerEmptyListener = this,
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
-            shopHomeDisplayBannerTimerWidgetListener = this,
+            shopHomeDisplayBannerTimerWidgetListener = this
         )
     }
 
@@ -424,7 +425,8 @@ open class ShopPageHomeFragment :
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
-    //TODO need to move this one to viewmodel in the future
+
+    // TODO need to move this one to viewmodel in the future
     var listWidgetLayout = mutableListOf<ShopPageWidgetUiModel>()
     var initialLayoutData = mutableListOf<ShopPageWidgetUiModel>()
     val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
@@ -545,7 +547,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun observeUpdatedBannerTimerUiModelData() {
-        viewModel?.updatedBannerTimerUiModelData?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+        viewModel?.updatedBannerTimerUiModelData?.observe(viewLifecycleOwner) { bannerTimerUiModel ->
             bannerTimerUiModel?.let {
                 shopReminderButtonStatusSharedVieModel?.updateSharedBannerTimerData(it)
             }
@@ -553,7 +555,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun observeShopReminderButtonStatusSharedVieModel() {
-        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.observe(viewLifecycleOwner) { bannerTimerUiModel ->
             if (shopHomeAdapter?.isLoading == false && getSelectedFragment() != this) {
                 bannerTimerUiModel?.let {
                     viewModel?.updateBannerTimerWidgetUiModel(
@@ -635,7 +637,7 @@ open class ShopPageHomeFragment :
                     onSuccessGetBannerTimerRemindMeStatusData(it.data)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -698,7 +700,7 @@ open class ShopPageHomeFragment :
             when (it) {
                 is Success -> {
                     val listRecommendationItem = it.data.recommendationWidget?.recommendationItemList.orEmpty()
-                    if(listRecommendationItem.isNotEmpty()) {
+                    if (listRecommendationItem.isNotEmpty()) {
                         shopHomeAdapter?.setProductComparisonData(it.data)
                     } else {
                         shopHomeAdapter?.removeProductComparisonWidget()
@@ -881,7 +883,7 @@ open class ShopPageHomeFragment :
             listWidgetContentData
                 .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
                 .firstOrNull().let { bannerTimerWidget ->
-                    if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
+                    if (bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
                         viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.getCampaignId())
                     }
                 }
@@ -1118,7 +1120,7 @@ open class ShopPageHomeFragment :
                         onSuccessCheckWishlist(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1147,7 +1149,7 @@ open class ShopPageHomeFragment :
                         onSuccessGetCampaignNplRemindMeStatusData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1161,7 +1163,7 @@ open class ShopPageHomeFragment :
                         onSuccessGetCampaignFlashSaleRemindMeStatusData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1228,7 +1230,7 @@ open class ShopPageHomeFragment :
                         onSuccessGetBottomSheetFilterData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1242,7 +1244,7 @@ open class ShopPageHomeFragment :
                         onSuccessGetShopProductFilterCount(count = it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1929,10 +1931,11 @@ open class ShopPageHomeFragment :
 
     protected open fun getPlayWidgetData() {
         shopHomeAdapter?.getPlayWidgetUiModel()?.let {
-            val playWidgetType = if (isOwner)
+            val playWidgetType = if (isOwner) {
                 ShopPageWidgetMapper.mapToPlayWidgetTypeSellerApp(shopId)
-            else
+            } else {
                 ShopPageWidgetMapper.mapToPlayWidgetTypeShopPage(shopId)
+            }
             viewModel?.getPlayWidget(it, playWidgetType)
         }
     }
@@ -2543,27 +2546,42 @@ open class ShopPageHomeFragment :
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_BANNER
             }
         }
-        sendShopHomeWidgetClickedTracker(
-            segmentName,
-            displayWidgetUiModel?.name.orEmpty(),
-            displayWidgetUiModel?.widgetId.orEmpty(),
-            ShopUtil.getActualPositionFromIndex(parentPosition),
-            displayWidgetUiModel?.widgetMasterId.orEmpty(),
-            displayWidgetUiModel?.isFestivity.orFalse()
-        )
-        shopPageHomeTracking.clickDisplayWidget(
-            false,
-            shopId,
-            shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-            displayWidgetUiModel?.name ?: "",
-            displayWidgetUiModel?.widgetId ?: "",
-            ShopUtil.getActualPositionFromIndex(parentPosition),
-            displayWidgetUiModel?.header?.ratio ?: "",
-            destinationLink,
-            creativeUrl,
-            ShopUtil.getActualPositionFromIndex(adapterPosition),
-            customDimensionShopPage
-        )
+        when (displayWidgetUiModel?.name ?: "") {
+            BMGM_BANNER -> {
+                val applinkUri = Uri.parse(displayWidgetItem.appLink)
+                val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
+                shopPageHomeTracking.clickBmgmBanner(
+                    offerId,
+                    ShopUtil.getActualPositionFromIndex(parentPosition).toString(),
+                    ShopUtil.getActualPositionFromIndex(parentPosition).toString(),
+                    shopId,
+                    userId
+                )
+            }
+            else -> {
+                sendShopHomeWidgetClickedTracker(
+                    segmentName,
+                    displayWidgetUiModel?.name.orEmpty(),
+                    displayWidgetUiModel?.widgetId.orEmpty(),
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    displayWidgetUiModel?.widgetMasterId.orEmpty(),
+                    displayWidgetUiModel?.isFestivity.orFalse()
+                )
+                shopPageHomeTracking.clickDisplayWidget(
+                    false,
+                    shopId,
+                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
+                    displayWidgetUiModel?.name ?: "",
+                    displayWidgetUiModel?.widgetId ?: "",
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    displayWidgetUiModel?.header?.ratio ?: "",
+                    destinationLink,
+                    creativeUrl,
+                    ShopUtil.getActualPositionFromIndex(adapterPosition),
+                    customDimensionShopPage
+                )
+            }
+        }
         context?.let {
             if (displayWidgetItem.appLink.isNotEmpty()) {
                 RouteManager.route(it, displayWidgetItem.appLink)
@@ -4217,8 +4235,9 @@ open class ShopPageHomeFragment :
     }
 
     override fun scrollToTop(isUserClick: Boolean) {
-        if(isUserClick)
+        if (isUserClick) {
             isClickToScrollToTop = true
+        }
         getRecyclerView(view)?.scrollToPosition(0)
     }
 
@@ -4883,12 +4902,12 @@ open class ShopPageHomeFragment :
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         shopHomeAdapter?.removeWidget(uiModel)
         endlessRecyclerViewScrollListener.resetState()
-        if(getSelectedFragment() == this){
+        if (getSelectedFragment() == this) {
             refreshShopHeader()
         }
     }
 
-    protected fun refreshShopHeader(){
+    protected fun refreshShopHeader() {
         (parentFragment as? ShopPageHeaderFragment)?.apply {
             refreshData()
         }
