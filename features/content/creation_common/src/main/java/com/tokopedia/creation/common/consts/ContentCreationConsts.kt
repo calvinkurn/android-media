@@ -11,5 +11,4 @@ object ContentCreationConsts {
     const val IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
 
     const val VALUE_MAX_MULTI_SELECT_ALLOWED = 5
-
 }

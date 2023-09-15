@@ -8,10 +8,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created By : Muhammad Furqan on 08/09/23
  */
+@Singleton
 class ContentCreationConfigUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
