@@ -29,7 +29,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
@@ -278,9 +277,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (secondArg() as (Throwable) -> Unit).invoke(Throwable())
-        }
+        coEvery { epharmacyUseCase.executeOnBackground() } throws Throwable()
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -327,11 +324,9 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(null)
-            )
-        }
+        coEvery { epharmacyUseCase.executeOnBackground() } returns EPharmacyPrepareProductsGroupResponse(
+            null
+        )
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -378,15 +373,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        null
-                    )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    null
                 )
             )
-        }
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -433,21 +425,18 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            null,
-                            null,
-                            null,
-                            null,
-                            null
-                        )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
                     )
                 )
             )
-        }
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -513,21 +502,18 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            null,
-                            null,
-                            listOf(),
-                            null,
-                            null
-                        )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
+                        listOf(),
+                        null,
+                        null
                     )
                 )
             )
-        }
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -594,32 +580,29 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            null,
-                            null,
-                            listOf(
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    null,
-                                    null,
-                                    "1",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null
-                                )
-                            ),
-                            null,
-                            null
-                        )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
+                        listOf(
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                null,
+                                null,
+                                "1",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            )
+                        ),
+                        null,
+                        null
                     )
                 )
             )
-        }
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -685,32 +668,29 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            null,
-                            null,
-                            listOf(
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    null,
-                                    null,
-                                    "1",
-                                    null,
-                                    null,
-                                    null,
-                                    listOf(null),
-                                    null
-                                )
-                            ),
-                            null,
-                            null
-                        )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
+                        listOf(
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                null,
+                                null,
+                                "1",
+                                null,
+                                null,
+                                null,
+                                listOf(null),
+                                null
+                            )
+                        ),
+                        null,
+                        null
                     )
                 )
             )
-        }
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -778,52 +758,49 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            null,
-                            null,
-                            listOf(
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    null,
-                                    null,
-                                    "1",
-                                    null,
-                                    null,
-                                    null,
-                                    listOf(
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            null,
-                                            arrayListOf(
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null
-                                                )
-                                            ),
-                                            "6554231",
-                                            null,
-                                            null,
-                                            null,
-                                            null
-                                        )
-                                    ),
-                                    null
-                                )
-                            ),
-                            null,
-                            null
-                        )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
+                        listOf(
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                null,
+                                null,
+                                "1",
+                                null,
+                                null,
+                                null,
+                                listOf(
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        null,
+                                        arrayListOf(
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null
+                                            )
+                                        ),
+                                        "6554231",
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    )
+                                ),
+                                null
+                            )
+                        ),
+                        null,
+                        null
                     )
                 )
             )
-        }
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -891,42 +868,39 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            null,
-                            null,
-                            listOf(
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    null,
-                                    null,
-                                    "1",
-                                    null,
-                                    null,
-                                    null,
-                                    listOf(
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            null,
-                                            null,
-                                            "6554231",
-                                            null,
-                                            null,
-                                            null,
-                                            null
-                                        )
-                                    ),
-                                    null
-                                )
-                            ),
-                            null,
-                            null
-                        )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
+                        listOf(
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                null,
+                                null,
+                                "1",
+                                null,
+                                null,
+                                null,
+                                listOf(
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        null,
+                                        null,
+                                        "6554231",
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    )
+                                ),
+                                null
+                            )
+                        ),
+                        null,
+                        null
                     )
                 )
             )
-        }
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -994,42 +968,39 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            null,
-                            null,
-                            listOf(
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    null,
-                                    null,
-                                    "1",
-                                    null,
-                                    null,
-                                    null,
-                                    listOf(
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            null,
-                                            null,
-                                            "asdf",
-                                            null,
-                                            null,
-                                            null,
-                                            null
-                                        )
-                                    ),
-                                    null
-                                )
-                            ),
-                            null,
-                            null
-                        )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
+                        listOf(
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                null,
+                                null,
+                                "1",
+                                null,
+                                null,
+                                null,
+                                listOf(
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        null,
+                                        null,
+                                        "asdf",
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    )
+                                ),
+                                null
+                            )
+                        ),
+                        null,
+                        null
                     )
                 )
             )
-        }
 
         // When
         viewModel.prepareFullCheckoutPage()
@@ -1051,81 +1022,78 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
     fun `GIVEN rejected consultation WHEN fetch epharmacy data THEN should set error`() {
         // Given
         val errorWording = "error wording"
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        groupsData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            epharmacyGroups = listOf(
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    epharmacyGroupId = "123",
-                                    shopInfo = listOf(
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            shopId = "6554231",
-                                            products = arrayListOf(
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389388,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                )
-                                            ),
-                                            partnerLogoUrl = "",
-                                            shopLocation = "",
-                                            shopLogoUrl = "",
-                                            shopName = "",
-                                            shopType = ""
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    groupsData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        epharmacyGroups = listOf(
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                epharmacyGroupId = "123",
+                                shopInfo = listOf(
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        shopId = "6554231",
+                                        products = arrayListOf(
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389388,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
+                                            )
                                         ),
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            shopId = "6554232",
-                                            products = arrayListOf(
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389387,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                )
-                                            ),
-                                            partnerLogoUrl = "",
-                                            shopLocation = "",
-                                            shopLogoUrl = "",
-                                            shopName = "",
-                                            shopType = ""
-                                        )
+                                        partnerLogoUrl = "",
+                                        shopLocation = "",
+                                        shopLogoUrl = "",
+                                        shopName = "",
+                                        shopType = ""
                                     ),
-                                    numberPrescriptionImages = 0,
-                                    prescriptionImages = listOf(),
-                                    consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
-                                        consultationString = "",
-                                        tokoConsultationId = "123",
-                                        partnerConsultationId = "321",
-                                        consultationStatus = 4,
-                                        doctorDetails = null,
-                                        endTime = null,
-                                        medicalRecommendation = null,
-                                        prescription = listOf(),
-                                        startTime = ""
-                                    ),
-                                    consultationSource = null,
-                                    prescriptionSource = null,
-                                    prescriptionCTA = null
-                                )
-                            ),
-                            attachmentPageTickerText = null,
-                            attachmentPageTickerLogoUrl = null,
-                            toaster = null,
-                            papPrimaryCTA = null
-                        )
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        shopId = "6554232",
+                                        products = arrayListOf(
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389387,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
+                                            )
+                                        ),
+                                        partnerLogoUrl = "",
+                                        shopLocation = "",
+                                        shopLogoUrl = "",
+                                        shopName = "",
+                                        shopType = ""
+                                    )
+                                ),
+                                numberPrescriptionImages = 0,
+                                prescriptionImages = listOf(),
+                                consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
+                                    consultationString = "",
+                                    tokoConsultationId = "123",
+                                    partnerConsultationId = "321",
+                                    consultationStatus = 4,
+                                    doctorDetails = null,
+                                    endTime = null,
+                                    medicalRecommendation = null,
+                                    prescription = listOf(),
+                                    startTime = ""
+                                ),
+                                consultationSource = null,
+                                prescriptionSource = null,
+                                prescriptionCTA = null
+                            )
+                        ),
+                        attachmentPageTickerText = null,
+                        attachmentPageTickerLogoUrl = null,
+                        toaster = null,
+                        papPrimaryCTA = null
                     )
                 )
             )
-        }
         val rejectedWording = "rejectedWording"
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
@@ -1226,71 +1194,68 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
     @Test
     fun `GIVEN approved consultation WHEN fetch epharmacy data THEN should set consultation data`() {
         // Given
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        groupsData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            epharmacyGroups = listOf(
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    epharmacyGroupId = "123",
-                                    shopInfo = listOf(
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            shopId = "6554231",
-                                            products = arrayListOf(
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389388,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                ),
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389389,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    groupsData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        epharmacyGroups = listOf(
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                epharmacyGroupId = "123",
+                                shopInfo = listOf(
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        shopId = "6554231",
+                                        products = arrayListOf(
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389388,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
                                             ),
-                                            partnerLogoUrl = "",
-                                            shopLocation = "",
-                                            shopLogoUrl = "",
-                                            shopName = "",
-                                            shopType = ""
-                                        )
-                                    ),
-                                    numberPrescriptionImages = 0,
-                                    prescriptionImages = listOf(),
-                                    consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
-                                        consultationString = "qwerty",
-                                        tokoConsultationId = "123",
-                                        partnerConsultationId = "321",
-                                        consultationStatus = 2,
-                                        doctorDetails = null,
-                                        endTime = null,
-                                        medicalRecommendation = null,
-                                        prescription = listOf(),
-                                        startTime = ""
-                                    ),
-                                    consultationSource = null,
-                                    prescriptionSource = null,
-                                    prescriptionCTA = null
-                                )
-                            ),
-                            attachmentPageTickerText = null,
-                            attachmentPageTickerLogoUrl = null,
-                            toaster = null,
-                            papPrimaryCTA = null
-                        )
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389389,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
+                                            )
+                                        ),
+                                        partnerLogoUrl = "",
+                                        shopLocation = "",
+                                        shopLogoUrl = "",
+                                        shopName = "",
+                                        shopType = ""
+                                    )
+                                ),
+                                numberPrescriptionImages = 0,
+                                prescriptionImages = listOf(),
+                                consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
+                                    consultationString = "qwerty",
+                                    tokoConsultationId = "123",
+                                    partnerConsultationId = "321",
+                                    consultationStatus = 2,
+                                    doctorDetails = null,
+                                    endTime = null,
+                                    medicalRecommendation = null,
+                                    prescription = listOf(),
+                                    startTime = ""
+                                ),
+                                consultationSource = null,
+                                prescriptionSource = null,
+                                prescriptionCTA = null
+                            )
+                        ),
+                        attachmentPageTickerText = null,
+                        attachmentPageTickerLogoUrl = null,
+                        toaster = null,
+                        papPrimaryCTA = null
                     )
                 )
             )
-        }
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -1419,201 +1384,198 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
     @Test
     fun `GIVEN mixed epharmacy data WHEN fetch epharmacy data THEN should set epharmacy data correctly`() {
         // Given
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(
-                    detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        groupsData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-                            epharmacyGroups = listOf(
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    epharmacyGroupId = "123",
-                                    shopInfo = listOf(
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            shopId = "6554231",
-                                            products = arrayListOf(
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389389,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                ),
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389388,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                )
+        coEvery { epharmacyUseCase.executeOnBackground() } returns
+            EPharmacyPrepareProductsGroupResponse(
+                detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                    groupsData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        epharmacyGroups = listOf(
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                epharmacyGroupId = "123",
+                                shopInfo = listOf(
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        shopId = "6554231",
+                                        products = arrayListOf(
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389389,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
                                             ),
-                                            partnerLogoUrl = "",
-                                            shopLocation = "",
-                                            shopLogoUrl = "",
-                                            shopName = "",
-                                            shopType = ""
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389388,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
+                                            )
                                         ),
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            shopId = "6554234",
-                                            products = arrayListOf(
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389382,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                )
-                                            ),
-                                            partnerLogoUrl = "",
-                                            shopLocation = "",
-                                            shopLogoUrl = "",
-                                            shopName = "",
-                                            shopType = ""
-                                        )
+                                        partnerLogoUrl = "",
+                                        shopLocation = "",
+                                        shopLogoUrl = "",
+                                        shopName = "",
+                                        shopType = ""
                                     ),
-                                    numberPrescriptionImages = 0,
-                                    prescriptionImages = listOf(),
-                                    consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
-                                        consultationString = "qwerty",
-                                        tokoConsultationId = "123",
-                                        partnerConsultationId = "321",
-                                        consultationStatus = 2,
-                                        doctorDetails = null,
-                                        endTime = null,
-                                        medicalRecommendation = null,
-                                        prescription = listOf(),
-                                        startTime = ""
-                                    ),
-                                    consultationSource = null,
-                                    prescriptionSource = null,
-                                    prescriptionCTA = null
-                                ),
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    epharmacyGroupId = "124",
-                                    shopInfo = listOf(
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            shopId = "6554231",
-                                            products = arrayListOf(
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389387,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                ),
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389386,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                )
-                                            ),
-                                            partnerLogoUrl = "",
-                                            shopLocation = "",
-                                            shopLogoUrl = "",
-                                            shopName = "",
-                                            shopType = ""
-                                        )
-                                    ),
-                                    numberPrescriptionImages = 0,
-                                    prescriptionImages = listOf(
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage(
-                                            expiredAt = null,
-                                            prescriptionId = "1",
-                                            rejectReason = null,
-                                            status = null
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        shopId = "6554234",
+                                        products = arrayListOf(
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389382,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
+                                            )
                                         ),
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage(
-                                            expiredAt = null,
-                                            prescriptionId = "2",
-                                            rejectReason = null,
-                                            status = null
-                                        )
-                                    ),
-                                    consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
-                                        consultationString = "",
-                                        tokoConsultationId = "",
-                                        partnerConsultationId = "",
-                                        consultationStatus = 0,
-                                        doctorDetails = null,
-                                        endTime = null,
-                                        medicalRecommendation = null,
-                                        prescription = listOf(),
-                                        startTime = ""
-                                    ),
-                                    consultationSource = null,
-                                    prescriptionSource = null,
-                                    prescriptionCTA = null
+                                        partnerLogoUrl = "",
+                                        shopLocation = "",
+                                        shopLogoUrl = "",
+                                        shopName = "",
+                                        shopType = ""
+                                    )
                                 ),
-                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-                                    epharmacyGroupId = "125",
-                                    shopInfo = listOf(
-                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                            shopId = "6554232",
-                                            products = arrayListOf(
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389384,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                ),
-                                                EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                    productId = 2150389385,
-                                                    isEthicalDrug = true,
-                                                    itemWeight = 0.0,
-                                                    name = "",
-                                                    productImage = "",
-                                                    productTotalWeightFmt = "",
-                                                    quantity = "1"
-                                                )
-                                            ),
-                                            partnerLogoUrl = "",
-                                            shopLocation = "",
-                                            shopLogoUrl = "",
-                                            shopName = "",
-                                            shopType = ""
-                                        )
-                                    ),
-                                    numberPrescriptionImages = 0,
-                                    prescriptionImages = listOf(),
-                                    consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
-                                        consultationString = "qwerty",
-                                        tokoConsultationId = "125",
-                                        partnerConsultationId = "521",
-                                        consultationStatus = 4,
-                                        doctorDetails = null,
-                                        endTime = null,
-                                        medicalRecommendation = null,
-                                        prescription = listOf(),
-                                        startTime = ""
-                                    ),
-                                    consultationSource = null,
-                                    prescriptionSource = null,
-                                    prescriptionCTA = null
-                                )
+                                numberPrescriptionImages = 0,
+                                prescriptionImages = listOf(),
+                                consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
+                                    consultationString = "qwerty",
+                                    tokoConsultationId = "123",
+                                    partnerConsultationId = "321",
+                                    consultationStatus = 2,
+                                    doctorDetails = null,
+                                    endTime = null,
+                                    medicalRecommendation = null,
+                                    prescription = listOf(),
+                                    startTime = ""
+                                ),
+                                consultationSource = null,
+                                prescriptionSource = null,
+                                prescriptionCTA = null
                             ),
-                            attachmentPageTickerText = null,
-                            attachmentPageTickerLogoUrl = null,
-                            toaster = null,
-                            papPrimaryCTA = null
-                        )
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                epharmacyGroupId = "124",
+                                shopInfo = listOf(
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        shopId = "6554231",
+                                        products = arrayListOf(
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389387,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
+                                            ),
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389386,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
+                                            )
+                                        ),
+                                        partnerLogoUrl = "",
+                                        shopLocation = "",
+                                        shopLogoUrl = "",
+                                        shopName = "",
+                                        shopType = ""
+                                    )
+                                ),
+                                numberPrescriptionImages = 0,
+                                prescriptionImages = listOf(
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage(
+                                        expiredAt = null,
+                                        prescriptionId = "1",
+                                        rejectReason = null,
+                                        status = null
+                                    ),
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage(
+                                        expiredAt = null,
+                                        prescriptionId = "2",
+                                        rejectReason = null,
+                                        status = null
+                                    )
+                                ),
+                                consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
+                                    consultationString = "",
+                                    tokoConsultationId = "",
+                                    partnerConsultationId = "",
+                                    consultationStatus = 0,
+                                    doctorDetails = null,
+                                    endTime = null,
+                                    medicalRecommendation = null,
+                                    prescription = listOf(),
+                                    startTime = ""
+                                ),
+                                consultationSource = null,
+                                prescriptionSource = null,
+                                prescriptionCTA = null
+                            ),
+                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+                                epharmacyGroupId = "125",
+                                shopInfo = listOf(
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+                                        shopId = "6554232",
+                                        products = arrayListOf(
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389384,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
+                                            ),
+                                            EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                productId = 2150389385,
+                                                isEthicalDrug = true,
+                                                itemWeight = 0.0,
+                                                name = "",
+                                                productImage = "",
+                                                productTotalWeightFmt = "",
+                                                quantity = "1"
+                                            )
+                                        ),
+                                        partnerLogoUrl = "",
+                                        shopLocation = "",
+                                        shopLogoUrl = "",
+                                        shopName = "",
+                                        shopType = ""
+                                    )
+                                ),
+                                numberPrescriptionImages = 0,
+                                prescriptionImages = listOf(),
+                                consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
+                                    consultationString = "qwerty",
+                                    tokoConsultationId = "125",
+                                    partnerConsultationId = "521",
+                                    consultationStatus = 4,
+                                    doctorDetails = null,
+                                    endTime = null,
+                                    medicalRecommendation = null,
+                                    prescription = listOf(),
+                                    startTime = ""
+                                ),
+                                consultationSource = null,
+                                prescriptionSource = null,
+                                prescriptionCTA = null
+                            )
+                        ),
+                        attachmentPageTickerText = null,
+                        attachmentPageTickerLogoUrl = null,
+                        toaster = null,
+                        papPrimaryCTA = null
                     )
                 )
             )
-        }
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),

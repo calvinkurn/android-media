@@ -1520,8 +1520,7 @@ class CheckoutFragment :
                     viewModel.setSelectedCourier(
                         cartPosition,
                         courierItemData,
-                        shippingCourierUiModels,
-                        selectedCourier.productData.insurance
+                        shippingCourierUiModels
                     )
                 }
             }
@@ -1563,8 +1562,7 @@ class CheckoutFragment :
                 cartString,
                 promoCode,
                 true,
-                courierItemData,
-                courierData.productData.insurance
+                courierItemData
             )
         }
     }
@@ -1704,8 +1702,7 @@ class CheckoutFragment :
             viewModel.setSelectedCourier(
                 cartPosition,
                 courierItemData,
-                shippingCourierList,
-                shippingCourierUiModel.productData.insurance
+                shippingCourierList
             )
         }
     }
@@ -2251,7 +2248,7 @@ class CheckoutFragment :
                     epharmacyItem.epharmacy.epharmacyGroupIds,
                     false,
                     if (showErrorToaster) {
-                        activity?.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found)
+                        activity?.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found_new)
                             ?: ""
                     } else {
                         "success"

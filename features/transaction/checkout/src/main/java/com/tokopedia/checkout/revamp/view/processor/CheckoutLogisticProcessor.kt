@@ -4,13 +4,14 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderInsurance
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.request.EditPinpointParam
 import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
@@ -355,7 +356,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                     )
                                                 return@withContext RatesResult(
                                                     courierItemData,
-                                                    shippingCourierUiModel.productData.insurance,
+                                                    generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
                                                     shippingDurationUiModel.shippingCourierViewModelList
                                                 )
                                             }
@@ -418,7 +419,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                             }
                                             return@withContext RatesResult(
                                                 courierItemData,
-                                                shippingCourierUiModel.productData.insurance,
+                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
                                                 shippingDurationUiModel.shippingCourierViewModelList
                                             )
                                         }
@@ -451,7 +452,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     }
                                     return@withContext RatesResult(
                                         courierItemData,
-                                        shippingCourier.productData.insurance,
+                                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
                                         shippingDuration.shippingCourierViewModelList
                                     )
                                 }
@@ -477,7 +478,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                 if (t is AkamaiErrorException) {
                     return@withContext RatesResult(
                         null,
-                        InsuranceData(),
+                        CheckoutOrderInsurance(),
                         emptyList(),
                         t.message ?: ""
                     )
@@ -644,7 +645,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                     )
                                                 return@withContext RatesResult(
                                                     courierItemData,
-                                                    shippingCourierUiModel.productData.insurance,
+                                                    generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
                                                     shippingDurationUiModel.shippingCourierViewModelList
                                                 )
                                             }
@@ -710,7 +711,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                             }
                                             return@withContext RatesResult(
                                                 courierItemData,
-                                                shippingCourierUiModel.productData.insurance,
+                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
                                                 shippingDurationUiModel.shippingCourierViewModelList
                                             )
                                         }
@@ -745,7 +746,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     }
                                     return@withContext RatesResult(
                                         courierItemData,
-                                        shippingCourier.productData.insurance,
+                                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
                                         shippingDuration.shippingCourierViewModelList
                                     )
                                 }
@@ -771,7 +772,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                 if (t is AkamaiErrorException) {
                     return@withContext RatesResult(
                         null,
-                        InsuranceData(),
+                        CheckoutOrderInsurance(),
                         emptyList(),
                         t.message ?: ""
                     )
@@ -938,7 +939,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                 )
                                             return@withContext RatesResult(
                                                 courierItemData,
-                                                shippingCourierUiModel.productData.insurance,
+                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
                                                 shippingDurationUiModel.shippingCourierViewModelList
                                             )
                                         }
@@ -966,7 +967,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                 if (t is AkamaiErrorException) {
                     return@withContext RatesResult(
                         null,
-                        InsuranceData(),
+                        CheckoutOrderInsurance(),
                         emptyList(),
                         t.message ?: ""
                     )
@@ -1018,7 +1019,30 @@ data class EditAddressResult(
 
 data class RatesResult(
     val courier: CourierItemData?,
-    val insurance: InsuranceData,
+    val insurance: CheckoutOrderInsurance,
     val couriers: List<ShippingCourierUiModel>,
     val akamaiError: String = ""
 )
+
+internal fun generateCheckoutOrderInsuranceFromCourier(
+    courierItemData: CourierItemData,
+    order: CheckoutOrderModel
+): CheckoutOrderInsurance {
+    return CheckoutOrderInsurance(
+        when (courierItemData.selectedShipper.insuranceType) {
+            InsuranceConstant.INSURANCE_TYPE_MUST -> {
+                true
+            }
+
+            InsuranceConstant.INSURANCE_TYPE_NO -> {
+                false
+            }
+
+            InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
+                courierItemData.selectedShipper.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES || order.isInsurance
+            }
+
+            else -> false
+        }
+    )
+}

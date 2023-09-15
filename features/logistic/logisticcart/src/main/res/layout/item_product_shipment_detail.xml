@@ -51,7 +51,8 @@
             app:layout_constraintTop_toTopOf="@id/icon_product_shipment_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="display_3"
-            tools:text="Dikirim dari Tangerang • Berat 5 kg" />
+            tools:visibility="visible"
+            tools:text="Dikirim dari Kota Administrasi Jakarta Timur Jakarta TimurJakarta TimurJakarta Timur• Berat 5 kg" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/icon_preorder"
@@ -61,8 +62,9 @@
             android:visibility="gone"
             app:icon_color_light_enable="@color/Unify_NN900"
             app:icon_name="CALENDAR_TIME"
+            tools:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/icon_product_shipment_info" />
+            app:layout_constraintTop_toBottomOf="@id/tv_weight_origin" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_preorder_info"
@@ -75,6 +77,7 @@
             app:layout_constraintTop_toTopOf="@id/icon_preorder"
             app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="display_3"
+            tools:visibility="visible"
             tools:text="Barang dikirim 17 Jan (PreOrder 25 hari)" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

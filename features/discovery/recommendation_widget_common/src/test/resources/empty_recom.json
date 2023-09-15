@@ -1,0 +1,34 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "EsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d",
+        "source": "",
+        "title": "",
+        "subtitle": "",
+        "foreignTitle": "",
+        "widgetUrl": "",
+        "pageName": "pdp_fbt_hatc",
+        "seeMoreAppLink": "",
+        "layoutType": "tokopedia-horizontal-atc",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": false
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": []
+      }
+    ]
+  }
+}
