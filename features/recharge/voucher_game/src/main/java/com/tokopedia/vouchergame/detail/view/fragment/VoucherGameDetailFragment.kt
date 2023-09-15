@@ -282,6 +282,7 @@ class VoucherGameDetailFragment :
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
+        topupBillsViewModel.updateMultiCheckoutButtons(data.multiCheckoutButtons)
         if (data.catalog.label.isNotEmpty()) {
             categoryName = data.catalog.label
             voucherGameAnalytics.categoryName = categoryName
@@ -722,6 +723,7 @@ class VoucherGameDetailFragment :
 
     private fun showCheckoutView() {
         binding?.checkoutView?.setVisibilityLayout(true)
+        binding?.checkoutView?.showMulticheckoutButtonSupport(topupBillsViewModel.multiCheckoutButtons)
         selectedProduct?.attributes?.run {
             binding?.checkoutView?.setTotalPrice(promo?.newPrice ?: price)
         }
@@ -739,6 +741,10 @@ class VoucherGameDetailFragment :
 
     override fun onClickNextBuyButton() {
         processCheckoutData()
+    }
+
+    override fun onClickMultiCheckout() {
+        //TODO("Not yet implemented")
     }
 
     override fun processSeamlessFavoriteNumbers(
