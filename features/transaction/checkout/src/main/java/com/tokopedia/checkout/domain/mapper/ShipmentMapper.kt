@@ -79,6 +79,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOn
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.BebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.ErrorDefault
@@ -89,7 +90,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfo
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
@@ -858,8 +859,7 @@ class ShipmentMapper @Inject constructor() {
             promoSpIds = mapPromoSpId(additionalInfo)
             usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
             pomlAutoApplied = additionalInfo.pomlAutoApplied
-            bebasOngkirInfo =
-                LastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo.isBoUnstackEnabled)
+            bebasOngkirInfo = mapLastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo)
         }
     }
 
@@ -873,6 +873,13 @@ class ShipmentMapper @Inject constructor() {
                 currencyDetailsStr = it.currencyDetailsStr
             }
         }
+    }
+
+    private fun mapLastApplyBebasOngkirInfo(bebasOngkirInfo: BebasOngkirInfo): LastApplyBebasOngkirInfoUiModel {
+        return LastApplyBebasOngkirInfoUiModel(
+            isBoUnstackEnabled = bebasOngkirInfo.isBoUnstackEnabled,
+            isUseBebasOngkirOnly = bebasOngkirInfo.isUseBebasOngkirOnly
+        )
     }
 
     private fun mapLastApplyMessageInfoUiModel(messageInfo: MessageInfo): LastApplyMessageInfoUiModel {

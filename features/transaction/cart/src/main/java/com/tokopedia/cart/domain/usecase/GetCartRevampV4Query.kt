@@ -833,6 +833,9 @@ const val CART_REVAMP_V4_QUERY =
                         amount
                         currency_details_str
                       }
+                      bebas_ongkir_info {
+                        is_use_bebas_ongkir_only
+                      }
                       sp_ids
                       poml_auto_applied
                     }

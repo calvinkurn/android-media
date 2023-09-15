@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class LastApplyBebasOngkirInfo(
+data class LastApplyBebasOngkirInfoUiModel(
     var isBoUnstackEnabled: Boolean = false,
     var isUseBebasOngkirOnly: Boolean = false
 ) : Parcelable
