@@ -1,5 +1,6 @@
 package com.tokopedia.creation.common.presentation.components
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,6 +50,27 @@ import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 /**
  * Created By : Muhammad Furqan on 06/09/23
  */
+
+private const val clickableDescriptionTag = "applink"
+
+@Composable
+private fun buildDescriptionAnnotatedString(
+    @StringRes descriptionTextId: Int,
+    @StringRes clickTextId: Int
+): AnnotatedString =
+    buildAnnotatedString {
+        append(stringResource(descriptionTextId))
+        withStyle(
+            SpanStyle(
+                color = NestTheme.colors.GN._500,
+                fontWeight = FontWeight.Bold
+            )
+        ) {
+            pushStringAnnotation(clickableDescriptionTag, clickableDescriptionTag)
+            append(stringResource(clickTextId))
+        }
+    }
+
 @Composable
 fun ExpandableContentCreationItem(
     isSelected: Boolean,
@@ -57,57 +79,24 @@ fun ExpandableContentCreationItem(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val clickableDescriptionTag = "applink"
 
     val description: AnnotatedString = when (data.type) {
-        ContentCreationTypeEnum.LIVE -> buildAnnotatedString {
-            append(stringResource(R.string.content_creation_live_description_text))
-            withStyle(
-                SpanStyle(
-                    color = NestTheme.colors.GN._500,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                pushStringAnnotation(clickableDescriptionTag, clickableDescriptionTag)
-                append(stringResource(R.string.content_creation_live_description_click_label))
-            }
-        }
-        ContentCreationTypeEnum.POST -> buildAnnotatedString {
-            append(stringResource(R.string.content_creation_post_description_text))
-            withStyle(
-                SpanStyle(
-                    color = NestTheme.colors.GN._500,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                pushStringAnnotation(clickableDescriptionTag, clickableDescriptionTag)
-                append(stringResource(R.string.content_creation_post_description_click_label))
-            }
-        }
-        ContentCreationTypeEnum.SHORT -> buildAnnotatedString {
-            append(stringResource(R.string.content_creation_short_description_text))
-            withStyle(
-                SpanStyle(
-                    color = NestTheme.colors.GN._500,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                pushStringAnnotation(clickableDescriptionTag, clickableDescriptionTag)
-                append(stringResource(R.string.content_creation_short_description_click_label))
-            }
-        }
-        ContentCreationTypeEnum.STORY -> buildAnnotatedString {
-            append(stringResource(R.string.content_creation_story_description_text))
-            withStyle(
-                SpanStyle(
-                    color = NestTheme.colors.GN._500,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                pushStringAnnotation(clickableDescriptionTag, clickableDescriptionTag)
-                append(stringResource(R.string.content_creation_story_description_click_label))
-            }
-        }
+        ContentCreationTypeEnum.LIVE -> buildDescriptionAnnotatedString(
+            descriptionTextId = R.string.content_creation_live_description_text,
+            clickTextId = R.string.content_creation_live_description_click_label
+        )
+        ContentCreationTypeEnum.POST -> buildDescriptionAnnotatedString(
+            descriptionTextId = R.string.content_creation_post_description_text,
+            clickTextId = R.string.content_creation_post_description_click_label
+        )
+        ContentCreationTypeEnum.SHORT -> buildDescriptionAnnotatedString(
+            descriptionTextId = R.string.content_creation_short_description_text,
+            clickTextId = R.string.content_creation_short_description_click_label
+        )
+        ContentCreationTypeEnum.STORY -> buildDescriptionAnnotatedString(
+            descriptionTextId = R.string.content_creation_story_description_text,
+            clickTextId = R.string.content_creation_story_description_click_label
+        )
     }
 
     Column(
@@ -124,7 +113,8 @@ fun ExpandableContentCreationItem(
                     indication = null,
                     onClick = {
                         if (!isSelected) onSelect(data)
-                    }),
+                    }
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             NestIcon(
@@ -149,14 +139,16 @@ fun ExpandableContentCreationItem(
                 factory = {
                     RadioButtonUnify(it).apply {
                         setOnCheckedChangeListener { _, isChecked ->
-                            if (!isSelected && isChecked)
+                            if (!isSelected && isChecked) {
                                 onSelect(data)
+                            }
                         }
                     }
                 },
                 update = {
                     it.isChecked = isSelected
-                })
+                }
+            )
         }
 
         AnimatedVisibility(visible = isSelected) {
@@ -171,7 +163,7 @@ fun ExpandableContentCreationItem(
                     }
                 }
 
-                if (data.media.coverUrl.isNotEmpty() || data.media.mediaUrl.isNotEmpty())
+                if (data.media.coverUrl.isNotEmpty() || data.media.mediaUrl.isNotEmpty()) {
                     NestImage(
                         source = ImageSource.Remote(
                             data.media.coverUrl.ifEmpty { data.media.mediaUrl }
@@ -184,6 +176,7 @@ fun ExpandableContentCreationItem(
                             .clip(RoundedCornerShape(12.dp)),
                         contentDescription = description.toString()
                     )
+                }
             }
         }
     }
@@ -209,14 +202,13 @@ private fun ExpandableContentCreationItemPreview() {
                         type = "image",
                         id = "",
                         coverUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
-                        mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
+                        mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png"
                     ),
                     descriptionApplink = "tokopedia://any",
                     drawableIconId = IconUnify.VIDEO,
                     authorType = ContentCreationAuthorEnum.SHOP
                 ),
                 onSelect = {
-
                 }
             )
             Box(modifier = Modifier.height(16.dp))
@@ -231,15 +223,15 @@ private fun ExpandableContentCreationItemPreview() {
                         type = "image",
                         id = "",
                         coverUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
-                        mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png",
+                        mediaUrl = "https://cdn-icons-png.flaticon.com/512/25/25694.png"
                     ),
                     descriptionApplink = "tokopedia://any",
                     drawableIconId = IconUnify.VIDEO,
                     authorType = ContentCreationAuthorEnum.SHOP
                 ),
                 onSelect = {
-
-                })
+                }
+            )
         }
     }
 }
