@@ -60,7 +60,7 @@ import javax.inject.Inject
 import com.tokopedia.home.beranda.data.mapper.BestSellerMapper as BestSellerRevampMapper
 import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
-class HomeDynamicChannelUseCase @Inject constructor(
+class HomeUseCase @Inject constructor(
     private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
     private val homeDataMapper: HomeDataMapper,
     private val bestSellerRevampMapper: BestSellerRevampMapper,
@@ -126,44 +126,47 @@ class HomeDynamicChannelUseCase @Inject constructor(
     @FlowPreview
     @ExperimentalCoroutinesApi
     fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
-        var isCache = true
-        var isCacheDc = true
-        val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
-            flow<HomeDynamicChannelModel> {
-                if (isCache) {
-                    val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
-                        HomeData(
-                            atfData = HomeAtfData(
-                                dataList = it.map {
-                                    AtfData(
-                                        id = it.id,
-                                        name = it.name,
-                                        component = it.component,
-                                        param = it.param,
-                                        isOptional = it.isOptional,
-                                        content = it.content,
-                                        status = it.status
-                                    )
-                                },
-                                isProcessingAtf = true
-                            ),
-                            isProcessingDynamicChannel = true,
-                        ),
-                        isCache = true,
-                        addShimmeringChannel = true,
-                        isLoadingAtf = true
-                    )
-                    dynamicChannelPlainResponse.apply {
-                        Log.d("Each merge list size:", ("" + this.list.size))
-                        this.isCache = isCache
-                        this.flowCompleted = true
-                    }
-                    emit(dynamicChannelPlainResponse)
-                }
-            }
+        return flow {
+            emitAll(getHomeDynamicChannelFlow())
         }
+//        val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
+//            flow<HomeDynamicChannelModel> {
+//                if (isCache) {
+//                    val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
+//                        HomeData(
+//                            atfData = HomeAtfData(
+//                                dataList = it.map {
+//                                    AtfData(
+//                                        id = it.id,
+//                                        name = it.name,
+//                                        component = it.component,
+//                                        param = it.param,
+//                                        isOptional = it.isOptional,
+//                                        content = it.content,
+//                                        status = it.status
+//                                    )
+//                                },
+//                                isProcessingAtf = true
+//                            ),
+//                            isProcessingDynamicChannel = true,
+//                        ),
+//                        isCache = true,
+//                        addShimmeringChannel = true,
+//                    )
+//                    dynamicChannelPlainResponse.apply {
+//                        Log.d("Each merge list size:", ("" + this.list.size))
+//                        this.isCache = isCache
+//                        this.flowCompleted = true
+//                    }
+//                    emit(dynamicChannelPlainResponse)
+//                }
+//            }
+//        }
+    }
 
-        val homeDynamicChannelFlow = getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
+    private fun getHomeDynamicChannelFlow(): Flow<HomeDynamicChannelModel> {
+        var isCacheDc = true
+        return getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
                 topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
 
@@ -461,10 +464,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 )
                 isCacheDc = false
             }
-        }
-
-        return merge(homeAtfCacheFlow, homeDynamicChannelFlow).onEach {
-            isCache = false
         }
     }
 
