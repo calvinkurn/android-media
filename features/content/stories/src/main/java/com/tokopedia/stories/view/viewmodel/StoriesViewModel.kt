@@ -58,14 +58,25 @@ class StoriesViewModel @AssistedInject constructor(
     val mGroup: StoriesGroupItem
         get() {
             val groupPosition = _groupPos.value
-            return _storiesMainData.value.groupItems[groupPosition]
+            return if (groupPosition < 0) StoriesGroupItem()
+            else {
+                if (_storiesMainData.value.groupItems.size <= groupPosition) StoriesGroupItem()
+                else _storiesMainData.value.groupItems[groupPosition]
+            }
         }
 
     val mDetail: StoriesDetailItem
         get() {
             val groupPosition = _groupPos.value
             val detailPosition = _detailPos.value
-            return _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
+            return if (groupPosition < 0 || detailPosition < 0) StoriesDetailItem()
+            else {
+                when {
+                    _storiesMainData.value.groupItems.size <= groupPosition -> StoriesDetailItem()
+                    _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size <= detailPosition -> StoriesDetailItem()
+                    else -> _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
+                }
+            }
         }
 
     private val mStoriesMainData: StoriesUiModel
@@ -84,13 +95,20 @@ class StoriesViewModel @AssistedInject constructor(
         get() {
             val groupPosition = _groupPos.value
             return if (groupPosition < 0) StoriesGroupItem()
-            else _storiesMainData.value.groupItems[groupPosition]
+            else {
+                if (_storiesMainData.value.groupItems.size <= groupPosition) StoriesGroupItem()
+                else _storiesMainData.value.groupItems[groupPosition]
+            }
         }
 
     private val mDetailSize: Int
         get() {
             val groupPosition = _groupPos.value
-            return _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size
+            return if (groupPosition < 0) 0
+            else {
+                if (_storiesMainData.value.groupItems.size <= groupPosition) 0
+                else _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size
+            }
         }
 
     private val mResetValue: Int
