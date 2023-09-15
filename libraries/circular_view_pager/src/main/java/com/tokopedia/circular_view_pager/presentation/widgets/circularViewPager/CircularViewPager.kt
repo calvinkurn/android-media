@@ -18,6 +18,7 @@ import kotlin.math.abs
 open class CircularViewPager : FrameLayout, CoroutineScope{
     companion object{
         const val SCROLL_STATE_DRAGGING = 1
+        const val FIRST_ITEM_POSITION = 1
     }
 
     var isInfinite = true
@@ -195,9 +196,13 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
         autoScrollLauncher()
     }
 
-    fun setCurrentPosition(position: Int) {
+    fun setCurrentPosition(position: Int, size: Int) {
+        if (position == FIRST_ITEM_POSITION && currentPagePosition == size) {
+            viewPager.setCurrentItem(currentPagePosition.inc(), true)
+        } else if (position != FIRST_ITEM_POSITION) {
+            viewPager.setCurrentItem(position, true)
+        }
         currentPagePosition = position
-        viewPager.setCurrentItem(currentPagePosition, true)
     }
 
     fun pauseAutoScroll() {
