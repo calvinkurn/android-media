@@ -15,7 +15,6 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
-import com.tokopedia.play.PLAY_KEY_LAST_PATH_SEGMENT
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.cast.PlayCastNotificationAction
@@ -417,7 +416,6 @@ class PlayActivity :
 
     private fun setupIntentExtra() {
         intent.putExtra(PLAY_KEY_CHANNEL_ID, startChannelId)
-        intent.putExtra(PLAY_KEY_LAST_PATH_SEGMENT, lastPathSegment)
     }
 
     private fun removePip() {
