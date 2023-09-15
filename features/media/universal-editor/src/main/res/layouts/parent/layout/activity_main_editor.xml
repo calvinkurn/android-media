@@ -2,12 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
 
     <RelativeLayout
+        android:id="@+id/canvas_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,9:16"
@@ -17,16 +17,12 @@
 
         <include layout="@layout/uc_pager_container" />
 
-    </RelativeLayout>
+        <com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-    <com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
-        android:id="@+id/container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="H,9:16"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    </RelativeLayout>
 
     <androidx.appcompat.widget.Toolbar
         android:elevation="2dp"
