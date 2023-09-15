@@ -406,25 +406,23 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         affiliateChannel: String,
         wishlistItemOnAtc: WishlistV2UiModel.Item
     ) {
-        if (affiliateUUID.isNotEmpty()) {
-            launchCatchError(block = {
-                val affiliateSource = AffiliateSdkPageSource.DirectATC(
-                    AffiliateAtcSource.SHOP_PAGE,
-                    wishlistItemOnAtc.shop.id,
-                    null
+        launchCatchError(block = {
+            val affiliateSource = AffiliateSdkPageSource.DirectATC(
+                AffiliateAtcSource.SHOP_PAGE,
+                wishlistItemOnAtc.shop.id,
+                null
+            )
+            affiliateCookieHelper.initCookie(
+                affiliateUUID = affiliateUUID,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = AffiliatePageDetail(
+                    pageId = wishlistItemOnAtc.id,
+                    source = affiliateSource
                 )
-                affiliateCookieHelper.initCookie(
-                    affiliateUUID = affiliateUUID,
-                    affiliateChannel = affiliateChannel,
-                    affiliatePageDetail = AffiliatePageDetail(
-                        pageId = wishlistItemOnAtc.id,
-                        source = affiliateSource
-                    )
-                )
-            }, onError = {
-                    // no op, expect to be handled by Affiliate SDK
-                })
-        }
+            )
+        }, onError = {
+                // no op, expect to be handled by Affiliate SDK
+            })
     }
 
     fun createAffiliateLink(url: String): String {
