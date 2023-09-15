@@ -625,6 +625,26 @@ internal class PromoUsageViewModel @Inject constructor(
                     return@map item
                 }
             }
+
+            // Re-calculate clash for adjusted selected promo after deselection event
+            val snapshotProcessedItems = processedItems
+            snapshotProcessedItems.forEach { adjustedItem ->
+                if (adjustedItem is PromoItem &&
+                    adjustedItem.useSecondaryPromo &&
+                    adjustedItem.state is PromoItemState.Selected
+                ) {
+                    if (selectedItem.clashingInfos.isNotEmpty()) {
+                        processedItems = processedItems.map { item ->
+                            if (item is PromoItem) {
+                                val (resultItem, _) = checkAndSetClashOnSelectionEvent(item, adjustedItem)
+                                return@map resultItem
+                            } else {
+                                return@map item
+                            }
+                        }
+                    }
+                }
+            }
         }
         return Pair(processedItems, isSelectedPromoCausingClash)
     }
