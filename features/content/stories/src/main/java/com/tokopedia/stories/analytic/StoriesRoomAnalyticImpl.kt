@@ -4,11 +4,19 @@ import android.os.Bundle
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-class StoriesAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface
-) : StoriesAnalytic {
+class StoriesRoomAnalyticImpl @AssistedInject constructor(
+    @Assisted private val authorId: String,
+    private val userSession: UserSessionInterface,
+) : StoriesRoomAnalytic {
+    
+    @AssistedFactory
+    interface Factory: StoriesRoomAnalytic.Factory {
+        override fun create(authorId: String): StoriesRoomAnalyticImpl
+    }
 
     private val userId: String
         get() = userSession.userId.orEmpty()
@@ -18,7 +26,7 @@ class StoriesAnalyticImpl @Inject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46042
-    override fun sendImpressionStoriesContent(storiesId: String, authorId: String) {
+    override fun sendImpressionStoriesContent(storiesId: String) {
         Tracker.Builder()
             .setEvent("openScreen")
             .setCustomProperty("trackerId", "46042")
@@ -36,7 +44,6 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker ID: 46043
     override fun sendViewStoryCircleEvent(
         entryPoint: String,
-        partnerId: String,
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     ) {
@@ -55,7 +62,7 @@ class StoriesAnalyticImpl @Inject constructor(
             putString(EVENT_CATEGORY, "stories room")
             putString(
                 EVENT_LABEL,
-                "$entryPoint - $partnerId - $currentCircle"
+                "$entryPoint - $authorId - $currentCircle"
             )
             putString(TRACKER_ID, "46043")
             putString(BUSINESS_UNIT, "content")
@@ -126,7 +133,7 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker ID: 46049
     override fun sendClickStoryCircleEvent(
         entryPoint: String,
-        partnerId: String,
+        
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     ) {
@@ -145,7 +152,7 @@ class StoriesAnalyticImpl @Inject constructor(
             putString(EVENT_CATEGORY, "stories room")
             putString(
                 EVENT_LABEL,
-                "$entryPoint - $partnerId - $currentCircle"
+                "$entryPoint - $authorId - $currentCircle"
             )
             putString(TRACKER_ID, "46049")
             putString(BUSINESS_UNIT, "content")
@@ -269,7 +276,7 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker ID: 46057
     override fun sendClickTapNextContentEvent(
         entryPoint: String,
-        partnerId: String,
+        
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -279,7 +286,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEvent("clickContent")
             .setEventAction("click - tap next content")
             .setEventCategory("stories room")
-            .setEventLabel("$entryPoint - $partnerId - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty("trackerId", "46057")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
@@ -293,7 +300,7 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker ID: 46058
     override fun sendClickTapPreviousContentEvent(
         entryPoint: String,
-        partnerId: String,
+        
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -303,7 +310,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEvent("clickContent")
             .setEventAction("click - tap previous content")
             .setEventCategory("stories room")
-            .setEventLabel("$entryPoint - $partnerId - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty("trackerId", "46058")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
@@ -317,13 +324,13 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker ID: 46059
     override fun sendClickMoveToOtherGroup(
         entryPoint: String,
-        partnerId: String,
+        
     ) {
         Tracker.Builder()
             .setEvent("clickContent")
             .setEventAction("click - move to other group")
             .setEventCategory("stories room")
-            .setEventLabel("$entryPoint - $partnerId")
+            .setEventLabel("$entryPoint - $authorId")
             .setCustomProperty("trackerId", "46059")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
@@ -337,7 +344,7 @@ class StoriesAnalyticImpl @Inject constructor(
     // Tracker ID: 46062
     override fun sendClickExitStoryRoomEvent(
         entryPoint: String,
-        partnerId: String,
+        
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -347,7 +354,7 @@ class StoriesAnalyticImpl @Inject constructor(
             .setEvent("clickContent")
             .setEventAction("click - exit story room")
             .setEventCategory("stories room")
-            .setEventLabel("$entryPoint - $partnerId - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty("trackerId", "46062")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)

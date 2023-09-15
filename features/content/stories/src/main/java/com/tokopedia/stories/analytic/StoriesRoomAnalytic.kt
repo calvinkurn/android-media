@@ -1,11 +1,14 @@
 package com.tokopedia.stories.analytic
 
-interface StoriesAnalytic {
+interface StoriesRoomAnalytic {
 
-    fun sendImpressionStoriesContent(storiesId: String, authorId: String)
+    interface Factory {
+        fun create(authorId: String): StoriesRoomAnalytic
+    }
+
+    fun sendImpressionStoriesContent(storiesId: String)
     fun sendViewStoryCircleEvent(
         entryPoint: String,
-        partnerId: String,
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     )
@@ -14,7 +17,6 @@ interface StoriesAnalytic {
     fun sendClickShoppingBagEvent(eventLabel: String)
     fun sendClickStoryCircleEvent(
         entryPoint: String,
-        partnerId: String,
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     )
@@ -25,7 +27,6 @@ interface StoriesAnalytic {
     fun sendClickAtcButtonEvent(eventLabel: String, items: List<String>)
     fun sendClickTapNextContentEvent(
         entryPoint: String,
-        partnerId: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -33,7 +34,6 @@ interface StoriesAnalytic {
     )
     fun sendClickTapPreviousContentEvent(
         entryPoint: String,
-        partnerId: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -41,11 +41,9 @@ interface StoriesAnalytic {
     )
     fun sendClickMoveToOtherGroup(
         entryPoint: String,
-        partnerId: String,
     )
     fun sendClickExitStoryRoomEvent(
         entryPoint: String,
-        partnerId: String,
         storiesId: String,
         creatorType: String,
         contentType: String,

@@ -14,7 +14,7 @@ import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.stories.analytic.StoriesAnalytic
+import com.tokopedia.stories.analytic.StoriesAnalytics
 import com.tokopedia.stories.analytic.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
@@ -36,7 +36,7 @@ import javax.inject.Inject
 
 class StoriesGroupFragment @Inject constructor(
     private val viewModelFactory: StoriesViewModelFactory.Creator,
-    private val analytic: StoriesAnalytic,
+    private val analyticFactory: StoriesAnalytics.Factory,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesGroupBinding? = null
@@ -46,13 +46,17 @@ class StoriesGroupFragment @Inject constructor(
     val authorId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
-    // we need to know everytime stories open from where
+    /*** TODO
+    //  we need to know everytime stories open from where
     // add the logic later
     // currently used for tracker
+     ***/
     val entryPoint: String
         get() = "Entry Point"
 
     val viewModelProvider get() = viewModelFactory.create(authorId)
+
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(authorId)
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
@@ -213,7 +217,6 @@ class StoriesGroupFragment @Inject constructor(
     private fun trackImpressionGroup() {
         analytic.sendViewStoryCircleEvent(
             entryPoint = entryPoint,
-            partnerId = authorId,
             currentCircle = viewModel.mGroup.groupId,
             promotions = viewModel.impressedGroupHeader.mapIndexed { index, storiesGroupHeader ->
                 StoriesEEModel(
@@ -232,13 +235,12 @@ class StoriesGroupFragment @Inject constructor(
             return
         }
 
-        analytic.sendClickMoveToOtherGroup(entryPoint = entryPoint, partnerId = authorId)
+        analytic.sendClickMoveToOtherGroup(entryPoint = entryPoint)
     }
 
     private fun trackExitRoom() {
         analytic.sendClickExitStoryRoomEvent(
             entryPoint = entryPoint,
-            partnerId = authorId,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,

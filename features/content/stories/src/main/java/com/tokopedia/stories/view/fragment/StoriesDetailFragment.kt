@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.stories.analytic.StoriesAnalytic
+import com.tokopedia.stories.analytic.StoriesAnalytics
 import com.tokopedia.stories.analytic.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
@@ -46,7 +46,7 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoriesDetailFragment @Inject constructor(
-    private val analytic: StoriesAnalytic,
+    private val analyticFactory: StoriesAnalytics.Factory,
 ) : TkpdBaseV4Fragment() {
 
     private val mParentPage: StoriesGroupFragment
@@ -59,6 +59,8 @@ class StoriesDetailFragment @Inject constructor(
     val viewModelProvider by lazyThreadSafetyNone { mParentPage.viewModelProvider }
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
+
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(mParentPage.authorId)
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
@@ -311,7 +313,6 @@ class StoriesDetailFragment @Inject constructor(
     private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {
         analytic.sendClickStoryCircleEvent(
             entryPoint = mParentPage.entryPoint,
-            partnerId = mParentPage.authorId,
             currentCircle = data.groupName,
             promotions = listOf(
                 StoriesEEModel(
@@ -325,13 +326,12 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackImpressionDetail(storiesId: String) {
-        analytic.sendImpressionStoriesContent(storiesId, mParentPage.authorId)
+        analytic.sendImpressionStoriesContent(storiesId)
     }
 
     private fun trackTapPreviousDetail() {
         analytic.sendClickTapPreviousContentEvent(
             entryPoint = mParentPage.entryPoint,
-            partnerId = mParentPage.authorId,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
@@ -342,7 +342,6 @@ class StoriesDetailFragment @Inject constructor(
     private fun trackTapNextDetail() {
         analytic.sendClickTapNextContentEvent(
             entryPoint = mParentPage.entryPoint,
-            partnerId = mParentPage.authorId,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
