@@ -128,10 +128,10 @@ class ShopHomeV4TerlarisViewHolder(
     private fun setHeaderSection(element: ShopHomeCarousellProductUiModel) {
         val title = element.header.title
         val subTitle = element.header.subtitle
-        widgetTitle?.shouldShowWithAction(title.isNotEmpty()) {
+        widgetTitle?.shouldShowWithAction(subTitle.isNotEmpty()) {
             widgetTitle?.text = subTitle
         }
-        widgetSubtitle?.shouldShowWithAction(subTitle.isNotEmpty()) {
+        widgetSubtitle?.shouldShowWithAction(title.isNotEmpty()) {
             widgetSubtitle?.text = title
         }
     }
