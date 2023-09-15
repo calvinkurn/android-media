@@ -37,6 +37,11 @@ class PagerContainerUiComponent constructor(
         setFragmentDisplayed(param)
     }
 
+    /**
+     * This API only support for single editable media and image file type.
+     *
+     * We will aim to support multiple media as well as support both image and video later.
+     */
     fun updateView(newPath: String?) {
         if (newPath == null) return
         val fragment = mAdapter?.fragments?.first() ?: return

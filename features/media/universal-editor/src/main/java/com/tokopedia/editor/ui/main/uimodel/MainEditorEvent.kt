@@ -13,9 +13,10 @@ sealed class MainEditorEvent {
     data class SetupView(val param: UniversalEditorParam) : MainEditorEvent()
 
     // Handling State Behavior
+    object ManageVideoAudio : MainEditorEvent()
     object ResetActiveInputText : MainEditorEvent()
     data class HasTextAdded(val isAdded: Boolean) : MainEditorEvent()
-    object ManageVideoAudio : MainEditorEvent()
+    data class GlobalCanvasSize(val width: Int, val height: Int) : MainEditorEvent()
 
     // User Action
     data class ClickHeaderCloseButton(val isSkipConfirmation: Boolean = false) : MainEditorEvent()

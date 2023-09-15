@@ -1,4 +1,4 @@
-package com.tokopedia.editor.ui.main.fragment.image.main
+package com.tokopedia.editor.ui.main.fragment.image
 
 import android.graphics.Bitmap
 import androidx.lifecycle.lifecycleScope

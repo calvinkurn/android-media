@@ -18,6 +18,7 @@ interface ImageFlattenRepository {
 class ImageFlattenRepositoryImpl @Inject constructor(
     private val imageSaveRepository: ImageSaveRepository
 ) : ImageFlattenRepository {
+
     override fun flattenImage(imageBitmap: Bitmap, textBitmap: Bitmap?): Flow<String> {
         return callbackFlow {
             val flattenBitmap = Bitmap.createBitmap(imageBitmap.width, imageBitmap.height, Bitmap.Config.ARGB_8888)

@@ -25,10 +25,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -45,6 +42,10 @@ class MainEditorViewModel @Inject constructor(
     private var _uiEffect = MutableSharedFlow<MainEditorEffect>(replay = 50)
     private var _mainEditorState = MutableStateFlow(MainEditorUiModel())
     private var _inputTextState = MutableStateFlow(InputTextParam())
+
+    // Get current state
+    private val state: MainEditorUiModel
+        get() = _mainEditorState.value
 
     /**
      * A path is active file path.
@@ -113,16 +114,17 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.ManageVideoAudio -> {
                 removeVideoAudio()
             }
+            is MainEditorEvent.GlobalCanvasSize -> {
+                setCanvasSize(event.width, event.height)
+            }
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextParam.reset()
             }
             is MainEditorEvent.ClickHeaderCloseButton -> {
                 analytics.backPageClick()
 
-                val currentState = mainEditorState.value
-
-                val isPlacementEdited = currentState.hasPlacementEdited()
-                val isTextAdded = currentState.hasTextAdded
+                val isPlacementEdited = state.hasPlacementEdited()
+                val isTextAdded = state.hasTextAdded
 
                 if ((isPlacementEdited || isTextAdded) && !event.isSkipConfirmation) {
                     setAction(MainEditorEffect.ShowCloseDialogConfirmation)
@@ -147,8 +149,12 @@ class MainEditorViewModel @Inject constructor(
     }
 
     private fun flattenVideoFileWithTextCanvas(videoPath: String, canvasText: Bitmap) {
-        val isAudioRemoved = mainEditorState.value.isRemoveAudio
-        val param = FlattenParam(videoPath, canvasText, isAudioRemoved)
+        val param = FlattenParam(
+            videoPath = videoPath,
+            canvasText = canvasText,
+            isRemoveAudio = state.isRemoveAudio,
+            canvasSize = state.canvasSize
+        )
 
         viewModelScope.launch {
             videoFlattenRepository
@@ -188,7 +194,7 @@ class MainEditorViewModel @Inject constructor(
 
     private fun navigateToPlacementPage() {
         val sourceFilePath = paramFetcher.get().firstFile.path ?: return
-        val currentPlacementModel = mainEditorState.value.imagePlacementModel
+        val currentPlacementModel = state.imagePlacementModel
 
         setAction(MainEditorEffect.OpenPlacementPage(sourceFilePath, currentPlacementModel))
     }
@@ -251,10 +257,16 @@ class MainEditorViewModel @Inject constructor(
     }
 
     private fun removeVideoAudio() {
-        val isAudio = !mainEditorState.value.isRemoveAudio
+        val isAudio = !state.isRemoveAudio
 
         _mainEditorState.setValue { copy(isRemoveAudio = isAudio) }
         setAction(MainEditorEffect.RemoveAudioState(isAudio))
+    }
+
+    private fun setCanvasSize(width: Int, height: Int) {
+        _mainEditorState.setValue {
+            copy(canvasSize = CanvasSize(width, height))
+        }
     }
 
     private fun setActiveEditableFilePath(path: String) {

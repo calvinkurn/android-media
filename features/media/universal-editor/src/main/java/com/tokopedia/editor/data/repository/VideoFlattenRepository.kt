@@ -3,6 +3,7 @@ package com.tokopedia.editor.data.repository
 import android.graphics.Bitmap
 import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.FFmpeg
+import com.tokopedia.editor.data.model.CanvasSize
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.channels.awaitClose
@@ -21,13 +22,14 @@ class VideoFlattenRepositoryImpl @Inject constructor() : VideoFlattenRepository 
 
     override fun flatten(param: FlattenParam): Flow<String> {
         return callbackFlow {
-            val bitmapToFile = convertCanvasTextBitmapToFilePath(param.canvasText)
-            if (bitmapToFile.isEmpty()) trySend("")
+            val textCanvasPath = convertCanvasTextBitmapToFilePath(param.canvasText)
+            if (textCanvasPath.isEmpty()) trySend("")
 
             val command = createFfmpegParam(
+                textCanvasPath,
                 param.videoPath,
-                bitmapToFile,
-                param.isRemoveAudio
+                param.isRemoveAudio,
+                param.canvasSize
             )
 
             FFmpeg.executeAsync(command) { _, returnCode ->
@@ -49,13 +51,16 @@ class VideoFlattenRepositoryImpl @Inject constructor() : VideoFlattenRepository 
     }
 
     private fun createFfmpegParam(
-        videoPath: String,
         textPath: String,
-        isRemoveAudio: Boolean
+        videoPath: String,
+        isRemoveAudio: Boolean,
+        canvasSize: CanvasSize
     ): String {
-        val portraitSize = "[0:v]scale=1080:1920"
+        val (width, height) = canvasSize
+
+        val portraitSize = "[0:v]scale=$width:$height"
         val aspectRatioDisabled = "force_original_aspect_ratio=decrease"
-        val blackCanvas = "pad=1080:1920:(ow-iw)/2:(oh-ih)/2[video];[video][1:v]overlay=0:0"
+        val blackCanvas = "pad=$width:$height:(ow-iw)/2:(oh-ih)/2[video];[video][1:v]overlay=0:0"
 
         val filter = "$portraitSize:$aspectRatioDisabled,$blackCanvas"
         val removeAudioCommand = if (isRemoveAudio) "-an" else ""
@@ -70,6 +75,7 @@ class VideoFlattenRepositoryImpl @Inject constructor() : VideoFlattenRepository 
     data class Param(
         val videoPath: String,
         val canvasText: Bitmap,
+        val canvasSize: CanvasSize,
         val isRemoveAudio: Boolean
     )
 
