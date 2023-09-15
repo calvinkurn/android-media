@@ -4,34 +4,34 @@ import com.google.gson.annotations.SerializedName
 
 data class StoriesGroupsResponseModel(
     @SerializedName("contentStoryGroups")
-    val data: ContentStoriesGroups,
+    val data: ContentStoriesGroups = ContentStoriesGroups(),
 ) {
 
     data class ContentStoriesGroups(
         @SerializedName("groups")
-        val groups: List<Group>,
+        val groups: List<Group> = emptyList(),
         @SerializedName("meta")
-        val meta: Meta,
+        val meta: Meta = Meta(),
     )
 
     data class Group(
         @SerializedName("appLink")
-        val appLink: String,
+        val appLink: String = "",
         @SerializedName("image")
-        val image: String,
+        val image: String = "",
         @SerializedName("name")
-        val name: String,
+        val name: String = "",
         @SerializedName("type")
-        val type: String,
+        val type: String = "",
         @SerializedName("value")
-        val value: String,
+        val value: String = "",
         @SerializedName("webLink")
-        val webLink: String,
+        val webLink: String = "",
     )
 
     data class Meta(
         @SerializedName("selectedGroupIndex")
-        val selectedGroupIndex: Int,
+        val selectedGroupIndex: Int = -1,
     )
 }
 
