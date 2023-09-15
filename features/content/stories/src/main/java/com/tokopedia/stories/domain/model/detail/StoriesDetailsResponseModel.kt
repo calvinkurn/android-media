@@ -4,104 +4,104 @@ import com.google.gson.annotations.SerializedName
 
 data class StoriesDetailsResponseModel(
     @SerializedName("contentStoryDetails")
-    val data: ContentStoriesDetails,
+    val data: ContentStoriesDetails = ContentStoriesDetails(),
 ) {
 
     data class ContentStoriesDetails(
         @SerializedName("meta")
-        val meta: Meta,
+        val meta: Meta = Meta(),
         @SerializedName("stories")
-        val stories: List<Stories>,
+        val stories: List<Stories> = emptyList(),
     ) {
 
         data class Meta(
             @SerializedName("selectedStoryIndex")
-            val selectedStoriesIndex: Int,
+            val selectedStoriesIndex: Int = -1,
         )
 
         data class Stories(
             @SerializedName("appLink")
-            val appLink: String,
+            val appLink: String = "",
             @SerializedName("author")
-            val author: Author,
+            val author: Author = Author(),
             @SerializedName("category")
-            val category: String,
+            val category: String = "",
             @SerializedName("id")
-            val id: String,
+            val id: String = "",
             @SerializedName("interaction")
-            val interaction: Interaction,
+            val interaction: Interaction = Interaction(),
             @SerializedName("media")
-            val media: Media,
+            val media: Media = Media(),
             @SerializedName("meta")
-            val meta: MetaX,
+            val meta: MetaX = MetaX(),
             @SerializedName("slug")
-            val slug: String,
+            val slug: String = "",
             @SerializedName("status")
-            val status: String,
+            val status: String = "",
             @SerializedName("totalProducts")
-            val totalProducts: Int,
+            val totalProducts: Int = -1,
             @SerializedName("totalProductsFmt")
-            val totalProductsFmt: String,
+            val totalProductsFmt: String = "",
             @SerializedName("webLink")
-            val webLink: String,
+            val webLink: String = "",
         ) {
 
             data class Author(
                 @SerializedName("appLink")
-                val appLink: String,
+                val appLink: String = "",
                 @SerializedName("badgeURL")
-                val badgeURL: String,
+                val badgeURL: String = "",
                 @SerializedName("encryptedID")
-                val encryptedID: String,
+                val encryptedID: String = "",
                 @SerializedName("hasStory")
-                val hasStories: Boolean,
+                val hasStories: Boolean = false,
                 @SerializedName("id")
-                val id: String,
+                val id: String = "",
                 @SerializedName("isLive")
-                val isLive: Boolean,
+                val isLive: Boolean = false,
                 @SerializedName("isUnseenStoryExist")
-                val isUnseenStoriesExist: Boolean,
+                val isUnseenStoriesExist: Boolean = false,
                 @SerializedName("name")
-                val name: String,
+                val name: String = "",
                 @SerializedName("thumbnailURL")
-                val thumbnailURL: String,
+                val thumbnailURL: String = "",
                 @SerializedName("type")
-                val type: Int,
+                val type: Int = -1,
                 @SerializedName("webLink")
-                val webLink: String,
+                val webLink: String = "",
             )
 
             data class Media(
                 @SerializedName("link")
-                val link: String,
+                val link: String = "",
                 @SerializedName("type")
-                val type: String,
+                val type: String = "",
             )
 
             data class Interaction(
                 @SerializedName("deletable")
-                val deletable: Boolean,
+                val deletable: Boolean = false,
                 @SerializedName("editable")
-                val editable: Boolean,
+                val editable: Boolean = false,
                 @SerializedName("reportable")
-                val reportable: Boolean,
+                val reportable: Boolean = false,
                 @SerializedName("shareable")
-                val shareable: Boolean,
+                val shareable: Boolean = false,
             )
 
             data class MetaX(
                 @SerializedName("hasSeen")
-                val hasSeen: Boolean,
+                val hasSeen: Boolean = false,
                 @SerializedName("shareDescription")
-                val shareDescription: String,
+                val shareDescription: String = "",
                 @SerializedName("shareImage")
-                val shareImage: String,
+                val shareImage: String = "",
                 @SerializedName("shareTitle")
-                val shareTitle: String,
+                val shareTitle: String = "",
                 @SerializedName("activityTracker")
-                val activityTracker: String,
+                val activityTracker: String = "",
                 @SerializedName("templateTracker")
-                val templateTracker: String,
+                val templateTracker: String = "",
             )
         }
     }

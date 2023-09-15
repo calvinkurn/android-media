@@ -10,7 +10,7 @@ data class StoriesUiModel(
     val selectedGroupPosition: Int = -1,
     val groupHeader: List<StoriesGroupHeader> = emptyList(),
     val groupItems: List<StoriesGroupItem> = emptyList(),
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class StoriesGroupHeader(
@@ -18,14 +18,14 @@ data class StoriesGroupHeader(
     val groupName: String = "",
     val image: String = "",
     val isSelected: Boolean = false,
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class StoriesGroupItem(
     val groupId: String = "",
     val groupName: String = "",
     val detail: StoriesDetail = StoriesDetail(),
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class StoriesDetail(
@@ -33,7 +33,7 @@ data class StoriesDetail(
     val selectedDetailPosition: Int = -1,
     val selectedDetailPositionCached: Int = -1,
     val detailItems: List<StoriesDetailItem> = emptyList(),
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class StoriesDetailItem(
@@ -43,20 +43,20 @@ data class StoriesDetailItem(
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
     val meta: Meta = Meta()
-): Parcelable {
+) : Parcelable {
 
     @Parcelize
     data class Meta(
         val activityTracker: String = "",
         val templateTracker: String = "",
-    ): Parcelable
+    ) : Parcelable
 
     @Parcelize
     data class StoriesItemContent(
         val type: StoriesItemContentType = IMAGE,
         val data: String = "",
         val duration: Int = -1,
-    ): Parcelable
+    ) : Parcelable
 
     enum class StoriesItemContentType(val value: String) {
         IMAGE("image"), VIDEO("video")
