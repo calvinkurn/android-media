@@ -63,19 +63,7 @@ class StoriesDetailFragment @Inject constructor(
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
             override fun onClickGroup(position: Int, data: StoriesGroupHeader) {
-                analytic.sendClickStoryCircleEvent(
-                    entryPoint = mParentPage.entryPoint,
-                    partnerId = mParentPage.authorId,
-                    currentCircle = data.groupName,
-                    promotions = listOf(
-                        StoriesEEModel(
-                            creativeName = "",
-                            creativeSlot = position.plus(1).toString(),
-                            itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.authorId}",
-                            itemName = "/ - stories"
-                        ),
-                    ),
-                )
+                trackClickGroup(position, data)
                 viewModelAction(StoriesUiAction.SelectGroup(position, false))
             }
 
@@ -197,8 +185,8 @@ class StoriesDetailFragment @Inject constructor(
                         currContent.content.data,
                         listener = object : ImageLoaderStateListener {
                             override fun successLoad() {
+                                trackImpressionDetail(currContent.id)
                                 contentIsLoaded()
-                                analytic.sendImpressionStoriesContent(currContent.id, mParentPage.authorId)
                             }
 
                             override fun failedLoad() {
@@ -258,14 +246,7 @@ class StoriesDetailFragment @Inject constructor(
                 }
 
                 TouchEventStories.NEXT_PREV -> {
-                    analytic.sendClickTapPreviousContentEvent(
-                        entryPoint = mParentPage.entryPoint,
-                        partnerId = mParentPage.authorId,
-                        storiesId = viewModel.mDetail.id,
-                        creatorType = "asgc",
-                        contentType = viewModel.mDetail.content.type.value,
-                        currentCircle = viewModel.mGroup.groupName,
-                    )
+                    trackTapPreviousDetail()
                     viewModelAction(PreviousDetail)
                 }
             }
@@ -287,14 +268,7 @@ class StoriesDetailFragment @Inject constructor(
                 }
 
                 TouchEventStories.NEXT_PREV -> {
-                    analytic.sendClickTapNextContentEvent(
-                        entryPoint = mParentPage.entryPoint,
-                        partnerId = mParentPage.authorId,
-                        storiesId = viewModel.mDetail.id,
-                        creatorType = "asgc",
-                        contentType = viewModel.mDetail.content.type.value,
-                        currentCircle = viewModel.mGroup.groupName,
-                    )
+                    trackTapNextDetail()
                     viewModelAction(NextDetail)
                 }
             }
@@ -332,6 +306,48 @@ class StoriesDetailFragment @Inject constructor(
         rvStoriesCategory.showWithCondition(!isShowLoading)
         layoutStoriesContent.container.showWithCondition(!isShowLoading)
         layoutDetailLoading.container.showWithCondition(isShowLoading)
+    }
+
+    private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {
+        analytic.sendClickStoryCircleEvent(
+            entryPoint = mParentPage.entryPoint,
+            partnerId = mParentPage.authorId,
+            currentCircle = data.groupName,
+            promotions = listOf(
+                StoriesEEModel(
+                    creativeName = "",
+                    creativeSlot = position.plus(1).toString(),
+                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.authorId}",
+                    itemName = "/ - stories"
+                ),
+            ),
+        )
+    }
+
+    private fun trackImpressionDetail(storiesId: String) {
+        analytic.sendImpressionStoriesContent(storiesId, mParentPage.authorId)
+    }
+
+    private fun trackTapPreviousDetail() {
+        analytic.sendClickTapPreviousContentEvent(
+            entryPoint = mParentPage.entryPoint,
+            partnerId = mParentPage.authorId,
+            storiesId = viewModel.mDetail.id,
+            creatorType = "asgc",
+            contentType = viewModel.mDetail.content.type.value,
+            currentCircle = viewModel.mGroup.groupName,
+        )
+    }
+
+    private fun trackTapNextDetail() {
+        analytic.sendClickTapNextContentEvent(
+            entryPoint = mParentPage.entryPoint,
+            partnerId = mParentPage.authorId,
+            storiesId = viewModel.mDetail.id,
+            creatorType = "asgc",
+            contentType = viewModel.mDetail.content.type.value,
+            currentCircle = viewModel.mGroup.groupName,
+        )
     }
 
     override fun onDestroyView() {

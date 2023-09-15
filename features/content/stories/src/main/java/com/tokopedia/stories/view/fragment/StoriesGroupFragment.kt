@@ -56,41 +56,14 @@ class StoriesGroupFragment @Inject constructor(
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
-    private var mCurrentPos = -1
+    private var mTrackGroupChanged = false
 
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
             showSelectedGroupHighlight(position)
             viewModelAction(StoriesUiAction.SetMainData(position))
-            super.onPageSelected(position)
-        }
-
-        override fun onPageScrollStateChanged(state: Int) {
-            super.onPageScrollStateChanged(state)
-            val currentPage = binding.storiesGroupViewPager.currentItem
-            when (state) {
-                ViewPager2.SCROLL_STATE_DRAGGING -> {
-                    mCurrentPos = currentPage
-                }
-                ViewPager2.SCROLL_STATE_IDLE -> {
-                    when {
-                        mCurrentPos > currentPage -> {
-                            analytic.sendClickMoveToOtherGroup(
-                                entryPoint = entryPoint,
-                                partnerId = authorId,
-                            )
-                        }
-                        mCurrentPos < currentPage -> {
-                            analytic.sendClickMoveToOtherGroup(
-                                entryPoint = entryPoint,
-                                partnerId = authorId,
-                            )
-                        }
-                        else -> return
-                    }
-                }
-                else -> return
-            }
+            trackMoveGroup()
         }
     }
 
@@ -131,7 +104,7 @@ class StoriesGroupFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         viewModelAction(PauseStories)
-        sendImpressedGroupTracker()
+        trackImpressionGroup()
     }
 
     override fun onResume() {
@@ -237,7 +210,7 @@ class StoriesGroupFragment @Inject constructor(
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
-    private fun sendImpressedGroupTracker() {
+    private fun trackImpressionGroup() {
         analytic.sendViewStoryCircleEvent(
             entryPoint = entryPoint,
             partnerId = authorId,
@@ -247,14 +220,22 @@ class StoriesGroupFragment @Inject constructor(
                     creativeName = "",
                     creativeSlot = index.plus(1).toString(),
                     itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.groupName} - $authorId",
-                    itemName = "/ - stories"
+                    itemName = "/ - stories",
                 )
             },
         )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    private fun trackMoveGroup() {
+        if (!mTrackGroupChanged) {
+            mTrackGroupChanged = true
+            return
+        }
+
+        analytic.sendClickMoveToOtherGroup(entryPoint = entryPoint, partnerId = authorId)
+    }
+
+    private fun trackExitRoom() {
         analytic.sendClickExitStoryRoomEvent(
             entryPoint = entryPoint,
             partnerId = authorId,
@@ -263,6 +244,11 @@ class StoriesGroupFragment @Inject constructor(
             contentType = viewModel.mDetail.content.type.value,
             currentCircle = viewModel.mGroup.groupName,
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        trackExitRoom()
         binding.storiesGroupViewPager.unregisterOnPageChangeCallback(pagerListener)
         _binding = null
     }
