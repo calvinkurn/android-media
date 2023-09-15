@@ -121,7 +121,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     fun hideShippingStateLoading() {
-        binding?.llShippingExperienceStateLoading?.root?.gone()
+        binding?.purchasePlatformPartialShimmeringList?.root?.gone()
     }
 
     fun renderShippingVibrationAnimation(
@@ -162,7 +162,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
     fun renderErrorCourierState(shippingWidgetUiModel: ShippingWidgetUiModel) {
         binding?.apply {
-            llShippingExperienceStateLoading.root.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
@@ -171,7 +171,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutShipmentInsurance.gone()
             shippingNowWidget.gone()
-            tradeInView.root.gone()
+            itemShipmentTradeInPickup.root.gone()
             if (shippingWidgetUiModel.courierErrorTitle.isEmpty()) {
                 labelErrorShippingTitle.text =
                     context.getString(logisticcartR.string.checkout_error_shipping_title)
@@ -179,7 +179,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                 labelErrorShippingTitle.text = shippingWidgetUiModel.courierErrorTitle
             }
             layoutStateHasErrorShipping.visible()
-            llShippingExperienceStateLoading.root.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
             containerShippingExperience.visible()
             containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_grey)
         }
@@ -189,8 +189,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
-            llShippingExperienceStateLoading.root.gone()
-            tradeInView.root.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
+            itemShipmentTradeInPickup.root.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
@@ -250,8 +250,9 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
-            llShippingExperienceStateLoading.root.gone()
-            tradeInView.layoutTradeInShippingInfo.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
+            itemShipmentTradeInPickup.layoutTradeInShippingInfo.gone()
+            layoutStateNoSelectedShipping.visible()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedWhitelabelShipping.gone()
@@ -260,7 +261,6 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateHasErrorShipping.gone()
             layoutStateFailedShipping.gone()
             layoutShipmentInsurance.gone()
-            layoutStateNoSelectedShipping.visible()
             layoutStateNoSelectedShipping.setOnClickListener {
                 mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
             }
@@ -270,7 +270,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
     fun showLayoutTradeIn(shippingWidgetUiModel: ShippingWidgetUiModel) {
         binding?.apply {
-            llShippingExperienceStateLoading.root.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
@@ -280,9 +280,9 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateHasErrorShipping.gone()
             layoutStateFailedShipping.gone()
             layoutShipmentInsurance.gone()
-            tradeInView.layoutTradeInShippingInfo.visible()
-            tradeInView.tvTradeInShippingPriceTitle.visible()
-            tradeInView.tvTradeInShippingPriceDetail.visible()
+            itemShipmentTradeInPickup.layoutTradeInShippingInfo.visible()
+            itemShipmentTradeInPickup.tvTradeInShippingPriceTitle.visible()
+            itemShipmentTradeInPickup.tvTradeInShippingPriceDetail.visible()
             containerShippingExperience.visible()
         }
         showInsuranceInfo(shippingWidgetUiModel)
@@ -292,8 +292,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
-            llShippingExperienceStateLoading.root.gone()
-            tradeInView.layoutTradeInShippingInfo.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
+            itemShipmentTradeInPickup.layoutTradeInShippingInfo.gone()
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
@@ -315,7 +315,6 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     fun renderSingleShippingCourier(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
-        // check point
         showLayoutSingleShippingCourier()
         binding?.labelSelectedSingleShippingTitle?.text =
             getSingleShippingTitle(shippingWidgetUiModel)
@@ -335,16 +334,13 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
-            llShippingExperienceStateLoading.root.gone()
-            tradeInView.root.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
+            itemShipmentTradeInPickup.root.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
             shippingNowWidget.gone()
-            layoutStateHasErrorShipping.gone()
-            layoutStateFailedShipping.gone()
-            layoutShipmentInsurance.gone()
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedWhitelabelShipping.visible()
@@ -433,10 +429,11 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
     fun renderLoadingCourierState() {
         binding?.apply {
-            llShippingExperienceStateLoading.loaderUnify1.type = LoaderUnify.TYPE_RECT
-            llShippingExperienceStateLoading.loaderUnify2.type = LoaderUnify.TYPE_RECT
-            llShippingExperienceStateLoading.root.visible()
-            tradeInView.root.gone()
+            purchasePlatformPartialShimmeringList.loaderUnify1.type = LoaderUnify.TYPE_RECT
+            purchasePlatformPartialShimmeringList.loaderUnify2.type = LoaderUnify.TYPE_RECT
+            purchasePlatformPartialShimmeringList.root.visible()
+            itemShipmentTradeInPickup.tvTradeInShippingPriceTitle.gone()
+            itemShipmentTradeInPickup.tvTradeInShippingPriceDetail.gone()
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
@@ -451,15 +448,15 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
     fun onLoadCourierStateData() {
         binding?.apply {
-            llShippingExperienceStateLoading.loaderUnify1.type = LoaderUnify.TYPE_RECT
-            llShippingExperienceStateLoading.loaderUnify2.type = LoaderUnify.TYPE_RECT
-            llShippingExperienceStateLoading.root.visible()
+            purchasePlatformPartialShimmeringList.loaderUnify1.type = LoaderUnify.TYPE_RECT
+            purchasePlatformPartialShimmeringList.loaderUnify2.type = LoaderUnify.TYPE_RECT
+            purchasePlatformPartialShimmeringList.root.visible()
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
             layoutStateHasSelectedWhitelabelShipping.gone()
             layoutStateNoSelectedShipping.gone()
-            tradeInView.root.gone()
+            itemShipmentTradeInPickup.root.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             shippingNowWidget.gone()
@@ -468,21 +465,21 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     fun hideTradeInShippingInfo() {
-        binding?.tradeInView?.layoutTradeInShippingInfo?.gone()
+        binding?.itemShipmentTradeInPickup?.layoutTradeInShippingInfo?.gone()
     }
 
     fun hideTradeInTitleAndDetail() {
         binding?.apply {
-            tradeInView.tvTradeInShippingPriceTitle.gone()
-            tradeInView.tvTradeInShippingPriceDetail.gone()
+            itemShipmentTradeInPickup.tvTradeInShippingPriceTitle.gone()
+            itemShipmentTradeInPickup.tvTradeInShippingPriceDetail.gone()
         }
     }
 
     fun renderErrorPinpointCourier() {
         binding?.apply {
             layoutStateNoSelectedShipping.gone()
-            llShippingExperienceStateLoading.root.gone()
-            tradeInView.root.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
+            itemShipmentTradeInPickup.root.gone()
             layoutStateHasErrorShipping.gone()
             containerShippingExperience.visible()
             containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_grey)
@@ -558,7 +555,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     fun showContainerShippingExperience() {
         binding?.apply {
             layoutStateNoSelectedShipping.gone()
-            llShippingExperienceStateLoading.root.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
             layoutShipmentInsurance.gone()
             containerShippingExperience.visible()
             containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_grey)
@@ -585,16 +582,19 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
     private fun showLayoutSingleShippingCourier() {
         binding?.apply {
-            llShippingExperienceStateLoading.root.gone()
-            layoutStateHasSelectedNormalShipping.gone()
+            itemShipmentTradeInPickup.root.gone()
             layoutStateNoSelectedShipping.gone()
-            layoutStateFailedShipping.gone()
-            layoutStateHasErrorShipping.gone()
+            layoutStateHasSelectedNormalShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedWhitelabelShipping.gone()
-            shippingNowWidget.gone()
             layoutStateHasSelectedSingleShipping.visible()
             labelSingleShippingEta.gone()
+            shippingNowWidget.gone()
+            layoutStateHasErrorShipping.gone()
+            layoutStateFailedShipping.gone()
+            layoutShipmentInsurance.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
+
             layoutStateHasSelectedSingleShipping.setOnClickListener { }
         }
     }
@@ -652,7 +652,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
-            llShippingExperienceStateLoading.root.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedWhitelabelShipping.gone()
             layoutStateFailedShipping.gone()
@@ -816,7 +816,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
     private fun showScheduleDeliveryWidget() {
         binding?.apply {
-            llShippingExperienceStateLoading.root.gone()
+            purchasePlatformPartialShimmeringList.root.gone()
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
@@ -825,9 +825,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateHasSelectedWhitelabelShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
             layoutStateNoSelectedShipping.gone()
-            tradeInView.root.gone()
+            itemShipmentTradeInPickup.root.gone()
             shippingNowWidget.visible()
-            layoutShipmentInsurance.gone()
         }
     }
 
