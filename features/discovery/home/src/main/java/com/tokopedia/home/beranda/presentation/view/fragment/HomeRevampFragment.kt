@@ -226,6 +226,7 @@ import java.net.URLEncoder
 import java.util.Date
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import com.tokopedia.home.R as homeR
 
 /**
  * @author by yoasfs on 12/14/17.
@@ -1474,7 +1475,7 @@ open class HomeRevampFragment :
             CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
-            ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
+            ShopFlashSaleWidgetCallback(this, getHomeViewModel())
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1613,7 +1614,7 @@ open class HomeRevampFragment :
             RouteManager.route(requireActivity(), ApplinkConstInternalPromo.PROMO_LIST)
         } else {
             if (activity != null) {
-                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(com.tokopedia.home.R.string.title_activity_promo))
+                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(homeR.string.title_activity_promo))
             }
         }
     }
