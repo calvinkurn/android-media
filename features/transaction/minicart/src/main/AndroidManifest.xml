@@ -7,8 +7,7 @@
             android:name="com.tokopedia.minicart.bmgm.presentation.activity.BmgmMiniCartDetailActivity"
             android:exported="false"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Translucent">
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
