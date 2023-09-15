@@ -1,5 +1,6 @@
 package com.tokopedia.editor.ui.main
 
+import com.tokopedia.editor.data.model.CanvasSize
 import com.tokopedia.editor.data.model.NavigationTool
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -14,6 +15,7 @@ data class MainEditorUiModel(
     val imagePlacementModel: ImagePlacementModel? = null,
     val hasTextAdded: Boolean = false,
     val isRemoveAudio: Boolean = false,
+    val canvasSize: CanvasSize = CanvasSize(0, 0)
 ) {
 
     fun hasPlacementEdited(): Boolean {
