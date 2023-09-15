@@ -61,6 +61,7 @@ import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel.Companion.mapperForShopShowCase
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageHeaderModule
@@ -93,6 +94,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
         private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
+        private const val FRAGMENT_SHOWCASE_KEY_FOR_SHARE = "shop_header_for_sharing"
         private const val QUERY_PARAM_EXT_PARAM = "extParam"
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
@@ -658,6 +660,10 @@ class ShopPageHeaderFragmentTabContentWrapper :
                             putBoolean(
                                 FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT,
                                 shopPageHeaderDataModel?.isGoldMerchant ?: false
+                            )
+                            putParcelable(
+                                FRAGMENT_SHOWCASE_KEY_FOR_SHARE,
+                                shopPageHeaderDataModel?.mapperForShopShowCase()
                             )
                         }
                     )
