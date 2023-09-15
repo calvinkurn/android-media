@@ -2161,14 +2161,15 @@ class CartViewModel @Inject constructor(
         toBeDeletedProducts.forEach { cartItemToBeDeleted ->
             val productListByOfferId = CartDataHelper.getListProductByOfferId(cartDataList.value, cartItemToBeDeleted.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
             productListByOfferId.forEachIndexed { index, cartItemHolderData ->
-                if (index == 0
-                        && cartItemToBeDeleted.cartBmGmTickerData.isShowTickerBmGm
-                        && cartItemToBeDeleted.productId == cartItemHolderData.productId
-                        && productListByOfferId.size > 1) {
-                    productListByOfferId[index+1].cartBmGmTickerData = cartItemToBeDeleted.cartBmGmTickerData
+                if (index == 0 &&
+                    cartItemToBeDeleted.cartBmGmTickerData.isShowTickerBmGm &&
+                    cartItemToBeDeleted.productId == cartItemHolderData.productId &&
+                    productListByOfferId.size > 1
+                ) {
+                    productListByOfferId[index + 1].cartBmGmTickerData = cartItemToBeDeleted.cartBmGmTickerData
                     var isShowBmGmDivider = false
                     if (productListByOfferId.size > 2) isShowBmGmDivider = true
-                    productListByOfferId[index+1].cartBmGmTickerData.isShowBmGmDivider = isShowBmGmDivider
+                    productListByOfferId[index + 1].cartBmGmTickerData.isShowBmGmDivider = isShowBmGmDivider
                     return@forEach
                 }
             }
@@ -2742,26 +2743,11 @@ class CartViewModel @Inject constructor(
             try {
                 val result = getGroupProductTickerUseCase(params)
                 withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(params.carts[0].cartDetails[0].offer.offerId, result))
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(offerId, result))
                 }
             } catch (t: Throwable) {
                 withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(params.carts[0].cartDetails[0].offer.offerId, t))
-                }
-            }
-        }
-    }
-
-    fun getAllBmGmGroupProductTicker(params: BmGmGetGroupProductTickerParams) {
-        viewModelScope.launch(dispatchers.io) {
-            try {
-                val result = getGroupProductTickerUseCase(params)
-                withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(params.carts[0].cartDetails[0].offer.offerId, result))
-                }
-            } catch (t: Throwable) {
-                withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(params.carts[0].cartDetails[0].offer.offerId, t))
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(offerId, t))
                 }
             }
         }
