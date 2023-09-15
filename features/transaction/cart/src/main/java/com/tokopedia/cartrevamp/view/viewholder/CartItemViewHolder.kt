@@ -771,6 +771,25 @@ class CartItemViewHolder constructor(
                 data
             )
         )
+        if (data.isError && data.isBundlingItem) {
+            binding.flImageProduct.layoutParams.width =
+                66.dpToPx(binding.root.resources.displayMetrics)
+            binding.flImageProduct.layoutParams.height =
+                66.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.width =
+                66.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.height =
+                66.dpToPx(binding.root.resources.displayMetrics)
+        } else {
+            binding.flImageProduct.layoutParams.width =
+                80.dpToPx(binding.root.resources.displayMetrics)
+            binding.flImageProduct.layoutParams.height =
+                80.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.width =
+                80.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.height =
+                80.dpToPx(binding.root.resources.displayMetrics)
+        }
     }
 
     private fun renderProductAddOns(data: CartItemHolderData) {

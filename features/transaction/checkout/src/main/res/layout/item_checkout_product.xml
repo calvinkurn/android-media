@@ -29,12 +29,12 @@
         android:layout_width="118dp"
         android:layout_height="62dp"
         android:importantForAccessibility="no"
-        app:unify_image_corner_radius="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_divider_shop"
-        app:srcCompat="@drawable/checkout_module_bg_order" />
+        app:srcCompat="@drawable/checkout_module_bg_order"
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/checkout_ticker_shop_error"
@@ -93,6 +93,7 @@
         app:layout_constraintEnd_toStartOf="@id/tv_checkout_order_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_order_number"
+        app:unify_image_corner_radius="0"
         app:unify_image_type="rect"
         tools:src="@drawable/ic_badge_shop_official"
         tools:visibility="gone" />
@@ -128,6 +129,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_checkout_order_name"
         app:layout_maxWidth="100dp"
+        app:unify_image_corner_radius="0"
         tools:src="@color/Unify_GN500" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -141,6 +143,7 @@
         app:layout_constraintEnd_toStartOf="@id/tv_checkout_shop_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_order_name"
+        app:unify_image_corner_radius="0"
         app:unify_image_type="rect"
         tools:src="@drawable/ic_badge_shop_official"
         tools:visibility="visible" />

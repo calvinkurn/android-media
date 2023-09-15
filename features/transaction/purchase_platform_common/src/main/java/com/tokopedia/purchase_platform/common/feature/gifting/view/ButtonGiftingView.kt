@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.databinding.ItemGiftingViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -34,7 +36,15 @@ class ButtonGiftingView @JvmOverloads constructor(
                 descAddon.text = desc
                 titleAddon.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600))
             }
-            iconRight.setImageUrl(rightIconUrl)
+            if (rightIconUrl.isEmpty()) {
+                iconRight.setImage(IconUnify.CHEVRON_RIGHT)
+                iconRight.visible()
+                imageRight.gone()
+            } else {
+                imageRight.setImageUrl(rightIconUrl)
+                imageRight.visible()
+                iconRight.invisible()
+            }
         }
     }
 
@@ -51,7 +61,15 @@ class ButtonGiftingView @JvmOverloads constructor(
                 descInactiveAddon.visible()
                 descInactiveAddon.text = desc
             }
-            iconRight.setImageUrl(rightIconUrl)
+            if (rightIconUrl.isEmpty()) {
+                iconRight.setImage(IconUnify.CHEVRON_RIGHT)
+                iconRight.visible()
+                imageRight.gone()
+            } else {
+                imageRight.setImageUrl(rightIconUrl)
+                imageRight.visible()
+                iconRight.invisible()
+            }
         }
     }
 
@@ -70,7 +88,15 @@ class ButtonGiftingView @JvmOverloads constructor(
                 descAddon.text = desc
                 descAddon.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN400))
             }
-            iconRight.setImageUrl(rightIconUrl)
+            if (rightIconUrl.isEmpty()) {
+                iconRight.setImage(IconUnify.INFORMATION)
+                iconRight.visible()
+                imageRight.gone()
+            } else {
+                imageRight.setImageUrl(rightIconUrl)
+                imageRight.visible()
+                iconRight.invisible()
+            }
         }
     }
 }
