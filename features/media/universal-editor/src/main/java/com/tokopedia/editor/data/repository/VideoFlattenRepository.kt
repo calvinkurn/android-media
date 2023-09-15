@@ -65,7 +65,7 @@ class VideoFlattenRepositoryImpl @Inject constructor() : VideoFlattenRepository 
         val filter = "$portraitSize:$aspectRatioDisabled,$blackCanvas"
         val removeAudioCommand = if (isRemoveAudio) "-an" else ""
 
-        return "-i $videoPath -i $textPath -filter_complex \"$filter\" -c:a copy -f mp4 $removeAudioCommand -y ${flattenResultFilePath()}"
+        return "-i \"$videoPath\" -i \"$textPath\" -filter_complex \"$filter\" -c:a copy -f mp4 $removeAudioCommand -y ${flattenResultFilePath()}"
     }
 
     private fun cacheDir() = FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path

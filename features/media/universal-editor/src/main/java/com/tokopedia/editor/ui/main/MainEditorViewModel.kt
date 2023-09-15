@@ -43,10 +43,6 @@ class MainEditorViewModel @Inject constructor(
     private var _mainEditorState = MutableStateFlow(MainEditorUiModel())
     private var _inputTextState = MutableStateFlow(InputTextParam())
 
-    // Get current state
-    private val state: MainEditorUiModel
-        get() = _mainEditorState.value
-
     /**
      * A path is active file path.
      *
@@ -123,8 +119,8 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.ClickHeaderCloseButton -> {
                 analytics.backPageClick()
 
-                val isPlacementEdited = state.hasPlacementEdited()
-                val isTextAdded = state.hasTextAdded
+                val isPlacementEdited = mainEditorState.value.hasPlacementEdited()
+                val isTextAdded = mainEditorState.value.hasTextAdded
 
                 if ((isPlacementEdited || isTextAdded) && !event.isSkipConfirmation) {
                     setAction(MainEditorEffect.ShowCloseDialogConfirmation)
@@ -149,11 +145,14 @@ class MainEditorViewModel @Inject constructor(
     }
 
     private fun flattenVideoFileWithTextCanvas(videoPath: String, canvasText: Bitmap) {
+        val isRemoveAudio = mainEditorState.value.isRemoveAudio
+        val canvasSize = mainEditorState.value.canvasSize
+
         val param = FlattenParam(
             videoPath = videoPath,
             canvasText = canvasText,
-            isRemoveAudio = state.isRemoveAudio,
-            canvasSize = state.canvasSize
+            isRemoveAudio = isRemoveAudio,
+            canvasSize = canvasSize
         )
 
         viewModelScope.launch {
@@ -194,7 +193,7 @@ class MainEditorViewModel @Inject constructor(
 
     private fun navigateToPlacementPage() {
         val sourceFilePath = paramFetcher.get().firstFile.path ?: return
-        val currentPlacementModel = state.imagePlacementModel
+        val currentPlacementModel = mainEditorState.value.imagePlacementModel
 
         setAction(MainEditorEffect.OpenPlacementPage(sourceFilePath, currentPlacementModel))
     }
@@ -257,7 +256,7 @@ class MainEditorViewModel @Inject constructor(
     }
 
     private fun removeVideoAudio() {
-        val isAudio = !state.isRemoveAudio
+        val isAudio = !mainEditorState.value.isRemoveAudio
 
         _mainEditorState.setValue { copy(isRemoveAudio = isAudio) }
         setAction(MainEditorEffect.RemoveAudioState(isAudio))

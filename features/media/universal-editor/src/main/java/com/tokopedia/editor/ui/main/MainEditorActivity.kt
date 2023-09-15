@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -212,7 +213,7 @@ open class MainEditorActivity : AppCompatActivity()
         binding.container.setListener(this)
 
         // set global canvas variable
-        setCanvasSize()
+        getOrSetCanvasSize()
 
         isPageInitialize = true
     }
@@ -278,13 +279,21 @@ open class MainEditorActivity : AppCompatActivity()
         viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap, imageBitmap))
     }
 
-    private fun setCanvasSize() {
-        val canvasContainer = binding.canvasContainer
+    private fun getOrSetCanvasSize() {
+        val container = binding.canvasContainer
 
-        viewModel.onEvent(MainEditorEvent.GlobalCanvasSize(
-            width = canvasContainer.width,
-            height = canvasContainer.height
-        ))
+        container.viewTreeObserver.addOnGlobalLayoutListener(
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    container.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    viewModel.onEvent(MainEditorEvent.GlobalCanvasSize(
+                        width = container.width,
+                        height = container.height
+                    ))
+                }
+            }
+        )
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {

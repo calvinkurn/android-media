@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
-import com.tokopedia.editor.ui.main.fragment.image.main.ImageMainEditorFragment
+import com.tokopedia.editor.ui.main.fragment.image.ImageMainEditorFragment
 import com.tokopedia.editor.ui.main.fragment.video.VideoMainEditorFragment
 import com.tokopedia.editor.ui.placement.PlacementImageFragment
 import com.tokopedia.editor.ui.text.InputTextFragment
