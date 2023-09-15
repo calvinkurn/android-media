@@ -21,6 +21,7 @@ object ApplinkConstInternalUserPlatform {
     const val PAGE_EDIT_INFO_PROFILE_USERNAME = "username"
     const val PAGE_EDIT_INFO_PARAM = "page"
 
+    const val PARAM_IS_AUTO_REGISTER = "isAutoRegister"
     const val PARAM_IS_RETURN_HOME = "return_to_home"
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     const val PARAM_IS_FROM_STICKY_LOGIN = "from_sticky_login"

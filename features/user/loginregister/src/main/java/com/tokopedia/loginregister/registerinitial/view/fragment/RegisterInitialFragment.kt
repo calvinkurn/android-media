@@ -124,6 +124,7 @@ class RegisterInitialFragment :
     private var phoneNumber: String? = ""
     private var source: String = ""
     private var email: String = ""
+    private var isAutoRegister: Boolean = false
     private var isSmartLogin: Boolean = false
     private var isSmartRegister: Boolean = false
     private var isPending: Boolean = false
@@ -217,6 +218,12 @@ class RegisterInitialFragment :
             savedInstanceState,
             ""
         )
+        isAutoRegister = getParamBoolean(
+            ApplinkConstInternalUserPlatform.PARAM_IS_AUTO_REGISTER,
+            arguments,
+            savedInstanceState,
+            false
+        )
 
         registerInitialRouter.source = source
     }
@@ -249,27 +256,12 @@ class RegisterInitialFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareView()
-        if (isSmartLogin) {
-            showProgressBar()
-            activity?.let {
-                if (isPending) {
-                    val intent = registerInitialRouter.goToVerification(
-                        email = email,
-                        otpType = RegisterConstants.OtpType.OTP_TYPE_ACTIVATE,
-                        context = requireContext()
-                    )
-                    startActivityForResult(
-                        intent,
-                        RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE
-                    )
-                } else {
-                    val intent = registerInitialRouter.goToVerification(
-                        email = email,
-                        otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER,
-                        context = requireContext()
-                    )
-                    startActivityForResult(intent, RegisterConstants.Request.REQUEST_OTP_VALIDATE)
-                }
+        when {
+            isSmartLogin -> {
+                handleSmartLogin()
+            }
+            isAutoRegister -> {
+                handleAutoRegister()
             }
         }
 
@@ -278,6 +270,49 @@ class RegisterInitialFragment :
         initObserver()
         initData()
         setupToolbar()
+    }
+
+    @SuppressLint("PII Data Exposure")
+    private fun handleAutoRegister() {
+        val idRegister = when {
+            phoneNumber?.isNotEmpty() == true -> {
+                phoneNumber
+            }
+            email.isNotEmpty() -> {
+                email
+            }
+            else -> ""
+        }
+
+        viewBinding?.registerInputView?.inputEmailPhoneField?.editText?.setText(idRegister)
+        if (idRegister?.isNotEmpty() == true) {
+            onActionPartialClick(idRegister)
+        }
+    }
+
+    @SuppressLint("PII Data Exposure")
+    private fun handleSmartLogin() {
+        showProgressBar()
+        activity?.let {
+            if (isPending) {
+                val intent = registerInitialRouter.goToVerification(
+                    email = email,
+                    otpType = RegisterConstants.OtpType.OTP_TYPE_ACTIVATE,
+                    context = requireContext()
+                )
+                startActivityForResult(
+                    intent,
+                    RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE
+                )
+            } else {
+                val intent = registerInitialRouter.goToVerification(
+                    email = email,
+                    otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER,
+                    context = requireContext()
+                )
+                startActivityForResult(intent, RegisterConstants.Request.REQUEST_OTP_VALIDATE)
+            }
+        }
     }
 
     private fun initInputType() {
