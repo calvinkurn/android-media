@@ -86,7 +86,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-    implementation projectOrAar(rootProject.ext.features.topAdsDetailSheet)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)

@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -909,6 +910,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             productSingleVariant?.let {
                 it.mapOfSelectedVariant = mapOfSelectedIds
+            }
+        }
+    }
+
+    // for now especially for level one only
+    fun updateVariantOneLevel(variantOptions: VariantOptionWithAttribute) {
+        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+            productSingleVariant?.let {
+                // copy by toMutableMap for create new instance the mapOfSelectedVariant
+                // to prevent updating the original data in recyclerview
+                val mapSelected = it.mapOfSelectedVariant.toMutableMap()
+                mapSelected[variantOptions.variantCategoryKey] = variantOptions.variantId
+                it.mapOfSelectedVariant = mapSelected
             }
         }
     }
