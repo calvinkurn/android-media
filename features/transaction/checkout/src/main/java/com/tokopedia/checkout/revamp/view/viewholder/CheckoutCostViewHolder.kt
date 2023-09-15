@@ -233,9 +233,10 @@ class CheckoutCostViewHolder(
 
     private fun renderOtherFee(cost: CheckoutCostModel) {
         val insuranceCourierList = if (cost.shippingInsuranceFee > 0.0) listOf(cost.shippingInsuranceFee) else emptyList()
+        val giftingList = if (cost.hasAddOn) listOf(cost.totalAddOnPrice) else emptyList()
         val egoldList = if (cost.emasPrice > 0.0) listOf(cost.emasPrice) else emptyList()
         val donationList = if (cost.donation > 0.0) listOf(cost.donation) else emptyList()
-        if ((insuranceCourierList.size + cost.listAddOnSummary.size + cost.listCrossSell.size + egoldList.size + donationList.size) > 2) {
+        if ((insuranceCourierList.size + cost.listAddOnSummary.size + giftingList.size + cost.listCrossSell.size + egoldList.size + donationList.size) > 2) {
             // render in collapsable group
             binding.tvCheckoutCostOthersValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cost.totalOtherFee, false).removeDecimalSuffix()
             binding.icCheckoutCostOthersToggle.setOnClickListener {
@@ -287,6 +288,20 @@ class CheckoutCostViewHolder(
                 )
                 itemBinding.tvCheckoutCostItemTitle.text = it.crossSellModel.orderSummary.title
                 itemBinding.tvCheckoutCostItemValue.text = it.crossSellModel.orderSummary.priceWording
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
+            }
+            giftingList.forEach {
+                val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
+                    layoutInflater,
+                    binding.llCheckoutCostOthersExpanded,
+                    false
+                )
+                itemBinding.tvCheckoutCostItemTitle.setText(R.string.checkout_label_total_gifting)
+                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    it,
+                    false
+                ).removeDecimalSuffix()
                 (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
             }
@@ -369,6 +384,20 @@ class CheckoutCostViewHolder(
                 )
                 itemBinding.tvCheckoutCostItemTitle.text = it.crossSellModel.orderSummary.title
                 itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.crossSellModel.price, false).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                binding.llCheckoutCostOthers.addView(itemBinding.root)
+            }
+            giftingList.forEach {
+                val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
+                    layoutInflater,
+                    binding.llCheckoutCostOthers,
+                    false
+                )
+                itemBinding.tvCheckoutCostItemTitle.setText(R.string.checkout_label_total_gifting)
+                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    it,
+                    false
+                ).removeDecimalSuffix()
                 (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthers.addView(itemBinding.root)
             }
