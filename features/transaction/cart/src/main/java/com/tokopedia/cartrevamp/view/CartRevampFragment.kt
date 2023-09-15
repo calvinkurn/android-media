@@ -2620,7 +2620,7 @@ class CartRevampFragment :
 
     private fun observeEntryPointInfo() {
         viewModel.entryPointInfoEvent.observe(viewLifecycleOwner) { data ->
-            when(data) {
+            when (data) {
                 is EntryPointInfoEvent.Loading -> {
                     binding?.promoCheckoutBtnCart?.showLoading()
                 }
@@ -2629,7 +2629,8 @@ class CartRevampFragment :
                     val message = if (data.isNoItemSelected) {
                         getString(R.string.promo_desc_no_selected_item)
                     } else {
-                        data.entryPointInfo?.messages?.firstOrNull().ifNull { "" }
+                        data.entryPointInfo?.messages?.firstOrNull()
+                            .ifNull { getString(purchase_platformcommonR.string.promo_funnel_label) }
                     }
                     val isClickable = data.entryPointInfo?.isClickable ?: false
                     if (message.isNotBlank()) {
@@ -2715,7 +2716,7 @@ class CartRevampFragment :
 
                 is EntryPointInfoEvent.ActiveDefault -> {
                     binding?.promoCheckoutBtnCart?.showActive(
-                        wording = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label),
+                        wording = getString(purchase_platformcommonR.string.promo_funnel_label),
                         rightIcon = IconUnify.CHEVRON_RIGHT,
                         onClickListener = {
                             checkGoToPromo()
