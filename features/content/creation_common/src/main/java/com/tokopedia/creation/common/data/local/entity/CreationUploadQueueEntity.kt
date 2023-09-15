@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.data.entity
+package com.tokopedia.creation.common.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

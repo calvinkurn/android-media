@@ -3,7 +3,7 @@ package com.tokopedia.creation.common.di
 import android.content.Context
 import androidx.work.WorkManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.creation.common.data.database.CreationUploadQueueDatabase
+import com.tokopedia.creation.common.data.local.database.CreationUploadQueueDatabase
 import dagger.Module
 import dagger.Provides
 

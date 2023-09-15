@@ -1,11 +1,11 @@
-package com.tokopedia.creation.common.data.database
+package com.tokopedia.creation.common.data.local.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.tokopedia.creation.common.data.dao.CreationUploadQueueDao
-import com.tokopedia.creation.common.data.entity.CreationUploadQueueEntity
+import com.tokopedia.creation.common.data.local.dao.CreationUploadQueueDao
+import com.tokopedia.creation.common.data.local.entity.CreationUploadQueueEntity
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
