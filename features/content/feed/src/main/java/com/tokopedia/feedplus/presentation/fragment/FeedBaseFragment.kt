@@ -249,7 +249,7 @@ class FeedBaseFragment :
     }
 
     override fun initInjector() {
-        FeedMainInjector.get(requireContext()).inject(this)
+        FeedMainInjector.get().inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"
@@ -332,47 +332,47 @@ class FeedBaseFragment :
 
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
+                OnPageChangeCallback() {
 
-            var shouldSendSwipeTracker = false
+                var shouldSendSwipeTracker = false
 
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                handleTabTransition(position)
-                if (!userSession.isLoggedIn &&
-                    activeTabSource.tabName == null // not coming from appLink
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
                 ) {
-                    if (position == TAB_SECOND_INDEX) {
-                        onNonLoginGoToFollowingTab.launch(
-                            RouteManager.getIntent(
-                                context,
-                                ApplinkConst.LOGIN
+                    handleTabTransition(position)
+                    if (!userSession.isLoggedIn &&
+                        activeTabSource.tabName == null // not coming from appLink
+                    ) {
+                        if (position == TAB_SECOND_INDEX) {
+                            onNonLoginGoToFollowingTab.launch(
+                                RouteManager.getIntent(
+                                    context,
+                                    ApplinkConst.LOGIN
+                                )
                             )
-                        )
+                        }
+                    }
+
+                    if (shouldSendSwipeTracker) {
+                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                            feedNavigationAnalytics.eventSwipeFollowingTab()
+                        } else {
+                            feedNavigationAnalytics.eventSwipeForYouTab()
+                        }
+                        shouldSendSwipeTracker = false
                     }
                 }
 
-                if (shouldSendSwipeTracker) {
-                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                        feedNavigationAnalytics.eventSwipeFollowingTab()
-                    } else {
-                        feedNavigationAnalytics.eventSwipeForYouTab()
-                    }
-                    shouldSendSwipeTracker = false
+                override fun onPageSelected(position: Int) {
+                    selectActiveTab(position)
                 }
-            }
 
-            override fun onPageSelected(position: Int) {
-                selectActiveTab(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-            }
-        })
+                override fun onPageScrollStateChanged(state: Int) {
+                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+                }
+            })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -810,7 +810,7 @@ class FeedBaseFragment :
     private fun getAllMotionScene(): List<ConstraintSet> {
         return listOf(
             binding.containerFeedTopNav.root.getConstraintSet(R.id.start),
-            binding.containerFeedTopNav.root.getConstraintSet(R.id.end),
+            binding.containerFeedTopNav.root.getConstraintSet(R.id.end)
         )
     }
 
