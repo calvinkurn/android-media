@@ -574,9 +574,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         data.url?.shortURL
                     )
                 )
-                binding?.root?.let { root ->
+                binding?.root?.rootView?.let { safeView ->
                     Toaster.build(
-                        root,
+                        safeView,
                         getString(R.string.affiliate_link_generated_succesfully, currentName),
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_NORMAL
@@ -594,9 +594,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     )
                 }
 
-                binding?.root?.let { root ->
+                binding?.root?.rootView?.let { safeView ->
                     Toaster.build(
-                        root,
+                        safeView,
                         getString(R.string.affiliate_link_empty_error),
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR
@@ -626,9 +626,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         AffiliateAnalytics.LabelKeys.FAIL
                     )
                 }
-                binding?.root?.let { root ->
+                binding?.root?.rootView?.let { safeView ->
                     Toaster.build(
-                        root,
+                        safeView,
                         error,
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR
