@@ -3,6 +3,8 @@ package com.tokopedia.stories.creation.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -20,6 +23,7 @@ import javax.inject.Inject
  */
 class StoriesCreationViewModel @Inject constructor(
     private val repo: StoriesCreationRepository,
+    private val creationUploader: CreationUploader,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StoriesCreationUiState.Empty)
@@ -112,6 +116,19 @@ class StoriesCreationViewModel @Inject constructor(
     }
 
     private fun handleClickUpload() {
+        viewModelScope.launch {
+            val state = _uiState.value
 
+            val data = CreationUploadQueue.buildForStories(
+                creationId = state.config.storiesId,
+                mediaUri = state.mediaFilePath,
+                coverUri = "",
+                sourceId = "",
+                authorId = state.selectedAccount.id,
+                authorType = state.selectedAccount.type,
+            )
+
+            creationUploader.upload(data)
+        }
     }
 }

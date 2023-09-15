@@ -10,10 +10,10 @@ import dagger.Component
 @Component(
     modules = [
         CreationUploaderModule::class,
-        CreationUploaderBindModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )
+@CreationUploaderScope
 interface CreationUploaderComponent {
 
     fun inject(worker: CreationUploaderWorker)
