@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/shop_home_card_donation_card_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
+    android:layout_marginTop="8dp"
     app:card_background_color="@color/Unify_Background"
     app:card_type="border">
 
@@ -42,4 +42,4 @@
 
     </LinearLayout>
 
-</com.tokopedia.unifycomponents.CardUnify>
+</com.tokopedia.unifycomponents.CardUnify2>

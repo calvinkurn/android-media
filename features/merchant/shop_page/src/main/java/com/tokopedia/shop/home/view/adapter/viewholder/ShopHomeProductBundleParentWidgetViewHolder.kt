@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 import com.tokopedia.productbundlewidget.model.*
@@ -124,7 +125,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
         val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
 
-        productBundleWidgetView?.setTitleTextColor(titleColor)
+        productBundleWidgetView?.setTitleTextColor(intColor = titleColor)
     }
 
     override fun onBundleProductClicked(

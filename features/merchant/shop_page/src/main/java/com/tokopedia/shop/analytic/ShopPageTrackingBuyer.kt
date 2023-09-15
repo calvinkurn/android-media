@@ -34,6 +34,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGIN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_REVIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_USP
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_BOTTOM_NAV
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_SHOP_HEADER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IS_LOGGED_IN_STATUS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS
@@ -68,7 +69,12 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_USP
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_BOTTOM_NAV
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_HEADER_SHOP
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_HEADER_BACKGROUND_COLOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_HEADER_BACKGROUND_IMAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_HEADER_BACKGROUND_STANDARD
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_HEADER_BACKGROUND_VIDEO
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
@@ -77,6 +83,7 @@ import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -1762,6 +1769,61 @@ class ShopPageTrackingBuyer(
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
             EVENT_LABEL to tabTitle,
             TRACKER_ID to TRACKER_ID_REIMAGINED_CLICK_BOTTOM_NAV,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to shopId,
+            USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    private fun getShopHeaderBackgroundType(
+        shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
+        isOverrideTheme: Boolean
+    ): String {
+        val backgroundImage = shopHeaderConfig?.getBackgroundObject(
+            ShopPageHeaderLayoutUiModel.BgObjectType.IMAGE
+        )
+        val backgroundVideo = shopHeaderConfig?.getBackgroundObject(
+            ShopPageHeaderLayoutUiModel.BgObjectType.VIDEO
+        )
+        return if (isOverrideTheme) {
+            if (null != backgroundVideo) {
+                VALUE_SHOP_HEADER_BACKGROUND_VIDEO
+            } else if (null != backgroundImage) {
+                VALUE_SHOP_HEADER_BACKGROUND_IMAGE
+            } else {
+                VALUE_SHOP_HEADER_BACKGROUND_COLOR
+            }
+        } else {
+            VALUE_SHOP_HEADER_BACKGROUND_STANDARD
+        }
+    }
+
+    fun impressionShopHeader(
+        listDynamicUspText: List<String>,
+        shopStaticUspImageUrl: String,
+        shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
+        isOverrideTheme: Boolean,
+        shopId: String,
+        userId: String
+    ) {
+        val shopHeaderBackgroundType = getShopHeaderBackgroundType(
+            shopHeaderConfig,
+            isOverrideTheme
+        )
+
+        val eventLabelValue = joinDash(
+            listDynamicUspText.joinToString("_"),
+            shopStaticUspImageUrl,
+            shopHeaderBackgroundType
+        )
+        val eventMap = mapOf(
+            EVENT to VIEW_PG_IRIS,
+            EVENT_ACTION to REIMAGINED_IMPRESSION_SHOP_HEADER,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to eventLabelValue,
+            TRACKER_ID to TRACKER_ID_REIMAGINED_IMPRESSION_HEADER_SHOP,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             SHOP_ID to shopId,
