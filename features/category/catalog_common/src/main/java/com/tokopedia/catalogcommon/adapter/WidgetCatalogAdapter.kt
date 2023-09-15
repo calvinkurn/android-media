@@ -1,7 +1,6 @@
 package com.tokopedia.catalogcommon.adapter
 
 import android.os.Handler
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -96,9 +95,11 @@ class WidgetCatalogAdapter(
             val indexPartOfNavigation = stickyNav.content.indexOfFirst {
                 it.anchorTo == currentWidget?.widgetName.orEmpty()
             }
+
             if (indexPartOfNavigation >= Int.ZERO){
                 navigation.currentSelectTab = indexPartOfNavigation
                 notifyItemChanged(indexNavigation, navigation)
+                refreshSticky()
             }
 
         }

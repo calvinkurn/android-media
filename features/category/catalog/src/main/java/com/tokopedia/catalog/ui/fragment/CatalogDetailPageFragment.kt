@@ -68,7 +68,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
 
-                val indexVisible = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
+                val indexVisible = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
                 binding?.rvContent?.post {
                     widgetAdapter.autoSelectNavigation(indexVisible)
                 }
