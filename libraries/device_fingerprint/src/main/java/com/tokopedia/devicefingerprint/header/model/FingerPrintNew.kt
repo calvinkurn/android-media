@@ -6,31 +6,31 @@ import com.google.gson.annotations.SerializedName
 data class FingerPrintNew(
     @SerializedName("device_model")
     @Expose
-    private val device_model: String,
+    private val deviceModel: String,
 
     @SerializedName("device_system")
     @Expose
-    private val device_system: String,
+    private val deviceSystem: String,
 
     @SerializedName("user_dname")
     @Expose
-    private val user_dname: String,
+    private val userDname: String,
 
     @SerializedName("current_os")
     @Expose
-    private val current_os: String,
+    private val currentOs: String,
 
     @SerializedName("device_manufacturer")
     @Expose
-    private val device_manufacturer: String,
+    private val deviceManufacturer: String,
 
     @SerializedName("device_name")
     @Expose
-    private val device_name: String,
+    private val deviceName: String,
 
     @SerializedName("is_jailbroken_rooted")
     @Expose
-    private val is_jailbroken_rooted: Boolean,
+    private val isJailbrokenRooted: Boolean,
 
     @SerializedName("timezone")
     @Expose
@@ -38,15 +38,15 @@ data class FingerPrintNew(
 
     @SerializedName("user_agent")
     @Expose
-    private val user_agent: String,
+    private val userAgent: String,
 
     @SerializedName("is_emulator")
     @Expose
-    private val is_emulator: Boolean,
+    private val isEmulator: Boolean,
 
     @SerializedName("is_tablet")
     @Expose
-    private val is_tablet: Boolean,
+    private val isTablet: Boolean,
 
     @SerializedName("language")
     @Expose
@@ -62,23 +62,23 @@ data class FingerPrintNew(
 
     @SerializedName("screen_resolution")
     @Expose
-    private val screen_resolution: String,
+    private val screenResolution: String,
 
     @SerializedName("location_latitude")
     @Expose
-    private val location_latitude: String,
+    private val locationLatitude: String,
 
     @SerializedName("location_longitude")
     @Expose
-    private val location_longitude: String,
+    private val locationLongitude: String,
 
     @SerializedName("is_nakama")
     @Expose
-    private val is_nakama: String,
+    private val isNakama: String,
 
     @SerializedName("unique_id")
     @Expose
-    private val unique_id: String,
+    private val uniqueId: String,
 
     @SerializedName("inval")
     @Expose
@@ -157,5 +157,5 @@ data class FingerPrintNew(
     private val wideVineId: String
 ) {
 
-    fun hasUniqueId() = unique_id.isNotEmpty()
+    fun hasUniqueId() = uniqueId.isNotEmpty()
 }
