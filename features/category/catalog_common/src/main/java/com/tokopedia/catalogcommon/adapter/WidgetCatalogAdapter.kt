@@ -91,10 +91,10 @@ class WidgetCatalogAdapter(
 
         val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
 
-        val currentWidget = visitables[position] as BaseCatalogUiModel
+        val currentWidget = visitables.getOrNull(position) as? BaseCatalogUiModel
         navigation?.let { stickyNav ->
             val indexPartOfNavigation = stickyNav.content.indexOfFirst {
-                it.anchorTo == currentWidget.widgetName
+                it.anchorTo == currentWidget?.widgetName.orEmpty()
             }
             if (indexPartOfNavigation >= Int.ZERO){
                 navigation.currentSelectTab = indexPartOfNavigation
