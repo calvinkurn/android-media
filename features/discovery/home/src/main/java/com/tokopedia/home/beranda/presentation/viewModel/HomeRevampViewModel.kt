@@ -12,6 +12,7 @@ import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
+import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
@@ -54,6 +55,7 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -800,5 +802,26 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             } catch (_: Exception) { }
         }
+    }
+
+    fun getShopFlashSale(currentDataModel: ShopFlashSaleWidgetDataModel, shopId: String) {
+        findWidget<ShopFlashSaleWidgetDataModel>(
+            predicate = { it.visitableId() == currentDataModel.visitableId() },
+            actionOnFound = { _, index ->
+                launch {
+                    updateWidget(
+                        visitable = ShopFlashSaleMapper.getLoadingShopFlashSale(currentDataModel),
+                        visitableToChange = currentDataModel,
+                        position = index
+                    )
+                    val newDataModel = homeRecommendationUseCase.get().getShopFlashSaleProducts(currentDataModel, shopId)
+                    updateWidget(
+                        visitable = newDataModel,
+                        visitableToChange = currentDataModel,
+                        position = index
+                    )
+                }
+            }
+        )
     }
 }

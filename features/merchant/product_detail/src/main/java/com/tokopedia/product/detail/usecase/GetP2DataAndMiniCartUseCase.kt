@@ -29,7 +29,7 @@ class GetP2DataAndMiniCartUseCase @Inject constructor(private val dispatcher: Co
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     private var requestParamsP2Data: RequestParams = RequestParams.create()
-    private var isTokoNow: Boolean = false
+    private var hasQuantityEditor: Boolean = false
     private var shopId: String = ""
     private var forceRefresh: Boolean = false
     private var isLoggedIn: Boolean = false
@@ -38,10 +38,16 @@ class GetP2DataAndMiniCartUseCase @Inject constructor(private val dispatcher: Co
         getProductInfoP2DataUseCase.clearCache()
     }
 
-    suspend fun executeOnBackground(requestParams: RequestParams, isTokoNow: Boolean, shopId: String, forceRefresh: Boolean, isLoggedIn: Boolean,
-                                    setErrorLogListener: OnErrorLog): ProductInfoP2UiData {
+    suspend fun executeOnBackground(
+        requestParams: RequestParams,
+        hasQuantityEditor: Boolean,
+        shopId: String,
+        forceRefresh: Boolean,
+        isLoggedIn: Boolean,
+        setErrorLogListener: OnErrorLog
+    ): ProductInfoP2UiData {
         this.requestParamsP2Data = requestParams
-        this.isTokoNow = isTokoNow
+        this.hasQuantityEditor = hasQuantityEditor
         this.shopId = shopId
         this.forceRefresh = forceRefresh
         this.isLoggedIn = isLoggedIn
@@ -53,7 +59,7 @@ class GetP2DataAndMiniCartUseCase @Inject constructor(private val dispatcher: Co
 
     override suspend fun executeOnBackground(): ProductInfoP2UiData {
         val request: MutableList<Deferred<Any?>> = mutableListOf(executeP2Data())
-        if (isTokoNow && isLoggedIn) {
+        if (hasQuantityEditor && isLoggedIn) {
             request.add(executeMiniCart())
         }
 

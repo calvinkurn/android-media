@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
@@ -76,13 +75,14 @@ import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
+import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
-import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
@@ -118,8 +118,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.content.common.R as commonR
-import com.tokopedia.feedplus.R as feedR
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.feedplus.R as feedplusR
+import com.tokopedia.resources.common.R as resourcescommonR
 
 /**
  * Created By : Muhammad Furqan on 01/02/23
@@ -143,12 +144,12 @@ class FeedFragment :
                 viewLifecycleOwner,
                 binding.rvFeedPost,
                 trackerModelMapper,
-                feedFollowRecommendationListener,
+                feedFollowRecommendationListener
             )
         ) {
             if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
             adapter.showLoading()
-            feedPostViewModel.fetchFeedPosts(data?.type ?: "")
+            feedPostViewModel.fetchFeedPosts(data?.type ?: "", postSource = postSourceModel)
         }
     }
     private var currentTrackerData: FeedTrackerDataModel? = null
@@ -183,10 +184,10 @@ class FeedFragment :
 
     @Inject
     lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
-      
+
     @Inject
     lateinit var router: Router
-      
+
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
             parentFragment ?: this
@@ -203,7 +204,7 @@ class FeedFragment :
         isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
 
         MapperFeedModelToTrackerDataModel(
-            if (isCdp) FeedBaseFragment.CDP else data?.type.orEmpty(),
+            if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty(),
             arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ENTRY_POINT_DEFAULT
         )
     }
@@ -324,6 +325,8 @@ class FeedFragment :
     private var mHasVoucher: Boolean = false
     private var mCampaign: FeedCardCampaignModel? = null
 
+    private var postSourceModel: PostSourceModel? = null
+
     private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
 
         override fun onImpressProfile(profile: FeedFollowRecommendationModel.Profile) {
@@ -338,9 +341,17 @@ class FeedFragment :
             )
 
             if (profile.isFollowed) {
-                feedPostViewModel.doUnfollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
+                feedPostViewModel.doUnfollowProfileRecommendation(
+                    profile.id,
+                    profile.encryptedId,
+                    profile.isShop
+                )
             } else {
-                feedPostViewModel.doFollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
+                feedPostViewModel.doFollowProfileRecommendation(
+                    profile.id,
+                    profile.encryptedId,
+                    profile.isShop
+                )
             }
         }
 
@@ -375,13 +386,13 @@ class FeedFragment :
         override fun onSwipeProfileRecommendation() {
             feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation(
                 tabType = trackerModelMapper.tabType,
-                entryPoint = trackerModelMapper.entryPoint,
+                entryPoint = trackerModelMapper.entryPoint
             )
         }
 
         override fun onErrorPlayingVideo() {
             showToast(
-                getString(feedR.string.feed_load_follow_recommendation_failed),
+                getString(feedplusR.string.feed_load_follow_recommendation_failed),
                 Toaster.TYPE_ERROR
             )
         }
@@ -439,12 +450,21 @@ class FeedFragment :
         super.onViewCreated(view, savedInstanceState)
 
         showLoading()
+        postSourceModel = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
+            PostSourceModel(
+                id = sourceId,
+                source = if (isCdp) {
+                    FeedBaseFragment.TAB_TYPE_CDP
+                } else {
+                    arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
+                }
+            )
+        }
+
         feedPostViewModel.fetchFeedPosts(
             data?.type ?: "",
             isNewData = true,
-            postSource = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
-                PostSourceModel(sourceId, arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME))
-            }
+            postSource = postSourceModel
         )
 
         initView()
@@ -569,9 +589,9 @@ class FeedFragment :
             FeedMenuIdentifier.Delete -> {
                 context?.let {
                     DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                        setTitle(getString(feedR.string.dialog_delete_post_title))
-                        setDescription(getString(feedR.string.dialog_delete_post_subtitle))
-                        setPrimaryCTAText(getString(feedR.string.feed_delete))
+                        setTitle(getString(feedplusR.string.dialog_delete_post_title))
+                        setDescription(getString(feedplusR.string.dialog_delete_post_subtitle))
+                        setPrimaryCTAText(getString(feedplusR.string.feed_delete))
                         setPrimaryCTAClickListener {
                             feedPostViewModel.doDeletePost(
                                 feedMenuItem.contentData?.postId.orEmpty(),
@@ -579,7 +599,7 @@ class FeedFragment :
                             )
                             dismiss()
                         }
-                        setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
+                        setSecondaryCTAText(getString(resourcescommonR.string.general_label_cancel))
                         setSecondaryCTAClickListener {
                             dismiss()
                         }
@@ -663,7 +683,7 @@ class FeedFragment :
         )
         shareBottomSheet.setMetaData(
             tnTitle = String.format(
-                requireContext().getString(feedR.string.feed_share_title),
+                requireContext().getString(feedplusR.string.feed_share_title),
                 data.author.name
             ),
             tnImage = data.mediaUrl
@@ -700,7 +720,7 @@ class FeedFragment :
     }
 
     override fun reload() {
-        feedPostViewModel.fetchFeedPosts(data?.type ?: "")
+        feedPostViewModel.fetchFeedPosts(data?.type ?: "", postSource = postSourceModel)
         adapter.removeErrorNetwork()
         showLoading()
         adapter.showLoading()
@@ -726,7 +746,7 @@ class FeedFragment :
         model: FeedCardVideoContentModel,
         trackerModel: FeedTrackerDataModel
     ) {
-        feedAnalytics.eventWatchVideoPost()
+        feedAnalytics.eventWatchVideoPost(trackerModel)
         feedPostViewModel.trackVisitChannel(model)
         feedPostViewModel.trackChannelPerformance(model)
     }
@@ -904,21 +924,28 @@ class FeedFragment :
         feedPostViewModel.setUnsetReminder(campaignId, setReminder, type)
     }
 
-    override fun onTopAdsImpression(
-        adViewUrl: String,
-        id: String,
-        shopId: String,
-        uri: String,
-        fullEcs: String?,
-        position: Int
-    ) {
-        topAdsUrlHitter.hitImpressionUrl(
-            this::class.java.simpleName,
-            adViewUrl,
-            id,
-            uri,
-            fullEcs
-        )
+    override fun onTopAdsImpression(topadsTrackerData: FeedTopAdsTrackerDataModel) {
+        with(topadsTrackerData) {
+            topAdsUrlHitter.hitImpressionUrl(
+                this::class.java.simpleName,
+                adViewUrl,
+                id,
+                uri,
+                fullEcs
+            )
+        }
+    }
+
+    override fun onTopAdsClick(topadsTrackerData: FeedTopAdsTrackerDataModel) {
+        with(topadsTrackerData) {
+            topAdsUrlHitter.hitClickUrl(
+                this::class.java.simpleName,
+                adClickUrl,
+                id,
+                uri,
+                fullEcs
+            )
+        }
     }
 
     override fun onOngoingCampaignClicked(
@@ -1036,7 +1063,7 @@ class FeedFragment :
                         override fun onFooterClicked() {
                             RouteManager.route(
                                 requireContext(),
-                                getString(com.tokopedia.content.common.R.string.content_user_report_footer_weblink)
+                                getString(contentcommonR.string.content_user_report_footer_weblink)
                             )
                         }
                     }
@@ -1051,7 +1078,7 @@ class FeedFragment :
                     override fun onFooterClicked() {
                         RouteManager.route(
                             requireContext(),
-                            getString(com.tokopedia.content.common.R.string.content_user_report_footer_weblink)
+                            getString(contentcommonR.string.content_user_report_footer_weblink)
                         )
                     }
 
@@ -1061,10 +1088,10 @@ class FeedFragment :
                         if (item !is FeedCardVideoContentModel) return
 
                         showDialog(
-                            title = getString(commonR.string.play_user_report_verification_dialog_title),
-                            description = getString(commonR.string.play_user_report_verification_dialog_desc),
-                            primaryCTAText = getString(commonR.string.play_user_report_verification_dialog_btn_ok),
-                            secondaryCTAText = getString(feedR.string.feed_cancel),
+                            title = getString(contentcommonR.string.play_user_report_verification_dialog_title),
+                            description = getString(contentcommonR.string.play_user_report_verification_dialog_desc),
+                            primaryCTAText = getString(contentcommonR.string.play_user_report_verification_dialog_btn_ok),
+                            secondaryCTAText = getString(feedplusR.string.feed_cancel),
                             primaryAction = {
                                 feedPostViewModel.submitReport(desc, getVideoTimeStamp(), item)
                             }
@@ -1104,7 +1131,7 @@ class FeedFragment :
                     (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as? ContentReportBottomSheet)?.dismiss()
                     menuSheet?.dismiss()
                     showToast(
-                        message = getString(feedR.string.feed_success_report_video),
+                        message = getString(feedplusR.string.feed_success_report_video),
                         type = Toaster.TYPE_NORMAL
                     )
                 }
@@ -1126,13 +1153,13 @@ class FeedFragment :
             when (it) {
                 is Success -> {
                     showToast(
-                        getString(feedR.string.toast_delete_post_success),
+                        getString(feedplusR.string.toast_delete_post_success),
                         Toaster.TYPE_NORMAL
                     )
                 }
                 is Fail -> {
                     showToast(
-                        getString(feedR.string.toast_delete_post_failed),
+                        getString(feedplusR.string.toast_delete_post_failed),
                         Toaster.TYPE_ERROR
                     )
                 }
@@ -1143,7 +1170,11 @@ class FeedFragment :
     private fun initView() {
         binding.let {
             it.swipeRefreshFeedLayout.setOnRefreshListener {
-                feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
+                feedPostViewModel.fetchFeedPosts(
+                    data?.type ?: "",
+                    isNewData = true,
+                    postSource = postSourceModel
+                )
             }
 
             it.rvFeedPost.adapter = adapter
@@ -1208,13 +1239,13 @@ class FeedFragment :
             when (it) {
                 is Success -> {
                     showToast(
-                        getString(feedR.string.feed_message_success_follow, it.data),
+                        getString(feedplusR.string.feed_message_success_follow, it.data),
                         Toaster.TYPE_NORMAL
                     )
                 }
                 is Fail -> {
                     showToast(
-                        getString(feedR.string.feed_message_failed_follow),
+                        getString(feedplusR.string.feed_message_failed_follow),
                         Toaster.TYPE_ERROR
                     )
                 }
@@ -1227,13 +1258,13 @@ class FeedFragment :
             when (it) {
                 is Success -> {
                     showToast(
-                        getString(feedR.string.feed_message_success_unfollow, it.data),
+                        getString(feedplusR.string.feed_message_success_unfollow, it.data),
                         Toaster.TYPE_NORMAL
                     )
                 }
                 is Fail -> {
                     showToast(
-                        getString(feedR.string.feed_message_failed_unfollow),
+                        getString(feedplusR.string.feed_message_failed_unfollow),
                         Toaster.TYPE_ERROR
                     )
                 }
@@ -1280,8 +1311,8 @@ class FeedFragment :
                 (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
             when (it) {
                 is Success -> productBottomSheet?.doShowToaster(
-                    message = getString(feedR.string.feeds_add_to_cart_success_text),
-                    actionText = getString(feedR.string.feeds_add_to_cart_toaster_action_text),
+                    message = getString(feedplusR.string.feeds_add_to_cart_success_text),
+                    actionText = getString(feedplusR.string.feeds_add_to_cart_toaster_action_text),
                     actionClickListener = {
                         currentTrackerData?.let { trackerData ->
                             feedAnalytics.eventClickViewCart(trackerData)
@@ -1761,17 +1792,17 @@ class FeedFragment :
             val message = when (it) {
                 is Success -> {
                     val type = when (it.data.reminderType) {
-                        FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> getString(feedR.string.feed_flash_sale)
-                        FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> getString(feedR.string.feed_special_release)
+                        FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING -> getString(feedplusR.string.feed_flash_sale)
+                        FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> getString(feedplusR.string.feed_special_release)
                         else -> ""
                     }
 
                     // if set reminder
                     if (it.data.isSetReminder) {
-                        getString(feedR.string.feed_reminder_set_success, type)
+                        getString(feedplusR.string.feed_reminder_set_success, type)
                     } else {
                         // if unset reminder
-                        getString(feedR.string.feed_reminder_unset_success)
+                        getString(feedplusR.string.feed_reminder_unset_success)
                     }
                 }
                 is Fail -> it.throwable.message
@@ -1781,7 +1812,7 @@ class FeedFragment :
             showToast(
                 message = message.orEmpty(),
                 type = if (it is Success) Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR,
-                actionText = getString(feedR.string.feed_cta_ok_toaster)
+                actionText = getString(feedplusR.string.feed_cta_ok_toaster)
             )
         }
     }
@@ -1791,7 +1822,7 @@ class FeedFragment :
             when (it) {
                 is Fail -> {
                     showToast(
-                        getString(feedR.string.feed_load_follow_recommendation_failed),
+                        getString(feedplusR.string.feed_load_follow_recommendation_failed),
                         Toaster.TYPE_ERROR
                     )
                 }
@@ -1830,13 +1861,13 @@ class FeedFragment :
             .setId(data.contentId)
             .setName(
                 String.format(
-                    getString(feedR.string.feed_share_title),
+                    getString(feedplusR.string.feed_share_title),
                     data.author.name
                 )
             )
             .setDescription(
                 String.format(
-                    getString(feedR.string.feed_share_desc_text),
+                    getString(feedplusR.string.feed_share_desc_text),
                     data.author.name
                 )
             )
@@ -1872,8 +1903,8 @@ class FeedFragment :
                             shareString,
                             onSuccessCopyLink = {
                                 showToast(
-                                    message = getString(feedR.string.feed_copy_link_success_message),
-                                    actionText = getString(com.tokopedia.content.common.R.string.feed_ok),
+                                    message = getString(feedplusR.string.feed_copy_link_success_message),
+                                    actionText = getString(contentcommonR.string.feed_ok),
                                     actionClickListener = {
                                         feedAnalytics.sendClickOkeShareToasterEvent(trackerModel)
                                     }
@@ -1930,7 +1961,7 @@ class FeedFragment :
             when {
                 currentItem.data is FeedCardImageContentModel && currentItem.data.showComment -> {
                     val model = currentItem.data
-                    tyBottomAction.text = getString(feedR.string.feed_bottom_action_comment_label)
+                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_comment_label)
                     containerBottomAction.setOnClickListener {
                         onCommentClick(
                             trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
@@ -1945,7 +1976,7 @@ class FeedFragment :
                 }
                 currentItem.data is FeedCardImageContentModel -> {
                     val model = currentItem.data
-                    tyBottomAction.text = getString(feedR.string.feed_bottom_action_share_label)
+                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_share_label)
                     containerBottomAction.setOnClickListener {
                         onSharePostClicked(
                             data = model.share,
@@ -1958,7 +1989,7 @@ class FeedFragment :
                 }
                 currentItem.data is FeedCardVideoContentModel && !currentItem.data.isTypeProductHighlight -> {
                     val model = currentItem.data
-                    tyBottomAction.text = getString(feedR.string.feed_bottom_action_comment_label)
+                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_comment_label)
                     containerBottomAction.setOnClickListener {
                         onCommentClick(
                             trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
@@ -1973,7 +2004,7 @@ class FeedFragment :
                 }
                 currentItem.data is FeedCardVideoContentModel -> {
                     val model = currentItem.data
-                    tyBottomAction.text = getString(feedR.string.feed_bottom_action_share_label)
+                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_share_label)
                     containerBottomAction.setOnClickListener {
                         onSharePostClicked(
                             data = model.share,

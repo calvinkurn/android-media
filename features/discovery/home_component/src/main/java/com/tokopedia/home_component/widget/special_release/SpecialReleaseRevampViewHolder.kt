@@ -3,6 +3,7 @@ package com.tokopedia.home_component.widget.special_release
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampBinding
 import com.tokopedia.home_component.mapper.ChannelModelMapper
@@ -11,8 +12,7 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.NpaLinearLayoutManager
-import com.tokopedia.home_component.widget.common.CarouselListAdapter
-import com.tokopedia.home_component.widget.common.AbstractHomeViewHolder
+import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
@@ -23,7 +23,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class SpecialReleaseRevampViewHolder(
     itemView: View,
     private val specialReleaseRevampListener: SpecialReleaseRevampListener
-) : AbstractHomeViewHolder<SpecialReleaseRevampDataModel>(itemView) {
+) : AbstractViewHolder<SpecialReleaseRevampDataModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -32,9 +32,7 @@ class SpecialReleaseRevampViewHolder(
 
     private val binding: HomeComponentSpecialReleaseRevampBinding? by viewBinding()
     private val typeFactory: CommonCarouselProductCardTypeFactory by lazy { CommonCarouselProductCardTypeFactoryImpl() }
-    private val adapter: CarouselListAdapter<SpecialReleaseRevampItemDataModel, CommonCarouselProductCardTypeFactory> by lazy {
-        CarouselListAdapter(typeFactory, SpecialReleaseDiffUtil())
-    }
+    private val adapter by lazy { CarouselListAdapter(typeFactory, SpecialReleaseDiffUtilCallback()) }
 
     override fun bind(element: SpecialReleaseRevampDataModel) {
         binding?.let {
@@ -49,7 +47,7 @@ class SpecialReleaseRevampViewHolder(
         bind(element)
     }
 
-    override fun initAdapter() {
+    private fun initAdapter() {
         val layoutManager = NpaLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL)
         binding?.homeComponentSpecialReleaseRv?.apply {
             setLayoutManager(layoutManager)
@@ -60,7 +58,7 @@ class SpecialReleaseRevampViewHolder(
         }
     }
 
-    override fun setChannelDivider(channelModel: ChannelModel) {
+    private fun setChannelDivider(channelModel: ChannelModel) {
         binding?.let {
             ChannelWidgetUtil.validateHomeComponentDivider(
                 channelModel = channelModel,
@@ -70,7 +68,7 @@ class SpecialReleaseRevampViewHolder(
         }
     }
 
-    override fun setHeaderComponent(channelModel: ChannelModel) {
+    private fun setHeaderComponent(channelModel: ChannelModel) {
         binding?.homeComponentHeaderView?.setChannel(
             channelModel,
             object: HeaderListener {
@@ -81,7 +79,7 @@ class SpecialReleaseRevampViewHolder(
         )
     }
 
-    override fun setData(model: SpecialReleaseRevampDataModel) {
+    private fun setData(model: SpecialReleaseRevampDataModel) {
         val items = model.channelModel.channelGrids.map {
             SpecialReleaseRevampItemDataModel(
                 it,

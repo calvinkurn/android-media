@@ -1,6 +1,8 @@
 package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -11,8 +13,13 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class TodoWidgetListDataModel(
     val todoWidgetList: List<TodoWidgetDataModel> = listOf(),
     val channelModel: ChannelModel,
-    val status: Int = STATUS_LOADING,
-) : HomeComponentVisitable, ImpressHolder() {
+    val status: Int = STATUS_LOADING
+) : HomeComponentVisitable,
+    ImpressHolder(),
+    LoadableComponent by BlocksLoadableComponent(
+        { status != STATUS_LOADING },
+        "TodoWidgetListDataModel"
+    ) {
 
     companion object {
         const val STATUS_LOADING = 0
@@ -20,11 +27,12 @@ data class TodoWidgetListDataModel(
         const val STATUS_SUCCESS = 2
     }
 
-    fun isShowTodoWidget() : Boolean {
-        return if (status == STATUS_SUCCESS)
+    fun isShowTodoWidget(): Boolean {
+        return if (status == STATUS_SUCCESS) {
             todoWidgetList.isNotEmpty()
-        else
+        } else {
             true
+        }
     }
 
     override fun visitableId(): String {
@@ -42,5 +50,4 @@ data class TodoWidgetListDataModel(
     override fun type(typeFactory: HomeComponentTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

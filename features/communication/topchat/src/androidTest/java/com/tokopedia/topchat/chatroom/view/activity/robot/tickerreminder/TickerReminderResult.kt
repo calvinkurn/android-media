@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder
 
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
@@ -11,13 +11,15 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReminderTickerViewHolder
 import org.hamcrest.CoreMatchers.not
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 object TickerReminderResult {
 
     fun assertReminderTickerVisibleAtPosition(position: Int) {
         assertChatRecyclerview(
             hasViewHolderItemAtPosition(
-                position, ReminderTickerViewHolder::class.java
+                position,
+                ReminderTickerViewHolder::class.java
             )
         )
     }
@@ -25,7 +27,7 @@ object TickerReminderResult {
     fun assertReminderTickerVisibleWithText(position: Int, text: String) {
         assertViewInRecyclerViewAt(
             position,
-            com.tokopedia.unifycomponents.R.id.ticker_description,
+            unifycomponentsR.id.ticker_description,
             withSubstring(text)
         )
     }
@@ -37,7 +39,7 @@ object TickerReminderResult {
     }
 
     fun assertReminderTickerIsNotAtPosition(position: Int) {
-        Espresso.onView(ViewMatchers.withId(R.id.recycler_view_chatroom)).check(
+        onView(ViewMatchers.withId(R.id.recycler_view_chatroom)).check(
             atPositionIsNotInstanceOf(position, ReminderTickerViewHolder::class.java)
         )
     }

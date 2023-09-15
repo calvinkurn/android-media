@@ -364,7 +364,7 @@ class MvcListFragment :
         val voucherEndTime = voucher.finishTime.toDate(
             DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
         )
-        val promoType = PromoType.values().firstOrNull { value -> value.text == voucher.typeFormatted }
+        val promoType = PromoType.values().firstOrNull { value -> value.id == voucher.type }
             ?: PromoType.FREE_SHIPPING
 
         val shareComponentParam = getShareComponentData(

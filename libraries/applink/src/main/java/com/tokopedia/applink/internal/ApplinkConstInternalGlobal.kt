@@ -182,7 +182,6 @@ object ApplinkConstInternalGlobal {
     // applink, if provided will launch the applink after the module is installed
     // imageUrl, is the placeholder for the background
     const val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
-        "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
         DFFALLBACKURL_KEY +"={fallbackUrl}"
 
@@ -254,4 +253,13 @@ object ApplinkConstInternalGlobal {
 
     //LoginHelperActivity
     const val LOGIN_HELPER = "$INTERNAL_GLOBAL/login-helper"
+
+    //LoginHelperAccountSettingsActivity
+    const val LOGIN_HELPER_ACCOUNTS_SETTINGS = "$INTERNAL_GLOBAL/login-helper-accounts-settings"
+
+    //LoginHelperAddEditAccountActivity
+    const val LOGIN_HELPER_ADD_EDIT_ACCOUNT = "$INTERNAL_GLOBAL/login-helper-add-edit-account"
+
+    //LoginHelperSearchActivity
+    const val LOGIN_HELPER_SEARCH_ACCOUNT = "$INTERNAL_GLOBAL/login-helper-search-account"
 }

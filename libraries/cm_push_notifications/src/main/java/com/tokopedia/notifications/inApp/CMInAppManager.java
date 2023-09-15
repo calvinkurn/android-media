@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -341,7 +342,11 @@ public class CMInAppManager implements CmInAppListener,
     public void onCMInAppLinkClick(String appLink, CMInApp cmInApp, ElementType elementType) {
         Activity activity = activityLifecycleHandler.getCurrentActivity();
         if (activity != null) {
-            activity.startActivity(RouteManager.getIntent(activity, appLink));
+            if (appLink.equalsIgnoreCase(ApplinkConst.DEVICE_NOTIFICATION_SETTINGS)) {
+                RouteManager.route(application.getApplicationContext(), appLink);
+            } else {
+                activity.startActivity(RouteManager.getIntent(activity, appLink));
+            }
             CMNotificationUtils.INSTANCE.sendUTMParamsInGTM(appLink);
         } else {
             Map<String, String> messageMap = new HashMap<>();

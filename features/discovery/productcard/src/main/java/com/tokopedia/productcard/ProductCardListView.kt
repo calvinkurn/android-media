@@ -29,12 +29,12 @@ import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY
 import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY_BOUNCE
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
 import kotlin.LazyThreadSafetyMode.NONE

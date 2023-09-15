@@ -3,6 +3,8 @@ package com.tokopedia.carouselproductcard
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupProductModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingModel
+import com.tokopedia.carouselproductcard.paging.CarouselPagingProductCardView
+import com.tokopedia.carouselproductcard.paging.CarouselPagingSelectedGroupModel
 import com.tokopedia.carouselproductcard.paging.HasGroup
 import com.tokopedia.carouselproductcard.paging.VisitableFactory
 import com.tokopedia.carouselproductcard.paging.list.ProductCardListDataView
@@ -30,7 +32,7 @@ class VisitableFactoryTest {
         )
         val itemPerPage = 3
 
-        val visitableList = VisitableFactory.from(pagingModel, itemPerPage)
+        val visitableList = VisitableFactory.from(pagingModel, itemPerPage, EMPTY_LISTENER)
 
         val expectedVisitableSize = groupSize * productCardSize
         assertEquals(expectedVisitableSize, visitableList.size)
@@ -99,7 +101,7 @@ class VisitableFactoryTest {
         )
         val itemPerPage = 3
 
-        val visitableList = VisitableFactory.from(pagingModel, itemPerPage)
+        val visitableList = VisitableFactory.from(pagingModel, itemPerPage, EMPTY_LISTENER)
 
         visitableList.filterIsInstance<ProductCardListDataView>().forEach {
             assertEquals(1, it.spanSize)
@@ -119,7 +121,7 @@ class VisitableFactoryTest {
         )
         val itemPerPage = 3
 
-        val visitableList = VisitableFactory.from(pagingModel, itemPerPage)
+        val visitableList = VisitableFactory.from(pagingModel, itemPerPage, EMPTY_LISTENER)
 
         val productCardItemList = visitableList.filterIsInstance<ProductCardListDataView>()
         assertEquals(1, productCardItemList.first().spanSize)
@@ -139,7 +141,7 @@ class VisitableFactoryTest {
         )
         val itemPerPage = 3
 
-        val visitableList = VisitableFactory.from(pagingModel, itemPerPage)
+        val visitableList = VisitableFactory.from(pagingModel, itemPerPage, EMPTY_LISTENER)
 
         val productCardItemList = visitableList.filterIsInstance<ProductCardListDataView>()
         assertEquals(3, productCardItemList.first().spanSize)
@@ -158,7 +160,7 @@ class VisitableFactoryTest {
         )
         val itemPerPage = 3
 
-        val visitableList = VisitableFactory.from(pagingModel, itemPerPage)
+        val visitableList = VisitableFactory.from(pagingModel, itemPerPage, EMPTY_LISTENER)
 
         val productCardItemList = visitableList.filterIsInstance<ProductCardListDataView>()
         println("page count : ${pagingModel.productCardGroupList.first().getPageCount(itemPerPage)}")
@@ -181,7 +183,7 @@ class VisitableFactoryTest {
         )
         val itemPerPage = 3
 
-        val visitableList = VisitableFactory.from(pagingModel, itemPerPage)
+        val visitableList = VisitableFactory.from(pagingModel, itemPerPage, EMPTY_LISTENER)
 
         val productCardItemList = visitableList.filterIsInstance<ProductCardListDataView>()
         productCardItemList.forEachIndexed { index, productItem ->
@@ -207,11 +209,21 @@ class VisitableFactoryTest {
         )
         val itemPerPage = 3
 
-        val visitableList = VisitableFactory.from(pagingModel, itemPerPage)
+        val visitableList = VisitableFactory.from(pagingModel, itemPerPage, EMPTY_LISTENER)
 
         val loadingItemVisitableList = visitableList.last()
 
         assertThat(loadingItemVisitableList, `is`(instanceOf(HasGroup::class.java)))
         assertEquals(emptyGroupModel, (loadingItemVisitableList as HasGroup).group)
+    }
+
+    companion object {
+        private val EMPTY_LISTENER = object: CarouselPagingProductCardView.CarouselPagingListener {
+            override fun onGroupChanged(selectedGroupModel: CarouselPagingSelectedGroupModel) { }
+
+            override fun onItemImpress(groupModel: CarouselPagingGroupModel, itemPosition: Int) { }
+
+            override fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) { }
+        }
     }
 }

@@ -1,12 +1,10 @@
 package com.tokopedia.tokofood.search.searchresult
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
@@ -27,9 +25,8 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.ArgumentMatchers.any
 
-class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTestFixture() {
+class TokofoodSearchResultPageViewModelTest : TokofoodSearchResultPageViewModelTestFixture() {
 
     @Test
     fun `when setKeyword should set searchParameter`() {
@@ -806,8 +803,6 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
         )
     }
 
-
-
     @Test
     fun `when applyFilter but filter option is empty should not update search parameter`() {
         val filter = Filter()
@@ -975,7 +970,10 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
             val currentParam = hashMapOf(sortKey to selectedSortValue)
             val expectedUiModels = sortItems.map {
                 TokofoodQuickSortUiModel(
-                    it.name, it.key, it.value, it.value == selectedSortValue
+                    it.name,
+                    it.key,
+                    it.value,
+                    it.value == selectedSortValue
                 )
             }
 
@@ -1013,7 +1011,10 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
             val currentParam = hashMapOf(sortKey to selectedSortKey)
             val expectedUiModels = sortItems.map {
                 TokofoodQuickSortUiModel(
-                    it.name, it.key, it.value, it.value == selectedSortKey
+                    it.name,
+                    it.key,
+                    it.value,
+                    it.value == selectedSortKey
                 )
             }
 
@@ -1166,7 +1167,7 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
     fun `when latLong is blank, should emit no pinpoint state`() {
         runBlocking {
             val localCacheModel = LocalCacheModel(
-                address_id = "123",
+                address_id = "123"
             )
             val searchParameter = hashMapOf<String, String>()
             val expectedUiModels = listOf(
@@ -1221,7 +1222,6 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
             val expectedUiModels = listOf(
                 MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
             )
-            onGetEligibleForAnaRevamp_thenReturn(true)
             onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
             viewModel.visitables.collectFromSharedFlow(
@@ -1245,9 +1245,8 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
             )
             val searchParameter = hashMapOf<String, String>()
             val expectedUiModels = listOf(
-                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS)
+                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
             )
-            onGetEligibleForAnaRevamp_thenReturn(false)
             onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
             viewModel.visitables.collectFromSharedFlow(
@@ -1256,7 +1255,7 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
                     viewModel.getInitialMerchantSearchResult(searchParameter)
                 },
                 then = {
-                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS)
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
                 }
             )
         }
@@ -1267,9 +1266,8 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
         runBlocking {
             val searchParameter = hashMapOf<String, String>()
             val expectedUiModels = listOf(
-                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS)
+                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
             )
-            onGetEligibleForAnaRevamp_thenReturn(false)
             onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
             viewModel.visitables.collectFromSharedFlow(
@@ -1277,7 +1275,7 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
                     viewModel.getInitialMerchantSearchResult(searchParameter)
                 },
                 then = {
-                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS)
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
                 }
             )
         }
@@ -1288,9 +1286,8 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
         runBlocking {
             val searchParameter = hashMapOf<String, String>()
             val expectedUiModels = listOf(
-                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS)
+                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
             )
-            onGetEligibleForAnaRevamp_thenReturn(MessageErrorException())
             onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
             viewModel.visitables.collectFromSharedFlow(
@@ -1298,7 +1295,7 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
                     viewModel.getInitialMerchantSearchResult(searchParameter)
                 },
                 then = {
-                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS)
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
                 }
             )
         }
@@ -1382,7 +1379,6 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
         val expectedUiModels = listOf(
             MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
         )
-        onGetEligibleForAnaRevamp_thenReturn(true)
         onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
         runBlocking {
@@ -1403,7 +1399,6 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
         val expectedUiModels = listOf(
             MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
         )
-        onGetEligibleForAnaRevamp_thenReturn(true)
         onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
         runBlocking {
@@ -1417,5 +1412,4 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
             )
         }
     }
-
 }

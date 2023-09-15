@@ -32,6 +32,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
+            deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
             else -> deeplink
         }
     }
@@ -59,7 +60,7 @@ object DeeplinkMapperUser {
         }
     }
 
-    private fun isRollenceGotoKycActivated(): Boolean {
+    fun isRollenceGotoKycActivated(): Boolean {
         val rollence = getAbTestPlatform()
             .getFilteredKeyByKeyName(ROLLENCE_GOTO_KYC)
         return if (rollence.isNotEmpty()) {
@@ -77,7 +78,7 @@ object DeeplinkMapperUser {
         }
     }
 
-    private fun isRollencePrivacyCenterActivated(): Boolean {
+    fun isRollencePrivacyCenterActivated(): Boolean {
         return getAbTestPlatform()
             .getString(ROLLENCE_PRIVACY_CENTER)
             .isNotEmpty()
