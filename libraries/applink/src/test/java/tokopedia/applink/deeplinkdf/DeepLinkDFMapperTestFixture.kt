@@ -227,7 +227,7 @@ open class DeepLinkDFMapperTestFixture {
                 for (pathObjExpected in host.dfpPathObj) {
                     val pathCheck =
                         hostCheck.dfpPathObj.find { it.pattern?.pattern?.mapPatternAllToNull() == pathObjExpected.pattern?.pattern?.mapPatternAllToNull() }
-                            ?: throw RuntimeException(pathObjExpected.pattern?.pattern + " is not available in DeeplinkDFApp. Deeplink: " + schemeCheck.scheme + "://" + hostCheck.host + "/" + pathObjExpected.toPatternString())
+                            ?: throw RuntimeException(pathObjExpected.pattern?.pattern + " is not available in DeeplinkDFApp. Deeplink: " + schemeCheck.scheme + "://" + hostCheck.host + pathObjExpected.toPatternString())
                     if (pathCheck.dfTarget != pathObjExpected.dfTarget) {
                         throw RuntimeException(pathCheck.dfTarget + " should be " + pathObjExpected.dfTarget)
                     }
@@ -271,7 +271,7 @@ open class DeepLinkDFMapperTestFixture {
                 for (pathObj in host.dfpPathObj) {
                     val pathCheckExpected =
                         hostCheckExpected.dfpPathObj.find { it.pattern?.pattern?.mapPatternAllToNull() == pathObj.pattern?.pattern?.mapPatternAllToNull() }
-                            ?: throw RuntimeException(pathObj.pattern?.pattern + " is not available in expected. Deeplink: " + dfpSchemeToDf.scheme + "://" + hostCheckExpected.host + "/" + pathObj.toPatternString())
+                            ?: throw RuntimeException(pathObj.pattern?.pattern + " is not available in expected. Deeplink: " + dfpSchemeToDf.scheme + "://" + hostCheckExpected.host + pathObj.toPatternString())
                     if (pathCheckExpected.dfTarget != pathObj.dfTarget) {
                         throw RuntimeException(pathObj.dfTarget + " should be " + pathCheckExpected.dfTarget)
                     }
@@ -300,7 +300,7 @@ open class DeepLinkDFMapperTestFixture {
 
     @JvmName("hostToPatternString")
     private fun DFPHost.toPatternString(): String {
-        return this.host + "/" + this.dfpPathObj.toPatternString()
+        return this.host + this.dfpPathObj.toPatternString()
     }
 
     @JvmName("listPathToPatternString")

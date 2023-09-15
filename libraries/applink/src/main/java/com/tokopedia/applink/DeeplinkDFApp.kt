@@ -564,6 +564,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/profile-completion", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/edit-profile-info", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/profile-management", USER_PROFILE_SETTINGS),
+        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/webview-kyc", USER_PROFILE_SETTINGS),
 
         // settingbank
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/setting-bank", USER_SETTING_BANK),
@@ -609,6 +610,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/user-identification-info"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/user-identification-only"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/goto-kyc.*"),
+        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/webview-kyc"),
 
         // liveness
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/liveness-detection"),

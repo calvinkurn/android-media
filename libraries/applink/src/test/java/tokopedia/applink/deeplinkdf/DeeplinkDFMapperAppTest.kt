@@ -6,13 +6,18 @@ import com.tokopedia.applink.ApplinkConst.DEALS_ALL_BRANDS
 import com.tokopedia.applink.ApplinkConst.DEALS_CATEGORY
 import com.tokopedia.applink.ApplinkConst.DEALS_HOME
 import com.tokopedia.applink.ApplinkConst.FEEDBACK_FORM
+import com.tokopedia.applink.ApplinkConst.FLIGHT
 import com.tokopedia.applink.ApplinkConst.Gamification.DAILY_GIFT_BOX
 import com.tokopedia.applink.ApplinkConst.Gamification.GIFT_TAP_TAP
+import com.tokopedia.applink.ApplinkConst.PRIVACY_CENTER
 import com.tokopedia.applink.ApplinkConst.PRODUCT_AR
 import com.tokopedia.applink.ApplinkConst.PRODUCT_CREATE_REVIEW
 import com.tokopedia.applink.ApplinkConst.REPUTATION_DETAIL
 import com.tokopedia.applink.ApplinkConst.REVIEW_DETAIL
+import com.tokopedia.applink.ApplinkConst.SALDO
 import com.tokopedia.applink.ApplinkConst.SELLER_REVIEW
+import com.tokopedia.applink.ApplinkConst.SETTING_BANK
+import com.tokopedia.applink.ApplinkConst.SETTING_PROFILE
 import com.tokopedia.applink.ApplinkConst.TOKOPEDIA_REWARD
 import com.tokopedia.applink.ApplinkConst.TOKOPOINTS
 import com.tokopedia.applink.DeeplinkDFApp
@@ -32,17 +37,23 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PEOPLE
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_GAMIFICATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_TOKOPOINTS
+import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
+import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOCHAT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOFOOD
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOPEDIA_NOW
+import com.tokopedia.applink.DeeplinkDFMapper.DF_TRAVEL
+import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_SETTINGS
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel.DASHBOARD_HOTEL
 import com.tokopedia.applink.model.DFPHost
 import com.tokopedia.applink.model.DFPPath
 import com.tokopedia.applink.model.DFPSchemeToDF
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import io.mockk.every
 import org.junit.Assert
 import org.junit.Test
@@ -64,7 +75,7 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `test remove deeplink`() {
-        var list : MutableList<DFPSchemeToDF>? = null
+        var list: MutableList<DFPSchemeToDF>? = null
         every { DeeplinkDFApp.getDeeplinkPattern(any()) }.answers {
             mutableListOf(
                 DFPSchemeToDF(
@@ -279,5 +290,47 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE, DF_TOKOPEDIA_NOW)
     }
 
+    @Test
+    fun `MA df_travel`() {
+        assertEqualDeepLinkMA(DASHBOARD_HOTEL, DF_TRAVEL)
+        assertEqualDeepLinkMA(FLIGHT, DF_TRAVEL)
+    }
+
+    @Test
+    fun `MA df_user_settings`() {
+        every {
+            DeeplinkMapperUser.isProfileManagementM2Activated()
+        } returns true
+
+        every {
+            DeeplinkMapperUser.isRollencePrivacyCenterActivated()
+        } returns true
+
+        every {
+            DeeplinkMapperUser.isRollenceGotoKycActivated()
+        } returns true
+
+        assertEqualDeepLinkMA(SETTING_PROFILE, DF_USER_SETTINGS)
+        assertEqualDeepLinkMA("tokopedia://goto-kyc?projectId=7", DF_USER_SETTINGS)
+        assertEqualDeepLinkMA("tokopedia://kyc?projectId=7", DF_USER_SETTINGS)
+        assertEqualDeepLinkMA(PRIVACY_CENTER, DF_USER_SETTINGS)
+
+        assertEqualDeepLinkMA(SALDO, DF_USER_SETTINGS)
+        assertEqualDeepLinkMA(SETTING_BANK, DF_USER_SETTINGS)
+    }
+
+
+    @Test
+    fun `SA df_seller_front_funnel`() {
+        assertEqualDeepLinkSA("sellerapp://seller-persona", DF_SELLER_FRONT_FUNNEL)
+        assertEqualDeepLinkSA("sellerapp://gold-merchant-statistic-dashboard", DF_SELLER_FRONT_FUNNEL)
+        assertEqualDeepLinkSA("sellerapp://shop-score-detail", DF_SELLER_FRONT_FUNNEL)
+    }
+
+    @Test
+    fun `SA df_talk`() {
+        assertEqualDeepLinkSA("tokopedia://product/2506450520/talk?shop_id=3318861&is_variant_selected=true&available_variants=true",
+            DF_SELLER_TALK)
+    }
 
 }
