@@ -16,6 +16,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -28,7 +29,7 @@ class ShopHomeCardDonationViewHolder(
         itemView.findViewById(R.id.shop_home_card_donation_image)
     private val shopHomeCardDonationDescription: Typography =
         itemView.findViewById(R.id.shop_home_card_donation_description)
-    private val container: CardUnify =
+    private val container: CardUnify2 =
         itemView.findViewById(R.id.shop_home_card_donation_card_container)
     private var cardBackgroundColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
     private var descriptionTextColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
