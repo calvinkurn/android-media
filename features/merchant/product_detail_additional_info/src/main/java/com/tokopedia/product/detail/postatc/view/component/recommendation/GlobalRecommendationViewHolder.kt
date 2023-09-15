@@ -43,7 +43,7 @@ class GlobalRecommendationViewHolder(
             source = RecommendationWidgetSource.PDPAfterATC(
                 anchorProductId = element.productId,
                 isUserLoggedIn = callback.userSession.isLoggedIn,
-                userId = callback.userSession.userId
+                userId = callback.userSession.userId,
                 warehouseId = element.warehouseId
             )
         )
