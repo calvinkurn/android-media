@@ -19,6 +19,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.ArgumentMatchers.anyString
 import java.lang.reflect.Field
 
 /**
@@ -113,14 +114,15 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             val state = BmgmState.Success(getMiniCartDummyData())
             val shopId = anyLong()
             val warehouseId = anyLong()
+            val offerEndData = anyString()
             val miniCartData =
                 privateMiniCartData.get(viewModel) as MutableStateFlow<BmgmState<BmgmMiniCartDataUiModel>>
             miniCartData.value = state
 
-            viewModel.saveCartDataToLocalStorage(shopId, warehouseId)
+            viewModel.saveCartDataToLocalStorage(shopId, warehouseId, offerEndData)
 
             coVerify {
-                localCacheUseCase.saveToLocalCache(state.data, shopId, warehouseId)
+                localCacheUseCase.saveToLocalCache(state.data, shopId, warehouseId, offerEndData)
             }
         }
     }
@@ -133,14 +135,15 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             val state = BmgmState.Loading
             val shopId = anyLong()
             val warehouseId = anyLong()
+            val offerEndData = anyString()
             val miniCartData =
                 privateMiniCartData.get(viewModel) as MutableStateFlow<BmgmState<BmgmMiniCartDataUiModel>>
             miniCartData.value = state
 
-            viewModel.saveCartDataToLocalStorage(shopId, warehouseId)
+            viewModel.saveCartDataToLocalStorage(shopId, warehouseId, offerEndData)
 
             coVerify(inverse = true) {
-                localCacheUseCase.saveToLocalCache(data, shopId, warehouseId)
+                localCacheUseCase.saveToLocalCache(data, shopId, warehouseId, offerEndData)
             }
         }
     }
