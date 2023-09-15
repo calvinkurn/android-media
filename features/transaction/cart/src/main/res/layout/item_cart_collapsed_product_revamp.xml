@@ -23,22 +23,23 @@
 
     <FrameLayout
         android:id="@+id/cv_image_bundle_container"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/fl_image_product"
         app:layout_constraintEnd_toEndOf="@+id/fl_image_product"
         android:background="@drawable/bg_cart_rounded_collapsed_bundle_container" />
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_bundle_icon"
         android:layout_width="20dp"
-        android:layout_height="21dp"
+        android:layout_height="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/cv_image_bundle_container"
         app:layout_constraintEnd_toEndOf="@+id/cv_image_bundle_container"
         app:layout_constraintStart_toStartOf="@id/cv_image_bundle_container"
-        app:layout_constraintTop_toTopOf="@id/cv_image_bundle_container"/>
+        app:layout_constraintTop_toTopOf="@id/cv_image_bundle_container"
+        app:unify_image_corner_radius="0" />
 
 
     <com.tokopedia.unifyprinciples.Typography
