@@ -85,7 +85,7 @@ class TokoNowCategoryMenuViewHolder(
 
     private fun ItemTokopedianowCategoryMenuBinding.showLoadingState() {
         llCategory.hide()
-        rvCategory.hide()
+        recyclerView.hide()
         header.hide()
         categoryShimmering.categoryShimmeringLayout.show()
     }
@@ -96,7 +96,7 @@ class TokoNowCategoryMenuViewHolder(
         categoryShimmering.categoryShimmeringLayout.hide()
         llCategory.hide()
         header.show()
-        rvCategory.show()
+        recyclerView.show()
 
         showCategoryMenu(
             data = data
@@ -134,7 +134,7 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     private fun ItemTokopedianowCategoryMenuBinding.setCategoryList(data: TokoNowCategoryMenuUiModel) {
-        rvCategory.run {
+        recyclerView.run {
             adapter = this@TokoNowCategoryMenuViewHolder.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
@@ -156,7 +156,7 @@ class TokoNowCategoryMenuViewHolder(
             }
 
             categoryShimmering.categoryShimmeringLayout.hide()
-            rvCategory.hide()
+            recyclerView.hide()
             header.hide()
         }
     }
