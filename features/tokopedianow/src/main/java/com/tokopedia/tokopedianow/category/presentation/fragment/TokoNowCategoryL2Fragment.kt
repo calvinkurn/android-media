@@ -182,34 +182,29 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
             val onPageChangeCallback = createOnPageChangeCallback()
             viewPager.registerOnPageChangeCallback(onPageChangeCallback)
             viewPager.offscreenPageLimit = 1
-            viewPager.adapter = viewPagerAdapter
         }
     }
 
     private fun addTabFragments(data: CategoryL2TabUiModel) {
         binding?.apply {
-            val selectedTabPosition = data.selectedTabPosition
-            data.tabList.forEach { tab ->
+            val fragments = data.tabList.mapIndexed { _, tab ->
                 val fragment = TokoNowCategoryL2TabFragment.newInstance(tab)
                 fragment.categoryL2View = this@TokoNowCategoryL2Fragment
-                viewPagerAdapter.addFragment(fragment)
+                fragment
             }
-            setViewPagerCurrentItem(selectedTabPosition + 1)
+            viewPager.adapter = CategoryL2TabViewPagerAdapter(
+                fragment = this@TokoNowCategoryL2Fragment,
+                fragments = fragments
+            )
         }
     }
 
-    private fun setupTabsUnifyMediator(data: CategoryL2TabUiModel) {
+    private fun setupTabsUnify(data: CategoryL2TabUiModel) {
         binding?.apply {
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
-                val title = data.titleList.getOrNull(position).orEmpty()
-                if (title.isNotBlank()) tab.setCustomText(title)
+                tab.setCustomText(data.tabList[position].title)
             }
-        }
-    }
-
-    private fun setSelectedTabPosition(data: CategoryL2TabUiModel) {
-        binding?.tabsUnify?.apply {
-            tabLayout.post {
+            viewPager.post {
                 val selectedTabPosition = data.selectedTabPosition
                 setViewPagerCurrentItem(selectedTabPosition)
                 addOnTabSelectedListener()
@@ -251,7 +246,6 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
     private fun clearAllCategoryTabs() {
         binding?.apply {
             tabsUnify.tabLayout.removeAllTabs()
-            viewPagerAdapter.clearFragments()
         }
     }
 

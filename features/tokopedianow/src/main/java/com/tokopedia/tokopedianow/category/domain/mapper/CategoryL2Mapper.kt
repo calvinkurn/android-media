@@ -18,8 +18,6 @@ import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Categor
 
 object CategoryL2Mapper {
 
-    private const val DEFAULT_INDEX = 0
-
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         HEADLINE_L1
     )
@@ -81,28 +79,23 @@ object CategoryL2Mapper {
             .firstOrNull { it.type == TABS_HORIZONTAL_SCROLL }?.id.orEmpty()
         val categoryDetail = categoryDetailResponse?.categoryDetail
         val categoryChildList = categoryDetail?.data?.child.orEmpty()
-        val categoryNameList = categoryChildList.map { it.name }
-        val categoryL2Ids = categoryChildList.map { it.id }
-
         val tabComponents = componentListResponse.filterTabComponents()
-        val selectedTabPosition = if (categoryL2Ids.contains(categoryIdL2)) {
-            categoryL2Ids.indexOf(categoryIdL2)
-        } else {
-            DEFAULT_INDEX
-        }
 
-        val categoryL2TabList = categoryL2Ids.map {
+        val categoryL2TabList = categoryChildList.map {
             CategoryL2TabData(
+                title = it.name,
                 componentList = tabComponents,
                 categoryIdL1 = categoryIdL1,
-                categoryIdL2 = it,
+                categoryIdL2 = it.id,
                 tickerData = tickerData
             )
         }
 
+        val selectedTabPosition = categoryL2TabList
+            .indexOfFirst { it.categoryIdL2 == categoryIdL2 }
+
         return CategoryL2TabUiModel(
             id = id,
-            titleList = categoryNameList,
             tabList = categoryL2TabList,
             selectedTabPosition = selectedTabPosition,
             state = TokoNowLayoutState.LOADED
@@ -125,7 +118,6 @@ object CategoryL2Mapper {
     private fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
             is CategoryL2HeaderUiModel -> id
-            is CategoryL2TabUiModel -> id
             else -> null
         }
     }
@@ -133,7 +125,6 @@ object CategoryL2Mapper {
     private fun Visitable<*>.getLayoutState(): Int? {
         return when (this) {
             is CategoryL2HeaderUiModel -> state
-            is CategoryL2TabUiModel -> state
             else -> null
         }
     }

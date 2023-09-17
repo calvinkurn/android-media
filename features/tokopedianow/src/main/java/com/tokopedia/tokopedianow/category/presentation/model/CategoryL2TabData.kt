@@ -4,6 +4,7 @@ import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResp
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 
 data class CategoryL2TabData(
+    val title: String = "",
     val categoryIdL1: String = "",
     val categoryIdL2: String = "",
     val tickerData: GetTickerData = GetTickerData(),
