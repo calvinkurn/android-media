@@ -2,11 +2,14 @@ package com.tokopedia.mvcwidget.views
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MVCActivityCallbacks
 import com.tokopedia.mvcwidget.MvcData
@@ -34,6 +37,8 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     var mvcTextContainerSecond: MvcTextContainer?
     var mvcContainer: View?
     var imageCouponBackground: SquareImageView?
+    var imgIconChevron: AppCompatImageView?
+    var mvcBgImg: AppCompatImageView?
 
     var mvcAnimationHandler: MvcAnimationHandler
     private var startActivityForResultFunction: (() -> Unit)? = null
@@ -56,7 +61,10 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         mvcTextContainerFirst = this.findViewById(R.id.mvc_text_container_first)
         mvcTextContainerSecond = this.findViewById(R.id.mvc_text_container_second)
         imageCouponBackground = this.findViewById(R.id.image_coupon_bg)
+        imgIconChevron = this.findViewById(R.id.image_chevron)
+        mvcBgImg = this.findViewById(R.id.mvc_bg_img)
 
+        setWidgetTheme()
         setClicks()
 
         mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst), WeakReference(mvcTextContainerSecond))
@@ -124,6 +132,26 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 mvcAnimationHandler.startTimer()
             }
         }
+    }
+
+    private fun setWidgetTheme() {
+        imgIconChevron?.setColorFilter(
+            ContextCompat.getColor(context, R.color.mvc_dms_static_nn900)
+        )
+        imgIconChevron?.setColorFilter(Color.parseColor("#2E3137"), PorterDuff.Mode.SRC_IN)
+        imgIconChevron?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        mvcBgImg?.setColorFilter(
+            Color.parseColor("#FFFFFF"),
+            PorterDuff.Mode.SRC_IN
+        )
+
+        // First container
+        mvcTextContainerFirst?.tvTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+        mvcTextContainerFirst?.tvSubTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+
+        // Second container
+        mvcTextContainerSecond?.tvTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+        mvcTextContainerSecond?.tvSubTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
     }
 
     fun sendImpressionTrackerForPdp(){
