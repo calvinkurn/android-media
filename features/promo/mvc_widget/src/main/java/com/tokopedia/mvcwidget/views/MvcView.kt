@@ -22,7 +22,6 @@ import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.user.session.UserSession
 import java.lang.ref.WeakReference
 
-
 /*
 * 1. It has internal Padding of 6dp to render its shadows
 * */
@@ -43,6 +42,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     var mvcAnimationHandler: MvcAnimationHandler
     private var startActivityForResultFunction: (() -> Unit)? = null
     private val mvcActivityCallbacks = MVCActivityCallbacks()
+    private var isOverrideWidgetTheme: Boolean = false
 
     var shopId: String = ""
     var additionalParamJson = ""
@@ -96,12 +96,13 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         (context.applicationContext as Application).unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
     }
 
-    fun setData(mvcData: MvcData,
-                shopId: String,
-                @MvcSource source: Int,
-                startActivityForResultFunction: (() -> Unit)? = null,
-                mvcTrackerImpl: MvcTrackerImpl = DefaultMvcTrackerImpl(),
-                productId: String = ""
+    fun setData(
+        mvcData: MvcData,
+        shopId: String,
+        @MvcSource source: Int,
+        startActivityForResultFunction: (() -> Unit)? = null,
+        mvcTrackerImpl: MvcTrackerImpl = DefaultMvcTrackerImpl(),
+        productId: String = ""
     ) {
         this.source = source
         this.shopId = shopId
@@ -135,11 +136,18 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     }
 
     private fun setWidgetTheme() {
+        if (!isOverrideWidgetTheme) return
+
         imgIconChevron?.setColorFilter(
             ContextCompat.getColor(context, R.color.mvc_dms_static_nn900)
         )
         imgIconChevron?.setColorFilter(Color.parseColor("#2E3137"), PorterDuff.Mode.SRC_IN)
-        imgIconChevron?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        imgIconChevron?.setBackgroundColor(
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        )
         mvcBgImg?.setColorFilter(
             Color.parseColor("#FFFFFF"),
             PorterDuff.Mode.SRC_IN
@@ -154,9 +162,13 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         mvcTextContainerSecond?.tvSubTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
     }
 
-    fun sendImpressionTrackerForPdp(){
-        if(this.shopId.isNotEmpty()){
-            mvcTracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId, isTokomember)
+    fun sendImpressionTrackerForPdp() {
+        if (this.shopId.isNotEmpty()) {
+            mvcTracker.tokomemberImpressionOnPdp(this.shopId, UserSession(context).userId, isTokomember)
         }
+    }
+
+    fun setIsOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
+        this.isOverrideWidgetTheme = isOverrideWidgetTheme
     }
 }
