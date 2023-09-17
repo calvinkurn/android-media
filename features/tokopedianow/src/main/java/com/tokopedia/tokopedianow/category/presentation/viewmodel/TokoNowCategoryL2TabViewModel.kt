@@ -33,12 +33,12 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.add
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductRecommendation
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.findItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.findProductCardItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.getProductIndex
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapProductAdsCarousel
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToCategoryTabLayout
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapCategoryTabLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToQuickFilter
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeLoadMoreLoading
@@ -365,18 +365,13 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             val productList = getProductResponse.searchProduct.data.productList
 
             if(productList.isNotEmpty()) {
-                visitableList.clear()
-                visitableList.addTicker(categoryIdL2, tickerData)
-                visitableList.mapToCategoryTabLayout(components)
+                visitableList.mapCategoryTabLayout(
+                    categoryIdL2,
+                    tickerData,
+                    components
+                )
                 updateVisitableListLiveData()
-
-                visitableList.filterNotLoadedLayout().forEach {
-                    when (it) {
-                        is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
-                        is TokoNowAdsCarouselUiModel -> getAdsProductListAsync(it).await()
-                        is CategoryProductListUiModel -> addProductList(it, getProductResponse)
-                    }
-                }
+                getComponentsData(getProductResponse)
             } else {
                 showEmptyState(getProductResponse)
             }
@@ -388,13 +383,23 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getComponentsData(getProductResponse: AceSearchProductModel) {
+        visitableList.filterNotLoadedLayout().forEach {
+            when (it) {
+                is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
+                is TokoNowAdsCarouselUiModel -> getAdsProductListAsync(it).await()
+                is CategoryProductListUiModel -> addProductList(it, getProductResponse)
+            }
+        }
+    }
+
     private fun loadMore() {
         if (getProductJob?.isCompleted != false && !isAllProductShown) {
             launchCatchError(block = {
                 showLoadMoreLoading()
-                val getCategoryProductResponse = getCategoryProduct()
-                val productList = getCategoryProductResponse.searchProduct.data.productList
-                addProductCardItems(getCategoryProductResponse)
+                val getProductResponse = getCategoryProduct()
+                val productList = getProductResponse.searchProduct.data.productList
+                addProductCardItems(getProductResponse)
                 isAllProductShown = productList.isEmpty()
                 hideLoadMoreLoading()
                 page++
@@ -408,9 +413,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun showEmptyState(aceSearchResponse: AceSearchProductModel) {
         launchCatchError(block = {
             val violation = aceSearchResponse.searchProduct.data.violation
-            val quickFilterItem = CategoryQuickFilterUiModel(
-                id = CategoryStaticLayoutId.QUICK_FILTER
-            )
+            val quickFilterItem = visitableList.findItem<CategoryQuickFilterUiModel>()
+                ?: CategoryQuickFilterUiModel(id = CategoryStaticLayoutId.QUICK_FILTER)
 
             visitableList.clear()
             visitableList.add(quickFilterItem)

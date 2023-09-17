@@ -70,6 +70,18 @@ class CategoryQuickFilterViewHolder(
         }
     }
 
+    override fun bind(element: CategoryQuickFilterUiModel, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() != null) {
+            binding?.apply {
+                tokoNowSearchCategoryQuickFilter.chipItems?.forEachIndexed { index, filterItem ->
+                    val item = element.itemList[index]
+                    filterItem.title = item.filter.title
+                    filterItem.refChipUnify.chipType = item.chipType
+                }
+            }
+        }
+    }
+
     private fun openL3FilterPage(filter: Filter) {
         listener?.openL3FilterPage(filter)
     }

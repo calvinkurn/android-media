@@ -46,10 +46,19 @@ object CategoryL2TabMapper {
         PRODUCT_LIST_INFINITE_SCROLL
     )
 
-    fun MutableList<Visitable<*>>.mapToCategoryTabLayout(components: List<Component>) {
+    fun MutableList<Visitable<*>>.mapCategoryTabLayout(
+        categoryIdL2: String,
+        tickerData: GetTickerData?,
+        components: List<Component>
+    ) {
+        val quickFilter = findItem<CategoryQuickFilterUiModel>()
+
+        clear()
+        addTicker(categoryIdL2, tickerData)
+
         components.filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }.forEach {
             when (it.type) {
-                PRODUCT_LIST_FILTER -> addQuickFilter(it)
+                PRODUCT_LIST_FILTER -> addQuickFilter(it, quickFilter)
                 PRODUCT_LIST_INFINITE_SCROLL -> addProductList(it)
                 FEATURED_PRODUCT -> addProductAdsCarousel(it.id, true)
             }
@@ -102,6 +111,10 @@ object CategoryL2TabMapper {
                 hasBlockedAddToCart = hasBlockedAddToCart
             )
         }
+    }
+
+    inline fun<reified T> MutableList<Visitable<*>>.findItem(): T? {
+        return find { it is T } as? T
     }
 
     fun MutableList<Visitable<*>>.addProductCardItems(
@@ -214,8 +227,15 @@ object CategoryL2TabMapper {
         add(recommendationUiModel)
     }
 
-    private fun MutableList<Visitable<*>>.addQuickFilter(response: Component) {
-        add(CategoryQuickFilterUiModel(id = response.id))
+    private fun MutableList<Visitable<*>>.addQuickFilter(
+        response: Component,
+        quickFilter: CategoryQuickFilterUiModel?
+    ) {
+        if(quickFilter == null) {
+            add(CategoryQuickFilterUiModel(id = response.id))
+        } else {
+            add(quickFilter.copy(state = TokoNowLayoutState.LOADING))
+        }
     }
 
     private fun MutableList<Visitable<*>>.addProductList(response: Component) {

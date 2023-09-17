@@ -14,4 +14,11 @@ data class CategoryQuickFilterUiModel(
     override fun type(typeFactory: CategoryL2TabAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun getChangePayload(newItem: CategoryQuickFilterUiModel): Any? {
+        return when {
+            itemList != newItem.itemList -> true
+            else -> null
+        }
+    }
 }
