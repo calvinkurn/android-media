@@ -67,11 +67,11 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
 
     private var binding by autoClearedNullable<FragmentTokopedianowCategoryL2Binding>()
 
-    private val viewPagerAdapter by lazy { CategoryL2TabViewPagerAdapter(this) }
+    private val tabSelectedListener by lazy { createTabSelectedListener() }
 
     override val viewModel: TokoNowCategoryL2ViewModel by lazy {
         ViewModelProvider(
-            requireActivity(),
+            this,
             viewModelFactory
         )[TokoNowCategoryL2ViewModel::class.java]
     }
@@ -103,7 +103,6 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
         setupAppBarLayout()
         setupViewPager()
         setupTracker()
-        onViewCreated()
     }
 
     override fun initInjector() {
@@ -158,16 +157,13 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
 
     private fun observeLiveData() {
         observe(viewModel.categoryTabLiveData) { data ->
+            removeTabSelectedListener()
             clearAllCategoryTabs()
             addTabFragments(data)
-            setupTabsUnifyMediator(data)
-            setSelectedTabPosition(data)
-            setupTabsUnify()
+            setupTabsUnify(data)
         }
 
         observe(viewModel.onTabSelectedLiveData) {
-            val position = it.selectedTabPosition
-            setViewPagerCurrentItem(position)
             trackClickCategoryTab(it)
         }
     }
@@ -187,23 +183,6 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
             viewPager.registerOnPageChangeCallback(onPageChangeCallback)
             viewPager.offscreenPageLimit = 1
             viewPager.adapter = viewPagerAdapter
-        }
-    }
-
-    private fun setupTabsUnify() {
-        binding?.apply {
-            tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
-            tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    viewModel.onTabSelected(tab.position)
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {
-                }
-            })
         }
     }
 
@@ -232,8 +211,35 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
         binding?.tabsUnify?.apply {
             tabLayout.post {
                 val selectedTabPosition = data.selectedTabPosition
-                viewPagerAdapter.setSelectedTabPosition(selectedTabPosition)
-                tabLayout.getTabAt(selectedTabPosition)?.select()
+                setViewPagerCurrentItem(selectedTabPosition)
+                addOnTabSelectedListener()
+            }
+            tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+        }
+    }
+
+    private fun addOnTabSelectedListener() {
+        binding?.apply {
+            tabsUnify.tabLayout.addOnTabSelectedListener(tabSelectedListener)
+        }
+    }
+
+    private fun removeTabSelectedListener() {
+        binding?.apply {
+            tabsUnify.tabLayout.removeOnTabSelectedListener(tabSelectedListener)
+        }
+    }
+
+    private fun createTabSelectedListener(): OnTabSelectedListener {
+        return object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                viewModel.onTabSelected(tab.position)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         }
     }
@@ -278,10 +284,6 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
             categoryIdL2,
             viewModel.getWarehouseIds()
         )
-    }
-
-    private fun onViewCreated() {
-        viewModel.onViewCreated()
     }
 
     private fun createHeaderListener(): CategoryL2HeaderListener {

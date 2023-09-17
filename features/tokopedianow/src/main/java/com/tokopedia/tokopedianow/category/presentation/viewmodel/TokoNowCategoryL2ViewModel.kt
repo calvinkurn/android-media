@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -154,6 +155,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     }
 
     fun onTabSelected(position: Int) {
+        Log.e("onTabSelected", "$position")
         val categoryL2TabData = categoryTab.tabList[position]
         categoryIdL2 = categoryL2TabData.categoryIdL2
         categoryTab.selectedTabPosition = position
