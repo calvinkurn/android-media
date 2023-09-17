@@ -84,12 +84,16 @@ class ShopHomeVoucherViewHolder(
             }
         } else {
             if (model.data != null && model.data.isShown == true) {
-                if (model.data.animatedInfoList?.size.orZero() > 1)
+                if (model.data.animatedInfoList?.size.orZero() > 1) {
                     shopHomeVoucherViewHolderListener.onVoucherTokoMemberInformationImpression(model, adapterPosition)
-                else
+                } else {
                     shopHomeVoucherViewHolderListener.onVoucherImpression(model, adapterPosition)
+                }
                 merchantVoucherShimmering?.hide()
-                merchantVoucherWidget?.show()
+                merchantVoucherWidget?.apply {
+                    setIsOverrideWidgetTheme(isOverrideWidgetTheme = model.header.isOverrideTheme)
+                    show()
+                }
                 merchantVoucherReload?.hide()
                 merchantVoucherUiModel = model
 
