@@ -42,7 +42,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     var mvcAnimationHandler: MvcAnimationHandler
     private var startActivityForResultFunction: (() -> Unit)? = null
     private val mvcActivityCallbacks = MVCActivityCallbacks()
-    private var isOverrideWidgetTheme: Boolean = false
+//    private var isOverrideWidgetTheme: Boolean = false
 
     var shopId: String = ""
     var additionalParamJson = ""
@@ -64,7 +64,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         imgIconChevron = this.findViewById(R.id.image_chevron)
         mvcBgImg = this.findViewById(R.id.mvc_bg_img)
 
-        setWidgetTheme()
+//        setWidgetTheme()
         setClicks()
 
         mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst), WeakReference(mvcTextContainerSecond))
@@ -135,7 +135,44 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         }
     }
 
-    private fun setWidgetTheme() {
+//    private fun setWidgetTheme() {
+//        if (!isOverrideWidgetTheme) return
+//
+//        imgIconChevron?.setColorFilter(
+//            ContextCompat.getColor(context, R.color.mvc_dms_static_nn900)
+//        )
+//        imgIconChevron?.setColorFilter(Color.parseColor("#2E3137"), PorterDuff.Mode.SRC_IN)
+//        imgIconChevron?.setBackgroundColor(
+//            ContextCompat.getColor(
+//                context,
+//                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+//            )
+//        )
+//        mvcBgImg?.setColorFilter(
+//            Color.parseColor("#FFFFFF"),
+//            PorterDuff.Mode.SRC_IN
+//        )
+//
+//        // First container
+//        mvcTextContainerFirst?.tvTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+//        mvcTextContainerFirst?.tvSubTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+//
+//        // Second container
+//        mvcTextContainerSecond?.tvTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+//        mvcTextContainerSecond?.tvSubTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+//    }
+
+    fun sendImpressionTrackerForPdp() {
+        if (this.shopId.isNotEmpty()) {
+            mvcTracker.tokomemberImpressionOnPdp(this.shopId, UserSession(context).userId, isTokomember)
+        }
+    }
+
+//    fun setIsOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
+//        this.isOverrideWidgetTheme = isOverrideWidgetTheme
+//    }
+
+    fun setOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
         if (!isOverrideWidgetTheme) return
 
         imgIconChevron?.setColorFilter(
@@ -160,15 +197,5 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         // Second container
         mvcTextContainerSecond?.tvTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
         mvcTextContainerSecond?.tvSubTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
-    }
-
-    fun sendImpressionTrackerForPdp() {
-        if (this.shopId.isNotEmpty()) {
-            mvcTracker.tokomemberImpressionOnPdp(this.shopId, UserSession(context).userId, isTokomember)
-        }
-    }
-
-    fun setIsOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
-        this.isOverrideWidgetTheme = isOverrideWidgetTheme
     }
 }

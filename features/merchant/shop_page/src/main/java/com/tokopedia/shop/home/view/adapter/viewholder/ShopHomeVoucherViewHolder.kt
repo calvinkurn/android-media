@@ -91,7 +91,8 @@ class ShopHomeVoucherViewHolder(
                 }
                 merchantVoucherShimmering?.hide()
                 merchantVoucherWidget?.apply {
-                    setIsOverrideWidgetTheme(isOverrideWidgetTheme = model.header.isOverrideTheme)
+                    // setIsOverrideWidgetTheme(isOverrideWidgetTheme = model.header.isOverrideTheme)
+                    setOverrideWidgetTheme(isOverrideWidgetTheme = true) // model.header.isOverrideTheme)
                     show()
                 }
                 merchantVoucherReload?.hide()
