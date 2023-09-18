@@ -164,19 +164,15 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
         when (currContent.content.type) {
             IMAGE -> {
-                binding.layoutStoriesContent.ivStoriesDetailContent.apply {
-                    loadImage(
-                        currContent.content.data,
-                        listener = object : ImageLoaderStateListener {
-                            override fun successLoad() {
-                                contentIsLoaded()
-                            }
+                binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
+                    currContent.content.data,
+                    listener = object : ImageLoaderStateListener {
+                        override fun successLoad() { contentIsLoaded() }
 
-                            override fun failedLoad() {
-                                // TODO add some action when fail load image?
-                            }
-                        })
-                }
+                        override fun failedLoad() {
+                            // TODO add some action when fail load image?
+                        }
+                    })
             }
             VIDEO -> {
                 // TODO handle video content here
