@@ -4,14 +4,6 @@ import android.content.Context
 import android.net.Uri
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import com.tokopedia.applink.ApplinkConst.ADD_FINGERPRINT_ONBOARDING
-import com.tokopedia.applink.ApplinkConst.BRAND_LIST
-import com.tokopedia.applink.ApplinkConst.BRAND_LIST_WITH_SLASH
-import com.tokopedia.applink.ApplinkConst.BUYER_ORDER_EXTENSION
-import com.tokopedia.applink.ApplinkConst.BUY_MORE_GET_MORE_OLP
-import com.tokopedia.applink.ApplinkConst.CHANGE_INACTIVE_PHONE
-import com.tokopedia.applink.ApplinkConst.CONTACT_US
-import com.tokopedia.applink.ApplinkConst.CONTACT_US_NATIVE
 import com.tokopedia.applink.ApplinkConst.DFFALLBACKURL_KEY
 import com.tokopedia.applink.DeeplinkDFApp.getDeeplinkDFPatternList
 import com.tokopedia.applink.DeeplinkDFApp.removeDFModuleFromList
