@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view
 
 import android.content.Intent
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.channel.ConversationsChannel
@@ -40,7 +41,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -89,15 +89,16 @@ class UniversalInboxViewModel @Inject constructor(
     )
     val errorUiState = _errorUiState.asSharedFlow()
 
-    private var driverJob: Job? = null
+    @VisibleForTesting
+    var driverJob: Job? = null
 
     private var page = 1
 
     fun setupViewModelObserver() {
         _actionFlow.process()
-        observeInboxMenuWidgetMetaAndCounterFlow()
         observeInboxMenuLocalFlow()
         observeDriverChannelFlow()
+        observeInboxMenuWidgetMetaAndCounterFlow()
         observeProductRecommendationFlow()
     }
 
@@ -123,9 +124,6 @@ class UniversalInboxViewModel @Inject constructor(
                 }
 
                 // General process
-                is UniversalInboxAction.ShowErrorMessage -> {
-                    showErrorMessage(it.error)
-                }
                 is UniversalInboxAction.RefreshPage -> {
                     removeAllProductRecommendation(false)
                     loadInboxMenuAndWidgetMeta()
@@ -176,10 +174,6 @@ class UniversalInboxViewModel @Inject constructor(
                 UniversalInboxCombineState(menu, counter, driverChannel)
             }
                 .filterNotNull()
-                .catch {
-                    Timber.d(it)
-                    showErrorMessage(Pair(it, ::observeInboxMenuWidgetMetaAndCounterFlow.name))
-                }
                 .collectLatest {
                     withContext(dispatcher.default) {
                         handleGetMenuAndCounterResult(it)
@@ -206,6 +200,7 @@ class UniversalInboxViewModel @Inject constructor(
 
             // Handle error case for menu
             (result.menu is Result.Error) -> {
+                setFallbackInboxMenu()
                 setLoadingInboxMenu(false)
                 setErrorWidgetMeta()
                 showErrorMessage(
@@ -286,10 +281,6 @@ class UniversalInboxViewModel @Inject constructor(
     private fun observeProductRecommendationFlow() {
         viewModelScope.launch {
             getRecommendationUseCase.observe()
-                .catch {
-                    Timber.d(it)
-                    Result.Error(it)
-                }
                 .collectLatest {
                     withContext(dispatcher.default) {
                         handleResultProductRecommendation(it)
@@ -303,7 +294,15 @@ class UniversalInboxViewModel @Inject constructor(
     ) {
         when (result) {
             is Result.Success -> {
-                onSuccessGetProductRecommendation(result.data)
+                _productRecommendationState.update {
+                    it.copy(
+                        isLoading = false,
+                        title = result.data.title,
+                        productRecommendation = result.data.recommendationItemList.map { item ->
+                            UniversalInboxRecommendationUiModel(item)
+                        }
+                    )
+                }
                 page++
             }
             is Result.Error -> {
@@ -316,17 +315,6 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetProductRecommendation(
-        response: RecommendationWidget
-    ) {
-        try {
-            updateProductRecommendation(response)
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            showErrorMessage(Pair(throwable, ::onSuccessGetProductRecommendation.name))
-        }
-    }
-
     /**
      * Actions
      */
@@ -335,7 +323,7 @@ class UniversalInboxViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // Fetch inbox menu & widget from remote
-                getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta(Unit)
+                getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta()
                 refreshCounter()
             } catch (throwable: Throwable) {
                 setFallbackInboxMenu()
@@ -406,20 +394,6 @@ class UniversalInboxViewModel @Inject constructor(
     private fun loadProductRecommendation() {
         viewModelScope.launch {
             getRecommendationUseCase.fetchProductRecommendation(getRecommendationParam(page))
-        }
-    }
-
-    private fun updateProductRecommendation(response: RecommendationWidget) {
-        viewModelScope.launch {
-            _productRecommendationState.update {
-                it.copy(
-                    isLoading = false,
-                    title = response.title,
-                    productRecommendation = response.recommendationItemList.map { item ->
-                        UniversalInboxRecommendationUiModel(item)
-                    }
-                )
-            }
         }
     }
 

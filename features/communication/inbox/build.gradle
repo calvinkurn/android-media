@@ -102,6 +102,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.testCoreKtx
+    testImplementation rootProject.ext.testDependencies.turbine
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest

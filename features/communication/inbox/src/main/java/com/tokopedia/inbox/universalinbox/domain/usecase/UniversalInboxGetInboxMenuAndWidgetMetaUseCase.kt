@@ -57,13 +57,13 @@ class UniversalInboxGetInboxMenuAndWidgetMetaUseCase @Inject constructor(
 
     fun observe(): Flow<Result<UniversalInboxWrapperResponse?>> = menuFlow
 
-    suspend fun fetchInboxMenuAndWidgetMeta(params: Unit) {
+    suspend fun fetchInboxMenuAndWidgetMeta() {
         withContext(dispatcher.io) {
             menuFlow.emit(Result.Loading)
             try {
                 val result = repository.request<Unit, UniversalInboxWrapperResponse>(
                     graphqlQuery(),
-                    params
+                    Unit
                 )
                 menuFlow.emit(Result.Success(result))
                 updateCache(result)
@@ -100,10 +100,12 @@ class UniversalInboxGetInboxMenuAndWidgetMetaUseCase @Inject constructor(
     ) {
         // try-catch block is used to prevent obstructing the flow
         // in case of a failure to save to the cache
-        try {
-            localRepository.setInboxMenuCache(value)
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
+        withContext(dispatcher.io) {
+            try {
+                localRepository.setInboxMenuCache(value)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+            }
         }
     }
 }
