@@ -1155,6 +1155,9 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
             }
         )
 
+        val courier = helper.secondCourierFirstDuration
+        courier.productData.error = helper.errorProductData
+
         // When
         orderSummaryPageViewModel.chooseCourier(helper.secondCourierFirstDuration)
 
