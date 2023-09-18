@@ -64,8 +64,7 @@ internal class FilterGeneralDetailAdapter(
 
         private fun bindOnClickListener(option: IOption) {
             binding?.filterDetailContainer?.setOnClickListener {
-                val newIsSelected = getNewIsSelected(option)
-                callback.onOptionClick(option, newIsSelected, adapterPosition)
+                callback.onOptionClick(option, getNewIsSelected(option), bindingAdapterPosition)
             }
         }
 
@@ -109,7 +108,7 @@ internal class FilterGeneralDetailAdapter(
             filterDetailRadio.shouldShowWithAction(option.isTypeRadio) {
                 filterDetailRadio.isChecked = option.isSelected()
                 filterDetailRadio.setOnClickListener {
-                    callback.onOptionClick(option, !option.isSelected(), bindingAdapterPosition)
+                    callback.onOptionClick(option, getNewIsSelected(option), bindingAdapterPosition)
                 }
             }
         }

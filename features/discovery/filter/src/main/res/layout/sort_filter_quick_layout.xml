@@ -10,7 +10,7 @@
         android:id="@+id/sortFilterQuickRecyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:paddingStart="16dp"
         android:clipToPadding="false"
         app:layout_constraintStart_toStartOf="parent"
