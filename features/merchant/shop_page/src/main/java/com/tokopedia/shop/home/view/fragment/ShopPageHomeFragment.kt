@@ -402,6 +402,7 @@ open class ShopPageHomeFragment :
     private var topView: View? = null
     private var centerView: View? = null
     private var bottomView: View? = null
+    private var stickyHeaderView: StickySingleHeaderView? = null
     private val imageBackgroundPattern: ImageUnify? by lazy {
         viewBinding?.imageBackgroundPattern
     }
@@ -867,11 +868,13 @@ open class ShopPageHomeFragment :
             getRecyclerView(view)?.let {
                 if (it.itemDecorationCount == Int.ZERO) {
                     context?.let { ctx ->
-                        it.addItemDecoration(ShopFestivityRvItemDecoration(
-                            ctx,
-                            getBodyBackgroundHexColor(),
-                            isOverrideTheme()
-                        ))
+                        it.addItemDecoration(
+                            ShopFestivityRvItemDecoration(
+                                ctx,
+                                getBodyBackgroundHexColor(),
+                                isOverrideTheme()
+                            )
+                        )
                     }
                 }
             }
