@@ -97,13 +97,15 @@ class WidgetCatalogAdapter(
             }
 
             if (indexPartOfNavigation >= Int.ZERO){
-                navigation.currentSelectTab = indexPartOfNavigation
-                notifyItemChanged(indexNavigation, navigation)
-                refreshSticky()
+                if (indexPartOfNavigation != navigation.currentSelectTab){
+                    navigation.currentSelectTab = indexPartOfNavigation
+                    visitables[indexNavigation] = stickyNav
+                    notifyItemChanged(indexNavigation, navigation)
+                    refreshSticky()
+                }
             }
 
         }
-
     }
 
     fun findPositionWidget(widgetName: String): Int {
@@ -117,7 +119,6 @@ class WidgetCatalogAdapter(
         val index = visitables.indexOfFirst {
             it is StickyNavigationUiModel
         }
-
         return index
     }
 

@@ -1,8 +1,6 @@
 package com.tokopedia.catalog.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -249,7 +247,7 @@ class CatalogProductListFragment :
             when (it) {
                 is Success -> {
                     products.addAll(it.data)
-                    val hasNextPage = products.isNotEmpty()
+                    val hasNextPage = it.data.isNotEmpty()
                     renderList(products, hasNextPage)
                 }
 
