@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,14 +21,15 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.VIDEO
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.STORY_GROUP_ID
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
+import com.tokopedia.stories.view.utils.loadImage
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -68,7 +70,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
         get() = arguments?.getString(STORY_GROUP_ID).orEmpty()
 
     private val isEligiblePage: Boolean
-        get() = groupId == viewModel.mGroupId
+        get() = groupId == viewModel.mGroup.groupId
 
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
@@ -96,7 +98,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+            viewModel.storiesMainData.withCache().collectLatest { (prevState, state) ->
                 renderStoriesGroupHeader(prevState, state)
                 renderStoriesDetail(
                     prevState?.groupItems?.get(prevState.selectedGroupPosition)?.detail,
@@ -108,7 +110,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun setupUiEventObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiEvent.collect { event ->
+            viewModel.storiesEvent.collect { event ->
                 when (event) {
                     is StoriesUiEvent.ErrorDetailPage -> {
                         if (!isEligiblePage) return@collect
@@ -141,11 +143,11 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun renderStoriesDetail(
-        prevState: StoriesDetailUiModel?,
-        state: StoriesDetailUiModel
+        prevState: StoriesDetail?,
+        state: StoriesDetail
     ) {
         if (prevState == state ||
-            state == StoriesDetailUiModel() ||
+            state == StoriesDetail() ||
             state.selectedGroupId != groupId
         ) return
 
@@ -169,8 +171,17 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
         when (currContent.content.type) {
             IMAGE -> {
                 binding.layoutStoriesContent.ivStoriesDetailContent.apply {
-                    setImageUrl(currContent.content.data)
-                    onUrlLoaded = { contentIsLoaded() }
+                    loadImage(
+                        currContent.content.data,
+                        listener = object : ImageLoaderStateListener {
+                            override fun successLoad() {
+                                contentIsLoaded()
+                            }
+
+                            override fun failedLoad() {
+                                // TODO add some action when fail load image?
+                            }
+                        })
                 }
             }
             VIDEO -> {
@@ -179,7 +190,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
         }
     }
 
-    private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
+    private fun storiesDetailsTimer(state: StoriesDetail) {
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

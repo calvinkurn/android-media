@@ -66,7 +66,7 @@ class StoriesGroupAdapter(
 
         fun bind(data: StoriesGroupHeader) {
             binding.imgGroupImage.setImageUrl(data.image)
-            binding.txtGroupTitle.text = data.title
+            binding.txtGroupTitle.text = data.groupName
 
             if (data.isSelected) selectedView()
             else unSelectedView()

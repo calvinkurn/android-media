@@ -20,26 +20,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
 import kotlinx.coroutines.delay
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @Composable
 fun StoriesDetailTimer(
     currentPosition: Int,
     itemCount: Int,
-    data: StoriesDetailItemUiModel,
+    data: StoriesDetailItem,
     timerFinished: () -> Unit,
 ) {
-    val anim = remember(
-        currentPosition,
-        data.id,
-        data.resetValue,
-    ) { Animatable(INITIAL_ANIMATION) }
+    val anim = remember(data.id, data.resetValue) { Animatable(INITIAL_ANIMATION) }
 
     LaunchedEffect(data) {
         when (data.event) {
@@ -72,34 +67,36 @@ private fun StoriesDetailTimerContent(
     currentPosition: Int,
     progress: Float,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .background(Color.Transparent)
-            .height(4.dp),
-    ) {
-        for (index in 0 until count) {
-            Row(
-                modifier = Modifier
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(60))
-                    .weight(1f)
-                    .background(colorResource(id = unifyprinciplesR.color.Unify_Static_White).copy(alpha = 0.4f))
-            ) {
-                Box(
+    NestTheme(darkTheme = false) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .background(Color.Transparent)
+                .height(4.dp),
+        ) {
+            for (index in 0 until count) {
+                Row(
                     modifier = Modifier
-                        .background(colorResource(id = unifyprinciplesR.color.Unify_Static_White))
-                        .fillMaxHeight().let {
-                            when (index) {
-                                currentPosition -> it.fillMaxWidth(progress)
-                                in 0..currentPosition -> it.fillMaxWidth(1f)
-                                else -> it
-                            }
-                        },
-                )
+                        .height(4.dp)
+                        .clip(RoundedCornerShape(60))
+                        .weight(1f)
+                        .background(NestTheme.colors.NN._100.copy(alpha = 0.4f))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(NestTheme.colors.NN._100)
+                            .fillMaxHeight().let {
+                                when (index) {
+                                    currentPosition -> it.fillMaxWidth(progress)
+                                    in 0..currentPosition -> it.fillMaxWidth(1f)
+                                    else -> it
+                                }
+                            },
+                    )
+                }
+                Spacer(modifier = Modifier.width(4.dp))
             }
-            Spacer(modifier = Modifier.width(4.dp))
         }
     }
 }
@@ -110,7 +107,7 @@ internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
         currentPosition = 0,
         itemCount = 3,
-        data = StoriesDetailItemUiModel()
+        data = StoriesDetailItem()
     ) { }
 }
 
