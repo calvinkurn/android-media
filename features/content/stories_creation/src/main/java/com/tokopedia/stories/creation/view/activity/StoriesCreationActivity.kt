@@ -92,7 +92,6 @@ class StoriesCreationActivity : BaseActivity() {
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                     bottomSheetStateHolder.initState()
-                    viewModel.submitAction(StoriesCreationAction.Prepare)
 
                     NestBottomSheetScreen(
                         state = bottomSheetStateHolder.sheetState,
@@ -145,6 +144,8 @@ class StoriesCreationActivity : BaseActivity() {
                 }
             }
         }
+
+        viewModel.submitAction(StoriesCreationAction.Prepare)
     }
 
     private fun observeUiEvent() {
