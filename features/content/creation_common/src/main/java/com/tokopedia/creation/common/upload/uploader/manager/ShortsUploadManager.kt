@@ -91,6 +91,7 @@ class ShortsUploadManager @Inject constructor(
         uploadData: CreationUploadQueue,
         listener: CreationUploadManagerListener
     ) {
+        println("JOE LOG ShortsUploadManager execute")
         this.uploadData = uploadData
         this.mListener = listener
 
@@ -123,6 +124,8 @@ class ShortsUploadManager @Inject constructor(
                     updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
                 } catch (e: Exception) {
                 }
+
+                println("JOE LOG ERROR $e")
 
                 broadcastFail()
             }
@@ -244,7 +247,7 @@ class ShortsUploadManager @Inject constructor(
     private suspend fun broadcastInit(uploadData: CreationUploadQueue) {
         broadcastProgress(CreationUploadConst.PROGRESS_INIT)
         notificationManager.init(uploadData)
-        mListener?.setForegroundAsync(notificationManager.onStart())
+        mListener?.setupForegroundNotification(notificationManager.onStart())
     }
 
     private suspend fun broadcastComplete() {
@@ -260,17 +263,7 @@ class ShortsUploadManager @Inject constructor(
     }
 
     private suspend fun broadcastProgress(progress: Int) {
-        val data = workDataOf(
-            CreationUploadConst.PROGRESS to progress,
-            CreationUploadConst.UPLOAD_DATA to uploadData.toString()
-        )
-
-        mListener?.setProgress(
-            workDataOf(
-                CreationUploadConst.PROGRESS to progress,
-                CreationUploadConst.UPLOAD_DATA to uploadData.toString()
-            )
-        )
+        mListener?.setProgress(uploadData, progress)
     }
 
     private fun getSourceId(uploadType: UploadType): String {

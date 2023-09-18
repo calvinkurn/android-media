@@ -65,12 +65,17 @@ class CreationUploaderWorker(
                     uploadManager.execute(
                         data,
                         object : CreationUploadManagerListener {
-                            override suspend fun setForegroundAsync(info: ForegroundInfo) {
+                            override suspend fun setupForegroundNotification(info: ForegroundInfo) {
                                 setForegroundAsync(info)
                             }
 
-                            override suspend fun setProgress(data: Data) {
-                                setProgress(data)
+                            override suspend fun setProgress(uploadData: CreationUploadQueue, progress: Int) {
+                                setProgress(
+                                    workDataOf(
+                                        CreationUploadConst.PROGRESS to progress,
+                                        CreationUploadConst.UPLOAD_DATA to uploadData.toString()
+                                    )
+                                )
                             }
                         }
                     )

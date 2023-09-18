@@ -17,7 +17,7 @@ interface CreationUploadManager {
 
 interface CreationUploadManagerListener {
 
-    suspend fun setForegroundAsync(info: ForegroundInfo)
+    suspend fun setupForegroundNotification(info: ForegroundInfo)
 
-    suspend fun setProgress(data: Data)
+    suspend fun setProgress(uploadData: CreationUploadQueue, progress: Int)
 }

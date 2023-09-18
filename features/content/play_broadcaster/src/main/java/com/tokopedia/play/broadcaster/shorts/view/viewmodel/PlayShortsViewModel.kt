@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
@@ -48,7 +50,7 @@ class PlayShortsViewModel @Inject constructor(
     private val repo: PlayShortsRepository,
     private val sharedPref: HydraSharedPreferences,
     private val accountManager: PlayShortsAccountManager,
-    private val playShortsUploader: PlayShortsUploader
+    private val creationUploader: CreationUploader,
 ) : ViewModel() {
 
     /** Public Getter */
@@ -613,16 +615,17 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun uploadMedia() {
-        val uploadData = PlayShortsUploadModel(
-            shortsId = shortsId,
-            authorId = selectedAccount.id,
-            authorType = selectedAccount.type,
+    private suspend fun uploadMedia() {
+        val uploadData = CreationUploadQueue.buildForShorts(
+            creationId = shortsId,
             mediaUri = _media.value.mediaUri,
             coverUri = _coverForm.value.coverUri,
-            shortsVideoSourceId = _config.value.shortsVideoSourceId
+            sourceId = _config.value.shortsVideoSourceId,
+            authorId = selectedAccount.id,
+            authorType = selectedAccount.type,
         )
-        playShortsUploader.upload(uploadData)
+
+        creationUploader.upload(uploadData)
     }
 
     companion object {
