@@ -8,4 +8,6 @@ import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 interface CreationUploader {
 
     suspend fun upload(data: CreationUploadQueue)
+
+    suspend fun deleteFromQueue(creationId: String)
 }

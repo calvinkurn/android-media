@@ -25,4 +25,8 @@ class CreationUploaderImpl @Inject constructor(
             CreationUploaderWorker.build()
         )
     }
+
+    override suspend fun deleteFromQueue(creationId: String) {
+        creationUploadQueueRepository.delete(creationId)
+    }
 }

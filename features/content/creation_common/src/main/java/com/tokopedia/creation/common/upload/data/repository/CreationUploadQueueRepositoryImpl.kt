@@ -40,10 +40,10 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun delete(data: CreationUploadQueue) {
+    override suspend fun delete(creationId: String) {
         return mutex.withLock {
             withContext(dispatchers.io) {
-                creationUploadQueueDatabase.creationUploadQueueDao().delete(data.creationId)
+                creationUploadQueueDatabase.creationUploadQueueDao().delete(creationId)
             }
         }
     }
