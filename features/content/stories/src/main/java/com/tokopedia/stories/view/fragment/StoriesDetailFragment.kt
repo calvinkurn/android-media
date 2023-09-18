@@ -115,6 +115,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
                     is StoriesUiEvent.EmptyDetailPage -> {
                         // TODO handle empty data here
                         showToast("data stories $groupId is empty")
+                        showPageLoading(false)
                     }
                     is StoriesUiEvent.ErrorDetailPage -> {
                         if (event.throwable.isNetworkError) {

@@ -114,7 +114,7 @@ class StoriesViewModel @AssistedInject constructor(
     private val mResetValue: Int
         get() = _resetValue.value
 
-    private var mLatestTrackerPosition = -1
+    private var mLatestTrackPosition = -1
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
@@ -166,7 +166,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleMainData(selectedGroup: Int) {
-        mLatestTrackerPosition = -1
+        mLatestTrackPosition = -1
         _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
             setInitialData()
@@ -219,19 +219,15 @@ class StoriesViewModel @AssistedInject constructor(
 
     private suspend fun setInitialData() {
         val isCached = mGroupItem.detail.detailItems.isNotEmpty()
-        val detail = if (isCached) mGroupItem.detail
+        val currentDetail = if (isCached) mGroupItem.detail
         else {
             val detailData = requestStoriesDetailData(mGroup.groupId)
-            if (detailData == StoriesDetail()) {
-                _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
-                return
-            }
-
             updateMainData(detail = detailData, groupPosition = mGroupPos)
             detailData
         }
 
-        updateDetailData(position = detail.selectedDetailPositionCached, isReset = true)
+        updateDetailData(position = currentDetail.selectedDetailPositionCached, isReset = true)
+        if (currentDetail == StoriesDetail()) _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
     }
 
     private fun setCachingData() {
@@ -278,9 +274,6 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
-        val sameDetail = mStoriesMainData.groupItems[groupPosition].detail == detail
-        if (sameDetail) return
-
         _storiesMainData.update { group ->
             group.copy(
                 selectedGroupId = mGroup.groupId,
@@ -332,13 +325,9 @@ class StoriesViewModel @AssistedInject constructor(
     private fun launchRequestInitialData() {
         viewModelScope.launchCatchError(block = {
             _storiesMainData.value = requestStoriesInitialData()
-
-            if (mGroup == StoriesGroupItem()) {
-                _storiesEvent.emit(StoriesUiEvent.EmptyGroupPage)
-                return@launchCatchError
-            }
-
             _groupPos.value = mStoriesMainData.selectedGroupPosition
+
+            if (mGroup == StoriesGroupItem()) _storiesEvent.emit(StoriesUiEvent.EmptyGroupPage)
         }) { exception ->
             _storiesEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
         }
@@ -347,9 +336,9 @@ class StoriesViewModel @AssistedInject constructor(
     private fun checkAndHitTrackActivity() {
         viewModelScope.launchCatchError(block = {
             val detailItem = mGroupItem.detail
-            if (mDetailPos <= mLatestTrackerPosition) return@launchCatchError
-            mLatestTrackerPosition = mDetailPos
-            val trackerId = detailItem.detailItems[mLatestTrackerPosition].meta.activityTracker
+            if (mDetailPos <= mLatestTrackPosition) return@launchCatchError
+            mLatestTrackPosition = mDetailPos
+            val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker
             requestSetStoriesTrackActivity(trackerId)
         }) {}
     }

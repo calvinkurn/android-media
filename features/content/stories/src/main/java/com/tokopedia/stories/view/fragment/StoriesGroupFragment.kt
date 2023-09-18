@@ -158,6 +158,7 @@ class StoriesGroupFragment @Inject constructor(
                     StoriesUiEvent.EmptyGroupPage -> {
                         // TODO handle empty data here
                         showToast("data group is empty")
+                        showPageLoading(false)
                     }
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
                     else -> return@collect
