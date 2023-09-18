@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.view.View
@@ -15,11 +16,12 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.util.DateHelper
-import com.tokopedia.shop.home.view.adapter.HeightMeasureListener
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
@@ -42,7 +44,7 @@ class ShopHomeFlashSaleViewHolder(
     private var uiModel: ShopHomeFlashSaleUiModel? = null
     private val flashSaleCampaignNameView: Typography? = itemView.findViewById(R.id.tgp_flash_sale_campaign_name)
     private val tncInfoIconView: AppCompatImageView? = itemView.findViewById(R.id.iv_tnc_info_icon)
-    private val ctaSeeAllView: Typography? = itemView.findViewById(R.id.tgp_cta_see_all)
+    private var iconCtaChevron: IconUnify? = itemView.findViewById(R.id.icon_cta_chevron)
     private val singleBackGroundView: View? = itemView.findViewById(R.id.bg_single)
     private val doubleBackGroundView: View? = itemView.findViewById(R.id.bg_double)
     private val multipleBackGroundView: View? = itemView.findViewById(R.id.bg_multiple)
@@ -68,12 +70,12 @@ class ShopHomeFlashSaleViewHolder(
         private const val FORMAT_PREFIX_HEX_COLOR = "#"
         private const val VALUE_INT_HUNDREDS = 100
         private const val DELAY_IN_THREE_SECONDS = 3000L
-        private const val NOTIFY_ME_WRAPPER_BORDER_RADIUS = 16f
         private const val BOTTOM_MARGIN = 8f
         private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 10f
         private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 12f
         private const val RV_CONTAINER_FESTIVITY_MARGIN_TOP = 9f
         private const val RV_CONTAINER_DEFAULT_MARGIN_TOP = 12f
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     init {
@@ -87,31 +89,56 @@ class ShopHomeFlashSaleViewHolder(
         val flashSaleItem = element.data?.firstOrNull()
         val productSize = flashSaleItem?.totalProduct.orZero()
         setupWidgetImpressionListener(uiModel)
-        setupHeader(element.header.title ?: "")
+        setupHeader(element.header.title)
         setupCtaSeeAll(productSize, element.data?.firstOrNull()?.statusCampaign)
         setupFlashSaleCountDownTimer(element)
         if (!GlobalConfig.isSellerApp())
             setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
-        checkFestivity(element)
+        configColorTheme(element)
     }
 
-    private fun checkFestivity(element: ShopHomeFlashSaleUiModel) {
+    private fun configColorTheme(element: ShopHomeFlashSaleUiModel) {
         if (element.isFestivity) {
             configFestivity()
         } else {
-            configNonFestivity(element)
+            if (element.header.isOverrideTheme) {
+                configReimaginedColor(element)
+            } else {
+                configDefaultColor(element)
+            }
         }
     }
 
-    private fun configNonFestivity(element: ShopHomeFlashSaleUiModel) {
+    private fun configReimaginedColor(element: ShopHomeFlashSaleUiModel) {
+        val colorSchema = element.header.colorSchema
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
+        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        flashSaleCampaignNameView?.setTextColor(titleColor)
+        timerDescriptionView?.setTextColor(subTitleColor)
+        iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
+        tncInfoIconView?.setColorFilter(informationIconColor)
+        timerView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        val flashSaleItem = element.data?.firstOrNull()
+        setupFlashSaleBackgroundView(
+            productList = flashSaleItem?.productList.orEmpty(),
+            startBackGroundColor = flashSaleItem?.firstBackgroundColor,
+            endBackGroundColor = flashSaleItem?.secondBackgroundColor
+        )
+        configMarginNonFestivity()
+        setShopReimaginedContainerMargin()
+    }
+
+    private fun configDefaultColor(element: ShopHomeFlashSaleUiModel) {
         val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         flashSaleCampaignNameView?.setTextColor(defaultTitleColor)
         timerDescriptionView?.setTextColor(defaultSubTitleColor)
-        ctaSeeAllView?.setTextColor(defaultCtaColor)
+        iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
         tncInfoIconView?.setColorFilter(defaultInformationIconColor)
         timerView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         val flashSaleItem = element.data?.firstOrNull()
@@ -123,11 +150,20 @@ class ShopHomeFlashSaleViewHolder(
         configMarginNonFestivity()
     }
 
+    private fun setShopReimaginedContainerMargin() {
+        rvContainer?.let {
+            it.clipToOutline = true
+            it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
+        }
+    }
+
     private fun configFestivity() {
         val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         flashSaleCampaignNameView?.setTextColor(festivityTextColor)
         timerDescriptionView?.setTextColor(festivityTextColor)
-        ctaSeeAllView?.setTextColor(festivityTextColor)
+        iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
         tncInfoIconView?.setColorFilter(festivityTextColor)
         timerView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
         singleBackGroundView?.hide()
@@ -177,7 +213,7 @@ class ShopHomeFlashSaleViewHolder(
             rvLayoutParams.leftMargin,
             12f.dpToPx().toInt(),
             rvLayoutParams.rightMargin,
-            rvLayoutParams.bottomMargin
+            12f.dpToPx().toInt(),
         )
         productCarouselView?.layoutParams = rvLayoutParams
         setContainerMarginDefault()
@@ -220,7 +256,7 @@ class ShopHomeFlashSaleViewHolder(
                 listener.onClickTncFlashSaleWidget(this)
             }
         }
-        ctaSeeAllView?.setOnClickListener {
+        iconCtaChevron?.setOnClickListener {
             uiModel?.run {
                 listener.onClickSeeAllFlashSaleWidget(this)
             }
@@ -251,8 +287,8 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupCtaSeeAll(productSize: Int, statusCampaign: String?) {
         val isUpcoming = isStatusCampaignUpcoming(statusCampaign.orEmpty())
-        if (productSize <= MAX_PRODUCT_CARD_SIZE || isUpcoming) ctaSeeAllView?.hide()
-        else ctaSeeAllView?.show()
+        if (productSize <= MAX_PRODUCT_CARD_SIZE || isUpcoming) iconCtaChevron?.hide()
+        else iconCtaChevron?.show()
     }
 
     private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackGroundColor: String?, endBackGroundColor: String?) {
@@ -275,21 +311,13 @@ class ShopHomeFlashSaleViewHolder(
                 setBottomMarginOnMainContainer()
                 singleBackGroundView?.show()
             }
-            DOUBLE -> { setBackgroundViewHeightAndVisible(doubleBackGroundView) }
-            else -> { setBackgroundViewHeightAndVisible(multipleBackGroundView) }
-        }
-    }
-
-    private fun setBackgroundViewHeightAndVisible(view: View?){
-        productCarouselAdapter.setHeightMeasureListener( object : HeightMeasureListener {
-            override fun setHeightListener(height: Int) {
-                view?.show()
-                val layoutRv = productCarouselView?.layoutParams as? ViewGroup.MarginLayoutParams
-                val layout = view?.layoutParams
-                layout?.height = height + layoutRv?.topMargin.orZero()
-                view?.layoutParams = layout
+            DOUBLE -> {
+                doubleBackGroundView?.show()
             }
-        })
+            else -> {
+                multipleBackGroundView?.show()
+            }
+        }
     }
 
     private fun setBottomMarginOnMainContainer() {
@@ -406,6 +434,7 @@ class ShopHomeFlashSaleViewHolder(
                 }
             )
         }
+        productCarouselAdapter.setIsFestivity(model.isFestivity)
         // set flash sale ui model for click handling purpose
         productCarouselAdapter.setFsUiModel(model)
         // set product list to product carousel adapter

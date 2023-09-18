@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
@@ -14,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
@@ -21,7 +23,11 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.dpToPx
 
-class ShopFestivityRvItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
+class ShopFestivityRvItemDecoration(
+    context: Context,
+    bodyBackgroundHexColor: String,
+    isOverrideTheme: Boolean
+) : RecyclerView.ItemDecoration() {
 
     companion object{
         private const val RV_PADDING = 12f
@@ -30,8 +36,18 @@ class ShopFestivityRvItemDecoration(context: Context) : RecyclerView.ItemDecorat
     private var backgroundDrawableWhite: Drawable? = null
 
     init {
-        backgroundDrawableWhite =
-            MethodChecker.getDrawable(context, R.drawable.bg_festivity_widget_background_white)
+        val bgColor = if(isOverrideTheme){
+            ShopUtil.parseColorFromHexString(bodyBackgroundHexColor)
+        }else{
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        }
+        (MethodChecker.getDrawable(
+            context,
+            R.drawable.bg_festivity_widget_background_white
+        ) as? GradientDrawable)?.let {
+            it.setColor(bgColor)
+            backgroundDrawableWhite = it
+        }
     }
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {

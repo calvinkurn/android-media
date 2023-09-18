@@ -15,6 +15,7 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.product.view.datamodel.*
+import com.tokopedia.shop.product.view.fragment.ShopProductTabInterface
 import com.tokopedia.shop.product.view.listener.*
 import com.tokopedia.shop.product.view.viewholder.*
 import com.tokopedia.shop.product.view.viewholder.ErrorNetworkWrapViewHolder
@@ -37,7 +38,8 @@ class ShopProductAdapterTypeFactory(
     private val deviceWidth: Int,
     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
     private val shopTrackType: Int,
-    private val isShowTripleDot: Boolean
+    private val isShowTripleDot: Boolean,
+    private val shopProductTabInterface: ShopProductTabInterface?
 ) : BaseAdapterTypeFactory() {
     private var shopProductAdapter: ShopProductAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
@@ -164,7 +166,7 @@ class ShopProductAdapterTypeFactory(
             ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
             ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
             MembershipStampProgressViewHolder.LAYOUT -> return MembershipStampProgressViewHolder(parent, membershipStampAdapterListener)
-            ShopProductChangeGridSectionViewHolder.LAYOUT -> return ShopProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
+            ShopProductChangeGridSectionViewHolder.LAYOUT -> return ShopProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener, shopProductTabInterface)
             ShopProductSearchResultSuggestionViewHolder.LAYOUT -> return ShopProductSearchResultSuggestionViewHolder(parent, shopProductSearchSuggestionListener)
             else -> return if (type == HideViewHolder.LAYOUT) {
                 HideViewHolder(parent)

@@ -5,9 +5,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -23,17 +25,19 @@ import com.tokopedia.productbundlewidget.model.BundleProductGroupingHelper.group
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productbundlewidget.model.BundleShopUiModel
 import com.tokopedia.productbundlewidget.model.BundleUiModel
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
-
 class ProductBundleMultipleViewHolder(
     itemView: View,
-    private val containerWidgetParams: Int
-): RecyclerView.ViewHolder(itemView) {
+    private val containerWidgetParams: Int,
+    private val isOverrideWidgetTheme: Boolean
+) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         @LayoutRes
@@ -51,6 +55,8 @@ class ProductBundleMultipleViewHolder(
     private var labelBundleDiscount: Label? = null
     private var rvBundleProducts: RecyclerView? = null
     private var widgetContainer: ConstraintLayout? = null
+    private var cardBundling: CardUnify? = null
+    private var icBundleDiscount: IconUnify? = null
 
     init {
         viewBinding?.apply {
@@ -63,6 +69,8 @@ class ProductBundleMultipleViewHolder(
             buttonAtc = bundleWidgetFooter.btnBundleAtc
             rvBundleProducts = rvMultipleBundleProducts
             widgetContainer = bundleWidgetContainer
+            cardBundling = container
+            icBundleDiscount = icBundleDiscount
         }
     }
 
@@ -70,6 +78,9 @@ class ProductBundleMultipleViewHolder(
         val bundleDetail = bundle.bundleDetails.firstOrNull() ?: BundleDetailUiModel()
 
         initFooterStyle(bundle)
+
+        // Setup widget theme if the page owner wants to change the widget theme
+        overrideWidgetTheme()
 
         // bundle card item details
         typographyBundleName?.text = bundle.bundleName
@@ -94,8 +105,10 @@ class ProductBundleMultipleViewHolder(
             bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
             bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
             bundleDetail.totalSold.isZero() -> ""
-            else -> itemView.context.getString(R.string.product_bundle_bundle_sold,
-                bundleDetail.totalSold.toString())
+            else -> itemView.context.getString(
+                R.string.product_bundle_bundle_sold,
+                bundleDetail.totalSold.toString()
+            )
         }
     }
 
@@ -130,7 +143,10 @@ class ProductBundleMultipleViewHolder(
         rvBundleProducts?.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
-            adapter = ProductBundleMultipleAdapter(listener)
+            adapter = ProductBundleMultipleAdapter(
+                listener = listener,
+                isOverrideWidgetTheme = isOverrideWidgetTheme
+            )
             addItemDecoration(MultipleBundleItemDecoration(context))
         }
         (rvBundleProducts?.adapter as ProductBundleMultipleAdapter).updateDataSet(
@@ -207,5 +223,21 @@ class ProductBundleMultipleViewHolder(
 
     fun setListener(listener: ProductBundleAdapterListener?) {
         this.listener = listener
+    }
+
+    private fun overrideWidgetTheme() {
+        if (isOverrideWidgetTheme) {
+            viewBinding?.bundleWidgetHeaderContainer?.let {
+                it.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            }
+            cardBundling?.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            typographyBundleName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            typographyBundlePreOrder?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
+            typographyBundleProductDisplayPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            typographyBundleProductOriginalPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
+            typographyBundleProductSavingAmount?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            icBundleDiscount?.setImage(newLightEnable = ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            buttonAtc?.applyColorMode(colorMode = ColorMode.LIGHT_MODE)
+        }
     }
 }

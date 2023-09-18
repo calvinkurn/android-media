@@ -3,6 +3,7 @@ package com.tokopedia.shop_widget.thematicwidget.viewholder
 import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_widget.R
@@ -36,9 +38,10 @@ import kotlin.math.abs
 
 //need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
-class ThematicWidgetViewHolder (
+class ThematicWidgetViewHolder(
     itemView: View,
-    private val listener: ThematicWidgetListener
+    private val listener: ThematicWidgetListener,
+    private val isOverrideTheme: Boolean
 ) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope, HeaderCustomViewListener {
 
     companion object {
@@ -54,6 +57,7 @@ class ThematicWidgetViewHolder (
         private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 8f
         private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 10f
         private const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     private var binding: ItemThematicWidgetBinding? by viewBinding()
@@ -66,6 +70,7 @@ class ThematicWidgetViewHolder (
     private var viewParallaxBackground: View? = null
     private var layoutManager: LinearLayoutManager? = null
     private var dynamicHeaderCustomView: DynamicHeaderCustomView? = null
+    private var containerMixLeft: View? = null
     private var uiModel: ThematicWidgetUiModel? = null
     private var isFirstAttached: Boolean = true
     private var trackerProductsModel = mutableListOf<ProductCardUiModel>()
@@ -89,6 +94,7 @@ class ThematicWidgetViewHolder (
             dynamicHeaderCustomView = it.dynamicHeaderCustomView
             ivParallaxImage = it.parallaxImage
             viewParallaxBackground = it.parallaxBackground
+            containerMixLeft = it.containerMixleft
         }
         rvProduct?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -107,24 +113,43 @@ class ThematicWidgetViewHolder (
             model = element.header,
             listener = this
         )
+        dynamicHeaderCustomView?.setShopPageCta(element.header)
         setupRecyclerView()
         setupImage(
             imageBanner = element.imageBanner
         )
-        checkFestivity(element)
+        resetShopReimaginedContainerMargin()
+        configColorTheme(element)
         checkTotalProduct(element)
     }
 
-    private fun checkFestivity(uiModel: ThematicWidgetUiModel) {
-        if (uiModel.isFestivity) {
-            configFestivity(uiModel)
-        } else {
-            configNonFestivity(uiModel)
+    private fun resetShopReimaginedContainerMargin() {
+        containerMixLeft?.let {
+            it.background = null
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = 0
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = 0
         }
     }
 
-    private fun configNonFestivity(uiModel: ThematicWidgetUiModel) {
-        dynamicHeaderCustomView?.configNonFestivity()
+    private fun configColorTheme(uiModel: ThematicWidgetUiModel) {
+        if (uiModel.isFestivity) {
+            configFestivity(uiModel)
+        } else {
+            if (isOverrideTheme) {
+                configReimagined(uiModel)
+            } else {
+                configDefaultColor(uiModel)
+            }
+        }
+    }
+
+    private fun configReimagined(uiModel: ThematicWidgetUiModel) {
+        dynamicHeaderCustomView?.configReimaginedColor(uiModel.header.colorSchema)
+        setShopReimaginedContainerMargin()
+    }
+
+    private fun configDefaultColor(uiModel: ThematicWidgetUiModel) {
+        dynamicHeaderCustomView?.configDefaultColor()
         configMarginNonFestivity()
         setupBackgroundColor(
             startBackGroundColor = uiModel.firstBackgroundColor,
@@ -133,7 +158,7 @@ class ThematicWidgetViewHolder (
     }
 
     private fun configFestivity(uiModel: ThematicWidgetUiModel) {
-        dynamicHeaderCustomView?.configFestivity()
+        dynamicHeaderCustomView?.configShopPageFestivityColor()
         when(uiModel.name){
             BIG_CAMPAIGN_THEMATIC -> {
                 configMarginFestivity()
@@ -145,7 +170,17 @@ class ThematicWidgetViewHolder (
                     startBackGroundColor = uiModel.firstBackgroundColor,
                     endBackGroundColor = uiModel.secondBackgroundColor
                 )
+                setShopReimaginedContainerMargin()
             }
+        }
+    }
+
+    private fun setShopReimaginedContainerMargin() {
+        containerMixLeft?.let {
+            it.clipToOutline = true
+            it.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_reimagined_rounded)
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
     }
 
@@ -198,6 +233,7 @@ class ThematicWidgetViewHolder (
     private fun setupRecyclerView() {
         restoreInstanceStateToLayoutManager()
         setHeightRecyclerView()
+        rvProduct?.isNestedScrollingEnabled = false
         rvProduct?.adapter = adapter
     }
 
