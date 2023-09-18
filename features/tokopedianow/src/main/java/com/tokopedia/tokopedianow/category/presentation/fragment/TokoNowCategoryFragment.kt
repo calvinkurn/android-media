@@ -70,8 +70,8 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavig
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView.ProductCardCompactListener
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
-import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
+import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.constant.RequestCode
@@ -175,7 +175,7 @@ class TokoNowCategoryFragment:
             tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
             productCardCompactListener = createProductCardCompactCallback(),
-            productCardCompactSimilarProductTrackerListener = createProductCardCompactSimilarProductTrackerCallback(),
+            productCardCompactSimilarProductTrackerListener = ProductCardCompactSimilarProductTrackerCallback(analytic.categoryOosProductAnalytic),
             productAdsCarouselListener = createProductCardAdsCallback(),
             recycledViewPool = recycledViewPool,
             lifecycleOwner = viewLifecycleOwner
@@ -1424,88 +1424,6 @@ class TokoNowCategoryFragment:
                 )
                 startActivity(intent)
             }
-        }
-    }
-
-    private fun createProductCardCompactSimilarProductTrackerCallback() = object : ProductCardCompactSimilarProductTrackerListener {
-        override fun trackImpressionBottomSheet(
-            userId: String,
-            warehouseId: String,
-            similarProduct: ProductCardCompactSimilarProductUiModel,
-            productIdTriggered: String
-        ) {
-            analytic.categoryOosProductAnalytic.trackImpressionBottomSheet(
-                userId = userId,
-                warehouseId = warehouseId,
-                similarProduct = similarProduct,
-                productIdTriggered = productIdTriggered
-            )
-        }
-
-        override fun trackClickProduct(
-            userId: String,
-            warehouseId: String,
-            similarProduct: ProductCardCompactSimilarProductUiModel,
-            productIdTriggered: String
-        ) {
-            analytic.categoryOosProductAnalytic.trackClickProduct(
-                userId = userId,
-                warehouseId = warehouseId,
-                similarProduct = similarProduct,
-                productIdTriggered = productIdTriggered
-            )
-        }
-
-        override fun trackClickAddToCart(
-            userId: String,
-            warehouseId: String,
-            similarProduct: ProductCardCompactSimilarProductUiModel,
-            productIdTriggered: String,
-            newQuantity: Int
-        ) {
-            analytic.categoryOosProductAnalytic.trackClickAddToCart(
-                userId = userId,
-                warehouseId = warehouseId,
-                similarProduct = similarProduct,
-                productIdTriggered = productIdTriggered,
-                newQuantity = newQuantity
-            )
-        }
-
-        override fun trackClickCloseBottomsheet(
-            userId: String,
-            warehouseId: String,
-            productIdTriggered: String
-        ) {
-            analytic.categoryOosProductAnalytic.trackClickCloseBottomsheet(
-                userId = userId,
-                warehouseId = warehouseId,
-                productIdTriggered = productIdTriggered
-            )
-        }
-
-        override fun trackClickSimilarProductBtn(
-            userId: String,
-            warehouseId: String,
-            productIdTriggered: String
-        ) {
-            analytic.categoryOosProductAnalytic.trackClickSimilarProductBtn(
-                userId = userId,
-                warehouseId = warehouseId,
-                productIdTriggered = productIdTriggered
-            )
-        }
-
-        override fun trackImpressionEmptyState(
-            userId: String,
-            warehouseId: String,
-            productIdTriggered: String
-        ) {
-            analytic.categoryOosProductAnalytic.trackImpressionEmptyState(
-                userId = userId,
-                warehouseId = warehouseId,
-                productIdTriggered = productIdTriggered
-            )
         }
     }
 
