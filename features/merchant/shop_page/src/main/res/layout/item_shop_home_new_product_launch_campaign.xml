@@ -100,7 +100,7 @@
         android:id="@+id/npl_reminder_view"
         android:layout_width="wrap_content"
         android:layout_height="26dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="16dp"
         android:visibility="visible"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="@id/npl_timer"
