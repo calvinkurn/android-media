@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ifNull
-import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
@@ -174,14 +173,6 @@ internal class PromoUsageViewModel @Inject constructor(
             onError = { throwable ->
                 PromoUsageIdlingResource.decrement()
                 handleLoadPromoListFailed(throwable)
-
-                val hasAttemptedPromo = attemptedPromoCode.isNotBlank()
-                if (hasAttemptedPromo) {
-                    promoUsageAnalytics.onErrorAttemptPromo(
-                        attemptedPromoCode = attemptedPromoCode,
-                        errorMessage = throwable.message ?: ""
-                    )
-                }
             }
         )
     }
@@ -461,7 +452,6 @@ internal class PromoUsageViewModel @Inject constructor(
                         val clashCalculationResult =
                             calculateClickPromo(newClickedItem, currentItems)
                         updatedItems = clashCalculationResult.second
-                        processAndSendEventClickPromo(newClickedItem)
 
                         // Update Promo Recommendation section
                         val recommendationItem = updatedItems.getRecommendationItem()
@@ -1082,7 +1072,6 @@ internal class PromoUsageViewModel @Inject constructor(
             PromoUsageLogger.logOnErrorApplyPromo(exception)
             onFailed?.invoke(exception) ?: run {
                 _applyPromoUiAction.postValue(ApplyPromoUiAction.Failed(exception, false))
-                processAndSendEventViewErrorAfterClickPakaiPromo(exception, selectedPromoCodes)
             }
         }
     }
@@ -1097,7 +1086,6 @@ internal class PromoUsageViewModel @Inject constructor(
             _applyPromoUiAction.postValue(
                 ApplyPromoUiAction.Failed(throwable, false)
             )
-            processAndSendEventViewErrorAfterClickPakaiPromo(throwable, selectedPromoCodes)
         }
     }
 
@@ -1111,7 +1099,6 @@ internal class PromoUsageViewModel @Inject constructor(
         val isGlobalSuccess = validateUse.promoUiModel.messageUiModel.state != PROMO_STATE_RED
         if (isGlobalSuccess) {
             onSuccess?.invoke(entryPoint, validateUse, lastValidateUsePromoRequest) ?: run {
-                processAndSendEventCLickPakaiPromoSuccessAnalytics(selectedPromoCodes)
                 _applyPromoUiAction.postValue(
                     ApplyPromoUiAction.SuccessWithApplyPromo(
                         entryPoint = entryPoint,
@@ -1186,7 +1173,6 @@ internal class PromoUsageViewModel @Inject constructor(
                     _applyPromoUiAction.postValue(
                         ApplyPromoUiAction.Failed(exception)
                     )
-                    processAndSendEventViewErrorAfterClickPakaiPromo(exception, selectedPromoCodes)
                 }
             }
         } else {
@@ -1197,7 +1183,6 @@ internal class PromoUsageViewModel @Inject constructor(
                 PromoErrorException(response.additionalInfoUiModel.errorDetailUiModel.message)
             onFailed?.invoke(exception) ?: run {
                 _applyPromoUiAction.postValue(ApplyPromoUiAction.Failed(exception, false))
-                processAndSendEventViewErrorAfterClickPakaiPromo(exception, selectedPromoCodes)
             }
         }
     }
@@ -1772,89 +1757,6 @@ internal class PromoUsageViewModel @Inject constructor(
                 }
         }
         return false
-    }
-
-    private fun getPageSourceForAnalytics(entryPoint: PromoPageEntryPoint): Int {
-        return when (entryPoint) {
-            PromoPageEntryPoint.CART_PAGE -> PromoUsageAnalytics.SOURCE_CART_PAGE
-            PromoPageEntryPoint.CHECKOUT_PAGE -> PromoUsageAnalytics.SOURCE_CHECKOUT_PAGE
-            PromoPageEntryPoint.OCC_PAGE -> PromoUsageAnalytics.SOURCE_OCC_PAGE
-        }
-    }
-
-    private fun processAndSendEventCLickPakaiPromoSuccessAnalytics(
-        selectedPromoCodes: List<String>
-    ) {
-        val promoRecommendation =
-            _promoPageUiState.asSuccessOrNull()?.items?.getRecommendationItem()
-        val promoRecommendationCount = promoRecommendation?.codes?.size ?: 0
-        val selectedRecommendationCount = promoRecommendation
-            ?.codes?.count { selectedPromoCodes.contains(it) } ?: 0
-        val status = if (selectedPromoCodes.size == selectedRecommendationCount &&
-            selectedRecommendationCount == promoRecommendationCount
-        ) {
-            "1"
-        } else {
-            "0"
-        }
-        promoUsageAnalytics.eventClickPakaiPromoSuccess(
-            pageSource = getPageSourceForAnalytics(entryPoint),
-            status = status,
-            selectedPromoCodes = selectedPromoCodes
-        )
-    }
-
-    private fun processAndSendEventViewErrorAfterClickPakaiPromo(
-        throwable: Throwable,
-        selectedPromoCodes: List<String>
-    ) {
-        val errorMessage = throwable.message.ifNullOrBlank { defaultErrorMessage }
-        _promoPageUiState.ifSuccess { pageState ->
-            pageState.items.forEach { item ->
-                if (item is PromoItem && selectedPromoCodes.containsPromoCode(item)) {
-                    promoUsageAnalytics.eventViewErrorAfterClickPakaiPromo(
-                        pageSource = getPageSourceForAnalytics(entryPoint),
-                        promoId = item.id,
-                        errorMessage = errorMessage
-                    )
-                }
-            }
-        }
-    }
-
-    private fun processAndSendEventClickPromo(clickedItem: PromoItem) {
-        _promoPageUiState.ifSuccess { _ ->
-            val clickedPromoCode = if (clickedItem.useSecondaryPromo) {
-                clickedItem.secondaryPromo.code
-            } else {
-                clickedItem.code
-            }
-            if (clickedItem.state is PromoItemState.Selected) {
-                promoUsageAnalytics.eventClickSelectKupon(
-                    getPageSourceForAnalytics(entryPoint),
-                    clickedPromoCode,
-                    clickedItem.isCausingOtherPromoClash
-                )
-                if (clickedItem.isAttempted) {
-                    promoUsageAnalytics.eventClickSelectPromo(
-                        getPageSourceForAnalytics(entryPoint),
-                        clickedItem.code
-                    )
-                }
-            } else {
-                promoUsageAnalytics.eventClickDeselectKupon(
-                    getPageSourceForAnalytics(entryPoint),
-                    clickedPromoCode,
-                    clickedItem.isCausingOtherPromoClash
-                )
-                if (clickedItem.isAttempted) {
-                    promoUsageAnalytics.eventClickDeselectPromo(
-                        getPageSourceForAnalytics(entryPoint),
-                        clickedItem.code
-                    )
-                }
-            }
-        }
     }
 
     fun getCurrentItems(): List<DelegateAdapterItem> {

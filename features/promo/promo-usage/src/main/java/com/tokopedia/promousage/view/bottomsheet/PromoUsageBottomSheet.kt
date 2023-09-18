@@ -1013,6 +1013,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             chosenAddress = chosenAddress,
             attemptedPromoCode = attemptedPromoCode,
             onSuccess = {
+                // no-op
             }
         )
     }
