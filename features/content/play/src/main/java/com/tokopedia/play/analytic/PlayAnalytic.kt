@@ -234,10 +234,10 @@ class PlayAnalytic(
         )
     }
 
-    fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
+    fun clickActionProductWithVariant(product: PlayProductUiModel.Product, productAction: ProductAction) {
         when (productAction) {
-            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
-            ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(productId)
+            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(product)
+            ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(product)
             else -> {
                 //no-op
             }
@@ -568,21 +568,21 @@ class PlayAnalytic(
         )
     }
 
-    private fun clickBeliButtonProductWithVariant(productId: String) {
+    private fun clickBeliButtonProductWithVariant(product: PlayProductUiModel.Product) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             Event.clickGroupChat,
             EventCategory.groupChatRoom,
             "click buy in bottom sheet with varian",
-            "$mChannelId - $productId - ${mChannelType.value}"
+            "$mChannelId - ${product.id} - ${mChannelType.value}"
         )
     }
 
-    private fun clickAtcButtonProductWithVariant(productId: String) {
+    private fun clickAtcButtonProductWithVariant(product: PlayProductUiModel.Product) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             Event.clickGroupChat,
             EventCategory.groupChatRoom,
             "click atc in bottom sheet with varian",
-            "$mChannelId - $productId - ${mChannelType.value}"
+            "$mChannelId - ${product.id} - ${mChannelType.value}"
         )
     }
 
