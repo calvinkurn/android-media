@@ -1,7 +1,6 @@
 package com.tokopedia.creation.common.upload.uploader.manager
 
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
-import com.tokopedia.creation.common.upload.notification.CreationUploadNotificationManager
 import javax.inject.Inject
 
 /**
@@ -11,7 +10,10 @@ class StoriesUploadManager @Inject constructor(
 
 ) : CreationUploadManager {
 
-    override fun execute(data: CreationUploadQueue) {
+    override suspend fun execute(
+        uploadData: CreationUploadQueue,
+        listener: CreationUploadManagerListener
+    ) {
 
     }
 }

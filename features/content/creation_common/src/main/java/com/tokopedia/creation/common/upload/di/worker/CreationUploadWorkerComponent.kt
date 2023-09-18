@@ -2,6 +2,7 @@ package com.tokopedia.creation.common.upload.di.worker
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.creation.common.upload.uploader.worker.CreationUploaderWorker
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import dagger.Component
 
 /**
@@ -10,7 +11,7 @@ import dagger.Component
 @Component(
     modules = [
         CreationUploadWorkerModule::class,
-
+        MediaUploaderModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

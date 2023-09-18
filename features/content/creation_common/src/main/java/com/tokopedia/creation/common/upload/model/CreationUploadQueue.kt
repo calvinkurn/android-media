@@ -3,6 +3,7 @@ package com.tokopedia.creation.common.upload.model
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import java.util.UUID
 
 /**
@@ -32,6 +33,21 @@ data class CreationUploadQueue private constructor(
     val notificationIdAfterUpload: Int
         get() = notificationId + 1
 
+    override fun toString(): String {
+        return mapOf(
+            KEY_ID to id,
+            KEY_UPLOAD_TYPE to uploadType.type,
+            KEY_QUEUE_STATUS to queueStatus.value,
+            KEY_TIMESTAMP to timestamp,
+            KEY_CREATION_ID to creationId,
+            KEY_MEDIA_URI to mediaUri,
+            KEY_COVER_URI to coverUri,
+            KEY_SOURCE_ID to sourceId,
+            KEY_AUTHOR_ID to authorId,
+            KEY_AUTHOR_TYPE to authorType,
+        ).toString()
+    }
+
     fun mapToEntity(): CreationUploadQueueEntity {
         return CreationUploadQueueEntity(
             id = id,
@@ -54,8 +70,8 @@ data class CreationUploadQueue private constructor(
         private const val KEY_QUEUE_STATUS = "KEY_QUEUE_STATUS"
         private const val KEY_TIMESTAMP = "KEY_TIMESTAMP"
         private const val KEY_CREATION_ID = "KEY_CREATION_ID"
-        private const val KEY_ACCOUNT_ID = "KEY_ACCOUNT_ID"
-        private const val KEY_ACCOUNT_TYPE = "KEY_ACCOUNT_TYPE"
+        private const val KEY_AUTHOR_ID = "KEY_AUTHOR_ID"
+        private const val KEY_AUTHOR_TYPE = "KEY_AUTHOR_TYPE"
         private const val KEY_MEDIA_URI = "KEY_MEDIA_URI"
         private const val KEY_COVER_URI = "KEY_COVER_URI"
         private const val KEY_SOURCE_ID = "KEY_SOURCE_ID"
@@ -100,8 +116,8 @@ data class CreationUploadQueue private constructor(
                     queueStatus = UploadQueueStatus.mapFromValue((map[KEY_QUEUE_STATUS] as? String).orEmpty()),
                     timestamp = (map[KEY_TIMESTAMP] as? Long).orZero(),
                     creationId = (map[KEY_CREATION_ID] as? String).orEmpty(),
-                    authorId = (map[KEY_ACCOUNT_ID] as? String).orEmpty(),
-                    authorType = (map[KEY_ACCOUNT_TYPE] as? String).orEmpty(),
+                    authorId = (map[KEY_AUTHOR_ID] as? String).orEmpty(),
+                    authorType = (map[KEY_AUTHOR_TYPE] as? String).orEmpty(),
                     mediaUri = (map[KEY_MEDIA_URI] as? String).orEmpty(),
                     coverUri = (map[KEY_COVER_URI] as? String).orEmpty(),
                     sourceId = (map[KEY_SOURCE_ID] as? String).orEmpty()

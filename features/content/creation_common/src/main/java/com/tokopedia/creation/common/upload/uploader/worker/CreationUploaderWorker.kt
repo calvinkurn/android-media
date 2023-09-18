@@ -2,14 +2,19 @@ package com.tokopedia.creation.common.upload.uploader.worker
 
 import android.content.Context
 import androidx.work.CoroutineWorker
+import androidx.work.Data
+import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
 import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
+import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -57,7 +62,18 @@ class CreationUploaderWorker(
 
                 try {
                     val uploadManager = uploadManagerProvider.get(data.uploadType)
-                    uploadManager.execute(data)
+                    uploadManager.execute(
+                        data,
+                        object : CreationUploadManagerListener {
+                            override suspend fun setForegroundAsync(info: ForegroundInfo) {
+                                setForegroundAsync(info)
+                            }
+
+                            override suspend fun setProgress(data: Data) {
+                                setProgress(data)
+                            }
+                        }
+                    )
 
                     queueRepository.delete(data)
                 } catch (throwable: Throwable) {

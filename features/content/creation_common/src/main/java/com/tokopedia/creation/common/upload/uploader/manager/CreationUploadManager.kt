@@ -1,5 +1,7 @@
 package com.tokopedia.creation.common.upload.uploader.manager
 
+import androidx.work.Data
+import androidx.work.ForegroundInfo
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 
 /**
@@ -7,5 +9,15 @@ import com.tokopedia.creation.common.upload.model.CreationUploadQueue
  */
 interface CreationUploadManager {
 
-    fun execute(data: CreationUploadQueue)
+    suspend fun execute(
+        uploadData: CreationUploadQueue,
+        listener: CreationUploadManagerListener,
+    )
+}
+
+interface CreationUploadManagerListener {
+
+    suspend fun setForegroundAsync(info: ForegroundInfo)
+
+    suspend fun setProgress(data: Data)
 }
