@@ -117,6 +117,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             wishlist
                             ratingAverage
                             componentId
+                            warehouseIdDefault
                             labelGroups {
                                 title
                                 position
