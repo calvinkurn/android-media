@@ -5,7 +5,7 @@ import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRec
 data class InfiniteTitleUiModel(
     val title: String,
     override val isFullSpan: Boolean = true
-) : InfiniteRecommendationUiModel() {
+) : InfiniteRecommendationUiModel {
     override fun areItemsTheSame(newItem: InfiniteRecommendationUiModel): Boolean = true
     override fun areContentsTheSame(newItem: InfiniteRecommendationUiModel): Boolean = true
 }
