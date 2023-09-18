@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -26,6 +27,9 @@ import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
+import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
+import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
@@ -34,7 +38,6 @@ import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
 import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
-import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
 import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
@@ -63,14 +66,14 @@ import javax.inject.Inject
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
 class FeedBaseFragment :
     BaseDaggerFragment(),
-    FeedContentCreationTypeBottomSheet.Listener,
+    ContentCreationBottomSheet.ContentCreationBottomSheetListener,
     FragmentListener {
 
     private var _binding: FragmentFeedBaseBinding? = null
@@ -79,7 +82,11 @@ class FeedBaseFragment :
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
-    @Inject lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels {
         FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
     }
@@ -175,13 +182,10 @@ class FeedBaseFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
-                is FeedContentCreationTypeBottomSheet -> {
-                    fragment.setListener(this)
-                    fragment.setDataSource(
-                        FeedContentCreationTypeBottomSheet.DataSource(
-                            feedMainViewModel.metaData.value.entryPoints
-                        )
-                    )
+                is ContentCreationBottomSheet -> {
+                    fragment.viewModelFactory = viewModelFactory
+                    fragment.listener = this
+                    fragment.shouldShowPerformanceAction = false
                 }
             }
         }
@@ -250,20 +254,22 @@ class FeedBaseFragment :
 
     override fun getScreenName(): String = "Feed Fragment"
 
-    override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
-        when (creationTypeItem.type) {
-            CreateContentType.Live -> {
+    override fun onCreationItemSelected(data: ContentCreationItemModel) {}
+
+    override fun onCreationNextClicked(data: ContentCreationItemModel) {
+        when (data.type) {
+            ContentCreationTypeEnum.LIVE -> {
                 feedNavigationAnalytics.eventClickCreateLive()
 
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
-            CreateContentType.Post -> {
+            ContentCreationTypeEnum.POST -> {
                 feedNavigationAnalytics.eventClickCreatePost()
 
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2).apply {
                     putExtra(
                         BundleData.IS_CREATE_POST_AS_BUYER,
-                        creationTypeItem.creatorType.asBuyer
+                        data.authorType.asBuyer
                     )
                     putExtra(
                         BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
@@ -275,7 +281,7 @@ class FeedBaseFragment :
                     )
                     putExtra(
                         BundleData.TITLE,
-                        getString(contentCommonR.string.feed_post_sebagai)
+                        getString(contentcommonR.string.feed_post_sebagai)
                     )
                     putExtra(
                         BundleData.APPLINK_FOR_GALLERY_PROCEED,
@@ -286,11 +292,17 @@ class FeedBaseFragment :
                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
             }
 
-            CreateContentType.ShortVideo -> {
+            ContentCreationTypeEnum.SHORT -> {
                 feedNavigationAnalytics.eventClickCreateVideo()
 
                 openCreateShorts.launch()
             }
+
+            ContentCreationTypeEnum.STORY -> {
+                /* TODO : Add Analytics, if any */
+                openAppLink.launch(data.applink)
+            }
+
             else -> {}
         }
     }
@@ -314,47 +326,47 @@ class FeedBaseFragment :
 
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
+            OnPageChangeCallback() {
 
-                var shouldSendSwipeTracker = false
+            var shouldSendSwipeTracker = false
 
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                handleTabTransition(position)
+                if (!userSession.isLoggedIn &&
+                    activeTabSource.tabName == null // not coming from appLink
                 ) {
-                    handleTabTransition(position)
-                    if (!userSession.isLoggedIn &&
-                        activeTabSource.tabName == null // not coming from appLink
-                    ) {
-                        if (position == TAB_SECOND_INDEX) {
-                            onNonLoginGoToFollowingTab.launch(
-                                RouteManager.getIntent(
-                                    context,
-                                    ApplinkConst.LOGIN
-                                )
+                    if (position == TAB_SECOND_INDEX) {
+                        onNonLoginGoToFollowingTab.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
                             )
-                        }
-                    }
-
-                    if (shouldSendSwipeTracker) {
-                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                            feedNavigationAnalytics.eventSwipeFollowingTab()
-                        } else {
-                            feedNavigationAnalytics.eventSwipeForYouTab()
-                        }
-                        shouldSendSwipeTracker = false
+                        )
                     }
                 }
 
-                override fun onPageSelected(position: Int) {
-                    selectActiveTab(position)
+                if (shouldSendSwipeTracker) {
+                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                        feedNavigationAnalytics.eventSwipeFollowingTab()
+                    } else {
+                        feedNavigationAnalytics.eventSwipeForYouTab()
+                    }
+                    shouldSendSwipeTracker = false
                 }
+            }
 
-                override fun onPageScrollStateChanged(state: Int) {
-                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-                }
-            })
+            override fun onPageSelected(position: Int) {
+                selectActiveTab(position)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+            }
+        })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -364,16 +376,22 @@ class FeedBaseFragment :
     private fun setupInsets() {
         binding.containerFeedTopNav.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
 
-            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
+            val topInsetsMargin =
+                (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
 
             getAllMotionScene().forEach {
-                it.setMargin(binding.containerFeedTopNav.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin)
+                it.setMargin(
+                    binding.containerFeedTopNav.vMenuCenter.id,
+                    ConstraintSet.TOP,
+                    topInsetsMargin
+                )
             }
         }
 
         binding.loaderFeedTopNav.root.doOnApplyWindowInsets { v, insets, _, margin ->
 
-            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset16).coerceAtLeast(margin.top)
+            val topInsetsMargin =
+                (insets.systemWindowInsetTop + tabExtraTopOffset16).coerceAtLeast(margin.top)
 
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             marginLayoutParams.updateMargins(top = topInsetsMargin)
@@ -691,7 +709,7 @@ class FeedBaseFragment :
     }
 
     private fun onCreatePostClicked() {
-        FeedContentCreationTypeBottomSheet
+        ContentCreationBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }
