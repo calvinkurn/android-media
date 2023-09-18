@@ -142,6 +142,19 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     }
     private var isUsingViewStub = false
 
+    private val progressBarStock: ProgressBarUnify? by lazy(NONE) { findViewById(R.id.progressBarStock) }
+    private val textViewStockLabel: Typography? by lazy(NONE) { findViewById(R.id.textViewStockLabel) }
+    private val productName: Typography? by lazy(NONE) { findViewById(R.id.textViewProductName) }
+    private val productPrice: Typography? by lazy(NONE) { findViewById(R.id.textViewPrice) }
+    private val labelDiscount: Label? by lazy(NONE) { findViewById(R.id.labelDiscount) }
+    private val productSlashPrice: Typography? by lazy(NONE) { findViewById(R.id.textViewSlashedPrice) }
+    private val soldCount: Typography? by lazy(NONE) { findViewById(R.id.textViewSales) }
+    private val rating: Typography? by lazy(NONE) { findViewById(R.id.salesRatingFloat) }
+    private val gimmick: Typography? by lazy(NONE) { findViewById(R.id.textViewGimmick) }
+    private val salesRatingFloatLine: View? by lazy(NONE) { findViewById(R.id.salesRatingFloatLine) }
+    private val textViewIntegrity: Typography? by lazy(NONE) { findViewById(R.id.textViewIntegrity) }
+    private val textViewFulfillment: Typography? by lazy(NONE) { findViewById(R.id.textViewFulfillment) }
+
     constructor(context: Context) : super(context) {
         init()
     }
@@ -378,50 +391,22 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     }
 
     fun forceLightModeColor(productCard: ProductCardGridView?) {
-        productCard?.let {
-            val cardView = productCard.findViewById<CardUnify2>(R.id.cardViewProductCard)
-            cardView.setCardUnifyBackgroundColor(ContextCompat.getColor(cardView.context, R.color.dms_static_white))
+        val context = productCard?.context
 
-            val productName = productCard.findViewById<Typography>(R.id.textViewProductName)
-            productName.setTextColor(ContextCompat.getColor(productName.context, R.color.dms_static_light_NN950_96))
-
-            val productPrice = productCard.findViewById<Typography>(R.id.textViewPrice)
-            productPrice.setTextColor(ContextCompat.getColor(productPrice.context, R.color.dms_static_light_NN950_96))
-
-            val labelDiscount = productCard.findViewById<Label>(R.id.labelDiscount)
-            labelDiscount.forceLightRed()
-
-            val productSlashPrice = productCard.findViewById<Typography>(R.id.textViewSlashedPrice)
-            productSlashPrice.setTextColor(ContextCompat.getColor(productSlashPrice.context, R.color.dms_static_light_NN950_44))
-
-            val soldCount = productCard.findViewById<Typography>(R.id.textViewSales)
-            soldCount.setTextColor(ContextCompat.getColor(soldCount.context, R.color.dms_static_light_NN950_68))
-
-            val rating = productCard.findViewById<Typography>(R.id.salesRatingFloat)
-            rating.setTextColor(ContextCompat.getColor(rating.context, R.color.dms_static_light_NN950_68))
-
-            val gimmick = productCard.findViewById<Typography>(R.id.textViewGimmick)
-            gimmick.setTextColor(ContextCompat.getColor(gimmick.context, R.color.dms_static_light_YN400))
-
-            //Divider bottom sold count
-            val salesRatingFloatLine = productCard.findViewById<View>(R.id.salesRatingFloatLine)
-            salesRatingFloatLine.setBackgroundColor(ContextCompat.getColor(salesRatingFloatLine.context, R.color.dms_static_light_NN950_32))
-
-            //Bottom sold count
-            val textViewIntegrity = productCard.findViewById<Typography>(R.id.textViewIntegrity)
-            textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, R.color.dms_static_light_NN950_68))
-
-            //Dilayani tokopedia textView
-            val textViewFulfillment = productCard.findViewById<Typography>(R.id.textViewFulfillment)
-            textViewFulfillment.setTextColor(ContextCompat.getColor(textViewFulfillment.context, R.color.dms_static_light_NN950_68))
-
-            val textViewStockLabel = productCard.findViewById<Typography>(R.id.textViewStockLabel)
-            textViewStockLabel.setTextColor(ContextCompat.getColor(textViewStockLabel.context, R.color.dms_static_light_NN950_68))
-
-            val progressBarStock = productCard.findViewById<ProgressBarUnify>(R.id.progressBarStock)
-            progressBarStock.trackDrawable.apply {
-                setColor(ContextCompat.getColor(progressBarStock.context, R.color.dms_static_light_NN100))
-            }
+        if (productCard != null && context != null) {
+            cardViewProductCard?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_white))
+            productName?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+            productPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+            labelDiscount?.forceLightRed()
+            productSlashPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_44))
+            soldCount?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+            rating?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+            gimmick?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_YN400))
+            salesRatingFloatLine?.setBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_32))
+            textViewIntegrity?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+            textViewFulfillment?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+            textViewStockLabel?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+            progressBarStock?.trackDrawable?.apply { setColor(ContextCompat.getColor(context, R.color.dms_static_light_NN100)) }
         }
     }
 }
