@@ -3,6 +3,7 @@
     <string name="content_creation_bottom_sheet_title">Buat Konten</string>
     <string name="content_creation_bottom_sheet_performance_action">Lihat Performa</string>
     <string name="content_creation_bottom_sheet_next_label">Lanjut</string>
+    <string name="content_creation_retry_label">Coba Lagi</string>
 
     <string name="content_creation_short_description_text">Bikin review, tutorial, hingga unboxing produk yang menginspirasi pembeli. </string>
     <string name="content_creation_short_description_click_label">Tips Bikin Video.</string>
@@ -15,4 +16,8 @@
 
     <string name="content_creation_story_description_text">Pamerin tentang bagusnya suatu produk dengan update Story singkat &amp; memikat. </string>
     <string name="content_creation_story_description_click_label">Tips Bikin Story.</string>
+
+    <string name="content_creation_failed_network_title">Ada gangguan di rumah Toped!</string>
+    <string name="content_creation_failed_network_description">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="content_creation_failed_network_image_url">https://images.tokopedia.net/img/content/creation/content_creation_network-error.png</string>
 </resources>

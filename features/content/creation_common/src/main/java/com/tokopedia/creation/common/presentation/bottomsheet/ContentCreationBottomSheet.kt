@@ -51,7 +51,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                 val creationList = viewModel?.creationConfig?.collectAsStateWithLifecycle()
 
                 ContentCreationComponent(
-                    creationItemList = creationList?.value,
+                    creationConfig = creationList?.value,
                     selectedItem = selectedCreation?.value,
                     onSelectItem = {
                         viewModel?.selectCreationItem(it)
