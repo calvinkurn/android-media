@@ -9,12 +9,13 @@ import javax.inject.Inject
 class AceSearchParamMapper @Inject constructor(
     private val userSession: UserSessionInterface,
     private val addressData: TokoNowLocalAddress,
-    private val uniqueId: String = ""
 ) {
 
     companion object {
         private const val DEFAULT_PAGE = 1
     }
+
+    var uniqueId: String = ""
 
     fun createRequestParams(
         page: Int? = DEFAULT_PAGE,
@@ -68,14 +69,14 @@ class AceSearchParamMapper @Inject constructor(
         }
 
         queryParams[SearchApiConst.ROWS] = rows
-        queryParams[SearchApiConst.UNIQUE_ID] = getUniqueId()
+        queryParams[SearchApiConst.UNIQUE_ID] = getUniqueIdHash()
         queryParams[SearchApiConst.OB] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
         queryParams[SearchApiConst.DEVICE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 
         return queryParams
     }
 
-    private fun getUniqueId() =
+    private fun getUniqueIdHash() =
         if (uniqueId.isNotEmpty()) {
             uniqueId
         } else if (userSession.isLoggedIn) {
