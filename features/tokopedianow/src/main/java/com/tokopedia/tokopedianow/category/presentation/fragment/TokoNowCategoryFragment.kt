@@ -1205,17 +1205,6 @@ class TokoNowCategoryFragment:
         )
 
         override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
-
-        override fun onWishlistButtonClicked(
-            productId: String,
-            isWishlistSelected: Boolean,
-            descriptionToaster: String,
-            ctaToaster: String,
-            type: Int,
-            ctaClickListener: (() -> Unit)?
-        ) {
-            /* nothing to do */
-        }
     }
 
     private fun createCategoryShowcaseHeaderCallback() = object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
