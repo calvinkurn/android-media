@@ -26,10 +26,6 @@ android {
         exclude 'META-INF/**'
     }
 
-    buildFeatures {
-        viewBinding true
-    }
-
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
