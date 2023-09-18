@@ -31,7 +31,7 @@ data class StoriesGroupsResponseModel(
 
     data class Meta(
         @SerializedName("selectedGroupIndex")
-        val selectedGroupIndex: Int = -1,
+        val selectedGroupIndex: Int = 0,
     )
 }
 

@@ -184,7 +184,7 @@ class StoriesGroupFragment @Inject constructor(
         prevState: StoriesUiModel?,
         state: StoriesUiModel
     ) {
-        if (prevState == null || pagerAdapter.getCurrentData().size == state.groupItems.size) return
+        if (prevState == state) return
 
         if (state.groupItems.isEmpty()) {
             // TODO handle error empty data state here
@@ -195,6 +195,8 @@ class StoriesGroupFragment @Inject constructor(
             ).show()
             return
         }
+
+        if (pagerAdapter.getCurrentData().size == state.groupItems.size) return
 
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
