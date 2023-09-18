@@ -58,7 +58,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
-    implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     api projectOrAar(rootProject.ext.features.promoMvcWidget)

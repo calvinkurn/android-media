@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -81,6 +81,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestComponents
 
     implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
 }

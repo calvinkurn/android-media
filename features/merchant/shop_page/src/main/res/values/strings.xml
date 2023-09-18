@@ -138,11 +138,8 @@
     <string name="shop_page_play_widget_sgc_performance_dashboard">Pelajari Wawasan Video</string>
     <string name="shop_page_broadcast_creation_label">Buat Live</string>
     <string name="shop_page_shorts_creation_label">Buat Shorts Video</string>
-    <string name="shop_page_start_create_content">Yuk, Mulai</string>
-    <string name="shop_page_play_widget_beta_template">[beta]</string>
-    <string name="shop_page_play_widget_livestream_only_label"><![CDATA[Ayo cobain <b>live streaming</b> [beta]<br />dan bikin tokomu makin terkenal!]]></string>
-    <string name="shop_page_play_widget_livestream_and_shorts_label"><![CDATA[Promosikan produkmu dengan<br /><b>Live</b> atau <b>Shorts Video</b> [beta]]]></string>
-    <string name="shop_page_play_widget_shorts_only_label"><![CDATA[Promosikan produkmu dengan<br /><b>Shorts Video</b> [beta]]]></string>
+    <string name="shop_page_play_creation_button_label">Buat Konten</string>
+    <string name="shop_page_play_widget_desription"><![CDATA[Promosikan produkmu dengan <b>Live, Video, Foto & Story</b>!]]></string>
 
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>

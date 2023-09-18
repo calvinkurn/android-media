@@ -17,6 +17,8 @@
     <string name="content_creation_story_description_text">Pamerin tentang bagusnya suatu produk dengan update Story singkat &amp; memikat. </string>
     <string name="content_creation_story_description_click_label">Tips Bikin Story.</string>
 
+    <string name="content_creation_post_as_label">Post sebagai</string>
+
     <string name="content_creation_failed_network_title">Ada gangguan di rumah Toped!</string>
     <string name="content_creation_failed_network_description">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="content_creation_failed_network_image_url">https://images.tokopedia.net/img/content/creation/content_creation_network-error.png</string>

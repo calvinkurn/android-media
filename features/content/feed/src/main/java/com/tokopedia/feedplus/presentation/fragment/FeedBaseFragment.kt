@@ -23,10 +23,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
-import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.creation.common.consts.ContentCreationConsts
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
@@ -66,7 +66,7 @@ import javax.inject.Inject
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
-import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.creation.common.R as creationcommonR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -254,7 +254,9 @@ class FeedBaseFragment :
 
     override fun getScreenName(): String = "Feed Fragment"
 
-    override fun onCreationItemSelected(data: ContentCreationItemModel) {}
+    override fun onCreationItemSelected(data: ContentCreationItemModel) {
+        /* TODO : Add Analytics, if any */
+    }
 
     override fun onCreationNextClicked(data: ContentCreationItemModel) {
         when (data.type) {
@@ -268,23 +270,23 @@ class FeedBaseFragment :
 
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2).apply {
                     putExtra(
-                        BundleData.IS_CREATE_POST_AS_BUYER,
+                        ContentCreationConsts.IS_CREATE_POST_AS_BUYER,
                         data.authorType.asBuyer
                     )
                     putExtra(
-                        BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
+                        ContentCreationConsts.APPLINK_AFTER_CAMERA_CAPTURE,
                         ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
                     )
                     putExtra(
-                        BundleData.MAX_MULTI_SELECT_ALLOWED,
-                        BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
+                        ContentCreationConsts.MAX_MULTI_SELECT_ALLOWED,
+                        ContentCreationConsts.VALUE_MAX_MULTI_SELECT_ALLOWED
                     )
                     putExtra(
-                        BundleData.TITLE,
-                        getString(contentcommonR.string.feed_post_sebagai)
+                        ContentCreationConsts.TITLE,
+                        getString(creationcommonR.string.content_creation_post_as_label)
                     )
                     putExtra(
-                        BundleData.APPLINK_FOR_GALLERY_PROCEED,
+                        ContentCreationConsts.APPLINK_FOR_GALLERY_PROCEED,
                         ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
                     )
                 }
@@ -305,6 +307,10 @@ class FeedBaseFragment :
 
             else -> {}
         }
+    }
+
+    override fun trackViewPerformanceClicked() {
+        /* TODO : Add Analytics, if any */
     }
 
     @OptIn(ExperimentalTime::class)
