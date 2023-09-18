@@ -17,18 +17,20 @@ import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
-import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesGroupHeader
+import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.getRandomNumber
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -44,8 +46,6 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private val _storiesMainData = MutableStateFlow(StoriesUiModel())
-    val storiesMainData: Flow<StoriesUiModel>
-        get() = _storiesMainData
 
     private val _storiesEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val storiesEvent: Flow<StoriesUiEvent>
@@ -119,6 +119,17 @@ class StoriesViewModel @AssistedInject constructor(
         get() = _resetValue.value
 
     private var mLatestTrackPosition = -1
+
+    val storiesState: Flow<StoriesUiState>
+        get() = combine(
+            _storiesMainData,
+            MutableStateFlow(Any())
+        ) { storiesMainData, product ->
+            StoriesUiState(
+                storiesMainData = storiesMainData,
+                product = product,
+            )
+        }
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {

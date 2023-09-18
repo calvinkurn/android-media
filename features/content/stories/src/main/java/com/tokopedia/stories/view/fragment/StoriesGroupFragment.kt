@@ -145,8 +145,8 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.storiesMainData.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroup(prevState, state)
+            viewModel.storiesState.withCache().collectLatest { (prevState, state) ->
+                renderStoriesGroup(prevState?.storiesMainData, state.storiesMainData)
             }
         }
     }
