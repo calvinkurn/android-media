@@ -5,19 +5,47 @@ import android.media.MediaDrm
 import android.os.Build
 import android.util.Base64
 import com.google.gson.Gson
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
 import java.util.UUID
 
 data class AdditionalInfoModel(
-    val time: Long,
+    @SerializedName("time")
+    @Expose
+    val time: String,
+
+    @SerializedName("brand")
+    @Expose
     val brand: String,
+
+    @SerializedName("product")
+    @Expose
     val product: String,
+
+    @SerializedName("board")
+    @Expose
     val board: String,
+
+    @SerializedName("cpuAbi")
+    @Expose
     val cpuAbi: String,
+
+    @SerializedName("device")
+    @Expose
     val device: String,
+
+    @SerializedName("versionName")
+    @Expose
     val versionName: String,
+
+    @SerializedName("advertisingId")
+    @Expose
     val advertisingId: String,
+
+    @SerializedName("wideVineId")
+    @Expose
     val wideVineId: String
 ) {
 
@@ -32,7 +60,7 @@ data class AdditionalInfoModel(
             val wideVineIdBase64 = Base64.encodeToString(wideVineId, Base64.DEFAULT).trim()
 
             return AdditionalInfoModel(
-                time = System.currentTimeMillis(),
+                time = System.currentTimeMillis().toString(),
                 brand = Build.BRAND,
                 product = Build.PRODUCT,
                 board = Build.BOARD,
