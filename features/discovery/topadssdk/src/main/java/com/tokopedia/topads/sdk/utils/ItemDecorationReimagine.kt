@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.toPx
 
-internal class CarouselProductCardDefaultDecorationReimagine: RecyclerView.ItemDecoration() {
+internal class ItemDecorationReimagine: RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,

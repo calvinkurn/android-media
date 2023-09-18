@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/containerCTASeeMore"
+    android:id="@+id/topAdsContainerCTASeeMore"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
 >
     <ImageView
-        android:id="@+id/borderCTASeeMore"
+        android:id="@+id/topAdsBorderCTASeeMore"
         android:layout_width="32dp"
         android:layout_height="32dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -18,7 +18,7 @@
         android:importantForAccessibility="no" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iconCTASeeMore"
+        android:id="@+id/topAdsIconCTASeeMore"
         app:icon_name="CHEVRON_RIGHT"
         android:clickable="true"
         android:focusable="true"

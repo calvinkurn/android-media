@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -15,12 +16,14 @@ import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel.ShopProductModelItem
 import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopAdsProductAdapter(
     private val shopAdsProductListener: ShopAdsProductListener,
-    private val followButtonClickListener:FollowButtonClickListener?
+    private val followButtonClickListener:FollowButtonClickListener?,
+    private val isReimagine: Boolean = false,
 ) : RecyclerView.Adapter<ShopAdsProductAdapter.ShopAdsProductViewHolder>() {
 
 
@@ -34,6 +37,7 @@ class ShopAdsProductAdapter(
     }
 
     inner class ShopAdsProductViewHolder(itemView: View, private val shopAdsProductListener: ShopAdsProductListener) : RecyclerView.ViewHolder(itemView) {
+        private val container = itemView.findViewById<CardUnify2>(R.id.topAdsShopWithOneProductContainer)
         private val productImage = itemView.findViewById<ImageView>(R.id.productImage)
         private val productLogoShop = itemView.findViewById<ImageView>(R.id.productLogoShop)
         private val productShopBadge = itemView.findViewById<ImageView>(R.id.productShopBadge)
@@ -46,7 +50,7 @@ class ShopAdsProductAdapter(
 
 
         fun bind(shopProductModelItem: ShopProductModelItem) {
-
+            container.renderContainer(isReimagine)
             productImage.loadImage(shopProductModelItem.imageUrl)
             productLogoShop.loadImageCircle(shopProductModelItem.shopIcon)
             loadBadge(shopProductModelItem)
@@ -60,7 +64,32 @@ class ShopAdsProductAdapter(
 
             itemView.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
             setFollowButton(shopProductModelItem.layoutType, shopProductModelItem)
+        }
 
+        private fun CardUnify2.renderContainer(isReimagine: Boolean) {
+            if (isReimagine) {
+                this.renderShopCardReimagine()
+            } else {
+                this.renderShopCardControl()
+            }
+        }
+
+        private fun CardUnify2.renderShopCardReimagine() {
+            this.apply {
+                cardType = CardUnify2.TYPE_BORDER
+                val rootView = this as CardView
+                rootView.preventCornerOverlap = true
+                rootView.useCompatPadding = false
+            }
+        }
+
+        private fun CardUnify2.renderShopCardControl() {
+            this.apply {
+                cardType = CardUnify2.TYPE_SHADOW
+                val rootView = this as CardView
+                rootView.preventCornerOverlap = false
+                rootView.useCompatPadding = true
+            }
         }
 
         private fun setFollowButton(

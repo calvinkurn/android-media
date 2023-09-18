@@ -67,7 +67,7 @@ class BannerShopProductRevampViewHolder(
             },
             rating = item.ratingString,
             freeShipping = com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping(item.freeOngkir.imageUrl),
-            hasMultilineName = false
+            hasMultilineName = true
         )
     }
 

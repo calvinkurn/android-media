@@ -22,6 +22,9 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.shopwidget.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_SHADOW
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
@@ -29,7 +32,7 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
 
 class ShopCardView : BaseCustomView {
-    private val shopWidgetCardViewShopCard: CardView? by lazy(NONE) {
+    private val shopWidgetCardViewShopCard: CardUnify2? by lazy(NONE) {
         findViewById(R.id.shopWidgetCardViewShopCard)
     }
     private val shopWidgetConstraintLayoutShopCard: ConstraintLayout? by lazy(NONE) {
@@ -87,6 +90,10 @@ class ShopCardView : BaseCustomView {
         findViewById(R.id.shopWidgetTextViewShopStatus)
     }
 
+    private val shopWidgetImageViewAdsText: Typography? by lazy(NONE) {
+        findViewById(R.id.shopWidgetImageViewAdsText)
+    }
+
     constructor(context: Context) : super(context) {
         init()
     }
@@ -116,6 +123,7 @@ class ShopCardView : BaseCustomView {
         initProductPreview(shopCardModel, shopCardListener)
         initShopVoucherLabel(shopCardModel)
         initShopStatus(shopCardModel)
+        initShopAdsText(shopCardModel)
     }
 
     private fun initCardViewShopCard(shopCardListener: ShopCardListener) {
@@ -372,4 +380,40 @@ class ShopCardView : BaseCustomView {
     fun getMaxCardElevation() = shopWidgetCardViewShopCard?.maxCardElevation ?: 0f
 
     fun getRadius() = shopWidgetCardViewShopCard?.radius ?: 0f
+
+    fun setCardUnifyStyle(isReimagine: Boolean) {
+        if (isReimagine) {
+            renderShopCardReimagine()
+        } else {
+            renderShopCardControl()
+        }
+    }
+
+    private fun renderShopCardReimagine() {
+        shopWidgetCardViewShopCard?.apply {
+            cardType = TYPE_BORDER
+            val rootView = this as CardView
+            rootView.preventCornerOverlap = true
+            rootView.useCompatPadding = false
+        }
+    }
+
+    private fun renderShopCardControl() {
+        shopWidgetCardViewShopCard?.apply {
+            cardType = TYPE_SHADOW
+            val rootView = this as CardView
+            rootView.preventCornerOverlap = false
+            rootView.useCompatPadding = true
+        }
+    }
+
+    private fun initShopAdsText(shopModel: ShopCardModel) {
+        if (shopModel.isAds) {
+            shopWidgetImageViewAdsText?.visible()
+            shopWidgetTextViewShopLocation?.gone()
+        } else {
+            shopWidgetImageViewAdsText?.gone()
+            shopWidgetTextViewShopLocation?.visible()
+        }
+    }
 }

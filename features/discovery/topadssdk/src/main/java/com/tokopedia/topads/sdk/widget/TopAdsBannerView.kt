@@ -24,7 +24,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardListener
@@ -40,7 +39,7 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
-import com.tokopedia.topads.sdk.utils.CarouselProductCardDefaultDecorationReimagine
+import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.setItemDecorationReimagineSearch
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.BannerAdsContract
@@ -150,22 +149,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         setHeadlineShopData(cpmModel, appLink, adsClickUrl, index)
     }
 
-    private fun RecyclerView.setItemDecorationReimagineSearch(isReimagine: Boolean) {
-        if(isReimagine)
-            addItemDecoratorReimagine()
-        else
-            removeItemDecorationIfExist()
-    }
-
-    private fun RecyclerView.addItemDecoratorReimagine() {
-        removeItemDecorationIfExist()
-        addItemDecoration(CarouselProductCardDefaultDecorationReimagine())
-    }
-
-    private fun RecyclerView.removeItemDecorationIfExist(){
-        if (itemDecorationCount > 0) removeItemDecorationAt(0)
-    }
-
     private fun setHeadlineShopData(cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
         val adsBannerShopCardView = findViewById<ShopCardView?>(R.id.adsBannerShopCardView)
         val shopDetail = findViewById<View?>(R.id.shop_detail)
@@ -186,6 +169,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     topAdsCarousel.hide()
                     shopAdsProductView.hide()
                     adsBannerShopCardView?.visible()
+                    adsBannerShopCardView?.setCardUnifyStyle(isReimagine)
                     shopAdsWithThreeProducts.hide()
                     container?.setBackgroundResource(0)
                     (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
@@ -353,7 +337,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun renderHeaderSeeMore(cpmData: CpmData, appLink: String, adsClickUrl: String, isReimagine: Boolean) {
-        val containerSeeMore = findViewById<View>(R.id.btnSeeMore)
+        val containerSeeMore = findViewById<View>(R.id.topAdsBtnSeeMore)
         val isApplinkNotEmpty = appLink.isNotEmpty()
         if (isReimagine && isApplinkNotEmpty)
             showHeaderSeeMore(containerSeeMore, cpmData, appLink, adsClickUrl)
@@ -363,7 +347,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun showHeaderSeeMore(btnSeeMore: View, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         btnSeeMore.visible()
-        val btnSeeMore: IconUnify = btnSeeMore.findViewById(R.id.iconCTASeeMore)
+        val btnSeeMore: IconUnify = btnSeeMore.findViewById(R.id.topAdsIconCTASeeMore)
         btnSeeMore.setOnClickListener {
             if (topAdsBannerClickListener != null) {
                 topAdsBannerClickListener?.onBannerAdsClicked(0, appLink, cpmData)
@@ -525,7 +509,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     )
                 }
             },
-            null
+            null,
+            isReimagine
         )
     }
 
@@ -792,7 +777,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 },
                 isOfficial = cpmData.cpm.cpmShop.isOfficial,
                 isPMPro = cpmData.cpm.cpmShop.isPMPro,
-                impressHolder = cpmData.cpm.cpmShop.imageShop
+                impressHolder = cpmData.cpm.cpmShop.imageShop,
+                isAds = true
             ),
             object : ShopCardListener {
                 override fun onItemImpressed() {
