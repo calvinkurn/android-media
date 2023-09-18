@@ -351,7 +351,7 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindAuthor(data: FeedCardVideoContentModel) {
-        authorView.bindData(data.author, false, !data.followers.isFollowed, trackerDataModel)
+        authorView.bindData(data.author, false, !data.followers.isFollowed, trackerDataModel, null)
     }
 
     private fun bindCaption(data: FeedCardVideoContentModel) {
@@ -374,7 +374,8 @@ class FeedPostVideoViewHolder(
             products = data.products,
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition
+            positionInFeed = absoluteAdapterPosition,
+            topAdsTrackerData = null
         )
 
         productButtonView.bindData(
@@ -387,7 +388,8 @@ class FeedPostVideoViewHolder(
             products = data.products,
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition
+            positionInFeed = absoluteAdapterPosition,
+            topAdsTrackerData = null
         )
     }
 

@@ -68,6 +68,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.design.R as designR
+import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MedalCelebrationBottomSheet : BottomSheetUnify() {
@@ -635,7 +636,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         val badgeDrawable = if (isFallbackCase) {
 //            CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
             changeBadgeSize()
-            ResourcesCompat.getDrawable(resources, R.drawable.fallback_badge, null)
+            context?.let { ContextCompat.getDrawable(it, scp_rewards_commonR.drawable.fallback_badge) }
         } else {
             badge_image
         }

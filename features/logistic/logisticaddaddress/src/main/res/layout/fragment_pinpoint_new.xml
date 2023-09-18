@@ -1,117 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_Background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
 
-    <RelativeLayout
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_views"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_pointer"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:contentDescription="@string/pointer"
+        app:icon_color_light_disabled="@color/Unify_GN500"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_disabled="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
+        app:icon_name="LOCATION_FILLED"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/maps_empty"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:constraint_referenced_ids="img_maps_empty, ic_location" />
 
-        <RelativeLayout
-            android:id="@+id/rl_map_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="80dp">
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_maps_empty"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="pinpointMapsEmptyImage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/map_views"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_location"
+        android:layout_width="32dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:icon_name="LOCATION_FILLED"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/pointer_0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/pointer" />
+    <HorizontalScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/bottomsheet_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-            <ImageView
-                android:id="@+id/icon_pointer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/pointer_0"
-                android:layout_centerHorizontal="true"
-                android:contentDescription="@string/pointer"
-                app:srcCompat="@drawable/ic_green_pointer" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/maps_empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/layout_botoomsheet_loc">
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/img_maps_empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="null"/>
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/ic_location"
-                android:layout_width="32dp"
-                android:layout_height="40dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                app:icon_name="LOCATION_FILLED"/>
-
-        </RelativeLayout>
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/btn_horizonal_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@id/layout_botoomsheet_loc" >
-            <LinearLayout
-                android:id="@+id/btn_horizonal_layout"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chips_current_loc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:orientation="horizontal"
-                android:visibility="visible">
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="Gunakan Lokasi Saat Ini"
+                app:chipType="normal" />
 
-                <com.tokopedia.unifycomponents.ChipsUnify
-                    android:id="@+id/chips_current_loc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    app:centerText="true"
-                    app:chipSize="medium"
-                    app:chipText="Gunakan Lokasi Saat Ini"
-                    app:chipType="normal" />
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chips_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="Cari Ulang"
+                app:chipType="normal" />
 
-                <com.tokopedia.unifycomponents.ChipsUnify
-                    android:id="@+id/chips_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="12dp"
-                    app:centerText="true"
-                    app:chipSize="medium"
-                    app:chipText="Cari Ulang"
-                    app:chipType="normal" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
-            </LinearLayout>
-        </HorizontalScrollView>
+    <include
+        android:id="@+id/bottomsheet_location"
+        layout="@layout/bottomsheet_choose_location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/layout_botoomsheet_loc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            <include
-                android:id="@+id/bottomsheet_location"
-                layout="@layout/bottomsheet_choose_location" />
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    </RelativeLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

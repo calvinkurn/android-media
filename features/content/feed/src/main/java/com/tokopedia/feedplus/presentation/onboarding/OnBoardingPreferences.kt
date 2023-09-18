@@ -11,9 +11,13 @@ interface OnBoardingPreferences {
 
     fun hasShownSwipeOnBoarding(): Boolean
 
+    fun hasShownBrowseEntryPoint(): Boolean
+
     fun setHasShownCreateContent()
 
     fun setHasShownProfileEntryPoint()
 
     fun setHasShownSwipeOnBoarding()
+
+    fun setHasShownBrowseEntryPoint()
 }
