@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.merchant
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.CheckDeliveryCoverageUseCase
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.ManageLocationViewModel
@@ -16,10 +15,10 @@ abstract class ManageLocationViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var keroEditAddressUseCase: KeroEditAddressUseCase
+
     @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
-    @RelaxedMockK
-    lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
+
     @RelaxedMockK
     lateinit var checkDeliveryCoverageUseCase: CheckDeliveryCoverageUseCase
 
@@ -32,11 +31,10 @@ abstract class ManageLocationViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ManageLocationViewModel(
-                keroEditAddressUseCase,
-                getChooseAddressWarehouseLocUseCase,
-                eligibleForAddressUseCase,
-                checkDeliveryCoverageUseCase,
-                CoroutineTestDispatchersProvider
+            keroEditAddressUseCase,
+            getChooseAddressWarehouseLocUseCase,
+            checkDeliveryCoverageUseCase,
+            CoroutineTestDispatchersProvider
         )
     }
 }

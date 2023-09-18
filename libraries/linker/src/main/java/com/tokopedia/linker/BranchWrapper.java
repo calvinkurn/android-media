@@ -389,7 +389,14 @@ public class BranchWrapper implements WrapperInterface {
                     String userId = (String) linkerGenericRequest.getDataObj();
                     BranchHelper.sendPageViewShop(context, userId);
                 }
-
+                break;
+            case LinkerConstants.EVENT_SUBSCRIBE_PLUS:
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerCommerceData) {
+                    BranchHelper.sendSubscribePlusEvent(
+                            ((LinkerCommerceData) linkerGenericRequest.getDataObj()).getPaymentData(),
+                            context, ((LinkerCommerceData) linkerGenericRequest.getDataObj()).getUserData());
+                }
         }
     }
 

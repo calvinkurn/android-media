@@ -9,7 +9,7 @@ class MockTimber : Timber.Tree() {
         logs.add(Log(priority, tag, message, t))
     }
 
-    fun lastLogMessage() : String {
+    fun lastLogMessage(): String {
         return logs.last().message
     }
 

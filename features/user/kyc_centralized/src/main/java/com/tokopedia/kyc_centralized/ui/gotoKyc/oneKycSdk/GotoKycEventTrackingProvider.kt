@@ -58,10 +58,22 @@ class GotoKycEventTrackingProvider @Inject constructor(
                                 )
                             }
                             SELFIE -> {
-                                GotoKycAnalytics.sendViewSelfiePage(
-                                    isManual = false,
-                                    projectId = projectId
-                                )
+                                when (eventProperties[FLOW_TYPE]) {
+                                    FLOW_TYPE_AURORA -> {
+                                        GotoKycAnalytics.sendViewSelfiePage(
+                                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                            detectionType = VALUE_DETECTION_TYPE_AURORA,
+                                            projectId = projectId
+                                        )
+                                    }
+                                    else -> {
+                                        GotoKycAnalytics.sendViewSelfiePage(
+                                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                            detectionType = VALUE_DETECTION_TYPE_AUTO,
+                                            projectId = projectId
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -75,7 +87,8 @@ class GotoKycEventTrackingProvider @Inject constructor(
                             }
                             SELFIE -> {
                                 GotoKycAnalytics.sendViewSelfiePage(
-                                    isManual = true,
+                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                    detectionType = VALUE_DETECTION_TYPE_MANUAL,
                                     projectId = projectId
                                 )
                             }
@@ -113,36 +126,6 @@ class GotoKycEventTrackingProvider @Inject constructor(
                     }
                 }
             }
-            IMAGE_CAPTURE_INITIATED -> {
-                when (eventProperties[CAPTURE_MODE]) {
-                    AUTO_CAPTURE -> {
-                        when (eventProperties[TYPE]) {
-                            KTP -> {
-                                GotoKycAnalytics.sendScanKtpImage(
-                                    statusScan = VALUE_IMAGE_CAPTURED,
-                                    projectId = projectId
-                                )
-                            }
-                            SELFIE -> {
-                                GotoKycAnalytics.sendScanSelfieImage(
-                                    statusScan = VALUE_IMAGE_CAPTURED,
-                                    projectId = projectId
-                                )
-                            }
-                        }
-                    }
-                    MANUAL_CAPTURE -> {
-                        when (eventProperties[TYPE]) {
-                            KTP -> {
-                                GotoKycAnalytics.sendClickOnButtonCaptureKtpPage(projectId)
-                            }
-                            SELFIE -> {
-                                GotoKycAnalytics.sendClickOnButtonCaptureSelfiePage(projectId)
-                            }
-                        }
-                    }
-                }
-            }
             APP_CLOSE_BUTTON_CLICKED -> {
                 when (eventProperties[SCREEN_TYPE]) {
                     SCREEN_TYPE_CAMERA -> {
@@ -160,7 +143,22 @@ class GotoKycEventTrackingProvider @Inject constructor(
                             SELFIE -> {
                                 when (eventProperties[CAPTURE_MODE]) {
                                     AUTO_CAPTURE -> {
-                                        GotoKycAnalytics.sendClickOnButtonBackSelfiePage(projectId)
+                                        when (eventProperties[FLOW_TYPE]) {
+                                            FLOW_TYPE_AURORA -> {
+                                                GotoKycAnalytics.sendClickOnButtonBackSelfiePage(
+                                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                                    detectionType = VALUE_DETECTION_TYPE_AURORA,
+                                                    projectId = projectId
+                                                )
+                                            }
+                                            else -> {
+                                                GotoKycAnalytics.sendClickOnButtonBackSelfiePage(
+                                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                                    detectionType = VALUE_DETECTION_TYPE_AUTO,
+                                                    projectId = projectId
+                                                )
+                                            }
+                                        }
                                     }
                                     MANUAL_CAPTURE -> {
                                         GotoKycAnalytics.sendClickOnButtonBackManualSelfie(projectId)
@@ -199,13 +197,76 @@ class GotoKycEventTrackingProvider @Inject constructor(
                 }
             }
             SELFIE_PREPARE_SCREEN_VIEWED -> {
-                GotoKycAnalytics.sendViewGuideSelfiePage(projectId)
+                when (eventProperties[FLOW_TYPE]) {
+                    FLOW_TYPE_AURORA -> {
+                        GotoKycAnalytics.sendViewGuideSelfiePage(
+                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                            detectionType = VALUE_DETECTION_TYPE_AURORA,
+                            projectId = projectId
+                        )
+                    }
+                    else -> {
+                        GotoKycAnalytics.sendViewGuideSelfiePage(
+                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                            detectionType = VALUE_DETECTION_TYPE_AUTO,
+                            projectId = projectId
+                        )
+                    }
+                }
+            }
+            SELFIE_TIMER_EXHAUSTED_VIEW -> {
+                GotoKycAnalytics.sendViewOnAuroraConfirmationEvent(
+                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                    projectId = projectId
+                )
+            }
+            SELFIE_TIMER_EXHAUSTED_CLICK_READY -> {
+                GotoKycAnalytics.sendClickOnButtonOkAuroraConfirmationEvent(
+                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                    projectId = projectId
+                )
+            }
+            SELFIE_TIMER_EXHAUSTED_CLICK_LATER -> {
+                GotoKycAnalytics.sendClickOnButtonLaterAuroraConfirmationEvent(
+                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                    projectId = projectId
+                )
             }
             CLICK_SELFIE_NEED_TIME -> {
-                GotoKycAnalytics.sendClickNeedTimeGuideSelfiePage(projectId)
+                when (eventProperties[FLOW_TYPE]) {
+                    FLOW_TYPE_AURORA -> {
+                        GotoKycAnalytics.sendClickNeedTimeGuideSelfiePage(
+                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                            detectionType = VALUE_DETECTION_TYPE_AURORA,
+                            projectId = projectId
+                        )
+                    }
+                    else -> {
+                        GotoKycAnalytics.sendClickNeedTimeGuideSelfiePage(
+                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                            detectionType = VALUE_DETECTION_TYPE_AUTO,
+                            projectId = projectId
+                        )
+                    }
+                }
             }
             SELFIE_PREPARE_READY_CLICKED -> {
-                GotoKycAnalytics.sendClickOnStartSelfie(projectId)
+                when (eventProperties[FLOW_TYPE]) {
+                    FLOW_TYPE_AURORA -> {
+                        GotoKycAnalytics.sendClickOnStartSelfie(
+                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                            detectionType = VALUE_DETECTION_TYPE_AURORA,
+                            projectId = projectId
+                        )
+                    }
+                    else -> {
+                        GotoKycAnalytics.sendClickOnStartSelfie(
+                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                            detectionType = VALUE_DETECTION_TYPE_AUTO,
+                            projectId = projectId
+                        )
+                    }
+                }
             }
             PREVIEW_ALL_DOCUMENT_VIEWED -> {
                 GotoKycAnalytics.sendViewReviewPage(projectId)
@@ -262,10 +323,24 @@ class GotoKycEventTrackingProvider @Inject constructor(
                         )
                     }
                     SELFIE -> {
-                        GotoKycAnalytics.sendScanSelfieImage(
-                            statusScan = VALUE_IMAGE_DETECTED_ERROR,
-                            projectId = projectId
-                        )
+                        when (eventProperties[FLOW_TYPE]) {
+                            FLOW_TYPE_AURORA -> {
+                                GotoKycAnalytics.sendScanSelfieImage(
+                                    statusScan = VALUE_IMAGE_DETECTED_ERROR,
+                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                    detectionType = VALUE_DETECTION_TYPE_AURORA,
+                                    projectId = projectId
+                                )
+                            }
+                            else -> {
+                                GotoKycAnalytics.sendScanSelfieImage(
+                                    statusScan = VALUE_IMAGE_DETECTED_ERROR,
+                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                    detectionType = VALUE_DETECTION_TYPE_AUTO,
+                                    projectId = projectId
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -288,10 +363,24 @@ class GotoKycEventTrackingProvider @Inject constructor(
                         )
                     }
                     SELFIE -> {
-                        GotoKycAnalytics.sendScanSelfieImage(
-                            statusScan = VALUE_IMAGE_DETECTED,
-                            projectId = projectId
-                        )
+                        when (eventProperties[FLOW_TYPE]) {
+                            FLOW_TYPE_AURORA -> {
+                                GotoKycAnalytics.sendScanSelfieImage(
+                                    statusScan = VALUE_IMAGE_DETECTED,
+                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                    detectionType = VALUE_DETECTION_TYPE_AURORA,
+                                    projectId = projectId
+                                )
+                            }
+                            else -> {
+                                GotoKycAnalytics.sendScanSelfieImage(
+                                    statusScan = VALUE_IMAGE_DETECTED,
+                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                    detectionType = VALUE_DETECTION_TYPE_AUTO,
+                                    projectId = projectId
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -304,15 +393,72 @@ class GotoKycEventTrackingProvider @Inject constructor(
                         )
                     }
                     SELFIE -> {
-                        GotoKycAnalytics.sendScanSelfieImage(
-                            statusScan = VALUE_IMAGE_DETECTED_GOOD,
-                            projectId = projectId
-                        )
+                        when (eventProperties[FLOW_TYPE]) {
+                            FLOW_TYPE_AURORA -> {
+                                GotoKycAnalytics.sendScanSelfieImage(
+                                    statusScan = VALUE_IMAGE_DETECTED_GOOD,
+                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                    detectionType = VALUE_DETECTION_TYPE_AURORA,
+                                    projectId = projectId
+                                )
+                            }
+                            else -> {
+                                GotoKycAnalytics.sendScanSelfieImage(
+                                    statusScan = VALUE_IMAGE_DETECTED_GOOD,
+                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                    detectionType = VALUE_DETECTION_TYPE_AUTO,
+                                    projectId = projectId
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            MANUAL_IMAGE_CAPTURE_CLICKED -> {
+                when (eventProperties[TYPE]) {
+                    KTP -> {
+                        GotoKycAnalytics.sendClickOnButtonCaptureKtpPage(projectId)
+                    }
+                    SELFIE -> {
+                        GotoKycAnalytics.sendClickOnButtonCaptureSelfiePage(projectId)
                     }
                 }
             }
             IMAGE_CAPTURED -> {
                 GotoKycCleanupStorageWorker.scheduleWorker(context)
+
+                when (eventProperties[CAPTURE_MODE]) {
+                    AUTO_CAPTURE -> {
+                        when (eventProperties[TYPE]) {
+                            KTP -> {
+                                GotoKycAnalytics.sendScanKtpImage(
+                                    statusScan = VALUE_IMAGE_CAPTURED,
+                                    projectId = projectId
+                                )
+                            }
+                            SELFIE -> {
+                                when (eventProperties[FLOW_TYPE]) {
+                                    FLOW_TYPE_AURORA -> {
+                                        GotoKycAnalytics.sendScanSelfieImage(
+                                            statusScan = VALUE_IMAGE_CAPTURED,
+                                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                            detectionType = VALUE_DETECTION_TYPE_AURORA,
+                                            projectId = projectId
+                                        )
+                                    }
+                                    else -> {
+                                        GotoKycAnalytics.sendScanSelfieImage(
+                                            statusScan = VALUE_IMAGE_CAPTURED,
+                                            kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
+                                            detectionType = VALUE_DETECTION_TYPE_AUTO,
+                                            projectId = projectId
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -324,6 +470,8 @@ class GotoKycEventTrackingProvider @Inject constructor(
         private const val SCREEN_TYPE_DOCUMENT_INFO = "Captured Document Info"
         private const val CAPTURE_MODE = "CaptureMode"
         private const val ACTUAL_USAGE = "ActualUsage"
+        private const val FLOW_TYPE = "FlowType"
+        private const val FLOW_TYPE_AURORA = "Zero Click Aurora"
         private const val TYPE = "Type"
         private const val KTP = "KTP"
         private const val SELFIE = "Selfie"
@@ -335,11 +483,13 @@ class GotoKycEventTrackingProvider @Inject constructor(
         private const val IMAGE_CAPTURE_MODE_AUTO_CAPTURE  = "GP KYC Image Capture Mode Autocapture Clicked"
         private const val IMAGE_CAPTURE_MODE_CHANGE_VIEWED = "GP KYC Image Capture Mode Change Viewed"
         private const val IMAGE_CAPTURE_MODE_CHANGED = "GP KYC Image Capture Mode Changed"
-        private const val IMAGE_CAPTURE_INITIATED = "GP KYC Image Capture Initiated"
         private const val APP_CLOSE_BUTTON_CLICKED = "GP KYC In App Close Button Clicked"
         private const val CLOSE_BUTTON_CLICKED = "GP KYC Close Button Clicked"
         private const val IMAGE_CAPTURE_MODE_BACK_PRESSED = "GP KYC Image Capture Mode Back Button Pressed"
         private const val SELFIE_PREPARE_SCREEN_VIEWED = "GP KYC Selfie Prepare Screen Viewed"
+        private const val SELFIE_TIMER_EXHAUSTED_VIEW = "GP KYC Selfie Timer Exhausted"
+        private const val SELFIE_TIMER_EXHAUSTED_CLICK_READY = "GP KYC Selfie Timer Exhausted Ready CTA Clicked"
+        private const val SELFIE_TIMER_EXHAUSTED_CLICK_LATER = "GP KYC Selfie Timer Exhausted Close CTA Clicked"
         private const val CLICK_SELFIE_NEED_TIME = "GP KYC Selfie Prepare Need Time CTA Clicked"
         private const val SELFIE_PREPARE_READY_CLICKED = "GP KYC Selfie Prepare Ready CTA Clicked"
         private const val PREVIEW_ALL_DOCUMENT_VIEWED = "GP KYC All Documents Viewed"
@@ -352,10 +502,15 @@ class GotoKycEventTrackingProvider @Inject constructor(
         private const val IMAGE_QUALITY_ERROR = "GP KYC Image Quality Error"
         private const val IMAGE_DETECTED = "GP KYC Image Detected"
         private const val IMAGE_QUALITY_GOOD_DETECTED = "GP KYC Good Quality Image Detected"
+        private const val MANUAL_IMAGE_CAPTURE_CLICKED = "GP KYC Image Capture Clicked"
         private const val VALUE_IMAGE_DETECTED = "image detected"
         private const val VALUE_IMAGE_DETECTED_GOOD = "good image detected"
         private const val VALUE_IMAGE_DETECTED_ERROR = "error image detected"
         private const val VALUE_IMAGE_CAPTURED = "image captured"
+        private const val VALUE_DETECTION_TYPE_AURORA = "aurora"
+        private const val VALUE_DETECTION_TYPE_AUTO = "auto"
+        private const val VALUE_DETECTION_TYPE_MANUAL = "manual"
+        private const val VALUE_KYC_TYPE_NON_PROGRESSIVE = "non progressive"
         private const val IMAGE_CAPTURED = "GP KYC Image Captured"
     }
 }

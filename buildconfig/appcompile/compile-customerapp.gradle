@@ -217,7 +217,6 @@ includeIfEnabled("features:promo:mvc_widget")
 includeIfEnabled("features:promo:quest_widget")
 includeIfEnabled("features:promo:tokomember")
 
-includeIfEnabled("features:top_ads:top_ads_detail_sheet")
 includeIfEnabled("features:top_ads:top_ads_dashboard")
 includeIfEnabled("features:top_ads:top_ads_management_common")
 
@@ -250,7 +249,6 @@ includeIfEnabled("features:communication:topchat")
 includeIfEnabled("features:communication:tokochat")
 includeIfEnabled("features:communication:tokochat_common")
 includeIfEnabled("features:communication:tokochat_config_common")
-includeIfEnabled("features:communication:sharingexperience")
 
 includeIfEnabled("features:user:campaign_shake_landing")
 includeIfEnabled("features:user:chatbot")

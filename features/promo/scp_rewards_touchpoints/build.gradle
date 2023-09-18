@@ -29,10 +29,12 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.lottie
     implementation (rootProject.ext.firebase.crashlytics)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
 
     //Network Dependencies
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -72,6 +74,8 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
 }
 
 project.ext {
