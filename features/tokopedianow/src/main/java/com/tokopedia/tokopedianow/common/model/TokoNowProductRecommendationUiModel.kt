@@ -8,8 +8,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecom
 data class TokoNowProductRecommendationUiModel(
     val id: String = String.EMPTY,
     val requestParam: GetRecommendationRequestParam,
-    val tickerPageSource: String = String.EMPTY,
-    val enableTouchListener: Boolean = false
+    val tickerPageSource: String = String.EMPTY
 ): Visitable<TokoNowProductRecommendationTypeFactory> {
     override fun type(typeFactory: TokoNowProductRecommendationTypeFactory): Int {
         return typeFactory.type(this)

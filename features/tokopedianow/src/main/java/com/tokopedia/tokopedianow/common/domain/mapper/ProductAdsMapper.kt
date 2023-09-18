@@ -11,7 +11,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.AddToCartMapper.getAddToCartQuantity
 import com.tokopedia.tokopedianow.common.domain.mapper.AddToCartMapper.removeProductAtcQuantity
-import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.updateProductCarouselItem
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.Product
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.Shop
@@ -29,15 +28,13 @@ object ProductAdsMapper {
     private const val ADDITIONAL_POSITION = 1
 
     fun MutableList<Visitable<*>>.addProductAdsCarousel(
-        id: String = PRODUCT_ADS_CAROUSEL,
-        enableTouchListener: Boolean = false
+        id: String = PRODUCT_ADS_CAROUSEL
     ) {
         add(
             TokoNowAdsCarouselUiModel(
                 id = id,
                 items = emptyList(),
-                state = TokoNowLayoutState.LOADING,
-                enableTouchListener = enableTouchListener
+                state = TokoNowLayoutState.LOADING
             )
         )
     }
@@ -70,8 +67,7 @@ object ProductAdsMapper {
         return TokoNowAdsCarouselUiModel(
             id = id,
             items = productList,
-            state = TokoNowLayoutState.LOADED,
-            enableTouchListener = true
+            state = TokoNowLayoutState.LOADED
         )
     }
 

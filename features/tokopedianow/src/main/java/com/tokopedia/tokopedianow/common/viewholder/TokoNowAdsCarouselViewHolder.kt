@@ -2,7 +2,6 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,7 +13,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.listener.HorizontalItemTouchListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductAdsCarouselBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -57,20 +55,11 @@ class TokoNowAdsCarouselViewHolder(
             header.setModel(TokoNowDynamicHeaderUiModel(title = title))
             productCardCarousel.setListener(createProductCardListener(title))
             productCardCarousel.bindItems(uiModel.items)
-            setupItemTouchListener(uiModel)
 
             containerBackground.show()
             productCardCarousel.show()
             imageBackground.show()
             header.show()
-        }
-    }
-
-    private fun setupItemTouchListener(uiModel: TokoNowAdsCarouselUiModel) {
-        if(uiModel.enableTouchListener) {
-            binding?.productCardCarousel
-                ?.findViewById<RecyclerView>(R.id.recycler_view)
-                ?.addOnItemTouchListener(HorizontalItemTouchListener())
         }
     }
 

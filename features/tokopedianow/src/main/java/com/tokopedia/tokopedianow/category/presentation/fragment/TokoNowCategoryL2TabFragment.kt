@@ -52,6 +52,7 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuick
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2TabViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_CARD_ITEM
+import com.tokopedia.tokopedianow.common.decoration.HorizontalScrollDecoration
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
@@ -285,6 +286,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
+            addItemDecoration(HorizontalScrollDecoration())
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
                 addOnScrollListener(createOnScrollListener())
                 spanSizeLookup = createSpanSizeLookup()
