@@ -2,7 +2,7 @@ package com.tokopedia.creation.common.upload.di.uploader
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
-import com.tokopedia.creation.common.upload.uploader.receiver.PlayShortsUploadReceiver
+import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
 import dagger.Component
 
 /**
@@ -18,7 +18,7 @@ import dagger.Component
 @CreationUploaderScope
 interface CreationUploaderComponent {
 
-    fun inject(receiver: PlayShortsUploadReceiver)
+    fun inject(receiver: CreationUploadReceiver)
 
     fun inject(activity: PlayShortsPostUploadActivity)
 }

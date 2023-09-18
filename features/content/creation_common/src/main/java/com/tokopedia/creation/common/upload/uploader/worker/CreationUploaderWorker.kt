@@ -80,7 +80,7 @@ class CreationUploaderWorker(
                         }
                     )
 
-                    queueRepository.delete(data)
+                    queueRepository.delete(data.creationId)
                 } catch (throwable: Throwable) {
                     break
                 }

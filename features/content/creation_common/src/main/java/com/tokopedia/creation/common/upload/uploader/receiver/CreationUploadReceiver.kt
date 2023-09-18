@@ -8,7 +8,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.di.uploader.DaggerCreationUploaderComponent
+import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +20,7 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on December 08, 2022
  */
-class PlayShortsUploadReceiver : BroadcastReceiver() {
+class CreationUploadReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var creationUploader: CreationUploader
@@ -28,6 +30,11 @@ class PlayShortsUploadReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
+
+    @Inject
+    lateinit var uploadQueueRepository: CreationUploadQueueRepository
+
+    private val scope = CoroutineScope(dispatchers.io)
 
     override fun onReceive(context: Context, intent: Intent?) {
         inject(context)
@@ -41,9 +48,16 @@ class PlayShortsUploadReceiver : BroadcastReceiver() {
 
         when(action) {
             Action.Retry.value -> {
-                analytic.clickRetryUpload(uploadData.authorId, uploadData.authorType, uploadData.creationId)
-                CoroutineScope(dispatchers.io).launch {
-                    creationUploader.upload(uploadData)
+                if (uploadData.uploadType == CreationUploadType.Shorts)
+                    analytic.clickRetryUpload(uploadData.authorId, uploadData.authorType, uploadData.creationId)
+
+                scope.launch {
+                    creationUploader.retry()
+                }
+            }
+            Action.RemoveQueue.value -> {
+                scope.launch {
+                    uploadQueueRepository.delete(uploadData.creationId)
                 }
             }
         }
@@ -66,14 +80,15 @@ class PlayShortsUploadReceiver : BroadcastReceiver() {
             uploadData: CreationUploadQueue,
             action: Action,
         ): Intent {
-            return Intent(context, PlayShortsUploadReceiver::class.java).apply {
+            return Intent(context, CreationUploadReceiver::class.java).apply {
                 putExtra(EXTRA_UPLOAD_DATA, uploadData.toString())
                 putExtra(EXTRA_ACTION, action.value)
             }
         }
 
         enum class Action(val value: Int) {
-            Retry(1)
+            Retry(1),
+            RemoveQueue(2)
         }
     }
 }

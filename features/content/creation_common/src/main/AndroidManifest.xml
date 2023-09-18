@@ -6,7 +6,7 @@
         <activity android:name=".upload.uploader.activity.PlayShortsPostUploadActivity"/>
 
         <receiver
-            android:name=".upload.uploader.receiver.PlayShortsUploadReceiver"
+            android:name=".upload.uploader.receiver.CreationUploadReceiver"
             android:enabled="true"/>
     </application>
 </manifest>

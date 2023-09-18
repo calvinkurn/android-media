@@ -9,5 +9,7 @@ interface CreationUploader {
 
     suspend fun upload(data: CreationUploadQueue)
 
+    fun retry()
+
     suspend fun deleteFromQueue(creationId: String)
 }

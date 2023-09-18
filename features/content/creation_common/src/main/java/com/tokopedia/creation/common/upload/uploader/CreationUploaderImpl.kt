@@ -18,15 +18,22 @@ class CreationUploaderImpl @Inject constructor(
 
     override suspend fun upload(data: CreationUploadQueue) {
         creationUploadQueueRepository.insert(data)
+        startWorkManager()
+    }
 
+    override fun retry() {
+        startWorkManager()
+    }
+
+    override suspend fun deleteFromQueue(creationId: String) {
+        creationUploadQueueRepository.delete(creationId)
+    }
+
+    private fun startWorkManager() {
         workManager.enqueueUniqueWork(
             CreationUploadConst.CREATION_UPLOAD_WORKER,
             ExistingWorkPolicy.KEEP,
             CreationUploaderWorker.build()
         )
-    }
-
-    override suspend fun deleteFromQueue(creationId: String) {
-        creationUploadQueueRepository.delete(creationId)
     }
 }

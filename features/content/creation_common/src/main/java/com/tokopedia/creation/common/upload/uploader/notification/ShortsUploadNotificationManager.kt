@@ -12,9 +12,9 @@ import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUplo
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.model.orEmpty
-import com.tokopedia.creation.common.upload.uploader.receiver.PlayShortsUploadReceiver
 import javax.inject.Inject
 import com.tokopedia.creation.common.R
+import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
 
 /**
  * Created By : Jonathan Darwin on September 18, 2023
@@ -85,10 +85,10 @@ class ShortsUploadNotificationManager @Inject constructor(
     }
 
     override fun generateErrorPendingIntent(): PendingIntent {
-        val intent = PlayShortsUploadReceiver.getIntent(
+        val intent = CreationUploadReceiver.getIntent(
             context,
             uploadData.orEmpty(),
-            PlayShortsUploadReceiver.Companion.Action.Retry
+            CreationUploadReceiver.Companion.Action.Retry
         )
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
