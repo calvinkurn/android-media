@@ -52,14 +52,12 @@ import com.tokopedia.sellerfeedback.presentation.bottomsheet.SellerFeedbackPageC
 import com.tokopedia.sellerfeedback.presentation.bottomsheet.SettingsBottomSheet
 import com.tokopedia.sellerfeedback.presentation.uimodel.BaseImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
-import com.tokopedia.sellerfeedback.presentation.uimodel.ProductUiModelTemp
 import com.tokopedia.sellerfeedback.presentation.uimodel.Score
 import com.tokopedia.sellerfeedback.presentation.util.ScreenShootPageHelper
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotManager
 import com.tokopedia.sellerfeedback.presentation.view.SellerFeedbackToolbar
 import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackViewHolder
 import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackKmpViewModel
-import com.tokopedia.shared.domain.model.ProductModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -73,7 +71,8 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSI
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_MEDIA_IMAGES
 import javax.inject.Inject
 
-class SellerFeedbackKmpFragment : BaseDaggerFragment(),
+class SellerFeedbackKmpFragment :
+    BaseDaggerFragment(),
     BaseImageFeedbackViewHolder.ImageClickListener {
 
     companion object {
@@ -176,7 +175,7 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
         showSettings()
         setDefaultFeedbackResultValue()
         attachScreenshot()
-        viewModel?.fetchProductList()
+        viewModel?.fetchHostPolicy()
     }
 
     override fun onRequestPermissionsResult(
@@ -224,11 +223,17 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
 
     override fun onClickAddImage() {
         context?.let {
-            if (!permissionCheckerHelper?.hasPermission(it, arrayOf(if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    PERMISSION_READ_MEDIA_IMAGES
-                }else{
-                    PERMISSION_READ_EXTERNAL_STORAGE
-                })).orFalse()) {
+            if (!permissionCheckerHelper?.hasPermission(
+                    it,
+                    arrayOf(
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                PERMISSION_READ_MEDIA_IMAGES
+                            } else {
+                                PERMISSION_READ_EXTERNAL_STORAGE
+                            }
+                        )
+                ).orFalse()
+            ) {
                 checkPermission()
                 return@let
             }
@@ -276,7 +281,8 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
 
         val pageClassName = arguments?.getString(EXTRA_ACTIVITY_NAME).orEmpty()
         textFieldFeedbackPage?.text = ScreenShootPageHelper.getPageByClassName(
-            requireContext(), pageClassName
+            requireContext(),
+            pageClassName
         )
         checkButtonSend()
         textFieldFeedbackPage?.setOnClickListener { v ->
@@ -398,9 +404,9 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
     private fun checkButtonSend() {
         val isValidFeedbackPage = !textFieldFeedbackPage?.text.isNullOrBlank()
         buttonSend?.isEnabled = isValidFeedbackPage &&
-                isValidFeedbackDetail &&
-                activeScore != null &&
-                imageFeedbackAdapter.itemCount > 1
+            isValidFeedbackDetail &&
+            activeScore != null &&
+            imageFeedbackAdapter.itemCount > 1
     }
 
     private fun getFeedbackScore(): String {
@@ -424,25 +430,17 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
         viewModel?.run {
             getFeedbackImages().observe(viewLifecycleOwner, observerFeedbackImages)
             getSubmitResult().observe(viewLifecycleOwner, observerSubmitResult)
-            getProductList.observe(viewLifecycleOwner, observerProductList)
+            getHostPolicy.observe(viewLifecycleOwner, observerHostPolicy)
         }
     }
 
-    private val observerProductList = Observer<Result<List<ProductModel>>> {
+    private val observerHostPolicy = Observer<Result<String>> {
         when (it) {
             is Result.Success -> {
-                val productListUiModel = it.data.map { product ->
-                    ProductUiModelTemp(
-                        product.name,
-                        product.banner,
-                        product.link,
-                        product.price
-                    )
-                }
-                Log.d("productListUiModel", productListUiModel.toString())
+                Log.d("hostPolicyResponse", it.data)
             }
             is Result.Failure -> {
-
+                Log.e("hostPolicyResponseError", it.toString())
             }
         }
     }
@@ -488,10 +486,13 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
                     it.context,
                     isScreenShootTriggerEnabled
                 )
-                activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                    putExtra(EXTRA_SCREEN_SHOOT_TRIGGER, isScreenShootTriggerEnabled)
-                    putExtra(EXTRA_TOASTER_MESSAGE, toasterMessage)
-                })
+                activity?.setResult(
+                    Activity.RESULT_OK,
+                    Intent().apply {
+                        putExtra(EXTRA_SCREEN_SHOOT_TRIGGER, isScreenShootTriggerEnabled)
+                        putExtra(EXTRA_TOASTER_MESSAGE, toasterMessage)
+                    }
+                )
                 activity?.finish()
             }
         }
@@ -514,7 +515,8 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
     }
 
     private fun checkPermission() {
-        permissionCheckerHelper?.checkPermission(this,
+        permissionCheckerHelper?.checkPermission(
+            this,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 PERMISSION_READ_MEDIA_IMAGES
             } else {
@@ -533,7 +535,8 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
                 override fun onPermissionGranted() {
                     attachScreenshot()
                 }
-            })
+            }
+        )
     }
 
     private fun buildImagePicker(): ImagePickerBuilder {

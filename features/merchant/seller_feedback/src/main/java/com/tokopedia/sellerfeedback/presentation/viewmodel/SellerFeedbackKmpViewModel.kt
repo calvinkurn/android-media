@@ -14,9 +14,7 @@ import com.tokopedia.sellerfeedback.error.SubmitThrowable
 import com.tokopedia.sellerfeedback.error.UploadThrowable
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
-import com.tokopedia.shared.di.FeatureModule
-import com.tokopedia.shared.domain.GetProductUseCase
-import com.tokopedia.shared.domain.model.ProductModel
+import com.tokopedia.shared.domain.GetHostPolicyUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
@@ -28,7 +26,7 @@ class SellerFeedbackKmpViewModel @Inject constructor(
     private val dispatcherProviders: CoroutineDispatchers,
     private val uploaderUseCase: UploaderUseCase,
     private val submitGlobalFeedbackUseCase: SubmitGlobalFeedbackUseCase,
-    private val getProductUseCase: GetProductUseCase,
+    private val getHostPolicyUseCase: GetHostPolicyUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProviders.main) {
 
@@ -44,9 +42,9 @@ class SellerFeedbackKmpViewModel @Inject constructor(
     private val submitResult = MutableLiveData<SubmitResult>()
     fun getSubmitResult(): LiveData<SubmitResult> = submitResult
 
-    private val _productList = MutableLiveData<Result<List<ProductModel>>>()
-    val getProductList: LiveData<Result<List<ProductModel>>>
-        get() = _productList
+    private val _getHostPolicy = MutableLiveData<Result<String>>()
+    val getHostPolicy: LiveData<Result<String>>
+        get() = _getHostPolicy
 
     fun setImages(images: List<ImageFeedbackUiModel>) {
         feedbackImageList.clear()
@@ -54,12 +52,12 @@ class SellerFeedbackKmpViewModel @Inject constructor(
         feedbackImages.value = feedbackImageList
     }
 
-    fun fetchProductList() {
+    fun fetchHostPolicy() {
         launch {
-            val productListResponse = withContext(dispatcherProviders.main) {
-                getProductUseCase.getProductList()
+            val getHostPolicyResponse = withContext(dispatcherProviders.io) {
+                getHostPolicyUseCase.result("")
             }
-            _productList.value = productListResponse
+            _getHostPolicy.value = getHostPolicyResponse
         }
     }
 
@@ -85,13 +83,13 @@ class SellerFeedbackKmpViewModel @Inject constructor(
 
             submitResult.postValue(SubmitResult.Success)
         }, onError = {
-            val result = when (it) {
-                is UploadThrowable -> SubmitResult.UploadFail(it)
-                is SubmitThrowable -> SubmitResult.SubmitFail(it)
-                else -> SubmitResult.NetworkFail(it)
-            }
-            submitResult.postValue(result)
-        })
+                val result = when (it) {
+                    is UploadThrowable -> SubmitResult.UploadFail(it)
+                    is SubmitThrowable -> SubmitResult.SubmitFail(it)
+                    else -> SubmitResult.NetworkFail(it)
+                }
+                submitResult.postValue(result)
+            })
     }
 
     private suspend fun uploadImage(imagePath: String): String {

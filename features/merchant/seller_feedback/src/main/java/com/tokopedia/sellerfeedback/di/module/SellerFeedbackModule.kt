@@ -2,11 +2,16 @@ package com.tokopedia.sellerfeedback.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gql.core.GqlClient
+import com.tokopedia.gql.engine
+import com.tokopedia.gql.ktor.KtorClient
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerfeedback.di.scope.SellerFeedbackScope
-import com.tokopedia.shared.di.FeatureModule
-import com.tokopedia.shared.domain.GetProductUseCase
+import com.tokopedia.shared.data.UploadPolicyApiImpl
+import com.tokopedia.shared.data.repository.UploadPolicyRepository
+import com.tokopedia.shared.data.repository.UploadPolicyRepositoryImpl
+import com.tokopedia.shared.domain.GetHostPolicyUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -27,5 +32,28 @@ class SellerFeedbackModule {
 
     @SellerFeedbackScope
     @Provides
-    fun provideGetProductUseCase(): GetProductUseCase = FeatureModule.getUseCase()
+    fun provideGqlClient(): GqlClient {
+        val gqlUrl = "https://gql.tokopedia.com/"
+        val ktorClient = KtorClient(baseUrl = gqlUrl, engine = engine)
+        return GqlClient(ktorClient)
+    }
+
+    @SellerFeedbackScope
+    @Provides
+    fun provideUploadPolicyRepository(gqlClient: GqlClient): UploadPolicyRepository {
+        val uploadPolicyApi = UploadPolicyApiImpl(gqlClient)
+        return UploadPolicyRepositoryImpl(uploadPolicyApi)
+    }
+
+    @SellerFeedbackScope
+    @Provides
+    fun provideGetHostPolicyUseCase(uploadPolicyRepository: UploadPolicyRepository): GetHostPolicyUseCase {
+        return GetHostPolicyUseCase(uploadPolicyRepository)
+    }
+
+//    @SellerFeedbackScope
+//    @Provides
+//    fun provideSubmitFeedbackUseCase(): SubmitFeedback {
+//
+//    }
 }
