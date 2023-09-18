@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -111,9 +110,13 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private fun setupUiEventObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.storiesEvent.collect { event ->
+                if (!isEligiblePage) return@collect
                 when (event) {
+                    is StoriesUiEvent.EmptyDetailPage -> {
+                        // TODO handle empty data here
+                        showToast("data stories $groupId is empty")
+                    }
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (!isEligiblePage) return@collect
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
                             showToast("error detail network ${event.throwable}")
@@ -150,16 +153,6 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
             state == StoriesDetail() ||
             state.selectedGroupId != groupId
         ) return
-
-        if (state.detailItems.isEmpty()) {
-            // TODO handle error empty data state here
-            Toast.makeText(
-                requireContext(),
-                "data stories $groupId is empty",
-                Toast.LENGTH_LONG
-            ).show()
-            return
-        }
 
         storiesDetailsTimer(state)
 

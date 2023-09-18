@@ -222,6 +222,11 @@ class StoriesViewModel @AssistedInject constructor(
         val detail = if (isCached) mGroupItem.detail
         else {
             val detailData = requestStoriesDetailData(mGroup.groupId)
+            if (detailData == StoriesDetail()) {
+                _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
+                return
+            }
+
             updateMainData(detail = detailData, groupPosition = mGroupPos)
             detailData
         }
@@ -327,6 +332,12 @@ class StoriesViewModel @AssistedInject constructor(
     private fun launchRequestInitialData() {
         viewModelScope.launchCatchError(block = {
             _storiesMainData.value = requestStoriesInitialData()
+
+            if (mGroup == StoriesGroupItem()) {
+                _storiesEvent.emit(StoriesUiEvent.EmptyGroupPage)
+                return@launchCatchError
+            }
+
             _groupPos.value = mStoriesMainData.selectedGroupPosition
         }) { exception ->
             _storiesEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))

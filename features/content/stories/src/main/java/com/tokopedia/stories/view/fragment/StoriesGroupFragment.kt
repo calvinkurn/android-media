@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -146,7 +145,6 @@ class StoriesGroupFragment @Inject constructor(
             viewModel.storiesEvent.collect { event ->
                 when (event) {
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
-                    StoriesUiEvent.FinishedAllStories -> activity?.finish()
                     is StoriesUiEvent.ErrorGroupPage -> {
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
@@ -157,6 +155,11 @@ class StoriesGroupFragment @Inject constructor(
                         }
                         showPageLoading(false)
                     }
+                    StoriesUiEvent.EmptyGroupPage -> {
+                        // TODO handle empty data here
+                        showToast("data group is empty")
+                    }
+                    StoriesUiEvent.FinishedAllStories -> activity?.finish()
                     else -> return@collect
                 }
             }
@@ -167,19 +170,7 @@ class StoriesGroupFragment @Inject constructor(
         prevState: StoriesUiModel?,
         state: StoriesUiModel
     ) {
-        if (prevState == state) return
-
-        if (state.groupItems.isEmpty()) {
-            // TODO handle error empty data state here
-            Toast.makeText(
-                requireContext(),
-                "data categories is empty",
-                Toast.LENGTH_LONG
-            ).show()
-            return
-        }
-
-        if (pagerAdapter.getCurrentData().size == state.groupItems.size) return
+        if (prevState == state || pagerAdapter.getCurrentData().size == state.groupItems.size) return
 
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
