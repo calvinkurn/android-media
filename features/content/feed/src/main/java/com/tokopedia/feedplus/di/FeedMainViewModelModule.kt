@@ -16,7 +16,6 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class FeedMainViewModelModule {
 
-    @FeedMainScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 

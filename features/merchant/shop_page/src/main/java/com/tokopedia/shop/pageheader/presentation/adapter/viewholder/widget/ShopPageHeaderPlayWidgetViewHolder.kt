@@ -1,12 +1,9 @@
 package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget
 
-import android.text.Spannable
-import android.text.SpannableString
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -14,7 +11,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.databinding.LayoutShopHeaderPlayWidgetBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
-import com.tokopedia.shop.pageheader.presentation.customview.ShopPageHeaderCenteredImageSpan
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderPlayWidgetButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -34,7 +30,7 @@ class ShopPageHeaderPlayWidgetViewHolder(
         fun onStartLiveStreamingClicked(
             componentModel: ShopPageHeaderPlayWidgetButtonComponentUiModel,
             shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
-            broadcasterConfig: Broadcaster.Config,
+            broadcasterConfig: Broadcaster.Config
         )
 
         fun onImpressionPlayWidgetComponent(
@@ -50,25 +46,18 @@ class ShopPageHeaderPlayWidgetViewHolder(
     private val widgetPlayRootContainer: FrameLayout? = viewBinding?.widgetPlayRootContainer
 
     override fun bind(shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel) {
-        viewBinding?.tvStartCreateContent?.setCompoundDrawablesWithIntrinsicBounds(
-            MethodChecker.getDrawable(itemView.context, R.drawable.ic_content_creation),
-            null,
-            null,
-            null
-        )
-
         val modelComponent = shopPageHeaderWidgetUiModel.componentPages.filterIsInstance<ShopPageHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()
         modelComponent?.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
             if (allowContentCreation(shopPageHeaderDataModel)) {
                 showPlayWidget()
-                setupTextContentSgcWidget(shopPageHeaderDataModel)
+                setupTextContentSgcWidget()
                 shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
                 playSgcBtnStartLive?.setOnClickListener {
                     shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
                     listener.onStartLiveStreamingClicked(
-                            modelComponent,
-                            shopPageHeaderWidgetUiModel,
-                            shopPageHeaderDataModel.broadcaster
+                        modelComponent,
+                        shopPageHeaderWidgetUiModel,
+                        shopPageHeaderDataModel.broadcaster
                     )
                 }
             } else {
@@ -88,46 +77,12 @@ class ShopPageHeaderPlayWidgetViewHolder(
     }
 
     private fun allowContentCreation(dataModel: ShopPageHeaderDataModel): Boolean {
-        return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel)) && GlobalConfig.isSellerApp()
+        return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel))
     }
 
-    private fun setupTextContentSgcWidget(dataModel: ShopPageHeaderDataModel) {
-        if(tvStartCreateContentDesc?.text?.isNotBlank() == true) return
-
-        val betaTemplate = getString(R.string.shop_page_play_widget_beta_template)
-
-        val imgBeta = MethodChecker.getDrawable(itemView.context, R.drawable.ic_play_beta_badge)?.apply {
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-        }
-        val imgBetaSpan = imgBeta?.let { ShopPageHeaderCenteredImageSpan(it) }
-
-        val span = SpannableString(
-            MethodChecker.fromHtml(
-                when {
-                    isStreamAllowed(dataModel) && isShortsVideoAllowed(dataModel) -> {
-                        getString(R.string.shop_page_play_widget_livestream_and_shorts_label)
-                    }
-                    isStreamAllowed(dataModel) -> {
-                        getString(R.string.shop_page_play_widget_livestream_only_label)
-                    }
-                    isShortsVideoAllowed(dataModel) -> {
-                        getString(R.string.shop_page_play_widget_shorts_only_label)
-                    }
-                    else -> {
-                        ""
-                    }
-                }
-            )
-        )
-
-        span.setSpan(
-            imgBetaSpan,
-            span.indexOf(betaTemplate),
-            span.indexOf(betaTemplate) + betaTemplate.length,
-            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-        )
-
-        tvStartCreateContentDesc?.text = span
+    private fun setupTextContentSgcWidget() {
+        if (tvStartCreateContentDesc?.text?.isNotBlank() == true) return
+        tvStartCreateContentDesc?.text = MethodChecker.fromHtml(getString(R.string.shop_page_play_widget_desription))
     }
 
     private fun isStreamAllowed(dataModel: ShopPageHeaderDataModel): Boolean {
