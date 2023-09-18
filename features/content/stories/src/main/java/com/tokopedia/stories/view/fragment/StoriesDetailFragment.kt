@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -124,9 +123,14 @@ class StoriesDetailFragment @Inject constructor(
     private fun setupUiEventObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.storiesEvent.collect { event ->
+                if (!isEligiblePage) return@collect
                 when (event) {
+                    is StoriesUiEvent.EmptyDetailPage -> {
+                        // TODO handle empty data here
+                        showToast("data stories $groupId is empty")
+                        showPageLoading(false)
+                    }
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (!isEligiblePage) return@collect
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
                             showToast("error detail network ${event.throwable}")
@@ -165,16 +169,6 @@ class StoriesDetailFragment @Inject constructor(
             state.selectedGroupId != groupId
         ) return
 
-        if (state.detailItems.isEmpty()) {
-            // TODO handle error empty data state here
-            Toast.makeText(
-                requireContext(),
-                "data stories $groupId is empty",
-                Toast.LENGTH_LONG
-            ).show()
-            return
-        }
-
         storiesDetailsTimer(state)
 
         val currContent = state.detailItems[state.selectedDetailPosition]
@@ -182,20 +176,18 @@ class StoriesDetailFragment @Inject constructor(
 
         when (currContent.content.type) {
             IMAGE -> {
-                binding.layoutStoriesContent.ivStoriesDetailContent.apply {
-                    loadImage(
-                        currContent.content.data,
-                        listener = object : ImageLoaderStateListener {
-                            override fun successLoad() {
-                                trackImpressionDetail(currContent.id)
-                                contentIsLoaded()
-                            }
+                binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
+                    currContent.content.data,
+                    listener = object : ImageLoaderStateListener {
+                        override fun successLoad() {
+                            trackImpressionDetail(currContent.id)
+                            contentIsLoaded()
+                        }
 
-                            override fun failedLoad() {
-                                // TODO add some action when fail load image?
-                            }
-                        })
-                }
+                        override fun failedLoad() {
+                            // TODO add some action when fail load image?
+                        }
+                    })
             }
 
             VIDEO -> {
