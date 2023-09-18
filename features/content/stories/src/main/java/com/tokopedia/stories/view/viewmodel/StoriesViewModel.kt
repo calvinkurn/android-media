@@ -118,8 +118,6 @@ class StoriesViewModel @AssistedInject constructor(
     fun submitAction(action: StoriesUiAction) {
         when (action) {
             is StoriesUiAction.SetInitialData -> handleSetInitialData(action.bundle)
-            is StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
-            is StoriesUiAction.GetSavedInstanceStateData -> handleGetSavedInstanceStateData()
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
             is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
             StoriesUiAction.NextDetail -> handleNext()
@@ -127,6 +125,8 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
+            StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
+            StoriesUiAction.GetSavedInstanceStateData -> handleGetSavedInstanceStateData()
         }
     }
 
