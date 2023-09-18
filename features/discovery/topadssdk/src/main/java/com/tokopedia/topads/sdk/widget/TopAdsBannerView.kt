@@ -264,7 +264,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         }
 
                         renderHeaderSeeMore(cpmData, appLink, adsClickUrl, isReimagine)
-                        if (productCardModelList.size <= ITEM_3) {
+                        if (productCardModelList.size < ITEM_3) {
                             items.add(BannerShopViewMoreUiModel(cpmData, appLink, adsClickUrl))
                         }
                     } else {
