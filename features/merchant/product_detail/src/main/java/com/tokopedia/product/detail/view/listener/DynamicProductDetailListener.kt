@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -530,4 +531,10 @@ interface DynamicProductDetailListener {
     fun onProductMediaRecomBottomSheetDismissed()
 
     fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel)
+
+    /**
+     * A+ Content
+     */
+    fun onToggleAPlus(expanded: Boolean, trackerData: APlusImageUiModel.TrackerData)
+    fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData)
 }

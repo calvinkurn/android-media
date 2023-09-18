@@ -22,6 +22,7 @@ class BuyerOrderDetailFragmentStub : BuyerOrderDetailFragment() {
             pofRefundInfoListener = this,
             owocInfoListener = this,
             productViewListener = this,
+            bottomSheetListener = this,
             navigator = navigator,
             buyerOrderDetailBindRecomWidgetListener = this,
             orderResolutionListener = this

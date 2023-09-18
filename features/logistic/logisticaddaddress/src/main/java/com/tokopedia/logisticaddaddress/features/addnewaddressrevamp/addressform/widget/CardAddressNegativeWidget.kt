@@ -27,7 +27,7 @@ class CardAddressNegativeWidget : ConstraintLayout {
     }
 
     fun updateView(
-        isEdit: Boolean,
+        isEdit: Boolean
     ) {
         binding?.apply {
             binding?.icLocation?.setImage(IconUnify.LOCATION)

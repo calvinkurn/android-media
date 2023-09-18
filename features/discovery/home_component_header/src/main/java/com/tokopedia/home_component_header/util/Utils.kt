@@ -9,3 +9,9 @@ fun ChannelHeader.getLink(): String {
         url
     }
 }
+
+fun getHomeComponentHeaderType(): ChannelHeader.HeaderType {
+    return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
+        ChannelHeader.HeaderType.REVAMP
+    } else ChannelHeader.HeaderType.CONTROL
+}

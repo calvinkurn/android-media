@@ -35,10 +35,10 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeedTopAds
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
-import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
@@ -98,7 +98,7 @@ import javax.inject.Inject
  * Created By : Muhammad Furqan on 23/02/23
  */
 class FeedPostViewModel @Inject constructor(
-    private val feedXHomeUseCase: FeedXHomeUseCase,
+    private val repository: FeedRepository,
     private val addToCartUseCase: AddToCartUseCase,
     private val likeContentUseCase: SubmitLikeContentUseCase,
     private val deletePostUseCase: SubmitActionContentUseCase,
@@ -207,7 +207,11 @@ class FeedPostViewModel @Inject constructor(
                         requireNotNull(postSource)
                         require(isNewData)
 
-                        getRelevantPosts(postSource)
+                        if (postSource.source != FeedBaseFragment.TAB_TYPE_CDP) {
+                            repository.getRelevantPosts(postSource)
+                        } else {
+                            FeedModel.Empty
+                        }
                     } catch (_: Throwable) {
                         FeedModel.Empty
                     }.items
@@ -218,7 +222,8 @@ class FeedPostViewModel @Inject constructor(
                         Success(
                             getFeedPosts(
                                 source = source,
-                                cursor = _feedHome.value?.cursor.orEmpty()
+                                cursor = _feedHome.value?.cursor.orEmpty(),
+                                postSourceModel = postSource
                             )
                         )
                     } catch (e: Throwable) {
@@ -748,27 +753,18 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getRelevantPosts(postSourceModel: PostSourceModel): FeedModel {
-        return feedXHomeUseCase(
-            feedXHomeUseCase.createParamsWithId(postSourceModel.id, postSourceModel.source)
-        )
-    }
-
     private suspend fun getFeedPosts(
         source: String,
-        cursor: String = ""
+        cursor: String = "",
+        postSourceModel: PostSourceModel?
     ): FeedModel {
         var response = FeedModel(emptyList(), FeedPaginationModel.Empty)
         var thresholdGet = 3
         var nextCursor = cursor
+        val detailId = if (postSourceModel?.source == FeedBaseFragment.TAB_TYPE_CDP) postSourceModel.id else ""
 
         while (response.items.isEmpty() && --thresholdGet >= 0) {
-            response = feedXHomeUseCase(
-                feedXHomeUseCase.createParams(
-                    source,
-                    nextCursor
-                )
-            )
+            response = repository.getPost(source, nextCursor, detailId = detailId)
             nextCursor = response.pagination.cursor
         }
 

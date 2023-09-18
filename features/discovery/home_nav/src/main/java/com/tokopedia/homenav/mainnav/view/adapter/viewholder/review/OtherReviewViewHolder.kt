@@ -3,8 +3,10 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.review
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.databinding.HolderViewAllRevampBinding
 import com.tokopedia.homenav.mainnav.view.datamodel.review.OtherReviewModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
@@ -27,7 +29,7 @@ class OtherReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
         binding?.cardViewAll?.cardView?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
 
         itemView.setOnClickListener {
-            mainNavListener.onViewAllReviewClicked()
+            mainNavListener.onViewAllCardClicked(ID_REVIEW, ApplinkConst.REPUTATION)
         }
     }
 }

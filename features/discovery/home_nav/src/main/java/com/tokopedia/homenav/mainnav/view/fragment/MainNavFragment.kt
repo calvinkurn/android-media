@@ -27,10 +27,7 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.MainNavConst
@@ -317,7 +314,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         } else if(homeNavMenuDataModel.id == ID_HOME) {
             TrackingOthers.onClickBackToHome(pageSource, pageSourcePath)
         } else {
-            TrackingOthers.clickOnUserMenu(homeNavMenuDataModel.trackerName, pageSource, pageSourcePath)
+            TrackingOthers.clickOnUserMenu(homeNavMenuDataModel.itemTitle, pageSource, pageSourcePath)
         }
     }
 
@@ -340,7 +337,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         when (homeNavTitleDataModel.identifier) {
             ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY -> TrackingTransactionSection.getClickViewAllTransaction(pageSource, pageSourcePath)
             ClientMenuGenerator.IDENTIFIER_TITLE_WISHLIST -> TrackingTransactionSection.clickOnWishlistViewAll(pageSource, pageSourcePath)
-            ClientMenuGenerator.IDENTIFIER_TITLE_REVIEW -> TrackingTransactionSection.clickOnReviewViewAll(pageSource, pageSourcePath)
         }
         handleClickFromPageSource(homeNavTitleDataModel.applink) {
             RouteManager.route(context, homeNavTitleDataModel.applink)
@@ -374,11 +370,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         ratingValue: String,
         uri: String
     ) {
-        if(isClickStar) {
-            TrackingTransactionSection.clickReviewStars(position, userSession.userId, element, ratingValue, pageSource, pageSourcePath)
-        } else {
-            TrackingTransactionSection.clickReviewCard(position, userSession.userId, element, pageSource, pageSourcePath)
-        }
+        TrackingTransactionSection.clickReviewCard(position, userSession.userId, element, isClickStar, ratingValue, pageSource, pageSourcePath)
         val intent = RouteManager.getIntent(context, uri)
         startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
     }
@@ -398,11 +390,20 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onErrorReviewClicked() {
     }
 
-    override fun onOrderCardClicked(applink: String, trackingLabel: String?) {
+    override fun onOrderCardClicked(
+        applink: String,
+        trackingLabel: String?,
+        orderId: String,
+        position: Int,
+    ) {
         if(trackingLabel != null) {
             TrackingTransactionSection.clickOnOrderStatus(
+                orderId,
                 trackingLabel,
-                pageSource
+                pageSource,
+                pageSourcePath,
+                position,
+                userSession.userId
             )
         } else {
             TrackingTransactionSection.getClickViewAllTransaction(pageSource, pageSourcePath)
@@ -422,15 +423,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         )
     }
 
-    override fun onViewAllWishlistClicked() {
-        TrackingTransactionSection.clickOnWishlistViewAll(pageSource, pageSourcePath)
-        val applink = ApplinkConst.WISHLIST
-        handleClickFromPageSource(applink) { RouteManager.route(context, applink) }
-    }
-
-    override fun onViewAllReviewClicked() {
-        TrackingTransactionSection.clickOnReviewViewAll(pageSource, pageSourcePath)
-        RouteManager.route(context, ApplinkConst.REPUTATION)
+    override fun onViewAllCardClicked(sectionId: Int, applink: String) {
+        TrackingTransactionSection.clickOnViewAllCard(sectionId, pageSource, pageSourcePath)
+        RouteManager.route(context, applink)
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {

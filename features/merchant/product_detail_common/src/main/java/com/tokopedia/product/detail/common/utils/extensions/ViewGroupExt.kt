@@ -23,3 +23,5 @@ inline fun <reified T : ViewGroup.LayoutParams> View.updateLayoutParams(
     block(params)
     layoutParams = params
 }
+
+fun String.validDimensionRatio() = matches(Regex("[0-9]+:[0-9]+"))

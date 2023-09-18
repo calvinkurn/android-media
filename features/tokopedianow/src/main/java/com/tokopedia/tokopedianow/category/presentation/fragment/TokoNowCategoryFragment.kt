@@ -17,6 +17,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryComponent
+import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createRequestParam
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryAdapterTypeFactory

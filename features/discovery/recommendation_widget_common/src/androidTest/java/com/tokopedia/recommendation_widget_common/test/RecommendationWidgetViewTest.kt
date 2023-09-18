@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationComponent
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
@@ -114,6 +117,28 @@ class RecommendationWidgetViewTest {
     }
 
     @Test
+    fun recommendation_widget_carousel_atc() {
+        val pageName = "pdp_1"
+        val state = stateFrom(
+            pageName = pageName,
+            rawResponseId = R.raw.hatc,
+        )
+
+        openTestActivity(state, pageName)
+    }
+
+    @Test
+    fun recommendation_widget_carousel_atc_with_quantity() {
+        val pageName = "pdp_1"
+        val state = stateFrom(
+            pageName = pageName,
+            rawResponseId = R.raw.hatc,
+        ).refreshMiniCart(miniCartSimplifiedData)
+
+        openTestActivity(state, pageName)
+    }
+
+    @Test
     fun recommendation_widget_carousel_shimmering() {
         val pageName = "pdp_1"
         val state = RecommendationWidgetState().loading(
@@ -147,5 +172,34 @@ class RecommendationWidgetViewTest {
         )
 
         openTestActivity(state, pageName)
+    }
+
+    companion object {
+        val miniCartItems
+            get() = mapOf(
+                MiniCartItemKey("3041429283") to MiniCartItem.MiniCartItemProduct(
+                    productId = "3041429283",
+                    productParentId = "0",
+                    quantity = 10,
+                    cartId = "12345",
+                ),
+
+                MiniCartItemKey("2176001448") to MiniCartItem.MiniCartItemProduct(
+                    productId = "2176001448",
+                    productParentId = "0",
+                    quantity = 3,
+                    cartId = "12346",
+                ),
+
+                MiniCartItemKey("2453476179") to MiniCartItem.MiniCartItemProduct(
+                    productId = "2453476179",
+                    productParentId = "0",
+                    quantity = 5,
+                    cartId = "12347",
+                )
+            )
+
+        val miniCartSimplifiedData
+            get() = MiniCartSimplifiedData(miniCartItems = miniCartItems)
     }
 }

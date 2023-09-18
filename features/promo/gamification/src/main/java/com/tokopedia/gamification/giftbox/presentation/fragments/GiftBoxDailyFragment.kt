@@ -470,6 +470,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
                     if (code == HTTP_STATUS_OK) {
                         if (autoApplyMessage.isNotEmpty() && context != null) {
                             CustomToast.show(context!!, autoApplyMessage)
+                        } else {
+                            val applySuccessMessage = getString(R.string.apply_coupon_success_toast_message)
+                            CustomToast.show(context!!, applySuccessMessage)
                         }
                     } else {
                         if (!messageList.isNullOrEmpty()) {

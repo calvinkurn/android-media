@@ -1,82 +1,54 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.product
 
-import androidx.annotation.IdRes
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.action.ClickChildViewWithIdAction
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
-import org.hamcrest.CoreMatchers.allOf
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
+import com.tokopedia.topchat.matchers.withRecyclerView
 
 object ProductRobot {
 
-    fun clickSingleProductCardAt(position: Int) {
-        performClickOnProductCard(R.id.recycler_view_chatroom, position)
+    fun clickBuyButtonAt(position: Int) {
+        generalRobot {
+            doActionOnListItemAt(position, R.id.tv_buy, click())
+        }
     }
 
-    fun clickCarouselProductCardAt(position: Int) {
-        performClickOnProductCard(R.id.rv_product_carousel, position)
+    fun clickATCButtonAt(position: Int) {
+        generalRobot {
+            doActionOnListItemAt(position, R.id.tv_atc, click())
+        }
     }
 
-    fun clickSingleProductCardAtcButtonAt(position: Int) {
-        performClickAtcButton(R.id.recycler_view_chatroom, position)
+    fun clickWishlistButtonAt(position: Int) {
+        generalRobot {
+            doActionOnListItemAt(position, R.id.tv_wishlist, click())
+        }
     }
 
-    fun clickCarouselProductCardAtcButtonAt(position: Int) {
-        performClickAtcButton(R.id.rv_product_carousel, position)
+    fun clickProductAttachmentAt(position: Int) {
+        generalRobot {
+            doActionOnListItemAt(position, R.id.cl_info, click())
+        }
     }
 
-    fun clickSingleProductCardBuyButtonAt(position: Int) {
-        performClickBuyButton(R.id.recycler_view_chatroom, position)
+    fun clickChangeStockBtnAt(position: Int) {
+        generalRobot {
+            doActionOnListItemAt(position, R.id.btn_update_stock, click())
+        }
     }
 
-    fun clickCarouselProductCardBuyButtonAt(position: Int) {
-        performClickBuyButton(R.id.recycler_view_chatroom, position)
-    }
-
-    private fun performClickOnProductCard(@IdRes recyclerViewId: Int, position: Int) {
-        val viewAction =
-            actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
-                position, click()
-            )
+    fun clickChangeStockBtnOnCarouselAt(position: Int) {
         onView(
-            allOf(
-                isDisplayed(),
-                withId(recyclerViewId)
-            )
-        ).perform(viewAction)
+            withRecyclerView(R.id.rv_product)
+                .atPositionOnView(position, R.id.btn_update_stock)
+        ).perform(click())
     }
 
-    private fun performClickAtcButton(@IdRes recyclerViewId: Int, position: Int) {
-        val viewAction =
-            actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
-                position,
-                ClickChildViewWithIdAction()
-                    .clickChildViewWithId(R.id.tv_atc)
-            )
+    fun clickChangeStockBtnOnCarouselBroadcastAt(position: Int) {
         onView(
-            allOf(
-                isDisplayed(),
-                withId(recyclerViewId)
-            )
-        ).perform(viewAction)
-    }
-
-    private fun performClickBuyButton(@IdRes recyclerViewId: Int, position: Int) {
-        val viewAction =
-            actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
-                position,
-                ClickChildViewWithIdAction()
-                    .clickChildViewWithId(R.id.tv_buy)
-            )
-        onView(
-            allOf(
-                isDisplayed(),
-                withId(recyclerViewId)
-            )
-        ).perform(viewAction)
+            withRecyclerView(R.id.rv_product_carousel)
+                .atPositionOnView(position, R.id.btn_update_stock)
+        ).perform(click())
     }
 }
