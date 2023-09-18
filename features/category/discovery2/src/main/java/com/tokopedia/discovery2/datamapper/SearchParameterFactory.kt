@@ -4,7 +4,8 @@ import com.tokopedia.discovery.common.model.SearchParameter
 
 internal object SearchParameterFactory {
 
-    private lateinit var existingParameter: Map<String, Any>
+    private var existingParameter: Map<String, Any>? = null
+
     fun construct(query: String?, path: String): SearchParameter? {
         if (query == null) return null
 
@@ -12,10 +13,8 @@ internal object SearchParameterFactory {
 
         val searchParameter = SearchParameter(deepLinkUri)
 
-        if (::existingParameter.isInitialized) {
-            existingParameter.forEach { filter ->
-                searchParameter.set(filter.key, filter.value.toString())
-            }
+        existingParameter?.forEach { filter ->
+            searchParameter.set(filter.key, filter.value.toString())
         }
 
         return searchParameter
