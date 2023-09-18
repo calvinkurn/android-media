@@ -46,19 +46,19 @@ import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategory
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 
 class CategoryAdapterTypeFactory(
-    private val categoryTitleListener: CategoryTitleListener? = null,
-    private val categoryNavigationListener: CategoryNavigationListener? = null,
-    private val categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
-    private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
-    private val tokoNowView: TokoNowView? = null,
-    private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
-    private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
-    private val tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
-    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
-    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
-    private val productAdsCarouselListener: ProductAdsCarouselListener? = null,
-    private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
-    private val lifecycleOwner: LifecycleOwner? = null
+    private var categoryTitleListener: CategoryTitleListener? = null,
+    private var categoryNavigationListener: CategoryNavigationListener? = null,
+    private var categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
+    private var categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
+    private var tokoNowView: TokoNowView? = null,
+    private var tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
+    private var tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
+    private var tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
+    private var productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
+    private var productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
+    private var productAdsCarouselListener: ProductAdsCarouselListener? = null,
+    private var recycledViewPool: RecyclerView.RecycledViewPool? = null,
+    private var lifecycleOwner: LifecycleOwner? = null
 ): BaseAdapterTypeFactory(),
     CategoryTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
@@ -131,5 +131,19 @@ class CategoryAdapterTypeFactory(
             }
             else -> super.createViewHolder(view, type)
         }
+    }
+
+    fun onDestroy() {
+        categoryTitleListener = null
+        categoryNavigationListener = null
+        categoryShowcaseItemListener = null
+        categoryShowcaseHeaderListener = null
+        tokoNowView = null
+        tokoNowChooseAddressWidgetListener = null
+        tokoNowCategoryMenuListener = null
+        tokoNowProductRecommendationListener = null
+        productCardCompactListener = null
+        productCardCompactSimilarProductTrackerListener = null
+        productAdsCarouselListener = null
     }
 }
