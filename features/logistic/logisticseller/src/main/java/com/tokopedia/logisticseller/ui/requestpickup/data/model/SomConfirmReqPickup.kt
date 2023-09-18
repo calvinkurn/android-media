@@ -96,54 +96,43 @@ data class SomConfirmReqPickup(
                         val urlText: String = "",
 
                         @SerializedName("url_detail")
-                        val urlDetail: String = "",
+                        val urlDetail: String = ""
                     ) : Parcelable
-
                 }
 
                 @Parcelize
                 data class Detail(
                     @SerializedName("title")
-                    @Expose
                     val title: String = "",
 
                     @SerializedName("invoice")
-                    @Expose
                     val invoice: String = "",
 
                     @SerializedName("shippers")
-                    @Expose
                     val listShippers: List<Shipper> = listOf(),
 
                     @SerializedName("orchestra_partner")
-                    @Expose
                     val orchestraPartner: String = ""
                 ) : Parcelable {
 
                     @Parcelize
                     data class Shipper(
                         @SerializedName("name")
-                        @Expose
                         val name: String = "",
 
                         @SerializedName("service")
-                        @Expose
                         val service: String = "",
 
                         @SerializedName("note")
-                        @Expose
                         val note: String = "",
 
                         @SerializedName("courier_image")
-                        @Expose
                         val courierImg: String = "",
 
                         @SerializedName("count_text")
-                        @Expose
                         val countText: String = "",
 
                         @SerializedName("count")
-                        @Expose
                         val count: String = ""
                     ) : Parcelable
                 }
@@ -151,11 +140,9 @@ data class SomConfirmReqPickup(
                 @Parcelize
                 data class Notes(
                     @SerializedName("title")
-                    @Expose
                     val title: String = "",
 
                     @SerializedName("list")
-                    @Expose
                     val listNotes: List<String> = listOf()
                 ) : Parcelable
 
