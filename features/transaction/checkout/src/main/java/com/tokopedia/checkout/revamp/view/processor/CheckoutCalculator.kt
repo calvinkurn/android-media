@@ -111,6 +111,7 @@ class CheckoutCalculator @Inject constructor(
         var totalPurchaseProtectionItem = 0
         var shippingFee = 0.0
         var insuranceFee = 0.0
+        var hasInsuranceSelected = false
         var totalBookingFee = 0
         var hasAddOnSelected = false
         var totalAddOnGiftingPrice = 0.0
@@ -194,6 +195,7 @@ class CheckoutCalculator @Inject constructor(
                     if (shipmentData.shipment.insurance.isCheckInsurance) {
                         insuranceFee += shipmentData.shipment
                             .courierItemData.selectedShipper.insurancePrice.toDouble()
+                        hasInsuranceSelected = true
                     }
                     additionalFee += shipmentData.shipment.courierItemData.additionalPrice.toDouble()
                 } else if (!shipmentData.isError) {
@@ -230,6 +232,7 @@ class CheckoutCalculator @Inject constructor(
         shipmentCost = shipmentCost.copy(finalShippingFee = finalShippingFee)
         shipmentCost = shipmentCost.copy(hasSelectAllShipping = hasSelectAllShipping)
         shipmentCost = shipmentCost.copy(shippingInsuranceFee = insuranceFee)
+        shipmentCost = shipmentCost.copy(hasInsurance = hasInsuranceSelected)
         var totalOtherFee = insuranceFee + totalAddOnGiftingPrice + totalAddOnProductServicePrice
         shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
         shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice
@@ -244,7 +247,8 @@ class CheckoutCalculator @Inject constructor(
             crossSellModel.orderSummary =
                 CrossSellOrderSummaryModel(upsellModel.upsell.summaryInfo, "")
             crossSellModel.price = upsellModel.upsell.price.toDouble()
-            upsellCost = CheckoutCrossSellModel(crossSellModel,
+            upsellCost = CheckoutCrossSellModel(
+                crossSellModel,
                 isChecked = true,
                 isEnabled = true,
                 index = -1

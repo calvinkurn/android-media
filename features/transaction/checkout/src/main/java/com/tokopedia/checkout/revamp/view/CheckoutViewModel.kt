@@ -719,7 +719,7 @@ class CheckoutViewModel @Inject constructor(
     private suspend fun fetchEpharmacyData() {
         val result = addOnProcessor.fetchEpharmacyData(listData.value)
         if (result != null) {
-            listData.value = result
+            listData.value = result!!
             pageState.value = CheckoutPageState.EpharmacyCoachMark
             calculateTotal()
         }

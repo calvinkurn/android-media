@@ -5,8 +5,9 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalCategory {
 
-    private const val HOST_CATEGORY = "category"
+    const val HOST_CATEGORY = "category"
     const val HOST_HOTLIST = "hot"
+    const val HOST_MONEYIN = "money_in"
     const val HOST_HOTLIST_REVAMP = "hotlist"
     const val HOST_FIND = "find"
     private const val HOST_EXPLORE_CATEGORY = "category-explore"
