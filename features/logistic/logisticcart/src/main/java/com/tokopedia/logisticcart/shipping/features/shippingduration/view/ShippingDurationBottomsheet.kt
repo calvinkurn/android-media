@@ -16,6 +16,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.databinding.FragmentShipmentDurationChoiceBinding
+import com.tokopedia.logisticcart.shipping.analytics.ShippingBottomSheetAnalytic
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent
 import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -31,6 +32,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.utils.RatesParamHelper.generateRatesParam
 import com.tokopedia.network.utils.ErrorHandler.Companion.getErrorMessage
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 import com.tokopedia.logisticcart.R as logisticcartR
@@ -63,6 +65,9 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel: ShippingDurationViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ShippingDurationViewModel::class.java]
@@ -144,6 +149,10 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
 
                 is ShippingDurationAnalyticState.AnalyticPromoLogistic -> {
                     sendAnalyticPromoLogistic(it.promoViewModelList)
+                }
+
+                is ShippingDurationAnalyticState.AnalyticShippingDuration -> {
+                    sendAnalyticImpressionDuration(it.shippingDurationUiModelList)
                 }
             }
         }
@@ -259,6 +268,11 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
 
     private fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>) {
         shippingDurationBottomsheetListener?.onShowLogisticPromo(promoViewModelList)
+        promoViewModelList.forEach { promo -> ShippingBottomSheetAnalytic.sendImpressionBebasOngkirShippingOptionEvent(cartId = ratesParam?.unique_id.orEmpty(), bebasOngkir = promo, shopId = ratesParam?.shop_id.orEmpty(), products = ratesParam?.products.orEmpty(), userId = userSession.userId) }
+    }
+
+    private fun sendAnalyticImpressionDuration(shippingDurationUiModelList: List<ShippingDurationUiModel>) {
+        shippingDurationUiModelList.forEach { duration -> ShippingBottomSheetAnalytic.sendViewDurationEvent(userId = userSession.userId, cartId = ratesParam?.unique_id.orEmpty(), shopId = ratesParam?.shop_id.orEmpty(), products = ratesParam?.products.orEmpty(), shippingService = duration, isDisableOrderPrioritas = isDisableOrderPrioritas) }
     }
 
     private fun showNoCourierAvailable(message: String?) {
@@ -332,13 +346,16 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
     override fun onShippingDurationChoosen(
         shippingCourierUiModelList: List<ShippingCourierUiModel>,
         cartPosition: Int,
-        serviceData: ServiceData
+        serviceData: ServiceData,
+        shippingDurationUiModel: ShippingDurationUiModel
     ) {
         viewModel.onChooseDuration(shippingCourierUiModelList, cartPosition, serviceData, isOcc)
+        ShippingBottomSheetAnalytic.sendClickChecklistShippingOptionEvent(userId = userSession.userId, cartId = ratesParam?.unique_id.orEmpty(), shippingService = shippingDurationUiModel, shopId = ratesParam?.shop_id.orEmpty(), products = ratesParam?.products.orEmpty(), isDisableOrderPrioritas = isDisableOrderPrioritas)
     }
 
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
         viewModel.onLogisticPromoClicked(data)
+        ShippingBottomSheetAnalytic.sendClickBebasOngkirShippingOptionEvent(userId = userSession.userId, cartId = ratesParam?.unique_id.orEmpty(), bebasOngkir = data, shopId = ratesParam?.shop_id.orEmpty(), products = ratesParam?.products.orEmpty())
     }
 
     companion object {
