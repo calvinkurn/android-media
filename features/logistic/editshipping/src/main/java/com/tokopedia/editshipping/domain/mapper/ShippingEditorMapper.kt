@@ -55,7 +55,7 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperOnDemand(response: List<OnDemand>): List<ShipperModel> {
         val onDemandModelList = ArrayList<ShipperModel>()
         response.forEach { data ->
-            val isWhitelabelShipper = data.isWhitelable
+            val isWhitelabelShipper = data.isWhitelabel
             val shipperDescription =
                 if (isWhitelabelShipper) {
                     data.shipperProduct.firstOrNull()?.description
@@ -82,7 +82,7 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperConventional(response: List<Conventional>): List<ShipperModel> {
         val conventionalModelList = ArrayList<ShipperModel>()
         response.forEach { data ->
-            val isWhitelabelShipper = data.isWhitelable
+            val isWhitelabelShipper = data.isWhitelabel
             val shipperDescription =
                 if (isWhitelabelShipper) {
                     data.shipperProduct.firstOrNull()?.description
