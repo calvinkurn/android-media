@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.os.Handler
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -17,6 +18,7 @@ import com.tokopedia.shop.databinding.ViewmodelSliderBannerBinding
 import com.tokopedia.shop.databinding.WidgetSliderBannerItemBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -35,6 +37,7 @@ class ShopHomeSliderBannerViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.viewmodel_slider_banner
         const val DURATION_SLIDER_BANNER = 5000L
+        private val SHOP_RE_IMAGINE_MARGIN = 4f.dpToPx()
     }
     private val viewBinding: ViewmodelSliderBannerBinding? by viewBinding()
     private var viewBindingSliderBannerItem: WidgetSliderBannerItemBinding? = null
@@ -74,6 +77,7 @@ class ShopHomeSliderBannerViewHolder(
         img?.onUrlLoaded = {
             performanceMonitoring.stopTrace()
         }
+        img?.cornerRadius = 4f.dpToPx().toInt()
     }
 
     init {
@@ -142,7 +146,15 @@ class ShopHomeSliderBannerViewHolder(
             }
         }
         configColorTheme(shopHomeDisplayWidgetUiModel)
+        setShopReimaginedContainerMargin()
     }
+    private fun setShopReimaginedContainerMargin() {
+        carouselShopPage?.let {
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
+        }
+    }
+
 
     private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
         if (element.header.isOverrideTheme) {

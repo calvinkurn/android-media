@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.Group
@@ -21,6 +22,7 @@ import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
@@ -38,6 +40,8 @@ class ShopHomeVideoViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.widget_shop_page_video_youtube
         const val KEY_YOUTUBE_VIDEO_ID = "v"
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
+        private val SHOP_RE_IMAGINE_RADIUS = 4f.dpToPx()
     }
     private val viewBinding: WidgetShopPageVideoYoutubeBinding? by viewBinding()
     private var youTubeThumbnailShopPageImageUnify: ShopCarouselBannerImageUnify? = null
@@ -111,6 +115,19 @@ class ShopHomeVideoViewHolder(
             }
         }
         configColorTheme(model)
+        configViewForShopReimagined()
+    }
+
+    private fun configViewForShopReimagined() {
+        youTubeThumbnailShopPageImageUnify?.let {
+            it.cornerRadius = SHOP_RE_IMAGINE_RADIUS.toInt()
+            setShopReimaginedContainerMargin(it)
+        }
+    }
+
+    private fun setShopReimaginedContainerMargin(shopCarouselBannerImageUnify: ShopCarouselBannerImageUnify) {
+        (shopCarouselBannerImageUnify.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+        (shopCarouselBannerImageUnify.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
     }
 
     private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
