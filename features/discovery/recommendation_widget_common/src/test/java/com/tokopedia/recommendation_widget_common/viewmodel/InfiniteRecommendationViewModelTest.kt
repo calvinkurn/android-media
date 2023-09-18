@@ -65,7 +65,7 @@ class InfiniteRecommendationViewModelTest {
     }
 
     @Test
-    fun `fetch recommendation success return components and not hasNext`() {
+    fun `fetch recommendation success return components without title and hasNext`() {
         val title = "This is Title"
 
         val response = listOf(
@@ -75,7 +75,7 @@ class InfiniteRecommendationViewModelTest {
                     RecommendationItem()
                 ),
                 hasNext = false,
-                currentPage = 1
+                currentPage = 2
             )
         )
         val params = GetRecommendationRequestParam()
@@ -91,12 +91,7 @@ class InfiniteRecommendationViewModelTest {
         Assert.assertTrue(components != null)
         Assert.assertTrue(components!!.isNotEmpty())
 
-        val firstComponent = components.first()
-        Assert.assertTrue(firstComponent is InfiniteTitleUiModel)
-        val titleModel = firstComponent as InfiniteTitleUiModel
-        Assert.assertTrue(titleModel.title == title)
-
-        Assert.assertTrue(components.size == 2)
+        Assert.assertTrue(components.size == 1)
     }
 
     @Test
@@ -113,5 +108,34 @@ class InfiniteRecommendationViewModelTest {
         val components = viewModel.components.value
         Assert.assertTrue(components != null)
         Assert.assertTrue(components!!.isEmpty())
+    }
+
+    @Test
+    fun `fetch recommendation success return components should add to last when no loading`() {
+        val title = "This is Title"
+
+        val response = listOf(
+            RecommendationWidget(
+                title = title,
+                recommendationItemList = listOf(
+                    RecommendationItem()
+                ),
+                hasNext = false,
+                currentPage = 2
+            )
+        )
+        val params = GetRecommendationRequestParam()
+
+        coEvery {
+            getRecommendationUseCase.getData(params)
+        } returns response
+
+        viewModel.fetchComponents(params)
+
+        val components = viewModel.components.value
+        Assert.assertTrue(components != null)
+        Assert.assertTrue(components!!.isNotEmpty())
+
+        Assert.assertTrue(components.size == 1)
     }
 }

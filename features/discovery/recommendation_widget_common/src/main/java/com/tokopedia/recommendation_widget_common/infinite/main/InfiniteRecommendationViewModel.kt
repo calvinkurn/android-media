@@ -69,9 +69,10 @@ class InfiniteRecommendationViewModel @Inject constructor(
             }
 
             val products = recommendationItemList.map { InfiniteProductUiModel(it) }
-            components.indexOfLast { it is InfiniteLoadingUiModel }
-
-            components.addAll(components.size - 1, products)
+            val target = components.indexOfLast {
+                it is InfiniteLoadingUiModel
+            }.takeIf { it > -1 } ?: components.size
+            components.addAll(target, products)
 
             if (!hasNext) components.remove(InfiniteLoadingUiModel)
 
