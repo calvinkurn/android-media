@@ -51,10 +51,6 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
         throw RuntimeException("Method is not implemented yet")
     }
 
-    override fun setRealtimeUpdate(param: RemoteConfig.RealTimeUpdateListener?) {
-        // no op
-    }
-
     override fun getKeysByPrefix(prefix: String): MutableSet<String> {
         return mutableSetOf<String>().apply {
             for ((key, value) in sharedPreferences.all) {

@@ -1,8 +1,5 @@
 package com.tokopedia.remoteconfig;
 
-import static com.tokopedia.remoteconfig.RemoteConfigManagerKtx.getRemoteConfigUpdates;
-
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
@@ -11,23 +8,17 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.ConfigUpdate;
 import com.google.firebase.remoteconfig.ConfigUpdateListener;
-import com.google.firebase.remoteconfig.ConfigUpdateListenerRegistration;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.firebase.remoteconfig.internal.ConfigRealtimeHandler;
-import com.google.firebase.remoteconfig.internal.ConfigRealtimeHandler.ConfigUpdateListenerRegistrationInternal;
 import com.tokopedia.config.GlobalConfig;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import kotlinx.coroutines.flow.Flow;
 
 /**
  * Created by okasurya on 9/11/17.
@@ -43,26 +34,14 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
 
-    private static FirebaseRemoteConfigImpl instance;
-
-    private ConfigUpdateListenerRegistration configUpdateListenerRegistration;
-
     public FirebaseRemoteConfigImpl(Context context) {
         try {
             this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        } catch (Exception ignored) {
-        } // FirebaseApp is not intialized, ignoring the error and handle it with default value
+        } catch (Exception ignored) {} // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
         if (GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
         }
-    }
-
-    public static @Nullable FirebaseRemoteConfigImpl getInstance(Application application) {
-        if (instance == null && application != null) {
-            instance = new FirebaseRemoteConfigImpl(application.getApplicationContext());
-        }
-        return instance;
     }
 
     private boolean isDebug() {
@@ -95,13 +74,13 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public boolean getBoolean(String key, boolean defaultValue) {
-//        if (isDebug()) {
-//            String cacheValue = sharedPrefs.getString(key, null);
-//
-//            if (cacheValue != null) {
-//                return cacheValue.equalsIgnoreCase("true");
-//            }
-//        }
+        if (isDebug()) {
+            String cacheValue = sharedPrefs.getString(key, null);
+
+            if (cacheValue != null) {
+                return cacheValue.equalsIgnoreCase("true");
+            }
+        }
 
         if (firebaseRemoteConfig != null) {
             String value = firebaseRemoteConfig.getString(key);
@@ -218,54 +197,40 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                             }
                         });
 
-                setRealtimeUpdate(null);
+                setRealtimeUpdate();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            FirebaseCrashlytics.getInstance().recordException(e);
         }
     }
 
-    @Override
-    public void setRealtimeUpdate(@Nullable RealTimeUpdateListener realTimeUpdateListener) {
+    private void setRealtimeUpdate() {
         try {
-            if (instance != null) {
-                if (configUpdateListenerRegistration != null) {
-                    configUpdateListenerRegistration.remove();
-                }
-                configUpdateListenerRegistration = instance.firebaseRemoteConfig.addOnConfigUpdateListener(getConfigUpdateListener(realTimeUpdateListener));
+            if (firebaseRemoteConfig != null) {
+                firebaseRemoteConfig.addOnConfigUpdateListener(getConfigRealtimeUpdateListener());
             }
         } catch (Exception e) {
+            //todo log to crashlytics or serverlogger
             Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Remote config error: %s", e.getStackTrace()));
-            e.printStackTrace();
+            FirebaseCrashlytics.getInstance().recordException(e);
         }
     }
 
-    private ConfigUpdateListener getConfigUpdateListener(@Nullable RealTimeUpdateListener realTimeUpdateListener) {
+    private ConfigUpdateListener getConfigRealtimeUpdateListener() {
         return new ConfigUpdateListener() {
             @Override
             public void onUpdate(@NonNull ConfigUpdate configUpdate) {
                 Log.d(REMOTE_CONFIG_REAL_TIME, String.format("Updated keys: %s", configUpdate.getUpdatedKeys()));
-                firebaseRemoteConfig.activate().addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (realTimeUpdateListener != null) {
-                            realTimeUpdateListener.onUpdate(configUpdate.getUpdatedKeys());
-                        }
-                    }
-                }).addOnFailureListener(e -> {
-                    if (realTimeUpdateListener != null) {
-                        realTimeUpdateListener.onError(e);
-                    }
+                firebaseRemoteConfig.activate().addOnFailureListener(e -> {
+                    //todo log to crashlytics or serverlogger
+                    FirebaseCrashlytics.getInstance().recordException(e);
                 });
             }
 
             @Override
             public void onError(FirebaseRemoteConfigException error) {
-                Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Config update error with stacktrace: %s", error.getStackTrace()));
-
-                if (realTimeUpdateListener != null) {
-                    realTimeUpdateListener.onError(error);
-                }
+                //todo log to crashlytics or serverlogger
+                FirebaseCrashlytics.getInstance().recordException(error);
             }
         };
     }

@@ -106,10 +106,6 @@ class ShopAbTestPlatform(
             }
     }
 
-    override fun setRealtimeUpdate(realTimeUpdateListener: RemoteConfig.RealTimeUpdateListener?) {
-        // no op
-    }
-
     private fun gqlResponseHandler(graphqlResponse: GraphqlResponse): ShopRolloutFeatureVariants {
         val responseData: ShopAbTestVariantPojo = graphqlResponse.getData(ShopAbTestVariantPojo::class.java)
         val featureVariants = responseData.dataRollout.featureVariants

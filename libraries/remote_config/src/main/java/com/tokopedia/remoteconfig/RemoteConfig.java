@@ -94,25 +94,10 @@ public interface RemoteConfig {
      */
     void fetch(Listener listener);
 
-    /**
-     * Set realtime update when there is any key updates within remote config
-     * @param realTimeUpdateListener The listener that will be called addOnConfigUpdateListener and override the onUpdate and onError methods
-     *                               or if any error happened
-     */
-    void setRealtimeUpdate(@Nullable RealTimeUpdateListener realTimeUpdateListener);
 
     interface Listener {
         void onComplete(RemoteConfig remoteConfig);
 
-        void onError(Exception e);
-    }
-
-    /**
-     * @param RealTimeUpdateListener to listen when real-time config updates from the Remote Config data and automatically
-     *                               or if any error happened
-     */
-    interface RealTimeUpdateListener {
-        void onUpdate(Set<String> updatedKeys);
         void onError(Exception e);
     }
 }
