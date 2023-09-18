@@ -8,7 +8,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMappe
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
@@ -36,7 +36,6 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
         onCategoryProduct_thenReturns()
 
         viewModel.onViewCreated()
-        viewModel.getFirstPage()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -124,7 +123,6 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
         )
 
         viewModel.onViewCreated()
-        viewModel.getFirstPage()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -187,20 +185,5 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
             )
         viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
-    }
-
-    @Test
-    fun `modify layout while its value is null should make getFirstPage error and do nothing`() {
-        val privateFieldNameLayout = "visitableList"
-
-        viewModel.mockSuperClassField(
-            name = privateFieldNameLayout,
-            value = null
-        )
-
-        viewModel.getFirstPage()
-
-        viewModel.visitableListLiveData
-            .verifyValueEquals(null)
     }
 }

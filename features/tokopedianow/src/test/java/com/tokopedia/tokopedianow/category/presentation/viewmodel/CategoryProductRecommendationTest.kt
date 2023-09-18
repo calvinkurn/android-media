@@ -6,7 +6,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.ma
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
@@ -32,7 +32,6 @@ class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() 
         onCategoryProduct_thenReturns()
 
         viewModel.onViewCreated()
-        viewModel.getFirstPage()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -86,9 +85,9 @@ class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() 
 
     @Test
     fun `modify layout while its value is null should make removeProductRecommendation error and do nothing`() {
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
 
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = null
         )

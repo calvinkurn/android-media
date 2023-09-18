@@ -8,10 +8,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMappe
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createProductRecommendation
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.NO_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
-import com.tokopedia.tokopedianow.common.util.ProductAdsMapper.createProductAdsCarousel
 import com.tokopedia.unit.test.ext.verifyValueEquals
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert
 import org.junit.Test
 
@@ -45,7 +42,6 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
         )
         val tickerUiModel = categoryDetailResponse
             .mapToTicker(tickerDataList.tickerList)
-        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -60,30 +56,19 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
             categoryIds = listOf(categoryIdL1)
         )
 
-        val productAdsCarouselUiModel = createProductAdsCarousel()
-
         val resultList = mutableListOf(
             headerSpaceUiModel,
             chooseAddressUiModel,
             tickerUiModel,
             titleUiModel,
             categoryNavigationUiModel,
-            productRecommendationUiModel,
-            productAdsCarouselUiModel
-        )
-
-        val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
-        mapShowcaseProduct(
-            hasAdded = false,
-            categoryNavigationList = categoryNavigationList,
-            resultList = resultList,
-            hasBlockedAddToCart = hasBlockedAddToCart
+            productRecommendationUiModel
         )
 
         verifyCategoryDetail()
         verifyTargetedTicker()
-        viewModel.categoryFirstPage
-            .verifyValueEquals(Success(resultList))
+        viewModel.visitableListLiveData
+            .verifyValueEquals(resultList)
     }
 
     @Test
@@ -121,29 +106,18 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
             categoryIds = listOf(categoryIdL1)
         )
 
-        val productAdsCarouselUiModel = createProductAdsCarousel()
-
         val resultList = mutableListOf(
             headerSpaceUiModel,
             chooseAddressUiModel,
             titleUiModel,
             categoryNavigationUiModel,
-            productRecommendationUiModel,
-            productAdsCarouselUiModel
-        )
-
-        val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
-        mapShowcaseProduct(
-            hasAdded = false,
-            categoryNavigationList = categoryNavigationList,
-            resultList = resultList,
-            hasBlockedAddToCart = false
+            productRecommendationUiModel
         )
 
         verifyCategoryDetail()
         verifyTargetedTicker()
-        viewModel.categoryFirstPage
-            .verifyValueEquals(Success(resultList))
+        viewModel.visitableListLiveData
+            .verifyValueEquals(resultList)
     }
 
     @Test
@@ -152,7 +126,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
 
-        Assert.assertTrue(viewModel.categoryFirstPage.value is Fail)
+        Assert.assertTrue(viewModel.visitableListLiveData.value == null)
     }
 
     @Test
@@ -164,7 +138,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
 
-        viewModel.categoryFirstPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(null)
         viewModel.outOfCoverageState
             .verifyValueEquals(Unit)

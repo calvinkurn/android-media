@@ -159,11 +159,8 @@ open class TokoNowCategoryViewModelTestFixture {
         MockKAnnotations.init(this)
 
         localAddress = mockk(relaxed = true)
-        aceSearchParamMapper = AceSearchParamMapper(
-            userSession,
-            localAddress,
-            uniqueId
-        )
+        aceSearchParamMapper = AceSearchParamMapper(userSession, localAddress)
+        aceSearchParamMapper.uniqueId = uniqueId
 
         setAddressData(
             warehouseId = warehouseId,
@@ -171,8 +168,8 @@ open class TokoNowCategoryViewModelTestFixture {
         )
 
         viewModel = TokoNowCategoryViewModel(
-            getCategoryDetailUseCase = getCategoryDetailUseCase,
             getCategoryProductUseCase = getCategoryProductUseCase,
+            getCategoryDetailUseCase = getCategoryDetailUseCase,
             getProductAdsUseCase = getProductAdsUseCase,
             getTargetedTickerUseCase = getTargetedTickerUseCase,
             getShopAndWarehouseUseCase = getShopAndWarehouseUseCase,
@@ -187,7 +184,9 @@ open class TokoNowCategoryViewModelTestFixture {
             dispatchers = CoroutineTestDispatchersProvider
         )
 
+        viewModel.navToolbarHeight = navToolbarHeight
         viewModel.categoryIdL1 = categoryIdL1
+
         onGetIsLoggedIn_thenReturn(loggedIn = true)
     }
 
@@ -207,7 +206,13 @@ open class TokoNowCategoryViewModelTestFixture {
         addressData = LocalCacheModel(
             warehouses = warehouses,
             warehouse_id = warehouseId,
-            shop_id = shopId
+            shop_id = shopId,
+            city_id = "1245",
+            address_id = "3455",
+            district_id = "1606",
+            lat = "784915.125",
+            long = "125995.234",
+            postal_code = "1660"
         )
 
         coEvery { localAddress.getWarehouseId() } returns warehouseId.toLong()
@@ -287,13 +292,14 @@ open class TokoNowCategoryViewModelTestFixture {
     }
 
     protected fun onCategoryProduct_thenThrows(expectedCategoryIdL2Failed: String) {
-        val queryParams = createGetProductQueryParams(expectedCategoryIdL2Failed)
         categoryProductResponseMap.forEach { (categoryIdL2, categoryProductResponse) ->
             if (expectedCategoryIdL2Failed == categoryIdL2) {
+                val queryParams = createGetProductQueryParams(expectedCategoryIdL2Failed)
                 coEvery {
                     getCategoryProductUseCase.execute(queryParams)
                 } throws Exception()
             } else {
+                val queryParams = createGetProductQueryParams(categoryIdL2)
                 coEvery {
                     getCategoryProductUseCase.execute(queryParams)
                 } returns categoryProductResponse

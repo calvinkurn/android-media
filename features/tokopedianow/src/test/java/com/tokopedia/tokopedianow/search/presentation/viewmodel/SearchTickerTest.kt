@@ -48,7 +48,7 @@ class SearchTickerTest: BaseSearchPageLoadTest() {
     private fun List<Visitable<*>>.getTicketWidgetUiModel() = find { it is TokoNowTickerUiModel } as TokoNowTickerUiModel
 
     private fun `Then assert ticker data`(searchModel: SearchModel, tickerUiModel: TokoNowTickerUiModel) {
-        Assert.assertEquals(TickerMapper.mapTickerData(searchModel.targetedTicker).blockAddToCart, tickerUiModel.tickers)
+        Assert.assertEquals(TickerMapper.mapTickerData(searchModel.targetedTicker).tickerList, tickerUiModel.tickers)
     }
 
     private fun `Then assert hasBlockedAddToCart`(expected: Boolean) {

@@ -138,7 +138,7 @@ class CategoryTickerTest: CategoryTestFixtures() {
     }
 
     private fun `Then assert ticker data`(categoryModel: CategoryModel, tickerUiModel: TokoNowTickerUiModel) {
-        Assert.assertEquals(TickerMapper.mapTickerData(categoryModel.targetedTicker).blockAddToCart, tickerUiModel.tickers)
+        Assert.assertEquals(TickerMapper.mapTickerData(categoryModel.targetedTicker).tickerList, tickerUiModel.tickers)
     }
 
     private fun `Then assert hasBlockedAddToCart`(expected: Boolean) {

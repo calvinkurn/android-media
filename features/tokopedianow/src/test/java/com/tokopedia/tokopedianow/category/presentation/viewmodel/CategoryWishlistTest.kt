@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
@@ -20,7 +20,7 @@ class CategoryWishlistTest: TokoNowCategoryViewModelTestFixture() {
         val productHasBeenWishlist = true
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
         val expectedWishlist = !productHasBeenWishlist
 
         val categoryShowcaseItemUiModel = CategoryShowcaseItemUiModel(
@@ -45,7 +45,7 @@ class CategoryWishlistTest: TokoNowCategoryViewModelTestFixture() {
         )
 
         val mockLayout = mutableListOf(categoryShowcaseUiModel)
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = mockLayout
         )
@@ -75,10 +75,10 @@ class CategoryWishlistTest: TokoNowCategoryViewModelTestFixture() {
     fun `modify layout while its value is null should make updateWishlistStatus error and do nothing`()  {
         val productId = "2025598474"
         val productHasBeenWishlist = true
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
         val expectedWishlist = !productHasBeenWishlist
 
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = null
         )

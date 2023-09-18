@@ -13,7 +13,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Compan
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.util.ProductAdsMapper
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Success
@@ -59,7 +59,6 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
         onGetProductAds_thenReturn(getProductAdsResponse)
 
         viewModel.onViewCreated()
-        viewModel.getFirstPage()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -157,7 +156,6 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
         onGetProductAds_thenReturn(getProductAdsResponse)
 
         viewModel.onViewCreated()
-        viewModel.getFirstPage()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -224,8 +222,8 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
             val adsProductItem = productAdsCarousel.items.first()
 
-            viewModel.mockPrivateField(
-                name = "layout",
+            viewModel.mockSuperClassField(
+                name = "visitableList",
                 value = mutableListOf(productAdsCarousel)
             )
 
@@ -283,8 +281,8 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
             val adsProductItem = productAdsCarousel.items.first()
 
-            viewModel.mockPrivateField(
-                name = "layout",
+            viewModel.mockSuperClassField(
+                name = "visitableList",
                 value = mutableListOf(productAdsCarousel)
             )
 
@@ -313,8 +311,8 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
             val adsProductItem = productAdsCarousel.items.first()
 
-            viewModel.mockPrivateField(
-                name = "layout",
+            viewModel.mockSuperClassField(
+                name = "visitableList",
                 value = mutableListOf(productAdsCarousel)
             )
 
