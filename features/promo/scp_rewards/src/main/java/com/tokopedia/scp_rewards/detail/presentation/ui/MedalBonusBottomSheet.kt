@@ -24,7 +24,6 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
     private var filtersList: List<FilterModel>? = null
     private var activeTabCouponStatus: String? = null
 
-    @SuppressLint("DeprecatedMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTabs()
@@ -70,6 +69,7 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
         }
     }
 
+    @SuppressLint("DEPRECATION")
     private fun setupTabs() {
         val couponList = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
         filtersList = arguments?.getParcelableArrayList<FilterModel?>(FILTER_LIST)

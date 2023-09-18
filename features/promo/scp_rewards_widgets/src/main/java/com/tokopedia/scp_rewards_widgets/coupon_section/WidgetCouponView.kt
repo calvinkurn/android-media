@@ -73,9 +73,10 @@ class WidgetCouponView @JvmOverloads constructor(
         benefitList: List<MedalBenefitModel>?,
         setOnFilterListener: (List<MedalBenefitModel>?) -> Unit
     ) {
-        if (filters != null && filters.isEmpty().not() &&
-            benefitList != null && benefitList.isEmpty().not()
-        ) {
+        if (filters.isNullOrEmpty() || benefitList.isNullOrEmpty()) {
+            binding.filterCoupon.gone()
+            setOnFilterListener(benefitList)
+        } else {
             val list = filters.map { filter ->
                 SortFilterItem(
                     title = filter.text.orEmpty(),
@@ -96,9 +97,6 @@ class WidgetCouponView @JvmOverloads constructor(
             setFiltersLeftPadding()
             binding.filterCoupon.addItem(list as ArrayList<SortFilterItem>)
             filterData(benefitList, filters.find { it.isSelected }, setOnFilterListener)
-        } else {
-            binding.filterCoupon.gone()
-            setOnFilterListener(benefitList)
         }
     }
 
@@ -120,7 +118,6 @@ class WidgetCouponView @JvmOverloads constructor(
                 setOnFilterListener(filteredList)
             }
         }
-
     }
 
     fun updateLoadingStatus(showLoader: Boolean) {

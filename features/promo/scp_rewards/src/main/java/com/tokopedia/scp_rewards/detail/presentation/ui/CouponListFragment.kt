@@ -37,7 +37,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
-import com.tokopedia.scp_rewards_widgets.R as scpRewardsWidgetsR
+import com.tokopedia.scp_rewards_widgets.R as scp_rewards_widgetsR
 
 class CouponListFragment : BaseDaggerFragment() {
 
@@ -113,7 +113,7 @@ class CouponListFragment : BaseDaggerFragment() {
                                     context?.let { context ->
                                         ContextCompat.getDrawable(
                                             context,
-                                            scpRewardsWidgetsR.drawable.ic_coupon_error
+                                            scp_rewards_widgetsR.drawable.ic_coupon_error
                                         )
                                     }
                                 )
@@ -142,7 +142,7 @@ class CouponListFragment : BaseDaggerFragment() {
                                     context?.let { context ->
                                         ContextCompat.getDrawable(
                                             context,
-                                            scpRewardsWidgetsR.drawable.ic_bonus_active_empty
+                                            scp_rewards_widgetsR.drawable.ic_bonus_active_empty
                                         )
                                     }
                                 )
