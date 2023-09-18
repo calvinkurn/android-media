@@ -442,10 +442,10 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
             cardView.setCardUnifyBackgroundColor(ContextCompat.getColor(cardView.context, R.color.dms_static_white))
 
             val productName = productCard.findViewById<Typography>(R.id.textViewProductName)
-            productName.setTextColor(ContextCompat.getColor(productName.context, R.color.dms_static_NN950_96_light))
+            productName.setTextColor(ContextCompat.getColor(productName.context, R.color.dms_static_light_NN950_96))
 
             val productPrice = productCard.findViewById<Typography>(R.id.textViewPrice)
-            productPrice.setTextColor(ContextCompat.getColor(productPrice.context, R.color.dms_static_NN950_96_light))
+            productPrice.setTextColor(ContextCompat.getColor(productPrice.context, R.color.dms_static_light_NN950_96))
 
             val labelDiscount = productCard.findViewById<Label>(R.id.labelDiscount)
             labelDiscount.forceLightRed()

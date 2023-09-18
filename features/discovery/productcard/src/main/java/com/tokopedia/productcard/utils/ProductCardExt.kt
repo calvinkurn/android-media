@@ -735,12 +735,12 @@ internal fun createColorSampleDrawable(context: Context, colorString: String): G
 internal fun Label.forceLightRed() {
     setTextSize(TypedValue.COMPLEX_UNIT_PX, smallTextSizePx)
     typeface = Typography.getFontType(context, true, Typography.SMALL)
-    setTextColor(ContextCompat.getColor(context, R.color.dms_static_RN500_light))
+    setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_RN500))
 
     setPadding(horizontalPaddingPx, verticalPaddingPx, horizontalPaddingPx, verticalPaddingPx)
 
     val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
-    drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_RN100_light), PorterDuff.Mode.SRC_ATOP)
+    drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_light_RN100), PorterDuff.Mode.SRC_ATOP)
 
     setBackgroundDrawable(drawable)
 }

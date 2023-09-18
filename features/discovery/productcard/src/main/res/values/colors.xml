@@ -38,8 +38,8 @@
     <color name="dms_static_light_NN950_32">#52212121</color>
     <color name="dms_static_light_YN500">#FF7F17</color>
     <color name="dms_static_light_YN300">#FFC400</color>
-    <color name="dms_static_NN950_96_light">#F5212121</color>
-    <color name="dms_static_RN500_light">#F94D63</color>
-    <color name="dms_static_RN100_light">#FFDBE2</color>
+    <color name="dms_static_light_NN950_96">#F5212121</color>
+    <color name="dms_static_light_RN500">#F94D63</color>
+    <color name="dms_static_light_RN100">#FFDBE2</color>
 
 </resources>
