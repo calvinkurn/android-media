@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 class CategoryShowcaseItemViewHolder(
     itemView: View,
     private var listener: CategoryShowcaseItemListener? = null,
-    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private val lifecycleOwner: LifecycleOwner? = null
 ) : AbstractViewHolder<CategoryShowcaseItemUiModel>(itemView) {
 
@@ -59,9 +58,6 @@ class CategoryShowcaseItemViewHolder(
                         product = element
                     )
                 }
-                setListener(
-                    productCardCompactListener = productCardCompactListener
-                )
                 setOnBlockAddToCartListener {
                     listener?.onProductCardAddToCartBlocked()
                 }

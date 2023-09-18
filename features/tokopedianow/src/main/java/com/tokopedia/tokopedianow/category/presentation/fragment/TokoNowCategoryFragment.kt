@@ -173,7 +173,6 @@ class TokoNowCategoryFragment:
             tokoNowChooseAddressWidgetListener = createTokoNowChooseAddressWidgetCallback(),
             tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
-            productCardCompactListener = createProductCardCompactCallback(),
             productAdsCarouselListener = createProductCardAdsCallback(),
             recycledViewPool = recycledViewPool,
             lifecycleOwner = viewLifecycleOwner
@@ -1373,22 +1372,6 @@ class TokoNowCategoryFragment:
                 "${uri.scheme}://${uri.host}/${uri.path}?" + UrlParamUtils.generateUrlParamString(queryParamsMap)
             } else {
                 originalAppLink
-            }
-        }
-    }
-
-    private fun createProductCardCompactCallback() = object : ProductCardCompactListener {
-        override fun onClickSimilarProduct(
-            productId: String,
-            similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?
-        ) {
-            context?.apply {
-                val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(
-                    this,
-                    productId,
-                    similarProductTrackerListener
-                )
-                startActivity(intent)
             }
         }
     }

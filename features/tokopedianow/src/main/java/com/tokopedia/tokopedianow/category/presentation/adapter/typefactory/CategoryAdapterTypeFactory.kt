@@ -53,7 +53,6 @@ class CategoryAdapterTypeFactory(
     private var tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
     private var tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
     private var tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
-    private var productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private var productAdsCarouselListener: ProductAdsCarouselListener? = null,
     private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val lifecycleOwner: LifecycleOwner? = null
@@ -98,7 +97,6 @@ class CategoryAdapterTypeFactory(
                 itemView = view,
                 categoryShowcaseItemListener = categoryShowcaseItemListener,
                 categoryShowcaseHeaderListener = categoryShowcaseHeaderListener,
-                productCardCompactListener = productCardCompactListener,
                 parentRecycledViewPool = recycledViewPool,
                 lifecycleOwner = lifecycleOwner
             )
@@ -139,7 +137,6 @@ class CategoryAdapterTypeFactory(
         tokoNowChooseAddressWidgetListener = null
         tokoNowCategoryMenuListener = null
         tokoNowProductRecommendationListener = null
-        productCardCompactListener = null
         productAdsCarouselListener = null
     }
 }

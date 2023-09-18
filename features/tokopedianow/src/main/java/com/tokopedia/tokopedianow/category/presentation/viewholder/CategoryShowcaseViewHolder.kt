@@ -26,7 +26,6 @@ class CategoryShowcaseViewHolder(
     itemView: View,
     private val categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
     private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
-    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val lifecycleOwner: LifecycleOwner? = null
 ): AbstractViewHolder<CategoryShowcaseUiModel>(itemView) {
@@ -45,7 +44,6 @@ class CategoryShowcaseViewHolder(
         CategoryShowcaseAdapter(
             typeFactory = CategoryShowcaseAdapterTypeFactory(
                 categoryShowcaseItemListener = categoryShowcaseItemListener,
-                productCardCompactListener = productCardCompactListener,
                 lifecycleOwner = lifecycleOwner
             ),
             differ = CategoryShowcaseDiffer()

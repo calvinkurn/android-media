@@ -13,7 +13,6 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowc
 
 class CategoryShowcaseAdapterTypeFactory(
     private var categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
-    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private val lifecycleOwner: LifecycleOwner? = null
 ): BaseAdapterTypeFactory(), CategoryShowcaseTypeFactory {
 
@@ -24,7 +23,6 @@ class CategoryShowcaseAdapterTypeFactory(
             CategoryShowcaseItemViewHolder.LAYOUT -> CategoryShowcaseItemViewHolder(
                 itemView = view,
                 listener = categoryShowcaseItemListener,
-                productCardCompactListener = productCardCompactListener,
                 lifecycleOwner = lifecycleOwner
             )
             else -> super.createViewHolder(view, type)
