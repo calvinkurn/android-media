@@ -1,7 +1,8 @@
 package com.tokopedia.search.result.presentation.mapper
 
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
+import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType.FIXED_GRID
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
@@ -12,7 +13,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductFreeOn
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroupVariant
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
-import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
+import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
@@ -22,7 +23,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.broadmatch.RelatedDataView
-import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
@@ -31,7 +31,12 @@ import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 
-class ProductViewModelMapper {
+class ProductViewModelMapper(
+    private val reimagineRollence: ReimagineRollence,
+) {
+
+    private val isUseAceSearchProductV5: Boolean
+        get() = reimagineRollence.search3ProductCard().isUseAceSearchProductV5()
 
     @Suppress("LongParameterList")
     fun convertToProductViewModel(
@@ -45,9 +50,10 @@ class ProductViewModelMapper {
         externalReference: String,
         newCardType: String = "",
     ): ProductDataView {
-        val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
-
         val productDataView = ProductDataView()
+        val productListType =
+            if (isUseAceSearchProductV5) FIXED_GRID
+            else newCardType.ifBlank { searchProductModel.productListType() }
 
         productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.globalNavDataView = GlobalNavDataView.create(
@@ -55,27 +61,26 @@ class ProductViewModelMapper {
             dimension90,
         )
         productDataView.cpmModel = searchProductModel.cpmModel
-        productDataView.relatedDataView = RelatedDataView.create(
-            searchProductData.related,
+        productDataView.relatedDataView = relatedDataView(
+            searchProductModel,
             isLocalSearch,
             dimension90,
             keyword,
-            externalReference,
+            externalReference
         )
-        val productListType = newCardType.ifBlank { searchProductModel.getProductListType() }
         productDataView.productList = convertToProductItemDataViewList(
             lastProductItemPosition,
-            searchProductData.productList,
+            searchProductModel,
             pageTitle,
             dimension90,
             isLocalSearchRecommendation,
             productListType,
             externalReference,
-            searchProductData.keywordIntention,
-            searchProductModel.isShowButtonAtc,
+            searchProductModel.keywordIntention(isUseAceSearchProductV5),
+            searchProductModel.isShowButtonAtc(isUseAceSearchProductV5),
         )
         productDataView.tickerModel = convertToTickerDataView(
-            searchProductData,
+            searchProductModel,
             keyword,
             dimension90,
         )
@@ -84,12 +89,11 @@ class ProductViewModelMapper {
             keyword,
             dimension90,
         )
-        productDataView.totalData = searchProductHeader.totalData
-        productDataView.totalDataText = searchProductHeader.totalDataText
-        productDataView.responseCode = searchProductHeader.responseCode
-        productDataView.keywordProcess = searchProductHeader.keywordProcess
-        productDataView.pageComponentId = searchProductHeader.componentId
-        productDataView.isQuerySafe = searchProductData.isQuerySafe
+        productDataView.totalData = searchProductModel.totalData(isUseAceSearchProductV5)
+        productDataView.responseCode = searchProductModel.responseCode(isUseAceSearchProductV5)
+        productDataView.keywordProcess = searchProductModel.keywordProcess(isUseAceSearchProductV5)
+        productDataView.pageComponentId = searchProductModel.componentId(isUseAceSearchProductV5)
+        productDataView.isQuerySafe = searchProductModel.isQuerySafe(isUseAceSearchProductV5)
         productDataView.inspirationCarouselDataView = convertToInspirationCarouselViewModel(
             searchProductModel.searchInspirationCarousel,
             dimension90,
@@ -101,15 +105,10 @@ class ProductViewModelMapper {
             keyword,
             dimension90,
         )
-        productDataView.additionalParams = searchProductHeader.additionalParams
-        productDataView.autocompleteApplink = searchProductData.autocompleteApplink
-        val isListViewExperiment = searchProductModel.getProductListType() == SearchConstant.ProductListType.LIST_VIEW
-        productDataView.defaultView = if (isListViewExperiment) ViewType.LIST.value else ViewType.SMALL_GRID.value
-        productDataView.gridType = searchProductModel.getProductListType().takeIf {
-            it == SearchConstant.ProductListType.FIXED_GRID
-        } ?: ""
+        productDataView.additionalParams = searchProductModel.additionalParams(isUseAceSearchProductV5)
+        productDataView.autocompleteApplink = searchProductModel.autocompleteApplink(isUseAceSearchProductV5)
         productDataView.bannerDataView = BannerDataView.create(
-            searchProductData.banner,
+            searchProductModel.banner(isUseAceSearchProductV5),
             keyword,
             dimension90,
             pageTitle,
@@ -120,38 +119,164 @@ class ProductViewModelMapper {
             dimension90,
         )
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
-        productDataView.violation = convertToViolationView(searchProductData.violation)
-        productDataView.backendFilters = searchProductModel.backendFilters
-        productDataView.keywordIntention = searchProductModel.keywordIntention
+        productDataView.violation = convertToViolationView(searchProductModel)
+        productDataView.backendFilters = searchProductModel.backendFilters(isUseAceSearchProductV5)
+        productDataView.keywordIntention = searchProductModel.keywordIntention(isUseAceSearchProductV5)
+        productDataView.isPostProcessing = searchProductModel.isPostProcessing(isUseAceSearchProductV5)
+        productDataView.redirectApplink = searchProductModel.redirectApplink(isUseAceSearchProductV5)
+        productDataView.productListType = productListType
+        productDataView.isShowButtonAtc = searchProductModel.isShowButtonAtc(isUseAceSearchProductV5)
 
         return productDataView
     }
 
-    private fun convertToProductItemDataViewList(
-            lastProductItemPosition: Int,
-            productModels: List<Product>,
-            pageTitle: String,
-            dimension90: String,
-            isLocalSearchRecommendation: Boolean,
-            productListType: String,
-            externalReference: String,
-            keywordIntention: Int,
-            showButtonAtc: Boolean,
-    ): List<ProductItemDataView> {
-        return productModels.mapIndexed { index, productModel ->
-            val position = lastProductItemPosition + index + 1
-            convertToProductItem(
-                productModel,
-                position,
-                pageTitle,
+    private fun relatedDataView(
+        searchProductModel: SearchProductModel,
+        isLocalSearch: Boolean,
+        dimension90: String,
+        keyword: String,
+        externalReference: String
+    ): RelatedDataView =
+        if (isUseAceSearchProductV5)
+            RelatedDataView.create(
+                searchProductModel.searchProductV5.data.related,
+                isLocalSearch,
                 dimension90,
-                isLocalSearchRecommendation,
-                productListType,
+                keyword,
                 externalReference,
-                keywordIntention,
-                showButtonAtc
             )
+        else
+            RelatedDataView.create(
+                searchProductModel.searchProduct.data.related,
+                isLocalSearch,
+                dimension90,
+                keyword,
+                externalReference,
+            )
+
+    private fun convertToProductItemDataViewList(
+        lastProductItemPosition: Int,
+        searchProductModel: SearchProductModel,
+        pageTitle: String,
+        dimension90: String,
+        isLocalSearchRecommendation: Boolean,
+        productListType: String,
+        externalReference: String,
+        keywordIntention: Int,
+        showButtonAtc: Boolean,
+    ): List<ProductItemDataView> {
+        return if (isUseAceSearchProductV5) {
+            searchProductModel.searchProductV5.data.productList.mapIndexed { index, productModel ->
+                val position = lastProductItemPosition + index + 1
+                convertToProductItem(
+                    productModel,
+                    position,
+                    pageTitle,
+                    dimension90,
+                    isLocalSearchRecommendation,
+                    productListType,
+                    externalReference,
+                    keywordIntention,
+                )
+            }
+        } else {
+            searchProductModel.searchProduct.data.productList.mapIndexed { index, productModel ->
+                val position = lastProductItemPosition + index + 1
+                convertToProductItem(
+                    productModel,
+                    position,
+                    pageTitle,
+                    dimension90,
+                    isLocalSearchRecommendation,
+                    productListType,
+                    externalReference,
+                    keywordIntention,
+                    showButtonAtc
+                )
+            }
         }
+    }
+
+    private fun convertToProductItem(
+        productModel: SearchProductV5.Data.Product,
+        position: Int,
+        pageTitle: String,
+        dimension90: String,
+        isLocalSearchRecommendation: Boolean,
+        productListType: String,
+        externalReference: String,
+        keywordIntention: Int,
+    ): ProductItemDataView {
+        val productItem = ProductItemDataView()
+
+        setExternalValues(
+            productItem,
+            position,
+            isLocalSearchRecommendation,
+            pageTitle,
+            dimension90,
+            productListType,
+            externalReference,
+            keywordIntention,
+        )
+
+        productItem.productID = productModel.id
+        productItem.warehouseID = productModel.meta.warehouseID
+        productItem.productName = productModel.name
+        productItem.imageUrl = productModel.mediaURL.image
+        productItem.imageUrl300 = productModel.mediaURL.image300
+        productItem.imageUrl700 = productModel.mediaURL.image700
+        productItem.ratingString = productModel.rating
+        productItem.discountPercentage = productModel.price.discountPercentage.toInt()
+        productItem.originalPrice = productModel.price.original
+        productItem.price = productModel.price.text
+        productItem.priceInt = productModel.price.number
+        productItem.priceRange = productModel.price.range
+        productItem.shopID = productModel.shop.id
+        productItem.shopName = productModel.shop.name
+        productItem.shopCity = productModel.shop.city
+        productItem.shopUrl = productModel.shop.url
+//        productItem.isShopOfficialStore = productModel.shop.isOfficial
+//        productItem.isShopPowerMerchant = productModel.shop.isPowerBadge
+        productItem.isWishlisted = productModel.wishlist
+        productItem.badgesList = listOf(BadgeItemDataView.create(productModel.badge))
+        productItem.categoryID = productModel.category.id
+        productItem.categoryName = productModel.category.name
+        productItem.categoryBreadcrumb = productModel.category.breadcrumb
+        productItem.labelGroupList = productModel.labelGroupList.map(LabelGroupDataView::create)
+        productItem.labelGroupVariantList = productModel.labelGroupVariantList.map(
+            LabelGroupVariantDataView.Companion::create
+        )
+        productItem.freeOngkirDataView = FreeOngkirDataView.create(productModel.freeShipping)
+        productItem.isOrganicAds = productModel.isOrganicAds()
+        productItem.topadsImpressionUrl = productModel.ads.productViewURL
+        productItem.topadsClickUrl = productModel.ads.productClickURL
+        productItem.topadsWishlistUrl = productModel.ads.productWishlistURL
+        productItem.topadsTag = productModel.ads.tag
+        productItem.productUrl = productModel.url
+        productItem.applink = productModel.applink
+        productItem.customVideoURL = productModel.mediaURL.videoCustom
+        productItem.parentId = productModel.meta.parentID
+        productItem.isPortrait = productModel.meta.isPortrait
+        return productItem
+    }
+
+    private fun setExternalValues(
+        productItem: ProductItemDataView,
+        position: Int,
+        isLocalSearchRecommendation: Boolean,
+        pageTitle: String,
+        dimension90: String,
+        productListType: String,
+        externalReference: String,
+        keywordIntention: Int,
+    ) {
+        productItem.position = position
+        productItem.pageTitle = if (isLocalSearchRecommendation) pageTitle else ""
+        productItem.dimension90 = dimension90
+        productItem.productListType = productListType
+        productItem.dimension131 = externalReference
+        productItem.keywordIntention = keywordIntention
     }
 
     private fun convertToProductItem(
@@ -166,6 +291,18 @@ class ProductViewModelMapper {
             showButtonAtc: Boolean,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
+
+        setExternalValues(
+            productItem,
+            position,
+            isLocalSearchRecommendation,
+            pageTitle,
+            dimension90,
+            productListType,
+            externalReference,
+            keywordIntention,
+        )
+
         productItem.productID = productModel.id
         productItem.warehouseID = productModel.warehouseIdDefault
         productItem.productName = productModel.name
@@ -182,11 +319,8 @@ class ProductViewModelMapper {
         productItem.shopName = productModel.shop.name
         productItem.shopCity = productModel.shop.city
         productItem.shopUrl = productModel.shop.url
-        productItem.isShopOfficialStore = productModel.shop.isOfficial
-        productItem.isShopPowerMerchant = productModel.shop.isPowerBadge
         productItem.isWishlisted = productModel.isWishlist
         productItem.badgesList = productModel.badgeList.mapToBadgeItemList()
-        productItem.position = position
         productItem.categoryID = productModel.categoryId
         productItem.categoryName = productModel.categoryName
         productItem.categoryBreadcrumb = productModel.categoryBreadcrumb
@@ -202,13 +336,8 @@ class ProductViewModelMapper {
         productItem.topadsTag = productModel.ads.tag
         productItem.minOrder = productModel.minOrder
         productItem.productUrl = productModel.url
-        productItem.pageTitle = if(isLocalSearchRecommendation) pageTitle else ""
-        productItem.dimension90 = dimension90
         productItem.applink = productModel.applink
         productItem.customVideoURL = productModel.customVideoURL
-        productItem.productListType = productListType
-        productItem.dimension131 = externalReference
-        productItem.keywordIntention = keywordIntention
         productItem.showButtonAtc = showButtonAtc
         productItem.parentId = productModel.parentId
         productItem.isPortrait = productModel.isPortrait
@@ -243,11 +372,12 @@ class ProductViewModelMapper {
     private fun ProductFreeOngkir.mapToFreeOngkirDataView() = FreeOngkirDataView(isActive, imageUrl)
 
     private fun convertToTickerDataView(
-        searchProductData: SearchProductData,
+        searchProductModel: SearchProductModel,
         keyword: String,
         dimension90: String,
     ): TickerDataView {
-        val ticker = searchProductData.ticker
+        val ticker = searchProductModel.ticker(isUseAceSearchProductV5)
+
         return TickerDataView(
             text = ticker.text,
             query = ticker.query,
@@ -264,13 +394,14 @@ class ProductViewModelMapper {
         keyword: String,
         dimension90: String,
     ): SuggestionDataView {
-        val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
-        val suggestion = searchProductData.suggestion
+        val suggestion = searchProductModel.suggestion(isUseAceSearchProductV5)
+        val responseCode = searchProductModel.responseCode(isUseAceSearchProductV5)
+
         val trackingValue =
-            if (searchProductHeader.responseCode == "3")
-                searchProductData.related.relatedKeyword
+            if (responseCode == "3")
+                searchProductModel.relatedKeyword(isUseAceSearchProductV5)
             else
-                searchProductData.suggestion.suggestion
+                suggestion.suggestion
 
         return SuggestionDataView(
             suggestionText = suggestion.text,
@@ -380,7 +511,8 @@ class ProductViewModelMapper {
         )
     }
 
-    private fun convertToViolationView(violation: SearchProductModel.Violation) : ViolationDataView? {
+    private fun convertToViolationView(searchProductModel: SearchProductModel) : ViolationDataView? {
+        val violation = searchProductModel.violation(isUseAceSearchProductV5)
         return ViolationDataView.create(violation)
     }
 }

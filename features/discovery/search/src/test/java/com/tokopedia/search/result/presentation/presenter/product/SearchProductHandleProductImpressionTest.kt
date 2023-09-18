@@ -6,7 +6,6 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.shouldBe
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -17,8 +16,6 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val capturedProductItemViewModel = slot<ProductItemDataView>()
-    private var suggestedRelatedKeyword = ""
-    private val suggestedRelatedKeywordSlot = slot<String>()
 
     @Test
     fun `Handle onProductImpressed with null ProductItemViewModel (degenerate cases)`() {
@@ -116,21 +113,16 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `When handle product impressed`(productItemViewModel, firstProductPosition)
 
         `Then verify interaction for product impression with no coach mark shown`(productItemViewModel)
-        `Then verify relatedKeyword`()
     }
 
     private fun `Then verify interaction for product impression with no coach mark shown`(productItemDataView: ProductItemDataView) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot))
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, any())
         }
 
         verify(exactly = 0) {
             productListView.showOnBoarding(any())
         }
-    }
-
-    private fun `Then verify relatedKeyword`() {
-        suggestedRelatedKeyword shouldBe suggestedRelatedKeywordSlot.captured
     }
 
     @Test
@@ -143,7 +135,6 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `When handle product impressed`(productItemViewModel, firstProductPosition)
 
         `Then verify interaction for Organic Ads product impression with no coach mark shown`(productItemViewModel)
-        `Then verify relatedKeyword`()
     }
 
     private fun `Then verify interaction for Organic Ads product impression with no coach mark shown`(productItemDataView: ProductItemDataView) {
@@ -159,7 +150,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
-            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot))
+            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), any())
         }
 
         verify(exactly = 0) {
@@ -207,13 +198,104 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `When handle product impressed`(productItemViewModel, firstProductPosition)
 
         `Then verify interaction for product impression with coach mark shown`(productItemViewModel, firstProductPosition)
-        `Then verify relatedKeyword`()
     }
 
     private fun `Then verify interaction for product impression with coach mark shown`(productItemDataView: ProductItemDataView, position: Int) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot))
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, any())
             productListView.showOnBoarding(position)
+        }
+    }
+
+    @Test
+    fun `Handle onProductImpressed for organic Product with related keyword`() {
+        val searchProductModel = "searchproduct/impressionclick/related.json".jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given view already load data`()
+
+        val productItem = findProductItemFromVisitableList(
+            isTopAds = false,
+            isOrganicAds = false,
+        )
+        val firstProductPosition = 1
+
+        `When handle product impressed`(productItem, firstProductPosition)
+
+        verify {
+            productListView.sendProductImpressionTrackingEvent(
+                productItem,
+                searchProductModel.searchProduct.relatedKeyword,
+            )
+        }
+    }
+
+    @Test
+    fun `Handle onProductImpressed for organic Product with suggestion keyword`() {
+        val searchProductModel = "searchproduct/impressionclick/suggestion.json".jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given view already load data`()
+
+        val productItem = findProductItemFromVisitableList(
+            isTopAds = false,
+            isOrganicAds = false,
+        )
+        val firstProductPosition = 1
+
+        `When handle product impressed`(productItem, firstProductPosition)
+
+        verify {
+            productListView.sendProductImpressionTrackingEvent(
+                productItem,
+                searchProductModel.searchProduct.data.suggestion.suggestion,
+            )
+        }
+    }
+
+    @Test
+    fun `Handle onProductImpressed for organic Product with related keyword for reimagine`() {
+        val searchProductModel = "searchproduct/impressionclick/related-reimagine.json"
+            .jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given view already load data`()
+
+        val productItem = findProductItemFromVisitableList(
+            isTopAds = false,
+            isOrganicAds = false,
+        )
+        val firstProductPosition = 1
+
+        `When handle product impressed`(productItem, firstProductPosition)
+
+        verify {
+            productListView.sendProductImpressionTrackingEvent(
+                productItem,
+                searchProductModel.searchProductV5.data.related.relatedKeyword,
+            )
+        }
+    }
+
+    @Test
+    fun `Handle onProductImpressed for organic Product with suggestion keyword for reimagine`() {
+        val searchProductModel = "searchproduct/impressionclick/suggestion-reimagine.json"
+            .jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given view already load data`()
+
+        val productItem = findProductItemFromVisitableList(
+            isTopAds = false,
+            isOrganicAds = false,
+        )
+        val firstProductPosition = 1
+
+        `When handle product impressed`(productItem, firstProductPosition)
+
+        verify {
+            productListView.sendProductImpressionTrackingEvent(
+                productItem,
+                searchProductModel.searchProductV5.data.suggestion.suggestion,
+            )
         }
     }
 }
