@@ -104,8 +104,10 @@ FilterGeneralDetailBottomSheet().show(
 Show function takes 3 arguments:
 
 1. `FragmentManager` → Use `parentFragmentManager`
-2. `Filter` → `Filter` object that contains list of `Option` to show in the bottom sheet
-3. `FilterGeneralDetailBottomSheet.Callback` → Callback interface used by `FilterGeneralDetailBottomSheet`. This callback has one function `onApplyButtonClicked`, which will be called when "Simpan" (save) button is clicked.
+2. `Filter` → `Filter` object that contains list of `Option` to show in the bottom sheet. It is also possible to send `SortModel` for sorting functionality.
+3. `FilterGeneralDetailBottomSheet.OptionCallback` → Callback interface used by `FilterGeneralDetailBottomSheet`. This callback has these function:
+   a. `onApplyButtonClicked`, which will be called when "Simpan" (save) button is clicked.
+   b. `onOptionClick`, which will be called when an option is clicked.
 
 Bottom Sheet Filter Detail configuration:
 
