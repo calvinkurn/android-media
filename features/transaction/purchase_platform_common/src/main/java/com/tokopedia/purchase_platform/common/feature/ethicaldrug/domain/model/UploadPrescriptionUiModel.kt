@@ -15,6 +15,8 @@ data class UploadPrescriptionUiModel(
     var uploadedImageCount: Int = 0,
     var descriptionText: String = "",
     var isError: Boolean = false,
+    val isIncompletePrescriptionError: Boolean = false,
+    val productErrorCount: Int = 0,
     var frontEndValidation: Boolean = false,
     var consultationFlow: Boolean = false,
     var rejectedWording: String = "",

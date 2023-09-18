@@ -125,6 +125,9 @@ dependencies {
     //ATC common
     implementation projectOrAar(rootProject.ext.features.atc_common)
 
+    //Recom common
+    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+
     // UI test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

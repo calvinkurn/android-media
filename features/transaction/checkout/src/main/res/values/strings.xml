@@ -142,4 +142,5 @@
     <string name="platform_fee_diskon_format" formatted="false">-%s</string>
 
     <string name="checkout_label_total_shipping_insurance">Total Asuransi Pengiriman</string>
+    <string name="checkout_label_total_gifting">Total Pelengkap Hadiah</string>
 </resources>

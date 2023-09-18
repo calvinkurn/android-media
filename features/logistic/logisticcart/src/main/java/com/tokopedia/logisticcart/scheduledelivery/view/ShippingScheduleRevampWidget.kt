@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -84,6 +85,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
                     delayShimmerLabel?.cancel()
                     delayShimmerLabel = GlobalScope.launch(Dispatchers.Main) {
                         delay(DELAY_CHANGE_LABEL)
+                        tvLabelSchedule.gone()
                         shimmerChangeSchedule.gone()
                         tvLabelSchedule.text = selectedShipment.label
                         tvLabelSchedule.visible()
@@ -264,7 +266,8 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
     private fun ItemShipmentNowRevampScheduledOptionBinding.showCoachMark(isShow: Boolean) {
         if (isShow) {
             coachMarkRunnable = Runnable {
-                tvOtherSchedule.apply {
+                val anchor = if (tvOtherSchedule.isGone) rbShipment else tvOtherSchedule
+                anchor.apply {
                     scheduleDeliveryPreferences?.isDisplayedCoachmark = true
                     val coachMarkItem = ArrayList<CoachMark2Item>()
                     val coachMark = CoachMark2(context)

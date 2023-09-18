@@ -41,13 +41,13 @@ import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTic
 import com.tokopedia.cartrevamp.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
+import com.tokopedia.cartrevamp.view.uimodel.CartBmGmTickerData
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
@@ -79,7 +79,6 @@ import com.tokopedia.cartrevamp.view.uimodel.GetBmGmGroupProductTickerState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
-import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
 import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
 import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
@@ -105,7 +104,6 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
-import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
@@ -116,7 +114,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
@@ -128,7 +125,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
@@ -521,9 +517,6 @@ class CartViewModel @Inject constructor(
             lastValidateUseResponse = null,
             lastUpdateCartAndGetLastApplyResponse = null,
             cartListData = cartData,
-            summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData),
-            summariesAddOnUiModel = CartUiModelMapper.getShoppingSummaryAddOns(cartData.shoppingSummary.summaryAddOnList),
-            promoSummaryUiModel = CartUiModelMapper.mapPromoSummaryUiModel(cartData.promoSummary),
             showChoosePromoWidget = cartData.promo.showChoosePromoWidget,
             promoTicker = cartData.promo.ticker,
             recommendationPage = RECOMMENDATION_START_PAGE
@@ -651,12 +644,6 @@ class CartViewModel @Inject constructor(
 
         // Collect all Cart Item & also calculate total weight on each shop
         val cartItemDataList = getAvailableCartItemDataList(dataList)
-
-        var subtotalBmGmDiscount = 0.0
-        dataList.forEach {
-            if (it.cartGroupBmGmHolderData.hasBmGmOffer) subtotalBmGmDiscount += it.cartGroupBmGmHolderData.discountBmGmAmount
-        }
-
         // Calculate total total item, price and cashback for marketplace product
         val returnValueMarketplaceProduct = cartCalculator.calculatePriceMarketplaceProduct(
             allCartItemDataList = cartItemDataList,
@@ -667,15 +654,8 @@ class CartViewModel @Inject constructor(
         )
         totalItemQty += returnValueMarketplaceProduct.first
         subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
-        subtotalPrice += (returnValueMarketplaceProduct.second.second - subtotalBmGmDiscount)
+        subtotalPrice += returnValueMarketplaceProduct.second.second
         subtotalCashback += returnValueMarketplaceProduct.third
-
-        updateSummaryTransactionUiModel(
-            subtotalBeforeSlashedPrice,
-            subtotalPrice,
-            totalItemQty,
-            subtotalCashback
-        )
 
         _globalEvent.value = CartGlobalEvent.SubTotalUpdated(
             subtotalCashback,
@@ -683,50 +663,6 @@ class CartViewModel @Inject constructor(
             subtotalPrice,
             dataList.isEmpty()
         )
-    }
-
-    private fun updateSummaryTransactionUiModel(
-        subtotalBeforeSlashedPrice: Double,
-        subtotalPrice: Double,
-        totalItemQty: Int,
-        subtotalCashback: Double
-    ) {
-        // update summary addons
-        var totalAddonPrice = 0.0
-        for ((key, value) in cartModel.summariesAddOnUiModel) {
-            cartModel.summaryTransactionUiModel?.listSummaryAddOns?.forEach {
-                if (it.type == key) {
-                    it.qty = cartModel.totalQtyWithAddon
-                    it.wording = value.replace(
-                        CartConstant.QTY_ADDON_REPLACE,
-                        cartModel.totalQtyWithAddon.toString()
-                    )
-
-                    totalAddonPrice = cartModel.totalQtyWithAddon * it.priceValue
-                    it.priceLabel =
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(totalAddonPrice, false)
-                            .removeDecimalSuffix()
-                }
-            }
-        }
-
-        val priceAfterAddon = subtotalPrice + totalAddonPrice
-        val priceAfterAddonBeforeSlashedPrice = subtotalBeforeSlashedPrice + totalAddonPrice
-
-        val summaryTransactionUiModel = cartModel.summaryTransactionUiModel
-
-        summaryTransactionUiModel?.qty = totalItemQty.toString()
-        if (priceAfterAddonBeforeSlashedPrice == 0.0) {
-            summaryTransactionUiModel?.totalValue = subtotalPrice.toLong()
-        } else {
-            summaryTransactionUiModel?.totalValue = subtotalBeforeSlashedPrice.toLong()
-        }
-        summaryTransactionUiModel?.discountValue =
-            (priceAfterAddonBeforeSlashedPrice - priceAfterAddon).toLong()
-        summaryTransactionUiModel?.paymentTotal = priceAfterAddon.toLong()
-        summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toLong()
-
-        cartModel = cartModel.copy(summaryTransactionUiModel = summaryTransactionUiModel)
     }
 
     private fun getAvailableCartItemDataList(dataList: List<CartGroupHolderData>): ArrayList<CartItemHolderData> {
@@ -974,25 +910,6 @@ class CartViewModel @Inject constructor(
         } else {
             _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
         }
-    }
-
-    fun updatePromoSummaryData(lastApplyUiModel: LastApplyUiModel) {
-        val promoSummaryUiModel = cartModel.promoSummaryUiModel
-        val summaryTransactionUiModel = cartModel.summaryTransactionUiModel
-        promoSummaryUiModel?.details?.clear()
-        promoSummaryUiModel?.details?.addAll(
-            lastApplyUiModel.additionalInfo.usageSummaries.map {
-                PromoSummaryDetailData(
-                    description = it.description,
-                    type = it.type,
-                    amountStr = it.amountStr,
-                    amount = it.amount.toDouble(),
-                    currencyDetailStr = it.currencyDetailsStr
-                )
-            }.toList()
-        )
-        summaryTransactionUiModel?.promoValue =
-            lastApplyUiModel.benefitSummaryInfo.finalBenefitAmount.toLong()
     }
 
     fun checkForShipmentForm() {
@@ -2066,6 +1983,9 @@ class CartViewModel @Inject constructor(
                         }
                     }
                     if (toBeDeletedProducts.isNotEmpty()) {
+                        if (data.cartGroupBmGmHolderData.hasBmGmOffer) {
+                            updateBmGmTickerData(toBeDeletedProducts)
+                        }
                         data.productUiModelList.removeAll(toBeDeletedProducts)
                         if (data.productUiModelList.isEmpty()) {
                             val previousIndex = index - 1
@@ -2237,6 +2157,25 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    fun updateBmGmTickerData(toBeDeletedProducts: List<CartItemHolderData>) {
+        toBeDeletedProducts.forEach { cartItemToBeDeleted ->
+            val productListByOfferId = CartDataHelper.getListProductByOfferId(cartDataList.value, cartItemToBeDeleted.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
+            productListByOfferId.forEachIndexed { index, cartItemHolderData ->
+                if (index == 0 &&
+                    cartItemToBeDeleted.cartBmGmTickerData.isShowTickerBmGm &&
+                    cartItemToBeDeleted.productId == cartItemHolderData.productId &&
+                    productListByOfferId.size > 1
+                ) {
+                    productListByOfferId[index + 1].cartBmGmTickerData = cartItemToBeDeleted.cartBmGmTickerData
+                    var isShowBmGmDivider = false
+                    if (productListByOfferId.size > 2) isShowBmGmDivider = true
+                    productListByOfferId[index + 1].cartBmGmTickerData.isShowBmGmDivider = isShowBmGmDivider
+                    return@forEach
+                }
+            }
+        }
+    }
+
     fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
         if (cartModel.lastCartShopGroupTickerCartString == cartGroupHolderData.cartString) {
             cartShopGroupTickerJob?.cancel()
@@ -2303,7 +2242,8 @@ class CartViewModel @Inject constructor(
                         Product(
                             it.productId.toLong(),
                             it.isFreeShipping,
-                            it.isFreeShippingExtra
+                            it.isFreeShippingExtra,
+                            it.shopHolderData.shopId.toLongOrZero()
                         )
                     }
                 }
@@ -2444,7 +2384,8 @@ class CartViewModel @Inject constructor(
         addWishList: Boolean,
         forceExpandCollapsedUnavailableItems: Boolean = false,
         isFromGlobalCheckbox: Boolean = false,
-        isFromEditBundle: Boolean = false
+        isFromEditBundle: Boolean = false,
+        cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData()
     ) {
         _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
         val allCartItemData = CartDataHelper.getAllCartItemData(
@@ -2467,7 +2408,8 @@ class CartViewModel @Inject constructor(
                     forceExpandCollapsedUnavailableItems,
                     addWishList,
                     isFromGlobalCheckbox,
-                    isFromEditBundle
+                    isFromEditBundle,
+                    cartBmGmTickerData
                 )
             },
             onError = { throwable ->
@@ -2801,26 +2743,11 @@ class CartViewModel @Inject constructor(
             try {
                 val result = getGroupProductTickerUseCase(params)
                 withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(params.carts[0].cartDetails[0].offer.offerId, result))
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(offerId, result))
                 }
             } catch (t: Throwable) {
                 withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(params.carts[0].cartDetails[0].offer.offerId, t))
-                }
-            }
-        }
-    }
-
-    fun getAllBmGmGroupProductTicker(params: BmGmGetGroupProductTickerParams) {
-        viewModelScope.launch(dispatchers.io) {
-            try {
-                val result = getGroupProductTickerUseCase(params)
-                withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(params.carts[0].cartDetails[0].offer.offerId, result))
-                }
-            } catch (t: Throwable) {
-                withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(params.carts[0].cartDetails[0].offer.offerId, t))
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(offerId, t))
                 }
             }
         }

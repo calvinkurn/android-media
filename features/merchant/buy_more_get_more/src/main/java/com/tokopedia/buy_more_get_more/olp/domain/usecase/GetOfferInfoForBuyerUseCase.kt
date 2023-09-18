@@ -42,6 +42,7 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
                         nearest_warehouse_id
                         offering{
                           offer_id
+                          offer_type_id
                           shop_data{
                             shop_id
                             shop_name

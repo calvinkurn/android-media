@@ -38,5 +38,4 @@ data class SharingDataByOfferIDResponse(
         @SerializedName("campaign_name")
         val campaignName: String = ""
     )
-
 }

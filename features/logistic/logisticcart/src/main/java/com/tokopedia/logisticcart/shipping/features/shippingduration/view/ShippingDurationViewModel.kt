@@ -8,6 +8,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Servi
 import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
@@ -226,6 +227,10 @@ class ShippingDurationViewModel @Inject constructor(
 
         if (promoUiModel.isNotEmpty()) {
             uiModelList.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+        }
+
+        if (!isOcc && !eligibleServices.any { it.etaErrorCode == 0 }) {
+            uiModelList.add(0, NotifierModel())
         }
 
         productShipmentDetailModel?.let {

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buy_more_get_more.databinding.BmgmBottomSheetTncBinding
+import com.tokopedia.buy_more_get_more.olp.domain.entity.TncUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.adapter.TncAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.listener.TncListener
 import com.tokopedia.buy_more_get_more.olp.utils.constant.BundleConstant
@@ -22,10 +23,16 @@ class TncBottomSheet : BottomSheetUnify(), TncListener {
 
     companion object {
         @JvmStatic
-        fun newInstance(tnc: List<String>): TncBottomSheet {
+        fun newInstance(
+            tnc: List<String>,
+            offerId: String,
+            warehouseId: String
+        ): TncBottomSheet {
             return TncBottomSheet().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(BundleConstant.BUNDLE_TNC, ArrayList(tnc))
+                    putString(BundleConstant.BUNDLE_OFFER_ID, offerId)
+                    putString(BundleConstant.BUNDLE_WAREHOUSE_ID, warehouseId)
                 }
             }
         }
@@ -33,6 +40,7 @@ class TncBottomSheet : BottomSheetUnify(), TncListener {
 
     private var binding by autoClearedNullable<BmgmBottomSheetTncBinding>()
     private val tnc by lazy { arguments?.getStringArrayList(BundleConstant.BUNDLE_TNC) }
+    private var impressListener: () -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,9 +66,12 @@ class TncBottomSheet : BottomSheetUnify(), TncListener {
     }
 
     private fun RecyclerView.setupTnc() {
+        val tncUiModel = tnc?.map {
+            TncUiModel(tnc = it)
+        }
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = TncAdapter(this@TncBottomSheet).apply {
-            setDataList(tnc ?: return)
+            setDataList(tncUiModel ?: return)
         }
     }
 
@@ -74,5 +85,13 @@ class TncBottomSheet : BottomSheetUnify(), TncListener {
             context,
             String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
         )
+    }
+
+    override fun onImpressTnc() {
+        impressListener.invoke()
+    }
+
+    fun setImpressionListener(listener: () -> Unit) {
+        impressListener = listener
     }
 }

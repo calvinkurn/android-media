@@ -73,7 +73,7 @@ object CartPageAnalyticsUtil {
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
             setDimension136(cartItemHolderData.cartStringOrder)
-            setDimension137(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId.toString())
+            setDimension137(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId.toString())
             setCampaignId(cartItemHolderData.campaignId)
             if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {
                 val fulfillText =

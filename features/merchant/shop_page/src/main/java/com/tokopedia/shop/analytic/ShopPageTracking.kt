@@ -284,6 +284,33 @@ open class ShopPageTracking(
         )
     }
 
+    fun clickBmgmBanner(
+        offerId: String,
+        widgetHorizontalPosition: String,
+        widgetVerticalPosition: String,
+        shopId: String,
+        userId: String
+    ) {
+        val eventLabel = String.format(
+            ShopPageTrackingConstant.LABEL_BMGM_BANNER,
+            offerId,
+            widgetHorizontalPosition,
+            widgetVerticalPosition
+        )
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+            ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_PG,
+            ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_BMGM_BANNER,
+            ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+            ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
+            ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_BMGM_BANNER,
+            ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
+            ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+            ShopPageTrackingConstant.SHOP_ID to shopId,
+            ShopPageTrackingConstant.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
     fun clickTab(
         tabName: String,
         shopId: String,

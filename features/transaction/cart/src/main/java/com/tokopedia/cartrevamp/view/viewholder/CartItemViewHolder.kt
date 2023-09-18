@@ -586,7 +586,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun adjustProductVerticalSeparatorConstraint(data: CartItemHolderData) {
-        if (!data.isBundlingItem && !data.isShowBmGmDivider) {
+        if (!data.isBundlingItem && !data.cartBmGmTickerData.isShowBmGmDivider) {
             binding.vBundlingProductSeparator.gone()
             return
         }
@@ -596,7 +596,7 @@ class CartItemViewHolder constructor(
             clone(binding.containerProductInformation)
 
             // Top
-            if (data.isShowBmGmDivider) {
+            if (data.cartBmGmTickerData.isShowBmGmDivider) {
                 connect(
                     R.id.v_bundling_product_separator,
                     ConstraintSet.TOP,
@@ -635,7 +635,7 @@ class CartItemViewHolder constructor(
             }
 
             // Bottom
-            if (data.isShowBmGmDivider) {
+            if (data.cartBmGmTickerData.isShowBmGmDivider) {
                 connect(
                     R.id.v_bundling_product_separator,
                     ConstraintSet.BOTTOM,
@@ -725,7 +725,7 @@ class CartItemViewHolder constructor(
 
     private fun renderProductName(data: CartItemHolderData) {
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
-        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
+        if (data.isBundlingItem && data.bundleLabelQuantity > 0) {
             val textProductNameLayoutParams =
                 binding.textProductName.layoutParams as MarginLayoutParams
             textProductNameLayoutParams.topMargin = marginTop
@@ -801,6 +801,25 @@ class CartItemViewHolder constructor(
                 data
             )
         )
+        if (data.isError && data.isBundlingItem) {
+            binding.flImageProduct.layoutParams.width =
+                66.dpToPx(binding.root.resources.displayMetrics)
+            binding.flImageProduct.layoutParams.height =
+                66.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.width =
+                66.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.height =
+                66.dpToPx(binding.root.resources.displayMetrics)
+        } else {
+            binding.flImageProduct.layoutParams.width =
+                80.dpToPx(binding.root.resources.displayMetrics)
+            binding.flImageProduct.layoutParams.height =
+                80.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.width =
+                80.dpToPx(binding.root.resources.displayMetrics)
+            binding.iuImageProduct.layoutParams.height =
+                80.dpToPx(binding.root.resources.displayMetrics)
+        }
     }
 
     private fun renderProductAddOns(data: CartItemHolderData) {
@@ -1384,26 +1403,26 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderBmGmOfferTicker(data: CartItemHolderData) {
-        if (data.isShowTickerBmGm) {
+        if (data.cartBmGmTickerData.isShowTickerBmGm) {
             binding.itemCartBmgm.root.visible()
-            when (data.stateTickerBmGm) {
+            when (data.cartBmGmTickerData.stateTickerBmGm) {
                 0 -> {
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.LOADING
                 }
                 1 -> {
                     var offerMessage = ""
-                    data.bmGmCartInfoData.bmGmData.offerMessage.forEachIndexed { index, s ->
+                    data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.forEachIndexed { index, s ->
                         offerMessage += s
-                        if (index < (data.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
+                        if (index < (data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
                             offerMessage += " • "
                         }
                     }
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
                     binding.itemCartBmgm.bmgmWidgetView.title = offerMessage
-                    binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.bmGmCartInfoData.bmGmData.offerIcon
-                    binding.itemCartBmgm.bmgmWidgetView.offerId = data.bmGmCartInfoData.bmGmData.offerId
+                    binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerIcon
+                    binding.itemCartBmgm.bmgmWidgetView.offerId = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
-                        actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerLandingPageLink)
+                        actionListener?.onBmGmChevronRightClicked(data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerLandingPageLink)
                     }
                 }
                 2 -> {

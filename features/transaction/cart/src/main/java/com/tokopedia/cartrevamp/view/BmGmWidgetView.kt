@@ -9,6 +9,7 @@ import com.tokopedia.cart.databinding.ItemCartBmgmTickerBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -108,7 +109,7 @@ class BmGmWidgetView @JvmOverloads constructor(
             icBmgmTicker.visible()
             icBmgmTicker.loadImage(urlLeftIcon)
 
-            iuTickerRightIcon.gone()
+            iuTickerRightIcon.invisible()
             icChevronRightBmgm.visible()
         }
     }
