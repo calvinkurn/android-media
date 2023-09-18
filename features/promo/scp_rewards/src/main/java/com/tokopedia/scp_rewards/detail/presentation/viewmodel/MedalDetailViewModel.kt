@@ -5,7 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase
+import com.tokopedia.scp_rewards.cabinet.mappers.MedaliListMapper
 import com.tokopedia.scp_rewards.common.constants.SUCCESS_CODE
+import com.tokopedia.scp_rewards.common.utils.MEDALI_SLUG_PARAM
+import com.tokopedia.scp_rewards.common.utils.PAGESIZE_PARAM
+import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
+import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
+import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.GetMedalBenefitUseCase
@@ -13,15 +20,21 @@ import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
+import com.tokopedia.scp_rewards_common.parseJsonKey
 import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
+import com.tokopedia.scp_rewards_widgets.medal.MedalItem
+import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 const val MDP_SECTION_TYPE_BENEFIT = "benefit"
+const val MDP_SECTION_TYPE_BRAND_RECOMMENDATIONS = "brand-related"
 
 class MedalDetailViewModel @Inject constructor(
     private val medalDetailUseCase: MedalDetailUseCase,
     private val getMedalBenefitUseCase: GetMedalBenefitUseCase,
-    private val couponAutoApplyUseCase: CouponAutoApplyUseCase
+    private val couponAutoApplyUseCase: CouponAutoApplyUseCase,
+    private val userMedaliUseCase: GetUserMedaliUseCase
 ) : ViewModel() {
 
     var couponCode: String = ""
@@ -46,16 +59,31 @@ class MedalDetailViewModel @Inject constructor(
                     pageName = pageName
                 )
 
-                val benefitResponse = getMedalBenefits(mdpResponse, medaliSlug, sourceName, pageName)
+                val benefitResponse =
+                    async { getMedalBenefits(mdpResponse, medaliSlug, sourceName, pageName) }
+
+                val recommendationsResponse =
+                    async { getMedalRecommendations(mdpResponse) }
 
                 when (val responseCode = mdpResponse.detail?.resultStatus?.code) {
                     SUCCESS_CODE -> {
-                        _badgeLiveData.postValue(MdpState.Success(mdpResponse, benefitResponse))
+                        _badgeLiveData.postValue(
+                            MdpState.Success(
+                                mdpResponse,
+                                benefitResponse.await(),
+                                recommendationsResponse.await()
+                            )
+                        )
                         setupAnalyticsData(mdpResponse)
                     }
 
                     else -> {
-                        _badgeLiveData.postValue(MdpState.Error(Throwable(), responseCode.orEmpty()))
+                        _badgeLiveData.postValue(
+                            MdpState.Error(
+                                Throwable(),
+                                responseCode.orEmpty()
+                            )
+                        )
                     }
                 }
             },
@@ -89,6 +117,40 @@ class MedalDetailViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getMedalRecommendations(
+        mdpResponse: MedalDetailResponseModel
+    ): List<MedalItem>? {
+        val section =
+            mdpResponse.detail?.medaliDetailPage?.section?.find { it.type == MDP_SECTION_TYPE_BRAND_RECOMMENDATIONS }
+        return if (section != null) {
+            try {
+                val response =
+                    userMedaliUseCase.getUserMedalis(getRecommendationParams(section.jsonParameter))
+                MedaliListMapper.getMedalList(response, false)
+            } catch (exp: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(exp)
+                emptyList()
+            }
+        } else {
+            null
+        }
+    }
+
+    private fun getRecommendationParams(json: String?): RequestParams {
+        val pageSize = json?.parseJsonKey<Int>(PAGESIZE_PARAM) ?: 3
+        val pageName = json?.parseJsonKey<String>(PAGE_NAME_PARAM).orEmpty()
+        val medaliSlug = json?.parseJsonKey<String>(MEDALI_SLUG_PARAM).orEmpty()
+        val type = json?.parseJsonKey<String>(TYPE_PARAM).orEmpty()
+
+        return RequestParams().apply {
+            putObject(MEDALI_SLUG_PARAM, arrayOf(medaliSlug))
+            putString(PAGE_NAME_PARAM, pageName)
+            putInt(PAGE_PARAM, 1)
+            putString(TYPE_PARAM, type)
+            putInt(PAGESIZE_PARAM, pageSize)
+        }
+    }
+
     fun applyCoupon(ctaButton: CtaButton?, shopId: Int? = null, couponCode: String) {
         viewModelScope.launchCatchError(
             block = {
@@ -96,9 +158,19 @@ class MedalDetailViewModel @Inject constructor(
                 val response = couponAutoApplyUseCase.applyCoupon(shopId, couponCode)
                 if (response.data != null && response.data.resultStatus.code == SUCCESS_CODE) {
                     if (response.data.couponAutoApply?.isSuccess == true) {
-                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponApplied(ctaButton, response.data))
+                        _autoApplyCoupon.postValue(
+                            AutoApplyState.SuccessCouponApplied(
+                                ctaButton,
+                                response.data
+                            )
+                        )
                     } else {
-                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponFailed(ctaButton, response.data))
+                        _autoApplyCoupon.postValue(
+                            AutoApplyState.SuccessCouponFailed(
+                                ctaButton,
+                                response.data
+                            )
+                        )
                     }
                 } else {
                     throw Throwable()
@@ -122,7 +194,8 @@ class MedalDetailViewModel @Inject constructor(
     sealed class MdpState {
         class Success(
             val data: MedalDetailResponseModel,
-            val benefitData: MedaliBenefitList?
+            val benefitData: MedaliBenefitList?,
+            val medalRecommendations: List<MedalItem>?
         ) : MdpState()
 
         class Error(val error: Throwable, val errorCode: String = "") : MdpState()
@@ -131,8 +204,16 @@ class MedalDetailViewModel @Inject constructor(
 
     sealed class AutoApplyState {
         object Loading : AutoApplyState()
-        data class SuccessCouponApplied(val ctaButton: CtaButton?, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
-        data class SuccessCouponFailed(val ctaButton: CtaButton?, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
+        data class SuccessCouponApplied(
+            val ctaButton: CtaButton?,
+            val data: ScpRewardsCouponAutoApply?
+        ) : AutoApplyState()
+
+        data class SuccessCouponFailed(
+            val ctaButton: CtaButton?,
+            val data: ScpRewardsCouponAutoApply?
+        ) : AutoApplyState()
+
         data class Error(val ctaButton: CtaButton?, val throwable: Throwable) : AutoApplyState()
     }
 }

@@ -36,7 +36,8 @@ const val GET_USER_MEDALI_GQL = """
     ${'$'}pageSize: Int,
     ${'$'}apiVersion:String,
     ${'$'}pageName:String,
-    ${'$'}sourceName:String 
+    ${'$'}sourceName:String, 
+    ${'$'}medaliSlug:[String]
 ) {
   scpRewardsGetUserMedalisByType(input:{
     type:${'$'}type,
@@ -44,7 +45,12 @@ const val GET_USER_MEDALI_GQL = """
     pageSize:${'$'}pageSize,
     apiVersion:${'$'}apiVersion,
     pageName:${'$'}pageName,
-    sourceName:${'$'}sourceName
+    sourceName:${'$'}sourceName,
+    filter:{
+        exclude:{
+            medaliSlug:${'$'}medaliSlug
+        }
+    }
   }){
   	resultStatus{
       code

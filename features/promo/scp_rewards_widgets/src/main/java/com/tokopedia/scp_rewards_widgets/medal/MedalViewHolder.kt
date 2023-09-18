@@ -61,13 +61,16 @@ class MedalViewHolder(
         tvMedalCaption.visible()
         tvMedalCaption.text = item.extraInfo
         listener?.onMedalLoad(item)
-        if (item.isDisabled == true) {
+        if (item.isEarned()) {
+            ivMedal.loadImageOrFallback(item.imageUrl, scp_rewards_commonR.drawable.ic_empty_medal)
+        } else {
             ivMedal.grayscale()
-            ivMedal.loadImageOrFallback(item.imageUrl, scp_rewards_commonR.drawable.ic_empty_medal) {
+            ivMedal.loadImageOrFallback(
+                item.imageUrl,
+                scp_rewards_commonR.drawable.ic_empty_medal
+            ) {
                 listener?.onMedalFailed(item)
             }
-        } else {
-            ivMedal.loadImageOrFallback(item.imageUrl, scp_rewards_commonR.drawable.ic_empty_medal)
         }
         listener?.let {
             this.root.setOnClickListener { listener.onMedalClick(item) }

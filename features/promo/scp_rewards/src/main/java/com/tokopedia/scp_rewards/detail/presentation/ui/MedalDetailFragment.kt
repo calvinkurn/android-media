@@ -42,11 +42,15 @@ import com.tokopedia.scp_rewards.detail.domain.model.MedaliDetailPage
 import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.mappers.MedalBenefitMapper
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MDP_SECTION_TYPE_BENEFIT
+import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MDP_SECTION_TYPE_BRAND_RECOMMENDATIONS
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeaderData
+import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
+import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitSectionModel
+import com.tokopedia.scp_rewards_widgets.model.RecommendedMedalSectionModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import com.tokopedia.unifycomponents.Toaster
@@ -220,6 +224,10 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         loadMedalDetails(data.detail?.medaliDetailPage)
                         loadTaskProgress(data.detail?.medaliDetailPage)
                         loadCouponWidget(data.detail?.medaliDetailPage, safeResult.benefitData)
+                        loadMedalRecommendations(
+                            data.detail?.medaliDetailPage,
+                            safeResult.medalRecommendations
+                        )
                         loadFooter(data.detail?.medaliDetailPage)
                         MedalDetailAnalyticsImpl.sendImpressionMDP(medaliSlug)
                     }
@@ -236,6 +244,31 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun loadMedalRecommendations(
+        medaliDetailPage: MedaliDetailPage?,
+        medalRecommendations: List<MedalItem>?
+    ) {
+        val recommendedMedalsSection =
+            medaliDetailPage?.section?.find { it.type == MDP_SECTION_TYPE_BRAND_RECOMMENDATIONS }
+
+        binding.viewRecommendedMedals.bindData(
+            RecommendedMedalSectionModel(
+                title = recommendedMedalsSection?.medaliSectionTitle?.content.orEmpty(),
+                medalList = medalRecommendations
+            )
+        )
+
+        binding.viewRecommendedMedals.attachMedalClickListener(object : MedalCallbackListener {
+            override fun onMedalClick(medalItem: MedalItem) {
+                super.onMedalClick(medalItem)
+                context?.launchLink(
+                    appLink = medalItem.cta?.appLink,
+                    webLink = medalItem.cta?.deepLink
+                )
+            }
+        })
     }
 
     private fun loadFooter(medaliDetailPage: MedaliDetailPage?) {
