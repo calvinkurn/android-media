@@ -11,6 +11,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -74,6 +75,12 @@ class StoriesModule {
         userSession: UserSessionInterface
     ): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSession)
+    }
+
+    @Provides
+    @StoriesScope
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 
 }

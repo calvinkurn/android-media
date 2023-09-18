@@ -20,6 +20,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEve
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoriesGroupItem
+import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.getRandomNumber
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -79,6 +80,10 @@ class StoriesViewModel @AssistedInject constructor(
             }
         }
 
+    private val _impressedGroupHeader = mutableListOf<StoriesGroupHeader>()
+    val impressedGroupHeader: List<StoriesGroupHeader>
+        get() = _impressedGroupHeader
+
     private val mStoriesMainData: StoriesUiModel
         get() = _storiesMainData.value
 
@@ -114,7 +119,7 @@ class StoriesViewModel @AssistedInject constructor(
     private val mResetValue: Int
         get() = _resetValue.value
 
-    private var mLatestTrackerPosition = -1
+    private var mLatestTrackPosition = -1
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
@@ -123,6 +128,7 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.GetSavedInstanceStateData -> handleGetSavedInstanceStateData(action.bundle)
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
             is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
+            is StoriesUiAction.CollectImpressedGroup -> handleCollectImpressedGroup(action.data)
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
@@ -166,7 +172,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleMainData(selectedGroup: Int) {
-        mLatestTrackerPosition = -1
+        mLatestTrackPosition = -1
         _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
             setInitialData()
@@ -180,6 +186,12 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.SelectGroup(position, showAnimation))
         }
+    }
+
+    private fun handleCollectImpressedGroup(data: StoriesGroupHeader) {
+        val isExist = impressedGroupHeader.find { it.groupId == data.groupId }!= null
+        if (isExist) return
+        _impressedGroupHeader.add(data)
     }
 
     private fun handleNext() {
@@ -336,9 +348,9 @@ class StoriesViewModel @AssistedInject constructor(
     private fun checkAndHitTrackActivity() {
         viewModelScope.launchCatchError(block = {
             val detailItem = mGroupItem.detail
-            if (mDetailPos <= mLatestTrackerPosition) return@launchCatchError
-            mLatestTrackerPosition = mDetailPos
-            val trackerId = detailItem.detailItems[mLatestTrackerPosition].meta.activityTracker
+            if (mDetailPos <= mLatestTrackPosition) return@launchCatchError
+            mLatestTrackPosition = mDetailPos
+            val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker
             requestSetStoriesTrackActivity(trackerId)
         }) {}
     }
