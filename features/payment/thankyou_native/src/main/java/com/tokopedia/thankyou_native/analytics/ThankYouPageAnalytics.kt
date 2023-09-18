@@ -300,7 +300,7 @@ class ThankYouPageAnalytics @Inject constructor(
         position: Int
     ): Bundle {
         return Bundle().apply {
-            putString(KEY_ITEM_NAME, banner.assetUrl)
+            putString(KEY_ITEM_NAME, banner.applink)
             putString(KEY_ITEM_ID, banner.itemId)
             putString(KEY_CREATIVE_NAME, banner.assetUrl)
             putString(KEY_CREATIVE_SLOT, position.toString())
