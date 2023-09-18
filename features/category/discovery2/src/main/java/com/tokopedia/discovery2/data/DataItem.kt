@@ -540,6 +540,12 @@ data class DataItem(
     @field:SerializedName("target_section_id")
     val targetSectionID: String? = null,
 
+    @field:SerializedName("icon_image_url")
+    val iconImageUrl: String? = null,
+
+    @field:SerializedName("inactive_icon_image_url")
+    val inactiveIconImageUrl: String? = null,
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",

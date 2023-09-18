@@ -94,6 +94,12 @@ data class Properties(
         @SerializedName("category_slug")
         val categorySlug: String? = "",
 
+        @SerializedName("chip_size")
+        val chipSize: String? = "",
+
+        @SerializedName("full_filter_type")
+        var fullFilterType: String? = "",
+
         @SerializedName("supergraphic_image_url")
         val supergraphicImageUrl: String? = "",
 

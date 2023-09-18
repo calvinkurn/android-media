@@ -11,6 +11,7 @@ interface ProductClickInterface {
         productIdentifier: String,
         status: Int?,
         type: String? = null,
-        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo? = null
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo? = null,
+        imageArray: List<String?>? = null
     )
 }

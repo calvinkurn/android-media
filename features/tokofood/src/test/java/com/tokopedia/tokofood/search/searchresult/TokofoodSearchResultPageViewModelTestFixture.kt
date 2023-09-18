@@ -6,9 +6,6 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
@@ -52,9 +49,6 @@ open class TokofoodSearchResultPageViewModelTestFixture {
     lateinit var tokofoodFilterSortUseCase: TokofoodFilterSortUseCase
 
     @RelaxedMockK
-    lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @RelaxedMockK
     lateinit var keroEditAddressUseCase: KeroEditAddressUseCase
 
     @RelaxedMockK
@@ -71,7 +65,6 @@ open class TokofoodSearchResultPageViewModelTestFixture {
         viewModel = TokofoodSearchResultPageViewModel(
             tokofoodSearchMerchantUseCase,
             tokofoodFilterSortUseCase,
-            eligibleForAddressUseCase,
             keroEditAddressUseCase,
             tokofoodMerchantSearchResultMapper,
             tokofoodFilterSortMapper,
@@ -177,8 +170,10 @@ open class TokofoodSearchResultPageViewModelTestFixture {
         } returns visitables
     }
 
-    protected fun onGetErrorSearchResultInitial_shouldReturn(throwable: Throwable?,
-                                                             visitables: List<Visitable<*>>) {
+    protected fun onGetErrorSearchResultInitial_shouldReturn(
+        throwable: Throwable?,
+        visitables: List<Visitable<*>>
+    ) {
         coEvery {
             tokofoodMerchantSearchResultMapper.getErrorSearchResultInitial(throwable)
         } returns visitables
@@ -199,38 +194,48 @@ open class TokofoodSearchResultPageViewModelTestFixture {
         } returns isVisitableContainOtherStates
     }
 
-    protected fun onGetQuickSortFilterUiModels_shouldReturn(dataValue: DataValue,
-                                                            uiModels: List<TokofoodSortFilterItemUiModel>) {
+    protected fun onGetQuickSortFilterUiModels_shouldReturn(
+        dataValue: DataValue,
+        uiModels: List<TokofoodSortFilterItemUiModel>
+    ) {
         coEvery {
             tokofoodFilterSortMapper.getQuickSortFilterUiModels(dataValue)
         } returns uiModels
     }
 
-    protected fun onGetAppliedSortFilterUiModels_shouldReturn(searchParameters: HashMap<String, String>,
-                                                              uiModels: List<TokofoodSortFilterItemUiModel>,
-                                                              returnedUiModels: List<TokofoodSortFilterItemUiModel>) {
+    protected fun onGetAppliedSortFilterUiModels_shouldReturn(
+        searchParameters: HashMap<String, String>,
+        uiModels: List<TokofoodSortFilterItemUiModel>,
+        returnedUiModels: List<TokofoodSortFilterItemUiModel>
+    ) {
         coEvery {
             tokofoodFilterSortMapper.getAppliedSortFilterUiModels(searchParameters, uiModels)
         } returns returnedUiModels
     }
 
-    protected fun onGetQuickSortUiModels_shouldReturn(sortList: List<Sort>,
-                                                      selectedSortValue: String,
-                                                      uiModels: List<TokofoodQuickSortUiModel>) {
+    protected fun onGetQuickSortUiModels_shouldReturn(
+        sortList: List<Sort>,
+        selectedSortValue: String,
+        uiModels: List<TokofoodQuickSortUiModel>
+    ) {
         coEvery {
             tokofoodFilterSortMapper.getQuickSortUiModels(sortList, selectedSortValue)
         } returns uiModels
     }
 
-    protected fun onGetQuickFilterPriceRangeUiModels_shouldReturn(filter: Filter,
-                                                                  uiModel: PriceRangeChipUiModel) {
+    protected fun onGetQuickFilterPriceRangeUiModels_shouldReturn(
+        filter: Filter,
+        uiModel: PriceRangeChipUiModel
+    ) {
         coEvery {
             tokofoodFilterSortMapper.getQuickFilterPriceRangeUiModels(filter)
         } returns uiModel
     }
 
-    protected fun onGetCurrentSortKey_shouldReturn(uiModels: List<TokofoodSortFilterItemUiModel>?,
-                                                   sortKey: String) {
+    protected fun onGetCurrentSortKey_shouldReturn(
+        uiModels: List<TokofoodSortFilterItemUiModel>?,
+        sortKey: String
+    ) {
         coEvery {
             tokofoodFilterSortMapper.getCurrentSortKey(uiModels)
         } returns sortKey
@@ -242,41 +247,23 @@ open class TokofoodSearchResultPageViewModelTestFixture {
         } returns uiModels
     }
 
-    protected fun onGetEligibleForAnaRevamp_thenReturn(isEligible: Boolean) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(
-                KeroAddrIsEligibleForAddressFeatureData(
-                    eligibleForRevampAna = EligibleForAddressFeature(
-                        eligible = isEligible
-                    )
-                )
-            )
-        }
-    }
-
-    protected fun onGetEligibleForAnaRevamp_thenReturn(errorThrowable: Throwable) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable)-> Unit>().invoke(errorThrowable)
-        }
-    }
-
-    protected fun onEditAddress_shouldReturn(addressId: String,
-                                             lat: String,
-                                             long: String,
-                                             isSuccess: Boolean) {
+    protected fun onEditAddress_shouldReturn(
+        addressId: String,
+        lat: String,
+        long: String,
+        isSuccess: Boolean
+    ) {
         coEvery {
             keroEditAddressUseCase.execute(addressId, lat, long)
         } returns isSuccess
     }
 
-    protected fun onEditAddress_shouldThrow(addressId: String,
-                                            lat: String,
-                                            long: String,
-                                            throwable: Throwable) {
+    protected fun onEditAddress_shouldThrow(
+        addressId: String,
+        lat: String,
+        long: String,
+        throwable: Throwable
+    ) {
         coEvery {
             keroEditAddressUseCase.execute(addressId, lat, long)
         } throws throwable
@@ -289,5 +276,4 @@ open class TokofoodSearchResultPageViewModelTestFixture {
         const val SEARCH_RESULT_EMPTY_JSON = "json/search/searchresult/search_result_empty.json"
         const val SEARCH_RESULT_OOC = "json/search/searchresult/search_result_ooc.json"
     }
-
 }
