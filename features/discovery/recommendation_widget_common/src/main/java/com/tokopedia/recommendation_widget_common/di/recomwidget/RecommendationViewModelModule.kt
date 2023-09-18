@@ -18,7 +18,7 @@ import dagger.multibindings.IntoMap
  */
 @Module(
     includes = [
-        RecommendationWidgetStateModule::class,
+        RecommendationWidgetStateModule::class
     ]
 )
 abstract class RecommendationViewModelModule {
@@ -54,6 +54,4 @@ abstract class RecommendationViewModelModule {
     abstract fun provideInfiniteRecommendationViewModel(
         viewModel: InfiniteRecommendationViewModel
     ): ViewModel
-
-
 }
