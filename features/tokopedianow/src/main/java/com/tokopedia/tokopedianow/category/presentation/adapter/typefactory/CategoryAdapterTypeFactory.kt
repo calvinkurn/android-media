@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
-import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryHeaderSpaceUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
@@ -55,7 +54,6 @@ class CategoryAdapterTypeFactory(
     private var tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
     private var tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
     private var productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
-    private var productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
     private var productAdsCarouselListener: ProductAdsCarouselListener? = null,
     private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val lifecycleOwner: LifecycleOwner? = null
@@ -101,7 +99,6 @@ class CategoryAdapterTypeFactory(
                 categoryShowcaseItemListener = categoryShowcaseItemListener,
                 categoryShowcaseHeaderListener = categoryShowcaseHeaderListener,
                 productCardCompactListener = productCardCompactListener,
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener,
                 parentRecycledViewPool = recycledViewPool,
                 lifecycleOwner = lifecycleOwner
             )
@@ -143,7 +140,6 @@ class CategoryAdapterTypeFactory(
         tokoNowCategoryMenuListener = null
         tokoNowProductRecommendationListener = null
         productCardCompactListener = null
-        productCardCompactSimilarProductTrackerListener = null
         productAdsCarouselListener = null
     }
 }

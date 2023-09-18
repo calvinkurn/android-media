@@ -32,7 +32,6 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCate
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateWishlistStatus
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
@@ -426,22 +425,6 @@ class TokoNowCategoryViewModel @Inject constructor(
         launchCatchError(
             block = {
                 layout.removeItem(CategoryLayoutType.PRODUCT_RECOMMENDATION.name)
-                _categoryPage.postValue(layout)
-            },
-            onError = { /* nothing to do */ }
-        )
-    }
-
-    fun updateWishlistStatus(
-        productId: String,
-        hasBeenWishlist: Boolean
-    ) {
-        launchCatchError(
-            block = {
-                layout.updateWishlistStatus(
-                    productId = productId,
-                    hasBeenWishlist = hasBeenWishlist
-                )
                 _categoryPage.postValue(layout)
             },
             onError = { /* nothing to do */ }

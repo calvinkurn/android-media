@@ -71,7 +71,6 @@ import com.tokopedia.productcard.compact.productcard.presentation.customview.Pro
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
-import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.constant.RequestCode
@@ -175,7 +174,6 @@ class TokoNowCategoryFragment:
             tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
             productCardCompactListener = createProductCardCompactCallback(),
-            productCardCompactSimilarProductTrackerListener = ProductCardCompactSimilarProductTrackerCallback(analytic.categoryOosProductAnalytic),
             productAdsCarouselListener = createProductCardAdsCallback(),
             recycledViewPool = recycledViewPool,
             lifecycleOwner = viewLifecycleOwner
@@ -1216,28 +1214,7 @@ class TokoNowCategoryFragment:
             type: Int,
             ctaClickListener: (() -> Unit)?
         ) {
-            if (isWishlistSelected) {
-                analytic.categoryOosProductAnalytic.trackClickAddToWishlist(
-                    warehouseId = viewModel.getWarehouseId(),
-                    productId = productId
-                )
-            } else {
-                analytic.categoryOosProductAnalytic.trackClickRemoveFromWishlist(
-                    warehouseId = viewModel.getWarehouseId(),
-                    productId = productId
-                )
-            }
-            viewModel.updateWishlistStatus(
-                productId,
-                isWishlistSelected
-            )
-            showToaster(
-                message = descriptionToaster,
-                type = type,
-                actionText = ctaToaster
-            ) {
-                ctaClickListener?.invoke()
-            }
+            /* nothing to do */
         }
     }
 

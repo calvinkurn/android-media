@@ -107,9 +107,6 @@ class CategoryAnalytic @Inject constructor(
     val categorySharingExperienceAnalytic: CategorySharingExperienceAnalytic
         get() = CategorySharingExperienceAnalytic(userSession.userId)
 
-    val categoryOosProductAnalytic: CategoryOosProductAnalytic
-        get() = CategoryOosProductAnalytic()
-
     val productAdsAnalytic: CategoryProductAdsAnalytic
         get() = CategoryProductAdsAnalytic(userSession, addressData)
 
