@@ -8,7 +8,6 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -16,12 +15,9 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
-import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
-import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
@@ -29,17 +25,12 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 
 abstract class BaseCategoryViewModel(
-    private val getCategoryProductUseCase: GetCategoryProductUseCase,
     private val getProductAdsUseCase: GetProductAdsUseCase,
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-    private val aceSearchParamMapper: AceSearchParamMapper,
     private val addressData: TokoNowLocalAddress,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
@@ -102,31 +93,6 @@ abstract class BaseCategoryViewModel(
 
     }
 
-    protected open fun onSuccessGetCategoryProduct(
-        response: AceSearchProductModel,
-        categoryL2Model: CategoryL2Model
-    ) {
-
-    }
-
-    protected open fun onErrorGetCategoryProduct(
-        error: Throwable,
-        categoryL2Model: CategoryL2Model
-    ) {
-
-    }
-
-    protected suspend fun getCategoryProductAsync(
-        categoryL2Model: CategoryL2Model
-    ): Deferred<Unit?> = asyncCatchError(block = {
-        val response = getCategoryProductUseCase.execute(
-            queryParams = createRequestQueryParams(categoryL2Model.id)
-        )
-        onSuccessGetCategoryProduct(response, categoryL2Model)
-    }) {
-        onErrorGetCategoryProduct(it, categoryL2Model)
-    }
-
     protected fun getProductAds(categoryId: String) {
         launchCatchError(block = {
             val params = GetProductAdsParam(
@@ -155,13 +121,6 @@ abstract class BaseCategoryViewModel(
         }
     }
 
-    protected open fun createRequestQueryParams(categoryId: String): Map<String?, Any?> {
-        return aceSearchParamMapper.createRequestParams(
-            source = CATEGORY_TOKONOW_DIRECTORY,
-            srpPageId = categoryId
-        )
-    }
-
     protected fun sendOpenScreenTracker(id: String, name: String, url: String) {
         _openScreenTracker.postValue(CategoryOpenScreenTrackerModel(id, name, url))
     }
@@ -171,6 +130,7 @@ abstract class BaseCategoryViewModel(
     }
 
     protected fun updateVisitableListLiveData() {
+        val visitableList = visitableList.toMutableList()
         _visitableListLiveData.postValue(visitableList)
     }
 

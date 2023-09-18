@@ -17,11 +17,8 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.rem
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryLayoutUseCase
-import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2ShimmerUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
@@ -37,7 +34,6 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     private val getCategoryLayout: GetCategoryLayoutUseCase,
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val addressData: TokoNowLocalAddress,
-    getCategoryProductUseCase: GetCategoryProductUseCase,
     getProductAdsUseCase: GetProductAdsUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
@@ -46,20 +42,17 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
-    aceSearchParamMapper: AceSearchParamMapper,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseCategoryViewModel(
-    getCategoryProductUseCase = getCategoryProductUseCase,
     getProductAdsUseCase = getProductAdsUseCase,
-    getTargetedTickerUseCase = getTargetedTickerUseCase,
     getShopAndWarehouseUseCase = getShopAndWarehouseUseCase,
+    getTargetedTickerUseCase = getTargetedTickerUseCase,
     getMiniCartUseCase = getMiniCartUseCase,
     addToCartUseCase = addToCartUseCase,
     updateCartUseCase = updateCartUseCase,
     deleteCartUseCase = deleteCartUseCase,
     affiliateService = affiliateService,
-    aceSearchParamMapper = aceSearchParamMapper,
     addressData = addressData,
     userSession = userSession,
     dispatchers = dispatchers
