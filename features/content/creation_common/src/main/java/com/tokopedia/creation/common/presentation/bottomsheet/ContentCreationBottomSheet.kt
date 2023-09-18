@@ -56,13 +56,17 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     onSelectItem = {
                         viewModel?.selectCreationItem(it)
                         listener?.onCreationItemSelected(it)
+                    },
+                    onNextClicked = {
+                        selectedCreation?.value?.let {
+                            listener?.onCreationNextClicked(it)
+                            RouteManager.route(context, it.applink)
+                        }
+                    },
+                    onRetryClicked = {
+                        viewModel?.fetchConfig()
                     }
-                ) {
-                    selectedCreation?.value?.let {
-                        listener?.onCreationNextClicked(it)
-                        RouteManager.route(context, it.applink)
-                    }
-                }
+                )
             }
         }
         setChild(composeView)

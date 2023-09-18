@@ -38,7 +38,8 @@ fun ContentCreationComponent(
     creationConfig: Result<ContentCreationConfigModel>?,
     selectedItem: ContentCreationItemModel?,
     onSelectItem: (ContentCreationItemModel) -> Unit,
-    onNextClicked: () -> Unit
+    onNextClicked: () -> Unit,
+    onRetryClicked: () -> Unit
 ) {
     NestTheme {
         when (creationConfig) {
@@ -48,7 +49,7 @@ fun ContentCreationComponent(
                 onSelectItem = onSelectItem,
                 onNextClicked = onNextClicked
             )
-            is Fail -> ContentCreationFailView {}
+            is Fail -> ContentCreationFailView(onRetry = onRetryClicked)
             else -> ContentCreationLoadingView()
         }
     }
@@ -101,7 +102,6 @@ private fun ContentCreationSuccessView(
     }
 }
 
-
 @Composable
 private fun ContentCreationFailView(onRetry: () -> Unit) {
     Column(
@@ -122,7 +122,9 @@ private fun ContentCreationFailView(onRetry: () -> Unit) {
                 textAlign = TextAlign.Center,
                 color = NestTheme.colors.NN._950
             ),
-            modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
         )
         NestTypography(
             text = stringResource(creationcommonR.string.content_creation_failed_network_description),
@@ -151,10 +153,10 @@ private fun ContentCreationComponentFailedPreview() {
     ContentCreationComponent(
         creationConfig = Fail(Throwable("Failed")),
         selectedItem = null,
-        onSelectItem = {}
-    ) {
-
-    }
+        onSelectItem = {},
+        onNextClicked = {},
+        onRetryClicked = {}
+    )
 }
 
 @Preview
@@ -216,6 +218,8 @@ private fun ContentCreationComponentSuccessPreview() {
             drawableIconId = IconUnify.VIDEO,
             authorType = ContentCreationAuthorEnum.SHOP
         ),
-        onSelectItem = {}
-    ) {}
+        onSelectItem = {},
+        onNextClicked = {},
+        onRetryClicked = {}
+    )
 }
