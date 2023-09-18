@@ -153,7 +153,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia-android-internal://seller/ready-to-ship"
     }
 
     data class Model(

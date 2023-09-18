@@ -17,7 +17,5 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface SomConfirmReqPickupComponent {
-    fun inject(somConfirmReqPickupActivity: RequestPickupActivity)
     fun inject(requestPickupFragment: RequestPickupFragment)
-
 }

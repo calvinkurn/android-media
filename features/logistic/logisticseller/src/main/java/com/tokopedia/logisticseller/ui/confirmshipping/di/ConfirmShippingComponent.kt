@@ -15,6 +15,5 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface ConfirmShippingComponent {
-    fun inject(somConfirmShippingActivity: ConfirmShippingActivity)
     fun inject(somConfirmShippingFragment: ConfirmShippingFragment)
 }
