@@ -1786,6 +1786,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                     totalPriceString = "Rp100",
                     hasSelectAllShipping = true,
                     shippingInsuranceFee = 100.0,
+                    hasInsurance = true,
                     totalOtherFee = 100.0
                 ),
                 CheckoutCrossSellGroupModel(),
