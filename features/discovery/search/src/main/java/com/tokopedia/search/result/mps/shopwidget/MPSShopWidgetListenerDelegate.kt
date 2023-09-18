@@ -3,7 +3,11 @@ package com.tokopedia.search.result.mps.shopwidget
 import android.content.Context
 import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
 import com.tokopedia.iris.Iris
+import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.mps.MPSViewModel
+import com.tokopedia.search.result.product.addtocart.AddToCartConstant
+import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheetLauncher
+import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
@@ -17,6 +21,7 @@ class MPSShopWidgetListenerDelegate(
     private val mpsViewModel: MPSViewModel?,
     private val trackingQueue: TrackingQueue,
     private val iris: Iris,
+    private val atcVariantBottomSheetLauncher: AddToCartVariantBottomSheetLauncher
 ): MPSShopWidgetListener,
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
@@ -79,9 +84,32 @@ class MPSShopWidgetListenerDelegate(
         mpsShopWidgetProductDataView: MPSShopWidgetProductDataView?
     ) {
         mpsShopWidgetProductDataView ?: return
-
-        mpsViewModel?.onAddToCart(mpsShopWidgetDataView, mpsShopWidgetProductDataView)
+        if (mpsShopWidgetProductDataView.hasVariant()) {
+            openVariantBottomSheet(mpsShopWidgetDataView, mpsShopWidgetProductDataView)
+        } else {
+            mpsViewModel?.onAddToCart(mpsShopWidgetDataView, mpsShopWidgetProductDataView)
+        }
     }
+
+    private fun openVariantBottomSheet(mpsShopWidget: MPSShopWidgetDataView,
+                                       mpsShopWidgetProductDataView: MPSShopWidgetProductDataView) {
+        atcVariantBottomSheetLauncher.launch(
+            productId = mpsShopWidgetProductDataView.parentId,
+            shopId = mpsShopWidget.id,
+            trackerCDListName = SearchTracking.getActionFieldString(
+                false,
+                0,
+                mpsShopWidget.componentId,
+            ),
+        ) {
+            mpsViewModel?.onAddToCart(mpsShopWidget, mpsShopWidgetProductDataView)
+        }
+
+        SearchIdlingResource.decrement()
+    }
+
+    private fun MPSShopWidgetProductDataView.hasVariant(): Boolean =
+        this.parentId != "" && this.parentId != AddToCartConstant.DEFAULT_PARENT_ID
 
     override fun onProductItemSeeOtherProductClick(
         mpsShopWidgetDataView: MPSShopWidgetDataView,

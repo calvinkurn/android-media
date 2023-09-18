@@ -31,6 +31,7 @@ import com.tokopedia.search.result.mps.violationstate.ViolationStateListener
 import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListenerDelegate
+import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheetLauncher
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.RefreshableView
@@ -61,6 +62,9 @@ class MPSFragment @Inject constructor(
     private val recycledViewPool = RecycledViewPool()
     private var mpsListAdapter: MPSListAdapter? = null
     private var endlessScrollListener: EndlessScrollListener? = null
+    private val atcVariantBottomSheetLauncher: AddToCartVariantBottomSheetLauncher by lazy {
+        AddToCartVariantBottomSheetLauncher(this.context, this)
+    }
 
     override fun getScreenName(): String = ""
 
@@ -112,6 +116,7 @@ class MPSFragment @Inject constructor(
                 viewModel,
                 trackingQueue,
                 iris,
+                atcVariantBottomSheetLauncher
             ),
             emptyStateListener = this,
             restrictedStateListener = this
