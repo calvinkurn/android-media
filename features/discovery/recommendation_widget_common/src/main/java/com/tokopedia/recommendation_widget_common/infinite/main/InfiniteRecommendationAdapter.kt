@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.infinite.main
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.AdapterDelegatesManager
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingDelegate
@@ -36,6 +37,11 @@ class InfiniteRecommendationAdapter(
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             layoutParams.isFullSpan = item.isFullSpan
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.addItemDecoration(InfiniteRecommendationItemDecoration())
     }
 
     override fun onViewAttachedToWindow(holder: InfiniteRecommendationViewHolder<*>) {
