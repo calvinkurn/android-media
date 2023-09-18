@@ -8,7 +8,10 @@ import com.tokopedia.inbox.databinding.UniversalInboxMenuItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.utils.view.binding.viewBinding
@@ -23,6 +26,7 @@ class UniversalInboxMenuItemViewHolder(
     override fun bind(uiModel: UniversalInboxMenuUiModel) {
         bindMenu(uiModel)
         bindShopInfo(uiModel)
+        bindLabel(uiModel)
         bindCounter(uiModel)
         bindListener(uiModel)
     }
@@ -48,6 +52,20 @@ class UniversalInboxMenuItemViewHolder(
             binding?.inboxImgShopAvatar?.loadImage(it.avatar)
         }
         binding?.inboxLayoutShopInfo?.showWithCondition(shopInfo != null)
+    }
+
+    private fun bindLabel(uiModel: UniversalInboxMenuUiModel) {
+        if (uiModel.getShopInfo() == null && // label should only exist when there's no shop info
+            uiModel.label.text.isNotBlank()
+        ) {
+            binding?.inboxLabelMenu?.setLabel(uiModel.label.text)
+            if (uiModel.label.color.toIntOrZero() > 0) {
+                binding?.inboxLabelMenu?.setLabelType(uiModel.label.color.toIntOrZero())
+            }
+            binding?.inboxLabelMenu?.show()
+        } else {
+            binding?.inboxLabelMenu?.hide()
+        }
     }
 
     private fun bindListener(uiModel: UniversalInboxMenuUiModel) {

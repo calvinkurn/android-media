@@ -104,6 +104,8 @@ class UniversalInboxFragment @Inject constructor(
 
     private var binding: UniversalInboxFragmentBinding? by autoClearedNullable()
 
+    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
+
     private val adapter by lazy {
         UniversalInboxAdapter(
             UniversalInboxTypeFactoryImpl(
@@ -130,8 +132,6 @@ class UniversalInboxFragment @Inject constructor(
     private var headlineExperimentPosition: Int = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
 
     private var trackingQueue: TrackingQueue? = null
-
-    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -176,7 +176,6 @@ class UniversalInboxFragment @Inject constructor(
         setupRecyclerViewLoadMore()
         setupObservers()
         setupListeners()
-        loadWidgetMetaAndCounter()
     }
 
     private fun setupRecyclerView() {
@@ -443,7 +442,6 @@ class UniversalInboxFragment @Inject constructor(
     override fun loadWidgetMetaAndCounter() {
         shouldTopAdsAndLoadRecommendation = true
         endlessRecyclerViewScrollListener?.resetState()
-        adapter
         viewModel.processAction(UniversalInboxAction.RefreshPage)
     }
 
@@ -874,9 +872,15 @@ class UniversalInboxFragment @Inject constructor(
     private fun refreshRecommendations() {
         // Refresh controlled by rollence
         if (shouldRefreshProductRecommendation(abTestPlatform)) {
-            viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
-            recommendationWidgetViewModel?.refresh()
+            endlessRecyclerViewScrollListener?.resetState()
+            refreshRecommendationWidget()
+            loadTopAdsAndRecommendation()
         }
+    }
+
+    private fun refreshRecommendationWidget() {
+        recommendationWidgetViewModel?.refresh()
+        adapter.refreshRecommendationWidget()
     }
 
     companion object {

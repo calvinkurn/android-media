@@ -4,10 +4,10 @@ import android.content.Context
 import com.gojek.conversations.courier.BabbleCourierClient
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMenuMapper
-import com.tokopedia.inbox.universalinbox.stub.common.UniversalInboxMapperStub
+import com.tokopedia.inbox.universalinbox.data.datastore.UniversalInboxDataStore
 import com.tokopedia.inbox.universalinbox.stub.common.UserSessionStub
 import com.tokopedia.inbox.universalinbox.stub.common.util.FakeAbTestPlatformImpl
+import com.tokopedia.inbox.universalinbox.stub.data.datastore.UniversalInboxDataStoreStub
 import com.tokopedia.inbox.universalinbox.stub.data.repository.TokoChatRepositoryStub
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProviderImpl
@@ -44,16 +44,6 @@ object UniversalInboxModuleStub {
         return FakeAbTestPlatformImpl()
     }
 
-    @ActivityScope
-    @Provides
-    fun provideUniversalInboxMenuMapper(
-        resourceProvider: UniversalInboxResourceProvider
-    ): UniversalInboxMenuMapper {
-        return UniversalInboxMapperStub(
-            resourceProvider
-        )
-    }
-
     @Provides
     @TokoChatQualifier
     fun provideTokoChatRepositoryStub(
@@ -85,5 +75,11 @@ object UniversalInboxModuleStub {
         @TokoChatQualifier context: Context
     ): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideDataStore(): UniversalInboxDataStore {
+        return UniversalInboxDataStoreStub()
     }
 }

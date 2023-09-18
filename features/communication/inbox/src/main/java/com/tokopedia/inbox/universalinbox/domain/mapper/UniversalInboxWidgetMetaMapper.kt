@@ -9,6 +9,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiMod
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.inbox.universalinbox.util.Result as Result
 
@@ -126,6 +127,7 @@ class UniversalInboxWidgetMetaMapper @Inject constructor() {
                 throw IllegalArgumentException()
             }
         } catch (throwable: Throwable) {
+            Timber.d(throwable)
             Pair(0, 0) // Default
         }
     }

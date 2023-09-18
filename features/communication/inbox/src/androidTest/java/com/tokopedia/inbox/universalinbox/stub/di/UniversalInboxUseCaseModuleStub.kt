@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.universalinbox.stub.di
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDriverChannelsUseCase
 import com.tokopedia.inbox.universalinbox.stub.domain.UniversalInboxGetAllDriverChannelsUseCaseStub
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
@@ -22,8 +23,9 @@ object UniversalInboxUseCaseModuleStub {
     @ActivityScope
     @Provides
     fun provideGetAllDriverUseCaseStub(
-        @TokoChatQualifier tokoChatRepository: TokoChatRepository
+        @TokoChatQualifier tokoChatRepository: TokoChatRepository,
+        dispatchers: CoroutineDispatchers
     ): UniversalInboxGetAllDriverChannelsUseCaseStub {
-        return UniversalInboxGetAllDriverChannelsUseCaseStub(tokoChatRepository)
+        return UniversalInboxGetAllDriverChannelsUseCaseStub(tokoChatRepository, dispatchers)
     }
 }

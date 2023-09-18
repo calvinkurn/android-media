@@ -3,6 +3,7 @@ package com.tokopedia.inbox.universalinbox.view.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -21,6 +22,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInbox
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxWidgetMetaViewHolder
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -70,6 +72,7 @@ class UniversalInboxAdapter(
 
     private var recommendationFirstPosition: Int? = null
     private var recommendationTitlePosition: Int? = null
+    private var recommendationWidgetPosition: Int? = null
 
     private val loaderUiModel by lazy {
         LoadingMoreModel()
@@ -102,6 +105,25 @@ class UniversalInboxAdapter(
     private fun checkCachedRecommendationFirstPosition(): Boolean {
         return recommendationFirstPosition?.let {
             it < visitables.size && visitables[it] is UniversalInboxRecommendationUiModel
+        } ?: false
+    }
+
+    private fun getRecommendationWidgetPosition(): Int? {
+        return if (checkCachedRecommendationWidgetPosition()) {
+            recommendationWidgetPosition
+        } else {
+            // get first index or -1
+            visitables.indexOfFirst {
+                it is UniversalInboxRecommendationWidgetUiModel
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
+                recommendationWidgetPosition = it
+            }
+        }
+    }
+
+    private fun checkCachedRecommendationWidgetPosition(): Boolean {
+        return recommendationWidgetPosition?.let {
+            it < visitables.size && visitables[it] is UniversalInboxRecommendationWidgetUiModel
         } ?: false
     }
 
@@ -270,5 +292,16 @@ class UniversalInboxAdapter(
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
+    }
+
+    fun refreshRecommendationWidget() {
+        getRecommendationWidgetPosition()?.let {
+            notifyItemChanged(it)
+        }
+    }
+
+    @VisibleForTesting
+    fun getInboxItem(position: Int): Visitable<in UniversalInboxTypeFactory> {
+        return visitables[position]
     }
 }

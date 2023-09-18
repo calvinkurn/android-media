@@ -26,7 +26,7 @@ object GqlResponseStub {
         )
 
         widgetMetaResponse = ResponseStub(
-            filePath = "widget/success_get_widget_meta.json",
+            filePath = "menuwidgetmeta/success_get_widget_meta.json",
             type = UniversalInboxWrapperResponse::class.java,
             query = "chatInboxWidgetMeta",
             isError = false
