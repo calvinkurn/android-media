@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMa
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
@@ -49,13 +50,11 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
-            tickerList = targetedTickerResponse
+            targetedTickerResponse
         )
         val tickerUiModel = categoryDetailResponse
-            .mapToTicker(
-                tickerList = tickerDataList.second
-            )
-        val hasBlockedAddToCart = tickerDataList.first
+            .mapToTicker(tickerDataList.tickerList)
+        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -121,11 +120,6 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
         onCategoryProduct_thenThrows(
-            uniqueId = getUniqueId(
-                isLoggedIn = isLoggedIn,
-                userId = userId,
-                deviceId = deviceId
-            ),
             expectedCategoryIdL2Failed = expectedCategoryIdL2Failed
         )
 
@@ -144,13 +138,11 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
-            tickerList = targetedTickerResponse
+            targetedTickerResponse
         )
         val tickerUiModel = categoryDetailResponse
-            .mapToTicker(
-                tickerList = tickerDataList.second
-            )
-        val hasBlockedAddToCart = tickerDataList.first
+            .mapToTicker(tickerDataList.tickerList)
+        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -199,9 +191,9 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `modify layout while its value is null should make getFirstPage error and do nothing`() {
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
 
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = null
         )

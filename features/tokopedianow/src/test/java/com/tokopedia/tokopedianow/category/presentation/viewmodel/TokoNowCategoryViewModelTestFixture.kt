@@ -10,6 +10,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -27,6 +28,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigati
 import com.tokopedia.tokopedianow.category.presentation.util.MiniCartMapper
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.BATCH_SHOWCASE_TOTAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
@@ -34,9 +36,11 @@ import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.util.AddressMapper
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -54,6 +58,7 @@ open class TokoNowCategoryViewModelTestFixture {
      * private variable section
      */
     private lateinit var localAddress: TokoNowLocalAddress
+    private lateinit var aceSearchParamMapper: AceSearchParamMapper
 
     private val categoryProductResponse1 = "category/ace-search-product-1-aneka-sayuran.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse2 = "category/ace-search-product-2-bawang.json".jsonToObject<AceSearchProductModel>()
@@ -86,6 +91,7 @@ open class TokoNowCategoryViewModelTestFixture {
     )
     protected val shopId: String = "11122"
     protected val navToolbarHeight: Int = 100
+    protected val uniqueId: String = "someuniqueId"
 
     protected val categoryDetailResponse = "category/category-detail.json".jsonToObject<CategoryDetailResponse>()
     protected val targetedTickerResponse = "category/targeted-ticker.json".jsonToObject<GetTargetedTickerResponse>()
@@ -150,13 +156,19 @@ open class TokoNowCategoryViewModelTestFixture {
 
     @Before
     fun setUp() {
+        MockKAnnotations.init(this)
+
         localAddress = mockk(relaxed = true)
+        aceSearchParamMapper = AceSearchParamMapper(
+            userSession,
+            localAddress,
+            uniqueId
+        )
+
         setAddressData(
             warehouseId = warehouseId,
             shopId = shopId
         )
-
-        MockKAnnotations.init(this)
 
         viewModel = TokoNowCategoryViewModel(
             getCategoryDetailUseCase = getCategoryDetailUseCase,
@@ -171,9 +183,11 @@ open class TokoNowCategoryViewModelTestFixture {
             updateCartUseCase = updateCartUseCase,
             deleteCartUseCase = deleteCartUseCase,
             affiliateService = affiliateService,
+            aceSearchParamMapper = aceSearchParamMapper,
             dispatchers = CoroutineTestDispatchersProvider
         )
 
+        viewModel.categoryIdL1 = categoryIdL1
         onGetIsLoggedIn_thenReturn(loggedIn = true)
     }
 
@@ -258,7 +272,8 @@ open class TokoNowCategoryViewModelTestFixture {
     protected fun onCategoryProduct_thenReturns() {
         categoryProductResponseMap.forEach { (categoryIdL2, categoryProductResponse) ->
             coEvery {
-                getCategoryProductUseCase.execute(categoryIdL2)
+                val queryParams = createGetProductQueryParams(categoryIdL2)
+                getCategoryProductUseCase.execute(queryParams)
             } returns categoryProductResponse
         }
     }
@@ -271,22 +286,16 @@ open class TokoNowCategoryViewModelTestFixture {
         coEvery { userSession.isLoggedIn } returns loggedIn
     }
 
-    protected fun onCategoryProduct_thenThrows(
-        uniqueId: String,
-        expectedCategoryIdL2Failed: String
-    ) {
+    protected fun onCategoryProduct_thenThrows(expectedCategoryIdL2Failed: String) {
+        val queryParams = createGetProductQueryParams(expectedCategoryIdL2Failed)
         categoryProductResponseMap.forEach { (categoryIdL2, categoryProductResponse) ->
             if (expectedCategoryIdL2Failed == categoryIdL2) {
                 coEvery {
-                    getCategoryProductUseCase.execute(
-                        categoryIdL2
-                    )
+                    getCategoryProductUseCase.execute(queryParams)
                 } throws Exception()
             } else {
                 coEvery {
-                    getCategoryProductUseCase.execute(
-                        categoryIdL2
-                    )
+                    getCategoryProductUseCase.execute(queryParams)
                 } returns categoryProductResponse
             }
         }
@@ -428,6 +437,27 @@ open class TokoNowCategoryViewModelTestFixture {
                     )
                 }
             }
+        }
+    }
+    
+    private fun createGetProductQueryParams(srpPageId: String): Map<String?, Any?> {
+        return mutableMapOf<String?, Any?>().apply {
+            put(SearchApiConst.USER_CITY_ID, addressData.city_id)
+            put(SearchApiConst.USER_ADDRESS_ID, addressData.address_id)
+            put(SearchApiConst.USER_DISTRICT_ID, addressData.district_id)
+            put(SearchApiConst.USER_LAT, addressData.lat)
+            put(SearchApiConst.USER_LONG, addressData.long)
+            put(SearchApiConst.USER_POST_CODE, addressData.postal_code)
+            put(SearchApiConst.WAREHOUSES, AddressMapper.mapToWarehouses(addressData))
+            put(SearchApiConst.SRP_PAGE_ID, srpPageId)
+            put(SearchApiConst.NAVSOURCE, CATEGORY_TOKONOW_DIRECTORY)
+            put(SearchApiConst.SOURCE, CATEGORY_TOKONOW_DIRECTORY)
+            put(SearchApiConst.PAGE, 1)
+            put(SearchApiConst.USE_PAGE, true)
+            put(SearchApiConst.ROWS, 7)
+            put(SearchApiConst.UNIQUE_ID, uniqueId)
+            put(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+            put(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
         }
     }
 }
