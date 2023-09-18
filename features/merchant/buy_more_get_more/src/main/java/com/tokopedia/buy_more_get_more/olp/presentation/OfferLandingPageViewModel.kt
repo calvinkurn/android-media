@@ -329,6 +329,24 @@ class OfferLandingPageViewModel @Inject constructor(
         }
     }
 
+    fun addAvailableProductImpression(product: OfferProductListUiModel.Product) {
+        _uiState.update {
+            val list = it.availableProductImpressionList
+            list.add(product)
+            it.copy(
+                availableProductImpressionList = list
+            )
+        }
+    }
+
+    fun clearAvailableProductImpression() {
+        _uiState.update {
+            it.copy(
+                availableProductImpressionList = mutableSetOf()
+            )
+        }
+    }
+
     fun getPageIdForSharing(): String {
         return "BMGM-${userSession.userId}-${currentState.shopData.shopId}-${currentState.offerIds.firstOrNull()}-${currentState.offerTypeId}-${Date()}-default"
     }

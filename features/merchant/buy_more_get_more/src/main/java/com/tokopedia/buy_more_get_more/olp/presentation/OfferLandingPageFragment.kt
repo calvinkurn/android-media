@@ -39,6 +39,7 @@ import com.tokopedia.buy_more_get_more.olp.utils.constant.Constant
 import com.tokopedia.buy_more_get_more.olp.utils.extension.setDefaultStatusBar
 import com.tokopedia.buy_more_get_more.olp.utils.extension.setTransparentStatusBar
 import com.tokopedia.buy_more_get_more.olp.utils.tracker.OlpTracker
+import com.tokopedia.buy_more_get_more.olp.utils.tracker.OlpTrackerUtil
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
@@ -317,6 +318,7 @@ class OfferLandingPageFragment :
                     offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
                     currentState.shopData.shopId.toString()
                 )
+                sendProductImpressionTracker()
                 activity?.finish()
             }
             showShareButton = true
@@ -649,6 +651,10 @@ class OfferLandingPageFragment :
         redirectToPDP(productId, productUrl)
     }
 
+    override fun onProductImpressed(product: OfferProductListUiModel.Product, position: Int) {
+        viewModel.addAvailableProductImpression(product.copy(position = position))
+    }
+
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
         tracker.sendClickAtcEvent(
             currentState.offerIds.toSafeString(),
@@ -678,6 +684,18 @@ class OfferLandingPageFragment :
                 startActivitResult = this::startActivityForResult
             )
         }
+    }
+
+    private fun sendProductImpressionTracker() {
+        val productCardItems = currentState.availableProductImpressionList
+        val analyticsData = OlpTrackerUtil.generateProductCardImpressionAnalytics(productCardItems)
+        tracker.sendImpressProductCardEvent(
+            offerId = currentState.offerIds.toSafeString(),
+            warehouseId = currentState.warehouseIds.toSafeString(),
+            shopId = currentState.shopData.shopId.toString(),
+            items = analyticsData
+        )
+        viewModel.clearAvailableProductImpression()
     }
 
     private fun fetchMiniCart() {
@@ -734,6 +752,7 @@ class OfferLandingPageFragment :
     }
 
     private fun redirectToCartPage() {
+        sendProductImpressionTracker()
         context?.let {
             val userSession = UserSession(it)
             if (userSession.isLoggedIn) {
@@ -748,20 +767,22 @@ class OfferLandingPageFragment :
     }
 
     private fun redirectToShopPage(shopId: Long) {
+        sendProductImpressionTracker()
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId.toString())
-        activity?.finish()
     }
 
     private fun redirectToPDP(productId: Long, productUrl: String) {
+        sendProductImpressionTracker()
         RouteManager.route(context, productUrl)
-        activity?.finish()
     }
 
     private fun redirectToMainMenu() {
+        sendProductImpressionTracker()
         RouteManager.route(context, ApplinkConsInternalNavigation.MAIN_NAVIGATION)
     }
 
     private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
+        sendProductImpressionTracker()
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             startActivityForResult(intent, requestCode)
