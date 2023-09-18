@@ -59,5 +59,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.sellerapp)
     implementation projectOrAar(rootProject.ext.features.kyccentralized)
+    implementation projectOrAar(rootProject.ext.features.accountlinking)
     implementation projectOrAar(rootProject.ext.features.liveness)
 }

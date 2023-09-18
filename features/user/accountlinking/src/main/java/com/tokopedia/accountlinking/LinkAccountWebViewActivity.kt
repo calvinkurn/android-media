@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.privacy_account.view
+package com.tokopedia.accountlinking
 
 import android.content.Context
 import android.content.Intent
@@ -15,21 +15,18 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.home_account.R
-import com.tokopedia.home_account.privacy_account.di.DaggerLinkAccountComponent
-import com.tokopedia.home_account.privacy_account.di.LinkAccountComponent
-import com.tokopedia.home_account.privacy_account.di.module.LinkAccountModule
+import com.tokopedia.accountlinking.R
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Yoris on 10/08/21.
  */
 @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<LinkAccountComponent> {
+class LinkAccountWebViewActivity : BaseSimpleWebViewActivity() {
 
     companion object {
         const val KEY_URL = "webview_url"
@@ -39,6 +36,9 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
         private const val QUERY_APP_CLIENT_ID = "appClientId"
 
         private const val LINK_ACC_PATH = "account-link/v1/gojek-auth"
+        private const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
+
+        private const val KEY_SUCCESS = "success"
 
         private fun getAccountLinkUrl(): String =
             TokopediaUrl.Companion.getInstance().ACCOUNTS.plus(LINK_ACC_PATH)
@@ -50,20 +50,18 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
         }
 
         fun getSuccessUrl(uri: Uri): Uri {
-            return uri.buildUpon().appendQueryParameter(QUERY_PAGE, "success").build()
+            return uri.buildUpon().appendQueryParameter(QUERY_PAGE, KEY_SUCCESS).build()
         }
 
         fun gotoSuccessPage(activity: FragmentActivity?, redirectionApplink: String) {
             activity?.run {
                 try {
                     val baseUrl = getLinkAccountUrl(redirectionApplink)
-                    if(baseUrl != null) {
+                    if (baseUrl != null) {
                         val i = newInstance(this, getSuccessUrl(baseUrl).toString())
-                        startActivityForResult(i, LinkAccountFragment.LINK_ACCOUNT_WEBVIEW_REQUEST)
+                        startActivityForResult(i, LINK_ACCOUNT_WEBVIEW_REQUEST)
                     }
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                }
+                } catch (_: Exception) { }
             }
         }
 
@@ -72,21 +70,12 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
                 val uri = Uri.parse(getAccountLinkUrl())
                 val clientID = TrackApp.getInstance().gtm.cachedClientIDString
                 return uri.buildUpon()
-                        .appendQueryParameter(QUERY_APP_CLIENT_ID, clientID)
-                        .appendQueryParameter(QUERY_LD, redirectionApplink.encodeToUtf8())
-                        .build()
-            }catch (ex: Exception) {
-                ex.printStackTrace()
-            }
+                    .appendQueryParameter(QUERY_APP_CLIENT_ID, clientID)
+                    .appendQueryParameter(QUERY_LD, redirectionApplink.encodeToUtf8())
+                    .build()
+            } catch (_: Exception) {}
             return null
         }
-    }
-
-    override fun getComponent(): LinkAccountComponent {
-        return DaggerLinkAccountComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .linkAccountModule(LinkAccountModule(this))
-            .build()
     }
 
     fun setToolbarTitle(title: String) {
@@ -111,7 +100,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.menu_link_account_skip) {
+        if (item.itemId == R.id.menu_link_account_skip) {
             (fragment as LinkAccountWebviewFragment).showSkipDialog()
         }
         return super.onOptionsItemSelected(item)
@@ -132,21 +121,26 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
         inflater.inflate(R.menu.menu_link_account, menu)
 
         val item = menu.findItem(R.id.menu_link_account_skip)
-        val s = SpannableString("Lewatin Dulu")
-        s.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)), 0, s.length, 0)
+        val s = SpannableString(this.getString(R.string.account_linking_skip_for_now))
+        s.setSpan(
+            ForegroundColorSpan(
+                ContextCompat.getColor(this, unifyprinciplesR.color.Unify_GN500)
+            ),
+            0, s.length, 0
+        )
         item.title = s
         return true
     }
 
     override fun getNewFragment(): Fragment {
-        var url = intent.getStringExtra(KEY_URL) ?: ""
-        val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE) ?: ""
+        var url = intent.getStringExtra(KEY_URL).orEmpty()
+        val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE).orEmpty()
 
-        if(url.isEmpty()) {
+        if (url.isEmpty()) {
             val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME
             val uri = getLinkAccountUrl(redirection)
             url = uri.toString()
-            if(source.isNotEmpty() && url.isNotEmpty()) {
+            if (source.isNotEmpty() && url.isNotEmpty()) {
                 url = "$url&source=$source"
             }
         }

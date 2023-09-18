@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.privacy_account.di.LinkAccountContext
-import com.tokopedia.home_account.privacy_account.tracker.LinkAccountTracker
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -32,12 +31,6 @@ import kotlinx.coroutines.Dispatchers
     @ActivityScope
     fun provideHomeAccountAnalytics(userSession: UserSessionInterface): HomeAccountAnalytics {
         return HomeAccountAnalytics(userSession)
-    }
-
-    @Provides
-    @ActivityScope
-    fun provideLinkAccountTracker(): LinkAccountTracker {
-        return LinkAccountTracker()
     }
 
     @Provides

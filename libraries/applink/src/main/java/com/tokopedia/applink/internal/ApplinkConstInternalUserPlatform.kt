@@ -220,13 +220,6 @@ object ApplinkConstInternalUserPlatform {
     const val LINK_ACCOUNT_WEBVIEW = "$NEW_INTERNAL_USER/link-account-webview"
 
     /**
-     * LinkAccountActivity
-     * @Applink : tokopedia-android-internal://user/link-account
-     **/
-    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-    const val LINK_ACCOUNT = "$NEW_INTERNAL_USER/link-account"
-
-    /**
      * AddNameRegisterPhoneActivity
      * @Applink : tokopedia-android-internal://user/add-name-register
      **/

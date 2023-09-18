@@ -611,6 +611,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/user-identification-only"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/goto-kyc.*"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/webview-kyc"),
+        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/account-linking-webview"),
 
         // liveness
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/liveness-detection"),

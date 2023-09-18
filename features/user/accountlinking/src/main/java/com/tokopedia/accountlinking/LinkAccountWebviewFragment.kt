@@ -1,4 +1,4 @@
-package com.tokopedia.privacycenter.ui.accountlinking
+package com.tokopedia.accountlinking
 
 import android.app.Activity
 import android.content.Intent
@@ -7,8 +7,7 @@ import android.os.Bundle
 import android.webkit.WebView
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.di.PrivacyCenterComponent
+import com.tokopedia.accountlinking.R
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import javax.inject.Inject
@@ -21,9 +20,7 @@ class LinkAccountWebviewFragment : BaseSessionWebViewFragment() {
 
     @Inject lateinit var analytics: LinkAccountTracker
 
-    override fun initInjector() {
-        getComponent(PrivacyCenterComponent::class.java).inject(this)
-    }
+    override fun initInjector() {}
 
     override fun onLoadFinished() {
         super.onLoadFinished()
