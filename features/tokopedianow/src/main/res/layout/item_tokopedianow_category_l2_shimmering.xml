@@ -83,48 +83,16 @@
         app:layout_constraintTop_toBottomOf="@id/shimmer_tab_1" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/section_title_shimmer"
-        android:layout_width="156dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
-        app:loader_type="rect" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/product_shimmer_1"
-        android:layout_width="224dp"
-        android:layout_height="110dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintCircleRadius="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/section_title_shimmer"
-        app:loader_type="rect" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/product_shimmer_2"
-        android:layout_width="224dp"
-        android:layout_height="110dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintCircleRadius="8dp"
-        app:layout_constraintStart_toEndOf="@id/product_shimmer_1"
-        app:layout_constraintTop_toTopOf="@id/product_shimmer_1"
-        app:loader_type="rect" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/quick_filter_shimmer"
         android:layout_width="88dp"
         android:layout_height="32dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintCircleRadius="12dp"
         app:layout_constraintEnd_toStartOf="@id/quick_filter_shimmer_1"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_shimmer_1"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -174,6 +142,38 @@
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/section_title_shimmer"
+        android:layout_width="156dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quick_filter_shimmer"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/product_shimmer_1"
+        android:layout_width="224dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintCircleRadius="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/section_title_shimmer"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/product_shimmer_2"
+        android:layout_width="224dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintCircleRadius="8dp"
+        app:layout_constraintStart_toEndOf="@id/product_shimmer_1"
+        app:layout_constraintTop_toTopOf="@id/product_shimmer_1"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/product_grid_shimmer"
         android:layout_width="0dp"
         android:layout_height="224dp"
@@ -183,7 +183,7 @@
         app:layout_constraintEnd_toStartOf="@id/product_grid_shimmer_1"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/quick_filter_shimmer"
+        app:layout_constraintTop_toBottomOf="@id/product_shimmer_1"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -191,12 +191,11 @@
         android:layout_width="0dp"
         android:layout_height="224dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintCircleRadius="8dp"
         app:layout_constraintEnd_toStartOf="@id/product_grid_shimmer_2"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/product_grid_shimmer"
-        app:layout_constraintTop_toBottomOf="@id/quick_filter_shimmer"
+        app:layout_constraintTop_toTopOf="@id/product_grid_shimmer"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -204,13 +203,12 @@
         android:layout_width="0dp"
         android:layout_height="224dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintCircleRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/product_grid_shimmer_1"
-        app:layout_constraintTop_toBottomOf="@id/quick_filter_shimmer"
+        app:layout_constraintTop_toTopOf="@id/product_grid_shimmer"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
