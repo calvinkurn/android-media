@@ -43,7 +43,7 @@ class SectionViewHolder(
                 if (shouldShowTooltip) {
                     tvSectionTitle.setUnifyDrawableEnd(
                         iconId = IconUnify.INFORMATION,
-                        colorIcon = root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                        colorIcon = root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500)
                     )
                     tvSectionTitle.setOnClickListener {
                         showSectionTooltip(element, tooltip)
