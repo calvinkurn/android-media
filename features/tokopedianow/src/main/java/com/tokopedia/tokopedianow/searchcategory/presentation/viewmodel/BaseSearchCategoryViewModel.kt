@@ -66,7 +66,6 @@ import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.Prod
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel

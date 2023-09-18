@@ -50,6 +50,7 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -57,6 +58,7 @@ import javax.inject.Inject
 class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val addressData: TokoNowLocalAddress,
+    private val aceSearchParamMapper: AceSearchParamMapper,
     getCategoryProductUseCase: GetCategoryProductUseCase,
     getProductAdsUseCase: GetProductAdsUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
@@ -66,7 +68,6 @@ class TokoNowCategoryViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
-    aceSearchParamMapper: AceSearchParamMapper,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseCategoryViewModel(
@@ -87,6 +88,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     companion object {
         const val BATCH_SHOWCASE_TOTAL = 3
         const val NO_WAREHOUSE_ID = "0"
+        const val PRODUCT_ROWS = 7
     }
 
     init {
@@ -211,6 +213,14 @@ class TokoNowCategoryViewModel @Inject constructor(
     ) {
         categoryL2Models.remove(categoryL2Model)
         removeVisitableItem(categoryL2Model.id)
+    }
+
+    override fun createRequestQueryParams(categoryId: String): Map<String?, Any?> {
+        return aceSearchParamMapper.createRequestParams(
+            source = CATEGORY_TOKONOW_DIRECTORY,
+            srpPageId = categoryId,
+            rows = PRODUCT_ROWS
+        )
     }
 
     /**
