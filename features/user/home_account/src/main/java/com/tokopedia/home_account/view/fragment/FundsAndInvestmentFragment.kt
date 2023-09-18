@@ -16,6 +16,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Screen.SCREEN_FUNDS
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.databinding.FundsAndInvestmentFragmentBinding
@@ -34,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -44,6 +46,9 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
@@ -86,6 +91,13 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     override fun onClickWallet(walletUiModel: WalletUiModel) {
+        if (walletUiModel.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            TokopediaCardAnalytics.sendClickPaymentWidgetOnLihatSemuaPagePyEvent(
+                eventLabel = walletUiModel.statusName,
+                userId = userSession.userId
+            )
+        }
+
         homeAccountAnalytic.eventClickAssetPage(
             walletUiModel.id,
             walletUiModel.isActive,
@@ -169,6 +181,13 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
+        if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            TokopediaCardAnalytics.sendViewLihatSemuaPagePyEvent(
+                eventLabel = balanceAndPoint.statusName,
+                userId = userSession.userId
+            )
+        }
+
         val wallet = UiModelMapper.getWalletUiModel(balanceAndPoint).apply {
             if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC ||
                 balanceAndPoint.id == AccountConstants.WALLET.GOPAYLATERCICIL) {
