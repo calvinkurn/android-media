@@ -4,13 +4,12 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.creation.common.upload.di.DaggerCreationUploaderComponent
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
+import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -36,7 +35,7 @@ class CreationUploaderWorker(
     }
 
     private fun inject() {
-        DaggerCreationUploaderComponent
+        DaggerCreationUploadWorkerComponent
             .builder()
             .baseAppComponent((appContext as BaseMainApplication).baseAppComponent)
             .build()

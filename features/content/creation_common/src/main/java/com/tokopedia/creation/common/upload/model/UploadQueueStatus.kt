@@ -8,4 +8,11 @@ enum class UploadQueueStatus(val value: String) {
     InProcess("in_process"),
     Failed("failed"),
     Unknown("unknown");
+
+    companion object {
+        fun mapFromValue(value: String): UploadQueueStatus {
+            return UploadQueueStatus.values()
+                .find { it.value == value } ?: Unknown
+        }
+    }
 }

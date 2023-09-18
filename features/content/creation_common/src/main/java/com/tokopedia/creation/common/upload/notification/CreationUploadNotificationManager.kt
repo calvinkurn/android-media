@@ -1,0 +1,170 @@
+package com.tokopedia.creation.common.upload.notification
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import androidx.core.app.NotificationCompat
+import androidx.work.ForegroundInfo
+import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
+import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import com.tokopedia.resources.common.R as resourcescommonR
+
+/**
+ * Created By : Jonathan Darwin on September 18, 2023
+ */
+abstract class CreationUploadNotificationManager(
+    private val context: Context,
+    private val dispatchers: CoroutineDispatchers,
+){
+
+    private val notificationManager = context.getSystemService(
+        Context.NOTIFICATION_SERVICE
+    ) as NotificationManager
+
+    private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID).apply {
+        setDefaults(Notification.DEFAULT_SOUND)
+        setOnlyAlertOnce(true)
+        setSmallIcon(resourcescommonR.drawable.ic_status_bar_notif_customerapp)
+        setGroup(NOTIFICATION_GROUP)
+        priority = NotificationCompat.PRIORITY_HIGH
+    }
+
+    protected var uploadData: CreationUploadQueue? = null
+
+    private val notificationId: Int
+        get() = uploadData?.notificationId.orZero()
+
+    private val notificationIdAfterUpload: Int
+        get() = uploadData?.notificationIdAfterUpload.orZero()
+
+    init {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = CHANNEL_NAME
+            val descriptionText = CHANNEL_DESCRIPTION
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    abstract val uploadNotificationText: CreationUploadNotificationText
+
+    abstract fun generateSuccessPendingIntent(): PendingIntent
+
+    abstract fun generateErrorPendingIntent(): PendingIntent
+
+    suspend fun init(uploadData: CreationUploadQueue) {
+        this.uploadData = uploadData
+
+        withContext(dispatchers.io) {
+            try {
+                val bitmap = Glide.with(context)
+                    .asBitmap()
+                    .load(uploadData.coverUri.ifEmpty { uploadData.mediaUri })
+                    .submit(COVER_PREVIEW_SIZE, COVER_PREVIEW_SIZE)
+                    .get()
+
+                notificationBuilder.setLargeIcon(bitmap)
+            }
+            catch (e: Exception) {
+
+            }
+        }
+    }
+
+    fun onStart(): ForegroundInfo {
+        val notification = notificationBuilder
+            .setProgress(0, 0, true)
+            .setContentTitle(uploadNotificationText.progressTitle)
+            .setContentText(uploadNotificationText.progressDescription)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(uploadNotificationText.progressDescription))
+            .setOngoing(true)
+            .setShowWhen(true)
+            .build()
+
+        notificationManager.notify(notificationId, notification)
+
+        return ForegroundInfo(notificationId, notification)
+    }
+
+    fun onProgress(progress: Int): ForegroundInfo {
+        val notification = notificationBuilder
+            .setProgress(PROGRESS_MAX, progress, false)
+            .setContentTitle(uploadNotificationText.progressTitle)
+            .setContentText(uploadNotificationText.progressDescription)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(uploadNotificationText.progressDescription))
+            .setOngoing(true)
+            .setShowWhen(true)
+            .build()
+
+        notificationManager.notify(notificationId, notification)
+
+        return ForegroundInfo(notificationId, notification)
+    }
+
+    fun onSuccess(): ForegroundInfo {
+        val successPendingIntent = generateSuccessPendingIntent()
+
+        val notification = notificationBuilder
+            .setProgress(0, 0, false)
+            .setContentTitle(uploadNotificationText.successTitle)
+            .setContentText(uploadNotificationText.successDescription)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(uploadNotificationText.successDescription))
+            .setContentIntent(successPendingIntent)
+            .setOngoing(false)
+            .setShowWhen(true)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(notificationIdAfterUpload, notification)
+
+        return ForegroundInfo(notificationIdAfterUpload, notification)
+    }
+
+    fun onError(): ForegroundInfo {
+        val errorPendingIntent = generateErrorPendingIntent()
+
+        notificationBuilder.addAction(0, uploadNotificationText.failRetryAction, errorPendingIntent)
+
+        val notification = notificationBuilder
+            .setProgress(0, 0, false)
+            .setContentTitle(uploadNotificationText.failTitle)
+            .setContentText(uploadNotificationText.failDescription)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(uploadNotificationText.failDescription))
+            .setOngoing(false)
+            .setShowWhen(true)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(notificationIdAfterUpload, notification)
+
+        return ForegroundInfo(notificationIdAfterUpload, notification)
+    }
+
+    private companion object {
+        const val PROGRESS_MAX = 100
+
+        const val NOTIFICATION_GROUP = "com.tokopedia"
+
+        const val CHANNEL_NAME = "Tokopedia Content Creation"
+        const val CHANNEL_DESCRIPTION = "Tokopedia Content Creation"
+        const val CHANNEL_ID = "ANDROID_GENERAL_CHANNEL"
+
+        const val COVER_PREVIEW_SIZE = 100
+    }
+}

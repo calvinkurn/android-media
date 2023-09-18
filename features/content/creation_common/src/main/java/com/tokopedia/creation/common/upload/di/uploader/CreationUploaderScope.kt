@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.upload.di
+package com.tokopedia.creation.common.upload.di.uploader
 
 import javax.inject.Scope
 
