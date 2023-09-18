@@ -29,6 +29,7 @@ import kotlin.coroutines.CoroutineContext
 
 const val DEFAULT_SORT_ID = "23"
 const val SORT_KEY = "ob"
+const val SORT_FILTER_KEY = "sortfilter_ob"
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @JvmField
@@ -271,9 +272,17 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     fun getSearchParameterHashMap() = components.searchParameter.getSearchParameterHashMap()
 
     private fun addDefaultToSearchParameter() {
-        if (components.isFromCategory && !components.searchParameter.contains(SORT_KEY)) {
-            components.searchParameter.set(SORT_KEY, DEFAULT_SORT_ID)
+        val searchParameter = components.searchParameter
+
+        if (searchParameter.contains(SORT_KEY) || searchParameter.contains(SORT_FILTER_KEY)) return
+
+        val key = if (components.isFromCategory) {
+            SORT_KEY
+        } else {
+            SORT_FILTER_KEY
         }
+
+        searchParameter.set(key, DEFAULT_SORT_ID)
     }
 
     fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
@@ -308,14 +317,10 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             val targetList = targetID.split(",")
             if (targetList.isNotEmpty()) {
                 launchCatchError(block = {
-                    val originalSearchParameter = components.searchParameter
-                        .getSearchParameterMap()
-                        .keys
-
                     val formattedParameters = FilterKeyFormatter
                         .format(
                             selectedFilterMapParameter,
-                            originalSearchParameter
+                            populateFilterKeys(components.filters)
                         )
 
                     productCountMutableLiveData.value = quickFilterGQLRepository
@@ -334,4 +339,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             }
         }
     }
+
+    private fun populateFilterKeys(filters: ArrayList<Filter>) = filters
+        .map { it.options.first().key }
+        .toSet()
 }

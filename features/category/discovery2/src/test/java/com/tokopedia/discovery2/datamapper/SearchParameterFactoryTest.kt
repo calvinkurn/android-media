@@ -28,6 +28,20 @@ class SearchParameterFactoryTest {
     }
 
     @Test
+    fun `given existing params, when construct SearchParameter, should set the existing params into new SearchParameter instance `() {
+        val existingParameter = mapOf("sortfilter_ob" to "5")
+        val keyword = arrayOf("kipas", "TV", "Smartphone").random()
+        val query = "q=$keyword"
+
+        val param = SearchParameterFactory
+            .withExistingParameter(existingParameter)
+            .construct(query, path)
+
+        assertEquals(keyword, param?.getSearchQuery())
+        assertEquals("5", param?.get("sortfilter_ob"))
+    }
+
+    @Test
     fun `given query is unavailable, when construct SearchParameter, should return null`() {
         val param = SearchParameterFactory.construct(null, path)
         assertNull(param)

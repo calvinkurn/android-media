@@ -297,14 +297,16 @@ class DiscoveryPageDataMapper(
                     DiscoveryDataMapper.mapTabsListToComponentList(
                         component,
                         ComponentNames.TabsIconItem.componentName
-                    ), component.tabName
+                    ),
+                    component.tabName
                 )
             } else {
                 component.setComponentsItem(
                     DiscoveryDataMapper.mapTabsListToComponentList(
                         component,
                         ComponentNames.TabsItem.componentName
-                    ), component.tabName
+                    ),
+                    component.tabName
                 )
             }
         } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") { // this is for the forced redirection case only, whenever tabs position is change using the product click from one tab to other
@@ -606,8 +608,6 @@ class DiscoveryPageDataMapper(
     }
 
     private fun handleQuickFilter(component: ComponentsItem) {
-        setSearchParameter(component)
-
         component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
 
         if (!component.isSelectedFiltersFromQueryApplied && queryParameterMapWithRpc.isNotEmpty()) {
@@ -630,12 +630,17 @@ class DiscoveryPageDataMapper(
                 parentFilterComponentId = component.id
             }
         }
+
+        addQueryParentOnSearchParameter(component)
     }
 
-    private fun setSearchParameter(component: ComponentsItem) {
+    private fun addQueryParentOnSearchParameter(component: ComponentsItem) {
         val query = discoComponentQuery?.get(QUERY_PARENT)
 
+        val existingParams = component.searchParameter.getSearchParameterMap()
+
         val parameter = SearchParameterFactory
+            .withExistingParameter(existingParams)
             .construct(query, component.pagePath)
 
         parameter?.run { component.searchParameter = SearchParameter(this) }

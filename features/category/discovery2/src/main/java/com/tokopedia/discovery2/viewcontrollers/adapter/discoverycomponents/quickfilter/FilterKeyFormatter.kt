@@ -1,18 +1,23 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter
 
+import com.tokopedia.discovery.common.constants.SearchApiConst
+
 internal object FilterKeyFormatter {
 
     fun format(
-        filterParameter: Map<String, String>,
-        originalKeyParameter: Set<String>
+        selectedParameter: Map<String, String>,
+        filterKey: Set<String>
     ): MutableMap<String, String> {
         val filtersQueryParameterMap = mutableMapOf<String, String>()
-        filterParameter
+
+        val needToAppendPrefixKeys = filterKey + DEFAULT_KEY
+
+        selectedParameter
             .filter { it.value.isNotEmpty() }
             .forEach { (key, value) ->
                 var formattedKey = key
 
-                if (!originalKeyParameter.contains(key)) {
+                if (needToAppendPrefixKeys.contains(key)) {
                     formattedKey = RPC_FILTER_KEY + key
                 }
 
@@ -23,4 +28,6 @@ internal object FilterKeyFormatter {
     }
 
     private const val RPC_FILTER_KEY = "rpc_"
+
+    private val DEFAULT_KEY = setOf(SearchApiConst.ORIGIN_FILTER, SORT_FILTER_KEY)
 }
