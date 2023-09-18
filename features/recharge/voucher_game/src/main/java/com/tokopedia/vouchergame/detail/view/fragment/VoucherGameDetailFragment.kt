@@ -112,6 +112,10 @@ class VoucherGameDetailFragment :
             setInputFieldsError(!value)
         }
 
+    override fun onUpdateMultiCheckout() {
+        //do nothing
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

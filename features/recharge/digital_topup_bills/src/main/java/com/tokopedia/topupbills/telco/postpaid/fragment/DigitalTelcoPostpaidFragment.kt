@@ -365,84 +365,30 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
         })
 
-        enquiryViewModel.enquiryResult.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> enquirySuccess(it.data)
-                    is Fail -> {
-                        enquiryFailed(it.throwable)
-                    }
-                }
-            }
-        )
-
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
-            override fun enquiryNumber() {
+            override fun mainButtonClick() {
                 if (postpaidClientNumberWidget.getInputNumber().isEmpty()) {
                     postpaidClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
                 } else if (userSession.isLoggedIn) {
-                    getEnquiryNumber()
+                    initialProcessTransaction()
                 } else {
                     navigateToLoginPage()
                 }
             }
+
+            override fun secondaryButtonClick() {
+                //TODO Multichekout
+            }
         })
     }
 
-    fun getEnquiryNumber() {
+    fun initialProcessTransaction() {
         operatorSelected?.let { selectedOperator ->
             topupAnalytics.eventClickCheckEnquiry(categoryId, operatorName, userSession.userId)
             postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
-            enquiryViewModel.getEnquiry(
-                CommonTopupBillsGqlQuery.rechargeInquiry,
-                selectedOperator.operator.attributes.defaultProductId.toString(),
-                postpaidClientNumberWidget.getInputNumber()
-            )
-        }
-    }
-
-    private fun enquirySuccess(enquiryData: TelcoEnquiryData) {
-        postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
-        tabLayout.hide()
-        separator.hide()
-        viewPager.hide()
-        setCheckoutPassData(enquiryData)
-        postpaidClientNumberWidget.showEnquiryResultPostpaid(enquiryData)
-
-        price = enquiryData.enquiry.attributes.pricePlain
-        buyWidget.setTotalPrice(enquiryData.enquiry.attributes.price)
-        buyWidget.setVisibilityLayout(true)
-    }
-
-    private fun enquiryFailed(throwable: Throwable) {
-        var error = throwable
-
-        when (error.message) {
-            DigitalTelcoEnquiryViewModel.NULL_RESPONSE ->
-                error =
-                    MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_error))
-            DigitalTelcoEnquiryViewModel.GRPC_ERROR_MSG_RESPONSE ->
-                error =
-                    MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_grpc_error_msg))
-        }
-
-        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
-            requireContext(),
-            error,
-            ErrorHandler.Builder()
-                .className(this::class.java.simpleName)
-                .build()
-        )
-
-        postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
-        view?.run {
-            Toaster.build(
-                this,
-                errorMessage.orEmpty(),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR
-            ).show()
+            setCheckoutPassData()
+            setCheckoutPassData()
+            processTransaction()
         }
     }
 
@@ -452,19 +398,18 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.resetEnquiryResult()
     }
 
-    private fun setCheckoutPassData(telcoEnquiryData: TelcoEnquiryData) {
-        telcoEnquiryData?.run {
-            operatorSelected?.run {
-                checkoutPassData = getDefaultCheckoutPassDataBuilder()
-                    .categoryId(categoryId.toString())
-                    .clientNumber(postpaidClientNumberWidget.getInputNumber())
-                    .isPromo("0")
-                    .operatorId(operator.id)
-                    .productId(operator.attributes.defaultProductId)
-                    .utmCampaign(categoryId.toString())
-                    .build()
-            }
-        }
+    private fun setCheckoutPassData() {
+         operatorSelected?.run {
+             checkoutPassData = getDefaultCheckoutPassDataBuilder()
+                 .categoryId(categoryId.toString())
+                 .clientNumber(postpaidClientNumberWidget.getInputNumber())
+                 .isPromo("0")
+                 .operatorId(operator.id)
+                 .productId(operator.attributes.defaultProductId)
+                 .utmCampaign(categoryId.toString())
+                 .build()
+         }
+
     }
 
     override fun renderProductFromCustomData(isDelayed: Boolean) {
@@ -534,8 +479,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun onUpdateMultiCheckout() {
+        postpaidClientNumberWidget.showMulticheckoutButtonSupport(topupBillsViewModel.multiCheckoutButtons)
+    }
+
     override fun onLoadingAtc(showLoading: Boolean) {
-        buyWidget.onBuyButtonLoading(showLoading)
+        postpaidClientNumberWidget.setLoadingButtonEnquiry(showLoading)
     }
 
     override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {

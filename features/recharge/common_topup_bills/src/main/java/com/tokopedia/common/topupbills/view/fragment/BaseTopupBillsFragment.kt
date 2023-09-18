@@ -17,6 +17,7 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
@@ -509,6 +510,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         isExpressCheckout = data.isExpressCheckout
         categoryName = data.catalog.label
         rechargeAnalytics.eventViewPdpPage(categoryName, userSession.userId)
+        topupBillsViewModel.updateMultiCheckoutButtons(data.multiCheckoutButtons)
+        onUpdateMultiCheckout()
     }
 
     open fun onMenuDetailError(error: Throwable) {
@@ -516,6 +519,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     abstract fun onLoadingMenuDetail(showLoading: Boolean)
+
+    abstract fun onUpdateMultiCheckout()
 
     abstract fun onLoadingAtc(showLoading: Boolean)
 

@@ -65,6 +65,9 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
     override var menuId = 0
     override var categoryId = 0
 
+    override fun onUpdateMultiCheckout() {
+        //do nothing
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
@@ -313,7 +316,7 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
         })
 
         signalClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
-            override fun enquiryNumber() {
+            override fun mainButtonClick() {
                 if (signalClientNumberWidget.getInputNumber().isEmpty()) {
                     signalClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
                 } else if (userSession.isLoggedIn) {
@@ -322,6 +325,10 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
                 } else {
                     navigateToLoginPage()
                 }
+            }
+
+            override fun secondaryButtonClick() {
+               //do nothing
             }
         })
     }
