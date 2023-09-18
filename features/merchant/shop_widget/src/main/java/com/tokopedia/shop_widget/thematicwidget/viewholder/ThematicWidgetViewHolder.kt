@@ -121,6 +121,7 @@ class ThematicWidgetViewHolder(
         resetShopReimaginedContainerMargin()
         configColorTheme(element)
         checkTotalProduct(element)
+        setShopReimaginedContainerMargin()
     }
 
     private fun resetShopReimaginedContainerMargin() {
@@ -145,7 +146,6 @@ class ThematicWidgetViewHolder(
 
     private fun configReimagined(uiModel: ThematicWidgetUiModel) {
         dynamicHeaderCustomView?.configReimaginedColor(uiModel.header.colorSchema)
-        setShopReimaginedContainerMargin()
     }
 
     private fun configDefaultColor(uiModel: ThematicWidgetUiModel) {
@@ -170,7 +170,6 @@ class ThematicWidgetViewHolder(
                     startBackGroundColor = uiModel.firstBackgroundColor,
                     endBackGroundColor = uiModel.secondBackgroundColor
                 )
-                setShopReimaginedContainerMargin()
             }
         }
     }

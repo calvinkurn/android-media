@@ -115,6 +115,7 @@ class ShopHomeNplCampaignViewHolder(
         setFollowersOnlyView(model)
         setVoucherPromoOffer(model)
         configColorTheme(model)
+        setShopReimaginedContainerMargin()
     }
 
     private fun configColorTheme(model: ShopHomeNewProductLaunchCampaignUiModel) {
@@ -143,7 +144,6 @@ class ShopHomeNplCampaignViewHolder(
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
             setTextColor(titleColor)
         }
-        setShopReimaginedContainerMargin()
     }
 
     private fun configFestivity() {
@@ -157,7 +157,6 @@ class ShopHomeNplCampaignViewHolder(
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_white_rect)
             setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.shop.common.R.color.dms_shop_festivity_timer_text_color))
         }
-        setShopReimaginedContainerMargin()
     }
 
     private fun configDefaultColor() {

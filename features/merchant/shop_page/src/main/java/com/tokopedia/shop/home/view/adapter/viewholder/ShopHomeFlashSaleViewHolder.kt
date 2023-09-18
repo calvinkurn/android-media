@@ -96,6 +96,7 @@ class ShopHomeFlashSaleViewHolder(
             setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
         configColorTheme(element)
+        setShopReimaginedContainerMargin()
     }
 
     private fun configColorTheme(element: ShopHomeFlashSaleUiModel) {
@@ -128,7 +129,6 @@ class ShopHomeFlashSaleViewHolder(
             endBackGroundColor = flashSaleItem?.secondBackgroundColor
         )
         configMarginNonFestivity()
-        setShopReimaginedContainerMargin()
     }
 
     private fun configDefaultColor(element: ShopHomeFlashSaleUiModel) {

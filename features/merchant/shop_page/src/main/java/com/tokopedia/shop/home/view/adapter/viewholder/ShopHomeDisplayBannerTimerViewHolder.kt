@@ -82,6 +82,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         setBannerImage(uiModel)
         setWidgetImpressionListener(uiModel)
         configColorTheme(uiModel)
+        setShopReimaginedContainerMargin()
     }
 
     private fun setHeader(
@@ -258,7 +259,6 @@ class ShopHomeDisplayBannerTimerViewHolder(
                 MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
             setTextColor(titleColor)
         }
-        setShopReimaginedContainerMargin()
     }
 
     private fun configFestivity() {
@@ -281,7 +281,6 @@ class ShopHomeDisplayBannerTimerViewHolder(
                 )
             )
         }
-        setShopReimaginedContainerMargin()
     }
 
     private fun configDefaultColor() {
