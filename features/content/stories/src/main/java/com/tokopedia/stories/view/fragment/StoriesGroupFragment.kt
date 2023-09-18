@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -27,7 +26,6 @@ import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
-import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -54,7 +52,7 @@ class StoriesGroupFragment @Inject constructor(
     val entryPoint: String
         get() = "Entry Point"
 
-    val viewModelProvider get() = viewModelFactory.create(authorId)
+    val viewModelProvider get() = viewModelFactory.create(requireActivity(), authorId)
 
     private val analytic: StoriesAnalytics get() = analyticFactory.create(authorId)
 
@@ -102,7 +100,7 @@ class StoriesGroupFragment @Inject constructor(
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        viewModelAction(StoriesUiAction.SaveInstanceStateData(outState))
+        viewModelAction(StoriesUiAction.SaveInstanceStateData)
     }
 
     override fun onPause() {
@@ -111,14 +109,9 @@ class StoriesGroupFragment @Inject constructor(
         trackImpressionGroup()
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModelAction(ResumeStories)
-    }
-
     private fun initializeData(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) viewModelAction(StoriesUiAction.SetInitialData(arguments))
-        else viewModelAction(StoriesUiAction.GetSavedInstanceStateData(savedInstanceState))
+        else viewModelAction(StoriesUiAction.GetSavedInstanceStateData)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
@@ -163,7 +156,6 @@ class StoriesGroupFragment @Inject constructor(
             viewModel.storiesEvent.collect { event ->
                 when (event) {
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
-                    StoriesUiEvent.FinishedAllStories -> { activity?.finish() }
                     is StoriesUiEvent.ErrorGroupPage -> {
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
@@ -174,6 +166,12 @@ class StoriesGroupFragment @Inject constructor(
                         }
                         showPageLoading(false)
                     }
+                    StoriesUiEvent.EmptyGroupPage -> {
+                        // TODO handle empty data here
+                        showToast("data group is empty")
+                        showPageLoading(false)
+                    }
+                    StoriesUiEvent.FinishedAllStories -> activity?.finish()
                     else -> return@collect
                 }
             }
@@ -184,19 +182,7 @@ class StoriesGroupFragment @Inject constructor(
         prevState: StoriesUiModel?,
         state: StoriesUiModel
     ) {
-        if (prevState == state) return
-
-        if (state.groupItems.isEmpty()) {
-            // TODO handle error empty data state here
-            Toast.makeText(
-                requireContext(),
-                "data categories is empty",
-                Toast.LENGTH_LONG
-            ).show()
-            return
-        }
-
-        if (pagerAdapter.getCurrentData().size == state.groupItems.size) return
+        if (prevState == state || pagerAdapter.getCurrentData().size == state.groupItems.size) return
 
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
