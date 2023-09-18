@@ -1,7 +1,9 @@
 package com.tokopedia.stories.data.mapper
 
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
+import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel.ContentStoriesDetails
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
+import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel.ContentStoriesGroups
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.Meta
@@ -18,24 +20,29 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
 
     override fun mapStoriesInitialData(
         dataGroup: StoriesGroupsResponseModel,
-        dataDetail: StoriesDetailsResponseModel
+        dataDetail: StoriesDetailsResponseModel,
     ): StoriesUiModel {
+        val groupsData = dataGroup.data
+        if (groupsData == ContentStoriesGroups()) return StoriesUiModel()
+
+        val groupSelectedPos = dataGroup.data.meta.selectedGroupIndex
+        val groupsItem = groupsData.groups
         return StoriesUiModel(
-            selectedGroupId = dataGroup.data.groups[dataGroup.data.meta.selectedGroupIndex].value,
-            selectedGroupPosition = dataGroup.data.meta.selectedGroupIndex,
-            groupHeader = dataGroup.data.groups.mapIndexed { indexGroupHeader, group ->
+            selectedGroupId = groupsItem[groupSelectedPos].value,
+            selectedGroupPosition = groupSelectedPos,
+            groupHeader = groupsItem.mapIndexed { indexGroupHeader, group ->
                 StoriesGroupHeader(
                     groupId = group.value,
                     image = group.image,
                     groupName = group.name,
-                    isSelected = dataGroup.data.meta.selectedGroupIndex == indexGroupHeader,
+                    isSelected = groupSelectedPos == indexGroupHeader,
                 )
             },
-            groupItems = dataGroup.data.groups.mapIndexed { indexGroupItem, group ->
+            groupItems = groupsItem.mapIndexed { indexGroupItem, group ->
                 StoriesGroupItem(
                     groupId = group.value,
                     groupName = group.name,
-                    detail = if (dataGroup.data.meta.selectedGroupIndex == indexGroupItem) {
+                    detail = if (groupSelectedPos == indexGroupItem) {
                         mapStoriesDetailRequest(
                             selectedGroupId = group.value,
                             dataDetail = dataDetail,
@@ -46,12 +53,20 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
         )
     }
 
-    override fun mapStoriesDetailRequest(selectedGroupId: String, dataDetail: StoriesDetailsResponseModel): StoriesDetail {
+    override fun mapStoriesDetailRequest(
+        selectedGroupId: String,
+        dataDetail: StoriesDetailsResponseModel,
+    ): StoriesDetail {
+        val detailData = dataDetail.data
+        if (detailData == ContentStoriesDetails()) return StoriesDetail()
+
+        val storiesSelectedPos = detailData.meta.selectedStoriesIndex
+        val storiesItem = detailData.stories
         return StoriesDetail(
             selectedGroupId = selectedGroupId,
-            selectedDetailPosition = dataDetail.data.meta.selectedStoriesIndex,
-            selectedDetailPositionCached = dataDetail.data.meta.selectedStoriesIndex,
-            detailItems = dataDetail.data.stories.map { stories ->
+            selectedDetailPosition = storiesSelectedPos,
+            selectedDetailPositionCached = storiesSelectedPos,
+            detailItems = storiesItem.map { stories ->
                 StoriesDetailItem(
                     id = stories.id,
                     event = StoriesDetailItemUiEvent.PAUSE,

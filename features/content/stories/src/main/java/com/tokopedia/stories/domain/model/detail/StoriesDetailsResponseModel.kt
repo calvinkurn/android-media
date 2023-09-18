@@ -16,7 +16,7 @@ data class StoriesDetailsResponseModel(
 
         data class Meta(
             @SerializedName("selectedStoryIndex")
-            val selectedStoriesIndex: Int = -1,
+            val selectedStoriesIndex: Int = 0,
         )
 
         data class Stories(
@@ -39,7 +39,7 @@ data class StoriesDetailsResponseModel(
             @SerializedName("status")
             val status: String = "",
             @SerializedName("totalProducts")
-            val totalProducts: Int = -1,
+            val totalProducts: Int = 0,
             @SerializedName("totalProductsFmt")
             val totalProductsFmt: String = "",
             @SerializedName("webLink")
@@ -66,7 +66,7 @@ data class StoriesDetailsResponseModel(
                 @SerializedName("thumbnailURL")
                 val thumbnailURL: String = "",
                 @SerializedName("type")
-                val type: Int = -1,
+                val type: Int = 0,
                 @SerializedName("webLink")
                 val webLink: String = "",
             )
