@@ -23,7 +23,6 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetProductManageUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetShopInfoV1UseCase
-import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetTotalAdsAndKeywordsUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -55,8 +54,6 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     lateinit var topAdsGetGroupInfoUseCase: GraphqlUseCase<TopAdsGroupsResponse>
     @Inject
     lateinit var topAdsProductActionUseCase: TopAdsProductActionUseCase
-    @Inject
-    lateinit var whiteListedUserUseCase: GetWhiteListedUserUseCase
 
     private val _topAdsDeposits: MutableLiveData<Result<Deposit>> = MutableLiveData()
     val topAdsDeposits: LiveData<Result<Deposit>> = _topAdsDeposits
