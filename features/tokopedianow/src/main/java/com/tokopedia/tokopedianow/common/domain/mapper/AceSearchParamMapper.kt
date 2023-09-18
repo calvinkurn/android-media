@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 class AceSearchParamMapper @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val addressData: TokoNowLocalAddress
+    private val addressData: TokoNowLocalAddress,
+    private val uniqueId: String = ""
 ) {
 
     companion object {
@@ -75,7 +76,9 @@ class AceSearchParamMapper @Inject constructor(
     }
 
     private fun getUniqueId() =
-        if (userSession.isLoggedIn) {
+        if (uniqueId.isNotEmpty()) {
+            uniqueId
+        } else if (userSession.isLoggedIn) {
             AuthHelper.getMD5Hash(userSession.userId)
         } else {
             AuthHelper.getMD5Hash(userSession.deviceId)
