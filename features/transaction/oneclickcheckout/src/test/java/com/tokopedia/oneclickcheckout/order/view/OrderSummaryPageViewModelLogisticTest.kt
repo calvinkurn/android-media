@@ -1159,7 +1159,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         courier.productData.error = helper.errorProductData
 
         // When
-        orderSummaryPageViewModel.chooseCourier(helper.secondCourierFirstDuration)
+        orderSummaryPageViewModel.chooseCourier(courier)
 
         // Then
         assertEquals(
@@ -1178,6 +1178,50 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 isShowLogisticPromoTickerMessage = false,
                 logisticPromoViewModel = helper.logisticPromo,
                 insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance)
+            ),
+            orderSummaryPageViewModel.orderShipment.value
+        )
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Courier With Error Pinpoint`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(
+            shippingRecommendationData = helper.shippingRecommendationData.apply {
+                shippingDurationUiModels = shippingDurationUiModels.reversed()
+            }
+        )
+
+        val courier = helper.secondCourierFirstDuration
+        val error = ErrorProductData().apply {
+            errorId = ErrorProductData.ERROR_PINPOINT_NEEDED
+        }
+        courier.productData.error = error
+
+        // When
+        orderSummaryPageViewModel.chooseCourier(courier)
+
+        // Then
+        assertEquals(
+            OrderShipment(
+                serviceName = helper.firstDuration.serviceData.serviceName,
+                serviceDuration = helper.firstDuration.serviceData.serviceName,
+                serviceId = helper.firstDuration.serviceData.serviceId,
+                isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
+                shipperName = helper.secondCourierFirstDuration.productData.shipperName,
+                shipperId = helper.secondCourierFirstDuration.productData.shipperId,
+                shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId,
+                ratesId = helper.secondCourierFirstDuration.ratesId,
+                shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
+                shippingRecommendationData = helper.shippingRecommendationData,
+                logisticPromoTickerMessage = "Tersedia bbo",
+                isShowLogisticPromoTickerMessage = false,
+                logisticPromoViewModel = helper.logisticPromo,
+                insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
+                serviceErrorMessage = OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE,
+                needPinpoint = true
             ),
             orderSummaryPageViewModel.orderShipment.value
         )
