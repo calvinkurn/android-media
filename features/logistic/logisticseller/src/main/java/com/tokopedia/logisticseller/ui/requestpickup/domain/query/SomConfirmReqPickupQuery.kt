@@ -12,8 +12,12 @@ object SomConfirmReqPickupQuery : GqlQueryInterface {
             message_error
             data{
               drop_off_location{
-                drop_off_courier
-                drop_off_notes
+                drop_off_notes{
+                    title
+                    text
+                    url_text
+                    url_detail
+                }
               }
               pickup_location{
                 title
