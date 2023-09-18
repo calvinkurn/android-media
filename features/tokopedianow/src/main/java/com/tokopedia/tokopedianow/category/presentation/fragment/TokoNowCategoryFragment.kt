@@ -46,6 +46,7 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic
 import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
+import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createRequestParam
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryAdapterTypeFactory
@@ -703,7 +704,14 @@ class TokoNowCategoryFragment :
         return false
     }
 
-    private fun refreshLayout() = viewModel.refreshLayout()
+    private fun refreshLayout() {
+        refreshProductRecommendation()
+        viewModel.refreshLayout()
+    }
+
+    private fun refreshProductRecommendation() {
+        productRecommendationViewModel.updateProductRecommendation(createRequestParam(listOf(categoryIdL1)))
+    }
 
     private fun getMiniCart() = viewModel.getMiniCart()
 
@@ -1280,7 +1288,7 @@ class TokoNowCategoryFragment :
     private fun createTokoNowViewCallback() = TokoNowViewCallback(
         fragment = this@TokoNowCategoryFragment
     ) {
-        viewModel.refreshLayout()
+        refreshLayout()
     }
 
     private fun createTokoNowCategoryMenuCallback() = TokoNowCategoryMenuCallback(
