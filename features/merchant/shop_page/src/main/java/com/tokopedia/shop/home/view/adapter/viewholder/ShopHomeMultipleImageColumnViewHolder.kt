@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -37,6 +39,8 @@ class ShopHomeMultipleImageColumnViewHolder(
         private const val SPAN_SIZE_TRIPLE = 2
         private const val SPAN_SIZE_DOUBLE_DATA_SIZE = 2
         private const val SPAN_SIZE_TRIPLE_DATA_SIZE = 3
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
+        private const val CORNER_RADIUS = 8f
     }
     private val viewBinding: WidgetShopHomeMultipleImageColumnBinding? by viewBinding()
     private var shopHomeMultipleImageColumnAdapter: ShopHomeMultipleImageColumnAdapter? = null
@@ -44,7 +48,7 @@ class ShopHomeMultipleImageColumnViewHolder(
     private val textViewTitle: Typography? = viewBinding?.textViewTitle
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         setWidgetImpressionListener(element)
-        shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener)
+        shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener, CORNER_RADIUS)
         val gridLayoutManager = GridLayoutManager(itemView.context, SPAN_SIZE_SINGLE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -78,6 +82,14 @@ class ShopHomeMultipleImageColumnViewHolder(
         shopHomeMultipleImageColumnAdapter?.setHeightRatio(getHeightRatio(element))
         shopHomeMultipleImageColumnAdapter?.submitList(element.data)
         configColorTheme(element)
+        setShopReimaginedContainerMargin()
+    }
+
+    private fun setShopReimaginedContainerMargin() {
+        rvShopHomeMultiple?.let {
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
+        }
     }
 
     private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
