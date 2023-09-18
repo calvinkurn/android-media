@@ -38,68 +38,69 @@ object AtcVariantHelper {
     /**
      * For PDP and ProductBundle only
      */
-    fun pdpToAtcVariant(context: Context,
-                        pageSource: VariantPageSource,
-                        productId: String,
-                        productInfoP1: DynamicProductInfoP1,
-                        warehouseId: String,
-                        pdpSession: String,
-                        isTokoNow: Boolean,
-                        isShopOwner: Boolean,
-                        productVariant: ProductVariant,
-                        warehouseResponse: Map<String, WarehouseInfo>,
-                        cartRedirection: Map<String, CartTypeData>,
-                        miniCart: Map<String, MiniCartItem.MiniCartItemProduct>?,
-                        alternateCopy: List<AlternateCopy>?,
-                        boData: BebasOngkir?,
-                        rates: List<P2RatesEstimate>?,
-                        restrictionData: RestrictionInfoResponse?,
-                        isFavorite: Boolean = false,
-                        uspImageUrl: String = "",
-                        dismissAfterTransaction: Boolean = false,
-                        saveAfterClose: Boolean = true,
-                        startActivitResult: (Intent, Int) -> Unit) {
-
+    fun pdpToAtcVariant(
+        context: Context,
+        pageSource: VariantPageSource,
+        productId: String,
+        productInfoP1: DynamicProductInfoP1,
+        warehouseId: String,
+        pdpSession: String,
+        isTokoNow: Boolean,
+        isShopOwner: Boolean,
+        productVariant: ProductVariant,
+        warehouseResponse: Map<String, WarehouseInfo>,
+        cartRedirection: Map<String, CartTypeData>,
+        miniCart: Map<String, MiniCartItem.MiniCartItemProduct>?,
+        alternateCopy: List<AlternateCopy>?,
+        boData: BebasOngkir?,
+        rates: List<P2RatesEstimate>?,
+        restrictionData: RestrictionInfoResponse?,
+        isFavorite: Boolean = false,
+        uspImageUrl: String = "",
+        dismissAfterTransaction: Boolean = false,
+        saveAfterClose: Boolean = true,
+        startActivitResult: (Intent, Int) -> Unit
+    ) {
         val cacheManager = SaveInstanceCacheManager(context, true)
         val updatedReData = manipulateRestrictionFollowers(restrictionData, isFavorite)
 
         val parcelData = ProductVariantBottomSheetParams(
-                productId = productId,
-                pageSource = pageSource.source,
-                whId = warehouseId,
-                pdpSession = pdpSession,
-                isTokoNow = isTokoNow,
-                isShopOwner = isShopOwner,
-                dismissAfterTransaction = dismissAfterTransaction,
-                saveAfterClose = saveAfterClose,
-                variantAggregator = ProductVariantAggregatorUiData(
-                        variantData = productVariant,
-                        cardRedirection = cartRedirection,
-                        nearestWarehouse = warehouseResponse,
-                        alternateCopy = alternateCopy ?: listOf(),
-                        rates = rates ?: listOf(),
-                        simpleBasicInfo = SimpleBasicInfo(
-                                shopID = productInfoP1.basic.shopID,
-                                shopName = productInfoP1.basic.shopName,
-                                category = productInfoP1.basic.category,
-                                defaultMediaURL = productInfoP1.basic.defaultMediaUrl
-                        ),
-                        shopType = productInfoP1.shopTypeString,
-                        boData = boData ?: BebasOngkir(),
-                        isCod = productInfoP1.data.isCod,
-                        reData = updatedReData,
-                        uspImageUrl = uspImageUrl,
-                        cashBackPercentage = productInfoP1.data.isCashback.percentage
+            productId = productId,
+            pageSource = pageSource.source,
+            whId = warehouseId,
+            pdpSession = pdpSession,
+            isTokoNow = isTokoNow,
+            isShopOwner = isShopOwner,
+            dismissAfterTransaction = dismissAfterTransaction,
+            saveAfterClose = saveAfterClose,
+            variantAggregator = ProductVariantAggregatorUiData(
+                variantData = productVariant,
+                cardRedirection = cartRedirection,
+                nearestWarehouse = warehouseResponse,
+                alternateCopy = alternateCopy ?: listOf(),
+                rates = rates ?: listOf(),
+                simpleBasicInfo = SimpleBasicInfo(
+                    shopID = productInfoP1.basic.shopID,
+                    shopName = productInfoP1.basic.shopName,
+                    category = productInfoP1.basic.category,
+                    defaultMediaURL = productInfoP1.basic.defaultMediaUrl
                 ),
-                shopId = productInfoP1.basic.shopID,
-                miniCartData = miniCart,
-                minimumShippingPrice = productInfoP1.basic.getDefaultOngkirDouble(),
-                showQtyEditor = isTokoNow
+                shopType = productInfoP1.shopTypeString,
+                boData = boData ?: BebasOngkir(),
+                isCod = productInfoP1.data.isCod,
+                reData = updatedReData,
+                uspImageUrl = uspImageUrl,
+                cashBackPercentage = productInfoP1.data.isCashback.percentage
+            ),
+            shopId = productInfoP1.basic.shopID,
+            miniCartData = miniCart,
+            minimumShippingPrice = productInfoP1.basic.getDefaultOngkirDouble(),
+            showQtyEditor = isTokoNow
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, "", pageSource.source, "", "", "")
-                .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
+            .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
         startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }
 
@@ -109,28 +110,33 @@ object AtcVariantHelper {
         val cacheManager = SaveInstanceCacheManager(context, cacheId)
 
         val result: ProductVariantResult = cacheManager.get(PDP_PARCEL_KEY_RESULT, ProductVariantResult::class.java)
-                ?: return
+            ?: return
 
         updateView.invoke(result)
     }
 
-    fun goToAtcVariant(context: Context,
-                       productId: String,
-                       pageSource: VariantPageSource,
-                       isTokoNow: Boolean = false,
-                       shopId: String,
-                       trackerCdListName: String = "",
-                       extParams: String = "",
-                       dismissAfterTransaction: Boolean = false,
-                       saveAfterClose: Boolean = true,
-                       showQuantityEditor: Boolean = false,
-                       startActivitResult: (Intent, Int) -> Unit) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT,
-                productId,
-                shopId,
-                pageSource.source,
-                isTokoNow.toString(),
-                trackerCdListName)
+    fun goToAtcVariant(
+        context: Context,
+        productId: String,
+        pageSource: VariantPageSource,
+        isTokoNow: Boolean = false,
+        shopId: String,
+        trackerCdListName: String = "",
+        extParams: String = "",
+        dismissAfterTransaction: Boolean = false,
+        saveAfterClose: Boolean = true,
+        showQuantityEditor: Boolean = false,
+        startActivitResult: (Intent, Int) -> Unit
+    ) {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalMarketplace.ATC_VARIANT,
+            productId,
+            shopId,
+            pageSource.source,
+            isTokoNow.toString(),
+            trackerCdListName
+        )
         val qtyEditorData = if (isTokoNow) true else showQuantityEditor
         intent.putExtra(KEY_DISMISS_AFTER_ATC, dismissAfterTransaction)
         intent.putExtra(KEY_SAVE_AFTER_CLOSE, saveAfterClose)
@@ -158,11 +164,14 @@ object AtcVariantHelper {
         } ?: listOf()
 
         return restrictionData?.copy(restrictionData = manipulateRestrictionShopFollowers)
-                ?: RestrictionInfoResponse()
+            ?: RestrictionInfoResponse()
     }
 
-    fun generateSimpanCartRedirection(productVariant: ProductVariant, buttonText: String,
-                                      customCartType: String = ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON): Map<String, CartTypeData>? {
+    fun generateSimpanCartRedirection(
+        productVariant: ProductVariant,
+        buttonText: String,
+        customCartType: String = ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON
+    ): Map<String, CartTypeData>? {
         if (!productVariant.hasChildren) return null
         val mapOfCartRedirection = mutableMapOf<String, CartTypeData>()
         productVariant.children.forEach {
@@ -171,19 +180,23 @@ object AtcVariantHelper {
         return mapOfCartRedirection
     }
 
-    private fun generateCartTypeDataSimpan(productId: String, buttonText: String,
-                                           customCartType: String): CartTypeData {
+    private fun generateCartTypeDataSimpan(
+        productId: String,
+        buttonText: String,
+        customCartType: String
+    ): CartTypeData {
         return CartTypeData(
-                productId = productId,
-                availableButtons = listOf(
-                        AvailableButton(
-                                cartType = customCartType,
-                                color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
-                                text = buttonText,
-                                showRecommendation = false
-                        )),
-                unavailableButtons = listOf(ProductDetailCommonConstant.KEY_CHAT),
-                hideFloatingButton = false
+            productId = productId,
+            availableButtons = listOf(
+                AvailableButton(
+                    cartType = customCartType,
+                    color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
+                    text = buttonText,
+                    showRecommendation = false
+                )
+            ),
+            unavailableButtons = listOf(ProductDetailCommonConstant.KEY_CHAT),
+            hideFloatingButton = false
         )
     }
 }
@@ -206,4 +219,5 @@ enum class VariantPageSource(val source: String) {
     SHOP_COUPON_PAGESOURCE("shop-coupon-product"),
     SRP_PAGESOURCE("srp_search"),
     FEED_PAGESOURCE("feed"),
+    BUY_MORE_GET_MORE("offerpage")
 }

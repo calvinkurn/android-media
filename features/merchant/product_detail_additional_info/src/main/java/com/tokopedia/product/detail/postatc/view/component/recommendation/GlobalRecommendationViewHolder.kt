@@ -34,15 +34,17 @@ class GlobalRecommendationViewHolder(
         RecommendationWidgetModel(
             metadata = RecommendationWidgetMetadata(
                 pageName = element.name,
-                productIds = listOf(element.productId)
+                productIds = listOf(element.productId),
+                queryParam = element.queryParam
             ),
             miniCart = RecommendationWidgetMiniCart(
                 miniCartSource = MiniCartSource.PDP
             ),
             source = RecommendationWidgetSource.PDPAfterATC(
-                element.productId,
-                callback.userSession.isLoggedIn,
-                callback.userSession.userId
+                anchorProductId = element.productId,
+                isUserLoggedIn = callback.userSession.isLoggedIn,
+                userId = callback.userSession.userId,
+                warehouseId = element.warehouseId
             )
         )
 

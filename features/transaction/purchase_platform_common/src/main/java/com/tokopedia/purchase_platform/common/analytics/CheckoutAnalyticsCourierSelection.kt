@@ -4,6 +4,7 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import javax.inject.Inject
 
 /**
@@ -968,5 +969,58 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         sendGeneralEvent(gtmData)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4210
+    // Tracker ID: 46930
+    fun sendClickSnkAsuransiDanProteksiEvent() {
+        Tracker.Builder()
+            .setEvent("clickPP")
+            .setEventAction("click snk asuransi dan proteksi")
+            .setEventCategory("courier selection")
+            .setEventLabel("")
+            .setCustomProperty("trackerId", "46930")
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4210
+    // Tracker ID: 46931
+    fun sendClicksInfoButtonOfAddonsEvent(addOnsType: Int) {
+        Tracker.Builder()
+            .setEvent("clickPP")
+            .setEventAction("clicks info button of addons")
+            .setEventCategory("courier selection")
+            .setEventLabel("$addOnsType")
+            .setCustomProperty("trackerId", "46931")
+            .setBusinessUnit("purchase platform")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46781
+    fun sendClickSnkBmgmEvent(
+        offerId: String,
+        sessionId: String,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PG)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_SNK_BMGM)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION)
+            .setEventLabel(offerId)
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.CLICK_SNK_BMGM)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(ConstantTransactionAnalytics.CustomDimension.DIMENSION_SESSION_IRIS, sessionId)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
     }
 }

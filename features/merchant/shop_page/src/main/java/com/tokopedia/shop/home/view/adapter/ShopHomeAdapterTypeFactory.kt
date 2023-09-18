@@ -16,6 +16,7 @@ import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.ADVANCED_SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_HOTSPOT
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
+import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DIRECT_PURCHASED_BY_ETALASE
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_NAVIGATION_BANNER
@@ -155,7 +156,7 @@ open class ShopHomeAdapterTypeFactory(
         return when (baseShopHomeWidgetUiModel.name) {
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel)
             SLIDER_SQUARE_BANNER -> getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel)
-            SLIDER_BANNER -> getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel)
+            SLIDER_BANNER, BMGM_BANNER -> getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel)
             ADVANCED_SLIDER_BANNER -> ShopHomeDisplayAdvanceCarouselBannerViewHolder.LAYOUT_RES
             VIDEO -> ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
@@ -245,17 +246,19 @@ open class ShopHomeAdapterTypeFactory(
     }
 
     private fun getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES
-        else
+        } else {
             ShopHomeSliderBannerViewHolder.LAYOUT_RES
+        }
     }
 
     private fun getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES
-        else
+        } else {
             ShopHomeSliderSquareViewHolder.LAYOUT_RES
+        }
     }
 
     private fun getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
