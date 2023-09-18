@@ -24,7 +24,6 @@ import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
-import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -91,11 +90,6 @@ class StoriesGroupFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         viewModelAction(PauseStories)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModelAction(ResumeStories)
     }
 
     private fun initializeData(savedInstanceState: Bundle?) {
