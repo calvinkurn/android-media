@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.toPx
 
-internal class ItemDecorationReimagine: RecyclerView.ItemDecoration() {
+internal class ItemDecorationShopAdsReimagine: RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,

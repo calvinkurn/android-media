@@ -10,7 +10,7 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel
 import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
-import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.setItemDecorationReimagineSearch
+import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.setItemDecorationShopCardAdsReimagineSearch
 import com.tokopedia.topads.sdk.view.adapter.ShopAdsProductAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
@@ -49,7 +49,7 @@ class ShopAdsWithOneProductView : BaseCustomView {
         val list = findViewById<RecyclerView>(R.id.shopAdsProductRv)
         list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         list.adapter = shopAdsProductAdapter
-        list.setItemDecorationReimagineSearch(isReimagine)
+        list.setItemDecorationShopCardAdsReimagineSearch(isReimagine)
         shopAdsProductAdapter?.setList(shopProductModel.items)
 
     }

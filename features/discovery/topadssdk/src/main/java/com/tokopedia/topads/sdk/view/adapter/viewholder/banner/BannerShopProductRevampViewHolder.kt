@@ -14,7 +14,8 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductU
 class BannerShopProductRevampViewHolder(
     container: View,
     private val topAdsBannerClickListener: TopAdsBannerClickListener?,
-    private val impressionListener: TopAdsItemImpressionListener?
+    private val impressionListener: TopAdsItemImpressionListener?,
+    private val hasMultilineProductName: Boolean = false
 ) : AbstractViewHolder<BannerShopProductUiModel?>(container) {
     private val productCardGridViewA: ProductCardGridCarouselView =
         itemView.findViewById(R.id.topAdsProductItem)
@@ -67,7 +68,7 @@ class BannerShopProductRevampViewHolder(
             },
             rating = item.ratingString,
             freeShipping = com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping(item.freeOngkir.imageUrl),
-            hasMultilineName = true
+            hasMultilineName = hasMultilineProductName
         )
     }
 

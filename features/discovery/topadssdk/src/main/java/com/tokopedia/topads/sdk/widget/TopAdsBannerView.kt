@@ -39,7 +39,7 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
-import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.setItemDecorationReimagineSearch
+import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.setItemDecorationShopAdsReimagineSearch
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.BannerAdsContract
@@ -97,6 +97,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         TopAdsUrlHitter(context.applicationContext)
     }
     private var isReimagine: Boolean = false
+    private var hasMultilineProductName: Boolean = false
 
 
     override fun onAttachedToWindow() {
@@ -135,11 +136,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             renderSeeMoreCard(isReimagine)
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData?.cpm?.name ?: "")
-            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener, topAdsAddToCartClickListener, isReimagine))
+            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener, topAdsAddToCartClickListener, isReimagine, hasMultilineProductName))
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
-            list.setItemDecorationReimagineSearch(isReimagine)
+            list.setItemDecorationShopAdsReimagineSearch(isReimagine)
             list.addOnScrollListener(CustomScrollListener(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
@@ -778,7 +779,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 isOfficial = cpmData.cpm.cpmShop.isOfficial,
                 isPMPro = cpmData.cpm.cpmShop.isPMPro,
                 impressHolder = cpmData.cpm.cpmShop.imageShop,
-                isAds = true
             ),
             object : ShopCardListener {
                 override fun onItemImpressed() {
@@ -822,7 +822,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         product.imageProduct.imageUrl
                     )
                 }
-            }
+            },
+            isReimagine
         )
     }
 
@@ -908,8 +909,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         displayAds(cpmModel, index)
     }
 
-    fun displayHeadlineAds(cpmModel: CpmModel?, index: Int = 0, isReimagine: Boolean = false) {
+    fun displayHeadlineAds(cpmModel: CpmModel?, index: Int = 0,
+                           isReimagine: Boolean = false, hasMultilineProductName: Boolean = false) {
         this.isReimagine = isReimagine
+        this.hasMultilineProductName = hasMultilineProductName
         displayAds(cpmModel, index)
     }
 

@@ -4,16 +4,28 @@ import androidx.recyclerview.widget.RecyclerView
 
 internal object ApplyItemDecorationReimagineHelper {
 
-    fun RecyclerView.setItemDecorationReimagineSearch(isReimagine: Boolean) {
+    fun RecyclerView.setItemDecorationShopAdsReimagineSearch(isReimagine: Boolean) {
         if (isReimagine)
-            addItemDecoratorReimagine()
+            addItemDecoratorShopAdsReimagine()
         else
             removeItemDecorationIfExist()
     }
 
-    private fun RecyclerView.addItemDecoratorReimagine() {
+    fun RecyclerView.setItemDecorationShopCardAdsReimagineSearch(isReimagine: Boolean) {
+        if (isReimagine)
+            addItemDecoratorShopCardAdsReimagine()
+        else
+            removeItemDecorationIfExist()
+    }
+
+    private fun RecyclerView.addItemDecoratorShopAdsReimagine() {
         removeItemDecorationIfExist()
-        addItemDecoration(ItemDecorationReimagine())
+        addItemDecoration(ItemDecorationShopAdsReimagine())
+    }
+
+    private fun RecyclerView.addItemDecoratorShopCardAdsReimagine() {
+        removeItemDecorationIfExist()
+        addItemDecoration(ItemDecorationShopCardAdsReimagine())
     }
 
     private fun RecyclerView.removeItemDecorationIfExist(){

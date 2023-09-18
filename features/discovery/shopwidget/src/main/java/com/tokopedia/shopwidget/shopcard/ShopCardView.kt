@@ -30,6 +30,9 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
+import com.tokopedia.gm.common.R as gmcommonR
+import com.tokopedia.media.loader.R as medialoaderR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopCardView : BaseCustomView {
     private val shopWidgetCardViewShopCard: CardUnify2? by lazy(NONE) {
@@ -110,12 +113,12 @@ class ShopCardView : BaseCustomView {
         View.inflate(context, R.layout.shopwidget_shop_card_layout, this)
     }
 
-    fun setShopCardModel(shopCardModel: ShopCardModel?, shopCardListener: ShopCardListener) {
+    fun setShopCardModel(shopCardModel: ShopCardModel?, shopCardListener: ShopCardListener, isReimagine: Boolean= false) {
         shopCardModel ?: return
 
         initCardViewShopCard(shopCardListener)
         initImageShopAvatar(shopCardModel, shopCardListener)
-        initImageShopBadge(shopCardModel)
+        initImageShopBadge(shopCardModel, isReimagine)
         initShopName(shopCardModel)
         initImageShopReputation(shopCardModel)
         initShopLocation(shopCardModel)
@@ -123,7 +126,7 @@ class ShopCardView : BaseCustomView {
         initProductPreview(shopCardModel, shopCardListener)
         initShopVoucherLabel(shopCardModel)
         initShopStatus(shopCardModel)
-        initShopAdsText(shopCardModel)
+        initShopAdsText(isReimagine)
     }
 
     private fun initCardViewShopCard(shopCardListener: ShopCardListener) {
@@ -142,17 +145,25 @@ class ShopCardView : BaseCustomView {
         }
     }
 
-    private fun initImageShopBadge(shopCardModel: ShopCardModel) {
+    private fun initImageShopBadge(shopCardModel: ShopCardModel, isReimagine: Boolean= false) {
         shopWidgetImageViewShopBadge?.let { imageViewShopBadge ->
             val isImageShopBadgeVisible = getIsImageShopBadgeVisible(shopCardModel)
 
             imageViewShopBadge.shouldShowWithAction(isImageShopBadgeVisible) {
                 when {
-                    shopCardModel.isOfficial -> imageViewShopBadge.loadImage(R.drawable.shopwidget_ic_official_store)
+                    shopCardModel.isOfficial -> imageViewShopBadge.renderImageShopBadgeOfficialStore(isReimagine)
                     shopCardModel.isPMPro -> imageViewShopBadge.loadImage(R.drawable.shopwidget_ic_pm_pro)
-                    shopCardModel.isGoldShop -> imageViewShopBadge.loadImage(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+                    shopCardModel.isGoldShop -> imageViewShopBadge.loadImage(gmcommonR.drawable.ic_power_merchant)
                 }
             }
+        }
+    }
+
+    private fun ImageView.renderImageShopBadgeOfficialStore(isReimagine: Boolean){
+        if (isReimagine) {
+            this.loadImage(gmcommonR.drawable.ic_official_store_product)
+        } else {
+            this.loadImage(R.drawable.shopwidget_ic_official_store)
         }
     }
 
@@ -280,7 +291,7 @@ class ShopCardView : BaseCustomView {
             shopCardListener: ShopCardListener
     ) {
         imageViewShopItemProductImage?.loadImageRounded(productPreviewItem.imageUrl, 6.toPx().toFloat()) {
-            setPlaceHolder(com.tokopedia.media.loader.R.drawable.media_placeholder_grey)
+            setPlaceHolder(medialoaderR.drawable.media_placeholder_grey)
         }
 
         productPreviewItem.impressHolder?.let { impressHolder ->
@@ -300,7 +311,7 @@ class ShopCardView : BaseCustomView {
             imageViewShopItemProductImage: AppCompatImageView?,
             textViewShopItemProductPrice: Typography?,
     ) {
-        imageViewShopItemProductImage?.setImageResource(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        imageViewShopItemProductImage?.setImageResource(unifyprinciplesR.color.Unify_NN50)
         textViewShopItemProductPrice?.text = ""
     }
 
@@ -407,8 +418,8 @@ class ShopCardView : BaseCustomView {
         }
     }
 
-    private fun initShopAdsText(shopModel: ShopCardModel) {
-        if (shopModel.isAds) {
+    private fun initShopAdsText(isReimagine: Boolean) {
+        if (isReimagine) {
             shopWidgetImageViewAdsText?.visible()
             shopWidgetTextViewShopLocation?.gone()
         } else {

@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.cpm
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutBinding
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
@@ -15,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class CpmViewHolder(
     itemView: View,
     bannerAdsListener: BannerAdsListener?,
-    private val isReimagine: Boolean = false,
+    private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL,
 ) : AbstractViewHolder<CpmDataView>(itemView) {
 
     companion object {
@@ -43,7 +44,11 @@ class CpmViewHolder(
             })
         }
     }
+
+    private fun isReimagine(): Boolean = reimagineSearch2Component.isReimagineShopAds() || reimagineSearch2Component.isReimagineQuickFilter()
+    private fun isMultiline(): Boolean = !reimagineSearch2Component.isReimagineQuickFilter()
+
     override fun bind(element: CpmDataView) {
-        binding?.adsBanner?.displayHeadlineAds(element.cpmModel, isReimagine = isReimagine)
+        binding?.adsBanner?.displayHeadlineAds(element.cpmModel, isReimagine = isReimagine(), hasMultilineProductName = isMultiline())
     }
 }
