@@ -7,9 +7,9 @@ import com.tokopedia.scp_rewards.common.utils.API_VERSION_PARAM
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetUserMedaliUseCase @Inject constructor() {
+@GqlQuery("ScpRewardsGetUserMedalisByTypeGQL", GET_USER_MEDALI_GQL)
+class GetUserMedaliUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsGetUserMedalisResponse>() {
 
-    @GqlQuery("ScpRewardsGetUserMedalisByTypeGQL", GET_USER_MEDALI_GQL)
     suspend fun getUserMedalis(medaliParams: RequestParams): ScpRewardsGetUserMedalisResponse? {
         GraphqlUseCase<ScpRewardsGetUserMedalisResponse>().apply {
             setTypeClass(ScpRewardsGetUserMedalisResponse::class.java)
