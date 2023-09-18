@@ -10,7 +10,6 @@ import dagger.Component
         StoriesModule::class,
         StoriesBindModule::class,
         StoriesFragmentModule::class,
-        StoriesViewModelModule::class,
     ],
     dependencies = [BaseAppComponent::class],
 )
