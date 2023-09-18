@@ -20,41 +20,43 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
-import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE
-import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.START
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
+import kotlinx.coroutines.delay
 
 @Composable
 fun StoriesDetailTimer(
+    currentPosition: Int,
     itemCount: Int,
-    data: StoriesDetailUiModel,
+    data: StoriesDetailItem,
     timerFinished: () -> Unit,
 ) {
-    val anim = remember(data.selected, data.id) { Animatable(INITIAL_ANIMATION) }
+    val anim = remember(data.id, data.resetValue) { Animatable(INITIAL_ANIMATION) }
 
     LaunchedEffect(data) {
         when (data.event) {
-            PAUSE -> anim.stop()
-            START -> {
+            StoriesDetailItemUiEvent.PAUSE -> anim.stop()
+            StoriesDetailItemUiEvent.RESUME -> {
+                delay(100)
                 anim.animateTo(
                     targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
-                        durationMillis = (TIMER_DURATION * (TARGET_ANIMATION - anim.value)).toInt(),
+                        durationMillis = (data.content.duration * (TARGET_ANIMATION - anim.value)).toInt(),
                         easing = LinearEasing,
                     )
                 )
             }
         }
 
-        if (anim.value == anim.targetValue) timerFinished.invoke()
+        if ((anim.value == anim.targetValue) && (anim.targetValue != 0F)) timerFinished.invoke()
     }
 
     StoriesDetailTimerContent(
         count = itemCount,
-        currentPosition = data.selected,
+        currentPosition = currentPosition,
         progress = anim.value,
     )
 }
@@ -65,33 +67,36 @@ private fun StoriesDetailTimerContent(
     currentPosition: Int,
     progress: Float,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .background(Color.Transparent),
-    ) {
-        for (index in 0 until count) {
-            Row(
-                modifier = Modifier
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(50))
-                    .weight(1f)
-                    .background(colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_Static_White).copy(alpha = 0.4f))
-            ) {
-                Box(
+    NestTheme(darkTheme = false) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .background(Color.Transparent)
+                .height(4.dp),
+        ) {
+            for (index in 0 until count) {
+                Row(
                     modifier = Modifier
-                        .background(colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                        .fillMaxHeight().let {
-                            when (index) {
-                                currentPosition -> it.fillMaxWidth(progress)
-                                in 0..currentPosition -> it.fillMaxWidth(1f)
-                                else -> it
-                            }
-                        },
-                )
+                        .height(4.dp)
+                        .clip(RoundedCornerShape(60))
+                        .weight(1f)
+                        .background(NestTheme.colors.NN._100.copy(alpha = 0.4f))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(NestTheme.colors.NN._100)
+                            .fillMaxHeight().let {
+                                when (index) {
+                                    currentPosition -> it.fillMaxWidth(progress)
+                                    in 0..currentPosition -> it.fillMaxWidth(1f)
+                                    else -> it
+                                }
+                            },
+                    )
+                }
+                Spacer(modifier = Modifier.width(4.dp))
             }
-            Spacer(modifier = Modifier.width(4.dp))
         }
     }
 }
@@ -100,16 +105,11 @@ private fun StoriesDetailTimerContent(
 @Composable
 internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
+        currentPosition = 0,
         itemCount = 3,
-        data = StoriesDetailUiModel(
-            id = "1",
-            selected = 1,
-            event = START,
-            imageContent = "",
-        )
+        data = StoriesDetailItem()
     ) { }
 }
 
 private const val TARGET_ANIMATION = 1F
 private const val INITIAL_ANIMATION = 0F
-private const val TIMER_DURATION = 7 * 1000

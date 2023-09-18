@@ -2,12 +2,16 @@ package com.tokopedia.stories.view.activity
 
 import android.content.res.Resources
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.utils.SHOP_ID
+import com.tokopedia.stories.view.utils.SHOP_ID_INDEX_APP_LINK
+import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
 import javax.inject.Inject
 
 class StoriesActivity : BaseActivity() {
@@ -30,7 +34,7 @@ class StoriesActivity : BaseActivity() {
 
     override fun getTheme(): Resources.Theme {
         val theme = super.getTheme()
-        theme.applyStyle(R.style.Story_FullScreen, true)
+        theme.applyStyle(R.style.Stories_Theme, true)
         return theme
     }
 
@@ -48,8 +52,7 @@ class StoriesActivity : BaseActivity() {
 
         val path = data.pathSegments
         bundle = Bundle().apply {
-            putString(SHOP_ID, path[SHOP_ID_INDEX])
-            if (path.size > STORIES_ID_INDEX) putString(STORIES_ID, path[STORIES_ID_INDEX])
+            putString(SHOP_ID, path[SHOP_ID_INDEX_APP_LINK])
         }
     }
 
@@ -60,33 +63,31 @@ class StoriesActivity : BaseActivity() {
     }
 
     private fun openFragment() {
-        supportFragmentManager.executePendingTransactions()
-        val existingFragment = supportFragmentManager.findFragmentByTag(StoriesGroupFragment.TAG)
-        if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
+        supportFragmentManager.apply {
+            executePendingTransactions()
+            val existingFragment = findFragmentByTag(TAG_FRAGMENT_STORIES_GROUP)
+            if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
+            beginTransaction().apply {
+                replace(
+                    binding.fragmentContainer.id,
+                    getStoriesFragment(),
+                    TAG_FRAGMENT_STORIES_GROUP,
+                )
+            }.commit()
+        }
+    }
 
-        supportFragmentManager.beginTransaction().apply {
-            add(
-                binding.fragmentContainer.id,
-                StoriesGroupFragment.getFragment(
-                    fragmentManager = supportFragmentManager,
-                    classLoader = classLoader,
-                    bundle = bundle ?: Bundle(),
-                ),
-                StoriesGroupFragment.TAG,
-            )
-        }.commit()
+    private fun getStoriesFragment(): Fragment {
+        return StoriesGroupFragment.getFragment(
+            fragmentManager = supportFragmentManager,
+            classLoader = classLoader,
+            bundle = bundle ?: Bundle(),
+        )
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    companion object {
-        private const val SHOP_ID = "shop_id"
-        private const val STORIES_ID = "stories_id"
-        private const val SHOP_ID_INDEX = 1
-        private const val STORIES_ID_INDEX = 2
     }
 
 }
