@@ -188,7 +188,7 @@ public class BranchWrapper implements WrapperInterface {
                 if (error == null) {
                     String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
                     String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
-
+                    String minVersion = referringParams.optString(LinkerConstants.KEY_MIN_ANDROID_VERSION);
                     if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://") &&
                             !TextUtils.isEmpty(deeplink)) {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
@@ -197,7 +197,7 @@ public class BranchWrapper implements WrapperInterface {
                     }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
-                                LinkerUtils.createDeeplinkData(deeplink, promoCode));
+                                LinkerUtils.createDeeplinkData(deeplink, promoCode, minVersion));
                     }
                     checkAndSendUtmParams(context, referringParams);
                     if (!TextUtils.isEmpty(deeplink)) {

@@ -96,6 +96,11 @@ public interface LinkerConstants {
     String KEY_GOOGLE_BUSINESS_VERTICAL = "google_business_vertical";
     String KEY_ITEM_ID = "item_id";
 
+    String KEY_MIN_ANDROID_VERSION = "an_min_version";
+    String KEY_MAX_ANDROID_VERSION = "an_max_version";
+    String KEY_MIN_IOS_VERSION = "ios_min_version";
+    String KEY_MAX_IOS_VERSION = "ios_max_version";
+
     String LABEL_SHARING = "sharing";
     String EMAIL_LABLE = "email";
     String PHONE_LABLE = "phone";
@@ -171,5 +176,4 @@ public interface LinkerConstants {
 
     String QUERY_INITIATOR = "?";
     String QUERY_PARAM_SEGREGATOR = "&";
-
 }
