@@ -1,8 +1,10 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,6 +23,7 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
@@ -35,6 +38,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.toString
@@ -61,7 +65,7 @@ class ShopHomeNplCampaignViewHolder(
     private val timerUnify: TimerUnifySingle? = viewBinding?.nplTimer
     private val timerMoreThanOneDay: Typography? = viewBinding?.textTimerMoreThan1Day
     private val textTimeDescription: Typography? = viewBinding?.nplTimerDescription
-    private val textSeeAll: Typography? = viewBinding?.textSeeAll
+    private var iconCtaChevron: IconUnify? = viewBinding?.iconCtaChevron
     private val loaderRemindMe: LoaderUnify? = viewBinding?.loaderRemindMe
     private val nplReminderView: CardUnify2? = viewBinding?.nplReminderView
     private val remindMeText: Typography? = viewBinding?.tvNplRemindMe
@@ -71,6 +75,7 @@ class ShopHomeNplCampaignViewHolder(
     private val textFollowersOnly: Typography? = viewBinding?.tvExclusiveFollower
     private val nplPromoOfferContainer: ConstraintLayout? = viewBinding?.nplPromoOfferContainer
     private val textVoucherWording: Typography? = viewBinding?.nplOfferText
+    private val containerProductList: View? = viewBinding?.containerProductList
     override val coroutineContext = masterJob + Dispatchers.Main
 
     companion object {
@@ -81,6 +86,7 @@ class ShopHomeNplCampaignViewHolder(
         private const val NPL_RULE_ID_FOLLOWERS_ONLY = "33"
         private const val RV_CAROUSEL_MARGIN_TOP = 24f
         private const val BANNER_IMAGE_RATION_EMPTY_PRODUCT = "1:1"
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     private var productListCampaignAdapter: ShopCampaignCarouselProductAdapter? = null
@@ -108,43 +114,74 @@ class ShopHomeNplCampaignViewHolder(
         setWidgetImpressionListener(model)
         setFollowersOnlyView(model)
         setVoucherPromoOffer(model)
-        checkFestivity(model)
+        configColorTheme(model)
     }
 
-    private fun checkFestivity(model: ShopHomeNewProductLaunchCampaignUiModel) {
+    private fun configColorTheme(model: ShopHomeNewProductLaunchCampaignUiModel) {
         if (model.isFestivity) {
             configFestivity()
         } else {
-            configNonFestivity()
+            if (model.header.isOverrideTheme) {
+                configReimaginedColor(model.header.colorSchema)
+            } else {
+                configDefaultColor()
+            }
         }
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
+        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        textTitle?.setTextColor(titleColor)
+        textTimeDescription?.setTextColor(subTitleColor)
+        iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
+        imageTnc?.setColorFilter(informationIconColor)
+        timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        timerMoreThanOneDay?.apply {
+            background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
+            setTextColor(titleColor)
+        }
+        setShopReimaginedContainerMargin()
     }
 
     private fun configFestivity() {
         val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         textTitle?.setTextColor(festivityTextColor)
         textTimeDescription?.setTextColor(festivityTextColor)
-        textSeeAll?.setTextColor(festivityTextColor)
+        iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(festivityTextColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
         timerMoreThanOneDay?.apply {
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_white_rect)
             setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.shop.common.R.color.dms_shop_festivity_timer_text_color))
         }
+        setShopReimaginedContainerMargin()
     }
 
-    private fun configNonFestivity() {
+    private fun configDefaultColor() {
         val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         textTitle?.setTextColor(defaultTitleColor)
         textTimeDescription?.setTextColor(defaultSubTitleColor)
-        textSeeAll?.setTextColor(defaultCtaColor)
+        iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(defaultInformationIconColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
             setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        }
+    }
+
+    private fun setShopReimaginedContainerMargin() {
+        containerProductList?.let {
+            it.clipToOutline = true
+            it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
     }
 
@@ -415,12 +452,10 @@ class ShopHomeNplCampaignViewHolder(
         val productList = model.data?.firstOrNull()?.productList ?: listOf()
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
         val isShowCta = (ctaText.isNotEmpty()) && (isStatusCampaignOngoing(statusCampaign)) && (productList.size > Int.ONE)
-        textSeeAll?.apply {
+        iconCtaChevron?.apply {
             if (!isShowCta) {
-                text = ""
                 hide()
             } else {
-                text = ctaText
                 setOnClickListener {
                     shopHomeCampaignNplWidgetListener.onClickCtaCampaignNplWidget(model)
                 }

@@ -8,6 +8,8 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
+    const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
+
 
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"

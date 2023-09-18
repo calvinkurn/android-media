@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -105,6 +106,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.analytic.model.ShopHomePersoProductComparisonWidgetImpressionTrackerModel
+import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -118,6 +120,7 @@ import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
+import com.tokopedia.shop.common.data.model.ShopPageProductDirectPurchaseWidgetAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
@@ -127,10 +130,13 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCra
 import com.tokopedia.shop.common.util.ShopPageRemoteConfigChecker
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.util.getIndicatorCount
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopBannerTimerSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
@@ -155,14 +161,22 @@ import com.tokopedia.shop.home.WidgetType.PROMO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
+import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
+import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
+import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchaseByEtalaseWidgetListener
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
+import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
+import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
@@ -173,6 +187,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
@@ -187,12 +202,20 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
+import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
-import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -201,6 +224,7 @@ import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -243,7 +267,15 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener {
+    ShopHomeDisplayBannerTimerWidgetListener,
+    ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
+    ShopHomeShowcaseNavigationListener,
+    ShopHomeShowcaseNavigationDependencyProvider,
+    ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
+    ShopBannerProductGroupWidgetTabDependencyProvider,
+    ShopBannerProductGroupListener,
+    ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
+    ShopHomeDirectPurchaseByEtalaseWidgetListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -398,7 +430,15 @@ open class ShopPageHomeFragment :
             shopHomeProductListSellerEmptyListener = this,
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
-            shopHomeDisplayBannerTimerWidgetListener = this
+            shopHomeDisplayBannerTimerWidgetListener = this,
+            shopHomeDisplayBannerProductHotspotListener = this,
+            shopHomeShowcaseNavigationListener = this,
+            shopHomeShowcaseNavigationDependencyProvider = this,
+            shopHomeV4TerlarisViewHolderListener = this,
+            shopBannerProductGroupListener = this,
+            shopBannerProductGroupWidgetTabDependencyProvider = this,
+            shopHomeDisplayAdvanceCarouselBannerWidgetListener = this,
+            shopHomeDirectPurchaseByEtalaseWidgetListener = this
         )
     }
 
@@ -464,7 +504,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun isShopHomeTabSelected(): Boolean {
-        return (parentFragment as? InterfaceShopPageHeader)?.isTabSelected(this::class.java)
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isTabSelected(this::class.java)
             ?: false
     }
 
@@ -523,6 +563,7 @@ open class ShopPageHomeFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        configStickyHeaderView()
         getRecyclerView(view)?.let {
             it.clearOnScrollListeners()
             it.layoutManager = staggeredGridLayoutManager
@@ -543,7 +584,38 @@ open class ShopPageHomeFragment :
         observeCheckBannerTimerRemindMeStatusData()
         observeHomeWidgetListVisitable()
         observeUpdatedBannerTimerUiModelData()
+        observeDirectPurchaseProductWidgetAtcResult()
         isLoadInitialData = true
+    }
+
+    private fun configStickyHeaderView() {
+        if (isOverrideTheme()) {
+            stickyHeaderView?.setShapeBackgroundColorIntValue(
+                ShopUtil.parseColorFromHexString(getBodyBackgroundHexColor())
+            )
+        }
+    }
+
+    private fun getBodyBackgroundHexColor(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyBackgroundHexColor().orEmpty()
+    }
+
+    private fun observeDirectPurchaseProductWidgetAtcResult() {
+        viewModel?.directPurchaseProductWidgetAtcResult?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    showToastSuccess(
+                        it.data.data.message.joinToString(separator = ", "),
+                        getString(R.string.see_label)
+                    ) {
+                        goToCart()
+                    }
+                }
+                is Fail -> {
+                    showErrorToast(it.throwable.message.orEmpty())
+                }
+            }
+        }
     }
 
     private fun observeUpdatedBannerTimerUiModelData() {
@@ -598,7 +670,7 @@ open class ShopPageHomeFragment :
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(R.string.shop_string_ok)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
         viewModel?.toggleBannerTimerRemindMe(
             shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
@@ -626,7 +698,7 @@ open class ShopPageHomeFragment :
                 getString(R.string.shop_string_ok)
             ) {
                 shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
-            }.show()
+            }.setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
     }
 
@@ -720,6 +792,7 @@ open class ShopPageHomeFragment :
         topView = viewBinding?.topView
         centerView = viewBinding?.centerView
         bottomView = viewBinding?.bottomView
+        stickyHeaderView = viewBinding?.stickySingleHeaderView
     }
 
     protected open fun observeShopHomeWidgetContentData() {
@@ -790,14 +863,15 @@ open class ShopPageHomeFragment :
     }
 
     private fun setFestivityRvDecoration() {
-        val anyFestivityWidget = shopHomeAdapter?.getShopHomeWidgetData().orEmpty().any {
-            it.isFestivity
-        }
-        if (anyFestivityWidget) {
+        if (shopHomeAdapter?.anyFestivityOnShopHomeWidget() == true) {
             getRecyclerView(view)?.let {
                 if (it.itemDecorationCount == Int.ZERO) {
                     context?.let { ctx ->
-                        it.addItemDecoration(ShopFestivityRvItemDecoration(ctx))
+                        it.addItemDecoration(ShopFestivityRvItemDecoration(
+                            ctx,
+                            getBodyBackgroundHexColor(),
+                            isOverrideTheme()
+                        ))
                     }
                 }
             }
@@ -933,7 +1007,11 @@ open class ShopPageHomeFragment :
     }
 
     protected fun getSelectedFragment(): Fragment? {
-        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedFragmentInstance()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
+        }
     }
 
     override fun onResume() {
@@ -1041,7 +1119,9 @@ open class ShopPageHomeFragment :
             isLogin,
             isThematicWidgetShown,
             isEnableDirectPurchase,
-            shopId
+            shopId,
+            isOverrideTheme(),
+            getShopPageColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1274,7 +1354,28 @@ open class ShopPageHomeFragment :
         observeDeleteCartLiveData()
         observeUpdatedShopHomeWidgetQuantityData()
         observeShopAtcTrackerLiveData()
+        observeShopProductDirectPurchaseWidgetAtcLiveData()
         observeIsCreateAffiliateCookieAtcProduct()
+    }
+
+    private fun observeShopProductDirectPurchaseWidgetAtcLiveData() {
+        viewModel?.shopPageProductDirectPurchaseWidgetAtcTracker?.observe(viewLifecycleOwner) {
+            sendClickAddToCartProductDirectPurchaseWidgetTracker(it)
+        }
+    }
+
+    private fun sendClickAddToCartProductDirectPurchaseWidgetTracker(
+        atcTrackerModel: ShopPageProductDirectPurchaseWidgetAtcTracker?
+    ) {
+        atcTrackerModel?.let {
+            shopPageHomeTracking.onAddToCartProductDirectPurchaseWidget(
+                atcTrackerModel,
+                shopId,
+                userId,
+                shopName,
+                customDimensionShopPage.shopType.orEmpty()
+            )
+        }
     }
 
     private fun observeIsCreateAffiliateCookieAtcProduct() {
@@ -1294,19 +1395,21 @@ open class ShopPageHomeFragment :
     }
 
     private fun observeShopAtcTrackerLiveData() {
-        viewModel?.shopPageAtcTracker?.observe(viewLifecycleOwner, {
+        viewModel?.shopPageAtcTracker?.observe(viewLifecycleOwner) {
             when (it.atcType) {
                 ShopPageAtcTracker.AtcType.ADD -> {
                     sendClickAddToCartTracker(it)
                 }
+
                 ShopPageAtcTracker.AtcType.UPDATE_ADD, ShopPageAtcTracker.AtcType.UPDATE_REMOVE -> {
                     sendUpdateCartProductQuantityTracker(it)
                 }
+
                 else -> {
                     sendRemoveCartProductTracker(it)
                 }
             }
-        })
+        }
     }
 
     private fun sendClickAddToCartTracker(atcTrackerModel: ShopPageAtcTracker) {
@@ -1384,7 +1487,7 @@ open class ShopPageHomeFragment :
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(R.string.shop_string_ok)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
         shopHomeAdapter?.updateRemindMeStatusCampaignNplWidgetData(campaignId)
     }
@@ -1421,7 +1524,7 @@ open class ShopPageHomeFragment :
                 View.OnClickListener {
                     shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
                 }
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
         }
     }
@@ -1446,7 +1549,7 @@ open class ShopPageHomeFragment :
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(R.string.shop_page_label_oke)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
         shopHomeAdapter?.updateRemindMeStatusCampaignFlashSaleWidgetData(campaignId)
     }
@@ -1466,7 +1569,7 @@ open class ShopPageHomeFragment :
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
                 getString(R.string.shop_page_label_oke)
-            ).show()
+            ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
         }
     }
 
@@ -1690,7 +1793,9 @@ open class ShopPageHomeFragment :
             isLogin,
             isThematicWidgetShown,
             isEnableDirectPurchase,
-            shopId
+            shopId,
+            isOverrideTheme(),
+            getShopPageColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1799,7 +1904,11 @@ open class ShopPageHomeFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? ShopPageHeaderFragment)?.expandHeader()
+                    if (ShopUtil.isEnableShopPageReImagined()) {
+                        (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
+                    } else {
+                        (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
+                    }
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex) {
                     hideScrollToTopButton()
@@ -1949,7 +2058,9 @@ open class ShopPageHomeFragment :
                 shopId,
                 widgetUserAddressLocalData,
                 isThematicWidgetShown,
-                isEnableDirectPurchase
+                isEnableDirectPurchase,
+                isOverrideTheme(),
+                getShopPageColorSchema()
             )
         }
     }
@@ -2050,7 +2161,7 @@ open class ShopPageHomeFragment :
             }
             REQUEST_CODE_USER_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    (parentFragment as? InterfaceShopPageHeader)?.refreshData()
+                    (getRealParentFragment() as? InterfaceShopPageHeader)?.refreshData()
                 }
             }
             REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
@@ -3524,7 +3635,7 @@ open class ShopPageHomeFragment :
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-            view?.let { Toaster.build(it, message).show() }
+            view?.let { Toaster.build(it, message).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show() }
         }
     }
 
@@ -3543,21 +3654,21 @@ open class ShopPageHomeFragment :
                         Toaster.TYPE_NORMAL,
                         ctaText,
                         ctaClickListener
-                    ).show()
+                    ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
                 } ?: Toaster.build(
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     ctaText
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
 
     protected fun showErrorToast(message: String) {
         activity?.run {
-            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show() }
         }
     }
 
@@ -4261,15 +4372,27 @@ open class ShopPageHomeFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderFragment)?.hideScrollToTopButton()
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
+        }
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
+        }
     }
 
     protected open fun getSelectedTabName(): String {
-        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedTabName().orEmpty()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
+        }
     }
 
     override fun getWidgetCarouselPositionSavedState(): SparseIntArray {
@@ -4278,6 +4401,15 @@ open class ShopPageHomeFragment :
 
     override fun getFragmentTrackingQueue(): TrackingQueue? {
         return trackingQueue
+    }
+
+    private fun isShopHomeTabHasFestivity(): Boolean {
+        return shopHomeAdapter?.anyFestivityOnShopHomeWidget().orFalse()
+    }
+
+    override fun getShopPageColorSchema(): ShopPageColorSchema {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyColorSchema()
+            ?: ShopPageColorSchema()
     }
 
     override fun onProductCardComparisonImpressed(
@@ -4339,15 +4471,27 @@ open class ShopPageHomeFragment :
     }
 
     private fun showConfetti() {
-        (parentFragment as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.setupShopPageLottieAnimation(homeTabLottieUrl)
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
+        }
     }
 
     private fun isShowConfetti(): Boolean {
-        return (parentFragment as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.isShowConfetti().orFalse()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
+        }
     }
 
     private fun setConfettiAlreadyShown() {
-        (parentFragment as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.setConfettiAlreadyShown()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
+        }
     }
 
     fun setHomeTabListBackgroundColor(listBackgroundColor: List<String>) {
@@ -4477,7 +4621,7 @@ open class ShopPageHomeFragment :
 
                 if (widget?.model?.hasSuccessfulTranscodedChannel == true) showWidgetTranscodeSuccessToaster()
 
-                val parent = parentFragment
+                val parent = getRealParentFragment()
                 if (parent is InterfaceShopPageHeader) {
                     val recyclerView = getRecyclerView(view)
 
@@ -4551,7 +4695,7 @@ open class ShopPageHomeFragment :
             )
         },
         isUserVisibleHint: Boolean = userVisibleHint,
-        isParentHidden: Boolean = parentFragment?.isHidden ?: true
+        isParentHidden: Boolean = getRealParentFragment()?.isHidden ?: true
     ) {
         if (::playWidgetCoordinator.isInitialized) {
             val isViewVisible = isViewResumed && isUserVisibleHint && !isParentHidden
@@ -4613,7 +4757,11 @@ open class ShopPageHomeFragment :
     }
 
     private fun updateMiniCartWidget() {
-        (parentFragment as? ShopPageHeaderFragment)?.updateMiniCartWidget()
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.updateMiniCartWidget()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.updateMiniCartWidget()
+        }
     }
 
     private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetChannelUiModel) {
@@ -4676,7 +4824,7 @@ open class ShopPageHomeFragment :
                     getString(R.string.shop_page_play_widget_sgc_video_deleted),
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_NORMAL
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
@@ -4697,7 +4845,7 @@ open class ShopPageHomeFragment :
                     clickListener = View.OnClickListener {
                         deleteChannel(channelId)
                     }
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
@@ -4710,7 +4858,7 @@ open class ShopPageHomeFragment :
                     text = getString(R.string.shop_page_play_widget_sgc_video_saved_success),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_NORMAL
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
@@ -4728,7 +4876,7 @@ open class ShopPageHomeFragment :
                     text = getString(R.string.shop_page_play_widget_sgc_link_copied),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_NORMAL
-                ).show()
+                ).setAnchorViewToShopHeaderBottomViewContainer(getShopHeaderBottomViewContainer()).show()
             }
         }
     }
@@ -4854,7 +5002,11 @@ open class ShopPageHomeFragment :
     private fun checkShouldSelectCampaignTab(appLink: String) {
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.CAMPAIGN) {
-            (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
+            if (ShopUtil.isEnableShopPageReImagined()) {
+                (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
+            } else {
+                (getRealParentFragment() as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
+            }
         }
     }
 
@@ -4923,8 +5075,547 @@ open class ShopPageHomeFragment :
     }
 
     protected fun refreshShopHeader() {
-        (parentFragment as? ShopPageHeaderFragment)?.apply {
-            refreshData()
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.apply {
+                refreshData()
+            }
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.apply {
+                refreshData()
+            }
+        }
+    }
+
+    private fun getRealParentFragment(): Fragment? {
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            parentFragment?.parentFragment
+        } else {
+            parentFragment
+        }
+    }
+
+    override fun onClickProductBannerHotspot(
+        uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+        bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
+        imageBannerPosition: Int,
+        bubblePosition: Int
+    ) {
+        val isSingleBannerImage = uiModel.data.size == Int.ONE
+        sendClickProductBannerHotspot(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.productId.orEmpty(),
+            bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.name.orEmpty(),
+            bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.displayedPrice.orEmpty(),
+            imageBannerPosition,
+            bubblePosition,
+            isSingleBannerImage,
+            shopId,
+            userId
+        )
+        RouteManager.route(context, bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.productUrl.orEmpty())
+    }
+
+    private fun sendClickProductBannerHotspot(
+        bannerId: String,
+        ratio: String,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        imageBannerPosition: Int,
+        bubblePosition: Int,
+        singleBannerImage: Boolean,
+        shopId: String,
+        userId: String
+    ) {
+        shopPageHomeTracking.clickProductBannerHotspot(
+            bannerId,
+            ratio,
+            productId,
+            productName,
+            productPrice,
+            imageBannerPosition,
+            bubblePosition,
+            singleBannerImage,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onImpressionBannerHotspotImage(
+        uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+        bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
+        imageBannerPosition: Int
+    ) {
+        val isSingleBannerImage = uiModel.data.size == Int.ONE
+        sendImpressionBannerHotspot(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            uiModel.widgetId,
+            imageBannerPosition,
+            isSingleBannerImage
+        )
+    }
+
+    private fun sendImpressionBannerHotspot(
+        bannerId: String,
+        ratio: String,
+        widgetId: String,
+        imageBannerPosition: Int,
+        singleBannerImage: Boolean
+    ) {
+        shopPageHomeTracking.impressionBannerHotspot(
+            bannerId,
+            ratio,
+            widgetId,
+            imageBannerPosition,
+            singleBannerImage,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onBannerProductGroupMainBannerClick(mainBanner: BannerProductGroupUiModel.Tab.ComponentList.Data) {
+        try {
+            RouteManager.route(activity ?: return, mainBanner.ctaLink)
+        } catch (_: Exception) {
+        }
+    }
+
+    override fun onBannerProductGroupProductClick(selectedProduct: ProductItemType) {
+        try {
+            RouteManager.route(activity ?: return, selectedProduct.appLink)
+        } catch (_: Exception) {
+        }
+    }
+
+    override fun onBannerProductGroupVerticalBannerClick(shopHomeProductCarouselVerticalBannerItemType: VerticalBannerItemType) {
+        try {
+            RouteManager.route(activity ?: return, shopHomeProductCarouselVerticalBannerItemType.appLink)
+        } catch (_: Exception) {
+        }
+    }
+
+    override fun onBannerProductGroupViewAllClick(ctaLink: String) {
+        try {
+            RouteManager.route(activity ?: return, ctaLink)
+        } catch (_: Exception) {
+        }
+    }
+
+    override fun onNavigationBannerViewAllShowcaseClick(
+        viewAllCtaAppLink: String,
+        appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
+        showcaseId: String
+    ) {
+        shopPageHomeTracking.sendShowcaseNavigationBannerWidgetViewAllClick(
+            appearance,
+            showcaseId,
+            shopId,
+            userId
+        )
+        RouteManager.route(activity ?: return, viewAllCtaAppLink)
+    }
+
+    override fun onNavigationBannerShowcaseClick(
+        selectedShowcase: Showcase,
+        uiModel: ShowcaseNavigationUiModel,
+        tabCount: Int,
+        tabName: String
+    ) {
+        if (tabCount > 1) {
+            shopPageHomeTracking.sendShowcaseNavigationShowcaseWithinTabClick(tabName, selectedShowcase, shopId, userId)
+        } else {
+            shopPageHomeTracking.sendShowcaseNavigationBannerWidgetShowcaseClick(shopId, userId, uiModel, selectedShowcase)
+        }
+
+        RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
+    }
+
+    override fun onNavigationBannerImpression(
+        uiModel: ShowcaseNavigationUiModel,
+        tabCount: Int,
+        tabName: String,
+        showcaseId: String
+    ) {
+        if (tabCount > 1) {
+            shopPageHomeTracking.sendShowcaseNavigationBannerWidgetWithTabImpression(tabName, showcaseId, shopId, userId)
+        } else {
+            shopPageHomeTracking.sendShowcaseNavigationBannerWidgetImpression(shopId, userId, uiModel)
+        }
+    }
+
+    override fun onNavigationBannerTabClick(tabName: String) {
+        if (tabName.isNotEmpty()) {
+            shopPageHomeTracking.sendShowcaseNavigationTabClick(tabName, shopId, userId)
+        }
+    }
+
+    override val productCarouselHostFragmentManager: FragmentManager
+        get() = childFragmentManager
+    override val productCarouselHostLifecycle: Lifecycle
+        get() = this.viewLifecycleOwner.lifecycle
+
+    override val currentShopId: String
+        get() = shopId
+
+    override val currentFragment: Fragment
+        get() = this
+
+    // For home tab, we also need to check whether there is any festivity widget if we want to override the theme
+    // need to be improve this logic in the future by combining this 2 logic in BE
+    override fun isOverrideTheme(): Boolean {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
+    }
+
+    override fun getShopPageHomeFragment(): ShopPageHomeFragment {
+        return this
+    }
+
+    override fun getPatternColorType(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
+    }
+
+    private fun addToCartDirectPurchaseProductWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        productModel: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        viewModel?.addToCartDirectPurchaseProductWidget(
+            productModel,
+            shopId,
+            uiModel,
+            selectedSwitcherIndex,
+            selectedEtalaseIndex
+        )
+    }
+
+    private fun redirectToEtalasePage(etalaseId: String) {
+        RouteManager.route(context, ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
+    }
+
+    override fun onImpressionAdvanceCarouselBannerItem(
+        uiModel: ShopHomeDisplayWidgetUiModel,
+        bannerItemUiModel: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
+        position: Int
+    ) {
+        shopPageHomeTracking.impressionAdvanceCarouselBannerItem(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            ShopUtil.getActualPositionFromIndex(position),
+            uiModel.widgetId,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onClickAdvanceCarouselBannerItem(
+        uiModel: ShopHomeDisplayWidgetUiModel,
+        bannerItemUiModel: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
+        position: Int
+    ) {
+        shopPageHomeTracking.clickAdvanceCarouselBannerItem(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            ShopUtil.getActualPositionFromIndex(position),
+            uiModel.widgetId,
+            shopId,
+            userId
+        )
+        RouteManager.route(context, bannerItemUiModel.appLink)
+    }
+
+    override fun onTriggerLoadProductDirectPurchaseWidget(
+        etalaseId: String,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        viewModel?.getDirectPurchaseWidgetProductData(
+            shopId,
+            etalaseId,
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+            selectedSwitcherIndex,
+            selectedEtalaseIndex,
+            shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList()
+        )
+    }
+
+    override fun onImpressionDirectPurchaseByEtalaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        position: Int
+    ) {
+        val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        val etalaseGroupName = uiModel.widgetData.titleList.firstOrNull()?.title.orEmpty()
+        val etalaseId = uiModel.widgetData.titleList.firstOrNull()?.etalaseList?.firstOrNull()?.etalaseId.orEmpty()
+        sendImpressionDirectPurchaseByEtalaseWidget(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            position,
+            uiModel.widgetId
+        )
+    }
+
+    override fun onClickEtalaseGroupDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        widgetPosition: Int,
+        selectedSwitcherIndex: Int
+    ) {
+        val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.title.orEmpty()
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.etalaseList?.firstOrNull()?.etalaseId.orEmpty()
+        val widgetId = uiModel.widgetId
+        sendClickEtalaseGroupDirectPurchaseWidgetTracker(
+            etalaseGroupName,
+            etalaseId,
+            ShopUtil.getActualPositionFromIndex(widgetPosition),
+            widgetId
+        )
+    }
+
+    override fun onClickDirectPurchaseWidgetSeeMore(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(
+            selectedSwitcherIndex
+        )?.etalaseList?.getOrNull(selectedEtalaseIndex)?.etalaseId.orEmpty()
+        redirectToEtalasePage(etalaseId)
+    }
+
+    override fun onClickEtalaseDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        widgetPosition: Int,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(
+            selectedSwitcherIndex
+        )?.etalaseList?.getOrNull(selectedEtalaseIndex)?.etalaseId.orEmpty()
+        val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(
+            selectedSwitcherIndex
+        )?.title.orEmpty()
+        val widgetId = uiModel.widgetId
+        val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        sendClickEtalaseDirectPurchaseWidgetTracker(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            widgetId,
+            widgetPosition
+        )
+    }
+
+    private fun sendClickEtalaseDirectPurchaseWidgetTracker(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        widgetId: String,
+        widgetPosition: Int
+    ) {
+        shopPageHomeTracking.clickEtalaseDirectPurchaseWidget(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            widgetId,
+            widgetPosition,
+            shopId,
+            userId
+        )
+    }
+
+    private fun sendClickEtalaseGroupDirectPurchaseWidgetTracker(
+        etalaseGroupName: String,
+        etalaseId: String,
+        widgetPosition: Int,
+        widgetId: String
+    ) {
+        shopPageHomeTracking.sendClickEtalaseGroupDirectPurchaseWidget(
+            etalaseGroupName,
+            etalaseId,
+            widgetPosition,
+            widgetId,
+            shopId,
+            userId
+        )
+    }
+
+    private fun sendImpressionDirectPurchaseByEtalaseWidget(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        position: Int,
+        widgetId: String
+    ) {
+        shopPageHomeTracking.impressionDirectPurchaseByEtalaseWidget(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            position,
+            widgetId,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onClickAtcProductDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        productModel: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        if (isOwner) {
+            val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
+            showErrorToast(sellerViewAtcErrorMessage)
+        } else {
+            if (productModel.isVariant) {
+                AtcVariantHelper.goToAtcVariant(
+                    context = requireContext(),
+                    productId = productModel.productId,
+                    pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
+                    shopId = shopId,
+                    startActivitResult = this::startActivityForResult,
+                    showQuantityEditor = false
+                )
+            } else {
+                if (isLogin) {
+                    addToCartDirectPurchaseProductWidget(
+                        uiModel,
+                        productModel,
+                        selectedSwitcherIndex,
+                        selectedEtalaseIndex
+                    )
+                } else {
+                    redirectToLoginPage()
+                }
+            }
+        }
+    }
+
+    override fun onImpressionProductDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        productModel: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int,
+        productPosition: Int
+    ) {
+        val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.title.orEmpty()
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(selectedEtalaseIndex)?.etalaseList?.firstOrNull()?.etalaseId.orEmpty()
+        sendImpressionProductDirectPurchaseWidgetTracker(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            productPosition,
+            productModel.productId,
+            productModel.name,
+            productModel.isVariant,
+            productModel.price
+        )
+    }
+
+    private fun sendImpressionProductDirectPurchaseWidgetTracker(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        productPosition: Int,
+        productId: String,
+        productName: String,
+        isVariant: Boolean,
+        price: String
+    ) {
+        shopPageHomeTracking.impressionProductDirectPurchaseWidget(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            productPosition,
+            productId,
+            productName,
+            isVariant,
+            price,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onClickProductDirectPurchaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        productModel: ProductCardDirectPurchaseDataModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int,
+        productPosition: Int
+    ) {
+        val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.title.orEmpty()
+        val etalaseId = uiModel.widgetData.titleList.getOrNull(selectedEtalaseIndex)?.etalaseList?.firstOrNull()?.etalaseId.orEmpty()
+        sendClickProductDirectPurchaseWidgetTracker(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            productPosition,
+            productModel.productId,
+            productModel.name,
+            productModel.isVariant,
+            productModel.price
+        )
+        goToPDP(
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productModel.productId
+            )
+        )
+    }
+
+    private fun sendClickProductDirectPurchaseWidgetTracker(
+        totalEtalaseGroup: Int,
+        etalaseGroupName: String,
+        etalaseId: String,
+        productPosition: Int,
+        productId: String,
+        productName: String,
+        isVariant: Boolean,
+        price: String
+    ) {
+        shopPageHomeTracking.clickProductDirectPurchaseWidget(
+            totalEtalaseGroup,
+            etalaseGroupName,
+            etalaseId,
+            productPosition,
+            productId,
+            productName,
+            isVariant,
+            price,
+            shopId,
+            userId
+        )
+    }
+
+    private fun getShopHeaderBottomViewContainer(): View? {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBottomViewContainer()
+    }
+
+    override fun onProductClick(trackerModel: ShopHomeTerlarisWidgetTrackerDataModel) {
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, trackerModel.productId)
+        if (!isOwner) {
+            shopPageHomeTracking.clickReimaginedTerlarisWidget(
+                trackerModel = trackerModel,
+                shopId = shopId,
+                shopName = shopName,
+                userId = userId
+            )
+        }
+    }
+
+    override fun onProductImpression(carouselData: List<ShopHomeProductUiModel>, position: Int, widgetId: String) {
+        if (!isOwner) {
+            shopPageHomeTracking.impressReimaginedTerlarisWidget(
+                carouselData = carouselData,
+                shopId = shopId,
+                shopName = shopName,
+                userId = userId,
+                widgetId = widgetId
+            )
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.shop.common.view.viewholder
 
+import android.graphics.drawable.ColorDrawable
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -11,6 +13,7 @@ import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.databinding.ItemShopShowcaseListImageBinding
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -27,6 +30,10 @@ abstract class ShopShowcaseListImageBaseViewHolder(
     var itemIvShowcaseImage: ImageUnify? = null
     var itemShowcaseCampaignLabel: Label? = null
     var itemShowcaseActionButton: View? = null
+    var itemSeparatorView: View? = null
+    private var showcaseNameColor: Int = MethodChecker.getColor(itemViewBinding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+    private var showcaseCountColor: Int = MethodChecker.getColor(itemViewBinding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+    private var itemSeparatorColor: Int = MethodChecker.getColor(itemViewBinding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
 
     abstract fun bind(element: Any)
 
@@ -36,13 +43,19 @@ abstract class ShopShowcaseListImageBaseViewHolder(
             itemTvShowcaseCount = tvShowcaseCount
             itemIvShowcaseImage = ivShowcaseImage
             itemShowcaseCampaignLabel = showcaseCampaignLabel
+            itemSeparatorView = itemSeparator
         }
     }
 
-    fun renderShowcaseMainInfo(element: Any, isMyShop: Boolean = false) {
+    fun renderShowcaseMainInfo(
+        element: Any,
+        isMyShop: Boolean = false,
+        isOverrideTheme: Boolean = false,
+        shopPageColorSchema: ShopPageColorSchema = ShopPageColorSchema()
+    ) {
         when (element) {
             is ShopEtalaseModel -> renderShowcaseMainInfo(element, isMyShop)
-            is ShopEtalaseUiModel -> renderShowcaseMainInfo(element, isMyShop)
+            is ShopEtalaseUiModel -> renderShowcaseUiModelMainInfo(element, isMyShop, isOverrideTheme, shopPageColorSchema)
         }
     }
 
@@ -120,7 +133,12 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         setShowcaseImage(element.imageUrl)
     }
 
-    private fun renderShowcaseMainInfo(element: ShopEtalaseUiModel, isMyShop: Boolean) {
+    private fun renderShowcaseUiModelMainInfo(
+        element: ShopEtalaseUiModel,
+        isMyShop: Boolean,
+        isOverrideTheme: Boolean,
+        shopPageColorSchema: ShopPageColorSchema
+    ) {
         // set showcase name & count
         setShowcaseInfo(name = element.name, count = element.count)
 
@@ -129,7 +147,49 @@ abstract class ShopShowcaseListImageBaseViewHolder(
 
         // set showcase image
         setShowcaseImage(element.imageUrl)
+        configColorTheme(isOverrideTheme, shopPageColorSchema)
     }
+
+    private fun configColorTheme(
+        isOverrideTheme: Boolean,
+        shopPageColorSchema: ShopPageColorSchema
+    ) {
+        if (isOverrideTheme) {
+            configReimaginedColor(shopPageColorSchema)
+        } else {
+            configDefaultColor()
+        }
+        itemTvShowcaseName?.setTextColor(showcaseNameColor)
+        itemTvShowcaseCount?.setTextColor(showcaseCountColor)
+        itemSeparatorView?.background = ColorDrawable(itemSeparatorColor)
+    }
+    private fun configReimaginedColor(shopPageColorSchema: ShopPageColorSchema) {
+        showcaseNameColor = shopPageColorSchema.getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        showcaseCountColor = shopPageColorSchema.getColorIntValue(
+                ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS
+        )
+        itemSeparatorColor = shopPageColorSchema.getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS
+        )
+    }
+
+    private fun configDefaultColor() {
+        showcaseNameColor = MethodChecker.getColor(
+            itemViewBinding.root.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        )
+        showcaseCountColor = MethodChecker.getColor(
+            itemViewBinding.root.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+        )
+        itemSeparatorColor = MethodChecker.getColor(
+            itemViewBinding.root.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN200
+        )
+    }
+
 
     private fun setShowcaseInfo(name: String, count: Int) {
         itemTvShowcaseName?.text = name

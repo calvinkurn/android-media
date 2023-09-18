@@ -1605,7 +1605,9 @@ class ShopHomeViewModelTest {
                 mockShopId,
                 addressWidgetData,
                 false,
-                mockIsDirectPurchaseTrue
+                mockIsDirectPurchaseTrue,
+                getIsOverrideTheme(),
+                getColorSchema()
             )
             assert(shopHomeWidgetContentData.await() is Success)
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.isNotEmpty() == true)
@@ -1666,7 +1668,9 @@ class ShopHomeViewModelTest {
                 mockShopId,
                 addressWidgetData,
                 false,
-                mockIsDirectPurchaseTrue
+                mockIsDirectPurchaseTrue,
+                getIsOverrideTheme(),
+                getColorSchema()
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == resultWidget)
         }
@@ -1706,7 +1710,9 @@ class ShopHomeViewModelTest {
                 mockShopId,
                 addressWidgetData,
                 false,
-                mockIsDirectPurchaseTrue
+                mockIsDirectPurchaseTrue,
+                getIsOverrideTheme(),
+                getColorSchema()
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == null)
         }
@@ -1729,7 +1735,9 @@ class ShopHomeViewModelTest {
                 mockShopId,
                 addressWidgetData,
                 false,
-                mockIsDirectPurchaseTrue
+                mockIsDirectPurchaseTrue,
+                getIsOverrideTheme(),
+                getColorSchema()
             )
             assert(shopHomeWidgetContentData.await() is Fail)
             assert(shopHomeWidgetContentDataError.await().isNotEmpty())

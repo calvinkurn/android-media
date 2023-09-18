@@ -13,14 +13,20 @@ import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabIconUrlModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentTabContentWrapper
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 
@@ -30,6 +36,9 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 ) : FragmentStateAdapter(fragment) {
     private var listShopPageTabModel = listOf<ShopPageHeaderTabModel>()
     private val ctxRef = WeakReference(ctx)
+    private var isOverrideTheme: Boolean = false
+    private var patternColorType: String = ""
+    private var colorSchema: ShopPageColorSchema = ShopPageColorSchema()
 
     companion object {
         @ColorRes
@@ -75,7 +84,40 @@ internal class ShopPageHeaderFragmentPagerAdapter(
         isActive: Boolean
     ): ShopPageDynamicTabViewBinding? {
         return getDynamicTabViewBinding(view)?.apply {
-            setDynamicTabIcon(this, tab.position, isActive)
+            setupTabView(this, tab.position, isActive)
+        }
+    }
+
+    private fun setupTabView(
+        shopPageDynamicTabViewBinding: ShopPageDynamicTabViewBinding,
+        position: Int,
+        isActive: Boolean
+    ) {
+        setDynamicTabIcon(shopPageDynamicTabViewBinding, position, isActive)
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            setTabName(shopPageDynamicTabViewBinding.textTabName, position, isActive)
+        } else {
+            shopPageDynamicTabViewBinding.textTabName.hide()
+        }
+    }
+
+    private fun setTabName(textTabName: Typography, position: Int, active: Boolean) {
+        ctx?.let {
+            textTabName.apply {
+                show()
+                if (active) {
+                    val linkColor = colorSchema.getColorIntValue(
+                        ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR
+                    )
+                    setTextColor(linkColor)
+                } else {
+                    val highEmphasizeColor = colorSchema.getColorIntValue(
+                        ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+                    )
+                    setTextColor(highEmphasizeColor)
+                }
+                text = listShopPageTabModel.getOrNull(position)?.tabText.orEmpty()
+            }
         }
     }
 
@@ -88,7 +130,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     }
 
     fun getDynamicTabView(position: Int, selectedPosition: Int): View = ShopPageDynamicTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
-        setDynamicTabIcon(this, position, position == selectedPosition)
+        setupTabView(this, position, position == selectedPosition)
     }.root
 
     private fun getTabIconDrawable(position: Int, isActive: Boolean): Int? = ctxRef.get()?.run {
@@ -152,14 +194,33 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 iconDataJsonString,
                 ShopPageHeaderTabIconUrlModel::class.java
             ).run {
-                if (ctx?.isDarkMode() == true) {
-                    darkModeUrl
-                } else {
-                    lightModeUrl
+                if(isOverrideTheme){
+                    configIconColorByBackgroundTheme(lightModeUrl, darkThemeUrl)
+                }else{
+                    configIconColorByDeviceTheme(lightModeUrl, darkModeUrl)
                 }
             }
         } catch (e: Exception) {
             ""
+        }
+    }
+
+    private fun configIconColorByDeviceTheme(lightModeUrl: String, darkModeUrl: String): String {
+        return if (ctx?.isDarkMode() == true) {
+            darkModeUrl
+        } else {
+            lightModeUrl
+        }
+    }
+
+    private fun configIconColorByBackgroundTheme(
+        lightModeUrl: String,
+        darkThemeUrl: String
+    ): String {
+        return if (patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
+            darkThemeUrl
+        } else {
+            lightModeUrl
         }
     }
 
@@ -203,17 +264,49 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 
     fun getFragmentPosition(classType: Class<*>): Int {
         var fragmentPosition = 0
-        listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
-            if (shopPageTabModel.tabFragment::class.java == classType) {
-                fragmentPosition = index
+        if(ShopUtil.isEnableShopPageReImagined()) {
+            listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
+                val tabFragmentInsideWrapper = (shopPageTabModel.tabFragment as? ShopPageHeaderFragmentTabContentWrapper)?.getTabFragment()
+                tabFragmentInsideWrapper?.let {
+                    if (it::class.java == classType) {
+                        fragmentPosition = index
+                    }
+                }
+            }
+        } else {
+            listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
+                if (shopPageTabModel.tabFragment::class.java == classType) {
+                    fragmentPosition = index
+                }
             }
         }
         return fragmentPosition
     }
 
     fun isFragmentObjectExists(classType: Class<*>): Boolean {
-        return listShopPageTabModel.firstOrNull {
-            it.tabFragment::class.java == classType
-        } != null
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            listShopPageTabModel.firstOrNull {
+                val tabFragmentInsideWrapper =
+                    (it.tabFragment as? ShopPageHeaderFragmentTabContentWrapper)?.getTabFragment()
+                tabFragmentInsideWrapper?.let { tabFragmentInsideWrapper ->
+                    tabFragmentInsideWrapper::class.java == classType
+                }.orFalse()
+            } != null
+        } else {
+            listShopPageTabModel.firstOrNull {
+                it.tabFragment::class.java == classType
+            } != null
+        }
+
+    }
+
+    fun setPageTheme(
+        isOverrideTheme: Boolean,
+        patternColorType: String,
+        colorSchema: ShopPageColorSchema
+    ) {
+        this.isOverrideTheme = isOverrideTheme
+        this.patternColorType = patternColorType
+        this.colorSchema = colorSchema
     }
 }
