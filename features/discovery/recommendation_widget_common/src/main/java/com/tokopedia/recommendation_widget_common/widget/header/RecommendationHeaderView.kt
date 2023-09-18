@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.widget.header
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -22,12 +21,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.viewutil.DateHelper
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.recommendation_widget_common.viewutil.invertIfDarkMode
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
-class RecommendationHeaderView: FrameLayout {
+class RecommendationHeaderView : FrameLayout {
 
     private var itemView: View?
 
@@ -48,16 +48,20 @@ class RecommendationHeaderView: FrameLayout {
         this.itemView = view
     }
 
-    fun bindData(data: RecommendationWidget, listener: RecommendationHeaderListener?) {
+    fun bindData(
+        data: RecommendationWidget,
+        tracking: RecommendationCarouselWidgetTracking?,
+        listener: RecommendationHeaderListener?
+    ) {
         this.listener = listener
-        handleHeaderComponent(data)
+        handleHeaderComponent(data = data, tracking = tracking)
     }
 
-    fun bindTemporaryHeaderName(tempData : RecommendationWidget) {
-        handleHeaderComponent(tempData)
+    fun bindTemporaryHeaderName(tempData: RecommendationWidget, tracking: RecommendationCarouselWidgetTracking?) {
+        handleHeaderComponent(tempData, tracking)
     }
 
-    private fun handleHeaderComponent(data: RecommendationWidget) {
+    private fun handleHeaderComponent(data: RecommendationWidget, tracking: RecommendationCarouselWidgetTracking?) {
         val channelTitleContainer: ConstraintLayout? = itemView?.findViewById(R.id.channel_title_container)
         val stubChannelTitle: View? = itemView?.findViewById(R.id.channel_title)
         val stubCountDownView: View? = itemView?.findViewById(R.id.count_down)
@@ -67,7 +71,7 @@ class RecommendationHeaderView: FrameLayout {
         channelTitleContainer?.let {
             handleTitle(data.title, channelTitleContainer, stubChannelTitle, data)
             handleSubtitle(data.subtitle, stubChannelSubtitle, data)
-            handleSeeAllApplink(data, stubSeeAllButton, data.subtitle, channelTitleContainer)
+            handleSeeAllApplink(data, stubSeeAllButton, data.subtitle, channelTitleContainer, tracking)
             handleBackImage(data, stubSeeAllButtonUnify, data.subtitle, channelTitleContainer)
             handleHeaderExpiredTime(data, stubCountDownView)
             handleBackgroundColor(data, it, stubSeeAllButton, stubSeeAllButtonUnify)
@@ -82,7 +86,8 @@ class RecommendationHeaderView: FrameLayout {
         if (channelHeaderName?.isNotEmpty() == true) {
             channelTitleContainer.visibility = View.VISIBLE
             channelTitle = if (stubChannelTitle is ViewStub &&
-                    !isViewStubHasBeenInflated(stubChannelTitle)) {
+                !isViewStubHasBeenInflated(stubChannelTitle)
+            ) {
                 val stubChannelView = stubChannelTitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_title)
             } else {
@@ -91,8 +96,11 @@ class RecommendationHeaderView: FrameLayout {
             channelTitle?.text = channelHeaderName
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
-                    if (data.titleColor.isNotEmpty()) Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView?.context)
+                if (data.titleColor.isNotEmpty()) {
+                    Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
+                } else {
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView?.context)
+                }
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -106,7 +114,8 @@ class RecommendationHeaderView: FrameLayout {
          */
         if (channelSubtitleName?.isNotEmpty() == true) {
             channelSubtitle = if (stubChannelSubtitle is ViewStub &&
-                    !isViewStubHasBeenInflated(stubChannelSubtitle)) {
+                !isViewStubHasBeenInflated(stubChannelSubtitle)
+            ) {
                 val stubChannelView = stubChannelSubtitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_subtitle)
             } else {
@@ -115,15 +124,24 @@ class RecommendationHeaderView: FrameLayout {
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
-                    if (data.titleColor.isNotEmpty()) Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView?.context)
+                if (data.titleColor.isNotEmpty()) {
+                    Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
+                } else {
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView?.context)
+                }
             )
         } else {
             channelSubtitle?.visibility = View.GONE
         }
     }
 
-    private fun handleSeeAllApplink(data: RecommendationWidget, stubSeeAllButton: View?, channelSubtitleName: String?, channelTitleContainer: ConstraintLayout?) {
+    private fun handleSeeAllApplink(
+        data: RecommendationWidget,
+        stubSeeAllButton: View?,
+        channelSubtitleName: String?,
+        channelTitleContainer: ConstraintLayout?,
+        tracking: RecommendationCarouselWidgetTracking?
+    ) {
         /**
          * Requirement:
          * Only show `see all` button when it is exist
@@ -131,7 +149,8 @@ class RecommendationHeaderView: FrameLayout {
          */
         if (isHasSeeMoreApplink(data)) {
             seeAllButton = if (stubSeeAllButton is ViewStub &&
-                    !isViewStubHasBeenInflated(stubSeeAllButton)) {
+                !isViewStubHasBeenInflated(stubSeeAllButton)
+            ) {
                 val stubSeeAllView = stubSeeAllButton.inflate()
                 stubSeeAllView?.findViewById(R.id.see_all_button)
             } else {
@@ -143,7 +162,7 @@ class RecommendationHeaderView: FrameLayout {
 
             seeAllButton?.show()
             seeAllButton?.setOnClickListener {
-                listener?.onSeeAllClick(data.seeMoreAppLink)
+                listener?.onSeeAllClick(data.seeMoreAppLink, tracking)
             }
         } else {
             seeAllButton?.hide()
@@ -177,7 +196,8 @@ class RecommendationHeaderView: FrameLayout {
          */
         if (data.headerBackImage.isNotBlank()) {
             seeAllButtonUnify = if (stubSeeAllButtonUnify is ViewStub &&
-                    !isViewStubHasBeenInflated(stubSeeAllButtonUnify)) {
+                !isViewStubHasBeenInflated(stubSeeAllButtonUnify)
+            ) {
                 val stubSeeAllButtonView = stubSeeAllButtonUnify.inflate()
                 stubSeeAllButtonView?.findViewById(R.id.see_all_button_unify)
             } else {
@@ -220,7 +240,8 @@ class RecommendationHeaderView: FrameLayout {
          */
         if (hasExpiredTime(data)) {
             countDownView = if (stubCountDownView is ViewStub &&
-                    !isViewStubHasBeenInflated(stubCountDownView)) {
+                !isViewStubHasBeenInflated(stubCountDownView)
+            ) {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
                 inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
@@ -230,7 +251,7 @@ class RecommendationHeaderView: FrameLayout {
             val expiredTime = DateHelper.getExpiredTime(data.expiredTime)
             if (!DateHelper.isExpired(data.recommendationConfig.serverTimeOffset, expiredTime)) {
                 countDownView?.run {
-                    timerVariant = if(data.headerBackColor.isNotEmpty()){
+                    timerVariant = if (data.headerBackColor.isNotEmpty()) {
                         TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
                         TimerUnifySingle.VARIANT_MAIN
@@ -250,7 +271,6 @@ class RecommendationHeaderView: FrameLayout {
                     onFinish = {
                         listener?.onChannelExpired(data)
                     }
-
                 }
             }
         } else {
@@ -267,12 +287,12 @@ class RecommendationHeaderView: FrameLayout {
             titleContainer.setBackgroundColor(Color.parseColor(data.headerBackColor))
 
             titleContainer.setPadding(
-                    titleContainer.paddingLeft,
-                    convertDpToPixel(TITLE_TOP_PADDING, titleContainer.context),
-                    titleContainer.paddingRight,
-                    titleContainer.paddingBottom)
+                titleContainer.paddingLeft,
+                convertDpToPixel(TITLE_TOP_PADDING, titleContainer.context),
+                titleContainer.paddingRight,
+                titleContainer.paddingBottom
+            )
         }
-
     }
 
     fun isHasSeeMoreApplink(data: RecommendationWidget): Boolean {

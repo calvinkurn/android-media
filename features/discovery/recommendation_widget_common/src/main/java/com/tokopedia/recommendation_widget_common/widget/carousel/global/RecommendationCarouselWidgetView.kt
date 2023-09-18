@@ -19,6 +19,7 @@ import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidg
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
 import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
@@ -56,17 +57,25 @@ class RecommendationCarouselWidgetView :
         get() = LAYOUT
 
     override fun bind(model: RecommendationCarouselModel) {
-        if (!model.hasData) hide()
-        else bindData(model)
+        if (!model.hasData) {
+            hide()
+        } else {
+            bindData(model)
+        }
     }
 
     private fun bindData(model: RecommendationCarouselModel) {
         show()
 
-        binding.recommendationHeaderView.bindData(model.widget, this)
+        binding.recommendationHeaderView.bindData(
+            data = model.widget,
+            tracking = model.widgetTracking,
+            listener = this
+        )
 
-        if (!binding.recommendationCarouselProduct.isVisible)
+        if (!binding.recommendationCarouselProduct.isVisible) {
             binding.recommendationCarouselLoading.root.show()
+        }
 
         binding.recommendationCarouselProduct.bindCarouselProductCardViewGrid(
             productCardModelList = model.widget.recommendationItemList.toProductCardModels(),
@@ -75,7 +84,7 @@ class RecommendationCarouselWidgetView :
             carouselProductCardOnItemClickListener = itemClickListener(model),
             carouselSeeMoreClickListener = seeMoreClickListener(model),
             carouselProductCardOnItemATCNonVariantClickListener = itemAddToCartNonVariantListener(model),
-            finishCalculate = ::finishCalculateCarouselHeight,
+            finishCalculate = ::finishCalculateCarouselHeight
         )
     }
 
@@ -90,27 +99,29 @@ class RecommendationCarouselWidgetView :
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
 
-                if (productCardModel.isTopAds)
+                if (productCardModel.isTopAds) {
                     TopAdsUrlHitter(context).hitImpressionUrl(
                         this@RecommendationCarouselWidgetView::class.java.simpleName,
                         productRecommendation.trackerImageUrl,
                         productRecommendation.productId.toString(),
                         productRecommendation.name,
-                        productRecommendation.imageUrl,
+                        productRecommendation.imageUrl
                     )
+                }
 
-                if (model.widgetTracking != null)
+                if (model.widgetTracking != null) {
                     model.widgetTracking.sendEventItemImpression(
                         trackingQueue,
                         productRecommendation
                     )
-                else
+                } else {
                     RecommendationCarouselTracking.sendEventItemImpression(
                         trackingQueue,
                         model.widget,
                         productRecommendation,
                         model.trackingModel
                     )
+                }
             }
         }
 
@@ -118,11 +129,11 @@ class RecommendationCarouselWidgetView :
         object : CarouselProductCardListener.OnItemClickListener {
             override fun onItemClick(
                 productCardModel: ProductCardModel,
-                carouselProductCardPosition: Int,
+                carouselProductCardPosition: Int
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
 
-                if (productCardModel.isTopAds)
+                if (productCardModel.isTopAds) {
                     TopAdsUrlHitter(context).hitClickUrl(
                         this@RecommendationCarouselWidgetView::class.java.simpleName,
                         productRecommendation.clickUrl,
@@ -130,15 +141,17 @@ class RecommendationCarouselWidgetView :
                         productRecommendation.name,
                         productRecommendation.imageUrl
                     )
+                }
 
-                if (model.widgetTracking != null)
+                if (model.widgetTracking != null) {
                     model.widgetTracking.sendEventItemClick(productRecommendation)
-                else
+                } else {
                     RecommendationCarouselTracking.sendEventItemClick(
                         model.widget,
                         productRecommendation,
                         model.trackingModel
                     )
+                }
 
                 RouteManager.route(context, productRecommendation.appUrl)
             }
@@ -153,17 +166,17 @@ class RecommendationCarouselWidgetView :
         }
 
     private fun itemAddToCartNonVariantListener(model: RecommendationCarouselModel) =
-        object: CarouselProductCardListener.OnATCNonVariantClickListener {
+        object : CarouselProductCardListener.OnATCNonVariantClickListener {
             override fun onATCNonVariantClick(
                 productCardModel: ProductCardModel,
                 carouselProductCardPosition: Int,
-                quantity: Int,
+                quantity: Int
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
                 recommendationWidgetViewModel?.onAddToCartNonVariant(
                     model,
                     productRecommendation,
-                    quantity,
+                    quantity
                 )
             }
         }
@@ -173,12 +186,12 @@ class RecommendationCarouselWidgetView :
         binding.recommendationCarouselLoading.root.hide()
     }
 
-    override fun onSeeAllClick(link: String) {
+    override fun onSeeAllClick(link: String, tracking: RecommendationCarouselWidgetTracking?) {
+        tracking?.sendEventSeeAll()
         RouteManager.route(context, link)
     }
 
     override fun onChannelExpired(widget: RecommendationWidget) {
-
     }
 
     override fun onPause(owner: LifecycleOwner) {

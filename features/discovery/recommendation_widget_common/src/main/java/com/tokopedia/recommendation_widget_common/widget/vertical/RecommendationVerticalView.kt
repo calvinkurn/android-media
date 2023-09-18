@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetVerticalLayoutBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalMapper.mapVisitableList
@@ -57,7 +58,7 @@ class RecommendationVerticalView :
     override fun recycle() {}
 
     private fun setupHeader(widget: RecommendationWidget) {
-        binding.headerViewRecommendationVertical.bindData(widget, this)
+        binding.headerViewRecommendationVertical.bindData(widget, tracking = null, listener = this)
         binding.headerViewRecommendationVertical.seeAllButton?.hide()
     }
 
@@ -68,7 +69,7 @@ class RecommendationVerticalView :
         recomAdapter.submitList(mapVisitableList(model = model))
     }
 
-    override fun onSeeAllClick(link: String) {}
+    override fun onSeeAllClick(link: String, tracking: RecommendationCarouselWidgetTracking?) {}
 
     override fun onChannelExpired(widget: RecommendationWidget) {}
 
