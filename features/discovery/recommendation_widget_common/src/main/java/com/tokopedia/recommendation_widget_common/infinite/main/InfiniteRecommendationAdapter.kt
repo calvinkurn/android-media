@@ -8,7 +8,6 @@ import com.tokopedia.adapterdelegate.AdapterDelegatesManager
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingDelegate
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductDelegate
-import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.component.title.InfiniteTitleDelegate
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationViewHolder
@@ -29,10 +28,14 @@ class InfiniteRecommendationAdapter(
             .addDelegate(InfiniteTitleDelegate())
     }
 
-    private fun determineFullSpan(holder: InfiniteRecommendationViewHolder<*>) {
-        val isFullSpan = holder !is InfiniteProductViewHolder
-        (holder.itemView.layoutParams as? StaggeredGridLayoutManager.LayoutParams)
-            ?.isFullSpan = isFullSpan
+    private fun determineFullSpan(
+        holder: InfiniteRecommendationViewHolder<*>,
+        item: InfiniteRecommendationUiModel
+    ) {
+        val layoutParams = holder.itemView.layoutParams
+        if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+            layoutParams.isFullSpan = item.isFullSpan
+        }
     }
 
     override fun onViewAttachedToWindow(holder: InfiniteRecommendationViewHolder<*>) {
@@ -53,7 +56,7 @@ class InfiniteRecommendationAdapter(
     }
 
     override fun onBindViewHolder(holder: InfiniteRecommendationViewHolder<*>, position: Int) {
-        determineFullSpan(holder)
+        determineFullSpan(holder, currentList[position])
         delegatesManager.onBindViewHolder(currentList, position, holder)
     }
 

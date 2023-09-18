@@ -4,7 +4,8 @@ import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRec
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 data class InfiniteProductUiModel(
-    val recommendationItem: RecommendationItem
+    val recommendationItem: RecommendationItem,
+    override val isFullSpan: Boolean = false
 ) : InfiniteRecommendationUiModel() {
     override fun areItemsTheSame(newItem: InfiniteRecommendationUiModel): Boolean {
         return newItem is InfiniteProductUiModel && recommendationItem == newItem.recommendationItem
