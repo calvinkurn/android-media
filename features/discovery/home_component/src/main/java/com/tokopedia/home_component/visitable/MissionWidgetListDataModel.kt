@@ -1,6 +1,8 @@
 package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -12,7 +14,12 @@ data class MissionWidgetListDataModel(
     val missionWidgetList: List<MissionWidgetDataModel> = listOf(),
     val channelModel: ChannelModel,
     val status: Int = STATUS_LOADING
-) : HomeComponentVisitable, ImpressHolder() {
+) : HomeComponentVisitable,
+    ImpressHolder(),
+    LoadableComponent by BlocksLoadableComponent(
+        { status != STATUS_LOADING },
+        "MissionWidgetListDataModel"
+    ) {
 
     companion object {
         const val STATUS_LOADING = 0

@@ -12,7 +12,7 @@ class CategoryRecommendationMapper @Inject constructor() {
                         title = it.name.orEmpty(),
                         description = ""
                 ).apply { setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-                    listActionText = it.id
+                    listActionText = listOf(it.id, it.confidenceScore, it.precision).joinToString()
                     isBold = false
                 }
             }.orEmpty()

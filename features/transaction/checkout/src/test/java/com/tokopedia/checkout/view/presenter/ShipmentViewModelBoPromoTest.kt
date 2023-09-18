@@ -740,7 +740,8 @@ class ShipmentViewModelBoPromoTest : BaseShipmentViewModelTest() {
             shippingId = 10,
             spId = 28,
             type = "logistic",
-            messageUiModel = MessageUiModel(state = "green")
+            messageUiModel = MessageUiModel(state = "green"),
+            cartStringGroup = "111-111-111"
         )
         val appliedVoucherOrder2 = PromoCheckoutVoucherOrdersItemUiModel(
             uniqueId = "222-222-222",
@@ -748,14 +749,30 @@ class ShipmentViewModelBoPromoTest : BaseShipmentViewModelTest() {
             shippingId = 10,
             spId = 28,
             type = "logistic",
-            messageUiModel = MessageUiModel(state = "green")
+            messageUiModel = MessageUiModel(state = "green"),
+            cartStringGroup = "222-222-222"
         )
         val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(appliedVoucherOrder1, appliedVoucherOrder2)
             )
         )
-        viewModel.shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
+        viewModel.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "111-111-111",
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "111-111-111")),
+                shipmentCartData = ShipmentCartData(
+                    boMetadata = BoMetadata(boType = 1)
+                )
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "222-222-222",
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "222-222-222")),
+                shipmentCartData = ShipmentCartData(
+                    boMetadata = BoMetadata(boType = 1)
+                )
+            )
+        )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
             cartStringGroup = "111-111-111",
@@ -795,7 +812,8 @@ class ShipmentViewModelBoPromoTest : BaseShipmentViewModelTest() {
             shippingId = 10,
             spId = 28,
             type = "logistic",
-            messageUiModel = MessageUiModel(state = "green")
+            messageUiModel = MessageUiModel(state = "green"),
+            cartStringGroup = "111-111-111"
         )
         val appliedVoucherOrder2 = PromoCheckoutVoucherOrdersItemUiModel(
             uniqueId = "222-222-222",
@@ -803,7 +821,8 @@ class ShipmentViewModelBoPromoTest : BaseShipmentViewModelTest() {
             shippingId = 10,
             spId = 28,
             type = "logistic",
-            messageUiModel = MessageUiModel(state = "green")
+            messageUiModel = MessageUiModel(state = "green"),
+            cartStringGroup = "222-222-222"
         )
         val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
@@ -814,6 +833,18 @@ class ShipmentViewModelBoPromoTest : BaseShipmentViewModelTest() {
             )
         )
         viewModel.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "111-111-111",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST3"
+                )
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "222-222-222",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST3"
+                )
+            ),
             ShipmentCartItemModel(
                 cartStringGroup = "333-333-333",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(

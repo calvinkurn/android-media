@@ -144,7 +144,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
 
     private fun onErrorState(result: Error) {
         with(viewModel) {
-            if (pageCount == 1) {
+            if (pageCount == 0) {
                 handleError(result)
             } else {
                 if (visitableList.last() is LoadingMoreModel) {
@@ -228,7 +228,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
 
     private fun onLoadingState() {
         with(viewModel) {
-            if (pageCount == 1) {
+            if (pageCount == 0) {
                 visitableList.clear()
                 visitableList.add(LoadingModel())
             } else {

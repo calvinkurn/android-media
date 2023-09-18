@@ -29,6 +29,8 @@ import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -79,12 +81,19 @@ class SuggestionFragment :
         get() = activity?.javaClass?.name ?: ""
 
     private var performanceMonitoring: PerformanceMonitoring? = null
-    private val suggestionTypeFactory = SuggestionAdapterTypeFactory(
+
+    var reimagineRollence: ReimagineRollence? = null
+        @Inject set
+
+    private val suggestionAdapter by lazy {
+        val suggestionTypeFactory= SuggestionAdapterTypeFactory(
         suggestionListener = this,
         suggestionTopShopListener = this,
         suggestionChipListener = this,
-    )
-    private val suggestionAdapter = SuggestionAdapter(suggestionTypeFactory)
+        isReimagine = reimagineRollence?.search1InstAuto() != Search1InstAuto.CONTROL
+        )
+        SuggestionAdapter(suggestionTypeFactory)
+    }
 
     private val recyclerViewSuggestion by lazy {
         view?.findViewById<RecyclerView?>(R.id.recyclerViewSuggestion)

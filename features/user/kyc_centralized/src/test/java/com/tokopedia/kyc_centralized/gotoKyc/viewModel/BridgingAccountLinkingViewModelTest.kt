@@ -42,10 +42,11 @@ class BridgingAccountLinkingViewModelTest {
 
     @Test
     fun `when get status account linking then return linked`() {
+        val projectId = 7
         val expected = AccountLinkingStatusResult.Linked
 
-        coEvery { accountLinkingStatusUseCase(Unit) } returns expected
-        viewModel.checkAccountLinkingStatus()
+        coEvery { accountLinkingStatusUseCase(projectId) } returns expected
+        viewModel.checkAccountLinkingStatus(projectId)
 
         val result = viewModel.accountLinkingStatus.getOrAwaitValue()
         assertTrue(result is AccountLinkingStatusResult.Linked)
@@ -54,10 +55,11 @@ class BridgingAccountLinkingViewModelTest {
 
     @Test
     fun `when get status account linking then return not linked`() {
+        val projectId = 7
         val expected = AccountLinkingStatusResult.NotLinked
 
-        coEvery { accountLinkingStatusUseCase(Unit) } returns expected
-        viewModel.checkAccountLinkingStatus()
+        coEvery { accountLinkingStatusUseCase(projectId) } returns expected
+        viewModel.checkAccountLinkingStatus(projectId)
 
         val result = viewModel.accountLinkingStatus.getOrAwaitValue()
         assertTrue(result is AccountLinkingStatusResult.NotLinked)
@@ -67,10 +69,11 @@ class BridgingAccountLinkingViewModelTest {
 
     @Test
     fun `when get status account linking then return failed`() {
+        val projectId = 7
         val throwable = Throwable()
 
-        coEvery { accountLinkingStatusUseCase(Unit) } throws throwable
-        viewModel.checkAccountLinkingStatus()
+        coEvery { accountLinkingStatusUseCase(projectId) } throws throwable
+        viewModel.checkAccountLinkingStatus(projectId)
 
         val result = viewModel.accountLinkingStatus.getOrAwaitValue()
         assertTrue(result is AccountLinkingStatusResult.Failed)

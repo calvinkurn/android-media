@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -64,6 +65,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadResult
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -81,6 +83,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
@@ -566,42 +571,62 @@ class FeedPlusContainerFragment :
             }
         )
 
-        playShortsUploader.observe(viewLifecycleOwner) { progress, uploadData ->
-            when (progress) {
-                PlayShortsUploadConst.PROGRESS_COMPLETED -> {
-                    postProgressUpdateView?.hide()
-                    Toaster.build(
-                        view = requireView(),
-                        text = getString(R.string.feed_upload_content_success),
-                        duration = Toaster.LENGTH_LONG,
-                        type = Toaster.TYPE_NORMAL,
-                        actionText = getString(R.string.feed_upload_shorts_see_video),
-                        clickListener = View.OnClickListener {
-                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
-                                uploadData.authorId,
-                                uploadData.authorType,
-                                uploadData.shortsId
-                            )
-                            RouteManager.route(
-                                requireContext(),
-                                ApplinkConst.PLAY_DETAIL,
-                                uploadData.shortsId
-                            )
-                        }
-                    ).show()
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            callbackFlow {
+                val uploadLiveData = playShortsUploader.getUploadLiveData()
+
+                val observer = Observer<PlayShortsUploadResult> {
+                    if (it is PlayShortsUploadResult.Success) {
+                        val progress = it.progress
+                        val uploadData = it.data
+
+                        trySendBlocking(progress to uploadData)
+                    }
                 }
-                PlayShortsUploadConst.PROGRESS_FAILED -> {
-                    postProgressUpdateView?.show()
-                    postProgressUpdateView?.handleShortsUploadFailed(
-                        uploadData,
-                        playShortsUploader,
-                        playShortsInFeedAnalytic
-                    )
-                }
-                else -> {
-                    postProgressUpdateView?.show()
-                    postProgressUpdateView?.setIcon(uploadData.coverUri.ifEmpty { uploadData.mediaUri })
-                    postProgressUpdateView?.setProgress(progress)
+
+                uploadLiveData.observeForever(observer)
+
+                awaitClose { uploadLiveData.removeObserver(observer) }
+
+            }.collect { data ->
+                val (progress, uploadData) = data
+
+                when (progress) {
+                    PlayShortsUploadConst.PROGRESS_COMPLETED -> {
+                        postProgressUpdateView?.hide()
+                        Toaster.build(
+                            view = requireView(),
+                            text = getString(R.string.feed_upload_content_success),
+                            duration = Toaster.LENGTH_LONG,
+                            type = Toaster.TYPE_NORMAL,
+                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                            clickListener = View.OnClickListener {
+                                playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                    uploadData.authorId,
+                                    uploadData.authorType,
+                                    uploadData.shortsId
+                                )
+                                RouteManager.route(
+                                    requireContext(),
+                                    ApplinkConst.PLAY_DETAIL,
+                                    uploadData.shortsId
+                                )
+                            }
+                        ).show()
+                    }
+                    PlayShortsUploadConst.PROGRESS_FAILED -> {
+                        postProgressUpdateView?.show()
+                        postProgressUpdateView?.handleShortsUploadFailed(
+                            uploadData,
+                            playShortsUploader,
+                            playShortsInFeedAnalytic
+                        )
+                    }
+                    else -> {
+                        postProgressUpdateView?.show()
+                        postProgressUpdateView?.setIcon(uploadData.coverUri.ifEmpty { uploadData.mediaUri })
+                        postProgressUpdateView?.setProgress(progress)
+                    }
                 }
             }
         }

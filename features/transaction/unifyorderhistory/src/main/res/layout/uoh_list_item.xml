@@ -71,12 +71,12 @@
             app:layout_constraintTop_toTopOf="@id/iv_kebab_menu"
             tools:text="Butuh Revisi" />
 
-        <View
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider_uoh_order_1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="12dp"
-            android:background="@color/Unify_NN50"
+            android:background="@color/dms_uoh_order_list_divider_color"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_date" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
@@ -164,7 +164,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN950_96"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/layout_review_rating"
+            android:layout_marginBottom="12dp"
+            app:layout_goneMarginBottom="0dp"
             app:layout_constraintStart_toStartOf="@id/tv_uoh_total_belanja"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_total_belanja"
             app:typographyType="body_3"
@@ -179,10 +181,12 @@
             android:layout_marginEnd="16dp"
             app:layout_goneMarginEnd="0dp"
             android:minWidth="80dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/layout_review_rating"
             app:layout_constraintEnd_toStartOf="@+id/uoh_btn_action_2"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/tv_uoh_total_belanja_value"
+            android:layout_marginBottom="12dp"
+            app:layout_goneMarginBottom="0dp"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled"
@@ -193,14 +197,23 @@
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:minWidth="80dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/layout_review_rating"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="12dp"
+            app:layout_goneMarginBottom="0dp"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
             android:visibility="gone"
             tools:visibility="visible"
             tools:text="action 2" />
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/layout_review_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

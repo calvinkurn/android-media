@@ -2,6 +2,7 @@ package com.tokopedia.addon.presentation.uimodel
 
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
 import com.tokopedia.gifting.presentation.uimodel.AddOnType
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -132,7 +133,7 @@ object AddOnMapper {
                     productId = addonGroups?.firstOrNull()?.productId.orZero()
                 )
             ),
-            addOnData = addonsSelected.map {
+            addOnData = addonsSelected.filter { it.id.toLongOrZero().isMoreThanZero() }.map {
                 AddOnDataRequest(
                     addOnId = it.id.toLongOrZero(),
                     addOnQty = ATC_ADDON_DEFAULT_QTY,
@@ -171,11 +172,11 @@ object AddOnMapper {
     fun simplifyAddonGroup(addonGroups: List<AddOnGroupUIModel>, isSimplified: Boolean): List<AddOnGroupUIModel> {
         return if (isSimplified) {
             addonGroups.map { group ->
-                group.copy(
-                    addon = group.addon.firstOrNull()?.let {
-                        listOf(it)
-                    } ?: emptyList()
-                )
+                val selectedAddon = group.addon.firstOrNull { it.isSelected }
+                val simplifiedAddon = selectedAddon ?: group.addon.firstOrNull()
+                val simplifiedAddonList = listOfNotNull(simplifiedAddon)
+
+                group.copy(addon = simplifiedAddonList)
             }
         } else {
             addonGroups

@@ -35,7 +35,20 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
     init {
         with(binding) {
             productRv.layoutManager = linearLayoutManager
-            mProductBundleRecycleAdapter = ProductBundleWidgetAdapter()
+            mProductBundleRecycleAdapter = ProductBundleWidgetAdapter().apply {
+                updateDataSet(
+                    listOf(
+                        BundleUiModel(
+                            bundleType = BundleTypes.SINGLE_BUNDLE,
+                            isShimmering = true
+                        ),
+                        BundleUiModel(
+                            bundleType = BundleTypes.MULTIPLE_BUNDLE,
+                            isShimmering = true
+                        )
+                    )
+                )
+            }
             mDiscoveryAdapter = DiscoveryRecycleAdapter(fragment)
             concatAdapter = ConcatAdapter(mProductBundleRecycleAdapter,mDiscoveryAdapter)
             productRv.adapter = concatAdapter

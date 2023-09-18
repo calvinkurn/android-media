@@ -125,6 +125,12 @@
 
     <string name="title_seller_feedback">Seller Feedback</string>
 
+    <!-- Talk -->
+    <string name="title_df_talk_discuss">Diskusi</string>
+    <string name="title_df_reply_page">Balas Pertanyaan</string>
+    <string name="title_df_write_page">Kirim Pertanyaan</string>
+    <string name="title_df_seller_settings_page">Pengaturan Diskusi</string>
+
 <!--    pms-->
     <string name="payment_title_payment_status">Menunggu Pembayaran</string>
     <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
@@ -206,4 +212,7 @@
 
     <!-- Payment Thank You -->
     <string name="payment_title_thank_you">Thank You Page</string>
+
+    <!-- Promo Scp -->
+    <string name="title_scp_rewards">SCP Rewards</string>
 </resources>

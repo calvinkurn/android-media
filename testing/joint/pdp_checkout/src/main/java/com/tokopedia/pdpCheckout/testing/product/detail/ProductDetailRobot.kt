@@ -25,6 +25,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.core.AllOf
 import com.tokopedia.unifycomponents.R as unifyComponentsR
+import com.tkpd.atcvariant.R as atcvariantR
 
 class ProductDetailRobot {
 
@@ -51,7 +52,7 @@ class ProductDetailRobot {
 
     fun clickBeliPakaiOvoOcs() {
         selectVariantOnVbs(0)
-        onView(withId(com.tkpd.atcvariant.R.id.btn_atc_variant))
+        onView(withId(atcvariantR.id.btn_buy_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("Beli pakai OVO")))
             .check(
@@ -63,13 +64,13 @@ class ProductDetailRobot {
                 )
             )
 
-        onView(withId(com.tkpd.atcvariant.R.id.btn_atc_variant)).perform(click())
+        onView(withId(atcvariantR.id.btn_buy_variant)).perform(click())
     }
 
     fun clickBeliLangsungOcc() {
         selectVariantOnVbs(3)
         Thread.sleep(5_000)
-        onView(withId(com.tkpd.atcvariant.R.id.btn_atc_variant))
+        onView(withId(atcvariantR.id.btn_buy_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("Beli Langsung")))
             .perform(click())

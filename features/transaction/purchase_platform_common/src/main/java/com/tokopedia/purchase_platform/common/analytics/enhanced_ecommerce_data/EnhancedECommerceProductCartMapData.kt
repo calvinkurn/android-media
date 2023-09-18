@@ -170,6 +170,10 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_DIMENSION_59] = if (!shopType.isNullOrBlank()) shopType else ""
     }
 
+    fun setDimension82(categoryId: String?) {
+        Product[KEY_DIMENSION_82] = if (!categoryId.isNullOrBlank()) categoryId else ""
+    }
+
     fun setDimension77(cartId: String?) {
         Product[KEY_DIMENSION_77] = if (!cartId.isNullOrBlank()) cartId else ""
     }
@@ -196,6 +200,10 @@ class EnhancedECommerceProductCartMapData {
 
     fun setBoAffordability(boAffordabilityValue: String) {
         Product[KEY_BO_AFFORDABILITY] = boAffordabilityValue
+    }
+
+    fun setDimension136(cartStringGroup: String) {
+        Product[KEY_DIMENSION136] = cartStringGroup
     }
 
     companion object {
@@ -226,6 +234,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_DIMENSION_59 = "dimension59"
         private const val KEY_DIMENSION_77 = "dimension77"
         private const val KEY_DIMENSION_80 = "dimension80"
+        private const val KEY_DIMENSION_82 = "dimension82"
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_12 = "dimension12"
         const val KEY_ATTRIBUTION = "attribution"
@@ -238,7 +247,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_COURIER = "dimension14"
         private const val KEY_SHIPPING_PRICE = "dimension12"
         private const val KEY_COD_FLAG = "dimension10"
-        private const val KEY_TOKOPEDIA_CORNER_FLAG = "dimension67"
+        private const val KEY_TOKOPEDIA_CORNER_FLAG = "dimension57"
         private const val KEY_IS_FULFILLMENT = "dimension58"
         private const val KEY_PICTURE = "picture"
         private const val KEY_URL = "url"
@@ -247,6 +256,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_DIMENSION117 = "dimension117"
         private const val KEY_DIMENSION118 = "dimension118"
         private const val KEY_BO_AFFORDABILITY = "dimension119"
+        private const val KEY_DIMENSION136 = "dimension136"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"

@@ -25,4 +25,7 @@
     <color name="product_card_dms_ad_color">@color/Unify_NN0</color>
 
     <color name="dms_ribbon_anchor_static_dark">#B31D40</color>
+    <color name="dms_gold_ribbon_anchor">#CC4C14</color>
+    <color name="dms_gold_ribbon_gradient_light">#FFC400</color>
+    <color name="dms_gold_ribbon_gradient_dark">#FFA617</color>
 </resources>

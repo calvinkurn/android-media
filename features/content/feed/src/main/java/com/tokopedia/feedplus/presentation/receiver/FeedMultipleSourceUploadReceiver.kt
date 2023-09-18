@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -18,7 +17,7 @@ import kotlinx.coroutines.sync.withLock
  */
 class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
     @Assisted fragment: Fragment,
-    shortsUploadReceiverFactory: ShortsUploadReceiver.Factory,
+    shortsUploadReceiver: ShortsUploadReceiver,
     postUploadReceiverFactory: PostUploadReceiver.Factory,
 ) : UploadReceiver {
 
@@ -27,7 +26,6 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
         fun create(fragment: Fragment): FeedMultipleSourceUploadReceiver
     }
 
-    private val shortsUploadReceiver = shortsUploadReceiverFactory.create(fragment.viewLifecycleOwner)
     private val postUploadReceiver = postUploadReceiverFactory.create(fragment.requireContext())
 
     private val mutex = Mutex()
@@ -36,7 +34,6 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
 
     private var mReceiver: UploadReceiver? = null
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun observe(): Flow<UploadInfo> = channelFlow {
         receiverList.forEach { receiver ->
             launch {
@@ -59,7 +56,6 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
         mReceiver?.let { clearReceiver(it) }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun ProducerScope<UploadInfo>.send(receiver: UploadReceiver, info: UploadInfo) = mutex.withLock {
         if (mReceiver != receiver) return@withLock
         send(info)

@@ -16,29 +16,20 @@ import com.tokopedia.inbox.R
 import com.tokopedia.inbox.universalinbox.stub.common.atPositionCheckInstanceOf
 import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
+import org.hamcrest.CoreMatchers.not
+import com.tokopedia.iconnotification.R as iconnotificationR
 
 object MenuResult {
 
-    fun assertMenuSectionOnPosition(position: Int, reverse: Boolean = false) {
-        onView(withId(R.id.inbox_rv)).check(
-            atPositionCheckInstanceOf(
-                position = position,
-                expectedClass = UniversalInboxMenuSectionUiModel::class.java,
-                reverse = reverse
-            )
-        )
-    }
-
     fun assertNotificationCounter(counterText: String) {
-        onView(withId(R.id.notification))
+        onView(withId(iconnotificationR.id.notification))
             .check(matches(withText(counterText)))
     }
 
     fun assertNotificationCounterGone() {
-        onView(withId(R.id.notification))
-            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)))
+        onView(withId(iconnotificationR.id.notification))
+            .check(matches(not(isDisplayed())))
     }
 
     fun assertMenuCounter(position: Int, counterText: String) {
@@ -62,12 +53,18 @@ object MenuResult {
         ).check(matches(isDisplayed()))
     }
 
-    fun assertSellerChatMenu(position: Int, hasShop: Boolean) {
+    fun assertShopInfoGone(position: Int) {
+        onView(
+            withRecyclerView(R.id.inbox_rv)
+                .atPositionOnView(position, R.id.inbox_layout_shop_info)
+        ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+    }
+
+    fun assertSellerChatMenu(position: Int) {
         onView(withId(R.id.inbox_rv)).check(
             atPositionCheckInstanceOf(
                 position = position,
-                expectedClass = UniversalInboxMenuUiModel::class.java,
-                reverse = !hasShop
+                expectedClass = UniversalInboxMenuUiModel::class.java
             )
         )
     }

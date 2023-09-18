@@ -199,6 +199,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             if (step == 0) ConstantTransactionAnalytics.EventAction.VIEW_CART_PAGE else ConstantTransactionAnalytics.EventAction.CLICK_CHECKOUT,
             eventLabel
         )
+        dataLayer[ExtraKey.TRACKER_ID] = if (step == 0) ConstantTransactionAnalytics.TrackerId.STEP_0_VIEW_CART_PAGE else ConstantTransactionAnalytics.TrackerId.STEP_1_CART_PAGE_LOADED
         dataLayer[ConstantTransactionAnalytics.Key.E_COMMERCE] = cartMap
         dataLayer[ConstantTransactionAnalytics.Key.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         dataLayer[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM

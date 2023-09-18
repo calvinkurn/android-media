@@ -3996,7 +3996,7 @@ class FeedPlusFragment :
         product: FeedXProduct = FeedXProduct()
     ) = FeedTrackerData(
         postId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id,
-        media = feedXCard.media.first(),
+        media = feedXCard.media.firstOrNull() ?: FeedXMedia(),
         postType = feedXCard.typename,
         isFollowed = feedXCard.followers.isFollowed,
         shopId = feedXCard.author.id,

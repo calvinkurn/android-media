@@ -751,6 +751,7 @@ const val CART_REVAMP_V4_QUERY =
                       }
                     }
                     voucher_orders {
+                      cart_string_group
                       code
                       success
                       cart_id

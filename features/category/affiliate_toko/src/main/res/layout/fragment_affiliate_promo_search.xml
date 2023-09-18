@@ -48,9 +48,10 @@
 
             <com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
                 android:id="@+id/product_link_et"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toStartOf="@id/search_button"
                 app:layout_constraintStart_toStartOf="parent"
@@ -63,11 +64,9 @@
                 android:id="@+id/search_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="6dp"
                 android:text="@string/promo_search_cta_text"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/product_link_et"
                 app:layout_constraintTop_toTopOf="@id/product_link_et"
                 app:unifyButtonSize="large"
                 app:unifyButtonVariant="filled" />

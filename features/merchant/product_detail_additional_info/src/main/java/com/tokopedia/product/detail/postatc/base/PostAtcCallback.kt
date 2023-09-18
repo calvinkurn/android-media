@@ -8,20 +8,16 @@ import com.tokopedia.product.detail.postatc.view.component.error.ErrorCallback
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorCallbackImpl
 import com.tokopedia.product.detail.postatc.view.component.productinfo.ProductInfoCallback
 import com.tokopedia.product.detail.postatc.view.component.productinfo.ProductInfoCallbackImpl
-import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationCallback
-import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationCallbackImpl
 
 class PostAtcCallback(
     fragment: PostAtcBottomSheet,
     addonsCallback: AddonsCallback = AddonsCallbackImpl(fragment),
     errorCallback: ErrorCallback = ErrorCallbackImpl(fragment),
     productInfoCallback: ProductInfoCallback = ProductInfoCallbackImpl(fragment),
-    recommendationCallback: RecommendationCallback = RecommendationCallbackImpl(fragment)
 ) : AddonsCallback by addonsCallback,
     ErrorCallback by errorCallback,
     ProductInfoCallback by productInfoCallback,
-    PostAtcBottomSheetDelegate by fragment,
-    RecommendationCallback by recommendationCallback {
+    PostAtcBottomSheetDelegate by fragment {
 
     fun impressComponent(componentTrackData: ComponentTrackData) {
         /**

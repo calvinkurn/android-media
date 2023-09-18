@@ -8,7 +8,7 @@ import com.tokopedia.affiliate.TRAFFIC_TYPE
 import com.tokopedia.affiliate.TYPE_DIVIDER
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
-import com.tokopedia.affiliate.model.response.AffiliateTrafficCommissionCardDetails
+import com.tokopedia.affiliate.model.response.AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
@@ -25,7 +25,8 @@ class AffiliateTransactionDetailViewModel @Inject constructor(
     private val affiliateCommissionDetailUserCase: AffiliateCommissionDetailsUseCase,
     private val extractBranchLinkUseCase: ExtractBranchLinkUseCase
 ) : BaseViewModel() {
-    private var commssionData = MutableLiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail>()
+    private var commssionData =
+        MutableLiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail>()
     private var detailList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var detailTitle = MutableLiveData<String>()
     private var errorMessage = MutableLiveData<Throwable>()
@@ -38,43 +39,66 @@ class AffiliateTransactionDetailViewModel @Inject constructor(
     private var applink = MutableLiveData<String>()
 
     fun affiliateCommission(transactionID: String, page: Int = PAGE_ZERO) {
-        launchCatchError(block = {
-            if (page == PAGE_ZERO) {
-                lastItem = "0"
-                progressBar.value = true
-                affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let { affiliateCommissionDetail ->
-                    var tempCardDetails: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null
-                    affiliateCommissionDetail.data?.additionQueryKey?.let { key ->
-                        additionKey = key
-                    }
-                    affiliateCommissionDetail.data?.pageType?.let { type ->
-                        pageType = type
-                    }
-                    affiliateCommissionDetail.data?.detailTitle?.let { detailTitle.value = it }
-                    commissionType = affiliateCommissionDetail.data?.commissionType
-                    if (affiliateCommissionDetail.data?.commissionType == TRAFFIC_TYPE) {
-                        affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem, pageType)?.let {
-                            tempCardDetails = it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail
-                            it.getAffiliateTrafficCommissionDetailCards?.data?.lastID?.let { lastID ->
-                                lastItem = lastID
+        launchCatchError(
+            block = {
+                if (page == PAGE_ZERO) {
+                    lastItem = "0"
+                    progressBar.value = true
+                    affiliateCommissionDetailUserCase
+                        .affiliateCommissionDetails(transactionID)
+                        .getAffiliateCommissionDetail?.let { affiliateCommissionDetail ->
+                            var tempCardDetails: List<TrafficCommissionCardDetail?>? =
+                                null
+                            affiliateCommissionDetail.commissionDetailData?.additionQueryKey?.let { key ->
+                                additionKey = key
                             }
+                            affiliateCommissionDetail.commissionDetailData?.pageType?.let { type ->
+                                pageType = type
+                            }
+                            affiliateCommissionDetail.commissionDetailData?.detailTitle?.let {
+                                detailTitle.value = it
+                            }
+                            commissionType = affiliateCommissionDetail.commissionDetailData?.commissionType
+                            if (affiliateCommissionDetail.commissionDetailData?.commissionType == TRAFFIC_TYPE) {
+                                affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(
+                                    additionKey,
+                                    lastItem,
+                                    pageType
+                                ).let {
+                                    tempCardDetails =
+                                        it.getAffiliateTrafficCommissionDetailCards?.trafficCommissionData?.trafficCommissionCardDetail
+                                    it.getAffiliateTrafficCommissionDetailCards?.trafficCommissionData?.lastID?.let { lastID ->
+                                        lastItem = lastID
+                                    }
+                                }
+                            }
+                            detailList.value = getDetailListOrganize(
+                                affiliateCommissionDetail.commissionDetailData?.detail,
+                                tempCardDetails
+                            )
+                            commssionData.value = affiliateCommissionDetail
                         }
+                    progressBar.value = false
+                } else {
+                    shimmerVisibility.value = true
+                    affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(
+                        additionKey,
+                        lastItem,
+                        pageType
+                    ).let {
+                        shimmerVisibility.value = false
+                        it.getAffiliateTrafficCommissionDetailCards?.trafficCommissionData?.lastID?.let { lastID ->
+                            lastItem = lastID
+                        }
+                        detailList.value = getDetailListOrganize(
+                            null,
+                            it.getAffiliateTrafficCommissionDetailCards?.trafficCommissionData?.trafficCommissionCardDetail,
+                            page
+                        )
                     }
-                    detailList.value = getDetailListOrganize(affiliateCommissionDetail.data?.detail, tempCardDetails)
-                    commssionData.value = affiliateCommissionDetail
                 }
-                progressBar.value = false
-            } else {
-                shimmerVisibility.value = true
-                affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem, pageType)?.let {
-                    shimmerVisibility.value = false
-                    it.getAffiliateTrafficCommissionDetailCards?.data?.lastID?.let { lastID ->
-                        lastItem = lastID
-                    }
-                    detailList.value = getDetailListOrganize(null, it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail, page)
-                }
-            }
-        }, onError = {
+            },
+            onError = {
                 if (page != PAGE_ZERO) {
                     shimmerVisibility.value = false
                 } else {
@@ -82,20 +106,21 @@ class AffiliateTransactionDetailViewModel @Inject constructor(
                 }
                 it.printStackTrace()
                 errorMessage.value = it
-            })
+            }
+        )
     }
 
     fun getDetailListOrganize(
         detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?,
-        trafficCommissionCardDetail: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null,
+        trafficCommissionCardDetail: List<TrafficCommissionCardDetail?>? = null,
         page: Int? = PAGE_ZERO
     ): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
         val tempList = ArrayList<Visitable<AffiliateAdapterTypeFactory>>()
         detail?.forEach {
-            if (it?.detailType != TYPE_DIVIDER) {
-                tempList.add(AffiliateCommissionItemModel(it))
-            } else if (it.detailType == TYPE_DIVIDER) {
+            if (it?.detailType == TYPE_DIVIDER) {
                 tempList.add(AffiliateCommisionDividerItemModel())
+            } else {
+                tempList.add(AffiliateCommissionItemModel(it))
             }
         }
         trafficCommissionCardDetail?.let {
@@ -124,7 +149,9 @@ class AffiliateTransactionDetailViewModel @Inject constructor(
     }
 
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
-    fun getCommissionData(): LiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail> = commssionData
+    fun getCommissionData(): LiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail> =
+        commssionData
+
     fun getDetailList(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = detailList
     fun getDetailTitle(): LiveData<String> = detailTitle
     fun progressBar(): LiveData<Boolean> = progressBar

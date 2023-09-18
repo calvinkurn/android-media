@@ -6,6 +6,8 @@ import com.tokopedia.autocompletecomponent.initialstate.data.InitialStateUnivers
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocompletecomponent.jsonToObject
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -20,6 +22,7 @@ internal open class InitialStatePresenterTestFixtures {
     protected val refreshInitialStateUseCase = mockk<UseCase<List<InitialStateData>>>(relaxed = true)
 
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
+    protected val reimagine = mockk<ReimagineRollence>(relaxed = true)
 
     protected val slotVisitableList = slot<List<Visitable<*>>>()
     protected val slotDeletedVisitableList = mutableListOf<List<Visitable<*>>>()
@@ -49,7 +52,9 @@ internal open class InitialStatePresenterTestFixtures {
                 getInitialStateUseCase,
                 deleteRecentSearchUseCase,
                 refreshInitialStateUseCase,
-                userSession)
+                userSession,
+                reimagine
+        )
         initialStatePresenter.attachView(initialStateView)
     }
 
@@ -185,5 +190,13 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected fun List<BaseItemInitialStateSearch>.findByType(type: String = ""): BaseItemInitialStateSearch {
         return this.find { it.type == type } as BaseItemInitialStateSearch
+    }
+
+    protected fun `Given rollance is off`(){
+        every { reimagine.search1InstAuto() } returns Search1InstAuto.CONTROL
+    }
+
+    protected fun `Given rollance is on`(){
+        every { reimagine.search1InstAuto() } returns Search1InstAuto.VARIANT_1
     }
 }

@@ -427,7 +427,6 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         isOpened = false
-        analytic.getTrackingQueue().sendAll()
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {

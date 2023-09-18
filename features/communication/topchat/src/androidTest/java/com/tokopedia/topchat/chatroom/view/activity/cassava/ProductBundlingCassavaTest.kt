@@ -1,21 +1,17 @@
 package com.tokopedia.topchat.chatroom.view.activity.cassava
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingRobot.clickCtaProductBundling
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.productBundlingRobot
 import org.junit.Rule
 import org.junit.Test
 
 @CassavaTest
-class ProductBundlingCassavaTest: TopchatRoomTest() {
+class ProductBundlingCassavaTest : TopchatRoomTest() {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(true, true)
@@ -39,7 +35,7 @@ class ProductBundlingCassavaTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
 
-        //Close
+        // Close
         finishChatRoomActivity()
     }
 
@@ -49,7 +45,7 @@ class ProductBundlingCassavaTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
 
-        //Close
+        // Close
         finishChatRoomActivity()
     }
 
@@ -58,14 +54,17 @@ class ProductBundlingCassavaTest: TopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.productBundlingAttachmentMultipleChat
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
+        stubIntents()
 
-        //When
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(0)
-        clickCtaProductBundling(0)
+        // When
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productBundlingRobot {
+            clickCtaProductBundling(0)
+        }
 
-        //Close
+        // Close
         finishChatRoomActivity()
     }
 }

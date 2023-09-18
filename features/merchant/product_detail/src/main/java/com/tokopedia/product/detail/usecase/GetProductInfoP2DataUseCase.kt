@@ -510,30 +510,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 totalRating
                 totalReviewTextAndImage
             }
-            bundleInfo {
-              productID
-              bundleID
-              groupID
-              name
-              type
-              status
-              titleComponent
-              finalPriceBundling
-              originalPriceBundling
-              savingPriceBundling
-              preorderString
-              bundleItems {
-                productID
-                name
-                picURL
-                status
-                quantity
-                originalPrice
-                bundlePrice
-                discountPercentage
-                stock
-              }
-  	        }
            arInfo{
               productIDs
               applink

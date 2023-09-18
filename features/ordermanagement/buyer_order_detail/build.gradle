@@ -16,6 +16,7 @@ android {
         } else {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     buildFeatures {
@@ -68,6 +69,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
+    implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

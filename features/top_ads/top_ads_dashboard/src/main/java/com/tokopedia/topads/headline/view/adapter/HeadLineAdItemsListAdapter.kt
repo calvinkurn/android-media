@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.headline.view.adapter.viewholder.HeadLineAdItemsViewHolder
 import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemModel
 import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsModel

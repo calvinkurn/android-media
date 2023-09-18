@@ -110,6 +110,7 @@ object ProductDetailConstant {
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
     const val RECOM_VERTICAL = "pdp_vertical"
+    const val A_PLUS_IMAGE = "product_detail_media"
 
     // custom info title as component type
     const val CUSTOM_INFO_TITLE = "custom_info_title"
@@ -200,4 +201,6 @@ object ProductDetailConstant {
 
     const val HTTP_PREFIX = "http"
     const val WEBVIEW_URL_PARAM = "url"
+
+    const val A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE = false
 }

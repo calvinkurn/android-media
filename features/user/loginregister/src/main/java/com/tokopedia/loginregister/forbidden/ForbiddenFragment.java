@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by meyta on 2/22/18.
@@ -22,7 +23,7 @@ import com.tokopedia.unifycomponents.UnifyButton;
 
 public class ForbiddenFragment extends TkpdBaseV4Fragment {
 
-    private String URL = "https://www.tokopedia.com/terms.pl#responsibility";
+    private String URL = TokopediaUrl.getInstance().getWEB() + "terms?lang=id";
     private String FORBIDDEN_PAGE = "Forbidden Page";
 
     public static ForbiddenFragment createInstance() {

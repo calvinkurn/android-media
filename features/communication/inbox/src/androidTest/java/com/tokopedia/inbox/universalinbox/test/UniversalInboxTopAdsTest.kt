@@ -14,12 +14,12 @@ class UniversalInboxTopAdsTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(30) // End of page 1
-            scrollToPosition(47)
+            scrollToPosition(28) // End of page 1
+            scrollToPosition(45)
         }
 
         // Then
-        assertHeadline(46)
+        assertHeadline(44)
     }
 
     @Test

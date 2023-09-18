@@ -1,12 +1,14 @@
 package com.tokopedia.play_common.shortsuploader
 
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadResult
 import com.tokopedia.play_common.shortsuploader.worker.PlayShortsUploadWorker
 import javax.inject.Inject
 
@@ -27,31 +29,21 @@ class PlayShortsUploaderImpl @Inject constructor(
         )
     }
 
-    override fun observe(
-        owner: LifecycleOwner,
-        observer: (progress: Int, uploadData: PlayShortsUploadModel) -> Unit
-    ): Observer<List<WorkInfo>> {
-        val workObserver = Observer<List<WorkInfo>> {
+    override fun getUploadLiveData(): LiveData<PlayShortsUploadResult> {
+        return Transformations.map(
+            workManager
+                .getWorkInfosForUniqueWorkLiveData(PlayShortsUploadConst.PLAY_SHORTS_UPLOAD)
+        ) {
             it.firstOrNull()?.let { workInfo ->
                 if(workInfo.state == WorkInfo.State.RUNNING) {
                     val progress = workInfo.progress.getInt(PlayShortsUploadConst.PROGRESS, 0)
                     val uploadData = PlayShortsUploadModel.parse(workInfo.progress.getString(PlayShortsUploadConst.UPLOAD_DATA).orEmpty())
 
-                    observer(progress, uploadData)
+                    return@map PlayShortsUploadResult.Success(progress, uploadData)
                 }
             }
+
+            return@map PlayShortsUploadResult.Unknown
         }
-
-        workManager
-            .getWorkInfosForUniqueWorkLiveData(PlayShortsUploadConst.PLAY_SHORTS_UPLOAD)
-            .observe(owner, workObserver)
-
-        return workObserver
-    }
-
-    override fun cancelObserve(observer: Observer<List<WorkInfo>>) {
-        workManager
-            .getWorkInfosForUniqueWorkLiveData(PlayShortsUploadConst.PLAY_SHORTS_UPLOAD)
-            .removeObserver(observer)
     }
 }

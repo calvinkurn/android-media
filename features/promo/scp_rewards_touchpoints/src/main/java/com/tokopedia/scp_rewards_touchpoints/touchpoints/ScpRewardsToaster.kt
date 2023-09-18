@@ -99,7 +99,7 @@ object ScpRewardsToaster {
         }
 
         val layout = tempSnackBar.view as Snackbar.SnackbarLayout
-        layout.isClickable = false
+        layout.isClickable = true
         layout.setBackgroundColor(Color.TRANSPARENT)
         layout.removeAllViews()
         layout.addView(viewLayout, 0)

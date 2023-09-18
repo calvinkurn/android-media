@@ -17,6 +17,7 @@ import com.tokopedia.config.GlobalConfig
 object DeeplinkMapperMerchant {
 
     const val PARAM_CREATE_SHOWCASE = "is_create_showcase"
+    const val PARAM_UTM_SOURCE = "utm_source"
     private const val PARAM_RATING = "rating"
     private const val PARAM_SOURCE = "source"
     private const val PRODUCT_SEGMENT = "product"
@@ -99,7 +100,7 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationProductReview(uri: Uri): String {
         val segments = uri.pathSegments
         val rating = uri.getQueryParameter(PARAM_RATING) ?: "5"
-        val utmSource = uri.getQueryParameter(PARAM_SOURCE) ?: ""
+        val utmSource = uri.getQueryParameter(PARAM_UTM_SOURCE) ?: uri.getQueryParameter(PARAM_SOURCE) ?: ""
 
         val reputationId = segments[segments.size - 2]
         val productId = segments.last()
@@ -108,7 +109,7 @@ object DeeplinkMapperMerchant {
         return Uri.parse(newUri)
             .buildUpon()
             .appendQueryParameter(PARAM_RATING, rating)
-            .appendQueryParameter(PARAM_SOURCE, utmSource)
+            .appendQueryParameter(PARAM_UTM_SOURCE, utmSource)
             .build()
             .toString()
     }

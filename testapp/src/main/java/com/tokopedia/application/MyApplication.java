@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.FirebaseApp;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
-import com.tokochat.tokochat_config_common.util.TokoChatConnection;
+import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
