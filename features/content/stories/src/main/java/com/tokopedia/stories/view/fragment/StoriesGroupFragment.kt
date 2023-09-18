@@ -52,7 +52,7 @@ class StoriesGroupFragment @Inject constructor(
     val entryPoint: String
         get() = "Entry Point"
 
-    val viewModelProvider get() = viewModelFactory.create(requireActivity(), shoauthorIdpId)
+    val viewModelProvider get() = viewModelFactory.create(requireActivity(), authorId)
 
     private val analytic: StoriesAnalytics get() = analyticFactory.create(authorId)
 
