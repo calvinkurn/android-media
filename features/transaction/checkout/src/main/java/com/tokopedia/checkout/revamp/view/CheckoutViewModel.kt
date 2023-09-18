@@ -778,6 +778,7 @@ class CheckoutViewModel @Inject constructor(
             }
         }
         listData.value = checkoutItems
+        calculateTotal()
     }
 
     fun updateAddOnGiftingOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
@@ -800,6 +801,7 @@ class CheckoutViewModel @Inject constructor(
             }
         }
         listData.value = checkoutItems
+        calculateTotal()
     }
 
     private fun setAddOnsGiftingData(
