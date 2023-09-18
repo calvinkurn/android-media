@@ -1,5 +1,8 @@
 package com.tokopedia.remoteconfig;
 
+import static com.tokopedia.remoteconfig.RemoteConfigManagerKtx.getRemoteConfigUpdates;
+
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
@@ -12,14 +15,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.ConfigUpdate;
 import com.google.firebase.remoteconfig.ConfigUpdateListener;
+import com.google.firebase.remoteconfig.ConfigUpdateListenerRegistration;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.firebase.remoteconfig.internal.ConfigRealtimeHandler;
+import com.google.firebase.remoteconfig.internal.ConfigRealtimeHandler.ConfigUpdateListenerRegistrationInternal;
 import com.tokopedia.config.GlobalConfig;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import kotlinx.coroutines.flow.Flow;
 
 /**
  * Created by okasurya on 9/11/17.
@@ -35,14 +43,26 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
 
+    private static FirebaseRemoteConfigImpl instance;
+
+    private ConfigUpdateListenerRegistration configUpdateListenerRegistration;
+
     public FirebaseRemoteConfigImpl(Context context) {
         try {
             this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        } catch (Exception ignored) {} // FirebaseApp is not intialized, ignoring the error and handle it with default value
+        } catch (Exception ignored) {
+        } // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
-//        if (GlobalConfig.isAllowDebuggingTools() && context != null) {
-//            this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
-//        }
+        if (GlobalConfig.isAllowDebuggingTools() && context != null) {
+            this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
+        }
+    }
+
+    public static @Nullable FirebaseRemoteConfigImpl getInstance(Application application) {
+        if (instance == null && application != null) {
+            instance = new FirebaseRemoteConfigImpl(application.getApplicationContext());
+        }
+        return instance;
     }
 
     private boolean isDebug() {
@@ -208,8 +228,11 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public void setRealtimeUpdate(@Nullable RealTimeUpdateListener realTimeUpdateListener) {
         try {
-            if (firebaseRemoteConfig != null) {
-                firebaseRemoteConfig.addOnConfigUpdateListener(getConfigUpdateListener(realTimeUpdateListener));
+            if (instance != null) {
+                if (configUpdateListenerRegistration != null) {
+                    configUpdateListenerRegistration.remove();
+                }
+                configUpdateListenerRegistration = instance.firebaseRemoteConfig.addOnConfigUpdateListener(getConfigUpdateListener(realTimeUpdateListener));
             }
         } catch (Exception e) {
             Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Remote config error: %s", e.getStackTrace()));
