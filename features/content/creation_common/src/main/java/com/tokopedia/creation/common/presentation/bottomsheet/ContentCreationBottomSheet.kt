@@ -51,18 +51,22 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                 val creationList = viewModel?.creationConfig?.collectAsStateWithLifecycle()
 
                 ContentCreationComponent(
-                    creationItemList = creationList?.value,
+                    creationConfig = creationList?.value,
                     selectedItem = selectedCreation?.value,
                     onSelectItem = {
                         viewModel?.selectCreationItem(it)
                         listener?.onCreationItemSelected(it)
+                    },
+                    onNextClicked = {
+                        selectedCreation?.value?.let {
+                            listener?.onCreationNextClicked(it)
+                            RouteManager.route(context, it.applink)
+                        }
+                    },
+                    onRetryClicked = {
+                        viewModel?.fetchConfig()
                     }
-                ) {
-                    selectedCreation?.value?.let {
-                        listener?.onCreationNextClicked(it)
-                        RouteManager.route(context, it.applink)
-                    }
-                }
+                )
             }
         }
         setChild(composeView)

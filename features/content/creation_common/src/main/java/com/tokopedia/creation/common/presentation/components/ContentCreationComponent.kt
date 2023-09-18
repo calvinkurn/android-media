@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
@@ -17,10 +18,14 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationMediaMode
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
+import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.creation.common.R as creationcommonR
@@ -30,19 +35,21 @@ import com.tokopedia.creation.common.R as creationcommonR
  */
 @Composable
 fun ContentCreationComponent(
-    creationItemList: Result<ContentCreationConfigModel>?,
+    creationConfig: Result<ContentCreationConfigModel>?,
     selectedItem: ContentCreationItemModel?,
     onSelectItem: (ContentCreationItemModel) -> Unit,
-    onNextClicked: () -> Unit
+    onNextClicked: () -> Unit,
+    onRetryClicked: () -> Unit
 ) {
     NestTheme {
-        when (creationItemList) {
+        when (creationConfig) {
             is Success -> ContentCreationSuccessView(
-                creationItemList = creationItemList.data.creationItems,
+                creationItemList = creationConfig.data.creationItems,
                 selectedItem = selectedItem,
                 onSelectItem = onSelectItem,
                 onNextClicked = onNextClicked
             )
+            is Fail -> ContentCreationFailView(onRetry = onRetryClicked)
             else -> ContentCreationLoadingView()
         }
     }
@@ -95,11 +102,68 @@ private fun ContentCreationSuccessView(
     }
 }
 
+@Composable
+private fun ContentCreationFailView(onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .padding(bottom = 16.dp, top = 16.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        NestImage(
+            source = ImageSource.Remote(stringResource(id = creationcommonR.string.content_creation_failed_network_image_url)),
+            modifier = Modifier.fillMaxWidth(),
+            contentDescription = stringResource(creationcommonR.string.content_creation_failed_network_title)
+        )
+        NestTypography(
+            text = stringResource(creationcommonR.string.content_creation_failed_network_title),
+            textStyle = NestTheme.typography.heading2.copy(
+                textAlign = TextAlign.Center,
+                color = NestTheme.colors.NN._950
+            ),
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+        )
+        NestTypography(
+            text = stringResource(creationcommonR.string.content_creation_failed_network_description),
+            textStyle = NestTheme.typography.paragraph2.copy(
+                textAlign = TextAlign.Center,
+                color = NestTheme.colors.NN._600
+            ),
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+        )
+
+        NestButton(
+            text = stringResource(creationcommonR.string.content_creation_retry_label),
+            onClick = onRetry,
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+        )
+    }
+}
+
 @Preview
 @Composable
-private fun ContentCreationComponentPreview() {
+private fun ContentCreationComponentFailedPreview() {
     ContentCreationComponent(
-        creationItemList = Success(
+        creationConfig = Fail(Throwable("Failed")),
+        selectedItem = null,
+        onSelectItem = {},
+        onNextClicked = {},
+        onRetryClicked = {}
+    )
+}
+
+@Preview
+@Composable
+private fun ContentCreationComponentSuccessPreview() {
+    ContentCreationComponent(
+        creationConfig = Success(
             ContentCreationConfigModel(
                 isActive = true,
                 statisticApplink = "",
@@ -154,6 +218,8 @@ private fun ContentCreationComponentPreview() {
             drawableIconId = IconUnify.VIDEO,
             authorType = ContentCreationAuthorEnum.SHOP
         ),
-        onSelectItem = {}
-    ) {}
+        onSelectItem = {},
+        onNextClicked = {},
+        onRetryClicked = {}
+    )
 }
