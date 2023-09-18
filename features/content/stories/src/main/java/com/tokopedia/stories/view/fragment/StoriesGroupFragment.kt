@@ -41,7 +41,7 @@ class StoriesGroupFragment @Inject constructor(
     private val shopId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
-    val viewModelProvider get() = viewModelFactory.create(shopId)
+    val viewModelProvider get() = viewModelFactory.create(requireActivity(), shopId)
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
@@ -84,7 +84,7 @@ class StoriesGroupFragment @Inject constructor(
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        viewModelAction(StoriesUiAction.SaveInstanceStateData(outState))
+        viewModelAction(StoriesUiAction.SaveInstanceStateData)
     }
 
     override fun onPause() {
@@ -94,7 +94,7 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun initializeData(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) viewModelAction(StoriesUiAction.SetInitialData(arguments))
-        else viewModelAction(StoriesUiAction.GetSavedInstanceStateData(savedInstanceState))
+        else viewModelAction(StoriesUiAction.GetSavedInstanceStateData)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
