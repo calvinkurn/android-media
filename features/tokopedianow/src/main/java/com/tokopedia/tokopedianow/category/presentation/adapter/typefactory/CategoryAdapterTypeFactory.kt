@@ -57,8 +57,8 @@ class CategoryAdapterTypeFactory(
     private var productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private var productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
     private var productAdsCarouselListener: ProductAdsCarouselListener? = null,
-    private var recycledViewPool: RecyclerView.RecycledViewPool? = null,
-    private var lifecycleOwner: LifecycleOwner? = null
+    private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
+    private val lifecycleOwner: LifecycleOwner? = null
 ): BaseAdapterTypeFactory(),
     CategoryTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
