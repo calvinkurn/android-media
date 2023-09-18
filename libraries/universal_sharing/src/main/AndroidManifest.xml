@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.sharingexperience.view.PostPurchaseSharingActivity"
+            android:name=".view.activity.PostPurchaseSharingActivity"
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.White">

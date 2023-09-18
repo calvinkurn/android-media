@@ -1,4 +1,4 @@
-package com.tokopedia.sharingexperience.view
+package com.tokopedia.universal_sharing.view.activity
 
 import android.os.Bundle
 import android.os.PersistableBundle
