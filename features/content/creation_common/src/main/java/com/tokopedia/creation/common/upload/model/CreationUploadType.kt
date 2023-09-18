@@ -6,4 +6,11 @@ package com.tokopedia.creation.common.upload.model
 enum class CreationUploadType(val type: String) {
     Shorts("shorts"),
     Stories("stories"),
+    Unknown("unknown");
+
+    companion object {
+        fun mapFromValue(value: String): CreationUploadType {
+            return values().find { it.type == value } ?: Unknown
+        }
+    }
 }

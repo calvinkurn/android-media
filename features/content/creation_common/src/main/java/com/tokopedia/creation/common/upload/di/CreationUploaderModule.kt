@@ -3,6 +3,7 @@ package com.tokopedia.creation.common.upload.di
 import android.content.Context
 import androidx.work.WorkManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
 import com.tokopedia.creation.common.upload.data.repository.CreationUploadQueueRepositoryImpl
@@ -11,6 +12,7 @@ import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.creation.common.upload.uploader.CreationUploaderImpl
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.sync.Mutex
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
@@ -29,12 +31,19 @@ class CreationUploaderModule {
     }
 
     @Provides
+    fun provideMutex(): Mutex {
+        return Mutex()
+    }
+
+    @Provides
     fun provideCreationUploadQueueRepository(
         dispatchers: CoroutineDispatchers,
+        mutex: Mutex,
         creationUploadQueueDatabase: CreationUploadQueueDatabase,
     ): CreationUploadQueueRepository {
         return CreationUploadQueueRepositoryImpl(
             dispatchers = dispatchers,
+            mutex = mutex,
             creationUploadQueueDatabase = creationUploadQueueDatabase
         )
     }

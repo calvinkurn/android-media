@@ -14,11 +14,11 @@ import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueu
 interface CreationUploadQueueDao {
 
     @Query("SELECT * FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp DESC LIMIT 1")
-    suspend fun getTopQueue(): CreationUploadQueueEntity
+    suspend fun getTopQueue(): CreationUploadQueueEntity?
 
     @Insert
     suspend fun insert(entity: CreationUploadQueueEntity)
 
-    @Delete
-    suspend fun delete(entity: CreationUploadQueueEntity)
+    @Query("DELETE FROM $CREATION_UPLOAD_QUEUE WHERE creation_id = :creationId")
+    suspend fun delete(creationId: String)
 }

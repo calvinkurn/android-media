@@ -36,6 +36,43 @@ data class CreationUploadQueue private constructor(
     }
 
     companion object {
+
+        val Empty: CreationUploadQueue
+            get() = CreationUploadQueue(
+                id = "",
+                uploadType = CreationUploadType.Unknown,
+                queueStatus = UploadQueueStatus.Unknown,
+                timestamp = 0L,
+                creationId = "",
+                mediaUri = "",
+                coverUri = "",
+                sourceId = "",
+                authorId = "",
+                authorType = "",
+            )
+
+        fun parseFromEntity(entity: CreationUploadQueueEntity): CreationUploadQueue {
+            return when (CreationUploadType.mapFromValue(entity.uploadType)) {
+                CreationUploadType.Shorts -> buildForShorts(
+                    creationId = entity.creationId,
+                    mediaUri = entity.mediaUri,
+                    coverUri = entity.coverUri,
+                    sourceId = entity.sourceId,
+                    authorId = entity.authorId,
+                    authorType = entity.authorType,
+                )
+                CreationUploadType.Stories -> buildForStories(
+                    creationId = entity.creationId,
+                    mediaUri = entity.mediaUri,
+                    coverUri = entity.coverUri,
+                    sourceId = entity.sourceId,
+                    authorId = entity.authorId,
+                    authorType = entity.authorType,
+                )
+                CreationUploadType.Unknown -> Empty
+            }
+        }
+
         fun buildForShorts(
             creationId: String,
             mediaUri: String,

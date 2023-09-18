@@ -69,7 +69,7 @@ class StoriesCreationRepositoryImpl @Inject constructor(
             delay(200)
             StoriesCreationConfiguration.Empty.copy(
                 maxStoriesConfig = StoriesCreationConfiguration.MaxStoriesConfig(
-                    isLimitReached = true,
+                    isLimitReached = false,
                     imageUrl = "https://images.tokopedia.net/img/android/content/content_creation/ic_content_too_much.png",
                     title = "Oops, kamu sudah terlalu banyak upload Story",
                     description = "Kamu tetap bisa upload lebih dari 30 Story, tapi yang terlama akan kami hapus, ya.",

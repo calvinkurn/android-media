@@ -8,6 +8,8 @@ import androidx.work.workDataOf
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.di.DaggerCreationUploaderComponent
+import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
+import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -25,6 +27,9 @@ class CreationUploaderWorker(
 
     @Inject
     lateinit var uploadManagerProvider: CreationUploadManagerProvider
+
+    @Inject
+    lateinit var queueRepository: CreationUploadQueueRepository
 
     init {
         inject()
@@ -45,8 +50,23 @@ class CreationUploaderWorker(
              * 2. Get upload manager based on type
              * 3. Execute upload manager
              */
-            println("JOE LOG CreationUploaderWorker is working...")
-            Result.success(workDataOf())
+
+            while(true) {
+                val data = queueRepository.getTopQueue() ?: break
+
+                if (data == CreationUploadQueue.Empty) continue
+
+                try {
+                    val uploadManager = uploadManagerProvider.get(data.uploadType)
+                    uploadManager.execute(data)
+
+                    queueRepository.delete(data)
+                } catch (throwable: Throwable) {
+                    break
+                }
+            }
+
+            Result.success()
         }
     }
 

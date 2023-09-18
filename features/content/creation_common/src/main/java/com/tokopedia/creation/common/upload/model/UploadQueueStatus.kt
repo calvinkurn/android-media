@@ -7,4 +7,5 @@ enum class UploadQueueStatus(val value: String) {
     Queued("queued"),
     InProcess("in_process"),
     Failed("failed"),
+    Unknown("unknown");
 }

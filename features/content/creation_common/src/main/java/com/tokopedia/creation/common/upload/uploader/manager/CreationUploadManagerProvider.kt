@@ -15,6 +15,7 @@ class CreationUploadManagerProvider @Inject constructor(
         return when (uploadType) {
             CreationUploadType.Shorts -> shortsUploadManager
             CreationUploadType.Stories -> storiesUploadManager
+            CreationUploadType.Unknown -> throw Exception("Upload manager is not defined")
         }
     }
 }
