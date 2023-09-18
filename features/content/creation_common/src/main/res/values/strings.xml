@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="content_creation_upload_notification_shorts_progress_title">Tunggu ya, videomu lagi di-upload</string>
+    <string name="content_creation_upload_notification_shorts_progress_description">Selagi menunggu video di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia.</string>\
+    <string name="content_creation_upload_notification_shorts_success_title">Yay, videomu berhasil di-upload!</string>
+    <string name="content_creation_upload_notification_shorts_success_description">Lihat videomu di sini, yuk!</string>
+    <string name="content_creation_upload_notification_shorts_fail_title">Oops, gagal upload video</string>
+    <string name="content_creation_upload_notification_shorts_fail_description">Tenang, kamu masih bisa coba upload videonya lagi.</string>
+    <string name="content_creation_upload_notification_shorts_fail_retry">Coba lagi</string>
+
+    <string name="content_creation_upload_notification_stories_progress_title">Tunggu ya, storymu lagi di-upload</string>
+    <string name="content_creation_upload_notification_stories_progress_description">Selagi menunggu story di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia.</string>
+    <string name="content_creation_upload_notification_stories_success_title">Yay, storymu berhasil di-upload!</string>
+    <string name="content_creation_upload_notification_stories_success_description">Lihat storymu di sini, yuk!</string>
+    <string name="content_creation_upload_notification_stories_fail_title">Oops, gagal upload story</string>
+    <string name="content_creation_upload_notification_stories_fail_description">Tenang, kamu masih bisa coba upload storynya lagi.</string>
+    <string name="content_creation_upload_notification_stories_fail_retry">Coba lagi</string>
+
     <string name="play_widget_watch_title">Tonton videomu di aplikasi Tokopedia, ya!</string>
     <string name="play_widget_watch_desc">
         Download aplikasi Tokopedia buat
