@@ -155,6 +155,13 @@ abstract class BaseCategoryViewModel(
         }
     }
 
+    protected open fun createRequestQueryParams(categoryId: String): Map<String?, Any?> {
+        return aceSearchParamMapper.createRequestParams(
+            source = CATEGORY_TOKONOW_DIRECTORY,
+            srpPageId = categoryId
+        )
+    }
+
     protected fun sendOpenScreenTracker(id: String, name: String, url: String) {
         _openScreenTracker.postValue(CategoryOpenScreenTrackerModel(id, name, url))
     }
@@ -210,13 +217,6 @@ abstract class BaseCategoryViewModel(
         updateAddressData()
         loadMoreJob = null
         _refreshState.postValue(Unit)
-    }
-
-    private fun createRequestQueryParams(categoryId: String): Map<String?, Any?> {
-        return aceSearchParamMapper.createRequestParams(
-            source = CATEGORY_TOKONOW_DIRECTORY,
-            srpPageId = categoryId
-        )
     }
 
     private fun processLoadDataPage() {
