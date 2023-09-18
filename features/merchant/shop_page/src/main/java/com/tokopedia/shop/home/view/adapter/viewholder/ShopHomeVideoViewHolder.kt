@@ -115,15 +115,19 @@ class ShopHomeVideoViewHolder(
             }
         }
         configColorTheme(model)
-        setShopReimaginedContainerMargin()
+        configViewForShopReimagined()
     }
 
-    private fun setShopReimaginedContainerMargin() {
+    private fun configViewForShopReimagined() {
         youTubeThumbnailShopPageImageUnify?.let {
             it.cornerRadius = SHOP_RE_IMAGINE_RADIUS.toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
+            setShopReimaginedContainerMargin(it)
         }
+    }
+
+    private fun setShopReimaginedContainerMargin(shopCarouselBannerImageUnify: ShopCarouselBannerImageUnify) {
+        (shopCarouselBannerImageUnify.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+        (shopCarouselBannerImageUnify.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
     }
 
     private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
