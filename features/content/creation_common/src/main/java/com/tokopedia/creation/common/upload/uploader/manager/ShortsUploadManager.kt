@@ -9,8 +9,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
-import com.tokopedia.creation.common.upload.notification.CreationUploadNotificationManager
-import com.tokopedia.creation.common.upload.notification.ShortsUploadNotificationManager
+import com.tokopedia.creation.common.upload.uploader.notification.CreationUploadNotificationManager
+import com.tokopedia.creation.common.upload.uploader.notification.ShortsUploadNotificationManager
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult

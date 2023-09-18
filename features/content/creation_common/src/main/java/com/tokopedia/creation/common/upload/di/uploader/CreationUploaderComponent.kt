@@ -1,8 +1,8 @@
 package com.tokopedia.creation.common.upload.di.uploader
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.creation.common.upload.activity.PlayShortsPostUploadActivity
-import com.tokopedia.creation.common.upload.receiver.PlayShortsUploadReceiver
+import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
+import com.tokopedia.creation.common.upload.uploader.receiver.PlayShortsUploadReceiver
 import dagger.Component
 
 /**

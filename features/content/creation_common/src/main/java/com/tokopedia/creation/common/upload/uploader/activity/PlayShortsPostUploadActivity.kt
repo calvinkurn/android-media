@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.upload.activity
+package com.tokopedia.creation.common.upload.uploader.activity
 
 import android.content.Context
 import android.content.Intent
@@ -10,7 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.di.uploader.DaggerCreationUploaderComponent
-import com.tokopedia.creation.common.upload.dialog.PlayInstallMainAppDialog
+import com.tokopedia.creation.common.upload.uploader.dialog.PlayInstallMainAppDialog
 import com.tokopedia.kotlin.extensions.view.isAppInstalled
 import javax.inject.Inject
 

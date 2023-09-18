@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.upload.dialog
+package com.tokopedia.creation.common.upload.uploader.dialog
 
 import android.content.Context
 import android.content.Intent

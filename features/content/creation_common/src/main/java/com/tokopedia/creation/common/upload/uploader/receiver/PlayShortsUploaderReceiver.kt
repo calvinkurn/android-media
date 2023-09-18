@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.upload.receiver
+package com.tokopedia.creation.common.upload.uploader.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

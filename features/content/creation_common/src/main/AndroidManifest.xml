@@ -3,10 +3,10 @@
     package="com.tokopedia.creation.common">
 
     <application>
-        <activity android:name=".upload.activity.PlayShortsPostUploadActivity"/>
+        <activity android:name=".upload.uploader.activity.PlayShortsPostUploadActivity"/>
 
         <receiver
-            android:name=".upload.receiver.PlayShortsUploadReceiver"
+            android:name=".upload.uploader.receiver.PlayShortsUploadReceiver"
             android:enabled="true"/>
     </application>
 </manifest>

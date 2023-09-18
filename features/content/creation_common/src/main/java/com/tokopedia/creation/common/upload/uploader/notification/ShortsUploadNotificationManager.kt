@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.upload.notification
+package com.tokopedia.creation.common.upload.uploader.notification
 
 import android.app.PendingIntent
 import android.content.Context
@@ -8,11 +8,11 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.creation.common.upload.activity.PlayShortsPostUploadActivity
+import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.model.orEmpty
-import com.tokopedia.creation.common.upload.receiver.PlayShortsUploadReceiver
+import com.tokopedia.creation.common.upload.uploader.receiver.PlayShortsUploadReceiver
 import javax.inject.Inject
 import com.tokopedia.creation.common.R
 

@@ -1,7 +1,7 @@
 package com.tokopedia.creation.common.upload.uploader.manager
 
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
-import com.tokopedia.creation.common.upload.notification.StoriesUploadNotificationManager
+import com.tokopedia.creation.common.upload.uploader.notification.StoriesUploadNotificationManager
 import javax.inject.Inject
 
 /**

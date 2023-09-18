@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.upload.notification
+package com.tokopedia.creation.common.upload.uploader.notification
 
 import android.app.Notification
 import android.app.NotificationChannel
