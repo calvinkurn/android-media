@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -20,6 +21,7 @@ import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.findViewById
+import com.tokopedia.productcard.utils.forceLightRed
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
@@ -433,4 +435,53 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
         super.setOnLongClickListener(l)
         cardViewProductCard?.setOnLongClickListener(l)
     }
+
+    fun forceLightModeColor(productCard: ProductCardListView?) {
+        productCard?.let {
+            val cardView = productCard.findViewById<CardUnify2>(R.id.cardViewProductCard)
+            cardView.setCardUnifyBackgroundColor(ContextCompat.getColor(cardView.context, R.color.dms_static_white))
+
+            val productName = productCard.findViewById<Typography>(R.id.textViewProductName)
+            productName.setTextColor(ContextCompat.getColor(productName.context, R.color.dms_static_NN950_96_light))
+
+            val productPrice = productCard.findViewById<Typography>(R.id.textViewPrice)
+            productPrice.setTextColor(ContextCompat.getColor(productPrice.context, R.color.dms_static_NN950_96_light))
+
+            val labelDiscount = productCard.findViewById<Label>(R.id.labelDiscount)
+            labelDiscount.forceLightRed()
+
+            val productSlashPrice = productCard.findViewById<Typography>(R.id.textViewSlashedPrice)
+            productSlashPrice.setTextColor(ContextCompat.getColor(productSlashPrice.context, R.color.dms_static_light_NN950_44))
+
+            val soldCount = productCard.findViewById<Typography>(R.id.textViewSales)
+            soldCount.setTextColor(ContextCompat.getColor(soldCount.context, R.color.dms_static_light_NN950_68))
+
+            val rating = productCard.findViewById<Typography>(R.id.salesRatingFloat)
+            rating.setTextColor(ContextCompat.getColor(rating.context, R.color.dms_static_light_NN950_68))
+
+            val gimmick = productCard.findViewById<Typography>(R.id.textViewGimmick)
+            gimmick.setTextColor(ContextCompat.getColor(gimmick.context, R.color.dms_static_light_YN400))
+
+            //Divider bottom sold count
+            val salesRatingFloatLine = productCard.findViewById<Typography>(R.id.salesRatingFloatLine)
+            salesRatingFloatLine.setBackgroundColor(ContextCompat.getColor(salesRatingFloatLine.context, R.color.dms_static_light_NN950_32))
+
+            //Bottom sold count
+            val textViewIntegrity = productCard.findViewById<Typography>(R.id.textViewIntegrity)
+            textViewIntegrity.setTextColor(ContextCompat.getColor(textViewIntegrity.context, R.color.dms_static_light_NN950_68))
+
+            //Dilayani tokopedia textView
+            val textViewFulfillment = productCard.findViewById<Typography>(R.id.textViewFulfillment)
+            textViewFulfillment.setTextColor(ContextCompat.getColor(textViewFulfillment.context, R.color.dms_static_light_NN950_68))
+
+            val textViewStockLabel = productCard.findViewById<Typography>(R.id.textViewStockLabel)
+            textViewStockLabel.setTextColor(ContextCompat.getColor(textViewStockLabel.context, R.color.dms_static_light_NN950_68))
+
+            val progressBarStock = productCard.findViewById<ProgressBarUnify>(R.id.progressBarStock)
+            progressBarStock.trackDrawable.apply {
+                setColor(ContextCompat.getColor(progressBarStock.context, R.color.dms_static_light_NN100))
+            }
+        }
+    }
+
 }

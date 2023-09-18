@@ -11,7 +11,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductCardListBinding
-import com.tokopedia.shop.home.util.ProductCardColorOverrideManager
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
@@ -31,7 +30,6 @@ open class ShopHomeProductItemListViewHolder(
     private val viewBinding: ItemShopHomeProductCardListBinding? by viewBinding()
     private var productCard: ProductCardListView? = null
     protected var shopHomeProductViewModel: ShopHomeProductUiModel? = null
-    private val colorOverrideManager = ProductCardColorOverrideManager()
 
     init {
         findViews()
@@ -57,7 +55,7 @@ open class ShopHomeProductItemListViewHolder(
         )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)
-        colorOverrideManager.forceLightModeColor(productCard)
+        productCard?.forceLightModeColor(productCard)
     }
 
     protected open fun setListener(productCardModel: ProductCardModel) {

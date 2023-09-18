@@ -28,4 +28,18 @@
     <color name="dms_gold_ribbon_anchor">#CC4C14</color>
     <color name="dms_gold_ribbon_gradient_light">#FFC400</color>
     <color name="dms_gold_ribbon_gradient_dark">#FFA617</color>
+
+
+    <color name="dms_static_white">#FFFFFF</color>
+    <color name="dms_static_light_NN100">#E4EBF5</color>
+    <color name="dms_static_light_NN950_44">#70212121</color>
+    <color name="dms_static_light_NN950_68">#AD212121</color>
+    <color name="dms_static_light_YN400">#FFA617</color>
+    <color name="dms_static_light_NN950_32">#52212121</color>
+    <color name="dms_static_light_YN500">#FF7F17</color>
+    <color name="dms_static_light_YN300">#FFC400</color>
+    <color name="dms_static_NN950_96_light">#F5212121</color>
+    <color name="dms_static_RN500_light">#F94D63</color>
+    <color name="dms_static_RN100_light">#FFDBE2</color>
+
 </resources>

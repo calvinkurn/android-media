@@ -2,11 +2,13 @@ package com.tokopedia.productcard.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.util.TypedValue
 import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewStub
@@ -39,6 +41,12 @@ import com.tokopedia.video_widget.VideoPlayerView
 import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+
+
+private val smallTextSizePx by lazy { 10.toPx().toFloat() }
+private val horizontalPaddingPx by lazy { 4.toPx() }
+private val verticalPaddingPx by lazy { 3.toPx() }
 
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
@@ -722,4 +730,17 @@ internal fun createColorSampleDrawable(context: Context, colorString: String): G
     gradientDrawable.setColor(com.tokopedia.productcard.safeParseColor(colorString))
 
     return gradientDrawable
+}
+
+internal fun Label.forceLightRed() {
+    setTextSize(TypedValue.COMPLEX_UNIT_PX, smallTextSizePx)
+    typeface = Typography.getFontType(context, true, Typography.SMALL)
+    setTextColor(ContextCompat.getColor(context, R.color.dms_static_RN500_light))
+
+    setPadding(horizontalPaddingPx, verticalPaddingPx, horizontalPaddingPx, verticalPaddingPx)
+
+    val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
+    drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_RN100_light), PorterDuff.Mode.SRC_ATOP)
+
+    setBackgroundDrawable(drawable)
 }

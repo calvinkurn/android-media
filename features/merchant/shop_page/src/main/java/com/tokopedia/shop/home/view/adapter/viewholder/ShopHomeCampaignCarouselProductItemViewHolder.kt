@@ -8,7 +8,6 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCarouselProductCardBinding
-import com.tokopedia.shop.home.util.ProductCardColorOverrideManager
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
@@ -28,7 +27,6 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
     private val viewBinding: ItemShopCarouselProductCardBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
     protected var shopHomeProductViewModel: ShopHomeProductUiModel? = null
-    private val colorOverrideManager = ProductCardColorOverrideManager()
 
     init {
         findViews(itemView)
@@ -69,7 +67,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
             )
         )
         setListener()
-        colorOverrideManager.forceLightModeColor(productCard)
+        productCard?.forceLightModeColor(productCard)
     }
 
     protected open fun setListener() {
