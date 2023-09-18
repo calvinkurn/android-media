@@ -843,6 +843,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     }
                 } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO || insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NONE) {
                     layoutShipmentInsurance.gone()
+                    spacingInsuranceNormalShipping.visible()
                     if (insuranceData.useInsurance != false) {
                         onChangeInsuranceState(shippingWidgetUiModel, false)
                     }
@@ -876,6 +877,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             }
         } else {
             binding?.layoutShipmentInsurance?.gone()
+            binding?.spacingInsuranceNormalShipping?.visible()
         }
     }
 

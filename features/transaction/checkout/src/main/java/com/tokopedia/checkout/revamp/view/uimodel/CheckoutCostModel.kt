@@ -15,6 +15,7 @@ data class CheckoutCostModel(
     val finalShippingFee: Double = 0.0,
     val hasSelectAllShipping: Boolean = false,
     val shippingInsuranceFee: Double = 0.0,
+    val hasInsurance: Boolean = false,
     var totalPurchaseProtectionItem: Int = 0,
     var purchaseProtectionFee: Double = 0.0,
     val additionalFee: Double = 0.0,

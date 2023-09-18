@@ -274,9 +274,9 @@
             android:contentDescription="@string/product_card_content_desc_ribbon"
             android:elevation="4dp"
             android:scaleType="fitXY"
-            android:src="@drawable/product_card_ribbon_arch_red"
             app:layout_constraintEnd_toStartOf="@id/fl_image_product"
             app:layout_constraintTop_toTopOf="@id/fl_image_product"
+            app:srcCompat="@drawable/cart_card_ribbon_arch_red"
             tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.Group
