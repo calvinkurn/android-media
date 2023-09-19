@@ -43,7 +43,6 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.recommendation_widget_common.widget.carousel.chips.RecomChipsAdapter
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderView
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactory
@@ -59,7 +58,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.productcard.R as productcardR
 
 /**
  * Created by yfsx on 5/3/21.
@@ -131,7 +129,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         basicListener: RecomCarouselWidgetBasicListener?,
         tokonowListener: RecommendationCarouselTokonowListener?,
         chipListener: RecomCarouselChipListener? = null,
-        scrollToPosition: Int = RecyclerView.NO_POSITION
+        scrollToPosition: Int = RecyclerView.NO_POSITION,
     ) {
         try {
             widgetMetadata = widgetMetadata.copy(
@@ -143,12 +141,10 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             this.basicChipListener = chipListener
             if (carouselData.recommendationData.recommendationItemList.isNotEmpty()) {
                 bindWidgetWithData(carouselData)
-            } else {
-                this.basicListener?.onWidgetFail(
-                    carouselData.recommendationData.pageName,
-                    MessageErrorException("")
-                )
-            }
+            } else this.basicListener?.onWidgetFail(
+                carouselData.recommendationData.pageName,
+                MessageErrorException("")
+            )
         } catch (e: Exception) {
             this.basicListener?.onWidgetFail(carouselData.recommendationData.pageName, e)
         }
@@ -207,20 +203,17 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     fun bindTemporaryHeader(tempHeaderName: String) {
         headerView?.bindData(
-            data = RecommendationWidget(title = tempHeaderName),
-            tracking = null,
-            listener = null
+            RecommendationWidget(title = tempHeaderName),
+            null
         )
         recyclerView.gone()
         loadingView?.visible()
     }
 
     fun getCurrentPosition(): Int {
-        return if (::layoutManager.isInitialized) {
+        return if (::layoutManager.isInitialized)
             layoutManager.findFirstCompletelyVisibleItemPosition()
-        } else {
-            0
-        }
+        else 0
     }
 
     fun restoreScrollState(scrollState: Parcelable?) {
@@ -271,14 +264,13 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         carouselData?.let {
             if (widgetMetadata.isRecomBindWithPageName) {
                 viewModel?.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
-            } else {
+            } else
                 tokonowListener?.onRecomProductCardAddToCartNonVariant(
                     data = it,
                     recomItem = recomItem,
                     adapterPosition = adapterPosition,
                     quantity = quantity
                 )
-            }
         }
     }
 
@@ -338,25 +330,23 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private fun createLayoutManager(): LinearLayoutManager {
-        return object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
+        return object: LinearLayoutManager(itemView.context, HORIZONTAL, false) {
             override fun requestChildRectangleOnScreen(
-                parent: RecyclerView,
-                child: View,
-                rect: Rect,
-                immediate: Boolean,
-                focusedChildVisible: Boolean
+                    parent: RecyclerView,
+                    child: View,
+                    rect: Rect,
+                    immediate: Boolean,
+                    focusedChildVisible: Boolean
             ): Boolean {
                 return if ((child as? ViewGroup)?.focusedChild is CardView) {
                     false
-                } else {
-                    super.requestChildRectangleOnScreen(
+                } else super.requestChildRectangleOnScreen(
                         parent,
                         child,
                         rect,
                         immediate,
                         focusedChildVisible
-                    )
-                }
+                )
             }
         }
     }
@@ -372,14 +362,11 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         val layoutName = carouselData.recommendationData.layoutType
         carouselData.recommendationData.recommendationBanner?.let {
             if (it.imageUrl.isNotEmpty() && layoutName == NAME_CAMPAIGN_WIDGET) {
-                cardList.add(
-                    RecomCarouselBannerDataModel(
+                cardList.add(RecomCarouselBannerDataModel(
                         applink = it.applink,
                         bannerBackgorundColor = it.backgroudColor,
                         bannerImage = it.imageUrl,
-                        listener = this
-                    )
-                )
+                        listener = this))
             }
         }
         val productDataList = carouselData.recommendationData.recommendationItemList.toRecomCarouselItems(listener = this)
@@ -406,8 +393,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-        productCardModelList: List<ProductCardModel>
-    ) {
+            productCardModelList: List<ProductCardModel>) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -416,28 +402,22 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
-    private fun setHeaderComponent(carouselData: RecommendationCarouselData) {
-        headerView?.bindData(
-            data = carouselData.recommendationData,
-            tracking = null, // the owner will carry out
-            listener = headerViewListener(carouselData)
-        )
-    }
 
-    private fun headerViewListener(carouselData: RecommendationCarouselData) =
-        object : RecommendationHeaderListener {
-            override fun onSeeAllClick(link: String, tracking: RecommendationCarouselWidgetTracking?) {
+    private fun setHeaderComponent(carouselData: RecommendationCarouselData) {
+        headerView?.bindData(data = carouselData.recommendationData, listener = object : RecommendationHeaderListener {
+            override fun onSeeAllClick(link: String) {
                 basicListener?.onSeeAllBannerClicked(carouselData, link)
             }
 
             override fun onChannelExpired(widget: RecommendationWidget) {
                 basicListener?.onChannelExpired(carouselData, widgetMetadata.adapterPosition)
             }
-        }
+        })
+    }
 
     private fun scrollCarousel(scrollToPosition: Int) {
         if (!::layoutManager.isInitialized) return
@@ -445,14 +425,14 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
         itemView.post {
             layoutManager.scrollToPositionWithOffset(
-                scrollToPosition,
-                16f.toDpInt()
+                    scrollToPosition,
+                    16f.toDpInt()
             )
         }
     }
 
     private fun createScrollListener(): RecyclerView.OnScrollListener {
-        return object : RecyclerView.OnScrollListener() {
+        return  object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (::layoutManager.isInitialized) {
@@ -463,7 +443,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
-    // get data with network call
+    //get data with network call
     private fun bindWidgetWithPageName(
         pageName: String,
         isForceRefresh: Boolean,
@@ -490,13 +470,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
-    // data alrd from fragment
+    //data alrd from fragment
     private fun bindWidgetWithData(carouselData: RecommendationCarouselData) {
         this.carouselData = carouselData
         initVar()
         initChips()
-        doActionBasedOnRecomState(
-            carouselData.state,
+        doActionBasedOnRecomState(carouselData.state,
             onLoad = {
                 recyclerView.gone()
                 loadingView?.visible()
@@ -544,40 +523,36 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
-    private fun handleChipsClick(
-        annotationChip: AnnotationChip,
-        position: Int
-    ) {
+    private fun handleChipsClick(annotationChip: AnnotationChip,
+                                 position: Int) {
         chipsAdapter?.submitList(
             carouselData?.filterData?.map {
                 it.copy(
                     recommendationFilterChip = it.recommendationFilterChip.copy(
                         isActivated =
-                        annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name &&
-                            !annotationChip.recommendationFilterChip.isActivated
+                        annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
+                                && !annotationChip.recommendationFilterChip.isActivated
                     )
                 )
             } ?: listOf()
         )
         if (widgetMetadata.pageName.isEmpty()) {
-            // throw to outer listener
-            basicChipListener?.onChipClicked(
-                annotationChip.copy(
-                    recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
-                        isActivated = !annotationChip.recommendationFilterChip.isActivated
+            //throw to outer listener
+                    basicChipListener?.onChipClicked(
+                        annotationChip.copy(
+                            recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
+                                isActivated = !annotationChip.recommendationFilterChip.isActivated)),
+                        position
                     )
-                ),
-                position
-            )
         } else {
-            // call recom viewmodel
-            carouselData?.let {
-                viewModel?.loadRecomBySelectedChips(
-                    widgetMetadata,
-                    it.filterData,
-                    annotationChip
-                )
-            }
+            //call recom viewmodel
+                carouselData?.let {
+                    viewModel?.loadRecomBySelectedChips(
+                        widgetMetadata,
+                        it.filterData,
+                        annotationChip
+                    )
+                }
         }
         loadingView?.show()
         recyclerView.invisible()
@@ -619,6 +594,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun destroyEvent() {
+
     }
 
     private fun observeLiveData() {
@@ -630,26 +606,23 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         * when minicart service called
          */
         lifecycleOwner?.let { owner ->
-            viewModel?.getRecommendationLiveData?.observe(
-                owner,
-                Observer {
-                    widgetMetadata.isForceRefresh = false
-                    if (it.pageName == widgetMetadata.pageName) {
-                        if (it.recommendationItemList.isNotEmpty()) {
-                            bindWidgetWithData(
-                                RecommendationCarouselData(
-                                    recommendationData = it,
-                                    filterData = mapToAnnotateChip(it),
-                                    state = STATE_READY,
-                                    isUsingWidgetViewModel = true
-                                )
+            viewModel?.getRecommendationLiveData?.observe(owner, Observer {
+                widgetMetadata.isForceRefresh = false
+                if (it.pageName == widgetMetadata.pageName) {
+                    if (it.recommendationItemList.isNotEmpty()) {
+                        bindWidgetWithData(
+                            RecommendationCarouselData(
+                                recommendationData = it,
+                                filterData = mapToAnnotateChip(it),
+                                state = STATE_READY,
+                                isUsingWidgetViewModel = true
                             )
-                        } else {
-                            basicListener?.onChannelWidgetEmpty()
-                        }
+                        )
+                    } else {
+                        basicListener?.onChannelWidgetEmpty()
                     }
                 }
-            )
+            })
 
             viewModel?.errorGetRecommendation?.observe(owner, {
                 if (it.pageName == widgetMetadata.pageName) {
@@ -660,112 +633,81 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 }
             })
 
-            // will be updated to all recom widgets on same page (expected)
-            viewModel?.miniCartData?.observe(
-                owner,
-                Observer {
-                    it?.let { map ->
-                        updateUiQuantity(map)
+            //will be updated to all recom widgets on same page (expected)
+            viewModel?.miniCartData?.observe(owner, Observer {
+                it?.let { map ->
+                    updateUiQuantity(map)
+                }
+            })
+            viewModel?.atcRecomTokonow?.observe(owner, Observer { it ->
+                if (it.recomItem.pageName == widgetMetadata.pageName) {
+                    if (it.error == null) tokonowPageNameListener?.onRecomTokonowAtcSuccess(it.message)
+                    else tokonowPageNameListener?.onRecomTokonowAtcFailed(it.error)
+                }
+            })
+            viewModel?.atcRecomTokonowSendTracker?.observe(owner, Observer { data ->
+                data.doSuccessOrFail({
+                    tokonowPageNameListener?.onRecomTokonowAtcNeedToSendTracker(
+                        it.data
+                    )
+                }, {})
+            })
+            viewModel?.deleteCartRecomTokonowSendTracker?.observe(owner, Observer { data ->
+                data.doSuccessOrFail({
+                    tokonowPageNameListener?.onRecomTokonowDeleteNeedToSendTracker(
+                        it.data
+                    )
+                }, {})
+            })
+            viewModel?.atcRecomTokonowResetCard?.observe(owner, Observer { recomItem ->
+                if (recomItem.pageName == widgetMetadata.pageName) {
+                    carouselData?.let {
+                        TokonowQuantityUpdater.updateCurrentQuantityRecomItem(it, recomItem)
+                        setData(it)
                     }
                 }
-            )
-            viewModel?.atcRecomTokonow?.observe(
-                owner,
-                Observer { it ->
-                    if (it.recomItem.pageName == widgetMetadata.pageName) {
-                        if (it.error == null) {
-                            tokonowPageNameListener?.onRecomTokonowAtcSuccess(it.message)
-                        } else {
-                            tokonowPageNameListener?.onRecomTokonowAtcFailed(it.error)
-                        }
+            })
+            viewModel?.atcRecomTokonowNonLogin?.observe(owner, Observer { recomItem ->
+                tokonowPageNameListener?.onClickItemNonLoginState()
+                if (recomItem.pageName == widgetMetadata.pageName) {
+                    carouselData?.let {
+                        TokonowQuantityUpdater.resetFailedRecomTokonowCard(it, recomItem)
+                        setData(it)
                     }
                 }
-            )
-            viewModel?.atcRecomTokonowSendTracker?.observe(
-                owner,
-                Observer { data ->
-                    data.doSuccessOrFail({
-                        tokonowPageNameListener?.onRecomTokonowAtcNeedToSendTracker(
-                            it.data
-                        )
-                    }, {})
+            })
+            viewModel?.refreshMiniCartDataTriggerByPageName?.observe(owner, Observer {
+                if (it == widgetMetadata.pageName) {
+                    getMiniCartData()
                 }
-            )
-            viewModel?.deleteCartRecomTokonowSendTracker?.observe(
-                owner,
-                Observer { data ->
-                    data.doSuccessOrFail({
-                        tokonowPageNameListener?.onRecomTokonowDeleteNeedToSendTracker(
-                            it.data
-                        )
-                    }, {})
-                }
-            )
-            viewModel?.atcRecomTokonowResetCard?.observe(
-                owner,
-                Observer { recomItem ->
-                    if (recomItem.pageName == widgetMetadata.pageName) {
-                        carouselData?.let {
-                            TokonowQuantityUpdater.updateCurrentQuantityRecomItem(it, recomItem)
-                            setData(it)
-                        }
-                    }
-                }
-            )
-            viewModel?.atcRecomTokonowNonLogin?.observe(
-                owner,
-                Observer { recomItem ->
-                    tokonowPageNameListener?.onClickItemNonLoginState()
-                    if (recomItem.pageName == widgetMetadata.pageName) {
-                        carouselData?.let {
-                            TokonowQuantityUpdater.resetFailedRecomTokonowCard(it, recomItem)
-                            setData(it)
-                        }
-                    }
-                }
-            )
-            viewModel?.refreshMiniCartDataTriggerByPageName?.observe(
-                owner,
-                Observer {
-                    if (it == widgetMetadata.pageName) {
-                        getMiniCartData()
-                    }
-                }
-            )
+            })
             viewModel?.refreshUIMiniCartData?.observe(owner, {
                 if (it.pageName == widgetMetadata.pageName) {
                     tokonowPageNameListener?.onMiniCartUpdatedFromRecomWidget(it.miniCartSimplifiedData)
                 }
             })
-            viewModel?.minicartError?.observe(
-                owner,
-                Observer {
-                }
-            )
-            viewModel?.recomFilterResultData?.observe(
-                owner,
-                Observer { result ->
-                    if (result.pageName == widgetMetadata.pageName) {
-                        if (result.isSuccess) {
-                            result.recomWidgetData?.let {
-                                rebindWidgetWithNewFilterData(
-                                    carouselData?.copy(
-                                        recommendationData = it,
-                                        filterData = result.filterList
-                                    )
+            viewModel?.minicartError?.observe(owner, Observer {
+            })
+            viewModel?.recomFilterResultData?.observe(owner, Observer { result ->
+                if (result.pageName == widgetMetadata.pageName) {
+                    if (result.isSuccess) {
+                        result.recomWidgetData?.let {
+                            rebindWidgetWithNewFilterData(
+                                carouselData?.copy(
+                                    recommendationData = it,
+                                    filterData = result.filterList
                                 )
-                            }
-                        } else {
-                            basicListener?.onShowError(
-                                pageName = result.pageName,
-                                e = result.throwable ?: MessageErrorException(context?.getString(R.string.failed_to_load))
                             )
-                            recyclerView.visible()
-                            loadingView?.gone()
                         }
+                    } else {
+                        basicListener?.onShowError(
+                            pageName = result.pageName,
+                            e = result.throwable ?: MessageErrorException(context?.getString(R.string.failed_to_load)))
+                        recyclerView.visible()
+                        loadingView?.gone()
                     }
                 }
-            )
+            })
         }
     }
 
@@ -804,5 +746,6 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         val isTokonow: Boolean = false,
         val queryParam: String = "",
         val miniCartSource: MiniCartSource = MiniCartSource.PDPRecommendationWidget
-    )
+    ) {
+    }
 }
