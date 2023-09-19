@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
+import com.tokopedia.catalog.ui.fragment.CatalogLandingPageFragment
 import com.tokopedia.catalog.util.RollenceUtil
 import com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity as OldCatalogDetailPageActivity
 import com.tokopedia.core.analytics.AppScreen
@@ -55,7 +56,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity() {
 
     private fun handleRollenceRoute(savedInstanceState: Bundle?, catalogId: String) {
         if (RollenceUtil.useCatalogReimagine()) {
-            prepareView(savedInstanceState == null)
+            prepareLoader(savedInstanceState == null)
         } else {
             val intent = OldCatalogDetailPageActivity.createIntent(this, catalogId)
             startActivity(intent)
@@ -71,6 +72,17 @@ class CatalogDetailPageActivity :  BaseSimpleActivity() {
                             CatalogDetailPageFragment.CATALOG_DETAIL_PAGE_FRAGMENT_TAG
                     )
                     .commit()
+        }
+    }
+
+    private fun prepareLoader(savedInstanceIsNull: Boolean) {
+        if(savedInstanceIsNull) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.catalog_detail_parent_view,
+                    CatalogLandingPageFragment.newInstance(catalogId),
+                    CatalogLandingPageFragment.CATALOG_LOADER_PAGE_FRAGMENT_TAG
+                )
+                .commit()
         }
     }
 }

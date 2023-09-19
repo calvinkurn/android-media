@@ -1,6 +1,7 @@
 package com.tokopedia.oldcatalog.repository.catalogdetail
 
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import com.tokopedia.oldcatalog.model.raw.gql.GQL_CATALOG_QUERY
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -23,11 +24,17 @@ class CatalogDetailRepository @Inject constructor() : BaseRepository() {
         comparedCatalogId: String,
         userId: String,
         device: String,
-        isReimagine: Boolean = false
+        isReimagine: Boolean = false,
+        cacheType: CacheType = CacheType.CACHE_FIRST
     ): GraphqlResponse? {
         val type: MutableList<Type> = ArrayList()
         type.add(CatalogResponseData::class.java)
-        return getGQLData(getQueries(isReimagine), type, getRequests(categoryID,comparedCatalogId,userId,device))
+        return getGQLData(
+            getQueries(isReimagine),
+            type,
+            getRequests(categoryID, comparedCatalogId, userId, device),
+            cacheType = cacheType
+        )
     }
 
     private fun getQueries(isReimagine: Boolean): MutableList<String> {

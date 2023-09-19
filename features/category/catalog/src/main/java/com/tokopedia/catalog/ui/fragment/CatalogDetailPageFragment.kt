@@ -42,26 +42,37 @@ import javax.inject.Inject
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     StickyNavigationListener {
 
+    companion object {
+        private const val QUERY_CATALOG_ID = "catalog_id"
+        private const val QUERY_PRODUCT_SORTING_STATUS = "product_sorting_status"
+
+        private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val COLOR_VALUE_MAX = 255
+        const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
+
+        fun newInstance(catalogId: String): CatalogDetailPageFragment {
+            val fragment = CatalogDetailPageFragment()
+            val bundle = Bundle()
+            bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
     @Inject
     lateinit var viewModel: CatalogDetailPageViewModel
+    var title = ""
+    var productSortingStatus = 0
 
     private var binding by autoClearedNullable<FragmentCatalogReimagineDetailPageBinding>()
-
     private val widgetAdapter by lazy {
         WidgetCatalogAdapter(
             CatalogAdapterFactoryImpl(
                 heroBannerListener = this,
-
                 navListener = this
             )
         )
     }
-
-    var title = ""
-
-    var productSortingStatus = 0
-
-
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -73,22 +84,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                     widgetAdapter.autoSelectNavigation(indexVisible)
                 }
             }
-        }
-    }
-
-    companion object {
-        private const val QUERY_CATALOG_ID = "catalog_id"
-        private const val QUERY_PRODUCT_SORTING_STATUS = "product_sorting_status"
-
-        private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        private const val COLOR_VALUE_MAX = 255
-        const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
-        fun newInstance(catalogId: String): CatalogDetailPageFragment {
-            val fragment = CatalogDetailPageFragment()
-            val bundle = Bundle()
-            bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
-            fragment.arguments = bundle
-            return fragment
         }
     }
 
@@ -116,7 +111,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         var catalogId = ""
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
-            viewModel.getProductCatalog(catalogId, "", "", "android")
+            viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
         }
         binding?.globalerrorsAction?.setOnClickListener {

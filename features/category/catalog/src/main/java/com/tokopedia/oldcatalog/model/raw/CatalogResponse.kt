@@ -25,7 +25,10 @@ data class CatalogResponseData(
         val components: List<BasicInfo.Component>?,
         @Expose
         @SerializedName("layout")
-        val layouts: List<BasicInfo.Layout>?
+        val layouts: List<BasicInfo.Layout>?,
+        @Expose
+        @SerializedName("version")
+        val version: Int = 0
     ) {
         data class BasicInfo(
             @Expose
