@@ -37,6 +37,9 @@ class PromoUsageGetPromoListRecommendationEntryPointUseCase @Inject constructor(
                     message
                     code
                   }
+                  promo_recommendation {
+                    codes
+                  }
                   entry_point_info {
                     messages
                     state

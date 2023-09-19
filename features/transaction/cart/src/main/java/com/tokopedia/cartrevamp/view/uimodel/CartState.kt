@@ -193,7 +193,8 @@ sealed class EntryPointInfoEvent {
 
     data class ActiveNew(
         val lastApply: LastApplyUiModel,
-        val entryPointInfo: PromoEntryPointInfo
+        val entryPointInfo: PromoEntryPointInfo,
+        val recommendedPromoCodes: List<String>
     ) : EntryPointInfoEvent()
 
     data class Active(
@@ -209,17 +210,19 @@ sealed class EntryPointInfoEvent {
         val lastApply: LastApplyUiModel,
         val isNoItemSelected: Boolean = false,
         val entryPointInfo: PromoEntryPointInfo? = null,
+        val recommendedPromoCodes: List<String>
     ) : EntryPointInfoEvent()
 
     data class Inactive(
         val message: String = "",
-        val isNoItemSelected: Boolean = false,
+        val isNoItemSelected: Boolean = false
     ) : EntryPointInfoEvent()
 
     data class AppliedNew(
         val lastApply: LastApplyUiModel,
         val leftIconUrl: String,
-        val message: String
+        val message: String,
+        val recommendedPromoCodes: List<String>
     ) : EntryPointInfoEvent()
 
     data class Applied(

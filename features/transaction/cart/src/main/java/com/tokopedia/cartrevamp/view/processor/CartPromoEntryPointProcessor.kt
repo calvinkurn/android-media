@@ -78,7 +78,8 @@ class CartPromoEntryPointProcessor @Inject constructor(
             if (!hasSelectedItemInCart) {
                 return EntryPointInfoEvent.InactiveNew(
                     lastApply = lastApply,
-                    isNoItemSelected = true
+                    isNoItemSelected = true,
+                    recommendedPromoCodes = emptyList()
                 )
             }
             val isUsingPromo = lastApply.additionalInfo.usageSummaries.isNotEmpty()
@@ -94,35 +95,41 @@ class CartPromoEntryPointProcessor @Inject constructor(
                 return if (response.promoListRecommendation.data.resultStatus.success) {
                     val entryPointInfo = getPromoListRecommendationMapper
                         .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+                    val recommendedPromoCodes = response.promoListRecommendation.data.promoRecommendation.codes
                     if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
                         EntryPointInfoEvent.ActiveNew(
                             lastApply = lastApply,
-                            entryPointInfo = entryPointInfo
+                            entryPointInfo = entryPointInfo,
+                            recommendedPromoCodes = recommendedPromoCodes
                         )
                     } else {
                         EntryPointInfoEvent.InactiveNew(
                             lastApply = lastApply,
-                            entryPointInfo = entryPointInfo
+                            entryPointInfo = entryPointInfo,
+                            recommendedPromoCodes = recommendedPromoCodes
                         )
                     }
                 } else {
-                    if (response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_COUPON_LIST_EMPTY
-                        || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_USER_BLACKLISTED
-                        || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_PHONE_NOT_VERIFIED
+                    if (response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_COUPON_LIST_EMPTY ||
+                        response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_USER_BLACKLISTED ||
+                        response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_PHONE_NOT_VERIFIED
                     ) {
                         val entryPointInfo = getPromoListRecommendationMapper
                             .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(
                                 response
                             )
+                        val recommendedPromoCodes = response.promoListRecommendation.data.promoRecommendation.codes
                         if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
                             EntryPointInfoEvent.ActiveNew(
                                 lastApply = lastApply,
-                                entryPointInfo = entryPointInfo
+                                entryPointInfo = entryPointInfo,
+                                recommendedPromoCodes = recommendedPromoCodes
                             )
                         } else {
                             EntryPointInfoEvent.InactiveNew(
                                 lastApply = lastApply,
-                                entryPointInfo = entryPointInfo
+                                entryPointInfo = entryPointInfo,
+                                recommendedPromoCodes = recommendedPromoCodes
                             )
                         }
                     } else {
@@ -146,7 +153,8 @@ class CartPromoEntryPointProcessor @Inject constructor(
                 return EntryPointInfoEvent.AppliedNew(
                     lastApply = lastApply,
                     leftIconUrl = ICON_URL_ENTRY_POINT_APPLIED,
-                    message = message
+                    message = message,
+                    recommendedPromoCodes = emptyList()
                 )
             }
         } else {
