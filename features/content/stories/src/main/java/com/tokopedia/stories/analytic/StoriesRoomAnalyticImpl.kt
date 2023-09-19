@@ -1,6 +1,9 @@
 package com.tokopedia.stories.analytic
 
 import android.os.Bundle
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -12,9 +15,9 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     @Assisted private val authorId: String,
     private val userSession: UserSessionInterface,
 ) : StoriesRoomAnalytic {
-    
+
     @AssistedFactory
-    interface Factory: StoriesRoomAnalytic.Factory {
+    interface Factory : StoriesRoomAnalytic.Factory {
         override fun create(authorId: String): StoriesRoomAnalyticImpl
     }
 
@@ -28,13 +31,13 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46042
     override fun sendImpressionStoriesContent(storiesId: String) {
         Tracker.Builder()
-            .setEvent("openScreen")
-            .setCustomProperty("trackerId", "46042")
-            .setBusinessUnit("content")
+            .setEvent(Event.openScreen)
+            .setCustomProperty(Key.trackerId, "46042")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("isLoggedInStatus", isLogin.toString())
-            .setCustomProperty("screenName", "/stories-room/$storiesId/$authorId")
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.isLoggedInStatus, isLogin.toString())
+            .setCustomProperty(Key.screenName, "/stories-room/$storiesId/$authorId")
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -49,31 +52,28 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     ) {
         val itemList = promotions.map {
             Bundle().apply {
-                putString(CREATIVE_NAME, it.creativeName)
-                putString(CREATIVE_SLOT, it.creativeSlot)
-                putString(ITEM_ID, it.itemId)
-                putString(ITEM_NAME, it.itemName)
+                putString(Key.creativeName, it.creativeName)
+                putString(Key.creativeSlot, it.creativeSlot)
+                putString(Key.itemId, it.itemId)
+                putString(Key.itemName, it.itemName)
             }
         }
 
         val eventDataLayer = Bundle().apply {
-            putString(EVENT, "view_item")
-            putString(EVENT_ACTION, "view - story circle")
-            putString(EVENT_CATEGORY, "stories room")
-            putString(
-                EVENT_LABEL,
-                "$entryPoint - $authorId - $currentCircle"
-            )
-            putString(TRACKER_ID, "46043")
-            putString(BUSINESS_UNIT, "content")
-            putString(CURRENT_SITE, currentSite)
-            putString(SESSION_IRIS, sessionIris)
-            putString(USER_ID, userId)
-            putParcelableArrayList(PROMOTIONS, ArrayList(itemList))
+            putString(Key.event, Event.viewItem)
+            putString(Key.eventAction, "view - story circle")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, "$entryPoint - $authorId - $currentCircle")
+            putString(Key.trackerId, "46043")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.promotions, ArrayList(itemList))
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            "view_item",
+            Event.viewItem,
             eventDataLayer,
         )
     }
@@ -82,14 +82,14 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46044
     override fun sendClickShopNameEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction("click - shop name")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46044")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46044")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -99,14 +99,14 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46046
     override fun sendClickThreeDotsEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction("click - three dots")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46046")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46046")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -116,14 +116,14 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46047
     override fun sendClickShoppingBagEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction("click - shopping bag")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46047")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46047")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -133,37 +133,33 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46049
     override fun sendClickStoryCircleEvent(
         entryPoint: String,
-        
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     ) {
         val itemList = promotions.map {
             Bundle().apply {
-                putString(CREATIVE_NAME, it.creativeName)
-                putString(CREATIVE_SLOT, it.creativeSlot)
-                putString(ITEM_ID, it.itemId)
-                putString(ITEM_NAME, it.itemName)
+                putString(Key.creativeName, it.creativeName)
+                putString(Key.creativeSlot, it.creativeSlot)
+                putString(Key.itemId, it.itemId)
+                putString(Key.itemName, it.itemName)
             }
         }
 
         val eventDataLayer = Bundle().apply {
-            putString(EVENT, "select_content")
-            putString(EVENT_ACTION, "click - story circle")
-            putString(EVENT_CATEGORY, "stories room")
-            putString(
-                EVENT_LABEL,
-                "$entryPoint - $authorId - $currentCircle"
-            )
-            putString(TRACKER_ID, "46049")
-            putString(BUSINESS_UNIT, "content")
-            putString(CURRENT_SITE, currentSite)
-            putString(SESSION_IRIS, sessionIris)
-            putString(USER_ID, userId)
-            putParcelableArrayList(PROMOTIONS, ArrayList(itemList))
+            putString(Key.event, Event.selectContent)
+            putString(Key.eventAction, "click - story circle")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, "$entryPoint - $authorId - $currentCircle")
+            putString(Key.trackerId, "46049")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.promotions, ArrayList(itemList))
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            "select_content",
+            Event.selectContent,
             eventDataLayer,
         )
     }
@@ -172,14 +168,14 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46050
     override fun sendClickRemoveStoryEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction("click - remove story")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46050")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46050")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -194,14 +190,14 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         Tracker.Builder()
             .setEvent("view_item_list")
             .setEventAction("view - product card")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46051")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46051")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
             .setCustomProperty("item_list", "/stories-room - product card")
-            .setCustomProperty("items", items)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.items, items)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -215,16 +211,16 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         items: List<String>,
     ) {
         Tracker.Builder()
-            .setEvent("select_content")
+            .setEvent(Event.selectContent)
             .setEventAction("click - product card")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46052")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46052")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
             .setCustomProperty("item_list", itemList)
-            .setCustomProperty("items", items)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.items, items)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -237,15 +233,15 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         items: List<String>,
     ) {
         Tracker.Builder()
-            .setEvent("add_to_cart")
+            .setEvent(Event.add_to_cart)
             .setEventAction("click - buy button")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46054")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46054")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("items", items)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.items, items)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -258,15 +254,15 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         items: List<String>,
     ) {
         Tracker.Builder()
-            .setEvent("add_to_cart")
+            .setEvent(Event.add_to_cart)
             .setEventAction("click - atc button")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "46056")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46056")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("items", items)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.items, items)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -276,21 +272,20 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46057
     override fun sendClickTapNextContentEvent(
         entryPoint: String,
-        
         storiesId: String,
         creatorType: String,
         contentType: String,
         currentCircle: String,
     ) {
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction("click - tap next content")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
-            .setCustomProperty("trackerId", "46057")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46057")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -300,21 +295,20 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46058
     override fun sendClickTapPreviousContentEvent(
         entryPoint: String,
-        
         storiesId: String,
         creatorType: String,
         contentType: String,
         currentCircle: String,
     ) {
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction("click - tap previous content")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
-            .setCustomProperty("trackerId", "46058")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46058")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -322,19 +316,16 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46059
-    override fun sendClickMoveToOtherGroup(
-        entryPoint: String,
-        
-    ) {
+    override fun sendClickMoveToOtherGroup(entryPoint: String) {
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction("click - move to other group")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel("$entryPoint - $authorId")
-            .setCustomProperty("trackerId", "46059")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46059")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -344,21 +335,20 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46062
     override fun sendClickExitStoryRoomEvent(
         entryPoint: String,
-        
         storiesId: String,
         creatorType: String,
         contentType: String,
-        currentCircle: String
+        currentCircle: String,
     ) {
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction("click - exit story room")
-            .setEventCategory("stories room")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
-            .setCustomProperty("trackerId", "46062")
-            .setBusinessUnit("content")
+            .setCustomProperty(Key.trackerId, "46062")
+            .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty("sessionIris", sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
