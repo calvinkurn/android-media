@@ -48,8 +48,10 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private var callback = ""
     private var isAccountLinked = false
     private var isReload = false
+    private var isLaunchCallback = false
 
     private var dismissDialogWithDataListener: (Boolean) -> Unit = {}
+    private var dismissDialogLaunchCallBackListener: (Unit) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -61,6 +63,10 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             }
             KYCConstant.ActivityResult.RELOAD -> {
                 isReload = true
+                dismiss()
+            }
+            KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
+                isLaunchCallback = true
                 dismiss()
             }
         }
@@ -259,7 +265,11 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        dismissDialogWithDataListener(isReload)
+        if (isLaunchCallback) {
+            dismissDialogLaunchCallBackListener(Unit)
+        } else {
+            dismissDialogWithDataListener(isReload)
+        }
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
@@ -269,6 +279,10 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     fun setOnDismissWithDataListener(isReload: (Boolean) -> Unit) {
         dismissDialogWithDataListener = isReload
+    }
+
+    fun setOnLaunchCallbackListener(isLaunchCallback: (Unit) -> Unit) {
+        dismissDialogLaunchCallBackListener = isLaunchCallback
     }
 
     companion object {

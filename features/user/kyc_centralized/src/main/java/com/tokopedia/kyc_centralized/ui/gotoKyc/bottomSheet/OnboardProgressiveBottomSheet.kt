@@ -49,8 +49,10 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     private var binding by autoClearedNullable<LayoutGotoKycOnboardProgressiveBinding>()
 
     private var exhaustedParam = DobChallengeExhaustedParam()
+    private var isLaunchCallback = false
 
     private var dismissDialogWithDataListener: (DobChallengeExhaustedParam) -> Unit = {}
+    private var dismissDialogLaunchCallBackListener: (Unit) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -59,6 +61,10 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
             }
             KYCConstant.ActivityResult.RESULT_FINISH -> {
                 finishWithResult(Activity.RESULT_CANCELED)
+            }
+            KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
+                isLaunchCallback = true
+                dismiss()
             }
         }
     }
@@ -279,12 +285,20 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        dismissDialogWithDataListener(exhaustedParam)
+        if (isLaunchCallback) {
+            dismissDialogLaunchCallBackListener(Unit)
+        } else {
+            dismissDialogWithDataListener(exhaustedParam)
+        }
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
             kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
         )
+    }
+
+    fun setOnLaunchCallbackListener(isLaunchCallback: (Unit) -> Unit) {
+        dismissDialogLaunchCallBackListener = isLaunchCallback
     }
 
     fun setOnDismissWithDataListener(exhaustedParam: (DobChallengeExhaustedParam) -> Unit) {

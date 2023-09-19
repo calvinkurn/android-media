@@ -403,6 +403,10 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 finishWithResult(Activity.RESULT_CANCELED)
             }
         }
+
+        onBoardProgressiveBottomSheet.setOnLaunchCallbackListener {
+            gotoCallbackApplink(viewModel.callback)
+        }
     }
 
     private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean, callback: String) {
@@ -426,6 +430,10 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 activity?.setResult(Activity.RESULT_CANCELED)
                 activity?.finish()
             }
+        }
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchCallbackListener {
+            gotoCallbackApplink(viewModel.callback)
         }
     }
 

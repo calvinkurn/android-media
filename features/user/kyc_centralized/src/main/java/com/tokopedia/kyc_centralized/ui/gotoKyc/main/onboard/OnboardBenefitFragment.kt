@@ -126,6 +126,11 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
                 )
             }
         }
+
+        onBoardProgressiveBottomSheet.setOnLaunchCallbackListener {
+            activity?.setResult(KYCConstant.ActivityResult.LAUNCH_CALLBACK)
+            activity?.finish()
+        }
     }
 
     private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean) {
@@ -146,6 +151,11 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
                 activity?.setResult(KYCConstant.ActivityResult.RELOAD)
                 activity?.finish()
             }
+        }
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchCallbackListener {
+            activity?.setResult(KYCConstant.ActivityResult.LAUNCH_CALLBACK)
+            activity?.finish()
         }
     }
 
