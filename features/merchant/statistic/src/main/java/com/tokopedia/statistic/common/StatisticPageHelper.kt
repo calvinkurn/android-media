@@ -231,8 +231,8 @@ class StatisticPageHelper @Inject constructor() {
                 showBottomBorder = false
             ),
             DateFilterItem.Divider,
-            getDateFilterPerDay(context, Const.DAYS_365),
-            getDateFilterPerWeek(context, false, Const.DAYS_365),
+            getDateFilterPerDay(context, Const.DAYS_91),
+            getDateFilterPerWeek(context, false, Const.DAYS_91),
             getFilterPerMonth(context, true, Const.DAYS_365)
         )
 
