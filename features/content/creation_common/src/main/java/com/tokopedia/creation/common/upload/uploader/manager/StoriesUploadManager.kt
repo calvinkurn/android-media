@@ -15,6 +15,22 @@ class StoriesUploadManager @Inject constructor(
         uploadData: CreationUploadQueue,
         listener: CreationUploadManagerListener
     ) {
+        /** TODO JOE: for mocking purpose */
+        notificationManager.init(uploadData)
+        listener.setupForegroundNotification(notificationManager.onStart())
 
+        var progress = 0
+        repeat(5) {
+            progress += 20
+            if (it == 2) {
+                listener.setProgress(uploadData, -1)
+                notificationManager.onError()
+
+                return@repeat
+            }
+
+            listener.setProgress(uploadData, progress)
+            notificationManager.onProgress(progress)
+        }
     }
 }

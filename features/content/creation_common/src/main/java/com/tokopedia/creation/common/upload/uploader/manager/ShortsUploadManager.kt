@@ -91,7 +91,6 @@ class ShortsUploadManager @Inject constructor(
         uploadData: CreationUploadQueue,
         listener: CreationUploadManagerListener
     ) {
-        println("JOE LOG ShortsUploadManager execute")
         this.uploadData = uploadData
         this.mListener = listener
 

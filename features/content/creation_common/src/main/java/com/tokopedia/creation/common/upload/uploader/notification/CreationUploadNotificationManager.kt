@@ -16,6 +16,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.orEmpty
+import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.coroutines.withContext
@@ -66,7 +68,29 @@ abstract class CreationUploadNotificationManager(
 
     abstract fun generateSuccessPendingIntent(): PendingIntent
 
-    abstract fun generateErrorPendingIntent(): PendingIntent
+    private fun generatePendingIntentToReceiver(action: CreationUploadReceiver.Action): PendingIntent {
+        val intent = CreationUploadReceiver.getIntent(
+            context,
+            uploadData.orEmpty(),
+            action
+        )
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+        } else {
+            PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+        }
+    }
 
     suspend fun init(uploadData: CreationUploadQueue) {
         this.uploadData = uploadData
@@ -137,7 +161,9 @@ abstract class CreationUploadNotificationManager(
     }
 
     fun onError(): ForegroundInfo {
-        val errorPendingIntent = generateErrorPendingIntent()
+        val errorPendingIntent = generatePendingIntentToReceiver(CreationUploadReceiver.Action.Retry)
+
+        val deleteNotificationPendingIntent = generatePendingIntentToReceiver(CreationUploadReceiver.Action.RemoveQueue)
 
         notificationBuilder.addAction(0, uploadNotificationText.failRetryAction, errorPendingIntent)
 
@@ -146,6 +172,7 @@ abstract class CreationUploadNotificationManager(
             .setContentTitle(uploadNotificationText.failTitle)
             .setContentText(uploadNotificationText.failDescription)
             .setStyle(NotificationCompat.BigTextStyle().bigText(uploadNotificationText.failDescription))
+            .setDeleteIntent(deleteNotificationPendingIntent)
             .setOngoing(false)
             .setShowWhen(true)
             .setAutoCancel(true)

@@ -57,33 +57,4 @@ class StoriesUploadNotificationManager @Inject constructor(
             )
         }
     }
-
-    override fun generateErrorPendingIntent(): PendingIntent {
-        /** TODO JOE: for mocking purpose */
-        val intent = PlayShortsPostUploadActivity.getIntent(
-            context,
-            channelId = uploadData?.creationId.orEmpty(),
-            authorId = uploadData?.authorId.orEmpty(),
-            authorType = uploadData?.authorType.orEmpty(),
-            appLink = "tokopedia://stories/shop/${uploadData?.authorId}"
-        ).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getActivity(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
-            )
-        } else {
-            PendingIntent.getActivity(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_CANCEL_CURRENT
-            )
-        }
-    }
 }

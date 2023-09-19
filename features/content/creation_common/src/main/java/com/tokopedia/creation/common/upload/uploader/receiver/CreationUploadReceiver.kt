@@ -34,10 +34,10 @@ class CreationUploadReceiver : BroadcastReceiver() {
     @Inject
     lateinit var uploadQueueRepository: CreationUploadQueueRepository
 
-    private val scope = CoroutineScope(dispatchers.io)
-
     override fun onReceive(context: Context, intent: Intent?) {
         inject(context)
+
+        val scope = CoroutineScope(dispatchers.io)
 
         val uploadDataRaw = intent?.getStringExtra(EXTRA_UPLOAD_DATA).orEmpty()
         val uploadData = CreationUploadQueue.parse(uploadDataRaw)
@@ -70,6 +70,11 @@ class CreationUploadReceiver : BroadcastReceiver() {
             .inject(this)
     }
 
+    enum class Action(val value: Int) {
+        Retry(1),
+        RemoveQueue(2)
+    }
+
     companion object {
 
         private const val EXTRA_UPLOAD_DATA = "EXTRA_UPLOAD_DATA"
@@ -84,11 +89,6 @@ class CreationUploadReceiver : BroadcastReceiver() {
                 putExtra(EXTRA_UPLOAD_DATA, uploadData.toString())
                 putExtra(EXTRA_ACTION, action.value)
             }
-        }
-
-        enum class Action(val value: Int) {
-            Retry(1),
-            RemoveQueue(2)
         }
     }
 }

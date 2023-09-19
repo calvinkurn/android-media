@@ -14,7 +14,6 @@ import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.model.orEmpty
 import javax.inject.Inject
 import com.tokopedia.creation.common.R
-import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
 
 /**
  * Created By : Jonathan Darwin on September 18, 2023
@@ -81,30 +80,6 @@ class ShortsUploadNotificationManager @Inject constructor(
             CONTENT_SHOP -> SOURCE_TYPE_SHOP
             CONTENT_USER -> SOURCE_TYPE_USER
             else -> ""
-        }
-    }
-
-    override fun generateErrorPendingIntent(): PendingIntent {
-        val intent = CreationUploadReceiver.getIntent(
-            context,
-            uploadData.orEmpty(),
-            CreationUploadReceiver.Companion.Action.Retry
-        )
-
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getBroadcast(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
-            )
-        } else {
-            PendingIntent.getBroadcast(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_CANCEL_CURRENT
-            )
         }
     }
 

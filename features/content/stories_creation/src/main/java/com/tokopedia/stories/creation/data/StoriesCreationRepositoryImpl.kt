@@ -92,7 +92,7 @@ class StoriesCreationRepositoryImpl @Inject constructor(
 //            response.data.storyId
 
             delay(200)
-            "123"
+            (0..100000).random().toString()
         }
     }
 
