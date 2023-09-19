@@ -143,6 +143,8 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 val tabTitle : Typography? = tabView.findViewById(R.id.tpgTabTitle)
                 tabTitle?.text = tabs[currentPosition].text
 
+                if (currentPosition == 0) tab.select(uiModel) else tab.unselect(uiModel)
+
                 tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
                 val tabWidth = (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
                 tabTotalWidth += tabWidth
