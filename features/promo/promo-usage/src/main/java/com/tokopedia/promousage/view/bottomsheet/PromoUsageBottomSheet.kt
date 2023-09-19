@@ -861,6 +861,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
                 is ApplyPromoUiAction.SuccessNoAction -> {
                     renderLoadingDialog(false)
+                    listener?.onApplyPromoNoAction()
                     dismiss()
                 }
 
@@ -1064,6 +1065,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             validateUse: ValidateUsePromoRevampUiModel,
             lastValidateUsePromoRequest: ValidateUsePromoRequest
         )
+
+        fun onApplyPromoNoAction()
 
         fun onApplyPromoFailed(throwable: Throwable)
 

@@ -5032,6 +5032,10 @@ class CartRevampFragment :
         goToCheckoutPage()
     }
 
+    override fun onApplyPromoNoAction() {
+        goToCheckoutPage()
+    }
+
     override fun onApplyPromoFailed(throwable: Throwable) {
         // no-op
     }
@@ -5050,6 +5054,7 @@ class CartRevampFragment :
         updatePromoCheckoutStickyButton(
             PromoUiModel(titleDescription = clearPromo.successDataModel.defaultEmptyPromoMessage)
         )
+        goToCheckoutPage()
     }
 
     override fun onClearPromoFailed(throwable: Throwable) {

@@ -2121,6 +2121,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         onApplyPromo(lastValidateUsePromoRequest, validateUse)
     }
 
+    override fun onApplyPromoNoAction() {
+        // no-op
+    }
+
     override fun onApplyPromoFailed(throwable: Throwable) {
         val message = throwable.message ?: ""
         if (message.isNotBlank()) {

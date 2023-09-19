@@ -154,7 +154,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
-import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.logisticcart.R as logisticcartR
@@ -2398,7 +2397,7 @@ class CheckoutFragment :
         onResultFromPromo(
             validateUsePromoRequest = lastValidateUsePromoRequest,
             validateUsePromoRevampUiModel = validateUse,
-            clearPromoUiModel = null,
+            clearPromoUiModel = null
         )
     }
 
@@ -2411,7 +2410,7 @@ class CheckoutFragment :
         onResultFromPromo(
             validateUsePromoRequest = lastValidateUsePromoRequest,
             validateUsePromoRevampUiModel = null,
-            clearPromoUiModel = clearPromo,
+            clearPromoUiModel = clearPromo
         )
     }
 
@@ -2427,8 +2426,12 @@ class CheckoutFragment :
         onResultFromPromo(
             validateUsePromoRequest = lastValidateUsePromoRequest,
             validateUsePromoRevampUiModel = validateUse,
-            clearPromoUiModel = null,
+            clearPromoUiModel = null
         )
+    }
+
+    override fun onApplyPromoNoAction() {
+        // no-op
     }
 
     override fun onApplyPromoFailed(throwable: Throwable) {
@@ -2444,7 +2447,7 @@ class CheckoutFragment :
         onResultFromPromo(
             validateUsePromoRequest = lastValidateUsePromoRequest,
             validateUsePromoRevampUiModel = null,
-            clearPromoUiModel = clearPromo,
+            clearPromoUiModel = clearPromo
         )
     }
 
