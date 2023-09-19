@@ -54,6 +54,7 @@ class GetLayoutUseCase(
               GetSellerDashboardPageLayout(shopID: ${'$'}shopID, page: ${'$'}page) {
                 widget {
                   ID
+                  sectionID
                   widgetType
                   title
                   subtitle
