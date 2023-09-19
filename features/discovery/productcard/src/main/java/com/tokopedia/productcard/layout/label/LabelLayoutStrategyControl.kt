@@ -6,7 +6,6 @@ import android.widget.ImageView
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -15,7 +14,6 @@ import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderLabelOverlay
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
@@ -125,57 +123,17 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         else 0
     }
 
-    override fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel) {
-        val constraintLayout = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
-
-        constraintLayout?.applyConstraintSet {
-            it.clear(R.id.labelDiscount, ConstraintSet.START)
-            it.clear(R.id.labelDiscount, ConstraintSet.TOP)
-
-            it.connect(
-                R.id.labelDiscount,
-                ConstraintSet.START,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.START,
-            )
-
-            it.connect(
-                R.id.labelDiscount,
-                ConstraintSet.TOP,
-                R.id.textViewPrice,
-                ConstraintSet.BOTTOM,
-            )
-
-            it.connect(
-                R.id.textViewSlashedPrice,
-                ConstraintSet.TOP,
-                R.id.labelDiscount,
-                ConstraintSet.TOP,
-                0.toPx()
-            )
-            it.setGoneMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 0.toPx())
-            it.setMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 4.toPx())
-        }
-    }
-
-    override fun setDiscountMargin(label: Label) {
-        val margin = 0
-        label.setMargin(margin, margin, margin, margin)
-    }
-
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
-        val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
-        view.moveLabelPriceConstraint(productCardModel)
 
-        if (productCardModel.isShowDiscountOrSlashPrice())
-            labelPrice?.initLabelGroup(null)
-        else
+        if (productCardModel.isShowLabelPrice())
             labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+        else
+            labelPrice?.initLabelGroup(null)
 
+        val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
         labelPriceReposition?.initLabelGroup(null)
     }
-
 
     override fun configContentPosition(view: View) {
         val contentLayout = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
@@ -237,15 +195,6 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
                 ConstraintSet.BOTTOM,
                 imageFreeOngkirPromoMarginTop,
             )
-        }
-    }
-
-    private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
-        val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
-        val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
-
-        view?.applyConstraintSet {
-            it.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 2.toPx())
         }
     }
 

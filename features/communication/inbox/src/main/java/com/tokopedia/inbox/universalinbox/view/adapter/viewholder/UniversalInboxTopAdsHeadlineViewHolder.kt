@@ -2,9 +2,9 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.inbox.databinding.UniversalInboxTopadsHeadlineItemBinding
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.databinding.UniversalInboxTopadsHeadlineItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -30,13 +30,13 @@ import com.tokopedia.utils.view.binding.viewBinding
 class UniversalInboxTopAdsHeadlineViewHolder(
     itemView: View,
     private val userSession: UserSessionInterface
-) : BaseViewHolder(itemView) {
+) : AbstractViewHolder<UniversalInboxTopadsHeadlineUiModel>(itemView) {
 
     private val binding: UniversalInboxTopadsHeadlineItemBinding? by viewBinding()
 
     private var topAdsHeadlineUiModel: UniversalInboxTopadsHeadlineUiModel? = null
 
-    fun bind(uiModel: UniversalInboxTopadsHeadlineUiModel) {
+    override fun bind(uiModel: UniversalInboxTopadsHeadlineUiModel) {
         topAdsHeadlineUiModel = uiModel
         hideHeadlineView()
         if (uiModel.cpmModel != null) {
@@ -57,16 +57,18 @@ class UniversalInboxTopAdsHeadlineViewHolder(
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
-        return UrlParamHelper.generateUrlParamString(mutableMapOf(
-            PARAM_DEVICE to VALUE_DEVICE,
-            PARAM_PAGE to topadsHeadLinePage,
-            PARAM_EP to VALUE_EP,
-            PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
-            PARAM_ITEM to VALUE_ITEM,
-            PARAM_SRC to PAGE_NAME,
-            PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-            PARAM_USER_ID to userSession.userId
-        ))
+        return UrlParamHelper.generateUrlParamString(
+            mutableMapOf(
+                PARAM_DEVICE to VALUE_DEVICE,
+                PARAM_PAGE to topadsHeadLinePage,
+                PARAM_EP to VALUE_EP,
+                PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
+                PARAM_ITEM to VALUE_ITEM,
+                PARAM_SRC to PAGE_NAME,
+                PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
+                PARAM_USER_ID to userSession.userId
+            )
+        )
     }
 
     private fun onSuccessResponse(cpmModel: CpmModel) {
