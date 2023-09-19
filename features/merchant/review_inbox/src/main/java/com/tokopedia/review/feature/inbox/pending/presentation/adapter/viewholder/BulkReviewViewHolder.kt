@@ -5,11 +5,13 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.BulkReviewUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.ItemBulkReviewBinding
 import com.tokopedia.review.inbox.databinding.ItemReviewPendingBulkCardProductBinding
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants.RATING_5
 import com.tokopedia.unifycomponents.toPx
 
 class BulkReviewViewHolder(
@@ -28,6 +30,7 @@ class BulkReviewViewHolder(
 
     override fun bind(element: BulkReviewUiModel) = with(binding) {
         val data = element.data
+        val onClickBulkReview = createOnClickBulkReview(data.appLink)
         bulkReviewTitle.text = data.title
 
         val thumbnailContainer = bulkReviewThumbnailContainer
@@ -41,13 +44,23 @@ class BulkReviewViewHolder(
             val imageUnify = product.toProductCard(
                 addMargin = index != 0,
                 moreInfo = moreInfo
-            )
+            ).apply {
+                setOnClickListener(onClickBulkReview)
+            }
             thumbnailContainer.addView(imageUnify)
         }
 
-        root.setOnClickListener {
-            listener.onClickBulkReview(data.appLink)
-        }
+        bulkReviewStars.setListener(object :
+                AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
+                override fun onClick(position: Int) {
+                    listener.onClickBulkReview(data.appLink, position)
+                }
+            })
+        root.setOnClickListener(onClickBulkReview)
+    }
+
+    private fun createOnClickBulkReview(appLink: String, rating: Int = RATING_5): (View) -> Unit {
+        return { listener.onClickBulkReview(appLink, RATING_5) }
     }
 
     private fun BulkReviewUiModel.Product.toProductCard(

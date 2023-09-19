@@ -61,6 +61,7 @@ import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.Incent
 import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewPendingBinding
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants.RATING_5
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -69,7 +70,8 @@ import com.tokopedia.usecase.coroutines.Success as CoroutineSucess
 
 class ReviewPendingFragment :
     BaseListFragment<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(),
-    ReviewPendingItemListener, HasComponent<ReviewPendingComponent>,
+    ReviewPendingItemListener,
+    HasComponent<ReviewPendingComponent>,
     ReviewPerformanceMonitoringContract,
     IncentiveOvoListener {
 
@@ -190,13 +192,13 @@ class ReviewPendingFragment :
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         binding?.reviewPendingRecyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding?.reviewPendingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                    reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                    binding?.reviewPendingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
@@ -243,13 +245,17 @@ class ReviewPendingFragment :
         observeBulkReview()
     }
 
-    private fun observeBulkReview(){
+    private fun observeBulkReview() {
         viewModel.bulkReview.observe(viewLifecycleOwner) {
             when (it) {
                 is CoroutineSucess -> onSuccessGetBulkReview(it.data)
-                else -> {}
+                else -> onFailedGetBulkReview()
             }
         }
+    }
+
+    private fun onFailedGetBulkReview() {
+        (adapter as? ReviewPendingAdapter)?.removeBulkReview()
     }
 
     private fun onSuccessGetBulkReview(data: BulkReviewRecommendationWidget) {
@@ -300,8 +306,8 @@ class ReviewPendingFragment :
         updateScrollListenerState(hasNextPage)
         coachMarkManager?.notifyUpdatedAdapter(!isLoadingInitialData)
         isLoadingInitialData = false
-        if (adapter.dataSize < minimumScrollableNumOfItems && isAutoLoadEnabled
-            && hasNextPage && endlessRecyclerViewScrollListener != null
+        if (adapter.dataSize < minimumScrollableNumOfItems && isAutoLoadEnabled &&
+            hasNextPage && endlessRecyclerViewScrollListener != null
         ) {
             endlessRecyclerViewScrollListener.loadMoreNextPage()
         }
@@ -333,6 +339,7 @@ class ReviewPendingFragment :
                         ?: getString(R.string.review_create_success_toaster, viewModel.getUserName())
                 )
                 refresh()
+                reloadBulkReviewCard()
             }
         }
     }
@@ -349,7 +356,6 @@ class ReviewPendingFragment :
     }
 
     override fun onDismissIncentiveBottomSheet() {
-
     }
 
     override fun onClickCloseThankYouBottomSheet() {
@@ -371,14 +377,23 @@ class ReviewPendingFragment :
                 userId = viewModel.getUserId()
             )
         } else {
-            val intent = RouteManager.getIntent(context, appLink)
-            if (appLink.startsWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW)) {
-                startActivityForResult(intent, BULK_CREATE_REVIEW_REQUEST_CODE)
-            } else {
-                startActivity(intent)
-            }
+            goToCreateBulkReview(appLink)
         }
         ReviewPendingTracking.trackCredibilityCarouselItemClick(position, title, viewModel.getUserId())
+    }
+
+    private fun goToCreateBulkReview(appLink: String, rating: Int = RATING_5) {
+        if (appLink.startsWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW)) {
+            val newAppLink = UriUtil.appendDiffDeeplinkWithQuery(
+                deeplink = appLink,
+                query = "${ApplinkConstInternalMarketplace.CREATE_REVIEW_APP_LINK_PARAM_RATING}=$rating"
+            )
+            val intent = RouteManager.getIntent(context, newAppLink)
+            startActivityForResult(intent, BULK_CREATE_REVIEW_REQUEST_CODE)
+        } else {
+            val intent = RouteManager.getIntent(context, appLink)
+            startActivity(intent)
+        }
     }
 
     override fun onReviewCredibilityWidgetImpressed(title: String, position: Int) {
@@ -456,7 +471,11 @@ class ReviewPendingFragment :
         try {
             view?.let {
                 Toaster.build(
-                    it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText
+                    it,
+                    errorMessage,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    ctaText
                 ) { action() }.show()
             }
         } catch (e: Exception) {
@@ -519,7 +538,8 @@ class ReviewPendingFragment :
                         renderReviewData(
                             ReviewPendingMapper.mapProductRevWaitForFeedbackResponseToReviewPendingUiModel(
                                 it.data.list
-                            ), it.data.hasNext
+                            ),
+                            it.data.hasNext
                         )
                     }
                     hideError()
@@ -667,8 +687,12 @@ class ReviewPendingFragment :
         loadInitialData()
     }
 
-    override fun onClickBulkReview(appLink: String) {
-        val context = context ?: return
-        RouteManager.route(context, appLink)
+    override fun onClickBulkReview(appLink: String, rating: Int) {
+        goToCreateBulkReview(appLink, rating)
+    }
+
+    private fun reloadBulkReviewCard() {
+        (adapter as? ReviewPendingAdapter)?.removeBulkReview()
+        viewModel.getBulkReview()
     }
 }

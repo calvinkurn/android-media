@@ -8,13 +8,12 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 
-
 class ReviewPendingAdapter(
-        reviewPendingAdapterTypeFactory: ReviewPendingAdapterTypeFactory
+    reviewPendingAdapterTypeFactory: ReviewPendingAdapterTypeFactory
 ) : BaseListAdapter<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(reviewPendingAdapterTypeFactory) {
 
     fun insertOvoIncentive(reviewPendingOvoIncentiveUiModel: ReviewPendingOvoIncentiveUiModel) {
-        if(visitables.firstOrNull() is ReviewPendingOvoIncentiveUiModel) {
+        if (visitables.firstOrNull() is ReviewPendingOvoIncentiveUiModel) {
             return
         }
         visitables.add(0, reviewPendingOvoIncentiveUiModel)
@@ -34,18 +33,21 @@ class ReviewPendingAdapter(
     }
 
     fun insertBulkReview(bulkReviewUiModel: BulkReviewUiModel) {
-        if (visitables.filterIsInstance<BulkReviewUiModel>().isEmpty()) {
-            val target = visitables.indexOfFirst {
-                it is ReviewPendingUiModel
-            }.takeIf { it > -1 }
-            if (target == null) {
-                visitables.add(bulkReviewUiModel)
-                notifyItemInserted(visitables.size)
-            } else {
-                visitables.add(target, bulkReviewUiModel)
-                notifyItemInserted(target)
-            }
+        if (visitables.filterIsInstance<BulkReviewUiModel>().isNotEmpty()) return
+        val target = visitables.indexOfFirst {
+            it is ReviewPendingUiModel
+        }.takeIf { it > -1 }
+        if (target == null) {
+            visitables.add(bulkReviewUiModel)
+            notifyItemInserted(visitables.size)
+        } else {
+            visitables.add(target, bulkReviewUiModel)
+            notifyItemInserted(target)
         }
+    }
+
+    fun removeBulkReview() {
+        visitables.removeAll { it is BulkReviewUiModel }
     }
 
     fun getItemPosition(uiModel: CoachMarkUiModel?): Int {

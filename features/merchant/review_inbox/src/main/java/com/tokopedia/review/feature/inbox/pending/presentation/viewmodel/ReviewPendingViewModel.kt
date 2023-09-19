@@ -25,12 +25,12 @@ import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
 class ReviewPendingViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val userSession: UserSessionInterface,
-        private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
-        private val getProductIncentiveOvo: GetProductIncentiveOvo,
-        private val markAsSeenUseCase: ProductrevMarkAsSeenUseCase,
-        private val bulkReviewUseCase: GetBulkReviewRecommendationUseCase
+    private val dispatchers: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
+    private val getProductIncentiveOvo: GetProductIncentiveOvo,
+    private val markAsSeenUseCase: ProductrevMarkAsSeenUseCase,
+    private val bulkReviewUseCase: GetBulkReviewRecommendationUseCase
 ) : BaseViewModel(dispatchers.io) {
 
     private val _reviewList = MutableLiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>()
@@ -41,8 +41,8 @@ class ReviewPendingViewModel @Inject constructor(
     val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>?>
         get() = _incentiveOvo
 
-    private var _bulkReview = MutableLiveData<Result<BulkReviewRecommendationWidget>>()
-    val bulkReview: LiveData<Result<BulkReviewRecommendationWidget>> = _bulkReview
+    private var _bulkReview = MutableLiveData<Result<BulkReviewRecommendationWidget>?>()
+    val bulkReview: LiveData<Result<BulkReviewRecommendationWidget>?> = _bulkReview
 
     fun getReviewData(page: Int, isRefresh: Boolean = false) {
         if (isRefresh) {
@@ -93,14 +93,17 @@ class ReviewPendingViewModel @Inject constructor(
         return userSession.name
     }
 
-    fun getBulkReview(){
+    fun getBulkReview() {
         launchCatchError(block = {
             val userId = userSession.userId
             val data = bulkReviewUseCase.execute(userId)
-            if(data.list.isNotEmpty()) _bulkReview.postValue(CoroutineSuccess(data))
+            if (data.list.isNotEmpty()) {
+                _bulkReview.postValue(CoroutineSuccess(data))
+            } else {
+                _bulkReview.postValue(null)
+            }
         }, onError = {
-            _bulkReview.postValue(CoroutineFail(it))
-        })
+                _bulkReview.postValue(CoroutineFail(it))
+            })
     }
-
 }
