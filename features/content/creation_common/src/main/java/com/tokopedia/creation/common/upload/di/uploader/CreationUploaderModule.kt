@@ -10,6 +10,7 @@ import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalyticImp
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
 import com.tokopedia.creation.common.upload.data.repository.CreationUploadQueueRepositoryImpl
 import com.tokopedia.creation.common.upload.di.CreationUploadDataModule
+import com.tokopedia.creation.common.upload.di.CreationUploadServiceModule
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.creation.common.upload.uploader.CreationUploaderImpl
@@ -22,14 +23,12 @@ import kotlinx.coroutines.sync.Mutex
  * Created By : Jonathan Darwin on September 15, 2023
  */
 @Module(
-    includes = [CreationUploadDataModule::class]
+    includes = [
+        CreationUploadDataModule::class,
+        CreationUploadServiceModule::class,
+    ]
 )
 class CreationUploaderModule {
-
-    @Provides
-    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
-        return WorkManager.getInstance(context)
-    }
 
     @Provides
     fun provideCreationUploader(
