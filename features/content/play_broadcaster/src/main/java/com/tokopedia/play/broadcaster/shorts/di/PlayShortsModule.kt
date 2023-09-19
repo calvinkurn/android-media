@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.shorts.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -78,6 +79,7 @@ class PlayShortsModule(
     @PlayShortsScope
     fun provideExoPlayer(): ExoPlayer {
         return SimpleExoPlayer.Builder(activityContext)
+            .setLoadControl(DefaultLoadControl.Builder().setPrioritizeTimeOverSizeThresholds(false).createDefaultLoadControl())
             .build()
             .apply {
                 repeatMode = Player.REPEAT_MODE_ALL
