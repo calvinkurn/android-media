@@ -39,7 +39,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
-import com.tokopedia.sessioncommon.data.ocl.OclStatus
 import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -133,9 +132,9 @@ class HomeAccountUserViewModel @Inject constructor(
     val tokopediaPlusData: LiveData<Result<TokopediaPlusDataModel>>
         get() = _tokopediaPlusData
 
-    private val _getOclStatus = MutableLiveData<OclStatus>()
-    val getOclStatus: LiveData<OclStatus>
-        get() = _getOclStatus
+    private val _isOclEligible = MutableLiveData<Boolean>()
+    val isOclEligible: LiveData<Boolean>
+        get() = _isOclEligible
 
     fun refreshUserProfile() {
         launch {
@@ -176,9 +175,13 @@ class HomeAccountUserViewModel @Inject constructor(
         launch {
             try {
                 val result = getOclStatusUseCase(oclPreference.getToken())
-                _getOclStatus.value = result
+                _isOclEligible.value = result.isShowing
             } catch (ignored: Exception) { }
         }
+    }
+
+    fun setOneTapStatus(isEligible: Boolean) {
+        _isOclEligible.value = isEligible
     }
 
     fun setSafeMode(isActive: Boolean) {
