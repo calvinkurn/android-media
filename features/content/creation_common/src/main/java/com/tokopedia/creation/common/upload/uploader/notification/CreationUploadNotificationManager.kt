@@ -14,8 +14,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.model.orEmpty
 import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -44,7 +44,7 @@ abstract class CreationUploadNotificationManager(
         priority = NotificationCompat.PRIORITY_HIGH
     }
 
-    protected var uploadData: CreationUploadQueue? = null
+    protected var uploadData: CreationUploadData? = null
 
     private val notificationId: Int
         get() = uploadData?.notificationId.orZero()
@@ -94,7 +94,7 @@ abstract class CreationUploadNotificationManager(
         }
     }
 
-    suspend fun init(uploadData: CreationUploadQueue) {
+    suspend fun init(uploadData: CreationUploadData) {
         this.uploadData = uploadData
 
         withContext(dispatchers.io) {

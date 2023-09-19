@@ -3,13 +3,12 @@ package com.tokopedia.creation.common.upload.model
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import java.util.UUID
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
  */
-data class CreationUploadQueue private constructor(
+data class CreationUploadData private constructor(
     val id: String,
     val uploadType: CreationUploadType,
     val queueStatus: UploadQueueStatus,
@@ -81,8 +80,8 @@ data class CreationUploadQueue private constructor(
         private const val ELEMENT_SEPARATOR = ", "
         private const val KEY_VALUE_SEPARATOR = "="
 
-        val Empty: CreationUploadQueue
-            get() = CreationUploadQueue(
+        val Empty: CreationUploadData
+            get() = CreationUploadData(
                 id = "",
                 uploadType = CreationUploadType.Unknown,
                 queueStatus = UploadQueueStatus.Unknown,
@@ -95,7 +94,7 @@ data class CreationUploadQueue private constructor(
                 authorType = "",
             )
 
-        fun parse(rawData: String): CreationUploadQueue {
+        fun parse(rawData: String): CreationUploadData {
             return try {
                 val map: Map<String, Any> = if (rawData.isEmpty()) {
                     mapOf()
@@ -110,7 +109,7 @@ data class CreationUploadQueue private constructor(
                         }
                 }
 
-                CreationUploadQueue(
+                CreationUploadData(
                     id = (map[KEY_ID] as? String).orEmpty(),
                     uploadType = CreationUploadType.mapFromValue((map[KEY_UPLOAD_TYPE] as? String).orEmpty()),
                     queueStatus = UploadQueueStatus.mapFromValue((map[KEY_QUEUE_STATUS] as? String).orEmpty()),
@@ -127,7 +126,7 @@ data class CreationUploadQueue private constructor(
             }
         }
 
-        fun parseFromEntity(entity: CreationUploadQueueEntity): CreationUploadQueue {
+        fun parseFromEntity(entity: CreationUploadQueueEntity): CreationUploadData {
             return when (CreationUploadType.mapFromValue(entity.uploadType)) {
                 CreationUploadType.Shorts -> buildForShorts(
                     creationId = entity.creationId,
@@ -156,8 +155,8 @@ data class CreationUploadQueue private constructor(
             sourceId: String,
             authorId: String,
             authorType: String,
-        ): CreationUploadQueue {
-            return CreationUploadQueue(
+        ): CreationUploadData {
+            return CreationUploadData(
                 id = UUID.randomUUID().toString(),
                 uploadType = CreationUploadType.Shorts,
                 queueStatus = UploadQueueStatus.Queued,
@@ -178,8 +177,8 @@ data class CreationUploadQueue private constructor(
             sourceId: String,
             authorId: String,
             authorType: String,
-        ): CreationUploadQueue {
-            return CreationUploadQueue(
+        ): CreationUploadData {
+            return CreationUploadData(
                 id = UUID.randomUUID().toString(),
                 uploadType = CreationUploadType.Stories,
                 queueStatus = UploadQueueStatus.Queued,
@@ -195,4 +194,4 @@ data class CreationUploadQueue private constructor(
     }
 }
 
-fun CreationUploadQueue?.orEmpty() = this ?: CreationUploadQueue.Empty
+fun CreationUploadData?.orEmpty() = this ?: CreationUploadData.Empty

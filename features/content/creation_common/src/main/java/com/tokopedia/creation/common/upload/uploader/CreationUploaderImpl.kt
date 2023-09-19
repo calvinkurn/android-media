@@ -4,7 +4,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.worker.CreationUploaderWorker
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ class CreationUploaderImpl @Inject constructor(
     private val creationUploadQueueRepository: CreationUploadQueueRepository
 ) : CreationUploader {
 
-    override suspend fun upload(data: CreationUploadQueue) {
+    override suspend fun upload(data: CreationUploadData) {
         creationUploadQueueRepository.insert(data)
         startWorkManager()
     }

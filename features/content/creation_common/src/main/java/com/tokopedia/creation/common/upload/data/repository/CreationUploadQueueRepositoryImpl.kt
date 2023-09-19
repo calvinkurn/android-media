@@ -3,7 +3,7 @@ package com.tokopedia.creation.common.upload.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -18,7 +18,7 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
     private val creationUploadQueueDatabase: CreationUploadQueueDatabase
 ) : CreationUploadQueueRepository {
 
-    override suspend fun insert(data: CreationUploadQueue) {
+    override suspend fun insert(data: CreationUploadData) {
         mutex.withLock {
             withContext(dispatchers.io) {
                 creationUploadQueueDatabase.creationUploadQueueDao().insert(data.mapToEntity())
@@ -26,13 +26,13 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getTopQueue(): CreationUploadQueue? {
+    override suspend fun getTopQueue(): CreationUploadData? {
         return mutex.withLock {
             withContext(dispatchers.io) {
                 val data = creationUploadQueueDatabase.creationUploadQueueDao().getTopQueue()
 
                 if (data != null) {
-                    CreationUploadQueue.parseFromEntity(data)
+                    CreationUploadData.parseFromEntity(data)
                 } else {
                     null
                 }

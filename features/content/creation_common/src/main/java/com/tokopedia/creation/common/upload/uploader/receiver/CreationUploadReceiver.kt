@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.di.uploader.DaggerCreationUploaderComponent
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -40,7 +40,7 @@ class CreationUploadReceiver : BroadcastReceiver() {
         val scope = CoroutineScope(dispatchers.io)
 
         val uploadDataRaw = intent?.getStringExtra(EXTRA_UPLOAD_DATA).orEmpty()
-        val uploadData = CreationUploadQueue.parse(uploadDataRaw)
+        val uploadData = CreationUploadData.parse(uploadDataRaw)
 
         NotificationManagerCompat.from(context).cancel(uploadData.notificationIdAfterUpload)
 
@@ -82,7 +82,7 @@ class CreationUploadReceiver : BroadcastReceiver() {
 
         fun getIntent(
             context: Context,
-            uploadData: CreationUploadQueue,
+            uploadData: CreationUploadData,
             action: Action,
         ): Intent {
             return Intent(context, CreationUploadReceiver::class.java).apply {

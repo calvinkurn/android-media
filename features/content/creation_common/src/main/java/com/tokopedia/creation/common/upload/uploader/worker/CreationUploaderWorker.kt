@@ -11,9 +11,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
 import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import kotlinx.coroutines.withContext
@@ -59,7 +59,7 @@ class CreationUploaderWorker(
             while(true) {
                 val data = queueRepository.getTopQueue() ?: break
 
-                if (data == CreationUploadQueue.Empty) continue
+                if (data == CreationUploadData.Empty) continue
 
                 try {
                     val uploadManager = uploadManagerProvider.get(data.uploadType)
@@ -71,7 +71,7 @@ class CreationUploaderWorker(
                                 setForegroundAsync(info)
                             }
 
-                            override suspend fun setProgress(uploadData: CreationUploadQueue, progress: Int) {
+                            override suspend fun setProgress(uploadData: CreationUploadData, progress: Int) {
                                 setProgress(
                                     workDataOf(
                                         CreationUploadConst.PROGRESS to progress,

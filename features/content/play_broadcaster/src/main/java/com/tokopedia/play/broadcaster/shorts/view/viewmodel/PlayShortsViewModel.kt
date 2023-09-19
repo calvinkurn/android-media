@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -616,7 +616,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private suspend fun uploadMedia() {
-        val uploadData = CreationUploadQueue.buildForShorts(
+        val uploadData = CreationUploadData.buildForShorts(
             creationId = shortsId,
             mediaUri = _media.value.mediaUri,
             coverUri = _coverForm.value.coverUri,

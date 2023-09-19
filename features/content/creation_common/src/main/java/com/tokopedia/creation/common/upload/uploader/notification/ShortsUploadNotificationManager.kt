@@ -10,10 +10,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.model.orEmpty
 import javax.inject.Inject
 import com.tokopedia.creation.common.R
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 
 /**
  * Created By : Jonathan Darwin on September 18, 2023
@@ -61,7 +61,7 @@ class ShortsUploadNotificationManager @Inject constructor(
         }
     }
 
-    private fun getPlayRoomAppLink(uploadData: CreationUploadQueue): String {
+    private fun getPlayRoomAppLink(uploadData: CreationUploadData): String {
         return buildString {
             append(UriUtil.buildUri(ApplinkConst.PLAY_DETAIL, uploadData.creationId))
             append("?")

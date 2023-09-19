@@ -3,7 +3,7 @@ package com.tokopedia.stories.creation.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
@@ -119,7 +119,7 @@ class StoriesCreationViewModel @Inject constructor(
         viewModelScope.launch {
             val state = _uiState.value
 
-            val data = CreationUploadQueue.buildForStories(
+            val data = CreationUploadData.buildForStories(
                 creationId = state.config.storiesId,
                 mediaUri = state.mediaFilePath,
                 coverUri = "",

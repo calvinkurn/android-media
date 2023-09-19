@@ -8,9 +8,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
-import com.tokopedia.creation.common.upload.uploader.notification.CreationUploadNotificationManager
 import com.tokopedia.creation.common.upload.uploader.notification.ShortsUploadNotificationManager
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mediauploader.UploaderUseCase
@@ -51,7 +50,7 @@ class ShortsUploadManager @Inject constructor(
 
     private var currentProgress = 0
 
-    private lateinit var uploadData: CreationUploadQueue
+    private lateinit var uploadData: CreationUploadData
 
     private var mListener: CreationUploadManagerListener? = null
 
@@ -89,7 +88,7 @@ class ShortsUploadManager @Inject constructor(
      * else : loading
      */
     override suspend fun execute(
-        uploadData: CreationUploadQueue,
+        uploadData: CreationUploadData,
         listener: CreationUploadManagerListener
     ): CreationUploadResult {
         this.uploadData = uploadData
@@ -164,7 +163,7 @@ class ShortsUploadManager @Inject constructor(
     }
 
     private suspend fun uploadFirstSnapshotAsCover(
-        uploadData: CreationUploadQueue
+        uploadData: CreationUploadData
     ) {
         val bitmap = snapshotHelper.snapVideo(appContext, uploadData.mediaUri)
             ?: throw Exception("Gagal upload cover")
@@ -185,7 +184,7 @@ class ShortsUploadManager @Inject constructor(
     }
 
     private suspend fun addMedia(
-        uploadData: CreationUploadQueue,
+        uploadData: CreationUploadData,
         mediaUrl: String
     ): String {
         val request = addMediaUseCase.getShortsRequest(
@@ -203,7 +202,7 @@ class ShortsUploadManager @Inject constructor(
     }
 
     private suspend fun updateChannelStatus(
-        uploadData: CreationUploadQueue,
+        uploadData: CreationUploadData,
         status: PlayChannelStatusType
     ) {
         updateChannelUseCase.apply {
@@ -223,7 +222,7 @@ class ShortsUploadManager @Inject constructor(
 
     private suspend fun updateChannelStatusWithMedia(
         activeMediaId: String,
-        uploadData: CreationUploadQueue,
+        uploadData: CreationUploadData,
         status: PlayChannelStatusType
     ) {
         updateChannelUseCase.apply {
@@ -246,7 +245,7 @@ class ShortsUploadManager @Inject constructor(
         notificationManager.onProgress(currentProgress)
     }
 
-    private suspend fun broadcastInit(uploadData: CreationUploadQueue) {
+    private suspend fun broadcastInit(uploadData: CreationUploadData) {
         broadcastProgress(CreationUploadConst.PROGRESS_INIT)
         notificationManager.init(uploadData)
         mListener?.setupForegroundNotification(notificationManager.onStart())

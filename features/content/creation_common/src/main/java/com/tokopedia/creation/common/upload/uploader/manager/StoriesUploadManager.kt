@@ -1,6 +1,6 @@
 package com.tokopedia.creation.common.upload.uploader.manager
 
-import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.uploader.notification.StoriesUploadNotificationManager
 import kotlinx.coroutines.delay
@@ -14,7 +14,7 @@ class StoriesUploadManager @Inject constructor(
 ) : CreationUploadManager {
 
     override suspend fun execute(
-        uploadData: CreationUploadQueue,
+        uploadData: CreationUploadData,
         listener: CreationUploadManagerListener
     ): CreationUploadResult {
         /** TODO JOE: for mocking purpose */
