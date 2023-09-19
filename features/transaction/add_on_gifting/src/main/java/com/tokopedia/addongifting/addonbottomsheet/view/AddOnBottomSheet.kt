@@ -117,6 +117,7 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutAddOnBottomSheetBinding, addOnProductData: AddOnProductData) {
+        // todo?
         var bottomSheetTitle = addOnProductData.bottomSheetTitle
         if (bottomSheetTitle.isEmpty()) {
             bottomSheetTitle = getString(R.string.add_on_bottomsheet_title)
@@ -223,6 +224,7 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
 
     private fun renderTotalAmount(viewBinding: LayoutAddOnBottomSheetBinding, fragmentUiModel: FragmentUiModel) {
         with(viewBinding.totalAmount) {
+            // todo?
             setLabelTitle(context.getString(R.string.add_on_label_total_amount))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.totalAmount.addOnTotalPrice, false).removeDecimalSuffix())
             if (fragmentUiModel.totalAmount.addOnTotalQuantity > 0) {
