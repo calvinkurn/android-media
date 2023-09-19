@@ -119,6 +119,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val DEFAULT_END_DATE_NON_REGULAR_MERCHANT = 0L
         private const val DEFAULT_END_DATE_REGULAR_MERCHANT = 1L
         private const val TOAST_DURATION = 5000L
+        private const val INVALID_SECTION_WIDGET_ID = "0"
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
         private const val TICKER_NAME = "statistic_page_ticker"
@@ -1205,11 +1206,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun removeEmptySection() {
         recyclerView?.post {
+            val widgetGroups: Map<String, List<BaseWidgetUiModel<*>>> =
+                adapter.data.groupBy { it.sectionId }
             val emptySection = mutableListOf<SectionWidgetUiModel>()
             adapter.data.forEach { widget ->
                 (widget as? SectionWidgetUiModel)?.let { section ->
-                    val hasChild = adapter.data.any { w -> w.sectionId == section.id }
-                    if (!hasChild) {
+                    val sectionWidgetId = section.id
+                    val isSectionEmpty = widgetGroups[sectionWidgetId].isNullOrEmpty()
+                    if (isSectionEmpty && sectionWidgetId != INVALID_SECTION_WIDGET_ID) {
                         emptySection.add(section)
                     }
                 }
