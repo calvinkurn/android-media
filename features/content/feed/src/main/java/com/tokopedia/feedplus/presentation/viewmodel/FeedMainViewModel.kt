@@ -67,7 +67,7 @@ class FeedMainViewModel @AssistedInject constructor(
     private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
 
-    private val _isMuted = MutableStateFlow(false)
+    private val _isMuted = MutableStateFlow<Boolean?>(null)
     val isMuted get() = _isMuted.asStateFlow()
 
     private val _swipeOnBoardingState = MutableStateFlow(

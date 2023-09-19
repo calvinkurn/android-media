@@ -15,6 +15,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -85,7 +86,8 @@ class FeedBaseFragment :
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
-    @Inject lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+    @Inject
+    lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels {
         FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
     }
@@ -133,6 +135,14 @@ class FeedBaseFragment :
         )
     }
 
+    private val muteAnimatedVector by lazy {
+        AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.ic_feed_mute_animated)
+    }
+
+    private val unmuteAnimatedVector by lazy {
+        AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.ic_feed_unmute_animated)
+    }
+
     private val isFromPushNotif: Boolean
         get() = activity?.intent?.getStringExtra(EXTRAS_UTM_MEDIUM)
             ?.contains(PARAM_PUSH_NOTIFICATION, true)
@@ -161,19 +171,21 @@ class FeedBaseFragment :
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
 
-    private val swipeFollowingLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        // this doesn't work, bcs the viewmodel doen't survive
-        if (userSession.isLoggedIn) {
-            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+    private val swipeFollowingLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // this doesn't work, bcs the viewmodel doen't survive
+            if (userSession.isLoggedIn) {
+                feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+            }
         }
-    }
-    private val openBrowseLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        // this also doesn't work, if the previous `browseAppLink` is empty :(
-        if (userSession.isLoggedIn) {
-            val metaModel = feedMainViewModel.metaData.value
-            RouteManager.route(requireContext(), metaModel.browseApplink)
+    private val openBrowseLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // this also doesn't work, if the previous `browseAppLink` is empty :(
+            if (userSession.isLoggedIn) {
+                val metaModel = feedMainViewModel.metaData.value
+                RouteManager.route(requireContext(), metaModel.browseApplink)
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -222,6 +234,8 @@ class FeedBaseFragment :
         observeEvent()
 
         observeUpload()
+
+        observeMuteUnmute()
     }
 
     override fun onStart() {
@@ -309,44 +323,44 @@ class FeedBaseFragment :
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
+            OnPageChangeCallback() {
 
-                var shouldSendSwipeTracker = false
+            var shouldSendSwipeTracker = false
 
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                handleTabTransition(position)
+                if (!userSession.isLoggedIn &&
+                    activeTabSource.tabName == null // not coming from appLink
                 ) {
-                    handleTabTransition(position)
-                    if (!userSession.isLoggedIn &&
-                        activeTabSource.tabName == null // not coming from appLink
-                    ) {
-                        if (position == TAB_SECOND_INDEX) {
-                            swipeFollowingLoginResult.launch(
-                                RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                            )
-                        }
-                    }
-
-                    if (shouldSendSwipeTracker) {
-                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                            feedNavigationAnalytics.eventSwipeFollowingTab()
-                        } else {
-                            feedNavigationAnalytics.eventSwipeForYouTab()
-                        }
-                        shouldSendSwipeTracker = false
+                    if (position == TAB_SECOND_INDEX) {
+                        swipeFollowingLoginResult.launch(
+                            RouteManager.getIntent(context, ApplinkConst.LOGIN)
+                        )
                     }
                 }
 
-                override fun onPageSelected(position: Int) {
-                    selectActiveTab(position)
+                if (shouldSendSwipeTracker) {
+                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                        feedNavigationAnalytics.eventSwipeFollowingTab()
+                    } else {
+                        feedNavigationAnalytics.eventSwipeForYouTab()
+                    }
+                    shouldSendSwipeTracker = false
                 }
+            }
 
-                override fun onPageScrollStateChanged(state: Int) {
-                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-                }
-            })
+            override fun onPageSelected(position: Int) {
+                selectActiveTab(position)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+            }
+        })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -356,16 +370,22 @@ class FeedBaseFragment :
     private fun setupInsets() {
         binding.containerFeedTopNav.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
 
-            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
+            val topInsetsMargin =
+                (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
 
             getAllMotionScene().forEach {
-                it.setMargin(binding.containerFeedTopNav.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin)
+                it.setMargin(
+                    binding.containerFeedTopNav.vMenuCenter.id,
+                    ConstraintSet.TOP,
+                    topInsetsMargin
+                )
             }
         }
 
         binding.loaderFeedTopNav.root.doOnApplyWindowInsets { v, insets, _, margin ->
 
-            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset16).coerceAtLeast(margin.top)
+            val topInsetsMargin =
+                (insets.systemWindowInsetTop + tabExtraTopOffset16).coerceAtLeast(margin.top)
 
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             marginLayoutParams.updateMargins(top = topInsetsMargin)
@@ -523,6 +543,24 @@ class FeedBaseFragment :
                         }
                     }
                 }
+        }
+    }
+
+    private fun observeMuteUnmute() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.isMuted.collect { isMuted ->
+                    if (isMuted == null) return@collect
+
+                    if (isMuted) {
+                        binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
+                        muteAnimatedVector?.start()
+                    } else {
+                        binding.ivFeedMuteUnmute.setImageDrawable(unmuteAnimatedVector)
+                        unmuteAnimatedVector?.start()
+                    }
+                }
+            }
         }
     }
 

@@ -399,7 +399,7 @@ class FeedFragment :
             )
         }
 
-        override fun isMuted(): Boolean = feedMainViewModel.isMuted.value
+        override fun isMuted(): Boolean = feedMainViewModel.isMuted.value.orFalse()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1041,7 +1041,7 @@ class FeedFragment :
         feedFollowersOnlyBottomSheet?.dismiss()
     }
 
-    override fun isMuted(): Boolean = feedMainViewModel.isMuted.value
+    override fun isMuted(): Boolean = feedMainViewModel.isMuted.value.orFalse()
 
     private fun onAttachChildFragment(fragmentManager: FragmentManager, childFragment: Fragment) {
         when (childFragment) {
@@ -1399,6 +1399,8 @@ class FeedFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 feedMainViewModel.isMuted.collect { isMuted ->
+                    if (isMuted == null) return@collect
+
                     updateCurrentVideoVolume(isMuted)
                 }
             }
