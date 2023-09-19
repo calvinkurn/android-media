@@ -3,14 +3,21 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.universal_sharing'
+    testNamespace 'com.tokopedia.universal_sharing.test'
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
-
     sourceSets {
         androidTest {
             java.srcDirs = ['src/androidTest/java']
             res.srcDirs = ['src/androidTest/res']
+        }
+        main {
+            res {
+                srcDirs 'src/main/res',
+                        'src/main/res/layouts/post_purchase'
+            }
         }
     }
 }
