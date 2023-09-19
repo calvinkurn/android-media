@@ -223,7 +223,6 @@ class CartListPresenter @Inject constructor(
             for (entry in updatedAddOnSummary) {
                 totalAddOnPrice += entry.priceValue.toLong()
             }
-            summaryTransactionUiModel?.paymentTotal = summaryTransactionUiModel?.totalValue?.plus(totalAddOnPrice) ?: 0
             summaryTransactionUiModel?.listSummaryAddOns = updatedAddOnSummary
         }
         return summaryTransactionUiModel
@@ -903,6 +902,7 @@ class CartListPresenter @Inject constructor(
                 totalQtyWithAddon = itemQty
                 cartItemHolderData.addOnsProduct.listData.forEach {
                     subtotalPrice += (totalQtyWithAddon * it.price)
+                    subtotalBeforeSlashedPrice += (totalQtyWithAddon * it.price)
                 }
             }
         }

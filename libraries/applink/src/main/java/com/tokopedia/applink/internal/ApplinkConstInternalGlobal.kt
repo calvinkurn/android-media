@@ -182,7 +182,6 @@ object ApplinkConstInternalGlobal {
     // applink, if provided will launch the applink after the module is installed
     // imageUrl, is the placeholder for the background
     const val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
-        "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
         DFFALLBACKURL_KEY +"={fallbackUrl}"
 
