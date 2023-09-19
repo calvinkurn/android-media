@@ -256,57 +256,57 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                 groupId = "groupId 1",
                 groupName = "Group Name 1",
                 detail = StoriesDetail(
-                        selectedGroupId = "groupId 1",
-                        selectedDetailPosition = 0,
-                        selectedDetailPositionCached = 0,
-                        detailItems = listOf(
-                            StoriesDetailItem(
-                                id = "0",
-                                event = StoriesDetailItemUiEvent.PAUSE,
-                                content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 0",
-                                    duration = 7 * 1000,
-                                ),
-                                resetValue = -1,
-                                isSameContent = false,
-                                meta = StoriesDetailItem.Meta(
-                                    activityTracker = "12345",
-                                    templateTracker = "1235df8",
-                                ),
+                    selectedGroupId = "groupId 1",
+                    selectedDetailPosition = 0,
+                    selectedDetailPositionCached = 0,
+                    detailItems = listOf(
+                        StoriesDetailItem(
+                            id = "0",
+                            event = StoriesDetailItemUiEvent.PAUSE,
+                            content = StoriesDetailItem.StoriesItemContent(
+                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                data = "data 0",
+                                duration = 7 * 1000,
                             ),
-                            StoriesDetailItem(
-                                id = "1",
-                                event = StoriesDetailItemUiEvent.PAUSE,
-                                content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 1",
-                                    duration = 7 * 1000,
-                                ),
-                                resetValue = -1,
-                                isSameContent = false,
-                                meta = StoriesDetailItem.Meta(
-                                    activityTracker = "12345",
-                                    templateTracker = "1235df8",
-                                ),
+                            resetValue = -1,
+                            isSameContent = false,
+                            meta = StoriesDetailItem.Meta(
+                                activityTracker = "12345",
+                                templateTracker = "1235df8",
                             ),
-                            StoriesDetailItem(
-                                id = "2",
-                                event = StoriesDetailItemUiEvent.PAUSE,
-                                content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 2",
-                                    duration = 7 * 1000,
-                                ),
-                                resetValue = -1,
-                                isSameContent = false,
-                                meta = StoriesDetailItem.Meta(
-                                    activityTracker = "12345",
-                                    templateTracker = "1235df8",
-                                ),
+                        ),
+                        StoriesDetailItem(
+                            id = "1",
+                            event = StoriesDetailItemUiEvent.PAUSE,
+                            content = StoriesDetailItem.StoriesItemContent(
+                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                data = "data 1",
+                                duration = 7 * 1000,
+                            ),
+                            resetValue = -1,
+                            isSameContent = false,
+                            meta = StoriesDetailItem.Meta(
+                                activityTracker = "12345",
+                                templateTracker = "1235df8",
+                            ),
+                        ),
+                        StoriesDetailItem(
+                            id = "2",
+                            event = StoriesDetailItemUiEvent.PAUSE,
+                            content = StoriesDetailItem.StoriesItemContent(
+                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                data = "data 2",
+                                duration = 7 * 1000,
+                            ),
+                            resetValue = -1,
+                            isSameContent = false,
+                            meta = StoriesDetailItem.Meta(
+                                activityTracker = "12345",
+                                templateTracker = "1235df8",
                             ),
                         ),
                     ),
+                ),
             ),
             StoriesGroupItem(groupId = "groupId 2"),
         ),
@@ -350,57 +350,57 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                 groupId = "groupId 2",
                 groupName = "Group Name 2",
                 detail = StoriesDetail(
-                        selectedGroupId = "groupId 2",
-                        selectedDetailPosition = 0,
-                        selectedDetailPositionCached = 0,
-                        detailItems = listOf(
-                            StoriesDetailItem(
-                                id = "0",
-                                event = StoriesDetailItemUiEvent.PAUSE,
-                                content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 0",
-                                    duration = 7 * 1000,
-                                ),
-                                resetValue = -1,
-                                isSameContent = false,
-                                meta = StoriesDetailItem.Meta(
-                                    activityTracker = "12345",
-                                    templateTracker = "1235df8",
-                                ),
+                    selectedGroupId = "groupId 2",
+                    selectedDetailPosition = 0,
+                    selectedDetailPositionCached = 0,
+                    detailItems = listOf(
+                        StoriesDetailItem(
+                            id = "0",
+                            event = StoriesDetailItemUiEvent.PAUSE,
+                            content = StoriesDetailItem.StoriesItemContent(
+                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                data = "data 0",
+                                duration = 7 * 1000,
                             ),
-                            StoriesDetailItem(
-                                id = "1",
-                                event = StoriesDetailItemUiEvent.PAUSE,
-                                content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 1",
-                                    duration = 7 * 1000,
-                                ),
-                                resetValue = -1,
-                                isSameContent = false,
-                                meta = StoriesDetailItem.Meta(
-                                    activityTracker = "12345",
-                                    templateTracker = "1235df8",
-                                ),
+                            resetValue = -1,
+                            isSameContent = false,
+                            meta = StoriesDetailItem.Meta(
+                                activityTracker = "12345",
+                                templateTracker = "1235df8",
                             ),
-                            StoriesDetailItem(
-                                id = "2",
-                                event = StoriesDetailItemUiEvent.PAUSE,
-                                content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 2",
-                                    duration = 7 * 1000,
-                                ),
-                                resetValue = -1,
-                                isSameContent = false,
-                                meta = StoriesDetailItem.Meta(
-                                    activityTracker = "12345",
-                                    templateTracker = "1235df8",
-                                ),
+                        ),
+                        StoriesDetailItem(
+                            id = "1",
+                            event = StoriesDetailItemUiEvent.PAUSE,
+                            content = StoriesDetailItem.StoriesItemContent(
+                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                data = "data 1",
+                                duration = 7 * 1000,
+                            ),
+                            resetValue = -1,
+                            isSameContent = false,
+                            meta = StoriesDetailItem.Meta(
+                                activityTracker = "12345",
+                                templateTracker = "1235df8",
+                            ),
+                        ),
+                        StoriesDetailItem(
+                            id = "2",
+                            event = StoriesDetailItemUiEvent.PAUSE,
+                            content = StoriesDetailItem.StoriesItemContent(
+                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                data = "data 2",
+                                duration = 7 * 1000,
+                            ),
+                            resetValue = -1,
+                            isSameContent = false,
+                            meta = StoriesDetailItem.Meta(
+                                activityTracker = "12345",
+                                templateTracker = "1235df8",
                             ),
                         ),
                     ),
+                ),
             ),
         ),
     )
@@ -441,57 +441,57 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                 groupId = "groupId 0",
                 groupName = "Group Name 0",
                 detail = StoriesDetail(
-                        selectedGroupId = "groupId 0",
-                        selectedDetailPosition = 0,
-                        selectedDetailPositionCached = 0,
-                        detailItems = listOf(
-                            StoriesDetailItem(
-                                id = "0",
-                                event = StoriesDetailItemUiEvent.PAUSE,
-                                content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 0",
-                                    duration = 7 * 1000,
-                                ),
-                                resetValue = -1,
-                                isSameContent = false,
-                                meta = StoriesDetailItem.Meta(
-                                    activityTracker = "12345",
-                                    templateTracker = "1235df8",
-                                ),
+                    selectedGroupId = "groupId 0",
+                    selectedDetailPosition = 0,
+                    selectedDetailPositionCached = 0,
+                    detailItems = listOf(
+                        StoriesDetailItem(
+                            id = "0",
+                            event = StoriesDetailItemUiEvent.PAUSE,
+                            content = StoriesDetailItem.StoriesItemContent(
+                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                data = "data 0",
+                                duration = 7 * 1000,
                             ),
-                            StoriesDetailItem(
-                                id = "1",
-                                event = StoriesDetailItemUiEvent.PAUSE,
-                                content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 1",
-                                    duration = 7 * 1000,
-                                ),
-                                resetValue = -1,
-                                isSameContent = false,
-                                meta = StoriesDetailItem.Meta(
-                                    activityTracker = "12345",
-                                    templateTracker = "1235df8",
-                                ),
+                            resetValue = -1,
+                            isSameContent = false,
+                            meta = StoriesDetailItem.Meta(
+                                activityTracker = "12345",
+                                templateTracker = "1235df8",
                             ),
-                            StoriesDetailItem(
-                                id = "2",
-                                event = StoriesDetailItemUiEvent.PAUSE,
-                                content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 2",
-                                    duration = 7 * 1000,
-                                ),
-                                resetValue = -1,
-                                isSameContent = false,
-                                meta = StoriesDetailItem.Meta(
-                                    activityTracker = "12345",
-                                    templateTracker = "1235df8",
-                                ),
+                        ),
+                        StoriesDetailItem(
+                            id = "1",
+                            event = StoriesDetailItemUiEvent.PAUSE,
+                            content = StoriesDetailItem.StoriesItemContent(
+                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                data = "data 1",
+                                duration = 7 * 1000,
+                            ),
+                            resetValue = -1,
+                            isSameContent = false,
+                            meta = StoriesDetailItem.Meta(
+                                activityTracker = "12345",
+                                templateTracker = "1235df8",
+                            ),
+                        ),
+                        StoriesDetailItem(
+                            id = "2",
+                            event = StoriesDetailItemUiEvent.PAUSE,
+                            content = StoriesDetailItem.StoriesItemContent(
+                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                data = "data 2",
+                                duration = 7 * 1000,
+                            ),
+                            resetValue = -1,
+                            isSameContent = false,
+                            meta = StoriesDetailItem.Meta(
+                                activityTracker = "12345",
+                                templateTracker = "1235df8",
                             ),
                         ),
                     ),
+                ),
             ),
             StoriesGroupItem(groupId = "groupId 1"),
             StoriesGroupItem(groupId = "groupId 2"),

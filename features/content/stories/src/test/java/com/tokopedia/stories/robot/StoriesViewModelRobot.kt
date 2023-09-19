@@ -26,9 +26,6 @@ internal class StoriesViewModelRobot(
     repository: StoriesRepository = mockk(relaxed = true),
 ) : Closeable {
 
-    init {
-    }
-
     private val viewModel = StoriesViewModel(
         authorId = authorId,
         handle = handle,
