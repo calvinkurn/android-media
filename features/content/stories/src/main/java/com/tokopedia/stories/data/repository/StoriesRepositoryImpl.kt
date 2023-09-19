@@ -1,7 +1,6 @@
 package com.tokopedia.stories.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.stories.data.mapper.StoriesMapperImpl
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
@@ -10,6 +9,7 @@ import com.tokopedia.stories.domain.usecase.StoriesGroupsUseCase
 import com.tokopedia.stories.domain.usecase.StoriesTrackActivityUseCase
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesUiModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,10 +22,10 @@ class StoriesRepositoryImpl @Inject constructor(
 ) : StoriesRepository {
 
     override suspend fun getStoriesInitialData(data: StoriesRequestModel): StoriesUiModel = withContext(dispatchers.io) {
-        val groupRequest = asyncCatchError(block = { storiesGroupsUseCase(data) }) { throw it }
-        val detailRequest = asyncCatchError(block = { storiesDetailsUseCase(data) }) { throw it }
-        val groupResult = groupRequest.await() ?: throw Throwable("Data Group is null")
-        val detailResult = detailRequest.await() ?: throw Throwable("Data Detail is null")
+        val groupRequest = async { storiesGroupsUseCase(data) }
+        val detailRequest = async {  storiesDetailsUseCase(data) }
+        val groupResult = groupRequest.await()
+        val detailResult = detailRequest.await()
         return@withContext mapper.mapStoriesInitialData(groupResult, detailResult)
     }
 

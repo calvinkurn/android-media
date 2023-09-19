@@ -1,10 +1,8 @@
 package com.tokopedia.stories.view.viewmodel
 
-import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesAuthorType
@@ -27,6 +25,7 @@ import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -133,33 +132,20 @@ class StoriesViewModel @AssistedInject constructor(
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
-            is StoriesUiAction.SetInitialData -> handleSetInitialData(action.bundle)
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
             is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
             is StoriesUiAction.CollectImpressedGroup -> handleCollectImpressedGroup(action.data)
+            StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
-            StoriesUiAction.GetSavedInstanceStateData -> handleGetSavedInstanceStateData()
         }
     }
 
-    private fun handleSetInitialData(bundle: Bundle?) {
-        if (bundle == null) return
-
-        launchRequestInitialData()
-    }
-
-    private fun handleSaveInstanceStateData() {
-        handle[SAVED_INSTANCE_STORIES_MAIN_DATA] = mStoriesMainData
-        handle[SAVED_INSTANCE_STORIES_GROUP_POSITION] = mGroupPos
-        handle[SAVED_INSTANCE_STORIES_DETAIL_POSITION] = mDetailPos
-    }
-
-    private fun handleGetSavedInstanceStateData() {
+    private fun handleSetInitialData() {
         val storiesMainData = handle.get<StoriesUiModel>(SAVED_INSTANCE_STORIES_MAIN_DATA)
         val groupPosition =  handle.get<Int>(SAVED_INSTANCE_STORIES_GROUP_POSITION) ?: 0
         val detailPosition = handle.get<Int>(SAVED_INSTANCE_STORIES_DETAIL_POSITION) ?: 0
@@ -170,6 +156,12 @@ class StoriesViewModel @AssistedInject constructor(
             _groupPos.value = groupPosition
             _detailPos.value = detailPosition
         }
+    }
+
+    private fun handleSaveInstanceStateData() {
+        handle[SAVED_INSTANCE_STORIES_MAIN_DATA] = mStoriesMainData
+        handle[SAVED_INSTANCE_STORIES_GROUP_POSITION] = mGroupPos
+        handle[SAVED_INSTANCE_STORIES_DETAIL_POSITION] = mDetailPos
     }
 
     private fun handleMainData(selectedGroup: Int) {
@@ -245,12 +237,8 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun setCachingData() {
         viewModelScope.launchCatchError(block = {
-            val prevRequest = asyncCatchError(block = {
-                fetchAndCachePreviousGroupDetail()
-            }) { it }
-            val nextRequest = asyncCatchError(block = {
-                fetchAndCacheNextGroupDetail()
-            }) { it }
+            val prevRequest = async { fetchAndCachePreviousGroupDetail() }
+            val nextRequest = async { fetchAndCacheNextGroupDetail() }
             prevRequest.await()
             nextRequest.await()
         }) { }
@@ -268,7 +256,9 @@ class StoriesViewModel @AssistedInject constructor(
         try {
             val prevGroupData = requestStoriesDetailData(prevGroupId)
             updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
-        } catch (_: Throwable) { }
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
     }
 
     private suspend fun fetchAndCacheNextGroupDetail() {
@@ -283,7 +273,9 @@ class StoriesViewModel @AssistedInject constructor(
         try {
             val nextGroupData = requestStoriesDetailData(nextGroupId)
             updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
-        } catch (_: Throwable) { }
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
     }
 
     private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
@@ -353,7 +345,7 @@ class StoriesViewModel @AssistedInject constructor(
             mLatestTrackPosition = mDetailPos
             val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker
             requestSetStoriesTrackActivity(trackerId)
-        }) {}
+        }) { }
     }
 
     private suspend fun requestStoriesInitialData(): StoriesUiModel {
@@ -385,9 +377,9 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     companion object {
-        private const val SAVED_INSTANCE_STORIES_MAIN_DATA = "stories_main_data"
-        private const val SAVED_INSTANCE_STORIES_GROUP_POSITION = "stories_group_position"
-        private const val SAVED_INSTANCE_STORIES_DETAIL_POSITION = "stories_detail_position"
+        const val SAVED_INSTANCE_STORIES_MAIN_DATA = "stories_main_data"
+        const val SAVED_INSTANCE_STORIES_GROUP_POSITION = "stories_group_position"
+        const val SAVED_INSTANCE_STORIES_DETAIL_POSITION = "stories_detail_position"
     }
 
 }
