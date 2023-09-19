@@ -454,7 +454,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
                 quickFilterResponse = quickFilterResponse,
                 categoryFilterResponse = categoryFilterResponse,
                 filterController = filterController
-            )
+            ).copy(mapParameter = queryParams)
 
             visitableList.mapToQuickFilter(
                 quickFilterUiModel = quickFilter
