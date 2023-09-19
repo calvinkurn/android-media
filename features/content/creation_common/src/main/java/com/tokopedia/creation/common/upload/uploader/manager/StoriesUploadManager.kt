@@ -16,7 +16,7 @@ class StoriesUploadManager @Inject constructor(
     override suspend fun execute(
         uploadData: CreationUploadData,
         listener: CreationUploadManagerListener
-    ): CreationUploadResult {
+    ): Boolean {
         /** TODO JOE: for mocking purpose */
         notificationManager.init(uploadData)
         listener.setupForegroundNotification(notificationManager.onStart())
@@ -29,13 +29,13 @@ class StoriesUploadManager @Inject constructor(
                 listener.setProgress(uploadData, -1)
                 notificationManager.onError()
 
-                return CreationUploadResult.Error
+                return false
             }
 
             listener.setProgress(uploadData, progress)
             notificationManager.onProgress(progress)
         }
 
-        return CreationUploadResult.Success
+        return true
     }
 }

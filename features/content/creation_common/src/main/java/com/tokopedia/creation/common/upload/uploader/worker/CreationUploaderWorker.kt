@@ -2,7 +2,6 @@ package com.tokopedia.creation.common.upload.uploader.worker
 
 import android.content.Context
 import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkerParameters
@@ -14,7 +13,6 @@ import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueu
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
 import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -82,13 +80,10 @@ class CreationUploaderWorker(
                         }
                     )
 
-                    when (uploadResult) {
-                        CreationUploadResult.Success -> {
-                            queueRepository.delete(data.creationId)
-                        }
-                        CreationUploadResult.Error -> {
-                            break
-                        }
+                    if (uploadResult) {
+                        queueRepository.delete(data.creationId)
+                    } else {
+                        break
                     }
                 } catch (throwable: Throwable) {
                     break

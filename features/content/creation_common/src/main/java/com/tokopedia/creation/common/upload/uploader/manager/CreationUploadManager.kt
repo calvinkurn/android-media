@@ -12,7 +12,7 @@ interface CreationUploadManager {
     suspend fun execute(
         uploadData: CreationUploadData,
         listener: CreationUploadManagerListener,
-    ): CreationUploadResult
+    ): Boolean
 }
 
 interface CreationUploadManagerListener {

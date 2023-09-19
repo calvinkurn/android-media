@@ -90,7 +90,7 @@ class ShortsUploadManager @Inject constructor(
     override suspend fun execute(
         uploadData: CreationUploadData,
         listener: CreationUploadManagerListener
-    ): CreationUploadResult {
+    ): Boolean {
         this.uploadData = uploadData
         this.mListener = listener
 
@@ -110,12 +110,8 @@ class ShortsUploadManager @Inject constructor(
 
                 broadcastComplete()
 
-                CreationUploadResult.Success
+                true
             } catch (e: Exception) {
-                /**
-                 * updateChannelStatus to TranscodingFailed may error
-                 * if no network connection
-                 */
                 /**
                  * updateChannelStatus to TranscodingFailed may error
                  * if no network connection
@@ -128,7 +124,7 @@ class ShortsUploadManager @Inject constructor(
 
                 broadcastFail()
 
-                CreationUploadResult.Error
+                false
             }
         }
     }
