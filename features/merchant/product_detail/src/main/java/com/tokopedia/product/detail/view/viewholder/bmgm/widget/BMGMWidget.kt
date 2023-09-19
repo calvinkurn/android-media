@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -24,6 +23,8 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.adapter.BMGMProductItem
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
 import com.tokopedia.unifyprinciples.stringToUnifyColor
+import com.tokopedia.product.detail.R as productdetailR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -43,7 +44,7 @@ class BMGMWidget @JvmOverloads constructor(
     }
 
     private val binding by lazyThreadSafetyNone {
-        val view = inflate(context, com.tokopedia.product.detail.R.layout.bmgm_widget, this)
+        val view = inflate(context, productdetailR.layout.bmgm_widget, this)
         BmgmWidgetBinding.bind(view)
     }
 
@@ -65,6 +66,7 @@ class BMGMWidget @JvmOverloads constructor(
         }
     }
 
+    private var previousUiModel: BMGMWidgetUiModel? = null
     // endregion
 
     // region expose function
@@ -79,9 +81,18 @@ class BMGMWidget @JvmOverloads constructor(
             }
 
             is BMGMWidgetUiState.Show -> {
+                if (previousUiModel?.hasSame(newUiModel = uiState.uiModel) == true) {
+                    return
+                }
+
+                previousUiModel = uiState.uiModel
                 showContent(uiModel = uiState.uiModel, router = router, tracker = tracker)
             }
         }
+    }
+
+    private fun BMGMWidgetUiModel?.hasSame(newUiModel: BMGMWidgetUiModel): Boolean {
+        return this?.hashCode() == newUiModel.hashCode()
     }
     // endregion
 
@@ -113,7 +124,7 @@ class BMGMWidget @JvmOverloads constructor(
     private fun setTitle(title: String, color: String) {
         binding.bmgmTitle.text = title
 
-        val default = com.tokopedia.unifyprinciples.R.color.Unify_TN500
+        val default = unifyprinciplesR.color.Unify_TN500
         val unifyColor = getStringUnifyColor(color = color, default = default)
         binding.bmgmTitle.setTextColor(unifyColor)
     }
