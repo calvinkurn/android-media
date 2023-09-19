@@ -823,7 +823,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                             isShowLogisticPromoTickerMessage = false,
                             isApplyLogisticPromo = false,
                             needPinpoint = flagNeedToSetPinpoint,
-                            serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else null
+                            serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else selectedShippingCourierUiModel.productData.error?.errorMessage
                         )
                     }
                 }
