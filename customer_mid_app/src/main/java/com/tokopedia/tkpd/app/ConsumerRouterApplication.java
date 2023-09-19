@@ -153,6 +153,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initGotoSDK() {
         GotoSdk.init(this);
+        if (userSession.isLoggedIn() && Objects.requireNonNull(GotoSdk.INSTANCE.getLSDKINSTANCE()).getAccessToken().isEmpty()) {
+            GotoSdk.INSTANCE.getLSDKINSTANCE().save(userSession.getAccessToken(), userSession.getFreshToken());
+        }
     }
 
     private void warmUpGQLClient() {
