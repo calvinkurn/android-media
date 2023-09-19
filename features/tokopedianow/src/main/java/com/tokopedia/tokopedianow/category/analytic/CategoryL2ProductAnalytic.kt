@@ -42,13 +42,13 @@ class CategoryL2ProductAnalytic(private val userSession: UserSessionInterface) {
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 45255
     fun trackProductImpression(
-        categoryIdL1: String,
+        categoryIdL2: String,
         productItem: ProductItemDataView
     ) {
         val position = productItem.position
         val product = productItem.productCardModel
         val productId = product.productId
-        val eventLabel = "$categoryIdL1 - $position - $productId"
+        val eventLabel = "$categoryIdL2 - $position - $productId"
         val isAvailable = product.availableStock.isMoreThanZero()
 
         val eventAction = if(isAvailable) {
@@ -98,13 +98,13 @@ class CategoryL2ProductAnalytic(private val userSession: UserSessionInterface) {
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 43886
     fun trackProductClick(
-        categoryIdL1: String,
+        categoryIdL2: String,
         productItem: ProductItemDataView
     ) {
         val position = productItem.position
         val product = productItem.productCardModel
         val productId = product.productId
-        val eventLabel = "$categoryIdL1 - $position - $productId"
+        val eventLabel = "$categoryIdL2 - $position - $productId"
         val isAvailable = product.availableStock.isMoreThanZero()
 
         val eventAction = if(isAvailable) {
@@ -156,7 +156,6 @@ class CategoryL2ProductAnalytic(private val userSession: UserSessionInterface) {
     fun trackProductAddToCart(data: CategoryAtcTrackerModel) {
         val position = data.index
         val product = data.product
-        val categoryIdL1 = data.categoryIdL1
         val categoryIdL2 = data.categoryIdL2
         val categoryBreadcrumbs = data.categoryBreadcrumbs
         val quantity = data.quantity
@@ -165,7 +164,7 @@ class CategoryL2ProductAnalytic(private val userSession: UserSessionInterface) {
         val shopType = data.shopType
 
         val productId = product.productId
-        val eventLabel = "$categoryIdL1 - $position - $productId"
+        val eventLabel = "$categoryIdL2 - $position - $productId"
         val isAvailable = product.availableStock.isMoreThanZero()
 
         val productItemsDataLayer = arrayListOf(
@@ -204,9 +203,9 @@ class CategoryL2ProductAnalytic(private val userSession: UserSessionInterface) {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 45253
-    fun sendClickWishlistButtonOosEvent(index: Int, categoryIdL1: String, productId: String) {
+    fun sendClickWishlistButtonOosEvent(index: Int, categoryIdL2: String, productId: String) {
         val position = index + 1
-        val eventLabel = "$categoryIdL1 - $position - $productId"
+        val eventLabel = "$categoryIdL2 - $position - $productId"
 
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)

@@ -26,12 +26,12 @@ class CategoryL2QuickFilterAnalytic {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 43887
-    fun sendClickFullFilterButtonEvent(categoryIdL1: String, warehouseIds: String) {
+    fun sendClickFullFilterButtonEvent(categoryIdL2: String, warehouseIds: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
             .setEventAction(EVENT_ACTION_CLICK_FULL_FILTER)
             .setEventCategory(EVENT_CATEGORY_PAGE_L2)
-            .setEventLabel(categoryIdL1)
+            .setEventLabel(categoryIdL2)
             .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_CLICK_FULL_FILTER)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite("")
@@ -42,12 +42,12 @@ class CategoryL2QuickFilterAnalytic {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 45249
-    fun sendClickQuickFilterButtonEvent(categoryIdL1: String, warehouseIds: String) {
+    fun sendClickQuickFilterButtonEvent(categoryIdL2: String, warehouseIds: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
             .setEventAction(EVENT_ACTION_CLICK_QUICK_FILTER)
             .setEventCategory(EVENT_CATEGORY_PAGE_L2)
-            .setEventLabel(categoryIdL1)
+            .setEventLabel(categoryIdL2)
             .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_CLICK_QUICK_FILTER)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite("")
@@ -58,12 +58,12 @@ class CategoryL2QuickFilterAnalytic {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 45250
-    fun sendClickBrandNavigationalDropdownEvent(categoryIdL1: String, warehouseIds: String) {
+    fun sendClickBrandNavigationalDropdownEvent(categoryIdL2: String, warehouseIds: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
             .setEventAction(EVENT_ACTION_CLICK_BRAND_NAVIGATION)
             .setEventCategory(EVENT_CATEGORY_PAGE_L2)
-            .setEventLabel(categoryIdL1)
+            .setEventLabel(categoryIdL2)
             .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_CLICK_BRAND_NAVIGATION)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite("")

@@ -33,11 +33,11 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
     fun trackProductAdsImpression(
         index: Int,
         title: String,
-        categoryIdL1: String,
+        categoryIdL2: String,
         product: ProductCardCompactCarouselItemUiModel
     ) {
         val position = index + 1
-        val eventLabel = "$categoryIdL1 - $title - $position - ${product.getProductId()}"
+        val eventLabel = "$categoryIdL2 - $title - $position - ${product.getProductId()}"
         val isAvailable = product.productCardModel.availableStock.isMoreThanZero()
 
         val productItemsDataLayer = arrayListOf(
@@ -77,11 +77,11 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
     fun trackProductAdsClick(
         index: Int,
         title: String,
-        categoryIdL1: String,
+        categoryIdL2: String,
         product: ProductCardCompactCarouselItemUiModel
     ) {
         val position = index + 1
-        val eventLabel = "$categoryIdL1 - $title - $position - ${product.getProductId()}"
+        val eventLabel = "$categoryIdL2 - $title - $position - ${product.getProductId()}"
         val isAvailable = product.productCardModel.availableStock.isMoreThanZero()
 
         val productItemsDataLayer = arrayListOf(
@@ -124,7 +124,6 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
     ) {
         val position = data.index
         val product = data.product
-        val categoryIdL1 = data.categoryIdL1
         val categoryIdL2 = data.categoryIdL2
         val categoryBreadcrumbs = data.categoryBreadcrumbs
         val quantity = data.quantity
@@ -133,7 +132,7 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
         val shopType = data.shopType
 
         val productId = product.productId
-        val eventLabel = "$categoryIdL1 - $title - $position - $productId"
+        val eventLabel = "$categoryIdL2 - $title - $position - $productId"
         val isAvailable = product.availableStock.isMoreThanZero()
 
         val productItemsDataLayer = arrayListOf(

@@ -479,31 +479,31 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     private fun trackClickFilterButton() {
-        val categoryIdL1 = data.categoryIdL1
+        val categoryIdL2 = data.categoryIdL2
         val warehouseIds = viewModel.getWarehouseIds()
         categoryL2Analytic.quickFilterAnalytic
-            .sendClickQuickFilterButtonEvent(categoryIdL1, warehouseIds)
+            .sendClickQuickFilterButtonEvent(categoryIdL2, warehouseIds)
     }
 
     private fun trackOpenBrandDropDown(filter: Filter) {
         if(filter.isBrandFilter) {
-            val categoryIdL1 = data.categoryIdL1
+            val categoryIdL2 = data.categoryIdL2
             val warehouseIds = viewModel.getWarehouseIds()
             categoryL2Analytic.quickFilterAnalytic
-                .sendClickBrandNavigationalDropdownEvent(categoryIdL1, warehouseIds)
+                .sendClickBrandNavigationalDropdownEvent(categoryIdL2, warehouseIds)
         }
     }
 
     private fun trackOpenFilterPage() {
-        val categoryIdL1 = data.categoryIdL1
+        val categoryIdL2 = data.categoryIdL2
         val warehouseIds = viewModel.getWarehouseIds()
         categoryL2Analytic.quickFilterAnalytic
-            .sendClickFullFilterButtonEvent(categoryIdL1, warehouseIds)
+            .sendClickFullFilterButtonEvent(categoryIdL2, warehouseIds)
     }
 
     private fun trackClickWishlistButton(index: Int, productId: String) {
         categoryL2Analytic.productAnalytic
-            .sendClickWishlistButtonOosEvent(index, data.categoryIdL1, productId)
+            .sendClickWishlistButtonOosEvent(index, data.categoryIdL2, productId)
     }
 
     private fun trackFilterBottomSheetImpression() {
@@ -620,7 +620,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 analytic.trackProductAdsClick(
                     position,
                     title,
-                    data.categoryIdL1,
+                    data.categoryIdL2,
                     product
                 )
             }
@@ -633,7 +633,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 analytic.trackProductAdsImpression(
                     position,
                     title,
-                    data.categoryIdL1,
+                    data.categoryIdL2,
                     product
                 )
             }
@@ -668,13 +668,13 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
         return object : ProductItemListener {
             override fun onProductImpressed(productItemDataView: ProductItemDataView) {
-                analytic.trackProductImpression(data.categoryIdL1, productItemDataView)
+                analytic.trackProductImpression(data.categoryIdL2, productItemDataView)
             }
 
             override fun onProductClick(productItemDataView: ProductItemDataView) {
                 val productId = productItemDataView.productCardModel.productId
                 viewModel.createProductDetailAppLink(productId)
-                analytic.trackProductClick(data.categoryIdL1, productItemDataView)
+                analytic.trackProductClick(data.categoryIdL2, productItemDataView)
             }
 
             override fun onProductNonVariantQuantityChanged(
