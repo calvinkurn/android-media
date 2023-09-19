@@ -505,9 +505,11 @@ fun StoriesUiModel.mockMainDataResetValue(expectedData: StoriesUiModel): Stories
             detail = storiesGroupItem.detail.copy(
                 detailItems = storiesGroupItem.detail.detailItems.mapIndexed { indexDetailItems, storiesDetailItem ->
                     storiesDetailItem.copy(resetValue = expectedData.groupItems[indexGroupItems].detail.detailItems[indexDetailItems].resetValue)
-                })
+                }
+            )
         )
-    })
+    }
+    )
 }
 
 fun StoriesGroupItem.mockGroupResetValue(expectedGroupDetail: List<StoriesDetailItem>): StoriesGroupItem {

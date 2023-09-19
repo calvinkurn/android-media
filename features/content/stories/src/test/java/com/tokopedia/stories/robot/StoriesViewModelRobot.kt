@@ -16,7 +16,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.yield
 import java.io.Closeable
 
 internal class StoriesViewModelRobot(
@@ -88,23 +87,6 @@ internal class StoriesViewModelRobot(
 
     fun cancelRemainingTasks() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
-    }
-
-    private suspend fun act(fn: () -> Unit) {
-        fn()
-        yield()
-    }
-
-    fun <T> getViewModelPrivateField(name: String): T {
-        val field = viewModel.javaClass.getDeclaredField(name)
-        field.isAccessible = true
-        return field.get(viewModel) as T
-    }
-
-    fun <T> executeViewModelPrivateFunction(name: String): T {
-        val method = viewModel.javaClass.getDeclaredMethod(name)
-        method.isAccessible = true
-        return method.invoke(viewModel) as T
     }
 
     fun entryPointTestCase(selectedGroup: Int = 0) {
@@ -191,4 +173,5 @@ internal class StoriesViewModelRobot(
     override fun close() {
         cancelRemainingTasks()
     }
+
 }

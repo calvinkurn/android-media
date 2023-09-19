@@ -21,22 +21,25 @@ class StoriesRepositoryImpl @Inject constructor(
     private val mapper: StoriesMapperImpl,
 ) : StoriesRepository {
 
-    override suspend fun getStoriesInitialData(data: StoriesRequestModel): StoriesUiModel = withContext(dispatchers.io) {
-        val groupRequest = async { storiesGroupsUseCase(data) }
-        val detailRequest = async {  storiesDetailsUseCase(data) }
-        val groupResult = groupRequest.await()
-        val detailResult = detailRequest.await()
-        return@withContext mapper.mapStoriesInitialData(groupResult, detailResult)
-    }
+    override suspend fun getStoriesInitialData(data: StoriesRequestModel): StoriesUiModel =
+        withContext(dispatchers.io) {
+            val groupRequest = async { storiesGroupsUseCase(data) }
+            val detailRequest = async { storiesDetailsUseCase(data) }
+            val groupResult = groupRequest.await()
+            val detailResult = detailRequest.await()
+            return@withContext mapper.mapStoriesInitialData(groupResult, detailResult)
+        }
 
-    override suspend fun getStoriesDetailData(data: StoriesRequestModel): StoriesDetail = withContext(dispatchers.io) {
-        val detailRequest = storiesDetailsUseCase(data)
-        return@withContext mapper.mapStoriesDetailRequest("", detailRequest)
-    }
+    override suspend fun getStoriesDetailData(data: StoriesRequestModel): StoriesDetail =
+        withContext(dispatchers.io) {
+            val detailRequest = storiesDetailsUseCase(data)
+            return@withContext mapper.mapStoriesDetailRequest("", detailRequest)
+        }
 
-    override suspend fun setStoriesTrackActivity(data: StoriesTrackActivityRequestModel): Boolean = withContext(dispatchers.io) {
-        val trackActivityRequest = storiesTrackActivityUseCase(data)
-        return@withContext trackActivityRequest.data.isSuccess
-    }
+    override suspend fun setStoriesTrackActivity(data: StoriesTrackActivityRequestModel): Boolean =
+        withContext(dispatchers.io) {
+            val trackActivityRequest = storiesTrackActivityUseCase(data)
+            return@withContext trackActivityRequest.data.isSuccess
+        }
 
 }
