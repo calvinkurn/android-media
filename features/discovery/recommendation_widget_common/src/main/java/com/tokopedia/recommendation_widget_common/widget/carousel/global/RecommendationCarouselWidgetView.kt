@@ -19,7 +19,6 @@ import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidg
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
 import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
@@ -68,8 +67,7 @@ class RecommendationCarouselWidgetView :
 
         binding.recommendationHeaderView.bindData(
             data = model.widget,
-            tracking = model.widgetTracking,
-            listener = headerViewListener()
+            listener = headerViewListener(model = model)
         )
 
         if (!binding.recommendationCarouselProduct.isVisible) {
@@ -180,14 +178,15 @@ class RecommendationCarouselWidgetView :
             }
         }
 
-    private fun headerViewListener() = object : RecommendationHeaderListener {
-        override fun onSeeAllClick(link: String, tracking: RecommendationCarouselWidgetTracking?) {
-            tracking?.sendEventSeeAll()
-            RouteManager.route(context, link)
-        }
+    private fun headerViewListener(model: RecommendationCarouselModel) =
+        object : RecommendationHeaderListener {
+            override fun onSeeAllClick(link: String) {
+                model.widgetTracking?.sendEventSeeAll()
+                RouteManager.route(context, link)
+            }
 
-        override fun onChannelExpired(widget: RecommendationWidget) {}
-    }
+            override fun onChannelExpired(widget: RecommendationWidget) {}
+        }
 
     private fun finishCalculateCarouselHeight() {
         binding.recommendationCarouselProduct.show()

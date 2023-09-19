@@ -21,12 +21,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.viewutil.DateHelper
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.recommendation_widget_common.viewutil.invertIfDarkMode
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RecommendationHeaderView : FrameLayout {
 
@@ -49,20 +47,16 @@ class RecommendationHeaderView : FrameLayout {
         this.itemView = view
     }
 
-    fun bindData(
-        data: RecommendationWidget,
-        tracking: RecommendationCarouselWidgetTracking?,
-        listener: RecommendationHeaderListener?
-    ) {
+    fun bindData(data: RecommendationWidget, listener: RecommendationHeaderListener?) {
         this.listener = listener
-        handleHeaderComponent(data = data, tracking = tracking)
+        handleHeaderComponent(data)
     }
 
-    fun bindTemporaryHeaderName(tempData: RecommendationWidget, tracking: RecommendationCarouselWidgetTracking?) {
-        handleHeaderComponent(tempData, tracking)
+    fun bindTemporaryHeaderName(tempData: RecommendationWidget) {
+        handleHeaderComponent(tempData)
     }
 
-    private fun handleHeaderComponent(data: RecommendationWidget, tracking: RecommendationCarouselWidgetTracking?) {
+    private fun handleHeaderComponent(data: RecommendationWidget) {
         val channelTitleContainer: ConstraintLayout? = itemView?.findViewById(R.id.channel_title_container)
         val stubChannelTitle: View? = itemView?.findViewById(R.id.channel_title)
         val stubCountDownView: View? = itemView?.findViewById(R.id.count_down)
@@ -72,7 +66,7 @@ class RecommendationHeaderView : FrameLayout {
         channelTitleContainer?.let {
             handleTitle(data.title, channelTitleContainer, stubChannelTitle, data)
             handleSubtitle(data.subtitle, stubChannelSubtitle, data)
-            handleSeeAllApplink(data, stubSeeAllButton, data.subtitle, channelTitleContainer, tracking)
+            handleSeeAllApplink(data, stubSeeAllButton, data.subtitle, channelTitleContainer)
             handleBackImage(data, stubSeeAllButtonUnify, data.subtitle, channelTitleContainer)
             handleHeaderExpiredTime(data, stubCountDownView)
             handleBackgroundColor(data, it, stubSeeAllButton, stubSeeAllButtonUnify)
@@ -100,7 +94,7 @@ class RecommendationHeaderView : FrameLayout {
                 if (data.titleColor.isNotEmpty()) {
                     Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
                 } else {
-                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950).invertIfDarkMode(itemView?.context)
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView?.context)
                 }
             )
         } else {
@@ -128,7 +122,7 @@ class RecommendationHeaderView : FrameLayout {
                 if (data.titleColor.isNotEmpty()) {
                     Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
                 } else {
-                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950).invertIfDarkMode(itemView?.context)
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView?.context)
                 }
             )
         } else {
@@ -136,13 +130,7 @@ class RecommendationHeaderView : FrameLayout {
         }
     }
 
-    private fun handleSeeAllApplink(
-        data: RecommendationWidget,
-        stubSeeAllButton: View?,
-        channelSubtitleName: String?,
-        channelTitleContainer: ConstraintLayout?,
-        tracking: RecommendationCarouselWidgetTracking?
-    ) {
+    private fun handleSeeAllApplink(data: RecommendationWidget, stubSeeAllButton: View?, channelSubtitleName: String?, channelTitleContainer: ConstraintLayout?) {
         /**
          * Requirement:
          * Only show `see all` button when it is exist
@@ -159,11 +147,11 @@ class RecommendationHeaderView : FrameLayout {
             }
 
             handleSubtitlePosition(channelSubtitleName, data, channelTitleContainer)
-            seeAllButton?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
+            seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
 
             seeAllButton?.show()
             seeAllButton?.setOnClickListener {
-                listener?.onSeeAllClick(data.seeMoreAppLink, tracking)
+                listener?.onSeeAllClick(data.seeMoreAppLink)
             }
         } else {
             seeAllButton?.hide()
