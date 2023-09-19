@@ -11,6 +11,7 @@ import com.tokopedia.carouselproductcard.CarouselSeeMoreCardModel
 
 internal class CarouselProductCardGridTypeFactoryImpl(
     private val internalListener: CarouselProductCardInternalListener,
+    private val forceLightModeColor: Boolean
 ) : CarouselProductCardTypeFactory{
     override fun type(carouselProductCardModel: CarouselProductCardModel) : Int{
         return CarouselProductCardGridViewHolder.LAYOUT
@@ -30,7 +31,7 @@ internal class CarouselProductCardGridTypeFactoryImpl(
                 .inflate(viewType, viewGroup, false)
         return when(viewType){
             CarouselProductCardGridViewHolder.LAYOUT ->
-                CarouselProductCardGridViewHolder(view, internalListener)
+                CarouselProductCardGridViewHolder(view, internalListener, forceLightModeColor)
             CarouselViewAllCardViewHolder.LAYOUT ->
                 CarouselViewAllCardViewHolder(view)
             else ->

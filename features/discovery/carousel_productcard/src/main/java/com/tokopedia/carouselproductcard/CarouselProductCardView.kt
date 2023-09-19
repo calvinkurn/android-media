@@ -45,6 +45,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     private val carouselProductCardRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.carouselProductCardRecyclerView)
     }
+    private var forceLightModeColor = false
 
     constructor(context: Context): super(context) {
         init(null)
@@ -187,11 +188,11 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     }
 
     private fun initGridAdapter() {
-        carouselProductCardAdapter = CarouselProductCardGridAdapter(this)
+        carouselProductCardAdapter = CarouselProductCardGridAdapter(this, forceLightModeColor)
     }
 
     private fun initListAdapter() {
-        carouselProductCardAdapter = CarouselProductCardListAdapter(this)
+        carouselProductCardAdapter = CarouselProductCardListAdapter(this, forceLightModeColor)
     }
 
     private suspend fun tryBindCarousel(
@@ -375,5 +376,9 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
             }
         }
         return 0
+    }
+
+    fun forceLightModeColor() {
+        this.forceLightModeColor = true
     }
 }
