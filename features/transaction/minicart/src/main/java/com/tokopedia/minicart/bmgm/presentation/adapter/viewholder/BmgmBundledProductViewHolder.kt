@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmBundledProductAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
@@ -48,11 +49,14 @@ class BmgmBundledProductViewHolder(
                     override fun onAnimationEnd(p0: Animation?) {
                         viewBmgmShining.gone()
                     }
+
                     override fun onAnimationStart(p0: Animation?) {
                     }
+
                     override fun onAnimationRepeat(p0: Animation?) {}
                 })
                 viewBmgmShining.visible()
+                viewBmgmShining.loadImage(R.drawable.bmgm_shining_effect)
                 viewBmgmShining.startAnimation(anim)
             }
         }

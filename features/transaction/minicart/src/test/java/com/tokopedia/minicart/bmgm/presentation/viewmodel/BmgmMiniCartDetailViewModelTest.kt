@@ -3,9 +3,8 @@ package com.tokopedia.minicart.bmgm.presentation.viewmodel
 import com.tokopedia.minicart.bmgm.domain.usecase.MiniCartLocalCacheUseCases
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -37,7 +36,7 @@ class BmgmMiniCartDetailViewModelTest :
             val cartData = mockCartData()
             var result: BmgmState<BmgmCommonDataModel> = BmgmState.None
 
-            every {
+            coEvery {
                 miniCartLocalCacheUseCases.getCartData()
             } returns cartData
 
@@ -49,7 +48,7 @@ class BmgmMiniCartDetailViewModelTest :
 
             viewModel.getCartData()
 
-            verify {
+            coEvery {
                 miniCartLocalCacheUseCases.getCartData()
             }
 
@@ -65,7 +64,7 @@ class BmgmMiniCartDetailViewModelTest :
             val throwable = Throwable()
             var result: BmgmState<BmgmCommonDataModel> = BmgmState.None
 
-            every {
+            coEvery {
                 miniCartLocalCacheUseCases.getCartData()
             } throws throwable
 
@@ -77,7 +76,7 @@ class BmgmMiniCartDetailViewModelTest :
 
             viewModel.getCartData()
 
-            verify {
+            coEvery {
                 miniCartLocalCacheUseCases.getCartData()
             }
 
