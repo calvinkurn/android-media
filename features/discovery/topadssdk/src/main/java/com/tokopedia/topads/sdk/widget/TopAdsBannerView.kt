@@ -24,7 +24,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardListener
@@ -40,11 +39,13 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
+import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.setItemDecorationShopAdsReimagineSearch
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductRevampViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder
@@ -95,6 +96,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context.applicationContext)
     }
+    private var isReimagine: Boolean = false
+    private var hasMultilineProductName: Boolean = false
+
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -125,18 +129,18 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (activityIsFinishing(context))
             return
         val cpmData = cpmModel?.data?.firstOrNull()
-        val isReimagine = cpmModel?.isReimagine.orFalse()
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
             View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
-            BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
             BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
+            renderShopProduct(isReimagine)
             renderSeeMoreCard(isReimagine)
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData?.cpm?.name ?: "")
-            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener, topAdsAddToCartClickListener))
+            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener, topAdsAddToCartClickListener, isReimagine, hasMultilineProductName))
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
+            list.setItemDecorationShopAdsReimagineSearch(isReimagine)
             list.addOnScrollListener(CustomScrollListener(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
@@ -147,7 +151,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun setHeadlineShopData(cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
-        val isReimagine = cpmModel?.isReimagine.orFalse()
         val adsBannerShopCardView = findViewById<ShopCardView?>(R.id.adsBannerShopCardView)
         val shopDetail = findViewById<View?>(R.id.shop_detail)
         val topAdsCarousel = findViewById<ToadsCarousel>(R.id.TopAdsCarousel)
@@ -167,6 +170,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     topAdsCarousel.hide()
                     shopAdsProductView.hide()
                     adsBannerShopCardView?.visible()
+                    adsBannerShopCardView?.setCardUnifyStyle(isReimagine)
                     shopAdsWithThreeProducts.hide()
                     container?.setBackgroundResource(0)
                     (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
@@ -244,7 +248,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                                     productCardModelList[i],
                                     cpmData.cpm.cpmShop.products[i].applinks,
                                     cpmData.cpm.cpmShop.products[i].image.m_url,
-                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl
+                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl,
                                 )
                                 val product = cpmData.cpm.cpmShop.products[i]
                                 model.apply {
@@ -326,8 +330,15 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
     }
 
+    private fun renderShopProduct(isReimagine: Boolean) {
+        if (isReimagine)
+            BannerShopProductRevampViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product_reimagine
+        else
+            BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
+    }
+
     private fun renderHeaderSeeMore(cpmData: CpmData, appLink: String, adsClickUrl: String, isReimagine: Boolean) {
-        val containerSeeMore = findViewById<View>(R.id.btnSeeMore)
+        val containerSeeMore = findViewById<View>(R.id.topAdsBtnSeeMore)
         val isApplinkNotEmpty = appLink.isNotEmpty()
         if (isReimagine && isApplinkNotEmpty)
             showHeaderSeeMore(containerSeeMore, cpmData, appLink, adsClickUrl)
@@ -337,7 +348,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun showHeaderSeeMore(btnSeeMore: View, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         btnSeeMore.visible()
-        val btnSeeMore: IconUnify = btnSeeMore.findViewById(R.id.iconCTASeeMore)
+        val btnSeeMore: IconUnify = btnSeeMore.findViewById(R.id.topAdsIconCTASeeMore)
         btnSeeMore.setOnClickListener {
             if (topAdsBannerClickListener != null) {
                 topAdsBannerClickListener?.onBannerAdsClicked(0, appLink, cpmData)
@@ -438,7 +449,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         productCardModelList[i],
                         cpmData.cpm.cpmShop.products[i].applinks,
                         cpmData.cpm.cpmShop.products[i].image.m_url,
-                        cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl
+                        cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl,
                     )
                     val product = cpmData.cpm.cpmShop.products[i]
                     model.apply {
@@ -499,7 +510,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     )
                 }
             },
-            null
+            null,
+            isReimagine
         )
     }
 
@@ -766,7 +778,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 },
                 isOfficial = cpmData.cpm.cpmShop.isOfficial,
                 isPMPro = cpmData.cpm.cpmShop.isPMPro,
-                impressHolder = cpmData.cpm.cpmShop.imageShop
+                impressHolder = cpmData.cpm.cpmShop.imageShop,
             ),
             object : ShopCardListener {
                 override fun onItemImpressed() {
@@ -810,7 +822,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         product.imageProduct.imageUrl
                     )
                 }
-            }
+            },
+            isReimagine
         )
     }
 
@@ -896,7 +909,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         displayAds(cpmModel, index)
     }
 
-    fun displayHeadlineAds(cpmModel: CpmModel?, index: Int = 0) {
+    fun displayHeadlineAds(cpmModel: CpmModel?, index: Int = 0,
+                           isReimagine: Boolean = false, hasMultilineProductName: Boolean = false) {
+        this.isReimagine = isReimagine
+        this.hasMultilineProductName = hasMultilineProductName
         displayAds(cpmModel, index)
     }
 

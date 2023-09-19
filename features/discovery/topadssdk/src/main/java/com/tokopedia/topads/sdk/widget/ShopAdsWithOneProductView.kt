@@ -10,6 +10,7 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel
 import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.setItemDecorationShopCardAdsReimagineSearch
 import com.tokopedia.topads.sdk.view.adapter.ShopAdsProductAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
@@ -34,19 +35,21 @@ class ShopAdsWithOneProductView : BaseCustomView {
         View.inflate(context, R.layout.topads_with_one_product_layout, this)
     }
 
-    fun setShopProductModel(shopProductModel: ShopProductModel, shopAdsProductListener: ShopAdsProductListener, followButtonClickListener:FollowButtonClickListener?) {
+    fun setShopProductModel(shopProductModel: ShopProductModel, shopAdsProductListener: ShopAdsProductListener,
+                            followButtonClickListener:FollowButtonClickListener?, isReimagine: Boolean = false,) {
 
         initTShopProductTitle(shopProductModel)
-        initTopAdsCarouselItem(shopProductModel, shopAdsProductListener, followButtonClickListener)
+        initTopAdsCarouselItem(shopProductModel, shopAdsProductListener, followButtonClickListener, isReimagine)
 
     }
 
     private fun initTopAdsCarouselItem(shopProductModel: ShopProductModel, shopAdsProductListener: ShopAdsProductListener,
-                                       followButtonClickListener: FollowButtonClickListener?) {
-        shopAdsProductAdapter = ShopAdsProductAdapter(shopAdsProductListener, followButtonClickListener)
+                                       followButtonClickListener: FollowButtonClickListener?, isReimagine: Boolean = false,) {
+        shopAdsProductAdapter = ShopAdsProductAdapter(shopAdsProductListener, followButtonClickListener, isReimagine)
         val list = findViewById<RecyclerView>(R.id.shopAdsProductRv)
         list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         list.adapter = shopAdsProductAdapter
+        list.setItemDecorationShopCardAdsReimagineSearch(isReimagine)
         shopAdsProductAdapter?.setList(shopProductModel.items)
 
     }
