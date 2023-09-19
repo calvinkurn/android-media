@@ -19,3 +19,9 @@ fun Boolean.assertTrue() {
         .assertThat(this)
         .isTrue
 }
+
+fun Boolean.assertFalse() {
+    Assertions
+        .assertThat(this)
+        .isFalse
+}

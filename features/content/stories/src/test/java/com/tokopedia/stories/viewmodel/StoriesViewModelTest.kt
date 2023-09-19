@@ -12,6 +12,7 @@ import com.tokopedia.stories.model.mockInitialDataModelFetchPrevAndNext
 import com.tokopedia.stories.model.mockMainDataResetValue
 import com.tokopedia.stories.robot.StoriesViewModelRobot
 import com.tokopedia.stories.util.assertEqualTo
+import com.tokopedia.stories.util.assertFalse
 import com.tokopedia.stories.util.assertNotEqualTo
 import com.tokopedia.stories.util.assertTrue
 import com.tokopedia.stories.view.model.StoriesDetail
@@ -93,6 +94,88 @@ class StoriesViewModelTest {
 
             state.first.storiesMainData.assertEqualTo(StoriesUiModel())
             state.second.last().assertEqualTo(StoriesUiEvent.EmptyGroupPage)
+        }
+    }
+
+    @Test
+    fun `when open stories from entry point and success fetch initial data but data group is invalid`() {
+        val selectedGroup = 5
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.entryPointTestCase(selectedGroup)
+
+            val actualGroup = robot.getViewModel().mGroup
+            actualGroup.assertEqualTo(StoriesGroupItem())
+        }
+    }
+
+    @Test
+    fun `when open stories from entry point and success fetch initial data but data detail is invalid 1`() {
+        val selectedGroup = -1
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.entryPointTestCase(selectedGroup)
+
+            val actualGroup = robot.getViewModel().mDetail
+            actualGroup.assertEqualTo(StoriesDetailItem())
+        }
+    }
+
+    @Test
+    fun `when open stories from entry point and success fetch initial data but data detail is invalid 2`() {
+        val selectedGroup = 0
+        val selectedDetail = -1
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.entryPointTestCase(selectedGroup)
+
+            val actualGroup = robot.getViewModel().mDetail
+            actualGroup.assertEqualTo(StoriesDetailItem())
+        }
+    }
+
+    @Test
+    fun `when open stories from entry point and success fetch initial data but data detail is invalid 3`() {
+        val selectedGroup = 3
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems[selectedGroup.minus(1)].detail
+
+        getStoriesRobot().use { robot ->
+            robot.entryPointTestCase(selectedGroup)
+
+            val actualGroup = robot.getViewModel().mDetail
+            actualGroup.assertEqualTo(StoriesDetailItem())
+        }
+    }
+
+    @Test
+    fun `when open stories from entry point and success fetch initial data but data detail is invalid 4`() {
+        val selectedGroup = 0
+        val selectedDetail = 5
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems[selectedGroup].detail
+
+        getStoriesRobot().use { robot ->
+            robot.entryPointTestCase(selectedGroup)
+
+            val actualGroup = robot.getViewModel().mDetail
+            actualGroup.assertEqualTo(StoriesDetailItem())
         }
     }
 
@@ -250,6 +333,7 @@ class StoriesViewModelTest {
         val selectedGroup = 2
         val selectedDetail = 0
         val expectedData = mockInitialDataModelFetchPrev()
+        val expectedThrowable = Throwable("fail")
         val resultGroupItem = expectedData.groupItems[selectedGroup]
         val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
 
@@ -259,19 +343,22 @@ class StoriesViewModelTest {
 
         coEvery {
             mockRepository.getStoriesDetailData(any())
-        } throws Throwable("fail fetch")
+        } throws expectedThrowable
 
         getStoriesRobot().use { robot ->
-            robot.entryPointTestCase(selectedGroup)
+            val event = robot.recordEvent {
+                robot.entryPointTestCase(selectedGroup)
 
-            val actualGroup = robot.getViewModel().mGroup
-            val actualDetail = robot.getViewModel().mDetail
+                val actualGroup = robot.getViewModel().mGroup
+                val actualDetail = robot.getViewModel().mDetail
 
-            val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
-            val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
+                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
-            actualGroup.assertEqualTo(expectedGroup)
-            actualDetail.assertEqualTo(expectedDetail)
+                actualGroup.assertEqualTo(expectedGroup)
+                actualDetail.assertEqualTo(expectedDetail)
+            }
+            event.contains(StoriesUiEvent.ErrorFetchCaching(expectedThrowable))
         }
     }
 
@@ -280,6 +367,7 @@ class StoriesViewModelTest {
         val selectedGroup = 0
         val selectedDetail = 0
         val expectedData = mockInitialDataModelFetchNext()
+        val expectedThrowable = Throwable("fail")
         val resultGroupItem = expectedData.groupItems[selectedGroup]
         val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
 
@@ -289,19 +377,22 @@ class StoriesViewModelTest {
 
         coEvery {
             mockRepository.getStoriesDetailData(any())
-        } throws Throwable("fail fetch")
+        } throws expectedThrowable
 
         getStoriesRobot().use { robot ->
-            robot.entryPointTestCase(selectedGroup)
+            val event = robot.recordEvent {
+                robot.entryPointTestCase(selectedGroup)
 
-            val actualGroup = robot.getViewModel().mGroup
-            val actualDetail = robot.getViewModel().mDetail
+                val actualGroup = robot.getViewModel().mGroup
+                val actualDetail = robot.getViewModel().mDetail
 
-            val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
-            val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
+                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
-            actualGroup.assertEqualTo(expectedGroup)
-            actualDetail.assertEqualTo(expectedDetail)
+                actualGroup.assertEqualTo(expectedGroup)
+                actualDetail.assertEqualTo(expectedDetail)
+            }
+            event.contains(StoriesUiEvent.ErrorFetchCaching(expectedThrowable))
         }
     }
 
@@ -323,19 +414,40 @@ class StoriesViewModelTest {
     }
 
     @Test
-    fun `when stories open and fail hit stories track activity`() {
+    fun `when stories open and invalid hit stories track activity`() {
         val selectedGroup = 0
-        val selectedDetail = 0
+        val selectedDetail = -1
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
-        coEvery { mockRepository.setStoriesTrackActivity(any()) } throws Throwable("fail")
+        coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
 
         getStoriesRobot().use { robot ->
             robot.setTrackActivity(selectedGroup)
 
             val actualDetail = robot.getViewModel().mDetail
-            actualDetail.isSameContent.assertTrue()
+            actualDetail.isSameContent.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when stories open and fail hit stories track activity`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedThrowable = Throwable("fail")
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.setStoriesTrackActivity(any()) } throws expectedThrowable
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.setTrackActivity(selectedGroup)
+
+                val actualDetail = robot.getViewModel().mDetail
+                actualDetail.isSameContent.assertTrue()
+            }
+            event.last().assertEqualTo(StoriesUiEvent.ErrorSetTracking(expectedThrowable))
         }
     }
 
@@ -355,6 +467,44 @@ class StoriesViewModelTest {
                 .assertEqualTo(selectedGroup)
             state.storiesMainData.groupItems[selectedGroup].detail.selectedDetailPosition
                 .assertEqualTo(selectedDetail.plus(1))
+        }
+    }
+
+    @Test
+    fun `when stories open and user tap next detail to next stories with invalid group position 1`() {
+        val selectedGroup = -1
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup.plus(1), selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordState {
+                robot.tapNextDetailToNextDetail(selectedGroup)
+            }
+            state.storiesMainData.selectedGroupPosition
+                .assertEqualTo(selectedGroup.plus(1))
+            state.storiesMainData.groupItems[selectedGroup.plus(1)].detail.selectedDetailPosition
+                .assertEqualTo(selectedDetail)
+        }
+    }
+
+    @Test
+    fun `when stories open and user tap next detail to next stories with invalid group position 2`() {
+        val selectedGroup = 5
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(0, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordState {
+                robot.tapNextDetailToNextDetail(selectedGroup)
+            }
+            state.storiesMainData.selectedGroupPosition
+                .assertEqualTo(0)
+            state.storiesMainData.groupItems[0].detail.selectedDetailPosition
+                .assertEqualTo(selectedDetail)
         }
     }
 
@@ -489,6 +639,22 @@ class StoriesViewModelTest {
 
         getStoriesRobot().use { robot ->
             robot.collectImpressionGroup(selectedGroup, expectedData.groupHeader[selectedGroup])
+
+            val actualImpression = robot.getViewModel().impressedGroupHeader.first()
+            actualImpression.assertEqualTo(expectedData.groupHeader.first())
+        }
+    }
+
+    @Test
+    fun `when stories open and collect impression group duplicate`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.collectImpressionGroupDuplicate(selectedGroup, expectedData.groupHeader[selectedGroup])
 
             val actualImpression = robot.getViewModel().impressedGroupHeader.first()
             actualImpression.assertEqualTo(expectedData.groupHeader.first())

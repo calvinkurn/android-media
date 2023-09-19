@@ -170,6 +170,13 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.CollectImpressedGroup(data))
     }
 
+    fun collectImpressionGroupDuplicate(selectedGroup: Int, data: StoriesGroupHeader) {
+        entryPointTestCase(selectedGroup)
+        viewModel.submitAction(StoriesUiAction.CollectImpressedGroup(data))
+        viewModel.submitAction(StoriesUiAction.CollectImpressedGroup(data.copy(groupId = "groupId 123")))
+        viewModel.submitAction(StoriesUiAction.CollectImpressedGroup(data))
+    }
+
     override fun close() {
         cancelRemainingTasks()
     }

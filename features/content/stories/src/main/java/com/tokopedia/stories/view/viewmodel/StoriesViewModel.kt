@@ -59,7 +59,7 @@ class StoriesViewModel @AssistedInject constructor(
             val groupPosition = _groupPos.value
             return if (groupPosition < 0) StoriesGroupItem()
             else {
-                if (_storiesMainData.value.groupItems.size <= groupPosition) StoriesGroupItem()
+                if (groupPosition >= _storiesMainData.value.groupItems.size) StoriesGroupItem()
                 else _storiesMainData.value.groupItems[groupPosition]
             }
         }
@@ -71,8 +71,8 @@ class StoriesViewModel @AssistedInject constructor(
             return if (groupPosition < 0 || detailPosition < 0) StoriesDetailItem()
             else {
                 when {
-                    _storiesMainData.value.groupItems.size <= groupPosition -> StoriesDetailItem()
-                    _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size <= detailPosition -> StoriesDetailItem()
+                    groupPosition >= _storiesMainData.value.groupItems.size -> StoriesDetailItem()
+                    detailPosition >= _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size -> StoriesDetailItem()
                     else -> _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
                 }
             }
@@ -109,7 +109,7 @@ class StoriesViewModel @AssistedInject constructor(
             val groupPosition = _groupPos.value
             return if (groupPosition < 0) 0
             else {
-                if (_storiesMainData.value.groupItems.size <= groupPosition) 0
+                if (groupPosition >= _storiesMainData.value.groupItems.size) 0
                 else _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size
             }
         }
@@ -241,37 +241,37 @@ class StoriesViewModel @AssistedInject constructor(
             val nextRequest = async { fetchAndCacheNextGroupDetail() }
             prevRequest.await()
             nextRequest.await()
-        }) { }
+        }) { exception ->
+            _storiesEvent.emit(StoriesUiEvent.ErrorFetchCaching(exception))
+        }
     }
 
     private suspend fun fetchAndCachePreviousGroupDetail() {
         val prevGroupPos = mGroupPos.minus(1)
         val prevGroupItem = mStoriesMainData.groupItems.getOrNull(prevGroupPos) ?: return
-        val isNotFirstGroup = prevGroupPos > -1
         val isPrevGroupCached = prevGroupItem.detail.detailItems.isNotEmpty()
-        if (isNotFirstGroup && isPrevGroupCached) return
+        if (isPrevGroupCached) return
 
         val prevGroupId = prevGroupItem.groupId
 
         try {
             val prevGroupData = requestStoriesDetailData(prevGroupId)
             updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
-        } catch (_: Throwable) { }
+        } catch (throwable: Throwable) { throw throwable }
     }
 
     private suspend fun fetchAndCacheNextGroupDetail() {
         val nextGroupPos = mGroupPos.plus(1)
         val nextGroupItem = mStoriesMainData.groupItems.getOrNull(nextGroupPos) ?: return
-        val isNotLastGroup = nextGroupPos < mGroupSize
         val isNextGroupCached = nextGroupItem.detail.detailItems.isNotEmpty()
-        if (isNotLastGroup && isNextGroupCached) return
+        if (isNextGroupCached) return
 
         val nextGroupId = nextGroupItem.groupId
 
         try {
             val nextGroupData = requestStoriesDetailData(nextGroupId)
             updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
-        } catch (_: Throwable) { }
+        } catch (throwable: Throwable) { throw throwable }
     }
 
     private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
@@ -341,7 +341,9 @@ class StoriesViewModel @AssistedInject constructor(
             mLatestTrackPosition = mDetailPos
             val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker
             requestSetStoriesTrackActivity(trackerId)
-        }) { }
+        }) { exception ->
+            _storiesEvent.emit(StoriesUiEvent.ErrorSetTracking(exception))
+        }
     }
 
     private suspend fun requestStoriesInitialData(): StoriesUiModel {
