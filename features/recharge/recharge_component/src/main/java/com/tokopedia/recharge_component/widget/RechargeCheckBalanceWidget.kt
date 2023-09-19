@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -160,6 +159,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                 }
             } else {
                 checkBalanceWarningChevron.hide()
+                checkBalanceWarningContainer.setOnClickListener { }
             }
         }
     }
