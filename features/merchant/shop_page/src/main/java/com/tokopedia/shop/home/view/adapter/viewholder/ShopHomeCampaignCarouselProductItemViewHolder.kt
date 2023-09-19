@@ -67,7 +67,10 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
             )
         )
         setListener()
-        productCard?.forceLightModeColor(productCard)
+
+        if (shopHomeCampaignNplWidgetListener.isForceLightModeColorOnCampaignNplWidget()) {
+            productCard?.forceLightModeColor(productCard)
+        }
     }
 
     protected open fun setListener() {

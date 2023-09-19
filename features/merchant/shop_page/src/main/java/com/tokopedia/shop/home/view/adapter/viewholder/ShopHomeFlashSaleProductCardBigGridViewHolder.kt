@@ -110,7 +110,10 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         productCardBigGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
         setProductImpressionListener(productCardModel, listener)
-        productCardBigGrid?.forceLightModeColor(productCardBigGrid)
+
+        if (listener.isForceLightModeColorOnShopFlashSaleWidget()) {
+            productCardBigGrid?.forceLightModeColor(productCardBigGrid)
+        }
     }
 
     fun getHeightOfImageProduct(action: (Int) -> Unit){
