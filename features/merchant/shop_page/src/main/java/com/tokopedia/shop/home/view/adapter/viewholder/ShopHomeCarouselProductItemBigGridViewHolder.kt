@@ -23,7 +23,8 @@ class ShopHomeCarouselProductItemBigGridViewHolder(
     private val carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener?,
     private val carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener?,
     private val carouselProductCardOnItemATCNonVariantClickListener: CarouselProductCardListener.OnATCNonVariantClickListener?,
-    private val carouselProductCardOnItemAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener?
+    private val carouselProductCardOnItemAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener?,
+    private val isOverrideWidgetTheme: Boolean
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
 
     private val viewBinding: ItemShopCarouselProductCardBigGridBinding? by viewBinding()
@@ -40,6 +41,15 @@ class ShopHomeCarouselProductItemBigGridViewHolder(
     override fun bind(shopHomeProductUiModel: ShopHomeProductUiModel) {
         setProductData()
         setProductListener()
+        configureReimagine()
+    }
+
+    private fun configureReimagine() {
+        if (isOverrideWidgetTheme) {
+            viewBinding?.productCard?.apply {
+                forceLightModeColor(productCard = this)
+            }
+        }
     }
 
     private fun setProductListener() {
