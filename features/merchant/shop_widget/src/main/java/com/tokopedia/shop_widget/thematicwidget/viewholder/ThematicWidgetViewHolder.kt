@@ -17,16 +17,16 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_widget.R
-import com.tokopedia.shop_widget.thematicwidget.adapter.ProductCardAdapter
-import com.tokopedia.shop_widget.thematicwidget.adapter.ProductCardDiffer
 import com.tokopedia.shop_widget.common.customview.DynamicHeaderCustomView
 import com.tokopedia.shop_widget.common.customview.DynamicHeaderCustomView.HeaderCustomViewListener
+import com.tokopedia.shop_widget.common.util.ColorUtil.getBackGroundColor
+import com.tokopedia.shop_widget.databinding.ItemThematicWidgetBinding
+import com.tokopedia.shop_widget.thematicwidget.adapter.ProductCardAdapter
+import com.tokopedia.shop_widget.thematicwidget.adapter.ProductCardDiffer
 import com.tokopedia.shop_widget.thematicwidget.typefactory.ProductCardTypeFactoryImpl
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSeeAllUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSpaceUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
-import com.tokopedia.shop_widget.common.util.ColorUtil.getBackGroundColor
-import com.tokopedia.shop_widget.databinding.ItemThematicWidgetBinding
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
@@ -36,7 +36,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-//need to surpress this one, since there are no pii related data defined on this class
+// need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
 class ThematicWidgetViewHolder(
     itemView: View,
@@ -81,7 +81,8 @@ class ThematicWidgetViewHolder(
                 productCardGridListener = productCardGridListenerImpl(),
                 productCardListListener = productCardListListenerImpl(),
                 productCardSeeAllListener = productCardSeeAllListenerImpl(),
-                totalProductSize = uiModel?.productList?.size.orZero()
+                totalProductSize = uiModel?.productList?.size.orZero(),
+                isOverrideWidgetTheme = isOverrideTheme
             ),
             differ = ProductCardDiffer()
         )
@@ -159,7 +160,7 @@ class ThematicWidgetViewHolder(
 
     private fun configFestivity(uiModel: ThematicWidgetUiModel) {
         dynamicHeaderCustomView?.configShopPageFestivityColor()
-        when(uiModel.name){
+        when (uiModel.name) {
             BIG_CAMPAIGN_THEMATIC -> {
                 configMarginFestivity()
                 viewParallaxBackground?.background = null
@@ -184,7 +185,7 @@ class ThematicWidgetViewHolder(
         }
     }
 
-    private fun configMarginFestivity(){
+    private fun configMarginFestivity() {
         val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
         rvLayoutParams?.setMargins(
             rvLayoutParams.leftMargin,
@@ -203,7 +204,7 @@ class ThematicWidgetViewHolder(
         contentContainer?.layoutParams = contentContainerLayoutParams
     }
 
-    private fun configMarginNonFestivity(){
+    private fun configMarginNonFestivity() {
         val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
         rvLayoutParams?.setMargins(
             rvLayoutParams.leftMargin,
@@ -326,7 +327,7 @@ class ThematicWidgetViewHolder(
 
     private fun restoreInstanceStateToLayoutManager() {
         launch {
-            val rvState =  uiModel?.productList?.firstOrNull()?.rvState
+            val rvState = uiModel?.productList?.firstOrNull()?.rvState
             if (null != rvState) {
                 rvProduct?.layoutManager?.onRestoreInstanceState(rvState)
             }

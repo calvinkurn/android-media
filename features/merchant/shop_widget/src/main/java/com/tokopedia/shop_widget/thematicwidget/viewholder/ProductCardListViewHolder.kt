@@ -6,15 +6,16 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.shop_widget.R
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.common.util.ProductCardMapper.mapToProductCardCampaignModel
 import com.tokopedia.shop_widget.databinding.ItemProductCardListBinding
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardListViewHolder(
     itemView: View,
-    private var listener: ProductCardListener? = null
-): AbstractViewHolder<ProductCardUiModel>(itemView) {
+    private var listener: ProductCardListener? = null,
+    private val isOverrideWidgetTheme: Boolean
+) : AbstractViewHolder<ProductCardUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -27,16 +28,24 @@ class ProductCardListViewHolder(
         binding?.productCardGridView?.apply {
             applyCarousel()
             layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
-            setProductModel(mapToProductCardCampaignModel(
-                isHasAddToCartButton = false,
-                hasThreeDots = false,
-                productCardUiModel = element
-            ))
-            setImageProductViewHintListener(element, object : ViewHintListener{
-                override fun onViewHint() {
-                    listener?.onProductCardImpressListener(element)
+            setProductModel(
+                mapToProductCardCampaignModel(
+                    isHasAddToCartButton = false,
+                    hasThreeDots = false,
+                    productCardUiModel = element
+                )
+            )
+            setImageProductViewHintListener(
+                element,
+                object : ViewHintListener {
+                    override fun onViewHint() {
+                        listener?.onProductCardImpressListener(element)
+                    }
                 }
-            })
+            )
+            if (isOverrideWidgetTheme) {
+                forceLightModeColor(productCard = this)
+            }
         }
 
         binding?.productCardGridView?.setOnClickListener {
