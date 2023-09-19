@@ -3,7 +3,6 @@ package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.left
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -15,13 +14,11 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBannerBinding
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
-import com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group.ShopHomeBannerProductGroupViewPagerViewHolder
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
@@ -30,7 +27,6 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
-import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -175,15 +171,15 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     private fun TabLayout.Tab?.select(model: ShowcaseNavigationUiModel) {
         val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
 
-        val lowEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
-            model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val highEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
+            model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         } else {
             ContextCompat.getColor(tabTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
 
         tabTitle?.apply {
             setTypeface(Typography.getFontType(context, true, Typography.DISPLAY_3))
-            setTextColor(lowEmphasizeColor)
+            setTextColor(highEmphasizeColor)
             invalidate()
         }
     }
