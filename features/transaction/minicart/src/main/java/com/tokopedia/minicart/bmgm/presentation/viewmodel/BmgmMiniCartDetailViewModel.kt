@@ -9,6 +9,7 @@ import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmComm
 import dagger.Lazy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +23,7 @@ class BmgmMiniCartDetailViewModel @Inject constructor(
     private val dispatchers: Lazy<CoroutineDispatchers>
 ) : BaseCartCheckboxViewModel(setCartListCheckboxStateUseCase.get(), dispatchers.get()) {
     val cartData: StateFlow<BmgmState<BmgmCommonDataModel>>
-        get() = _cartData
+        get() = _cartData.asStateFlow()
     private val _cartData = MutableStateFlow<BmgmState<BmgmCommonDataModel>>(BmgmState.None)
 
     fun getCartData() = viewModelScope.launch(dispatchers.get().io) {
