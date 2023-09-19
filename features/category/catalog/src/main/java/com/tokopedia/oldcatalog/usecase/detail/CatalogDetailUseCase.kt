@@ -24,7 +24,7 @@ class CatalogDetailUseCase @Inject constructor(
 
     suspend fun getCatalogDetail(catalogId : String ,comparedCatalogId : String, userId : String, device : String,
                                  catalogDetailDataModel: MutableLiveData<Result<CatalogDetailDataModel>>)  {
-        val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogId,comparedCatalogId, userId, device)
+        val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogId, comparedCatalogId, userId, device)
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
         if(data?.catalogGetDetailModular != null)
             catalogDetailDataModel.value = Success(mapIntoModel(comparedCatalogId,data.catalogGetDetailModular))
@@ -39,7 +39,7 @@ class CatalogDetailUseCase @Inject constructor(
         catalogDetailDataModel: MutableLiveData<Result<CatalogDetailUiModel>>
     )  {
         val gqlResponse = catalogDetailRepository.getCatalogDetail(
-            catalogId,comparedCatalogId, userSession.userId, CatalogConstant.DEVICE, true)
+            catalogId,comparedCatalogId, userSession.userId, CatalogConstant.DEVICE)
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
         if (data?.catalogGetDetailModular != null)
             catalogDetailDataModel.postValue(Success(catalogDetailUiMapper.mapToCatalogDetailUiModel(data.catalogGetDetailModular)))
@@ -50,18 +50,17 @@ class CatalogDetailUseCase @Inject constructor(
 
     suspend fun initializeGetCatalogDetail(
         catalogId: String
-    ): Int {
+    ): Boolean {
         val gqlResponse = catalogDetailRepository.getCatalogDetail(
             catalogId,
             "",
             userSession.userId,
             CatalogConstant.DEVICE,
-            isReimagine = true,
             cacheType = CacheType.ALWAYS_CLOUD
         )
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
         return if (data?.catalogGetDetailModular != null){
-            data.catalogGetDetailModular.version
+            catalogDetailUiMapper.isUsingAboveV4Layout(data.catalogGetDetailModular.version)
         } else {
             throw MessageErrorException("Invalid Data")
         }

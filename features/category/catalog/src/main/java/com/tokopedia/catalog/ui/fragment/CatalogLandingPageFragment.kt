@@ -16,6 +16,11 @@ import javax.inject.Inject
 
 class CatalogLandingPageFragment: BaseDaggerFragment() {
 
+    interface CatalogLandingPageFragmentListener {
+        fun onLayoutBelowVersion3()
+        fun onLayoutAboveVersion4()
+    }
+
     companion object {
         const val CATALOG_LOADER_PAGE_FRAGMENT_TAG = "CATALOG_LOADER_PAGE_FRAGMENT_TAG"
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
@@ -32,6 +37,7 @@ class CatalogLandingPageFragment: BaseDaggerFragment() {
     @Inject
     lateinit var viewModel: CatalogLandingPageViewModel
     private var binding by autoClearedNullable<FragmentCatalogLoaderPageBinding>()
+    private var fragmentListener: CatalogLandingPageFragmentListener? = null
 
     override fun getScreenName() = CatalogLandingPageFragment::class.java.canonicalName.orEmpty()
 
@@ -64,13 +70,21 @@ class CatalogLandingPageFragment: BaseDaggerFragment() {
     }
 
     private fun setupObservers(view: View) {
-        viewModel.catalogVersion.observe(viewLifecycleOwner) {
-            println("faisal " + it)
+        viewModel.usingV4AboveLayout.observe(viewLifecycleOwner) {
+            if (it) {
+                fragmentListener?.onLayoutAboveVersion4()
+            } else {
+                fragmentListener?.onLayoutBelowVersion3()
+            }
         }
 
         viewModel.errorsToaster.observe(viewLifecycleOwner) {
             val errorMessage = ErrorHandler.getErrorMessage(view.context, it)
             Toaster.build(view, errorMessage, duration = Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR).show()
         }
+    }
+
+    fun setListener(listener: CatalogLandingPageFragmentListener){
+        fragmentListener = listener
     }
 }

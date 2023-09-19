@@ -17,16 +17,16 @@ class CatalogLandingPageViewModel @Inject constructor(
     val errorsToaster: LiveData<Throwable>
         get() = _errorsToaster
 
-    private val _catalogVersion = MutableLiveData<Int>()
-    val catalogVersion: LiveData<Int>
-        get() = _catalogVersion
+    private val _usingV4AboveLayout = MutableLiveData<Boolean>()
+    val usingV4AboveLayout: LiveData<Boolean>
+        get() = _usingV4AboveLayout
 
     fun getProductCatalogVersion(catalogId: String) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val result = catalogDetailUseCase.initializeGetCatalogDetail(catalogId)
-                _catalogVersion.postValue(result)
+                _usingV4AboveLayout.postValue(result)
             },
             onError = {
                 _errorsToaster.postValue(it)

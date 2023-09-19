@@ -48,6 +48,10 @@ import javax.inject.Inject
 class CatalogDetailUiMapper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    companion object {
+        private val LAYOUT_VERSION_4_VALUE = 4
+    }
+
     fun mapToWidgetVisitables(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): List<Visitable<*>> {
@@ -364,6 +368,10 @@ class CatalogDetailUiMapper @Inject constructor(
             com.tokopedia.unifycomponents.R.color.Unify_Static_Black
         }
         return MethodChecker.getColor(context, textColorRes)
+    }
+
+    fun isUsingAboveV4Layout(version: Int): Boolean {
+        return version >= LAYOUT_VERSION_4_VALUE
     }
 
 }

@@ -24,22 +24,21 @@ class CatalogDetailRepository @Inject constructor() : BaseRepository() {
         comparedCatalogId: String,
         userId: String,
         device: String,
-        isReimagine: Boolean = false,
         cacheType: CacheType = CacheType.CACHE_FIRST
     ): GraphqlResponse? {
         val type: MutableList<Type> = ArrayList()
         type.add(CatalogResponseData::class.java)
         return getGQLData(
-            getQueries(isReimagine),
+            getQueries(),
             type,
             getRequests(categoryID, comparedCatalogId, userId, device),
             cacheType = cacheType
         )
     }
 
-    private fun getQueries(isReimagine: Boolean): MutableList<String> {
+    private fun getQueries(): MutableList<String> {
         val queries: MutableList<String> = ArrayList()
-        queries.add(if (isReimagine) GQL_CATALOG_REIMAGINE_QUERY else GQL_CATALOG_QUERY)
+        queries.add(GQL_CATALOG_REIMAGINE_QUERY)
         return queries
     }
 
