@@ -43,6 +43,20 @@ object CommonTopupBillsGqlQuery {
                 rule
                 title
               }
+              items{
+                name
+                text
+                style
+                placeholder
+                help
+                color
+                coachmark
+                validations {
+                    rule
+                    title
+                    message
+                }
+              }
             }
           }
         }

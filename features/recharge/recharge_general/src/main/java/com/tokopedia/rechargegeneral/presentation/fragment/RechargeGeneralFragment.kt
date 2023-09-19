@@ -24,10 +24,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
@@ -36,6 +40,12 @@ import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.ACTION_MULTIPLE
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_LEFT
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_RIGHT
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.PREFERENCE_MULTICHECKOUT
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.SHOW_COACH_MARK_MULTICHECKOUT_KEY
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.WHITE_COLOR
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -58,6 +68,7 @@ import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoC
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -75,6 +86,7 @@ import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.databinding.FragmentRechargeGeneralBinding
 import com.tokopedia.rechargegeneral.databinding.ViewRechargeGeneralProductInputInfoBottomSheetBinding
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
+import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicField
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
@@ -92,6 +104,7 @@ import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -176,6 +189,10 @@ class RechargeGeneralFragment :
     private var enquiryData: TopupBillsEnquiry? = null
 
     private lateinit var checkoutBottomSheet: BottomSheetUnify
+
+    override fun onUpdateMultiCheckout() {
+        //TODO("Not yet implemented")
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentRechargeGeneralBinding.inflate(inflater, container, false)
@@ -409,9 +426,7 @@ class RechargeGeneralFragment :
                 }
             })
             rechargeGeneralEnquiryButton.isEnabled = false
-            rechargeGeneralEnquiryButton.setOnClickListener {
-                enquire()
-            }
+            rechargeGeneralSecondaryButton.isEnabled = false
 
             rechargeGeneralSwipeRefreshLayout.setOnRefreshListener {
                 rechargeGeneralSwipeRefreshLayout.isRefreshing = true
@@ -607,8 +622,12 @@ class RechargeGeneralFragment :
 
         if (productData.enquiryFields.isNotEmpty()) {
             val enquiryFields = productData.enquiryFields.toMutableList()
+            val multiCheckoutButton = productData.enquiryFields.find { it.style ==  INPUT_TYPE_MULTIBUTTONS }
             val enquiryInfo = productData.enquiryFields.find { it.style == INPUT_TYPE_ENQUIRY_INFO }
-            if (enquiryInfo != null) {
+            if (multiCheckoutButton != null) {
+                enquiryFields.remove(multiCheckoutButton)
+                setMultiCheckoutButton(multiCheckoutButton)
+            } else if (enquiryInfo != null) {
                 enquiryFields.remove(enquiryInfo)
                 // Set enquiry button label
                 setEnquiryButtonLabel(enquiryInfo.text)
@@ -1003,6 +1022,7 @@ class RechargeGeneralFragment :
             operatorClusterSelect.hide()
             operatorSelect.hide()
             rechargeGeneralEnquiryButton.hide()
+            rechargeGeneralSecondaryButton.hide()
         }
     }
 
@@ -1103,7 +1123,101 @@ class RechargeGeneralFragment :
     private fun toggleEnquiryButton() {
         binding?.run {
             rechargeGeneralEnquiryButton.isEnabled = validateEnquiry()
+            rechargeGeneralSecondaryButton.isEnabled = validateEnquiry()
             if (enquiryLabel.isNotEmpty() && !isAddSBM) rechargeGeneralEnquiryButton.text = enquiryLabel
+        }
+    }
+
+    private fun setMultiCheckoutButton(multiCheckoutButtons: RechargeGeneralDynamicField) {
+        val localCacheHandler = LocalCacheHandler(context, PREFERENCE_MULTICHECKOUT)
+        val coachMarkList = arrayListOf<CoachMark2Item>()
+
+        binding?.apply {
+            if (multiCheckoutButtons.items.size > Int.ONE) {
+                val (leftButton, rightButton)  = multiCheckoutButtonSeparator(multiCheckoutButtons.items)
+                if (leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.style.isNotEmpty()) {
+                    rechargeGeneralSecondaryButton.show()
+                    rechargeGeneralSecondaryButton.text = leftButton.text
+                    rechargeGeneralSecondaryButton.buttonVariant = variantButton(leftButton.color)
+                    rechargeGeneralSecondaryButton.setOnClickListener {
+                        chooseListenerAction(leftButton.style)
+                    }
+
+                    if (leftButton.coachmark.isNotEmpty()) {
+                        coachMarkList.add(
+                            CoachMark2Item(
+                                rechargeGeneralSecondaryButton, "", leftButton.coachmark
+                            )
+                        )
+                    }
+                } else {
+                    rechargeGeneralSecondaryButton.hide()
+                }
+
+                if (rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty() && rightButton.style.isNotEmpty()) {
+                    rechargeGeneralEnquiryButton.text = rightButton.text
+                    rechargeGeneralEnquiryButton.buttonVariant = variantButton(rightButton.color)
+                    rechargeGeneralEnquiryButton.setOnClickListener {
+                        chooseListenerAction(rightButton.style)
+                    }
+
+                    if (rightButton.coachmark.isNotEmpty()) {
+                        coachMarkList.add(CoachMark2Item(
+                            rechargeGeneralEnquiryButton, "", rightButton.coachmark
+                        ))
+                    }
+                }
+            } else if(multiCheckoutButtons.items.size == Int.ONE) {
+                val button = multiCheckoutButtons.items.first()
+                rechargeGeneralEnquiryButton.text = button.text
+                rechargeGeneralEnquiryButton.buttonVariant = variantButton(button.color)
+                rechargeGeneralEnquiryButton.setOnClickListener {
+                    chooseListenerAction(button.style)
+                }
+
+                if (button.coachmark.isNotEmpty()) {
+                    coachMarkList.add(CoachMark2Item(
+                        rechargeGeneralEnquiryButton, "", button.coachmark
+                        )
+                    )
+                }
+            } else {
+                    rechargeGeneralEnquiryButton.setOnClickListener {
+                        enquire()
+                    }
+                }
+            }
+
+            val isCoachMarkClosed = localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
+            if (!isCoachMarkClosed) {
+                context?.let { context ->
+                    val coachmark = CoachMark2(context)
+                    coachmark.showCoachMark(coachMarkList)
+                    coachmark.setOnDismissListener {
+                        localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
+                        localCacheHandler.applyEditor()
+                    }
+                }
+            }
+    }
+
+    private fun multiCheckoutButtonSeparator(multiCheckoutButtons: List<RechargeGeneralDynamicField.Item>): Pair<RechargeGeneralDynamicField.Item, RechargeGeneralDynamicField.Item> {
+        val leftButton = multiCheckoutButtons.first()
+        val rightButton = multiCheckoutButtons[Int.ONE]
+        return Pair(leftButton, rightButton)
+    }
+    private fun chooseListenerAction(type: String) {
+        if (type.equals(ACTION_MULTIPLE)) {
+            //TODO ACTION MULTI CHECKOUT
+        } else {
+            enquire()
+        }
+    }
+    private fun variantButton(color: String): Int {
+        return if (color.equals(WHITE_COLOR)) {
+            UnifyButton.Variant.GHOST
+        } else {
+            UnifyButton.Variant.FILLED
         }
     }
 
@@ -1111,6 +1225,9 @@ class RechargeGeneralFragment :
         if (label.isNotEmpty() && !isAddSBM) {
             enquiryLabel = label
             binding?.rechargeGeneralEnquiryButton?.text = enquiryLabel
+            binding?.rechargeGeneralEnquiryButton?.setOnClickListener {
+                enquire()
+            }
         }
     }
 
@@ -1634,6 +1751,7 @@ class RechargeGeneralFragment :
 
         const val INPUT_TYPE_FAVORITE_NUMBER = "input_favorite"
         const val INPUT_TYPE_ENQUIRY_INFO = "enquiry"
+        const val INPUT_TYPE_MULTIBUTTONS = "multibuttons"
 
         const val PARAM_CLIENT_NUMBER = "client_number"
         const val PARAM_ZONE_ID = "zone_id"

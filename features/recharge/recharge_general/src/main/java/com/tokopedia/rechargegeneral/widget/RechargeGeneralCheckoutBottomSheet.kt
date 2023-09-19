@@ -51,6 +51,10 @@ class RechargeGeneralCheckoutBottomSheet @JvmOverloads constructor(
         listener?.onClickCheckout(binding.enquiryDataView.enquiryData)
     }
 
+    override fun onClickMultiCheckout() {
+        //TODO("Not yet implemented")
+    }
+
     interface CheckoutListener {
         fun onClickCheckout(data: TopupBillsEnquiry)
     }
