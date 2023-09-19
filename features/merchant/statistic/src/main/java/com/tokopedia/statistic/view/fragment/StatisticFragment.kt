@@ -24,7 +24,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -102,6 +101,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
 
 /**
  * Created By @ilhamsuaib on 08/06/20
@@ -311,8 +311,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         recyclerView?.post {
             adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
-            checkForSectionToBeRemoved(position)
         }
+        removeEmptySection()
     }
 
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
@@ -322,9 +322,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun getIsShouldRemoveWidget(): Boolean = false
 
     override fun onRemoveWidget(position: Int) {
-        recyclerView?.post {
-            checkForSectionToBeRemoved(position)
-        }
+        removeEmptySection()
     }
 
     override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
@@ -502,7 +500,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 ) as? WidgetFilterBottomSheet) ?: WidgetFilterBottomSheet.newInstance()
         tableFilterBottomSheet.init(
             requireContext(),
-            com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data,
+            sellerhomecommonR.string.shc_select_statistic_data,
             element.tableFilters
         ) { filter ->
             recyclerView?.post {
@@ -825,6 +823,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 is SectionWidgetUiModel -> {
                     it.shouldShow = true
                 }
+
                 else -> {
                     it.isLoaded = false
                     it.data = null
@@ -1180,39 +1179,24 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun checkForSectionToBeRemoved(removedPosition: Int) {
-        val previousWidget = adapter.data.getOrNull(removedPosition.minus(Int.ONE))
-        if (previousWidget is SectionWidgetUiModel) {
-            if (adapter.data.getOrNull(removedPosition.plus(Int.ONE)) == null) {
-                removeEmptySection(removedPosition.minus(Int.ONE))
-            } else {
-                removeSectionIfEmpty(removedPosition)
-            }
-        }
-    }
-
-    private fun removeSectionIfEmpty(removedPosition: Int) {
-        var shouldRemoveSection = false
-        adapter.data?.drop(removedPosition.plus(Int.ONE))?.forEach { widget ->
-            when {
-                widget.isShowEmpty || !widget.isEmpty() -> {
-                    // If we found that the next widget should be shown, then we should not remove the section
-                    return@forEach
+    private fun removeEmptySection() {
+        recyclerView?.post {
+            val emptySection = mutableListOf<SectionWidgetUiModel>()
+            adapter.data.forEach { widget ->
+                (widget as? SectionWidgetUiModel)?.let { section ->
+                    val hasChild = adapter.data.any { w -> w.sectionId == section.id }
+                    if (!hasChild) {
+                        emptySection.add(section)
+                    }
                 }
-                widget is SectionWidgetUiModel -> {
-                    shouldRemoveSection = true
-                    return@forEach
+            }
+            if (emptySection.isNotEmpty()) {
+                emptySection.forEach {
+                    val widgetIndex = adapter.data.indexOf(it)
+                    adapter.data.remove(it)
+                    adapter.notifyItemRemoved(widgetIndex)
                 }
             }
         }
-        if (shouldRemoveSection) {
-            removeEmptySection(removedPosition.minus(Int.ONE))
-        }
     }
-
-    private fun removeEmptySection(position: Int) {
-        (adapter.data.getOrNull(position) as? SectionWidgetUiModel)?.shouldShow = false
-        adapter.notifyItemChanged(position)
-    }
-
 }
