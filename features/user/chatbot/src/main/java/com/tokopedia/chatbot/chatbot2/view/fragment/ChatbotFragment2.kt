@@ -1997,6 +1997,8 @@ class ChatbotFragment2 :
                     )
                 if (isNeedAuthToken && RouteManager.isSupportApplink(activity, applinkWebview)) {
                     RouteManager.route(activity, applinkWebview)
+                } else if (isBranchIOLink(applinkWebview)) {
+                    RouteManager.route(activity, applinkWebview)
                 } else {
                     super.onGoToWebView(url, id)
                 }

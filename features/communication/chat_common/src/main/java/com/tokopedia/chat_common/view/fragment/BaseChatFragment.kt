@@ -172,7 +172,10 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun handleBranchIOLinkClick(url: String) {
         if (!GlobalConfig.isSellerApp()) {
-            RouteManager.route(activity, url)
+            val intent = RouteManager.getSplashScreenIntent(activity)
+            intent.putExtra("branch", url)
+            intent.putExtra("branch_force_new_session", true)
+            startActivity(intent)
         } else {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
