@@ -442,9 +442,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 } else if (groupedSummary.isNotEmpty()) {
                     val summaryView = LayoutInflater.from(this.context)
                         .inflate(R.layout.layout_promo_checkout_summary_grouping, this, false)
-                    summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_button).visibility =
-                        View.GONE
-                    summaryView.findViewById<IconUnify>(R.id.ic_promo_checkout_summary_button).visibility =
+                    summaryView.findViewById<View>(R.id.group_promo_checkout_secondary_text).visibility =
                         View.GONE
                     val groupContainer =
                         summaryView.findViewById<View>(R.id.group_promo_checkout_summary)
