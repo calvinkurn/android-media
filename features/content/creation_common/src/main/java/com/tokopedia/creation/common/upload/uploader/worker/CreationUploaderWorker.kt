@@ -14,6 +14,7 @@ import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueu
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
 import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
+import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -62,7 +63,8 @@ class CreationUploaderWorker(
 
                 try {
                     val uploadManager = uploadManagerProvider.get(data.uploadType)
-                    uploadManager.execute(
+
+                    val uploadResult = uploadManager.execute(
                         data,
                         object : CreationUploadManagerListener {
                             override suspend fun setupForegroundNotification(info: ForegroundInfo) {
@@ -80,7 +82,14 @@ class CreationUploaderWorker(
                         }
                     )
 
-                    queueRepository.delete(data.creationId)
+                    when (uploadResult) {
+                        CreationUploadResult.Success -> {
+                            queueRepository.delete(data.creationId)
+                        }
+                        CreationUploadResult.Error -> {
+                            break
+                        }
+                    }
                 } catch (throwable: Throwable) {
                     break
                 }

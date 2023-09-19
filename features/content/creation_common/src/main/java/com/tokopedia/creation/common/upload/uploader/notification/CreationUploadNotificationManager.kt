@@ -75,17 +75,19 @@ abstract class CreationUploadNotificationManager(
             action
         )
 
+        val requestCode = (0..1000000).random()
+
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getBroadcast(
                 context,
-                0,
+                requestCode,
                 intent,
                 PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         } else {
             PendingIntent.getBroadcast(
                 context,
-                0,
+                requestCode,
                 intent,
                 PendingIntent.FLAG_CANCEL_CURRENT
             )

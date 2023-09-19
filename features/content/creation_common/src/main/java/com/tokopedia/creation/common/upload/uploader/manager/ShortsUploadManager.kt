@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.model.CreationUploadQueue
+import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.uploader.notification.CreationUploadNotificationManager
 import com.tokopedia.creation.common.upload.uploader.notification.ShortsUploadNotificationManager
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -90,11 +91,11 @@ class ShortsUploadManager @Inject constructor(
     override suspend fun execute(
         uploadData: CreationUploadQueue,
         listener: CreationUploadManagerListener
-    ) {
+    ): CreationUploadResult {
         this.uploadData = uploadData
         this.mListener = listener
 
-        withContext(dispatchers.io) {
+        return withContext(dispatchers.io) {
             try {
                 broadcastInit(uploadData)
                 updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
@@ -109,6 +110,8 @@ class ShortsUploadManager @Inject constructor(
                 updateChannelStatusWithMedia(activeMediaId, uploadData, PlayChannelStatusType.Active)
 
                 broadcastComplete()
+
+                CreationUploadResult.Success
             } catch (e: Exception) {
                 /**
                  * updateChannelStatus to TranscodingFailed may error
@@ -124,9 +127,9 @@ class ShortsUploadManager @Inject constructor(
                 } catch (e: Exception) {
                 }
 
-                println("JOE LOG ERROR $e")
-
                 broadcastFail()
+
+                CreationUploadResult.Error
             }
         }
     }
