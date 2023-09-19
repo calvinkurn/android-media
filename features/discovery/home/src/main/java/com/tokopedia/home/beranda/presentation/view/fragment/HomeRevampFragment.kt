@@ -306,6 +306,7 @@ open class HomeRevampFragment :
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
+        private const val DEFAULT_BLOCK_SIZE = 6
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -1332,7 +1333,7 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            performanceTrace?.setBlock(data.take(6))
+            performanceTrace?.setBlock(data.take(layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE))
             adapter?.submitList(data)
         }
     }
@@ -1474,7 +1475,7 @@ open class HomeRevampFragment :
             CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
-            ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
+            ShopFlashSaleWidgetCallback(this, getHomeViewModel())
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
