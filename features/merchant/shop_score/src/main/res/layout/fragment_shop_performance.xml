@@ -15,6 +15,16 @@
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="true" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvRemoteConfigRealTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Remote Config Real Time"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shop_performance_toolbar"/>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/shopPerformanceSwipeRefresh"
         android:layout_width="match_parent"
@@ -22,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_performance_toolbar">
+        app:layout_constraintTop_toBottomOf="@id/tvRemoteConfigRealTime">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvShopPerformance"

@@ -32,16 +32,6 @@
         app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvRemoteConfigRealTime"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Remote Config Real Time"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail"/>
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshBuyerOrderDetail"
         android:layout_width="match_parent"
@@ -49,7 +39,7 @@
         android:visibility="gone"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@id/containerActionButtons"
-        app:layout_constraintTop_toBottomOf="@id/tvRemoteConfigRealTime">
+        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvBuyerOrderDetail"

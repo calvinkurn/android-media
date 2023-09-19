@@ -50,7 +50,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RemoteConfigRealTimeManager
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -204,10 +203,6 @@ open class SomDetailFragment :
         FirebaseRemoteConfigImpl(context)
     }
 
-    private val remoteConfigRealTimeManager: RemoteConfigRealTimeManager by lazy {
-        RemoteConfigRealTimeManager(remoteConfig)
-    }
-
     private fun createChatIcon(context: Context): IconUnify {
         return IconUnify(requireContext(), IconUnify.CHAT).apply {
             setOnClickListener {
@@ -309,7 +304,6 @@ open class SomDetailFragment :
         setupBackgroundColor()
         setupToolbar()
         showOrHideTvRemoteConfigRealTime()
-        observeTvRemoteConfigRealTime()
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
@@ -330,7 +324,6 @@ open class SomDetailFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        remoteConfigRealTimeManager.stopRealTimeUpdates()
         connectionMonitor?.end()
     }
 
@@ -377,25 +370,6 @@ open class SomDetailFragment :
     private fun showOrHideTvRemoteConfigRealTime() {
         val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL)
         binding?.tvRemoteConfigRealTime?.showWithCondition(isShowRemoteConfigRealTime)
-    }
-
-    private fun observeTvRemoteConfigRealTime() {
-        remoteConfigRealTimeManager.startRealtimeUpdates(this)
-
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            remoteConfigRealTimeManager.updatedRemoteConfigFlow.collect {
-                when (it) {
-                    is Success -> {
-                        if (it.data.contains(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL)) {
-                            showOrHideTvRemoteConfigRealTime()
-                        }
-                    }
-                    is Fail -> {
-                        // no op
-                    }
-                }
-            }
-        }
     }
 
     private fun checkUserRole() {
@@ -450,6 +424,7 @@ open class SomDetailFragment :
                     isDetailChanged = if (detailResponse == null) false else detailResponse != it.data.getSomDetail
                     detailResponse = it.data.getSomDetail
                     dynamicPriceResponse = it.data.somDynamicPriceResponse
+                    showOrHideTvRemoteConfigRealTime()
                     renderDetail(it.data.getSomDetail, it.data.somDynamicPriceResponse, it.data.somResolution)
                 }
                 is Fail -> {
