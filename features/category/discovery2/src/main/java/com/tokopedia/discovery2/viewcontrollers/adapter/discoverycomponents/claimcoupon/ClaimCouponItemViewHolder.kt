@@ -137,7 +137,6 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         claimBtn.isEnabled = status == KLAIM
         if (claimBtn.isEnabled) {
             claimBtn.isInverse = true
-            claimBtn.buttonVariant = UnifyButton.Variant.GHOST
             claimBtn.setTextColor(
                 MethodChecker.getColor(
                     itemView.context,
@@ -146,7 +145,6 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
             )
         } else {
             claimBtn.isInverse = false
-            claimBtn.buttonVariant = UnifyButton.Variant.FILLED
         }
         if (claimBtn.text.isNullOrEmpty()) {
             claimBtn.visibility = View.GONE
