@@ -13,6 +13,8 @@ import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.stories.analytic.StoriesAnalytics
+import com.tokopedia.stories.analytic.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
@@ -32,24 +34,38 @@ import javax.inject.Inject
 
 class StoriesGroupFragment @Inject constructor(
     private val viewModelFactory: StoriesViewModelFactory.Creator,
+    private val analyticFactory: StoriesAnalytics.Factory,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesGroupBinding? = null
     private val binding: FragmentStoriesGroupBinding
         get() = _binding!!
 
-    private val shopId: String
+    val authorId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
-    val viewModelProvider get() = viewModelFactory.create(requireActivity(), shopId)
+    /*** TODO
+    //  we need to know everytime stories open from where
+    // add the logic later
+    // currently used for tracker
+     ***/
+    val entryPoint: String
+        get() = "Entry Point"
+
+    val viewModelProvider get() = viewModelFactory.create(requireActivity(), authorId)
+
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(authorId)
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
+    private var mTrackGroupChanged = false
+
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
             showSelectedGroupHighlight(position)
             viewModelAction(StoriesUiAction.SetMainData(position))
-            super.onPageSelected(position)
+            trackMoveGroup()
         }
     }
 
@@ -90,6 +106,7 @@ class StoriesGroupFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         viewModelAction(PauseStories)
+        trackImpressionGroup()
     }
 
     private fun initializeData(savedInstanceState: Bundle?) {
@@ -185,8 +202,43 @@ class StoriesGroupFragment @Inject constructor(
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
+    private fun trackImpressionGroup() {
+        analytic.sendViewStoryCircleEvent(
+            entryPoint = entryPoint,
+            currentCircle = viewModel.mGroup.groupId,
+            promotions = viewModel.impressedGroupHeader.mapIndexed { index, storiesGroupHeader ->
+                StoriesEEModel(
+                    creativeName = "",
+                    creativeSlot = index.plus(1).toString(),
+                    itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.groupName} - $authorId",
+                    itemName = "/ - stories",
+                )
+            },
+        )
+    }
+
+    private fun trackMoveGroup() {
+        if (!mTrackGroupChanged) {
+            mTrackGroupChanged = true
+            return
+        }
+
+        analytic.sendClickMoveToOtherGroup(entryPoint = entryPoint)
+    }
+
+    private fun trackExitRoom() {
+        analytic.sendClickExitStoryRoomEvent(
+            entryPoint = entryPoint,
+            storiesId = viewModel.mDetail.id,
+            creatorType = "asgc",
+            contentType = viewModel.mDetail.content.type.value,
+            currentCircle = viewModel.mGroup.groupName,
+        )
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        trackExitRoom()
         binding.storiesGroupViewPager.unregisterOnPageChangeCallback(pagerListener)
         _binding = null
     }

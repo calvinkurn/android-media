@@ -18,6 +18,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEve
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoriesGroupItem
+import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.getRandomNumber
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -78,6 +79,10 @@ class StoriesViewModel @AssistedInject constructor(
             }
         }
 
+    private val _impressedGroupHeader = mutableListOf<StoriesGroupHeader>()
+    val impressedGroupHeader: List<StoriesGroupHeader>
+        get() = _impressedGroupHeader
+
     private val mStoriesMainData: StoriesUiModel
         get() = _storiesMainData.value
 
@@ -120,6 +125,7 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.SetInitialData -> handleSetInitialData(action.bundle)
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
             is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
+            is StoriesUiAction.CollectImpressedGroup -> handleCollectImpressedGroup(action.data)
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
@@ -170,6 +176,12 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.SelectGroup(position, showAnimation))
         }
+    }
+
+    private fun handleCollectImpressedGroup(data: StoriesGroupHeader) {
+        val isExist = impressedGroupHeader.find { it.groupId == data.groupId }!= null
+        if (isExist) return
+        _impressedGroupHeader.add(data)
     }
 
     private fun handleNext() {
