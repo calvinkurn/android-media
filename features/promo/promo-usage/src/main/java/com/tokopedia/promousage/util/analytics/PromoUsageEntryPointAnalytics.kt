@@ -20,15 +20,15 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
         lastApply: LastApplyUiModel,
         recommendedPromoCodes: List<String>
     ) {
-        val entryPointMessage = entryPointMessages.joinToString { "," }
+        val entryPointMessage = entryPointMessages.joinToString(separator = ",")
         val totalAvailablePromo = if (lastApply.additionalInfo.usageSummaries.isNotEmpty()) {
             lastApply.additionalInfo.usageSummaries.count()
         } else {
             recommendedPromoCodes.count()
         }
         val totalBenefit = lastApply.benefitSummaryInfo.finalBenefitAmount
-        val promoTypes = lastApply.additionalInfo.usageSummaries.map { it.type }
-            .joinToString { "," }
+        val promoTypes =
+            lastApply.additionalInfo.usageSummaries.joinToString(separator = ",") { it.type }
         val isGreyscale =
             entryPointInfo != null && entryPointInfo.color == PromoEntryPointInfo.COLOR_GREY
         val isAppliedBo = lastApply.additionalInfo.usageSummaries
@@ -40,8 +40,8 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
             return@mapIndexed bundleOf(
                 ExtraKey.CREATIVE_NAME to summary.description,
                 ExtraKey.CREATIVE_SLOT to index + 1,
-                CustomDimension.DIMENSION_45 to "",
-                ExtraKey.ITEM_ID to "",
+                CustomDimension.DIMENSION_45 to null,
+                ExtraKey.ITEM_ID to null,
                 ExtraKey.ITEM_NAME to itemName
             )
         }
@@ -55,6 +55,7 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
                 ExtraKey.TRACKER_ID to TrackerId.IMPRESSION_PROMO_ENTRY_POINT,
                 ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
                 ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE,
+                ExtraKey.PROMO_CODE to null,
                 ExtraKey.PROMOTIONS to promotions
             )
         )
@@ -69,15 +70,15 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
         lastApply: LastApplyUiModel,
         recommendedPromoCodes: List<String>
     ) {
-        val entryPointMessage = entryPointMessages.joinToString { "," }
+        val entryPointMessage = entryPointMessages.joinToString(separator = ",")
         val totalAvailablePromo = if (lastApply.additionalInfo.usageSummaries.isNotEmpty()) {
             lastApply.additionalInfo.usageSummaries.count()
         } else {
             recommendedPromoCodes.count()
         }
         val totalBenefit = lastApply.benefitSummaryInfo.finalBenefitAmount
-        val promoTypes = lastApply.additionalInfo.usageSummaries.map { it.type }
-            .joinToString { "," }
+        val promoTypes =
+            lastApply.additionalInfo.usageSummaries.joinToString(separator = ",") { it.type }
         val isGreyscale =
             entryPointInfo != null && entryPointInfo.color == PromoEntryPointInfo.COLOR_GREY
         val boPromo =
@@ -90,8 +91,8 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
             return@mapIndexed bundleOf(
                 ExtraKey.CREATIVE_NAME to summary.description,
                 ExtraKey.CREATIVE_SLOT to index + 1,
-                CustomDimension.DIMENSION_45 to "",
-                ExtraKey.ITEM_ID to "",
+                CustomDimension.DIMENSION_45 to null,
+                ExtraKey.ITEM_ID to null,
                 ExtraKey.ITEM_NAME to itemName
             )
         }
@@ -105,7 +106,7 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
                 ExtraKey.TRACKER_ID to TrackerId.CLICK_PROMO_ENTRY_POINT,
                 ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
                 ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE,
-                ExtraKey.PROMO_CODE to "",
+                ExtraKey.PROMO_CODE to null,
                 ExtraKey.PROMOTIONS to promotions
             )
         )
