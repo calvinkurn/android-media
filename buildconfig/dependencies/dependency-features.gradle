@@ -305,5 +305,6 @@ ext {
             watch                           : ":features:watch",
             tokofood                        : ":features:tokofood",
             samples                         : ":features:samples",
+			scpAuth                         : ":features:scp:auth"
     ]
 }

@@ -78,4 +78,9 @@ public class AppModule {
     public UserSessionDataStore provideUserSessionDataStore(@ApplicationContext Context context) {
         return UserSessionDataStoreClient.getInstance(context);
     }
+
+//    @ApplicationScope
+//    @Provides
+//    public LSdkProvider provideLsdkProvider(@ApplicationContext Context context) {
+//    }
 }
