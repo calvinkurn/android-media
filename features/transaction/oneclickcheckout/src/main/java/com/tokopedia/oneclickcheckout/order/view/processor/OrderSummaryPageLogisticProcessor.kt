@@ -212,8 +212,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
     private fun mapShippingRecommendationData(
         shippingRecommendationData: ShippingRecommendationData,
         orderShipment: OrderShipment,
-        listShopShipment: List<ShopShipment>,
-        shipmentProfile: OrderProfileShipment
+        listShopShipment: List<ShopShipment>
     ): ShippingRecommendationData {
         return ratesResponseStateConverter.fillState(
             shippingRecommendationData,
@@ -253,8 +252,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     mapShippingRecommendationData(
                         it,
                         orderShipment,
-                        listShopShipment,
-                        orderProfile.shipment
+                        listShopShipment
                     )
                 }.toBlocking().single()
                 val profileShipment = orderProfile.shipment
@@ -411,10 +409,10 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 null
             )
         }
-        val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
+        val durationError: ErrorServiceData = selectedShippingDurationUiModel.serviceData.error
         val hasSelectedSpIdFromRates =
             selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0
-        if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
+        if (durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
             return Pair(
                 OrderShipment(
                     isLoading = false,
@@ -443,13 +441,13 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         val selectedShippingCourierUiModel =
             shippingCourierViewModelList.firstOrNull { it.isSelected && (hasSelectedSpIdFromRates || !it.productData.isUiRatesHidden) }
                 ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
-                ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden && (it.productData.error?.errorMessage?.isEmpty() != false) }
+                ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden && it.productData.error.errorMessage.isEmpty() }
                 ?: shippingCourierViewModelList.first()
         var flagNeedToSetPinpoint = false
         var errorMessage: String? = null
         var shippingErrorId: String? = null
-        val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
-        if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
+        val courierError: ErrorProductData = selectedShippingCourierUiModel.productData.error
+        if (courierError.errorMessage.isNotBlank()) {
             shippingErrorId = courierError.errorId
             errorMessage = courierError.errorMessage
             if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
@@ -501,8 +499,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     profileShipment,
                     shippingRecommendationData
                 )
-        val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
-        if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
+        val durationError: ErrorServiceData = selectedShippingDurationUiModel.serviceData.error
+        if (durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
             return onRevampNewShippingFromRecommendation(
                 shippingDurationUiModels,
                 profileShipment,
@@ -523,8 +521,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         val errorMessage: String? = null
         val shippingErrorId: String? = null
         var preselectedSpId: String? = null
-        val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
-        if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
+        val courierError: ErrorProductData = selectedShippingCourierUiModel.productData.error
+        if (courierError.errorMessage.isNotBlank()) {
             return onRevampNewShippingFromRecommendation(
                 shippingDurationUiModels,
                 profileShipment,
@@ -595,7 +593,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     // fallback if recommendation is also ui rates hidden
                     val recommendedShippingCourierUiModel =
                         shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
-                            ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden && (it.productData.error?.errorMessage?.isEmpty() != false) }
+                            ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden && it.productData.error.errorMessage.isEmpty() }
                     if (recommendedShippingCourierUiModel != null) {
                         recommendedShippingCourierUiModel.isSelected = true
                         selectedShippingCourierUiModel = recommendedShippingCourierUiModel
@@ -606,10 +604,10 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         }
         if ((selectedShippingDurationUiModel == null || selectedShippingCourierUiModel == null) && profileShipment.autoCourierSelection) {
             selectedShippingDurationUiModel =
-                shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                shippingDurationUiModels.firstOrNull { it.serviceData.error.errorId.isEmpty() && it.serviceData.error.errorMessage.isEmpty() }
             selectedShippingDurationUiModel?.isSelected = true
             selectedShippingCourierUiModel =
-                selectedShippingDurationUiModel?.shippingCourierViewModelList?.firstOrNull { it.productData.error?.errorMessage.isNullOrEmpty() }
+                selectedShippingDurationUiModel?.shippingCourierViewModelList?.firstOrNull { it.productData.error.errorMessage.isEmpty() }
             selectedShippingCourierUiModel?.isSelected = true
         }
         if (selectedShippingDurationUiModel == null || selectedShippingCourierUiModel == null) {
@@ -628,8 +626,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 null
             )
         }
-        val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
-        if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
+        val durationError: ErrorServiceData = selectedShippingDurationUiModel.serviceData.error
+        if (durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
             return Triple(
                 OrderShipment(
                     isLoading = false,
@@ -649,8 +647,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         var errorMessage: String? = null
         var shippingErrorId: String? = null
         var preselectedSpId: String? = null
-        val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
-        if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
+        val courierError: ErrorProductData = selectedShippingCourierUiModel.productData.error
+        if (courierError.errorMessage.isNotBlank()) {
             shippingErrorId = courierError.errorId
             errorMessage = courierError.errorMessage
             if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
@@ -861,7 +859,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             var newShipping = shipping.copy(
                 isLoading = false,
                 needPinpoint = flagNeedToSetPinpoint,
-                serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else selectedShippingCourierUiModel.productData.error?.errorMessage,
+                serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else selectedShippingCourierUiModel.productData.error.errorMessage,
                 isServicePickerEnable = !flagNeedToSetPinpoint,
                 serviceId = selectedShippingDurationViewModel.serviceData.serviceId,
                 serviceDuration = selectedShippingDurationViewModel.serviceData.serviceName,
@@ -933,7 +931,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 shippingRecommendationData.listLogisticPromo =
                     logisticPromoList.map { it.copy(isApplied = logisticPromoUiModel.promoCode == it.promoCode) }
                 val needPinpoint =
-                    logisticPromoShipping.productData.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                    logisticPromoShipping.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                 return Pair(
                     shipping.copy(
                         isLoading = false,
@@ -941,7 +939,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                         shippingRecommendationData = shippingRecommendationData,
                         isServicePickerEnable = true,
                         insurance = setupInsurance(logisticPromoShipping.productData.insurance),
-                        serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData.error?.errorMessage,
+                        serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData.error.errorMessage,
                         needPinpoint = needPinpoint,
                         logisticPromoTickerMessage = null,
                         isShowLogisticPromoTickerMessage = false,
