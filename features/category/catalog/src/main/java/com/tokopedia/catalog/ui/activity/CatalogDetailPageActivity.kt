@@ -51,7 +51,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         }
         catalogId = catalogId.split("-").lastOrNull()?.trim() ?: ""
 
-        handleRollenceRoute(savedInstanceState, catalogId)
+        handleVersionRoute(savedInstanceState)
     }
 
     override fun onLayoutBelowVersion3() {
@@ -64,7 +64,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         loadV4Layout()
     }
 
-    private fun handleRollenceRoute(savedInstanceState: Bundle?, catalogId: String) {
+    private fun handleVersionRoute(savedInstanceState: Bundle?) {
         if(savedInstanceState == null) {
             prepareLoader()
         }
