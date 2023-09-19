@@ -89,6 +89,8 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -513,13 +515,15 @@ class FeedFragment :
         currentTrackerData = trackerModel
         feedAnalytics.eventClickThreeDots(trackerModel)
         activity?.let {
+            val newMenuItems = updateThreeDotsMenuItems(menuItems)
+
             val feedMenuSheet =
                 ContentThreeDotsMenuBottomSheet.getOrCreateFragment(
                     childFragmentManager,
                     it.classLoader
                 )
             feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(menuItems, id)
+            feedMenuSheet.setData(newMenuItems, id)
             feedMenuSheet.show(childFragmentManager, TAG_FEED_MENU_BOTTOMSHEET)
 
             if (trackerModel.type == FeedXCard.TYPE_FEED_X_CARD_PLAY || trackerModel.type == FeedXCard.TYPE_FEED_PLAY_CHANNEL || trackerModel.type == FeedXCard.TYPE_FEED_PLAY_SHORT_VIDEO || trackerModel.type == FeedXCard.TYPE_FEED_PLAY_LIVE) {
@@ -611,6 +615,14 @@ class FeedFragment :
             FeedMenuIdentifier.SeePerformance,
             FeedMenuIdentifier.LearnVideoInsight -> {
                 RouteManager.route(requireContext(), feedMenuItem.appLink)
+            }
+
+            FeedMenuIdentifier.Mute -> {
+                feedMainViewModel.muteSound()
+            }
+
+            FeedMenuIdentifier.Unmute -> {
+                feedMainViewModel.unmuteSound()
             }
         }
     }
@@ -1412,6 +1424,18 @@ class FeedFragment :
         videoPlayerManager.resume(id)
     }
 
+    private fun updateThreeDotsMenuItems(menuItems: List<FeedMenuItem>): List<FeedMenuItem> =
+        menuItems.map {
+            when (it.type) {
+                FeedMenuIdentifier.Mute, FeedMenuIdentifier.Unmute -> it.copy(
+                    iconUnify = if (feedMainViewModel.isMuted.value.orFalse()) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE,
+                    type = if (feedMainViewModel.isMuted.value.orFalse()) FeedMenuIdentifier.Unmute else FeedMenuIdentifier.Mute,
+                    name = if (feedMainViewModel.isMuted.value.orFalse()) feedplusR.string.feed_unmute_label else feedplusR.string.feed_mute_label,
+                )
+                else -> it
+            }
+        }
+
     private fun checkResume(
         isOnResume: Boolean = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
         isPageResumed: Boolean = feedMainViewModel.isPageResumed.value != false
@@ -1961,7 +1985,8 @@ class FeedFragment :
             when {
                 currentItem.data is FeedCardImageContentModel && currentItem.data.showComment -> {
                     val model = currentItem.data
-                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_comment_label)
+                    tyBottomAction.text =
+                        getString(feedplusR.string.feed_bottom_action_comment_label)
                     containerBottomAction.setOnClickListener {
                         onCommentClick(
                             trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
@@ -1989,7 +2014,8 @@ class FeedFragment :
                 }
                 currentItem.data is FeedCardVideoContentModel && !currentItem.data.isTypeProductHighlight -> {
                     val model = currentItem.data
-                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_comment_label)
+                    tyBottomAction.text =
+                        getString(feedplusR.string.feed_bottom_action_comment_label)
                     containerBottomAction.setOnClickListener {
                         onCommentClick(
                             trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(

@@ -50,7 +50,7 @@ import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Muhammad Furqan on 01/03/23
@@ -226,7 +226,8 @@ class MapperFeedXHome @Inject constructor(
             }
         )
 
-    private fun transformToFollowRecomWidget(card: FeedXCard) = FeedFollowRecommendationModel.Empty.copy(id = card.id)
+    private fun transformToFollowRecomWidget(card: FeedXCard) =
+        FeedFollowRecommendationModel.Empty.copy(id = card.id)
 
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel = FeedAuthorModel(
         id = author.id,
@@ -401,7 +402,7 @@ class MapperFeedXHome @Inject constructor(
                     add(
                         FeedMenuItem(
                             iconUnify = IconUnify.GRAPH,
-                            name = contentCommonR.string.performance_see,
+                            name = contentcommonR.string.performance_see,
                             type = FeedMenuIdentifier.SeePerformance,
                             appLink = card.performanceSummaryPageLink,
                             contentData = contentData
@@ -412,7 +413,7 @@ class MapperFeedXHome @Inject constructor(
                     add(
                         FeedMenuItem(
                             iconUnify = IconUnify.GRAPH_REPORT,
-                            name = contentCommonR.string.performance_learn_video_insight,
+                            name = contentcommonR.string.performance_learn_video_insight,
                             type = FeedMenuIdentifier.LearnVideoInsight,
                             appLink = card.insightSummaryPageLink,
                             contentData = contentData
@@ -428,11 +429,21 @@ class MapperFeedXHome @Inject constructor(
                     contentData = contentData
                 )
             )
+            if (isVideoPost(card)) {
+                add(
+                    FeedMenuItem(
+                        iconUnify = IconUnify.VOLUME_MUTE,
+                        name = R.string.feed_mute_label,
+                        type = FeedMenuIdentifier.Mute,
+                        contentData = contentData
+                    )
+                )
+            }
             if (isReportable(card)) {
                 add(
                     FeedMenuItem(
                         iconUnify = IconUnify.WARNING,
-                        name = contentCommonR.string.content_common_menu_report,
+                        name = contentcommonR.string.content_common_menu_report,
                         type = FeedMenuIdentifier.Report,
                         contentData = contentData
                     )
@@ -442,7 +453,7 @@ class MapperFeedXHome @Inject constructor(
                 add(
                     FeedMenuItem(
                         iconUnify = IconUnify.DELETE,
-                        name = contentCommonR.string.content_common_menu_delete,
+                        name = contentcommonR.string.content_common_menu_delete,
                         type = FeedMenuIdentifier.Delete,
                         contentData = contentData
                     )
@@ -477,5 +488,7 @@ class MapperFeedXHome @Inject constructor(
         card.typename == TYPE_FEED_X_CARD_PLACEHOLDER && card.type == TYPE_FEED_FOLLOW_RECOM
 
     private fun shouldShow(card: FeedXCard) =
-        isImagesPost(card) || isVideoPost(card) || isLivePreviewPost(card) || isFollowRecomWidget(card)
+        isImagesPost(card) || isVideoPost(card) || isLivePreviewPost(card) || isFollowRecomWidget(
+            card
+        )
 }
