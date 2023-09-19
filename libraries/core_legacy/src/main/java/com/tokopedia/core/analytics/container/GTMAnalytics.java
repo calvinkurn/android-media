@@ -300,11 +300,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private boolean sendEnhanceECommerceEventOrigin(Map<String, Object> value) {
-        // V4
-        clearEnhanceEcommerce();
-        pushGeneralEcommerce(clone(value));
-
-        // V5
         try {
             String keyEvent = keyEvent(clone(value));
             // prevent sending null keyevent
@@ -340,7 +335,6 @@ public class GTMAnalytics extends ContextAnalytics {
         Bundle bundle = addWrapperValue(value);
         bundle = addGclIdIfNeeded(eventName, bundle);
         pushEventV5(eventName, bundle, context);
-        pushIris(eventName, bundle);
     }
 
     @SuppressWarnings("unchecked")
@@ -1039,7 +1033,7 @@ public class GTMAnalytics extends ContextAnalytics {
         switch (keyEvent.toLowerCase()) {
             case PRODUCTVIEW:
                 String itemListString = bundle.getString(FirebaseAnalytics.Param.ITEM_LIST);
-                if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))){
+                if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))) {
                     bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, itemListString);
                 }
                 keyEvent = FirebaseAnalytics.Event.VIEW_ITEM_LIST;
@@ -1132,11 +1126,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         bundle = wrapWithSessionIris(bundle);
 
-        //v5
         pushEventV5("campaignTrack", bundle, context);
-
-        //v4
-        pushEvent("campaignTrack", bundleToMap(bundle));
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
@@ -1187,6 +1177,9 @@ public class GTMAnalytics extends ContextAnalytics {
             publishNewRelic(eventName, bundle);
             FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
             fa.logEvent(eventName, bundle);
+
+            pushGeneralEcommerce(bundle);
+
             mappingToGA4(fa, eventName, bundle);
             logV5(context, eventName, bundle);
             trackEmbraceBreadcrumb(eventName, bundle);
@@ -1450,39 +1443,24 @@ public class GTMAnalytics extends ContextAnalytics {
         pushIris("", data);
     }
 
-    private void pushGeneralEcommerce(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
-        Observable.just(data)
+    private void pushGeneralEcommerce(Bundle values) {
+        Observable.just(values)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
                     if (!TextUtils.isEmpty(mGclid)) {
-                        if (it.get("event") != null) {
-                            String eventName = String.valueOf(it.get("event"));
+                        if (it.containsKey("event") && !TextUtils.isEmpty(it.getString("event"))) {
+                            String eventName = it.getString("event");
                             addGclIdIfNeeded(eventName, it);
                         }
                     }
-                    it.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
-                    it.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
-                    it.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
-                    pushIris("", it);
+                    it.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+                    it.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+                    it.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
+                    pushIris(it);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
-    }
-
-    private void addGclIdIfNeeded(String eventName, Map<String, Object> values) {
-        if (null == eventName) return;
-        switch (eventName.toLowerCase()) {
-            case FirebaseAnalytics.Event.ADD_TO_CART:
-            case ADDTOCART:
-            case FirebaseAnalytics.Event.VIEW_ITEM:
-            case VIEWPRODUCT:
-            case PRODUCTVIEW:
-            case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
-            case TRANSACTION:
-                values.put(KEY_GCLID, mGclid);
-        }
     }
 
     private Bundle addGclIdIfNeeded(String eventName, Bundle values) {
@@ -1527,14 +1505,11 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
-    private void pushIris(String eventName, Bundle values) {
-        if (iris != null) {
-            if (!eventName.isEmpty()) {
-                values.putString("event", eventName);
-            }
-            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
-                iris.saveEvent(values);
-            }
+    private void pushIris(Bundle values) {
+        if (iris != null &&
+                values.get("event") != null &&
+                !String.valueOf(values.get("event")).equals("")) {
+            iris.saveEvent(values);
         }
     }
 
