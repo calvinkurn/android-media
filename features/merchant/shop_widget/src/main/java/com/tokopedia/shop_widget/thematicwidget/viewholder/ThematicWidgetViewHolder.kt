@@ -175,11 +175,18 @@ class ThematicWidgetViewHolder(
     }
 
     private fun setShopReimaginedContainerMargin() {
-        containerMixLeft?.let {
-            it.clipToOutline = true
-            it.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_reimagined_rounded)
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
+        if(uiModel?.isFestivity == false) {
+            containerMixLeft?.let {
+                it.clipToOutline = true
+                it.background = MethodChecker.getDrawable(
+                    itemView.context,
+                    R.drawable.bg_shop_reimagined_rounded
+                )
+                (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
+                    SHOP_RE_IMAGINE_MARGIN.toInt()
+                (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd =
+                    SHOP_RE_IMAGINE_MARGIN.toInt()
+            }
         }
     }
 
