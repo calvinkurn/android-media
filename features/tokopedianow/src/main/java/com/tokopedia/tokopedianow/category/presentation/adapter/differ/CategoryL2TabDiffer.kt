@@ -17,7 +17,7 @@ class CategoryL2TabDiffer : BaseTokopediaNowDiffer() {
             } else if (oldItem is ProductItemDataView && newItem is ProductItemDataView) {
                 oldItem.productCardModel.productId == newItem.productCardModel.productId
             } else if (oldItem is CategoryQuickFilterUiModel && newItem is CategoryQuickFilterUiModel) {
-                oldItem.id == newItem.id && oldItem.state == newItem.state
+                oldItem.id == newItem.id
             } else {
                 oldItem == newItem
             }
