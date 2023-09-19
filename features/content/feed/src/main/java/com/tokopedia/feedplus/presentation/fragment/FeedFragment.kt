@@ -398,6 +398,8 @@ class FeedFragment :
                 Toaster.TYPE_ERROR
             )
         }
+
+        override fun isMuted(): Boolean = feedMainViewModel.isMuted.value
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -483,6 +485,7 @@ class FeedFragment :
         observeFeedRecommendationResult()
 
         observeEvent()
+        observeMuteUnmute()
     }
 
     override fun onDestroyView() {
@@ -1038,6 +1041,8 @@ class FeedFragment :
         feedFollowersOnlyBottomSheet?.dismiss()
     }
 
+    override fun isMuted(): Boolean = feedMainViewModel.isMuted.value
+
     private fun onAttachChildFragment(fragmentManager: FragmentManager, childFragment: Fragment) {
         when (childFragment) {
             is ContentCommentBottomSheet -> {
@@ -1390,6 +1395,16 @@ class FeedFragment :
         }
     }
 
+    private fun observeMuteUnmute() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.isMuted.collect { isMuted ->
+                    updateCurrentVideoVolume(isMuted)
+                }
+            }
+        }
+    }
+
     private fun pauseCurrentVideo() {
         val currentIndex = getCurrentPosition()
         if (currentIndex < ZERO || currentIndex >= adapter.itemCount) return
@@ -1424,13 +1439,25 @@ class FeedFragment :
         videoPlayerManager.resume(id)
     }
 
+    private fun updateCurrentVideoVolume(isMuted: Boolean) {
+        val currentIndex = getCurrentPosition()
+        if (currentIndex < ZERO || currentIndex >= adapter.itemCount) return
+        val item = adapter.currentList[currentIndex]?.data ?: return
+
+        when (item) {
+            is FeedCardVideoContentModel -> videoPlayerManager.setMuteStatus(item.id, isMuted)
+            is FeedCardLivePreviewContentModel -> videoPlayerManager.setMuteStatus(item.id, isMuted)
+            else -> {}
+        }
+    }
+
     private fun updateThreeDotsMenuItems(menuItems: List<FeedMenuItem>): List<FeedMenuItem> =
         menuItems.map {
             when (it.type) {
                 FeedMenuIdentifier.Mute, FeedMenuIdentifier.Unmute -> it.copy(
                     iconUnify = if (feedMainViewModel.isMuted.value.orFalse()) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE,
                     type = if (feedMainViewModel.isMuted.value.orFalse()) FeedMenuIdentifier.Unmute else FeedMenuIdentifier.Mute,
-                    name = if (feedMainViewModel.isMuted.value.orFalse()) feedplusR.string.feed_unmute_label else feedplusR.string.feed_mute_label,
+                    name = if (feedMainViewModel.isMuted.value.orFalse()) feedplusR.string.feed_unmute_label else feedplusR.string.feed_mute_label
                 )
                 else -> it
             }
