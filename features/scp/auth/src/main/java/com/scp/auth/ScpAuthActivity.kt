@@ -91,6 +91,10 @@ class ScpAuthActivity: BaseActivity() {
             ),
             additionalHeaders = TkpdAdditionalHeaders(this),
             loginSuccessListener = object : LSdkLoginFlowListener {
+                override fun onUserBackPressedAndExit() {
+                    finish()
+                }
+
                 override fun onLoginSuccessful() {
                     lifecycleScope.launch {
                         viewModel.getUserInfo()
@@ -103,7 +107,7 @@ class ScpAuthActivity: BaseActivity() {
                     }
                 }
 
-                override fun onUserNotRegistered(credential: UserCredential) {
+                override fun onUserNotRegistered(credential: UserCredential, activity: Activity?) {
 
                 }
             },
@@ -123,9 +127,10 @@ class ScpAuthActivity: BaseActivity() {
                     Toast.makeText(this@ScpAuthActivity, "On Privacy Policy Clicked", Toast.LENGTH_SHORT).show()
                 }
 
-                override fun onLanguageSelectorClicked() {
-                    TODO("Not yet implemented")
+                override fun onLanguageSelectorClicked(activity: Activity) {
+
                 }
+
             },
             imageLoader = object: LoginImageLoader {
                 override fun loadBitmapFromUrl(

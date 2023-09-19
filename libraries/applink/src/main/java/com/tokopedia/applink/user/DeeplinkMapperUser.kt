@@ -43,7 +43,7 @@ object DeeplinkMapperUser {
         return if (isGotoLoginEnabled()) {
             ApplinkConstInternalUserPlatform.SCP_LOGIN
         } else {
-            ApplinkConst.LOGIN
+            ApplinkConstInternalUserPlatform.LOGIN
         }
     }
 
@@ -56,11 +56,10 @@ object DeeplinkMapperUser {
     }
 
     fun isGotoLoginEnabled(): Boolean {
-//        return RemoteConfigInstance.getInstance()
-//            .abTestPlatform
-//            .getString("")
-//            .isNotEmpty()
-        return true
+        return RemoteConfigInstance.getInstance()
+            .abTestPlatform
+            .getString("exp_scp_goto_login_sdk")
+            .isNotEmpty()
     }
 
     fun isProfileManagementM2Activated(): Boolean {

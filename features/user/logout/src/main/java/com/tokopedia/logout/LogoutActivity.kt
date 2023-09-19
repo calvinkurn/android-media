@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import com.gojek.kyc.plus.OneKycConstants
 import com.gojek.kyc.plus.getKycSdkDocumentDirectoryPath
 import com.gojek.kyc.plus.getKycSdkFrameDirectoryPath
@@ -23,6 +24,11 @@ import com.gojek.kyc.plus.getKycSdkLogDirectoryPath
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.scp.auth.GotoSdk
+import com.scp.login.core.domain.contracts.listener.LSdkLogoutCompletionListener
+import com.scp.login.core.domain.contracts.listener.LSdkOneTapListener
+import com.scp.login.core.domain.logout.mappers.LogoutError
+import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -50,6 +56,7 @@ import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.utils.file.FileUtil
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -109,15 +116,60 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         showLoading()
         saveLoginReminderData()
 
-        if (isClearDataOnly) {
-            clearData()
-        } else {
+        if (isGotoLoginEnabled()) {
             if(isSaveSession) {
-                logoutViewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
+                logoutAndEnableOcl()
             } else {
-                logoutViewModel.doLogout()
+                logoutUser()
+            }
+        } else {
+            if (isClearDataOnly) {
+                clearData()
+            } else {
+                if (isSaveSession) {
+                    logoutViewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
+                } else {
+                    logoutViewModel.doLogout()
+                }
             }
         }
+    }
+
+    private fun isGotoLoginEnabled(): Boolean {
+        return true
+    }
+
+    private fun logoutUser() {
+        GotoSdk.LSDKINSTANCE?.logout(object: LSdkLogoutCompletionListener {
+            override fun onLogoutSuccessful() {
+                lifecycleScope.launch {
+                    clearData()
+                }
+            }
+
+            override fun onLogoutFailed(error: LogoutError) {
+                lifecycleScope.launch {
+                    showErrorDialogWithRetry(error.error.message ?: "") {
+                        logoutUser()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun logoutAndEnableOcl() {
+        GotoSdk.LSDKINSTANCE?.enableOneTapLogin(lifecycle, object: LSdkOneTapListener {
+            override fun onSuccess() {
+                logoutUser()
+            }
+            override fun onError(error: OneTapLoginError) {
+                lifecycleScope.launch {
+                    showErrorDialogWithRetry(error.error.message ?: "") {
+                        logoutAndEnableOcl()
+                    }
+                }
+            }
+        })
     }
 
     private fun getParam() {
@@ -177,6 +229,20 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
             setOverlayClose(false)
             setPrimaryCTAClickListener {
                 clearData()
+                dismiss()
+            }
+        }.show()
+    }
+
+    private fun showErrorDialogWithRetry(errorMessage: String, retryAction: () -> Unit) {
+        DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.logout))
+            setDescription(errorMessage)
+            setPrimaryCTAText(getString(R.string.try_again))
+            setCancelable(false)
+            setOverlayClose(false)
+            setPrimaryCTAClickListener {
+                retryAction.invoke()
                 dismiss()
             }
         }.show()
