@@ -13,12 +13,14 @@ import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterDataView
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordDataView
-import com.tokopedia.search.result.mps.violationstate.TypeViolation
+import com.tokopedia.search.result.mps.violationstate.ViolationType
 import com.tokopedia.search.result.mps.violationstate.ViolationStateDataView
 import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterState
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterState
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
+import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetProductDataView
+import com.tokopedia.search.result.mps.variantstate.BottomSheetVariantState
 import com.tokopedia.search.utils.PaginationState
 import com.tokopedia.search.utils.mvvm.SearchUiState
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel as ChooseAddressModel
@@ -32,7 +34,8 @@ data class MPSState(
     val loadMoreThrowable: Throwable? = null,
     val paginationState: PaginationState = PaginationState(),
     val addToCartState: AddToCartState = AddToCartState(),
-    val bottomSheetFilterState: BottomSheetFilterState = BottomSheetFilterState()
+    val bottomSheetFilterState: BottomSheetFilterState = BottomSheetFilterState(),
+    val bottomSheetVariantState: BottomSheetVariantState = BottomSheetVariantState()
 ) : SearchUiState {
 
     private val shopIdSet: Set<String>
@@ -117,9 +120,9 @@ data class MPSState(
 
     private fun restrictedStateVisitableList(mpsModel: MPSModel) =
         if (mpsModel.responseCode == VIOLATION_BLACKLIST)
-            listOf(ViolationStateDataView(TypeViolation.BLACKLISTED))
+            listOf(ViolationStateDataView(ViolationType.BLACKLISTED))
         else
-            listOf(ViolationStateDataView(TypeViolation.BANNED))
+            listOf(ViolationStateDataView(ViolationType.BANNED))
 
     fun error(throwable: Throwable) = copy(
         result = State.Error(
@@ -198,6 +201,18 @@ data class MPSState(
     fun applyFilter(parameter: Map<String, String>) = copy(parameter = parameter)
 
     fun resetFilter() = copy(parameter = filterState.resetFilters().parameter)
+
+    fun openBottomSheetVariant(
+        mpsShopWidget: MPSShopWidgetDataView,
+        mpsShopWidgetProduct: MPSShopWidgetProductDataView
+    ) = copy(
+
+        bottomSheetVariantState = bottomSheetVariantState.openBottomSheetVariant(mpsShopWidget, mpsShopWidgetProduct )
+    )
+
+    fun dismissBottomSheetVariant() = copy(
+        bottomSheetVariantState = bottomSheetVariantState.closeBottomSheetVariant()
+    )
 
     companion object {
         private const val VIOLATION_BLACKLIST= "2"

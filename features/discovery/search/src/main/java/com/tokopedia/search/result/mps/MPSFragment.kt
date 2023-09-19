@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.mps
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,7 @@ import com.tokopedia.search.result.mps.violationstate.ViolationStateListener
 import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListenerDelegate
+import com.tokopedia.search.result.mps.variantstate.BottomSheetVariantView
 import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheetLauncher
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
@@ -92,6 +94,7 @@ class MPSFragment @Inject constructor(
         initBottomSheetFilter()
         initAddToCartView()
         initSwipeRefreshLayout()
+        initOpenVariantBottomSheetView()
     }
 
     private fun initRecyclerView() {
@@ -115,8 +118,7 @@ class MPSFragment @Inject constructor(
                 context,
                 viewModel,
                 trackingQueue,
-                iris,
-                atcVariantBottomSheetLauncher
+                iris
             ),
             emptyStateListener = this,
             restrictedStateListener = this
@@ -150,6 +152,10 @@ class MPSFragment @Inject constructor(
 
     private fun initAddToCartView() {
         AddToCartView(viewModel, context, view).onStateRefresh(MPSState::addToCartState)
+    }
+
+    private fun initOpenVariantBottomSheetView() {
+        BottomSheetVariantView(viewModel, context, atcVariantBottomSheetLauncher).onStateRefresh(MPSState::bottomSheetVariantState)
     }
 
     private fun <P> RefreshableView<P>.onStateRefresh(prop: KProperty1<MPSState, P>) {
@@ -227,6 +233,11 @@ class MPSFragment @Inject constructor(
 
     override fun onLearnItButtonClick() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, LEARNLINK)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        atcVariantBottomSheetLauncher.onActivityResult(requestCode, resultCode, data)
     }
 
     companion object {

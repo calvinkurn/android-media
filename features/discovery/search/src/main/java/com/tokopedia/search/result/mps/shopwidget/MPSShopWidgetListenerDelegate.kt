@@ -21,7 +21,6 @@ class MPSShopWidgetListenerDelegate(
     private val mpsViewModel: MPSViewModel?,
     private val trackingQueue: TrackingQueue,
     private val iris: Iris,
-    private val atcVariantBottomSheetLauncher: AddToCartVariantBottomSheetLauncher
 ): MPSShopWidgetListener,
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
@@ -84,32 +83,8 @@ class MPSShopWidgetListenerDelegate(
         mpsShopWidgetProductDataView: MPSShopWidgetProductDataView?
     ) {
         mpsShopWidgetProductDataView ?: return
-        if (mpsShopWidgetProductDataView.hasVariant()) {
-            openVariantBottomSheet(mpsShopWidgetDataView, mpsShopWidgetProductDataView)
-        } else {
-            mpsViewModel?.onAddToCart(mpsShopWidgetDataView, mpsShopWidgetProductDataView)
-        }
+        mpsViewModel?.onAddToCart(mpsShopWidgetDataView, mpsShopWidgetProductDataView)
     }
-
-    private fun openVariantBottomSheet(mpsShopWidget: MPSShopWidgetDataView,
-                                       mpsShopWidgetProductDataView: MPSShopWidgetProductDataView) {
-        atcVariantBottomSheetLauncher.launch(
-            productId = mpsShopWidgetProductDataView.parentId,
-            shopId = mpsShopWidget.id,
-            trackerCDListName = SearchTracking.getActionFieldString(
-                false,
-                0,
-                mpsShopWidget.componentId,
-            ),
-        ) {
-            mpsViewModel?.onAddToCart(mpsShopWidget, mpsShopWidgetProductDataView)
-        }
-
-        SearchIdlingResource.decrement()
-    }
-
-    private fun MPSShopWidgetProductDataView.hasVariant(): Boolean =
-        this.parentId != "" && this.parentId != AddToCartConstant.DEFAULT_PARENT_ID
 
     override fun onProductItemSeeOtherProductClick(
         mpsShopWidgetDataView: MPSShopWidgetDataView,

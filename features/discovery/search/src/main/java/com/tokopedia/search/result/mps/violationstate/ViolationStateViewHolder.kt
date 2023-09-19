@@ -16,7 +16,7 @@ class ViolationStateViewHolder(
     private var binding: SearchMpsViolationStateBinding? by viewBinding()
 
     override fun bind(element: ViolationStateDataView) {
-        if(element.typeViolation == TypeViolation.BLACKLISTED) {
+        if(element.violationType == ViolationType.BLACKLISTED) {
             renderViolationBlacklisted()
         } else {
             renderViolationBanned()
