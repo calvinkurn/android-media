@@ -18,18 +18,18 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class ShopPageHomeTabFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class ShopPageHomeTabFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
     }
 
     override fun setupMock() {
     }
 
-
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.basicRecyclerviewInteraction(
-            MacroIntent.ShopPage.PACKAGE_NAME,
-            MacroIntent.ShopPage.RV_HOME_TAB_RESOURCE_ID
+        MacroInteration.basicFlingInteraction(
+            MacroIntent.SearchResult.PACKAGE_NAME,
+            MacroIntent.SearchResult.RV_RESOURCE_ID,
+            flingSpeed = 3000
         )
     }
 

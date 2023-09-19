@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class SearchResultFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class SearchResultFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
     }
 
@@ -31,6 +31,7 @@ class SearchResultFrameTimingBenchmark: BaseFrameTimingBenchmark() {
             MacroIntent.SearchResult.PACKAGE_NAME,
             MacroIntent.SearchResult.RV_RESOURCE_ID,
             flingSpeed = 3000
+        )
     }
 
     override fun getIntent() = MacroIntent.SearchResult.getSearchResultIntent()

@@ -1,15 +1,10 @@
 package com.tkpd.macrobenchmark.test.home
-import android.content.Intent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
 import com.tkpd.macrobenchmark.base.BaseFrameTimingBenchmark
-import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
-import org.junit.Before
 import org.junit.runner.RunWith
 
 /**
@@ -22,7 +17,7 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class HomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class HomeFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
     }
 
@@ -30,9 +25,10 @@ class HomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.basicRecyclerviewInteraction(
-                MacroIntent.TKPD_PACKAGE_NAME,
-                MacroIntent.Home.RV_RESOURCE_ID
+        MacroInteration.basicFlingInteraction(
+            MacroIntent.SearchResult.PACKAGE_NAME,
+            MacroIntent.SearchResult.RV_RESOURCE_ID,
+            flingSpeed = 3000
         )
     }
 
