@@ -12,6 +12,7 @@ object Event {
     const val viewGroupChatIris = "viewGroupChatIris"
 
     const val clickContent = "clickContent"
+    const val selectContent = "select_content"
     const val viewContentIris = "viewContentIris"
 
     const val clickTopAds = "clickTopAds"
@@ -27,6 +28,9 @@ object Event {
     const val productClick = "productClick"
 
     const val addToCart = "addToCart"
+    const val add_to_cart = "add_to_cart"
+
+    const val viewItem = "view_item"
 
     /**
      * Upcoming
