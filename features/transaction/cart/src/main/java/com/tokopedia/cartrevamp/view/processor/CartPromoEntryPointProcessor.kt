@@ -25,10 +25,6 @@ class CartPromoEntryPointProcessor @Inject constructor(
 
     private var isPromoRevamp: Boolean? = null
 
-    companion object {
-        const val ICON_URL_ENTRY_POINT_APPLIED = "https://images.tokopedia.net/img/promo/icon/Applied.png"
-    }
-
     private fun generatePromoRequest(
         cartModel: CartModel,
         cartDataList: ArrayList<Any>
@@ -152,7 +148,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
                 }
                 return EntryPointInfoEvent.AppliedNew(
                     lastApply = lastApply,
-                    leftIconUrl = ICON_URL_ENTRY_POINT_APPLIED,
+                    leftIconUrl = PromoEntryPointInfo.ICON_URL_ENTRY_POINT_APPLIED,
                     message = message,
                     recommendedPromoCodes = emptyList()
                 )

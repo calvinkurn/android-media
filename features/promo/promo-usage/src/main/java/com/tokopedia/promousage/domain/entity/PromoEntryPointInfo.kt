@@ -12,5 +12,8 @@ data class PromoEntryPointInfo(
     companion object {
         const val COLOR_GREEN = "green"
         const val COLOR_GREY = "grey"
+
+        const val ICON_URL_ENTRY_POINT_NO_ITEM_SELECTED = "https://images.tokopedia.net/img/promo/icon/Product.png"
+        const val ICON_URL_ENTRY_POINT_APPLIED = "https://images.tokopedia.net/img/promo/icon/Applied.png"
     }
 }

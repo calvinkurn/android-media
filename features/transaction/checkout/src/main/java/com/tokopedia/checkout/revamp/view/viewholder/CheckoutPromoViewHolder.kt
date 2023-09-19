@@ -142,7 +142,7 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                         entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN
                     val isExpanded = boPromoSummaries.isNotEmpty() && isSecondaryTextEnabled
                     binding.btnCheckoutPromo.showActiveNewExpandable(
-                        leftImageUrl = ICON_URL_ENTRY_POINT_APPLIED,
+                        leftImageUrl = PromoEntryPointInfo.ICON_URL_ENTRY_POINT_APPLIED,
                         wording = message,
                         firstLevelSummary = boPromoSummaries,
                         groupedSummary = otherPromoSummaries,
@@ -221,7 +221,6 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
     companion object {
         val VIEW_TYPE = R.layout.item_checkout_promo
 
-        private const val ICON_URL_ENTRY_POINT_APPLIED = "https://images.tokopedia.net/img/promo/icon/Applied.png"
         private const val PROMO_TYPE_BEBAS_ONGKIR = "bebas_ongkir"
     }
 }
