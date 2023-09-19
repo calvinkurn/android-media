@@ -10,6 +10,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 internal class CarouselProductCardListViewHolder(
     itemView: View,
     internalListener: CarouselProductCardInternalListener,
+    private val forceLightModeColor: Boolean
 ): BaseProductCardViewHolder<CarouselProductCardModel>(itemView, internalListener) {
 
     companion object {
@@ -26,6 +27,10 @@ internal class CarouselProductCardListViewHolder(
         binding.carouselProductCardItem.applyCarousel()
 
         binding.carouselProductCardItem.setProductModel(productCardModel)
+
+        if (forceLightModeColor) {
+            binding.carouselProductCardItem.forceLightModeColor(binding.carouselProductCardItem)
+        }
 
         registerProductCardLifecycleObserver(binding.carouselProductCardItem, productCardModel)
 

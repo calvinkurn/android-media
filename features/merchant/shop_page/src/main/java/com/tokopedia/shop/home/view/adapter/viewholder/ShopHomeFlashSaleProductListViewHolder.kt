@@ -65,7 +65,10 @@ class ShopHomeFlashSaleProductListViewHolder(
         productCardList?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
         setProductImpressionListener(productCardModel, listener)
-        productCardList?.forceLightModeColor(productCardList)
+
+        if (listener.isForceLightModeColorOnShopFlashSaleWidget()) {
+            productCardList?.forceLightModeColor(productCardList)
+        }
     }
 
     private fun setProductImpressionListener(
