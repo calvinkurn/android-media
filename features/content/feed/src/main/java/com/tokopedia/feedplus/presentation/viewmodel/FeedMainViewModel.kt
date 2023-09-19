@@ -67,6 +67,9 @@ class FeedMainViewModel @AssistedInject constructor(
     private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
 
+    private val _isMuted = MutableLiveData(false)
+    val isMuted get() = _isMuted
+
     private val _swipeOnBoardingState = MutableStateFlow(
         SwipeOnboardingStateModel.Empty.copy(
             hasShown = onBoardingPreferences.hasShownSwipeOnBoarding() && userSession.isLoggedIn
@@ -114,9 +117,18 @@ class FeedMainViewModel @AssistedInject constructor(
         _isPageResumed.value = false
     }
 
+    fun muteSound() {
+        _isMuted.value = true
+    }
+
+    fun unmuteSound() {
+        _isMuted.value = false
+    }
+
     fun setActiveTab(position: Int) {
         viewModelScope.launch {
-            val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
+            val tabModel =
+                (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
             if (position < tabModel.data.size) {
                 val data = tabModel.data[position]
                 emitEvent(FeedMainEvent.SelectTab(data, position))
@@ -129,7 +141,8 @@ class FeedMainViewModel @AssistedInject constructor(
      */
     fun setActiveTab(type: String) {
         viewModelScope.launch {
-            val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
+            val tabModel =
+                (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
             tabModel.data.forEachIndexed { index, tab ->
                 if (tab.type.equals(type, true)) {
                     emitEvent(FeedMainEvent.SelectTab(tab, index))

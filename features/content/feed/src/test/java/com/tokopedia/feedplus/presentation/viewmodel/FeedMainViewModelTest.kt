@@ -120,6 +120,24 @@ class FeedMainViewModelTest {
     }
 
     @Test
+    fun onMuteSound_shouldChangeIsMutedToTrue() {
+        // when
+        viewModel.muteSound()
+
+        // then
+        assert(viewModel.isMuted.value == true)
+    }
+
+    @Test
+    fun onUnmuteSound_shouldChangeIsMutedToFalse() {
+        // when
+        viewModel.unmuteSound()
+
+        // then
+        assert(viewModel.isMuted.value == false)
+    }
+
+    @Test
     fun onFetchFeedTabs_whenSuccess_shouldChangeFeedTabsValue() {
         // given
         val expectedValue = tabsModelBuilder.buildUiModel()
