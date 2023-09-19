@@ -70,13 +70,20 @@ class CategoryQuickFilterViewHolder(
         }
     }
 
-    override fun bind(element: CategoryQuickFilterUiModel, payloads: MutableList<Any>) {
+    override fun bind(quickFilter: CategoryQuickFilterUiModel, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() != null) {
-            binding?.apply {
-                tokoNowSearchCategoryQuickFilter.chipItems?.forEachIndexed { index, filterItem ->
-                    val item = element.itemList[index]
-                    filterItem.title = item.filter.title
-                    filterItem.refChipUnify.chipType = item.chipType
+            binding?.tokoNowSearchCategoryQuickFilter?.apply {
+                val chipItemList = chipItems.orEmpty()
+
+                if(chipItemList.isNotEmpty()) {
+                    chipItemList.forEachIndexed { index, filterItem ->
+                        val item = quickFilter.itemList[index]
+                        filterItem.title = item.filter.title
+                        filterItem.refChipUnify.chipType = item.chipType
+                    }
+                    indicatorCounter = getSortFilterCount(quickFilter.mapParameter)
+                } else {
+                    bind(quickFilter)
                 }
             }
         }
