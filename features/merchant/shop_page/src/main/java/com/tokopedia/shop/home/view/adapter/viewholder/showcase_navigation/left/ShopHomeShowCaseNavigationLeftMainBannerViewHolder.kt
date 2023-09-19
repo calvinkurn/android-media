@@ -21,13 +21,16 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBannerBinding
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
+import com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group.ShopHomeBannerProductGroupViewPagerViewHolder
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -133,31 +136,15 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             val centeredTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
             tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
 
-            tabsUnify.tabLayout.removeAllTabs()
-
-            tabs.forEachIndexed { index, _ ->
-                val selected = index == 0
-                tabsUnify.tabLayout.newTab().let { tabsUnify.tabLayout.addTab(it, selected) }
-            }
-
-            for (i in 0 until tabsUnify.tabLayout.tabCount) {
-                val tab = tabsUnify.tabLayout.getTabAt(i)
+            TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 val tabView = LayoutInflater.from(tabsUnify.context).inflate(R.layout.item_viewpager_showcase_navigation_tab, tabsUnify, false)
-                tab?.customView = tabView
+                tab.customView = tabView
 
+                val tabTitle : Typography? = tabView.findViewById(R.id.tpgTabTitle)
+                tabTitle?.text = tabs[currentPosition].text
 
-                val tabTitle = (tabView.findViewById<TextView>(R.id.tpgTabTitle))
-                tabTitle.text = tabs[i].text
-
-                if (i == 0) {
-                    tab.select(uiModel)
-                } else {
-                    tab.unselect(uiModel)
-                }
-
-
-                tabView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                val tabWidth = (tab?.view?.measuredWidth.orZero() + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
+                tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                val tabWidth = (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
                 tabTotalWidth += tabWidth
             }
 
