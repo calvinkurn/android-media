@@ -12,6 +12,7 @@ import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -29,7 +30,7 @@ class BmgmMiniCartViewModel @Inject constructor(
 
     private val _cartData = MutableStateFlow<BmgmState<BmgmMiniCartDataUiModel>>(BmgmState.Loading)
     val cartData: StateFlow<BmgmState<BmgmMiniCartDataUiModel>>
-        get() = _cartData
+        get() = _cartData.asStateFlow()
 
     private var miniCartJob: Job? = null
 
@@ -52,13 +53,18 @@ class BmgmMiniCartViewModel @Inject constructor(
     }
 
     fun clearCartDataLocalCache() {
-        miniCartLocalCacheUseCases.get().clearLocalCache()
+        viewModelScope.launch {
+            miniCartLocalCacheUseCases.get().clearLocalCache()
+        }
     }
 
     fun saveCartDataToLocalStorage(shopId: Long, warehouseId: Long, offerEndDate: String) {
-        val result = _cartData.value
-        if (result is BmgmState.Success) {
-            miniCartLocalCacheUseCases.get().saveToLocalCache(result.data, shopId, warehouseId, offerEndDate)
+        viewModelScope.launch {
+            val result = _cartData.value
+            if (result is BmgmState.Success) {
+                miniCartLocalCacheUseCases.get()
+                    .saveToLocalCache(result.data, shopId, warehouseId, offerEndDate)
+            }
         }
     }
 }
