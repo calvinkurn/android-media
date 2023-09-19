@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.left
 
 import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -23,9 +24,10 @@ import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
+import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
-import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -119,63 +121,105 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         val fragments = createFragments(tabs, uiModel)
         val pagerAdapter = TabPagerAdapter(provider.currentFragment, fragments)
 
+
         viewBinding?.run {
             viewPager.adapter = pagerAdapter
-
             tabsUnify.tabLayout.isTabIndicatorFullWidth = false
             tabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
-
             tabsUnify.whiteShadeLeft.gone()
             tabsUnify.whiteShadeRight.gone()
-
-            tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    listener.onNavigationBannerTabClick(tab?.text?.toString().orEmpty())
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {
-
-                }
-
-            })
 
             val centeredTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
             tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
-                tab.setCustomText(fragments[currentPosition].first)
+                val tabView = LayoutInflater.from(tabsUnify.context).inflate(R.layout.item_viewpager_showcase_navigation_tab, tabsUnify, false)
+                tab.customView = tabView
+
+                val tabTitle : Typography? = tabView.findViewById(R.id.tpgTabTitle)
+                tabTitle?.text = tabs[currentPosition].text
+
+                if (currentPosition == 0) tab.select(uiModel) else tab.unselect(uiModel)
+
                 tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
                 val tabWidth = (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
                 tabTotalWidth += tabWidth
             }
 
-            tabsUnify.post {
-
-                when {
-                    tabs.isEmpty() -> tabsUnify.gone()
-                    tabs.size == ONE_TAB -> tabsUnify.gone()
-                    else -> {
-                        tabsUnify.visible()
-
-                        val screenWidth = DeviceScreenInfo.getScreenWidth(tabsUnify.context) - MARGIN_16_DP.dpToPx() - MARGIN_16_DP.dpToPx()
-                        if(tabTotalWidth < screenWidth) {
-                            tabsUnify.customTabMode = TabLayout.MODE_FIXED
-                            tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
-                        } else {
-                            tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
-                            tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
-                        }
-                    }
-                }
-
-            }
-
+            handleTabChange(tabsUnify, uiModel)
+            applyTabRuleWidth(tabs, tabsUnify)
         }
 
+    }
+
+    private fun handleTabChange(tabsUnify: TabsUnify, model: ShowcaseNavigationUiModel) {
+        tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                listener.onNavigationBannerTabClick(tab?.text?.toString().orEmpty())
+                tab?.select(model)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                tab.unselect(model)
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+
+        })
+    }
+
+    private fun TabLayout.Tab?.select(model: ShowcaseNavigationUiModel) {
+        val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
+
+        val highEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
+            model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        } else {
+            ContextCompat.getColor(tabTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
+        }
+
+        tabTitle?.apply {
+            setTypeface(Typography.getFontType(context, true, Typography.DISPLAY_3))
+            setTextColor(highEmphasizeColor)
+            invalidate()
+        }
+    }
+
+    private fun TabLayout.Tab?.unselect(model: ShowcaseNavigationUiModel) {
+        val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
+
+        val lowEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
+            model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        } else {
+            ContextCompat.getColor(tabTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
+        }
+
+        tabTitle?.apply {
+            setTypeface(Typography.getFontType(context, false, Typography.DISPLAY_3))
+            setTextColor(lowEmphasizeColor)
+            invalidate()
+        }
+    }
+
+    private fun applyTabRuleWidth(tabs: List<ShowcaseTab>, tabsUnify: TabsUnify) {
+        tabsUnify.post {
+            when {
+                tabs.isEmpty() -> tabsUnify.gone()
+                tabs.size == ONE_TAB -> tabsUnify.gone()
+                else -> {
+                    tabsUnify.visible()
+
+                    val screenWidth =
+                        DeviceScreenInfo.getScreenWidth(tabsUnify.context) - MARGIN_16_DP.dpToPx() - MARGIN_16_DP.dpToPx()
+                    if (tabTotalWidth < screenWidth) {
+                        tabsUnify.customTabMode = TabLayout.MODE_FIXED
+                        tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
+                    } else {
+                        tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+                        tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
+                    }
+                }
+            }
+        }
     }
 
     private class TabPagerAdapter(
