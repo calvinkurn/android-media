@@ -65,7 +65,7 @@ object CategoryL2TabMapper {
         }
     }
 
-    fun MutableList<Visitable<*>>.addTicker(
+    private fun MutableList<Visitable<*>>.addTicker(
         categoryIdL2: String,
         tickerData: GetTickerData?
     ) {
