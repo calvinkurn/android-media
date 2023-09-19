@@ -65,7 +65,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.gotoLoginSdk
     implementation rootProject.ext.miscDependencies.gotoCvSdk
-    implementation rootProject.ext.features.scpAuth
+    implementation projectOrAar(rootProject.ext.features.scpAuth)
 }
 
 apply from: '../publish_local.gradle'

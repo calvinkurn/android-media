@@ -37,8 +37,8 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.miscDependencies.gotoLoginSdk
-    implementation rootProject.ext.miscDependencies.gotoCvSdk
+    api rootProject.ext.miscDependencies.gotoLoginSdk
+    api rootProject.ext.miscDependencies.gotoCvSdk
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
