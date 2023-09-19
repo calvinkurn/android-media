@@ -185,8 +185,8 @@ object CategoryL2TabMapper {
             defaultTitle = violation.headerText,
             defaultDescription = violation.descriptionText,
             defaultImage = violation.imageUrl,
-            defaultTextPrimaryButton = violation.buttonText,
-            defaultUrlPrimaryButton = violation.ctaUrl
+            enablePrimaryButton = false,
+            enableSecondaryButton = false
         )
         add(emptyStateUiModel)
     }
