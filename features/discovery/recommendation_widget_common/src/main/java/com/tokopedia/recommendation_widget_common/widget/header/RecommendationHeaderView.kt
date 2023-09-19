@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RecommendationHeaderView : FrameLayout {
 
@@ -99,7 +100,7 @@ class RecommendationHeaderView : FrameLayout {
                 if (data.titleColor.isNotEmpty()) {
                     Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
                 } else {
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView?.context)
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950).invertIfDarkMode(itemView?.context)
                 }
             )
         } else {
@@ -127,7 +128,7 @@ class RecommendationHeaderView : FrameLayout {
                 if (data.titleColor.isNotEmpty()) {
                     Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
                 } else {
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView?.context)
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950).invertIfDarkMode(itemView?.context)
                 }
             )
         } else {
@@ -158,7 +159,7 @@ class RecommendationHeaderView : FrameLayout {
             }
 
             handleSubtitlePosition(channelSubtitleName, data, channelTitleContainer)
-            seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            seeAllButton?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
 
             seeAllButton?.show()
             seeAllButton?.setOnClickListener {

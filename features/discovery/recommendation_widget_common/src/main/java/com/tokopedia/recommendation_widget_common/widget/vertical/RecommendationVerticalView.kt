@@ -10,16 +10,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetVerticalLayoutBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
-import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalMapper.mapVisitableList
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 class RecommendationVerticalView :
     ConstraintLayout,
     IRecommendationWidgetView<RecommendationVerticalModel>,
-    RecommendationHeaderListener,
     DefaultLifecycleObserver {
 
     constructor(context: Context) : super(context)
@@ -58,7 +56,7 @@ class RecommendationVerticalView :
     override fun recycle() {}
 
     private fun setupHeader(widget: RecommendationWidget) {
-        binding.headerViewRecommendationVertical.bindData(widget, tracking = null, listener = this)
+        binding.headerViewRecommendationVertical.bindData(widget, tracking = null, listener = null)
         binding.headerViewRecommendationVertical.seeAllButton?.hide()
     }
 
@@ -69,11 +67,7 @@ class RecommendationVerticalView :
         recomAdapter.submitList(mapVisitableList(model = model))
     }
 
-    override fun onSeeAllClick(link: String, tracking: RecommendationCarouselWidgetTracking?) {}
-
-    override fun onChannelExpired(widget: RecommendationWidget) {}
-
     companion object {
-        val LAYOUT = com.tokopedia.recommendation_widget_common.R.layout.recommendation_widget_vertical_layout
+        val LAYOUT = recommendation_widget_commonR.layout.recommendation_widget_vertical_layout
     }
 }

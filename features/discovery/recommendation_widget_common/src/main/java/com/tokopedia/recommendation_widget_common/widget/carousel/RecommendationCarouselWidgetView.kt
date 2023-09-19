@@ -59,6 +59,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.productcard.R as productcardR
 
 /**
  * Created by yfsx on 5/3/21.
@@ -415,7 +416,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
@@ -423,17 +424,20 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         headerView?.bindData(
             data = carouselData.recommendationData,
             tracking = null, // the owner will carry out
-            listener = object : RecommendationHeaderListener {
-                override fun onSeeAllClick(link: String, tracking: RecommendationCarouselWidgetTracking?) {
-                    basicListener?.onSeeAllBannerClicked(carouselData, link)
-                }
-
-                override fun onChannelExpired(widget: RecommendationWidget) {
-                    basicListener?.onChannelExpired(carouselData, widgetMetadata.adapterPosition)
-                }
-            }
+            listener = headerViewListener(carouselData)
         )
     }
+
+    private fun headerViewListener(carouselData: RecommendationCarouselData) =
+        object : RecommendationHeaderListener {
+            override fun onSeeAllClick(link: String, tracking: RecommendationCarouselWidgetTracking?) {
+                basicListener?.onSeeAllBannerClicked(carouselData, link)
+            }
+
+            override fun onChannelExpired(widget: RecommendationWidget) {
+                basicListener?.onChannelExpired(carouselData, widgetMetadata.adapterPosition)
+            }
+        }
 
     private fun scrollCarousel(scrollToPosition: Int) {
         if (!::layoutManager.isInitialized) return

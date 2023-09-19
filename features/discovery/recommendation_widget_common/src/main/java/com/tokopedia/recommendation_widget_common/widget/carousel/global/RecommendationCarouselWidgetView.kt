@@ -32,7 +32,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 class RecommendationCarouselWidgetView :
     ConstraintLayout,
     IRecommendationWidgetView<RecommendationCarouselModel>,
-    RecommendationHeaderListener,
     DefaultLifecycleObserver {
 
     constructor(context: Context) : super(context)
@@ -70,7 +69,7 @@ class RecommendationCarouselWidgetView :
         binding.recommendationHeaderView.bindData(
             data = model.widget,
             tracking = model.widgetTracking,
-            listener = this
+            listener = headerViewListener()
         )
 
         if (!binding.recommendationCarouselProduct.isVisible) {
@@ -181,17 +180,18 @@ class RecommendationCarouselWidgetView :
             }
         }
 
+    private fun headerViewListener() = object : RecommendationHeaderListener {
+        override fun onSeeAllClick(link: String, tracking: RecommendationCarouselWidgetTracking?) {
+            tracking?.sendEventSeeAll()
+            RouteManager.route(context, link)
+        }
+
+        override fun onChannelExpired(widget: RecommendationWidget) {}
+    }
+
     private fun finishCalculateCarouselHeight() {
         binding.recommendationCarouselProduct.show()
         binding.recommendationCarouselLoading.root.hide()
-    }
-
-    override fun onSeeAllClick(link: String, tracking: RecommendationCarouselWidgetTracking?) {
-        tracking?.sendEventSeeAll()
-        RouteManager.route(context, link)
-    }
-
-    override fun onChannelExpired(widget: RecommendationWidget) {
     }
 
     override fun onPause(owner: LifecycleOwner) {
