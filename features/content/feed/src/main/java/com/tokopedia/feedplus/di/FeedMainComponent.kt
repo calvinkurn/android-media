@@ -3,9 +3,9 @@ package com.tokopedia.feedplus.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.comment.di.ContentCommentModule
 import com.tokopedia.creation.common.di.ContentCreationModule
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderModule
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
-import com.tokopedia.play_common.shortsuploader.di.uploader.PlayShortsUploaderModule
 import dagger.Component
 
 /**
@@ -16,7 +16,7 @@ import dagger.Component
     modules = [
         FeedMainModule::class,
         FeedMainViewModelModule::class,
-        PlayShortsUploaderModule::class,
+        CreationUploaderModule::class,
         FeedFragmentModule::class,
         ContentCommentModule::class,
         ContentCreationModule::class

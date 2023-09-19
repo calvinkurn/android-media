@@ -16,6 +16,8 @@ data class UploadInfo(
 )
 
 sealed interface UploadStatus {
+
+    object Unknown : UploadStatus
     data class Progress(val progress: Int, val thumbnailUrl: String) : UploadStatus
     data class Finished(
         val contentId: String,
