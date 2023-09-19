@@ -29,7 +29,7 @@
             android:name=".view.activity.ShareNotFoundActivity"
             android:exported="false"
             android:label=""
-            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.GlobalSharing">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

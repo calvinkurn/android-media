@@ -146,9 +146,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var chipOptionHeader: Typography? = null
     private var lstChip: RecyclerView? = null
 
-    // Min Max Version
-    private var minMaxVersionAndroid: Pair<String, String>? = null
-    private var minMaxVersioniOS: Pair<String, String>? = null
+    // Min Version for Sharing
+    private var minVersionAndroid: String? = null
+    private var minVersioniOS: String? = null
 
     // Options Flag
     private var featureFlagRemoteConfigKey: String = ""
@@ -745,11 +745,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     }
 
     /**
-     * use this method to set min &
+     * use this method to set min version
      */
-    fun setMinMaxVersion(minMaxVersionAndroid: Pair<String, String>, minMaxVersioniOS: Pair<String, String>) {
-        this.minMaxVersionAndroid = minMaxVersionAndroid
-        this.minMaxVersioniOS = minMaxVersioniOS
+    fun setMinVersion(minVersionAndroid: String, minVersioniOS: String) {
+        this.minVersionAndroid = minVersionAndroid
+        this.minVersioniOS = minVersioniOS
     }
 
     fun clearData() {
@@ -1044,10 +1044,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             deepLink = linkProperties?.deeplink
             id = linkProperties?.id
             linkAffiliateType = affiliateInput?.affiliateLinkType?.value
-            minVersionAndroid = minMaxVersionAndroid?.first ?: ""
-            maxVersionAndroid = minMaxVersionAndroid?.second ?: ""
-            minVersionIOS = minMaxVersioniOS?.first ?: ""
-            maxVersionIOS = minMaxVersioniOS?.second ?: ""
+            minVersionAndroid = this@UniversalShareBottomSheet.minVersionAndroid
+            minVersionIOS = this@UniversalShareBottomSheet.minVersioniOS
         }
         return LinkerShareData().apply {
             this.linkerData = linkerData

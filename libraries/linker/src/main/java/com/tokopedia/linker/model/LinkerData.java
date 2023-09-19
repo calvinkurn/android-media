@@ -91,14 +91,8 @@ public class LinkerData implements Parcelable {
     private boolean isAffiliate;
     private String additionalQueryParam;
     private String linkAffiliateType;
-
     private String minVersionAndroid = "";
-
-    private String maxVersionAndroid = "";
-
     private String minVersionIOS = "";
-
-    private String maxVersionIOS = "";
 
     public String getCustmMsg() {
         return custmMsg;
@@ -158,9 +152,7 @@ public class LinkerData implements Parcelable {
         additionalQueryParam = in.readString();
         linkAffiliateType = in.readString();
         minVersionAndroid = in.readString();
-        maxVersionAndroid = in.readString();
         minVersionIOS = in.readString();
-        maxVersionIOS = in.readString();
     }
 
     @Override
@@ -211,9 +203,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(additionalQueryParam);
         dest.writeString(linkAffiliateType);
         dest.writeString(minVersionAndroid);
-        dest.writeString(maxVersionAndroid);
         dest.writeString(minVersionIOS);
-        dest.writeString(maxVersionIOS);
     }
 
     public String getMinVersionIOS() {
@@ -224,28 +214,12 @@ public class LinkerData implements Parcelable {
         this.minVersionIOS = minVersionIOS;
     }
 
-    public String getMaxVersionIOS() {
-        return maxVersionIOS;
-    }
-
-    public void setMaxVersionIOS(String maxVersionIOS) {
-        this.maxVersionIOS = maxVersionIOS;
-    }
-
     public String getMinVersionAndroid() {
         return minVersionAndroid;
     }
 
     public void setMinVersionAndroid(String minVersionAndroid) {
         this.minVersionAndroid = minVersionAndroid;
-    }
-
-    public String getMaxVersionAndroid() {
-        return maxVersionAndroid;
-    }
-
-    public void setMaxVersionAndroid(String maxVersionAndroid) {
-        this.maxVersionAndroid = maxVersionAndroid;
     }
 
     @Override
@@ -774,14 +748,8 @@ public class LinkerData implements Parcelable {
         private boolean isAffiliate;
         private String additionalQueryParam;
         private String linkAffiliateType;
-
         private String minVersionAndroid;
-
-        private String maxVersionAndroid;
-
         private String minVersionIOS;
-
-        private String maxVersionIOS;
 
         private Builder() {
         }
@@ -1024,18 +992,8 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
-        public Builder setMaxVersionAndroid(String maxVersionAndroid) {
-            this.maxVersionAndroid = maxVersionAndroid;
-            return this;
-        }
-
         public Builder setMinVersionIOS(String minVersionIOS) {
             this.minVersionIOS = minVersionIOS;
-            return this;
-        }
-
-        public Builder setMaxVersionIOS(String maxVersionIOS) {
-            this.maxVersionIOS = maxVersionIOS;
             return this;
         }
 

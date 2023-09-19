@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.var.TkpdCache;
@@ -203,9 +204,9 @@ public class SplashScreen extends AppCompatActivity {
 
     private Boolean isUnderMinVersion(String version) {
         try {
-            String minVersionString = version.replace(".", "");
+            String minVersionString = version.replaceAll("[^0-9]", "");
             int minVersionInt = Integer.parseInt(minVersionString);
-            String currentVersionString = version.replace(".", "");
+            String currentVersionString = GlobalConfig.VERSION_NAME.replaceAll("[^0-9]", "");
             int currentVersionInt = Integer.parseInt(currentVersionString);
             return currentVersionInt < minVersionInt;
         } catch (Exception e) {

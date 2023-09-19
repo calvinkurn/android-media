@@ -24,6 +24,7 @@ class ShareNotFoundActivity : BaseActivity() {
     private fun initView() {
         binding?.globalError?.errorTitle?.text = getString(R.string.title_update_app)
         binding?.globalError?.errorDescription?.text = getString(R.string.description_error_not_found)
+        binding?.globalError?.errorAction?.text = getString(R.string.cta_update_app)
         binding?.globalError?.setActionClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(CUSTOMER_APP_PLAY_STORE)))
         }
