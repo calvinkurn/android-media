@@ -1276,7 +1276,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         )
 
         val courier = helper.secondCourierFirstDuration
-        courier.productData.error = helper.errorProductData
+        courier.productData = courier.productData.copy(error = helper.errorProductData)
 
         // When
         orderSummaryPageViewModel.chooseCourier(courier)
@@ -1297,6 +1297,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 logisticPromoTickerMessage = "Tersedia bbo",
                 isShowLogisticPromoTickerMessage = false,
                 logisticPromoViewModel = helper.logisticPromo,
+                needPinpoint = false,
+                serviceErrorMessage = helper.secondCourierFirstDuration.productData.error.errorMessage,
                 insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance)
             ),
             orderSummaryPageViewModel.orderShipment.value
@@ -1318,7 +1320,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val error = ErrorProductData().apply {
             errorId = ErrorProductData.ERROR_PINPOINT_NEEDED
         }
-        courier.productData.error = error
+
+        courier.productData = courier.productData.copy(error = error)
 
         // When
         orderSummaryPageViewModel.chooseCourier(courier)
