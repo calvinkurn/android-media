@@ -1473,6 +1473,7 @@ class RegisterInitialFragment :
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString(ApplinkConstInternalUserPlatform.PHONE_NUMBER, phoneNumber)
+        outState.putBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_AUTO_REGISTER, isAutoRegister)
         outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         super.onSaveInstanceState(outState)
     }
