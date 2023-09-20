@@ -12,6 +12,7 @@ import com.tokopedia.scp_rewards.common.utils.MEDALI_SLUG_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGESIZE_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
+import com.tokopedia.scp_rewards.common.utils.SOURCE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
@@ -20,6 +21,7 @@ import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
+import com.tokopedia.scp_rewards_common.camelToSnakeCase
 import com.tokopedia.scp_rewards_common.parseJsonKey
 import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
@@ -137,10 +139,11 @@ class MedalDetailViewModel @Inject constructor(
     }
 
     private fun getRecommendationParams(json: String?): RequestParams {
-        val pageSize = json?.parseJsonKey<Int>(PAGESIZE_PARAM) ?: 3
-        val pageName = json?.parseJsonKey<String>(PAGE_NAME_PARAM).orEmpty()
+        val pageSize = json?.parseJsonKey<Int>(PAGESIZE_PARAM.camelToSnakeCase()) ?: 3
+        val pageName = json?.parseJsonKey<String>(PAGE_NAME_PARAM.camelToSnakeCase()).orEmpty()
         val medaliSlug = json?.parseJsonKey<String>(MEDALI_SLUG_PARAM).orEmpty()
         val type = json?.parseJsonKey<String>(TYPE_PARAM).orEmpty()
+        val source = json?.parseJsonKey<String>(SOURCE_NAME_PARAM.camelToSnakeCase()).orEmpty()
 
         return RequestParams().apply {
             putObject(MEDALI_SLUG_PARAM, arrayOf(medaliSlug))
@@ -148,6 +151,7 @@ class MedalDetailViewModel @Inject constructor(
             putInt(PAGE_PARAM, 1)
             putString(TYPE_PARAM, type)
             putInt(PAGESIZE_PARAM, pageSize)
+            putString(SOURCE_NAME_PARAM, source)
         }
     }
 
