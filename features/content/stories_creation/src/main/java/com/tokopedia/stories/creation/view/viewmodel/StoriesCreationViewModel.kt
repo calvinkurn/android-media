@@ -83,8 +83,10 @@ class StoriesCreationViewModel @Inject constructor(
             else {
                 /** TODO JOE: handle this */
             }
-        }) {
-            /** TODO JOE: handle this */
+        }) { throwable ->
+            _uiEvent.emit(
+                StoriesCreationUiEvent.ErrorPreparePage(throwable)
+            )
         }
     }
 
@@ -116,6 +118,6 @@ class StoriesCreationViewModel @Inject constructor(
     }
 
     private fun handleClickUpload() {
-
+        /** TODO JOE: handle this */
     }
 }

@@ -81,6 +81,7 @@ class StoriesCreationActivity : BaseActivity() {
                     fragment.listener = object : StoriesCreationErrorBottomSheet.Listener {
                         override fun onRetry() {
                             fragment.dismiss()
+                            viewModel.submitAction(StoriesCreationAction.Prepare)
                         }
 
                         override fun onClose() {
