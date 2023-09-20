@@ -49,7 +49,8 @@ class OverscrollEdgeEffectFactory(
 
                 // Translate the recyclerView with the distance
                 val sign = if (direction == DIRECTION_BOTTOM) -1 else 1
-                val translationYDelta = sign * recyclerView.width * deltaDistance * OVERSCROLL_TRANSLATION_MAGNITUDE
+                val translationYDelta = sign * deltaDistance * recyclerView.height * OVERSCROLL_TRANSLATION_MAGNITUDE
+                Log.d("Overscroll", "TranslationYDelta: $translationYDelta")
                 recyclerView.translationY += translationYDelta
 
                 translationAnim?.cancel()
