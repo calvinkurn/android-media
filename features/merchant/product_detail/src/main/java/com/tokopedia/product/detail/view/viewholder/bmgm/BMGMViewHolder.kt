@@ -19,7 +19,7 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.widget.BMGMWidgetTracke
 class BMGMViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : ProductDetailPageViewHolder<BMGMDataModel>(view) {
+) : ProductDetailPageViewHolder<BMGMUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_bmgm
@@ -29,7 +29,7 @@ class BMGMViewHolder(
         ItemDynamicProductBmgmBinding.bind(view)
     }
 
-    override fun bind(element: BMGMDataModel) {
+    override fun bind(element: BMGMUiModel) {
         binding.pdpBmgmWidget.setData(
             uiState = element.state,
             router = object : BMGMWidgetRouter {
