@@ -7,5 +7,7 @@ sealed interface StoriesCreationUiEvent {
 
     object OpenMediaPicker : StoriesCreationUiEvent
 
+    data class ErrorPreparePage(val throwable: Throwable) : StoriesCreationUiEvent
+
     object ShowTooManyStoriesReminder : StoriesCreationUiEvent
 }
