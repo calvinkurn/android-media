@@ -40,8 +40,11 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsChannelConfig
 import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsHomeComponentHeader
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsChannelConfig
+import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsHomeComponentHeader
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -272,8 +275,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             val resultList =
                                 LazyLoadDataMapper.mapMissionWidgetData(data.getHomeMissionWidget.missions)
                             visitableFound.copy(
-                                header = data.getHomeMissionWidget.header.getAsHomeComponentHeader(),
                                 missionWidgetList = resultList,
+                                header = data.getHomeMissionWidget.header.getAsHomeComponentHeader(),
+                                config = data.getHomeMissionWidget.config.getAsChannelConfig(),
                                 status = MissionWidgetListDataModel.STATUS_SUCCESS
                             )
                         }
@@ -302,6 +306,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             val resultList = LazyLoadDataMapper.mapTodoWidgetData(data.getHomeTodoWidget.todos)
                             visitableFound.copy(
                                 todoWidgetList = resultList,
+                                header = data.getHomeTodoWidget.header.getAsHomeComponentHeader(),
+                                config = data.getHomeTodoWidget.config.getAsChannelConfig(),
                                 status = TodoWidgetListDataModel.STATUS_SUCCESS
                             )
                         },
