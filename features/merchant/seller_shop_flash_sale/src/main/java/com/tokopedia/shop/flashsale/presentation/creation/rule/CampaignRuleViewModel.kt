@@ -59,7 +59,7 @@ class CampaignRuleViewModel @Inject constructor(
     val selectedOosState: LiveData<Boolean>
         get() = _selectedOosState
 
-    private val _isUniqueBuyer = MutableLiveData<Boolean?>(true)
+    private val _isUniqueBuyer = MutableLiveData(true)
     val isUniqueBuyer: LiveData<Boolean?>
         get() = _isUniqueBuyer
     private val isUniqueBuyerFlow = isUniqueBuyer.asFlow()
