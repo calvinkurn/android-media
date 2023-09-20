@@ -855,7 +855,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         pushEventV5("openScreen", wrapWithSessionIris(bundle), context);
-        iris.saveEvent(bundleToMap(bundle));
     }
 
     private void putDarkModeValue(Bundle bundle) {
