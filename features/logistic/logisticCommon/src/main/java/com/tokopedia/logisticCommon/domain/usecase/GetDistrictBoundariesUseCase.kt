@@ -45,7 +45,6 @@ class GetDistrictBoundariesUseCase @Inject constructor(
             }
           }
         }
-
     """
     }
 }

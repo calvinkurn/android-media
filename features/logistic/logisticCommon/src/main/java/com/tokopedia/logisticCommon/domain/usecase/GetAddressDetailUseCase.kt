@@ -24,7 +24,7 @@ class GetAddressDetailUseCase @Inject constructor(
 
     companion object {
         private const val QUERY =
-            """""${'"'}
+            """"${'"'}
         query getAddressDetail(${'$'}input: KeroGetAddressInput!){
             kero_get_address(input: ${'$'}input) {
                 data {
