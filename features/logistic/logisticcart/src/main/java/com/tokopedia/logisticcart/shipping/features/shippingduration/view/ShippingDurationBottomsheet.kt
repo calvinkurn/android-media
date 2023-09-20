@@ -272,7 +272,15 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
     }
 
     private fun sendAnalyticImpressionDuration(shippingDurationUiModelList: List<ShippingDurationUiModel>) {
-        shippingDurationUiModelList.forEach { duration -> ShippingBottomSheetAnalytic.sendViewDurationEvent(userId = userSession.userId, cartId = ratesParam?.unique_id.orEmpty(), shopId = ratesParam?.shop_id.orEmpty(), products = ratesParam?.products.orEmpty(), shippingService = duration, isDisableOrderPrioritas = isDisableOrderPrioritas) }
+        shippingDurationUiModelList.forEach { duration ->
+            ShippingBottomSheetAnalytic.sendViewDurationEvent(
+                userId = userSession.userId,
+                cartId = ratesParam?.unique_id.orEmpty(),
+                products = ratesParam?.products.orEmpty(),
+                shopId = ratesParam?.shop_id.orEmpty(),
+                shippingService = duration
+            )
+        }
     }
 
     private fun showNoCourierAvailable(message: String?) {
@@ -350,7 +358,13 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
         shippingDurationUiModel: ShippingDurationUiModel
     ) {
         viewModel.onChooseDuration(shippingCourierUiModelList, cartPosition, serviceData, isOcc)
-        ShippingBottomSheetAnalytic.sendClickChecklistShippingOptionEvent(userId = userSession.userId, cartId = ratesParam?.unique_id.orEmpty(), shippingService = shippingDurationUiModel, shopId = ratesParam?.shop_id.orEmpty(), products = ratesParam?.products.orEmpty(), isDisableOrderPrioritas = isDisableOrderPrioritas)
+        ShippingBottomSheetAnalytic.sendClickChecklistShippingOptionEvent(
+            userId = userSession.userId,
+            cartId = ratesParam?.unique_id.orEmpty(),
+            shippingService = shippingDurationUiModel,
+            products = ratesParam?.products.orEmpty(),
+            shopId = ratesParam?.shop_id.orEmpty()
+        )
     }
 
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
