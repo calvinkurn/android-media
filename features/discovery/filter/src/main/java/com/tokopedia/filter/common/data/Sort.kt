@@ -48,6 +48,18 @@ class Sort(@SerializedName("name")
         return name
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+
+        if (other == null || other.javaClass != this.javaClass) return false
+
+        val sort = other as Sort
+
+        return (this.key == sort.key
+            && this.value == sort.value
+            && this.name == sort.name)
+    }
+
     fun toMapParam(): Map<String, String> =
         mapOf(key to value) + applyFilter.toMapParam()
 }

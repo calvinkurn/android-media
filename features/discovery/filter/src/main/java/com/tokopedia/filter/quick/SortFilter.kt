@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
@@ -15,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.toPx
 
 class SortFilter: ConstraintLayout {
 
@@ -81,8 +83,21 @@ class SortFilter: ConstraintLayout {
             val chipsLayout = View.inflate(context, R.layout.sort_filter_sort_chips_layout, null)
             addChipsCustomView(chipsLayout)
 
+            setContainerSize(
+                chipsLayout.findViewById(R.id.sortFilterSortChipContainer)
+            )
+
             setOnClickListener { listener?.onSortClicked() }
         }
+    }
+
+    private fun setContainerSize(container: ViewGroup?) {
+        container ?: return
+
+        val layoutParams = container.layoutParams
+        layoutParams.width = 24.toPx()
+        layoutParams.height = 24.toPx()
+        container.layoutParams = layoutParams
     }
 
     private fun ChipsUnify.addChipsCustomView(chipsLayout: View?) {
@@ -96,6 +111,9 @@ class SortFilter: ConstraintLayout {
             val chipsLayout = View.inflate(context, R.layout.sort_filter_filter_chips_layout, null)
             addChipsCustomView(chipsLayout)
 
+            setContainerSize(
+                chipsLayout.findViewById(R.id.sortFilterFilterChipContainer)
+            )
             chipsLayout.findViewById<IconUnify>(R.id.sortFilterFilterIcon)?.visible()
             chipsLayout.findViewById<NotificationUnify>(R.id.sortFilterFilterNotification)
                 ?.clearAnimationAndGone()

@@ -73,7 +73,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     fun setOptionHolder(optionHolder: OptionHolder?) {
-        this.optionHolder = optionHolder
+        this.optionHolder = optionHolder?.copy()
         this.isLoading = optionHolder != null
         this.originalSelectedOptionList.addAll(optionHolder.getSelectedOptions())
 

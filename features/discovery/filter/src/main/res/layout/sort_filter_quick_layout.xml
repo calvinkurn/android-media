@@ -23,25 +23,23 @@
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/sortFilterSortChips"
         android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="2dp"
         app:layout_constraintStart_toEndOf="@id/sortFilterQuickRecyclerView"
         app:layout_constraintEnd_toStartOf="@+id/sortFilterFilterChips"
-        app:chipImageSrc="@drawable/iconunify_sort"
         app:chipType="normal"
         app:chipSize="small" />
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/sortFilterFilterChips"
         android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/sortFilterSortChips"
         app:layout_constraintEnd_toEndOf="parent"
-        app:chipImageSrc="@drawable/iconunify_sort_filter"
         app:chipType="normal"
         app:chipSize="small" />
 </merge>
