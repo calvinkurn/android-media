@@ -1010,12 +1010,10 @@ class ProductListPresenter @Inject constructor(
 
         if (reimagineRollence.search2Component().isReimagineQuickFilter()) {
             val sortFilterItems = quickFilterData.mapFilter(::sortFilterItemReimagine)
-            if (sortFilterItems.isNotEmpty())
-                view.setQuickFilterReimagine(sortFilterItems)
+            view.setQuickFilterReimagine(sortFilterItems)
         } else {
             val sortFilterItems = quickFilterData.mapFilter(::sortFilterItem)
-            if (sortFilterItems.isNotEmpty())
-                view.setQuickFilter(sortFilterItems)
+            view.setQuickFilter(sortFilterItems)
         }
     }
 

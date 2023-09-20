@@ -23,6 +23,7 @@ import io.mockk.verify
 import io.mockk.verifyOrder
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import rx.Subscriber
 import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
@@ -392,5 +393,24 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         sortFilterItemList.listShouldBe(quickFilterModel.filter) { sortFilterItem, filter ->
             sortFilterItem.title shouldBe filter.chipName
         }
+    }
+
+    @Test
+    fun `Drop down quick filter reimagine hasChevron is true`() {
+        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+
+        every { reimagineRollence.search2Component() } returns Search2Component.QF_VAR
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify setQuickFilterReimagine is called`()
+        `Then verify SortFilterItemReimagine list`(searchProductModel.quickFilterModel)
+
+        val sortFilterItemList = listItemReimagineSlot.captured
+        assertTrue(
+            sortFilterItemList.find { it.title == "Jenis Toko Chip Name" }?.hasChevron == true
+        )
     }
 }
