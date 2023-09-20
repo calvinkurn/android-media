@@ -2,7 +2,6 @@ package com.tokopedia.order_management_common.presentation.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -66,7 +65,12 @@ class BmgmAddOnViewHolder(
     }
 
     private fun ItemBmgmDetailAddOnBinding.setupAddOnImage(thumbnailUrl: String) {
-        ivAddOn.loadImage(thumbnailUrl)
+        if (thumbnailUrl.isNotBlank()) {
+            ivAddOn.show()
+            ivAddOn.loadImage(thumbnailUrl)
+        } else {
+            ivAddOn.hide()
+        }
     }
 
     private fun ItemBmgmDetailAddOnBinding.setupAddOnName(

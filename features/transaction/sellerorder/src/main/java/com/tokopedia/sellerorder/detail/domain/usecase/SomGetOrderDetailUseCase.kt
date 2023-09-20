@@ -359,9 +359,6 @@ class SomGetOrderDetailUseCase @Inject constructor(
                         total_price_str
                         total_quantity
                       }
-                      flags {
-                        is_eligible_pof
-                      }
                     }
                   }
                 }
