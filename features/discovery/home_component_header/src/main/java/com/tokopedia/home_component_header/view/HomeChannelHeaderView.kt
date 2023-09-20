@@ -5,6 +5,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,8 @@ import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceControl
 import com.tokopedia.home_component_header.util.ViewUtils.convertDpToPixel
 import com.tokopedia.home_component_header.util.getLink
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
@@ -71,8 +74,10 @@ class HomeChannelHeaderView : FrameLayout {
     }
 
     private fun init(layoutStrategy: HeaderLayoutStrategy) {
-        inflate(context, layoutStrategy.getLayout(), this).also {
-            channelHeaderContainer = findViewById(R.id.channel_title_container)
+        if(channelHeaderContainer == null) {
+            inflate(context, layoutStrategy.getLayout(), this).also {
+                channelHeaderContainer = findViewById(R.id.channel_title_container)
+            }
         }
     }
 
@@ -110,7 +115,8 @@ class HomeChannelHeaderView : FrameLayout {
          * Only show channel header name when it is exist
          */
         if (channelHeaderName?.isNotEmpty() == true) {
-            channelHeaderContainer.visibility = View.VISIBLE
+            stubChannelTitle?.show()
+            channelHeaderContainer.show()
             channelTitle = if (stubChannelTitle is ViewStub &&
                 !isViewStubHasBeenInflated(stubChannelTitle)
             ) {
@@ -139,7 +145,8 @@ class HomeChannelHeaderView : FrameLayout {
             }
             constraintSet.applyTo(channelHeaderContainer)
         } else {
-            channelHeaderContainer.visibility = View.GONE
+            stubChannelTitle?.hide()
+            channelHeaderContainer.hide()
         }
     }
 
