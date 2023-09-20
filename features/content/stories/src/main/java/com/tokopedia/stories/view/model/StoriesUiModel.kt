@@ -1,8 +1,11 @@
 package com.tokopedia.stories.view.model
 
 import android.os.Parcelable
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class StoriesUiModel(
@@ -42,7 +45,9 @@ data class StoriesDetailItem(
     val content: StoriesItemContent = StoriesItemContent(),
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
-    val meta: Meta = Meta()
+    val meta: Meta = Meta(),
+    val author: @RawValue StoryAuthor = StoryAuthor.Unknown,
+    val menus: @RawValue List<ContentMenuItem> = emptyList(),
 ) : Parcelable {
 
     @Parcelize
