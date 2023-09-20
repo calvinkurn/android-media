@@ -260,6 +260,7 @@ open class SomListFragment :
     private var pendingAction: SomPendingAction? = null
     private var tickerIsReady = false
     private var coachMarkManager: SomListCoachMarkManager? = null
+    private var highLightStatusKey: String = ""
 
     protected var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     protected var selectedOrderId: String = ""
@@ -360,8 +361,10 @@ open class SomListFragment :
         if (!hidden) {
             SomAnalytics.sendScreenName(SomConsts.LIST_ORDER_SCREEN_NAME)
             coachMarkManager?.showCoachMark()
+            showCoachMarkAutoTabbing(highLightStatusKey)
         } else {
             coachMarkManager?.dismissCoachMark()
+            autoTabbingCoachMark?.dismissCoachMark()
         }
     }
 
@@ -395,13 +398,17 @@ open class SomListFragment :
 
     override fun onResume() {
         super.onResume()
-        if (!isHidden) coachMarkManager?.showCoachMark()
+        if (!isHidden) {
+            coachMarkManager?.showCoachMark()
+            showCoachMarkAutoTabbing(highLightStatusKey)
+        }
         updateShopActive()
     }
 
     override fun onPause() {
         dismissBottomSheets()
         coachMarkManager?.dismissCoachMark()
+        autoTabbingCoachMark?.dismissCoachMark()
         super.onPause()
         if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.end()
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
@@ -2929,7 +2936,7 @@ open class SomListFragment :
             somListGetOrderListParam = viewModel.getDataOrderListParams()
         )
 
-        val highLightStatusKey = somFilterUiModel.highLightedStatusKey
+        this.highLightStatusKey = somFilterUiModel.highLightedStatusKey
 
         if (getShouldRefreshOrderAutoTabbing(highLightStatusKey)) {
             val statusIds = somFilterUiModel.statusList.find { it.key == highLightStatusKey }?.id.orEmpty()
