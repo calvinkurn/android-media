@@ -839,7 +839,7 @@ class CartRevampFragment :
             dialog?.setPrimaryCTAClickListener {
                 var forceExpand = false
                 if (allDisabledCartItemDataList.size > 3 && unavailableItemAccordionCollapseState) {
-                    collapseOrExpandDisabledItem()
+                    collapseOrExpandDisabledItem(viewModel.cartDataList.value)
                     forceExpand = true
                 }
                 viewModel.processDeleteCartItem(
@@ -1071,7 +1071,7 @@ class CartRevampFragment :
                 viewModel.cartModel
             )
             if (allDisabledCartItemData.size > 3 && unavailableItemAccordionCollapseState) {
-                collapseOrExpandDisabledItem()
+                collapseOrExpandDisabledItem(viewModel.cartDataList.value)
                 forceExpand = true
             }
 
@@ -1596,9 +1596,9 @@ class CartRevampFragment :
         }
     }
 
-    private fun collapseOrExpandDisabledItem() {
+    private fun collapseOrExpandDisabledItem(cartDataList: ArrayList<Any>) {
         val disabledAccordionHolderData =
-            CartDataHelper.getDisabledAccordionHolderData(viewModel.cartDataList.value)
+            CartDataHelper.getDisabledAccordionHolderData(cartDataList)
         disabledAccordionHolderData?.let {
             it.isCollapsed = !it.isCollapsed
             unavailableItemAccordionCollapseState = it.isCollapsed
@@ -2405,7 +2405,7 @@ class CartRevampFragment :
                 is DeleteCartEvent.Failed -> {
                     deleteCartEvent.apply {
                         if (forceExpandCollapsedUnavailableItems) {
-                            collapseOrExpandDisabledItem()
+                            collapseOrExpandDisabledItem(viewModel.cartDataList.value)
                         }
                         hideProgressLoading()
                         showToastMessageRed(throwable)
@@ -3153,17 +3153,17 @@ class CartRevampFragment :
             viewModel.cartModel
         )
 
-        viewModel.updateCartGroupFirstItemStatus(updateListResult)
-        viewModel.updateCartDataList(updateListResult)
-
         // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
         if (allDisabledCartItemData.size > 3) {
             if (forceExpandCollapsedUnavailableItems) {
-                collapseOrExpandDisabledItem()
+                collapseOrExpandDisabledItem(updateListResult)
             }
         } else {
             viewModel.removeAccordionDisabledItem()
         }
+
+        viewModel.updateCartGroupFirstItemStatus(updateListResult)
+        viewModel.updateCartDataList(updateListResult)
 
         viewModel.reCalculateSubTotal()
         notifyBottomCartParent()
