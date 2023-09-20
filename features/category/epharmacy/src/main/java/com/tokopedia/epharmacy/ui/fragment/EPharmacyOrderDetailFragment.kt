@@ -16,16 +16,12 @@ import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactoryImpl
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUtil
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
-import com.tokopedia.epharmacy.databinding.EpharmacyCheckoutChatDokterFragmentBinding
 import com.tokopedia.epharmacy.databinding.EpharmacyOrderDetailFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
+import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_ORDER_DETAIL_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ORDER_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
-import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT
-import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_1
-import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_2
 import com.tokopedia.epharmacy.viewmodel.EPharmacyOrderDetailViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -102,6 +98,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun setUpObservers() {
         observeOrderDetail()
+        observeButtonData()
     }
 
     private fun initViews(view: View) {
@@ -121,9 +118,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private fun addShimmer() {
         ePharmacyRecyclerView?.show()
         ePharmacyDoneButton?.hide()
-        ePharmacyAttachmentUiUpdater.mapOfData.clear()
-        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel(SHIMMER_COMPONENT_1, SHIMMER_COMPONENT))
-        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel(SHIMMER_COMPONENT_2, SHIMMER_COMPONENT))
+        ePharmacyAttachmentUiUpdater.addShimmer()
         updateUi()
     }
 
@@ -153,13 +148,18 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         }
     }
 
-    private fun updateUi() {
-        val newData = ePharmacyAttachmentUiUpdater.mapOfData.values.toList()
-        submitList(newData)
+    private fun observeButtonData() {
+        ePharmacyOrderDetailViewModel?.ePharmacyButtonData?.observe(viewLifecycleOwner) {
+            renderButtons(it)
+        }
     }
 
-    private fun submitList(visitableList: List<BaseEPharmacyDataModel>) {
-        ePharmacyAdapter.submitList(visitableList)
+    private fun renderButtons(buttonData: EPharmacyOrderDetailResponse.OrderButtonData?) {
+    }
+
+    private fun updateUi() {
+        val updatedComponents = ePharmacyAttachmentUiUpdater.mapOfData.values.toList()
+        ePharmacyAdapter.submitList(updatedComponents)
     }
 
     private fun onSuccessOrderData(it: Success<EPharmacyDataModel>) {

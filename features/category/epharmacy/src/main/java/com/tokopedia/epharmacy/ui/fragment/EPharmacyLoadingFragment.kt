@@ -17,7 +17,6 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyVerifyConsultationResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
-import com.tokopedia.epharmacy.utils.ORDER_LIST_APPLINK
 import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -36,7 +35,6 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     private var ePharmacyGlobalError: GlobalError? = null
     private var illustrationImage: DeferredImageView? = null
     private var tConsultationId = String.EMPTY
-    private var isFirstFail = false
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var verifyRunnable: Runnable? = null
@@ -100,11 +98,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
             getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_title),
             getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_description)
         )
-        if (isFirstFail) {
-            if (verifyRunnable != null) { mainHandler.postDelayed(verifyRunnable!!, DELAY_MILLIS_VERIFY) }
-        } else {
-            ePharmacyLoadingViewModel.getVerifyConsultationOrder(tConsultationId)
-        }
+        if (verifyRunnable != null) { mainHandler.postDelayed(verifyRunnable!!, DELAY_MILLIS_VERIFY) }
     }
 
     private fun observerVerifyConsultationOrder() {
@@ -125,42 +119,23 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
             if (pwaLink.isNotBlank()) {
                 routeAction(pwaLink)
             } else {
-                handleFail(it.data.verifyConsultationOrder)
+                handleFail()
             }
         } ?: kotlin.run {
-            handleFail(it.data.verifyConsultationOrder)
+            handleFail()
         }
     }
 
-    private fun handleFail(verifyConsultationOrder: EPharmacyVerifyConsultationResponse.VerifyConsultationOrder?){
-        if(isFirstFail){
-            isFirstFail = false
-            setErrorData(
-                getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_title),
-                getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_description),
-                getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_cta_text),
-                ORDER_LIST_APPLINK
-            )
-            return
-        }
-        isFirstFail = true
-        invalidPwaLink()
-    }
-
-    private fun invalidPwaLink() {
-        if (isFirstFail) {
-            getData()
-            return
-        }
+    private fun handleFail() {
         setErrorData(
             getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_title),
             getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_description),
-            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_cta_text),
-            ORDER_LIST_APPLINK
+            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_cta_text)
         )
+        return
     }
 
-    private fun setErrorData(title: String, description: String, ctaText: String, appLink: String) {
+    private fun setErrorData(title: String, description: String, ctaText: String) {
         ePharmacyGlobalError?.setType(GlobalError.SERVER_ERROR)
         ePharmacyGlobalError?.errorAction?.show()
         ePharmacyGlobalError?.errorIllustration?.show()
@@ -169,12 +144,12 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
         ePharmacyGlobalError?.errorAction?.text = ctaText
         ePharmacyGlobalError?.errorDescription?.text = description
         ePharmacyGlobalError?.setActionClickListener {
-            RouteManager.route(context, appLink)
+            getData()
         }
     }
 
-    private fun routeAction(applink: String) {
-        RouteManager.route(context, applink)
+    private fun routeAction(appLink: String) {
+        RouteManager.route(context, appLink)
     }
 
     private fun onFailData(it: Fail) {
@@ -211,7 +186,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     companion object {
-        const val DELAY_MILLIS_VERIFY = 6000L
+        const val DELAY_MILLIS_VERIFY = 3000L
 
         @JvmStatic
         fun newInstance(bundle: Bundle): EPharmacyLoadingFragment {

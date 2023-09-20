@@ -13,10 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
-import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
-import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
-import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
@@ -32,27 +29,16 @@ import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
-import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_APP_CHECKOUT_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_CART_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_CHECKOUT_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_CHOOSER_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_DURATION
-import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_PRICE
-import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
-import com.tokopedia.epharmacy.utils.EPHARMACY_IS_ONLY_CONSULT
-import com.tokopedia.epharmacy.utils.EPHARMACY_IS_OUTSIDE_WORKING_HOURS
-import com.tokopedia.epharmacy.utils.EPHARMACY_NOTE
-import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
 import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
 import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationAnalytics
 import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationToaster
+import com.tokopedia.epharmacy.utils.EPharmacyNavigator
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.utils.ERROR_CODE_OUTSIDE_WORKING_HOUR
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
@@ -305,12 +291,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun openEPharmacyGeneralCheckoutPage(consultationResponse: EPharmacyInitiateConsultationResponse) {
-        RouteManager.getIntent(activity, EPHARMACY_CHECKOUT_APPLINK).apply {
-            putExtra(EPHARMACY_GROUP_ID, consultationResponse.epharmacyGroupId)
-            putExtra(EPHARMACY_ENABLER_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString())
-            putExtra(EPHARMACY_TOKO_CONSULTATION_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.tokoConsultationId)
-        }.also {
-            startActivityForResult(it, 11111)
+        EPharmacyNavigator.createEPharmacyCheckoutAppLink(consultationResponse).also { paramAppLink ->
+            RouteManager.route(activity, paramAppLink)
         }
     }
 
@@ -426,26 +408,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString(),
             EPharmacyUtils.getPrescriptionIds(ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData).toString()
         )
-        if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
-            activity?.setResult(
-                EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
-                Intent().apply {
-                    putParcelableArrayListExtra(
-                        EPHARMACY_CONSULTATION_RESULT_EXTRA,
-                        ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
-                    )
-                }
-            )
-            activity?.finish()
-        } else if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CART_APPLINK)) {
-            activity?.setResult(
-                EPHARMACY_REDIRECT_CART_RESULT_CODE,
-                Intent()
-            )
-            activity?.finish()
-        } else {
-            RouteManager.route(activity, appLink)
-        }
+
+        EPharmacyNavigator.prescriptionAttachmentDoneRedirection(activity, appLink, ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout())
     }
 
     private fun hasAnyError(): Boolean {
@@ -564,17 +528,19 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         note: String?,
         isOnlyConsult: Boolean = false
     ) {
-        RouteManager.getIntent(activity, EPHARMACY_CHOOSER_APPLINK).apply {
-            putExtra(ENABLER_IMAGE_URL, enablerImage)
-            putExtra(EPHARMACY_GROUP_ID, ePharmacyGroupId)
-            putExtra(EPHARMACY_ENABLER_NAME, enablerName)
-            putExtra(EPHARMACY_CONS_PRICE, price)
-            putExtra(EPHARMACY_CONS_DURATION, operatingSchedule?.duration)
-            putExtra(EPHARMACY_IS_OUTSIDE_WORKING_HOURS, operatingSchedule?.isClosingHour)
-            putExtra(EPHARMACY_NOTE, EPharmacyUtils.getChatDokterNote(context, operatingSchedule, note))
-            putExtra(EPHARMACY_IS_ONLY_CONSULT, isOnlyConsult)
-        }.also {
-            startActivityForResult(it, EPHARMACY_CHOOSER_REQUEST_CODE)
+        RouteManager.getIntent(
+            context,
+            EPharmacyNavigator.createChooserAppLink(
+                enablerImage,
+                ePharmacyGroupId,
+                enablerName,
+                price,
+                operatingSchedule,
+                EPharmacyUtils.getChatDokterNote(context, operatingSchedule, note),
+                isOnlyConsult
+            )
+        )?.also {
+            startActivityForResult(it, 1111)
         }
     }
 

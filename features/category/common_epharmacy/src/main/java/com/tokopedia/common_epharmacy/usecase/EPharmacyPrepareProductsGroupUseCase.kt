@@ -18,7 +18,7 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
     ) {
         try {
             this.setTypeClass(EPharmacyPrepareProductsGroupResponse::class.java)
-            this.setRequestParams(getRequestParams(source))
+            // this.setRequestParams(getRequestParams(source))
             this.setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
             this.setParams()
             this.execute(

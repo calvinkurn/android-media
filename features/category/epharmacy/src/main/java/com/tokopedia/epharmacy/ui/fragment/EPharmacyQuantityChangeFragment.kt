@@ -20,16 +20,12 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
 import com.tokopedia.epharmacy.databinding.EpharmacyQuantityChangeFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
-import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT
-import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_1
-import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_2
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -130,9 +126,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun addShimmer() {
         ePharmacyRecyclerView?.show()
-        ePharmacyAttachmentUiUpdater.mapOfData.clear()
-        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel(SHIMMER_COMPONENT_1, SHIMMER_COMPONENT))
-        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel(SHIMMER_COMPONENT_2, SHIMMER_COMPONENT))
+        ePharmacyAttachmentUiUpdater.addShimmer()
         updateUi()
     }
 
@@ -189,7 +183,6 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun observerPrescriptionError() {
         ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
-
         }
     }
 
@@ -210,12 +203,8 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun updateUi() {
-        val newData = ePharmacyAttachmentUiUpdater.mapOfData.values.toList()
-        submitList(newData)
-    }
-
-    private fun submitList(visitableList: List<BaseEPharmacyDataModel>) {
-        ePharmacyAdapter.submitList(visitableList)
+        val updatedComponents = ePharmacyAttachmentUiUpdater.mapOfData.values.toList()
+        ePharmacyAdapter.submitList(updatedComponents)
     }
 
     private fun onFailGroupData(it: Fail) {

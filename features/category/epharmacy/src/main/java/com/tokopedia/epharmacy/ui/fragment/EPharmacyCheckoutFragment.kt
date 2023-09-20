@@ -15,13 +15,11 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
 import com.tokopedia.epharmacy.network.response.EPharmacyAtcInstantResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyCartGeneralCheckoutResponse
-import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyComponentBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_CHECKOUT_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
-import com.tokopedia.epharmacy.utils.PRESCRIPTION_ATTACH_SUCCESS
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -130,7 +128,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
                     onSuccessCartCheckout(it)
                 }
                 is Fail -> {
-                    onFailCartCheckout(it)
+                    onFailCartCheckout()
                 }
             }
         }
@@ -177,7 +175,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         binding?.epharmacyCheckoutDetailView?.apply {
             serviceTypeValue.text = cart?.customResponse?.serviceType
             serviceProviderValue.text = cart?.customResponse?.enablerName
-            durationValue.text = "${cart?.customResponse?.durationMinutes} Menit"
+            durationValue.text = cart?.customResponse?.durationMinutes
             feeValue.text = cart?.priceFmt
         }
     }
@@ -252,18 +250,18 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
-        when(result.data.checkout?.data?.success){
-            0 -> showToast(TYPE_ERROR,result.data.checkout?.data?.message.orEmpty())
+        when (result.data.checkout?.data?.success) {
+            0 -> showToast(TYPE_ERROR, result.data.checkout?.data?.message.orEmpty())
             1 -> successCheckout(result.data.checkout?.data?.data?.redirectUrl)
         }
     }
 
     private fun successCheckout(redirectUrl: String?) {
-        RouteManager.route(context,redirectUrl)
+        RouteManager.route(context, redirectUrl)
     }
 
-    private fun onFailCartCheckout(fail: Fail) {
-        showToast(TYPE_ERROR,getString(com.tokopedia.epharmacy.R.string.epharmacy_internet_error))
+    private fun onFailCartCheckout() {
+        showToast(TYPE_ERROR, getString(com.tokopedia.epharmacy.R.string.epharmacy_internet_error))
     }
 
     override fun getScreenName() = EPHARMACY_CHECKOUT_PAGE

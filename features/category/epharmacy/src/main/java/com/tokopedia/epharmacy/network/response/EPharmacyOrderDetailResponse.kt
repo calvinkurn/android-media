@@ -1,6 +1,5 @@
 package com.tokopedia.epharmacy.network.response
 
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -9,6 +8,10 @@ data class EPharmacyOrderDetailResponse(
     @Expose
     val getConsultationOrderDetail: GetConsultationOrderDetail?
 ) {
+    data class OrderButtonData(
+        val cta: List<GetConsultationOrderDetail.Cta?>?,
+        val triDots: List<GetConsultationOrderDetail.Cta?>?
+    )
     data class GetConsultationOrderDetail(
         @SerializedName("cta")
         @Expose
@@ -21,7 +24,9 @@ data class EPharmacyOrderDetailResponse(
         val header: Header?,
         @SerializedName("tri_dots")
         @Expose
-        val triDots: List<TriDot?>?
+        val triDots: List<Cta?>?,
+
+        val orderButtonData: OrderButtonData? = OrderButtonData(cta, triDots)
     ) {
         data class Cta(
             @SerializedName("action_type")
@@ -144,21 +149,6 @@ data class EPharmacyOrderDetailResponse(
             @SerializedName("process_time")
             @Expose
             val processTime: Double?
-        )
-
-        data class TriDot(
-            @SerializedName("action_type")
-            @Expose
-            val actionType: String?,
-            @SerializedName("app_url")
-            @Expose
-            val appUrl: String?,
-            @SerializedName("label")
-            @Expose
-            val label: String?,
-            @SerializedName("web_url")
-            @Expose
-            val webUrl: String?
         )
     }
 }

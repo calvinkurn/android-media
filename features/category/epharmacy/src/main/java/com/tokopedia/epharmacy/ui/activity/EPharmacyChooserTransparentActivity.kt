@@ -42,14 +42,14 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
     }
 
     private fun extractParameters() {
-        enableImageURL = intent.extras?.getString(ENABLER_IMAGE_URL).orEmpty()
-        groupId = intent.extras?.getString(EPHARMACY_GROUP_ID).orEmpty()
-        enablerName = intent.extras?.getString(EPHARMACY_ENABLER_NAME).orEmpty()
-        price = intent.extras?.getString(EPHARMACY_CONS_PRICE).orEmpty()
-        duration = intent.extras?.getString(EPHARMACY_CONS_DURATION).orEmpty()
-        note = intent.extras?.getString(EPHARMACY_NOTE).orEmpty()
-        isOutsideWorkingHours = intent.extras?.getBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS).orFalse()
-        isOnlyConsultation = intent.extras?.getBoolean(EPHARMACY_IS_ONLY_CONSULT).orFalse()
+        enableImageURL = intent.data?.getQueryParameter(ENABLER_IMAGE_URL).orEmpty()
+        groupId = intent.data?.getQueryParameter(EPHARMACY_GROUP_ID).orEmpty()
+        enablerName = intent.data?.getQueryParameter(EPHARMACY_ENABLER_NAME).orEmpty()
+        price = intent.data?.getQueryParameter(EPHARMACY_CONS_PRICE).orEmpty()
+        duration = intent.data?.getQueryParameter(EPHARMACY_CONS_DURATION).orEmpty()
+        note = intent.data?.getQueryParameter(EPHARMACY_NOTE).orEmpty()
+        isOutsideWorkingHours = intent.data?.getBooleanQueryParameter(EPHARMACY_IS_OUTSIDE_WORKING_HOURS, false).orFalse()
+        isOnlyConsultation = intent.data?.getBooleanQueryParameter(EPHARMACY_IS_ONLY_CONSULT, false).orFalse()
     }
 
     private fun openBottomSheet() {

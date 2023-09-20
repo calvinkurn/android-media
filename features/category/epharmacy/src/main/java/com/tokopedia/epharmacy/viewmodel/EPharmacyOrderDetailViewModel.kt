@@ -16,26 +16,31 @@ import javax.inject.Inject
 
 class EPharmacyOrderDetailViewModel @Inject constructor(
     private val ePharmacyOrderDetailUseCase: EPharmacyOrderDetailUseCase,
-    @CoroutineBackgroundDispatcher private val dispatcherBackground : CoroutineDispatcher
-) : BaseViewModel(dispatcherBackground){
+    @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
+) : BaseViewModel(dispatcherBackground) {
 
     private val _ePharmacyOrderDetailData = MutableLiveData<Result<EPharmacyDataModel>>()
     val ePharmacyOrderDetailData: LiveData<Result<EPharmacyDataModel>> = _ePharmacyOrderDetailData
+
+    private val _ePharmacyButtonData = MutableLiveData<EPharmacyOrderDetailResponse.OrderButtonData>()
+    val ePharmacyButtonData: LiveData<EPharmacyOrderDetailResponse.OrderButtonData> = _ePharmacyButtonData
 
     fun getEPharmacyOrderDetail(tConsultationId: String, orderId: String) {
         ePharmacyOrderDetailUseCase.cancelJobs()
         ePharmacyOrderDetailUseCase.getEPharmacyOrderDetail(
             ::onAvailableEPharmacyOrderDetail,
             ::onFailEPharmacyOrderDetail,
-            tConsultationId, orderId
+            tConsultationId,
+            orderId
         )
     }
 
-    private fun onAvailableEPharmacyOrderDetail(data: EPharmacyOrderDetailResponse){
+    private fun onAvailableEPharmacyOrderDetail(data: EPharmacyOrderDetailResponse) {
         _ePharmacyOrderDetailData.postValue(Success(EPharmacyUtils.mapResponseToOrderDetail(data.getConsultationOrderDetail?.ePharmacyOrderData)))
+        _ePharmacyButtonData.value = (data.getConsultationOrderDetail?.orderButtonData)
     }
 
-    private fun onFailEPharmacyOrderDetail(throwable: Throwable){
+    private fun onFailEPharmacyOrderDetail(throwable: Throwable) {
         _ePharmacyOrderDetailData.postValue(Fail(throwable))
     }
 }
