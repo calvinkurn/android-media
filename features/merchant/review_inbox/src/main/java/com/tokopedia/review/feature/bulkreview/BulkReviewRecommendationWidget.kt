@@ -28,7 +28,7 @@ data class BulkReviewRecommendationWidget(
     data class Detail(
         @SerializedName("product")
         @Expose
-        val product: Product
+        val product: Product = Product()
     )
 
     data class Product(
