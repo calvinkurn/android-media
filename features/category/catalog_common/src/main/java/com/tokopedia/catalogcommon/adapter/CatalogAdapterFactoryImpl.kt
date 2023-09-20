@@ -41,7 +41,7 @@ import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 class CatalogAdapterFactoryImpl(
     private val heroBannerListener: HeroBannerListener? = null,
     private val navListener: StickyNavigationListener? = null
-): BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
+    ): BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {

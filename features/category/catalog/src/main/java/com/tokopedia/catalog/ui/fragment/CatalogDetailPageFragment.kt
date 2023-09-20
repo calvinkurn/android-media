@@ -261,6 +261,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
         if (anchorToPosition >= Int.ZERO) {
+            widgetAdapter.changeNavigationTabActive(tabPosition)
             smoothScroller.targetPosition = anchorToPosition - 2
             layoutManager?.startSmoothScroll(smoothScroller)
         }
