@@ -49,34 +49,6 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
-    val placesGetDistrict = """
-        query KeroPlacesGetDistrict(${'$'}param: String!, ${'$'}err: Boolean, ${'$'}is_manage_address_flow: Boolean) {
-          kero_places_get_district(placeid: ${'$'}param, error_data: ${'$'}err, is_manage_address_flow: ${'$'}is_manage_address_flow) {
-            error_code
-            data {
-              title
-              formatted_address
-              district_id
-              city_id
-              province_id
-              district_name
-              city_name
-              province_name
-              postal_code
-              latitude
-              longitude
-              full_data {
-                long_name
-                short_name
-                types
-              }
-            }
-            status
-            message_error
-          }
-        }
-    """.trimIndent()
-
     val getDistrictDetails = """
         query KeroDistrictQuery(${'$'}query: String, ${'$'}page: String){
           keroGetDistrictDetails(query:${'$'}query, page:${'$'}page) {

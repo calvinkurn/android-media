@@ -12,17 +12,18 @@ import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.KeroAddressGeocode
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageViewModel
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,6 +49,7 @@ class PinpointNewPageViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val repo: KeroRepository = mockk(relaxed = true)
+    private val getDistrict: GetDistrictUseCase = mockk(relaxed = true)
     private val getDistrictMapper = GetDistrictMapper()
     private val districtBoundaryMapper = DistrictBoundaryMapper()
 
@@ -74,6 +76,7 @@ class PinpointNewPageViewModelTest {
         pinpointNewPageViewModel =
             PinpointNewPageViewModel(
                 repo,
+                getDistrict,
                 getDistrictMapper,
                 districtBoundaryMapper,
                 mapsGeocodeUseCase
@@ -101,14 +104,14 @@ class PinpointNewPageViewModelTest {
 
     @Test
     fun `Get District Location Success`() {
-        coEvery { repo.getDistrict(any(), any()) } returns GetDistrictResponse()
+        coEvery { getDistrict(any()) } returns GetDistrictResponse()
         pinpointNewPageViewModel.getDistrictLocation("12312")
         verify { districtLocationObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Location Fail`() {
-        coEvery { repo.getDistrict(any()) } throws defaultThrowable
+        coEvery { getDistrict(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictLocation("12312")
         verify { districtLocationObserver.onChanged(match { it is Fail }) }
     }

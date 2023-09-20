@@ -12,7 +12,8 @@ import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocUpdateWarehouse
+import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,6 +23,7 @@ import javax.inject.Inject
 
 class ShopEditAddressViewModel @Inject constructor(
     private val repo: KeroRepository,
+    private val getDistrict: GetDistrictUseCase,
     private val shopRepo: ShopLocationRepository,
     private val mapper: AutoCompleteMapper
 ) : ViewModel() {
@@ -48,7 +50,7 @@ class ShopEditAddressViewModel @Inject constructor(
 
     fun getDistrictLocation(placeId: String) {
         viewModelScope.launch(onErrorGetDistrictLocation) {
-            val districtLoc = repo.getDistrict(placeId)
+            val districtLoc = getDistrict(GetDistrictParam(placeId))
             _districtLocation.value = Success(mapper.mapDistrictLoc(districtLoc))
         }
     }

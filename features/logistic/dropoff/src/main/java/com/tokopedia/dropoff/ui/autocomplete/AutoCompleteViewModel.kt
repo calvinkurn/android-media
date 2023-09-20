@@ -10,7 +10,9 @@ import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.domain.model.SavedAddress
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticCommon.domain.param.GetAutoCompleteParam
+import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
 import com.tokopedia.logisticCommon.domain.usecase.GetAutoCompleteUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,6 +23,7 @@ import javax.inject.Inject
 class AutoCompleteViewModel @Inject constructor(
     private val repo: KeroRepository,
     private val getAutoComplete: GetAutoCompleteUseCase,
+    private val getDistrict: GetDistrictUseCase,
     private val mapper: AutoCompleteMapper
 ) : ViewModel() {
 
@@ -43,7 +46,7 @@ class AutoCompleteViewModel @Inject constructor(
 
     fun getLatLng(placeId: String) {
         viewModelScope.launch(onErrorGetLatLng) {
-            val latLng = repo.getDistrict(placeId)
+            val latLng = getDistrict(GetDistrictParam(placeId))
             mValidatedDistrict.value = Success(mapper.mapValidate(latLng))
         }
     }
