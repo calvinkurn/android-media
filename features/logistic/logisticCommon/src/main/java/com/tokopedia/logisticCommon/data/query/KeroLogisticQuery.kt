@@ -131,39 +131,6 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
-    val kero_addr_get_default = """
-        query KeroAddrGetDefaultAddress(${'$'}source: String!, ${'$'}track_activity: Boolean) {
-          KeroAddrGetDefaultAddress(source: ${'$'}source, track_activity: ${'$'}track_activity) {
-            data {
-              addr_id
-              receiver_name
-              addr_name
-              address_1
-              address_2
-              postal_code
-              province
-              city
-              district
-              phone
-              province_name
-              city_name
-              district_name
-              status
-              country
-              latitude
-              longitude
-            }
-            kero_addr_error {
-              code
-              detail
-            }
-            status
-            server_process_time
-            config
-          }
-        }
-    """.trimIndent()
-
     val kero_district_boundary = """
         query keroGetDistrictBoundaryArray(${'$'}districtId: Int!) {
           keroGetDistrictBoundaryArray(input: {

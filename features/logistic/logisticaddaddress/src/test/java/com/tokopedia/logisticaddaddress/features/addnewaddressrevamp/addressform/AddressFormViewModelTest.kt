@@ -14,6 +14,7 @@ import com.tokopedia.logisticCommon.data.response.KeroAddAddress
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
+import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -41,6 +42,7 @@ class AddressFormViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val repo: KeroRepository = mockk(relaxed = true)
+    private val getDefaultAddress: GetDefaultAddressUseCase = mockk(relaxed = true)
     private val saveAddressDataModel = SaveAddressDataModel()
     private val addressId = "12345"
     private val sourceValue = ""
@@ -77,7 +79,7 @@ class AddressFormViewModelTest {
     }
 
     private fun initObserver() {
-        addressFormViewModel = AddressFormViewModel(repo)
+        addressFormViewModel = AddressFormViewModel(repo, getDefaultAddress)
         addressFormViewModel.saveAddress.observeForever(saveAddressObserver)
         addressFormViewModel.defaultAddress.observeForever(defaultAddressObserver)
         addressFormViewModel.editAddress.observeForever(editAddressObserver)
@@ -88,7 +90,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Get Default Address Success`() {
         // Given
-        coEvery { repo.getDefaultAddress(any(), true) } returns GetDefaultAddressResponse()
+        coEvery { getDefaultAddress(any()) } returns GetDefaultAddressResponse()
 
         // When
         addressFormViewModel.getDefaultAddress("address")
@@ -100,7 +102,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Get Default Address Fail`() {
         // Given
-        coEvery { repo.getDefaultAddress(any(), true) } throws defaultThrowable
+        coEvery { getDefaultAddress(any()) } throws defaultThrowable
 
         // When
         addressFormViewModel.getDefaultAddress("address")
