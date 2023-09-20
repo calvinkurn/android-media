@@ -304,7 +304,7 @@ class SellerFeedbackKmpFragment :
                     feedbackPage = getFeedbackPage(),
                     feedbackDetail = getFeedbackDetail()
                 )
-                viewModel?.submitFeedback(sellerFeedback)
+                viewModel?.submitFeedbackKmp(sellerFeedback)
             }
         }
     }
@@ -452,18 +452,30 @@ class SellerFeedbackKmpFragment :
 
     private val observerSubmitResult = Observer<SubmitResult> {
         when (it) {
-            is SubmitResult.Success -> setOnSuccessFeedbackSaved()
+            is SubmitResult.SubmitFeedbackSuccess -> {
+                Log.d("submitFeedbackSuccess", it.submitFeedbackModel.toString())
+            }
+            is SubmitResult.Success -> {
+                setOnSuccessFeedbackSaved()
+            }
             is SubmitResult.UploadFail -> {
+                Log.d("submitFeedbackUploadFail", it.cause.stackTraceToString())
                 logToCrashlytics(it.cause, ERROR_UPLOAD)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_upload))
             }
             is SubmitResult.SubmitFail -> {
+                Log.d("submitFeedbackSubmitFail", it.cause.stackTraceToString())
                 logToCrashlytics(it.cause, ERROR_SUBMIT)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_submit))
             }
             is SubmitResult.NetworkFail -> {
+                Log.d("submitFeedbackNetworkFail", it.cause.stackTraceToString())
                 logToCrashlytics(it.cause, ERROR_NETWORK)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_network))
+            }
+
+            else -> {
+                // no op
             }
         }
         buttonSend?.apply {

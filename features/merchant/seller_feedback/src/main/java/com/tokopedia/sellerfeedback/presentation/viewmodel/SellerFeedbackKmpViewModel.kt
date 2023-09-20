@@ -8,6 +8,8 @@ import com.tokopedia.gql.Result
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.seller.feedback.data.param.FeedbackParam
+import com.tokopedia.seller.feedback.domain.SubmitFeedbackUseCase
 import com.tokopedia.sellerfeedback.data.SubmitResult
 import com.tokopedia.sellerfeedback.domain.SubmitGlobalFeedbackUseCase
 import com.tokopedia.sellerfeedback.error.SubmitThrowable
@@ -26,6 +28,7 @@ class SellerFeedbackKmpViewModel @Inject constructor(
     private val dispatcherProviders: CoroutineDispatchers,
     private val uploaderUseCase: UploaderUseCase,
     private val submitGlobalFeedbackUseCase: SubmitGlobalFeedbackUseCase,
+    private val submitFeedbackUseCase: SubmitFeedbackUseCase,
     private val getHostPolicyUseCase: GetHostPolicyUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProviders.main) {
@@ -73,7 +76,6 @@ class SellerFeedbackKmpViewModel @Inject constructor(
 
             sellerFeedback.shopId = userSession.shopId.toLongOrZero()
 
-            submitGlobalFeedbackUseCase.setParams(sellerFeedback)
             val result = submitGlobalFeedbackUseCase.executeOnBackground()
 
             val submitGlobalFeedback = result.submitGlobalFeedback
@@ -82,6 +84,42 @@ class SellerFeedbackKmpViewModel @Inject constructor(
             }
 
             submitResult.postValue(SubmitResult.Success)
+        }, onError = {
+                val result = when (it) {
+                    is UploadThrowable -> SubmitResult.UploadFail(it)
+                    is SubmitThrowable -> SubmitResult.SubmitFail(it)
+                    else -> SubmitResult.NetworkFail(it)
+                }
+                submitResult.postValue(result)
+            })
+    }
+
+    fun submitFeedbackKmp(sellerFeedback: SellerFeedback) {
+        launchCatchError(block = {
+            val uploadIds = feedbackImageList.map {
+                uploadImage(it.imageUrl)
+            }
+
+            val submitFeedbackParam = FeedbackParam(
+                shopId = userSession.shopId.toLongOrZero(),
+                score = sellerFeedback.feedbackScore,
+                type = sellerFeedback.feedbackType,
+                page = sellerFeedback.feedbackPage,
+                detail = sellerFeedback.feedbackDetail,
+                uploadId1 = uploadIds.getOrNull(0),
+                uploadId2 = uploadIds.getOrNull(1),
+                uploadId3 = uploadIds.getOrNull(2)
+            )
+
+            val result = submitFeedbackUseCase.execute(submitFeedbackParam)
+
+            val successResult = (result as? Result.Success)?.data
+
+            if (successResult?.isError == true) {
+                throw SubmitThrowable(successResult.errorMessage)
+            }
+
+            submitResult.postValue(SubmitResult.SubmitFeedbackSuccess(successResult))
         }, onError = {
                 val result = when (it) {
                     is UploadThrowable -> SubmitResult.UploadFail(it)
