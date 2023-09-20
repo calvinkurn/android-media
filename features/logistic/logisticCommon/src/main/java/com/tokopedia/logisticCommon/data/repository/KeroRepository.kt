@@ -10,7 +10,6 @@ import com.tokopedia.logisticCommon.data.request.AddAddressParam
 import com.tokopedia.logisticCommon.data.request.EditAddressParam
 import com.tokopedia.logisticCommon.data.response.AddAddressResponse
 import com.tokopedia.logisticCommon.data.response.AddressResponse
-import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
@@ -29,16 +28,6 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         private const val PARAM_TRACK_ACTIVITY = "track_activity"
         private const val PARAM_LATLNG = "latlng"
         private const val PARAM_IS_MANAGE_ADDRESS_FLOW = "is_manage_address_flow"
-    }
-
-    suspend fun getDistrictBoundaries(districtId: Long): GetDistrictBoundaryResponse {
-        val param = mapOf("districtId" to districtId)
-        val request = GraphqlRequest(
-            KeroLogisticQuery.kero_district_boundary,
-            GetDistrictBoundaryResponse::class.java,
-            param
-        )
-        return gql.getResponse(request)
     }
 
     suspend fun getAddressDetail(addressId: String, source: String, needToTrack: Boolean = false): KeroGetAddressResponse.Data {

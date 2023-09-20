@@ -12,6 +12,7 @@ import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictBoundariesUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
@@ -50,6 +51,7 @@ class PinpointNewPageViewModelTest {
 
     private val repo: KeroRepository = mockk(relaxed = true)
     private val getDistrict: GetDistrictUseCase = mockk(relaxed = true)
+    private val getDistrictBoundaries: GetDistrictBoundariesUseCase = mockk(relaxed = true)
     private val getDistrictMapper = GetDistrictMapper()
     private val districtBoundaryMapper = DistrictBoundaryMapper()
 
@@ -77,6 +79,7 @@ class PinpointNewPageViewModelTest {
             PinpointNewPageViewModel(
                 repo,
                 getDistrict,
+                getDistrictBoundaries,
                 getDistrictMapper,
                 districtBoundaryMapper,
                 mapsGeocodeUseCase
@@ -118,14 +121,14 @@ class PinpointNewPageViewModelTest {
 
     @Test
     fun `Get District Boundaries Success`() {
-        coEvery { repo.getDistrictBoundaries(any()) } returns GetDistrictBoundaryResponse()
+        coEvery { getDistrictBoundaries(any()) } returns GetDistrictBoundaryResponse()
         pinpointNewPageViewModel.getDistrictBoundaries()
         verify { districtBoundaryObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Boundaries Fail`() {
-        coEvery { repo.getDistrictBoundaries(any()) } throws defaultThrowable
+        coEvery { getDistrictBoundaries(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictBoundaries()
         verify { districtBoundaryObserver.onChanged(match { it is Fail }) }
     }

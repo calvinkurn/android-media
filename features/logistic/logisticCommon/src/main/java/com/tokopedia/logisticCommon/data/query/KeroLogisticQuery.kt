@@ -131,32 +131,6 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
-    val kero_district_boundary = """
-        query keroGetDistrictBoundaryArray(${'$'}districtId: Int!) {
-          keroGetDistrictBoundaryArray(input: {
-            district_id: ${'$'}districtId
-          }) {
-            type
-            properties {
-              id
-              name
-            }
-            geometry {
-              type
-              coordinates
-              crs {
-                type
-                properties {
-                  id
-                  name
-                }
-              }
-            }
-          }
-        }
-
-    """.trimIndent()
-
     val district_recommendation = """
         query GetDistrictRecommendation(${'$'}query: String, ${'$'}page: String){
           kero_district_recommendation(query:${'$'}query, page:${'$'}page) {
