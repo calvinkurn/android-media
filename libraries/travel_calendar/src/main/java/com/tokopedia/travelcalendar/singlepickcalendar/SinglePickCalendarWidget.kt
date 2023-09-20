@@ -32,7 +32,7 @@ open class SinglePickCalendarWidget : BottomSheetUnify() {
 
     var isFirstTime: Boolean = true
 
-    private var binding by autoClearedNullable<DialogCalendarSinglePickBinding>()
+    protected var binding by autoClearedNullable<DialogCalendarSinglePickBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

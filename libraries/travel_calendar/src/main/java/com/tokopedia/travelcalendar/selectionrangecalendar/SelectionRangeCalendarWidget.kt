@@ -37,7 +37,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var binding by autoClearedNullable<DialogCalendarMultiPickBinding>()
+    protected var binding by autoClearedNullable<DialogCalendarMultiPickBinding>()
 
     lateinit var selectionRangeCalendarViewModel: SelectionRangeCalendarViewModel
 
