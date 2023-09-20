@@ -44,7 +44,8 @@ class GlobalRecommendationViewHolder(
                 anchorProductId = element.productId,
                 isUserLoggedIn = callback.userSession.isLoggedIn,
                 userId = callback.userSession.userId,
-                warehouseId = element.warehouseId
+                warehouseId = element.warehouseId,
+                offerId = element.offerId
             )
         )
 

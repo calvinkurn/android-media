@@ -53,6 +53,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.global.Recomme
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.CLICK_RECOMMENDATION_ITEM_PDP_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.DELETE_RECOMMENDATION_ITEM_PDP_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.SEE_ALL_RECOMMENDATION_PDP_ATC
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.SEE_ALL_RECOMMENDATION_PDP_ATC_BMGM
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
@@ -236,6 +237,16 @@ class RecommendationCarouselWidgetTrackingPDPATC(
     }
 
     override fun sendEventSeeAll() {
+        if (isBMGM()) {
+            sendEventSeeAllOfBMGM()
+        } else {
+            sendEventSeeAllOfGeneral()
+        }
+    }
+
+    private fun isBMGM() = widget.pageName == "pdp_bmgm_olp"
+
+    private fun sendEventSeeAllOfGeneral() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, CLICK_HOMEPAGE,
@@ -245,6 +256,22 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                 TRACKER_ID, SEE_ALL_RECOMMENDATION_PDP_ATC,
                 BUSINESS_UNIT, BUSINESS_UNIT_HOME,
                 CURRENT_SITE, CURRENT_SITE_MP
+            )
+        )
+    }
+
+    private fun sendEventSeeAllOfBMGM() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, "clickPG",
+                EVENT_ACTION, "click lihat semua bmgm",
+                EVENT_CATEGORY, PDP,
+                EVENT_LABEL, source.offerId,
+                TRACKER_ID, SEE_ALL_RECOMMENDATION_PDP_ATC_BMGM,
+                BUSINESS_UNIT, "Physical Goods",
+                CURRENT_SITE, CURRENT_SITE_MP,
+                PRODUCT_ID, source.anchorProductId,
+                USERID, userId
             )
         )
     }

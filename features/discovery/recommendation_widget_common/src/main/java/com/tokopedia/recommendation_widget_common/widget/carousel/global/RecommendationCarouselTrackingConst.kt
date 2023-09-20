@@ -32,6 +32,7 @@ object RecommendationCarouselTrackingConst {
         const val CLICK_RECOMMENDATION_ITEM_PDP_ATC = "43019"
         const val ATC_RECOMMENDATION_ITEM_PDP_ATC = "43020"
         const val SEE_ALL_RECOMMENDATION_PDP_ATC = "43021"
+        const val SEE_ALL_RECOMMENDATION_PDP_ATC_BMGM = "46751"
         const val DELETE_RECOMMENDATION_ITEM_PDP_ATC = "43022"
         const val ADJUST_QTY_ITEM_PDP_ATC = "43024"
     }
