@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.util
 
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants.RATING_5
 
 interface ReviewPendingItemListener {
     fun trackCardClicked(reputationId: String, productId: String, isEligible: Boolean)
@@ -12,5 +13,5 @@ interface ReviewPendingItemListener {
     fun onReviewCredibilityWidgetImpressed(title: String, position: Int)
     fun shouldShowCoachMark(): Boolean
     fun updateCoachMark()
-    fun onClickBulkReview(appLink: String, rating: Int)
+    fun onClickBulkReview(appLink: String, rating: Int = RATING_5)
 }

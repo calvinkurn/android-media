@@ -11,8 +11,11 @@ import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendin
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.ItemBulkReviewBinding
 import com.tokopedia.review.inbox.databinding.ItemReviewPendingBulkCardProductBinding
-import com.tokopedia.reviewcommon.constant.ReviewCommonConstants.RATING_5
 import com.tokopedia.unifycomponents.toPx
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class BulkReviewViewHolder(
     view: View,
@@ -30,7 +33,7 @@ class BulkReviewViewHolder(
 
     override fun bind(element: BulkReviewUiModel) = with(binding) {
         val data = element.data
-        val onClickBulkReview = createOnClickBulkReview(data.appLink)
+
         bulkReviewTitle.text = data.title
 
         val thumbnailContainer = bulkReviewThumbnailContainer
@@ -45,22 +48,27 @@ class BulkReviewViewHolder(
                 addMargin = index != 0,
                 moreInfo = moreInfo
             ).apply {
-                setOnClickListener(onClickBulkReview)
+                setOnClickListener { listener.onClickBulkReview(data.appLink) }
             }
             thumbnailContainer.addView(imageUnify)
         }
 
         bulkReviewStars.setListener(object :
                 AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
+                private var disableClick = false
                 override fun onClick(position: Int) {
-                    listener.onClickBulkReview(data.appLink, position)
+                    if (disableClick) return
+                    disableClick = true
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(100L * position)
+                        listener.onClickBulkReview(data.appLink, position)
+                        delay(200L)
+                        bulkReviewStars.resetStars()
+                        disableClick = false
+                    }
                 }
             })
-        root.setOnClickListener(onClickBulkReview)
-    }
-
-    private fun createOnClickBulkReview(appLink: String, rating: Int = RATING_5): (View) -> Unit {
-        return { listener.onClickBulkReview(appLink, RATING_5) }
+        root.setOnClickListener { listener.onClickBulkReview(data.appLink) }
     }
 
     private fun BulkReviewUiModel.Product.toProductCard(

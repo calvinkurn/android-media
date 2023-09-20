@@ -692,7 +692,6 @@ class ReviewPendingFragment :
     }
 
     private fun reloadBulkReviewCard() {
-        (adapter as? ReviewPendingAdapter)?.removeBulkReview()
         viewModel.getBulkReview()
     }
 }

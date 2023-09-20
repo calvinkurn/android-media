@@ -4,7 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
 
 class BulkReviewUiModel(
-    val data: Data
+    var data: Data,
+    var resetStars: Boolean = false
 ) : Visitable<ReviewPendingAdapterTypeFactory> {
     override fun type(typeFactory: ReviewPendingAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -29,5 +30,4 @@ class BulkReviewUiModel(
             val count: String
         ) : Product()
     }
-
 }
