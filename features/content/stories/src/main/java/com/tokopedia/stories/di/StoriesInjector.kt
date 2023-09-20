@@ -12,7 +12,7 @@ object StoriesInjector {
             .baseAppComponent(
                 (context.applicationContext as BaseMainApplication).baseAppComponent,
             )
-            .storiesModule(StoriesModule(context))
+            .storiesModule(StoriesModule())
             .build()
     }
 

@@ -4,23 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.common.util.withCache
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.stories.analytic.StoriesAnalytics
+import com.tokopedia.stories.analytic.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
-import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
-import com.tokopedia.stories.view.animation.ZoomOutPageTransformer
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.animation.StoriesPageAnimation
+import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.utils.SHOP_ID
+import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -28,20 +33,39 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class StoriesGroupFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFactory: StoriesViewModelFactory.Creator,
+    private val analyticFactory: StoriesAnalytics.Factory,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesGroupBinding? = null
     private val binding: FragmentStoriesGroupBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+    val authorId: String
+        get() = arguments?.getString(SHOP_ID).orEmpty()
+
+    /*** TODO
+    //  we need to know everytime stories open from where
+    // add the logic later
+    // currently used for tracker
+     ***/
+    val entryPoint: String
+        get() = "Entry Point"
+
+    val viewModelProvider get() = viewModelFactory.create(requireActivity(), authorId)
+
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(authorId)
+
+    private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
+
+    private var mTrackGroupChanged = false
 
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            showSelectedGroupHighlight(position)
-            viewModelAction(StoriesUiAction.SetGroupMainData(position))
             super.onPageSelected(position)
+            showSelectedGroupHighlight(position)
+            viewModelAction(StoriesUiAction.SetMainData(position))
+            trackMoveGroup()
         }
     }
 
@@ -49,12 +73,13 @@ class StoriesGroupFragment @Inject constructor(
         StoriesGroupPagerAdapter(
             childFragmentManager,
             requireActivity(),
-            lifecycle
+            lifecycle,
+            shopId = authorId
         )
     }
 
     override fun getScreenName(): String {
-        return TAG
+        return TAG_FRAGMENT_STORIES_GROUP
     }
 
     override fun onCreateView(
@@ -70,11 +95,19 @@ class StoriesGroupFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupObserver()
+
+        viewModelAction(StoriesUiAction.SetInitialData)
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModelAction(StoriesUiAction.SaveInstanceStateData)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModelAction(PauseStories)
+        trackImpressionGroup()
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
@@ -87,7 +120,7 @@ class StoriesGroupFragment @Inject constructor(
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
         if (storiesGroupViewPager.adapter != null) return@with
         storiesGroupViewPager.adapter = pagerAdapter
-        storiesGroupViewPager.setPageTransformer(ZoomOutPageTransformer())
+        storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
     }
 
@@ -99,6 +132,7 @@ class StoriesGroupFragment @Inject constructor(
     private fun showSelectedGroupHighlight(position: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
             binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
+            binding.tvHighlight.show()
             binding.tvHighlight.animate().alpha(1f)
             delay(1000)
             binding.tvHighlight.animate().alpha(0f)
@@ -107,81 +141,111 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
+            viewModel.storiesState.withCache().collectLatest { (prevState, state) ->
+                renderStoriesGroup(prevState?.storiesMainData, state.storiesMainData)
             }
         }
     }
 
     private fun setupUiEventObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiEvent.collect { event ->
+            viewModel.storiesEvent.collect { event ->
                 when (event) {
-                    is StoriesUiEvent.SelectGroup -> selectGroupEvent(event.position, event.showAnimation)
-                    StoriesUiEvent.FinishedAllStories -> activity?.finish()
+                    is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     is StoriesUiEvent.ErrorGroupPage -> {
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
                             showToast("error group network ${event.throwable}")
-                        }
-                        else {
+                        } else {
                             // TODO handle error fetch here
                             showToast("error group content ${event.throwable}")
                         }
                         showPageLoading(false)
                     }
-                    else -> {}
+                    StoriesUiEvent.EmptyGroupPage -> {
+                        // TODO handle empty data here
+                        showToast("data group is empty")
+                        showPageLoading(false)
+                    }
+                    StoriesUiEvent.FinishedAllStories -> activity?.finish()
+                    else -> return@collect
                 }
             }
         }
     }
 
     private fun renderStoriesGroup(
-        prevState: StoriesGroupUiModel?,
-        state: StoriesGroupUiModel
+        prevState: StoriesUiModel?,
+        state: StoriesUiModel
     ) {
-        if (prevState == null || prevState.groupItems.size == state.groupItems.size) return
-
-        if (state.groupItems.isEmpty()) {
-            // TODO handle error empty data state here
-            Toast.makeText(
-                requireContext(),
-                "Don't worry this is debug: ask BE team why data categories is empty :)"
-                , Toast.LENGTH_LONG
-            ).show()
-            return
-        }
+        if (prevState == state || pagerAdapter.getCurrentData().size == state.groupItems.size) return
 
         pagerAdapter.setStoriesGroup(state)
-        pagerAdapter.notifyItemRangeChanged(0, state.groupItems.size)
+        pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
+        selectGroupPosition(state.selectedGroupPosition, false)
 
         showPageLoading(false)
     }
 
-    private fun selectGroupEvent(position: Int, showAnimation: Boolean ) = with(binding.storiesGroupViewPager) {
+    private fun selectGroupPosition(position: Int, showAnimation: Boolean) = with(binding.storiesGroupViewPager) {
+        if (position < 0) return@with
+
         setCurrentItem(position, showAnimation)
     }
 
-    private fun showPageLoading(isShowLoading: Boolean) = with(binding){
+    private fun showPageLoading(isShowLoading: Boolean) = with(binding) {
         layoutGroupLoading.container.showWithCondition(isShowLoading)
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
+    private fun trackImpressionGroup() {
+        analytic.sendViewStoryCircleEvent(
+            entryPoint = entryPoint,
+            currentCircle = viewModel.mGroup.groupId,
+            promotions = viewModel.impressedGroupHeader.mapIndexed { index, storiesGroupHeader ->
+                StoriesEEModel(
+                    creativeName = "",
+                    creativeSlot = index.plus(1).toString(),
+                    itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.groupName} - $authorId",
+                    itemName = "/ - stories",
+                )
+            },
+        )
+    }
+
+    private fun trackMoveGroup() {
+        if (!mTrackGroupChanged) {
+            mTrackGroupChanged = true
+            return
+        }
+
+        analytic.sendClickMoveToOtherGroup(entryPoint = entryPoint)
+    }
+
+    private fun trackExitRoom() {
+        analytic.sendClickExitStoryRoomEvent(
+            entryPoint = entryPoint,
+            storiesId = viewModel.mDetail.id,
+            creatorType = "asgc",
+            contentType = viewModel.mDetail.content.type.value,
+            currentCircle = viewModel.mGroup.groupName,
+        )
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        trackExitRoom()
         binding.storiesGroupViewPager.unregisterOnPageChangeCallback(pagerListener)
         _binding = null
     }
 
     companion object {
-        const val TAG = "StoriesGroupFragment"
-
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle
         ): StoriesGroupFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesGroupFragment
+            val oldInstance = fragmentManager.findFragmentByTag(TAG_FRAGMENT_STORIES_GROUP) as? StoriesGroupFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 StoriesGroupFragment::class.java.name

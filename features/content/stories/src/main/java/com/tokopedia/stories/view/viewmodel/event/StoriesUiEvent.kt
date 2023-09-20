@@ -18,4 +18,10 @@ sealed interface StoriesUiEvent {
     data class ShowInfoEvent(val message: Int) : StoriesUiEvent
     data class ErrorGroupPage(val throwable: Throwable): StoriesUiEvent
     data class ErrorDetailPage(val throwable: Throwable): StoriesUiEvent
+    data class ErrorFetchCaching(val throwable: Throwable): StoriesUiEvent
+    data class ErrorSetTracking(val throwable: Throwable): StoriesUiEvent
+
+    object EmptyGroupPage: StoriesUiEvent
+    object EmptyDetailPage: StoriesUiEvent
+    object FinishedAllStories : StoriesUiEvent
 }
