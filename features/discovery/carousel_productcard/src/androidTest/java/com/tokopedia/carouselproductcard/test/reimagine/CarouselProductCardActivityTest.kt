@@ -11,16 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardView
 import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
-import com.tokopedia.carouselproductcard.test.R
+import com.tokopedia.carouselproductcard.test.R as carouselproductcardtestR
 import com.tokopedia.productcard.reimagine.ProductCardModel
 
 class CarouselProductCardActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.carousel_product_card_activity_test_layout)
+        setContentView(carouselproductcardtestR.layout.carousel_product_card_activity_test_layout)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.carouselProductCardRecyclerView)
+        val recyclerView = findViewById<RecyclerView>(carouselproductcardtestR.id.carouselProductCardRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = Adapter()
     }
@@ -54,7 +54,7 @@ class CarouselProductCardActivityTest: AppCompatActivity() {
     ): RecyclerView.ViewHolder(itemView) {
 
         companion object {
-            val LAYOUT = R.layout.carousel_product_card_reimagine_item_test_layout
+            val LAYOUT = carouselproductcardtestR.layout.carousel_product_card_reimagine_item_test_layout
         }
 
         private val item: CarouselProductCardView? by lazy {

@@ -3,6 +3,7 @@ package com.tokopedia.filter.quick
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.tokopedia.filter.R
 import com.tokopedia.filter.databinding.SortFilterQuickItemBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -49,7 +50,7 @@ internal class SortFilterItemViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.filter.R.layout.sort_filter_quick_item
+        val LAYOUT = R.layout.sort_filter_quick_item
     }
 
     interface Listener {

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.productcard.test.R
+import com.tokopedia.productcard.test.R as productcardtestR
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.productcard.R as productcardR
 
@@ -20,9 +20,11 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.product_card_reimagine_grid_carousel_activity_test_layout)
+        setContentView(productcardtestR.layout.product_card_reimagine_grid_carousel_activity_test_layout)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.productCardReimagineGridCarouselTestRecyclerView)
+        val recyclerView = findViewById<RecyclerView>(
+            productcardtestR.id.productCardReimagineGridCarouselTestRecyclerView
+        )
         recyclerView.adapter = Adapter()
         recyclerView.layoutManager = createLayoutManager()
     }
@@ -35,7 +37,11 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         private val testData = productCardReimagineCarouselGridTestData
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.product_card_reimagine_grid_carousel_item_test_layout, null)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(
+                    productcardtestR.layout.product_card_reimagine_grid_carousel_item_test_layout,
+                    null
+                )
 
             return ViewHolder(view)
         }
@@ -57,10 +63,10 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         private val testDescription: TextView? by lazy {
-            itemView.findViewById(R.id.productCardReimagineTestDescription)
+            itemView.findViewById(productcardtestR.id.productCardReimagineTestDescription)
         }
         private val productCardView: ProductCardGridCarouselView? by lazy {
-            itemView.findViewById(R.id.productCardReimagineGridCarouselView)
+            itemView.findViewById(productcardtestR.id.productCardReimagineGridCarouselView)
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {

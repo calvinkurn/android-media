@@ -37,9 +37,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import com.tokopedia.carouselproductcard.R as carouselProductCardR
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
+import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class InspirationCarouselViewHolder(
     itemView: View,
@@ -184,8 +186,8 @@ class InspirationCarouselViewHolder(
             )
             it.addItemDecorationIfNotExists(
                 InspirationCarouselChipsListItemDecoration(
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
+                    getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
                 )
             )
 
@@ -282,7 +284,7 @@ class InspirationCarouselViewHolder(
     private fun viewAllCardReimagine(activeOption: InspirationCarouselDataView.Option) =
         if (activeOption.applink.isNotEmpty())
             CarouselProductCardViewAllCardModel(
-                ctaText = getString(carouselProductCardR.string.see_more_card_see_all),
+                ctaText = getString(carouselproductcardR.string.see_more_card_see_all),
                 onClick = {
                     inspirationCarouselListener.onInspirationCarouselChipsSeeAllClicked(
                         activeOption)
@@ -460,7 +462,7 @@ class InspirationCarouselViewHolder(
     }
 
     private suspend fun getProductCardMaxHeight(list: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)
         return list.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
@@ -505,8 +507,8 @@ class InspirationCarouselViewHolder(
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return InspirationCarouselItemDecoration(
-            getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-            getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+            getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
+            getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
         )
     }
 

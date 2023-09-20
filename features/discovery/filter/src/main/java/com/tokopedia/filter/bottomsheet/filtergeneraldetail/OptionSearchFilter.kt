@@ -28,7 +28,7 @@ internal class OptionSearchFilter(
     }
 
     override fun publishResults(constraint: CharSequence, results: FilterResults) {
-        val resultList = results.values as List<IOption>? ?: return
+        val resultList = results.values as? List<IOption>? ?: return
 
         onReceiveFilterResult(resultList)
     }

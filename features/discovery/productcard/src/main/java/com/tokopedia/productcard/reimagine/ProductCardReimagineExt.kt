@@ -13,28 +13,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.utils.toOverlayUnifyLabelType
-import com.tokopedia.productcard.utils.toUnifyTextColor
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifycomponents.R as unifyComponentsR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 private val LABEL_COLOR_MAP by lazyThreadSafetyNone { mapOf(
     Label.HIGHLIGHT_LIGHT_GREEN to
-        (unifyComponentsR.color.Unify_GN50
-            to unifyComponentsR.color.Unify_GN500),
+        (unifycomponentsR.color.Unify_GN50
+            to unifycomponentsR.color.Unify_GN500),
 ) }
-
-internal fun Typography.initLabelGroupText(labelGroup: ProductCardModel.LabelGroup?) {
-    if (labelGroup == null) hide()
-    else showTypography(labelGroup)
-}
-
-private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
-    shouldShowWithAction(labelGroup.hasTitle()) {
-        it.text = MethodChecker.fromHtml(labelGroup.title)
-        it.setTextColor(labelGroup.type.toUnifyTextColor(context))
-    }
-}
 
 internal fun Typography.initLabelGroupLabel(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) hide()
