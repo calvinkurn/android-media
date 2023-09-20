@@ -1022,6 +1022,12 @@ class ChatbotFragment2 :
                 }
             }
         }
+
+        viewModel.applink.observe(viewLifecycleOwner) { applink ->
+            context?.let { context ->
+                RouteManager.route(context, applink)
+            }
+        }
     }
 
     private fun handleAddAttachmentButtonViewState(toShow: Boolean) {
@@ -1998,7 +2004,7 @@ class ChatbotFragment2 :
                 if (isNeedAuthToken && RouteManager.isSupportApplink(activity, applinkWebview)) {
                     RouteManager.route(activity, applinkWebview)
                 } else if (isBranchIOLink(url)) {
-                    RouteManager.route(activity, url)
+                    viewModel.extractBranchLink(url)
                 } else {
                     super.onGoToWebView(url, id)
                 }
