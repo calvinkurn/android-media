@@ -6,6 +6,12 @@
     android:padding="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupContent"
+        app:constraint_referenced_ids="shimmerHero,shimmerTopFeatureLeft,shimmerTopFeatureRight,shimmerNavigation,shimmerBanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmerHero"
         android:layout_width="0dp"
@@ -59,5 +65,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmerNavigation"
         app:loader_type="rect" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/gePageError"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
