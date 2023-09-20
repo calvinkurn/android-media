@@ -1,6 +1,5 @@
 package com.tokopedia.topads.common.domain.usecase
 
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -14,15 +13,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TopAdsGetAutoAdsUseCase @Inject constructor(
-    val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface,
     private val graphqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<AutoAdsResponse.TopAdsGetAutoAds>() {
 
     var params: RequestParams = RequestParams.create()
 
     override suspend fun executeOnBackground(): AutoAdsResponse.TopAdsGetAutoAds {
-        params.putString(SHOPID,userSession.shopId)
-        params.putString(SOURCE,"android.see_ads_performance")
+        params.putString(SHOPID, userSession.shopId)
+        params.putString(SOURCE, "android.see_ads_performance")
         val gqlRequest = GraphqlRequest(
             GetAutoAdsV2,
             AutoAdsResponse::class.java,
@@ -47,4 +46,3 @@ class TopAdsGetAutoAdsUseCase @Inject constructor(
         }
     }
 }
-

@@ -31,7 +31,7 @@ class EditAddressRevampNoPinpointTest {
 
     @get:Rule
     var permissionRule: GrantPermissionRule =
-            GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -73,7 +73,6 @@ class EditAddressRevampNoPinpointTest {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
     }
-
 
     companion object {
         const val KEYWORD = "Tokopedia"

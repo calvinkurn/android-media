@@ -204,8 +204,8 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             Assert.assertEquals(
-                false,
-                viewModel.isTkpdOrderStatusFailed.value
+                true,
+                viewModel.isTkpdOrderStatus.value
             )
         }
     }
@@ -223,8 +223,8 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             Assert.assertEquals(
-                true,
-                viewModel.isTkpdOrderStatusFailed.value
+                false,
+                viewModel.isTkpdOrderStatus.value
             )
         }
     }

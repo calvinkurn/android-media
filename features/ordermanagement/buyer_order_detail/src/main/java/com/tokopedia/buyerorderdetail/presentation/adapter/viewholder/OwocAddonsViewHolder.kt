@@ -25,4 +25,21 @@ class OwocAddonsViewHolder(itemView: View) : AbstractViewHolder<OwocAddonsListUi
             OwocPartialProductAddonViewHolder(partialItemOwocAddonsBinding)
         owocPartialProductAddonViewHolder?.bindViews(element)
     }
+
+    override fun bind(element: OwocAddonsListUiModel?, payloads: MutableList<Any>) {
+        payloads.firstOrNull()?.let {
+            if (it is Pair<*, *>) {
+                val (oldItem, newItem) = it
+                if (oldItem is OwocAddonsListUiModel && newItem is OwocAddonsListUiModel) {
+                    if (oldItem != newItem) {
+                        newItem?.let { owocAddonListUiModel ->
+                            owocPartialProductAddonViewHolder?.bindViews(owocAddonListUiModel)
+                        }
+                    }
+                    return
+                }
+            }
+        }
+        super.bind(element, payloads)
+    }
 }

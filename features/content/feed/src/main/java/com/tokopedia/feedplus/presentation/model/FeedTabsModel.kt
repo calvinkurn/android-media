@@ -47,7 +47,9 @@ data class MetaModel(
     val isCreationActive: Boolean,
     val showLive: Boolean,
     val liveApplink: String,
-    val entryPoints: List<ContentCreationTypeItem>
+    val entryPoints: List<ContentCreationTypeItem>,
+    val showBrowse: Boolean,
+    val browseApplink: String
 ) {
     companion object {
         val Empty: MetaModel
@@ -58,7 +60,9 @@ data class MetaModel(
                 isCreationActive = false,
                 showLive = false,
                 liveApplink = "",
-                entryPoints = emptyList()
+                entryPoints = emptyList(),
+                showBrowse = false,
+                browseApplink = ""
             )
     }
 }

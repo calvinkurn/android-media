@@ -14,7 +14,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bann
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ContentCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class ContentCardItemViewModel(
+    val application: Application,
+    val components: ComponentsItem,
+    val position: Int
+) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timeCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
@@ -61,7 +65,11 @@ class ContentCardItemViewModel(val application: Application, val components: Com
                             mutableTimerText.value =
                                 application.resources.getString(R.string.discovery_sale_ends_in)
                         }
-                        timeCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, showDays = true) { timerModel ->
+                        timeCounter = SaleCountDownTimer(
+                            saleTimeMillis,
+                            elapsedTime,
+                            showDays = true
+                        ) { timerModel ->
                             if (timerModel.timeFinish) {
                                 stopTimer()
                                 startTimer()

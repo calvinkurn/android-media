@@ -1,7 +1,6 @@
 package com.tokopedia.logisticCommon.data.repository
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -17,7 +16,6 @@ import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
@@ -222,20 +220,6 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         val request = GraphqlRequest(
             KeroLogisticQuery.kero_edit_address,
             KeroEditAddressResponse.Data::class.java,
-            gqlParam
-        )
-        return gql.getResponse(request)
-    }
-
-    suspend fun eligibleForAddressFeature(featureId: Int): KeroAddrIsEligibleForAddressFeatureResponse {
-        val gqlParam = mapOf(
-            "feature_id" to featureId,
-            "device" to "android",
-            "device_version" to GlobalConfig.VERSION_NAME
-        )
-        val request = GraphqlRequest(
-            KeroLogisticQuery.eligible_for_address_feature,
-            KeroAddrIsEligibleForAddressFeatureResponse::class.java,
             gqlParam
         )
         return gql.getResponse(request)
