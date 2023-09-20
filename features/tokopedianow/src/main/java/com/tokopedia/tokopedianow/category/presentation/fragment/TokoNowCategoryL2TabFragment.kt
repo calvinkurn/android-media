@@ -747,6 +747,10 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 similarProduct: ProductCardCompactSimilarProductUiModel,
                 productIdTriggered: String
             ) {
+                val categoryIdL2 = data.categoryIdL2
+                val warehouseIds = viewModel.getWarehouseIds()
+                categoryL2Analytic.similarProductAnalytic
+                    .sendClickSimilarProductCardEvent(categoryIdL2, warehouseIds, similarProduct)
             }
 
             override fun trackClickAddToCart(

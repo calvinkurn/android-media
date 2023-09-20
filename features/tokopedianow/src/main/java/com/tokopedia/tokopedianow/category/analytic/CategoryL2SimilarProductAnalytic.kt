@@ -28,12 +28,14 @@ class CategoryL2SimilarProductAnalytic(private val userSession: UserSessionInter
             "impression produk serupa bottom sheet"
         private const val EVENT_ACTION_ATC_SIMILAR_PRODUCT = "click atc on produk serupa"
         private const val EVENT_ACTION_CLICK_CLOSE_SIMILAR_PRODUCT = "click close on produk serupa"
+        private const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT = "click product card on product serupa"
 
         // TrackerId
         private const val TRACKER_ID_CLICK_DROP_DOWN = "45269"
         private const val TRACKER_ID_IMPRESSION_SIMILAR_PRODUCT = "45270"
         private const val TRACKER_ID_ATC_SIMILAR_PRODUCT = "45271"
         private const val TRACKER_ID_CLICK_CLOSE_SIMILAR_PRODUCT = "45272"
+        private const val TRACKER_ID_CLICK_SIMILAR_PRODUCT = "45577"
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
@@ -163,6 +165,28 @@ class CategoryL2SimilarProductAnalytic(private val userSession: UserSessionInter
             .setEventCategory(EVENT_CATEGORY_PAGE_L2)
             .setEventLabel(categoryIdL2)
             .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_CLICK_CLOSE_SIMILAR_PRODUCT)
+            .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
+            .setCurrentSite("")
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
+    // Tracker ID: 45577
+    fun sendClickSimilarProductCardEvent (
+        categoryIdL2: String,
+        warehouseIds: String,
+        product: ProductCardCompactSimilarProductUiModel,
+    ) {
+        val eventLabel = "$categoryIdL2 - ${product.position} - ${product.id}"
+
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_GROCERIES)
+            .setEventAction(EVENT_ACTION_CLICK_SIMILAR_PRODUCT)
+            .setEventCategory(EVENT_CATEGORY_PAGE_L2)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_CLICK_SIMILAR_PRODUCT)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite("")
             .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
