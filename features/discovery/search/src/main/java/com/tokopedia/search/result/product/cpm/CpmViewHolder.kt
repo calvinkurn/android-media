@@ -48,17 +48,15 @@ class CpmViewHolder(
         }
     }
 
-    private fun isReimagine(): Boolean = reimagineSearch2Component.isReimagineShopAds() || reimagineSearch2Component.isReimagineQuickFilter()
-    private fun isMultiline(): Boolean = !reimagineSearch2Component.isReimagineQuickFilter()
 
     override fun bind(element: CpmDataView) {
-        adjustMargin(isReimagine(), element)
-        binding?.adsBanner?.displayHeadlineAds(element.cpmModel, isReimagine = isReimagine(), hasMultilineProductName = isMultiline())
+        adjustMargin(reimagineSearch2Component.isReimagineShopAds(), element)
+        binding?.adsBanner?.displayHeadlineAds(element.cpmModel, isReimagine = reimagineSearch2Component.isReimagineShopAds(), hasMultilineProductName = reimagineSearch2Component.hasMultilineProductName())
     }
 
     private fun adjustMargin(isReimagine: Boolean, itemCPM: CpmDataView) {
-        val cpmData = itemCPM.cpmModel.data.first()
-        if (cpmData.cpm.layout == LAYOUT_2 && isReimagine) {
+        val cpmData = itemCPM.cpmModel.data.firstOrNull()
+        if (cpmData?.cpm?.layout == LAYOUT_2 && isReimagine) {
             adjustMarginLayout2Reimagine()
         } else {
             adjustMarginLayoutControl()
