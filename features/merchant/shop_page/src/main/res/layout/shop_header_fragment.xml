@@ -52,7 +52,7 @@
         app:lottie_autoPlay="false"
         app:lottie_loop="false" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottom_view_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,6 +64,8 @@
             android:id="@+id/mini_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/sticky_login_text"
             android:visibility="gone" />
 
         <com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
@@ -73,6 +75,8 @@
             android:visibility="gone"
             app:sticky_highlight_color="@color/Unify_GN500"
             app:sticky_left_icon="@drawable/ic_toped_widget_login"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tabLayout"
             tools:visibility="visible" />
 
         <com.google.android.material.tabs.TabLayout
@@ -84,7 +88,14 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:tabIndicatorHeight="0dp"
             app:tabMode="fixed" />
-    </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dms_clr_AAB4C8_25"
+            app:layout_constraintBottom_toTopOf="@id/tabLayout"
+            app:layout_constraintLeft_toLeftOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
