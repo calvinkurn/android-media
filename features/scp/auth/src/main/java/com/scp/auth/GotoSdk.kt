@@ -62,7 +62,7 @@ object GotoSdk {
     private fun getCvSdkProvider(application: Application): CvSdkProvider {
         return GotoVerification.getInstance(
             context = application,
-            configurations = VerificationSdkConfig(),
+            configurations = VerificationSdkConfig(application),
             services = VerificationServices(),
             identifier = CvsdkFlowType.Main
         )
@@ -82,7 +82,7 @@ class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
     }
 
     override fun getAuthConfigs(): LSdkAuthConfig {
-        return LSdkAuthConfig(clientID = "tokopedia:consumer:app", clientSecret = "qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu")
+        return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g")
     }
 
 
