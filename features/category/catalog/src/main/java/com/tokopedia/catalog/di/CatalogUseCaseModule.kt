@@ -72,9 +72,10 @@ class CatalogUseCaseModule {
     @Provides
     fun getProductCatalogOneUseCase(
         catalogDetailRepository: CatalogDetailRepository,
-        context: Context
+        context: Context,
+        userSession: UserSessionInterface
     ): CatalogDetailUseCase {
-        return CatalogDetailUseCase(catalogDetailRepository, CatalogDetailUiMapper(context))
+        return CatalogDetailUseCase(catalogDetailRepository, CatalogDetailUiMapper(context), userSession)
     }
 
     @CatalogScope

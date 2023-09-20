@@ -30,15 +30,13 @@ class CatalogDetailPageViewModel @Inject constructor(
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
 
-    fun getProductCatalog(catalogId: String,comparedCatalogId : String,userId : String, device : String) {
+    fun getProductCatalog(catalogId: String, comparedCatalogId : String) {
         launchCatchError(
             dispatchers.io,
             block = {
-                catalogDetailUseCase.getCatalogReimagineDetail(
+                catalogDetailUseCase.getCatalogDetailV4(
                     catalogId,
                     comparedCatalogId,
-                    userId,
-                    device,
                     _catalogDetailDataModel
                 )
             },
