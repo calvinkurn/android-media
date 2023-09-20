@@ -6,6 +6,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -26,8 +27,9 @@ class BannerShopProductRevampViewHolder(
     override fun bind(element: BannerShopProductUiModel?) {
         element?.let { model ->
             val productCardViewModel = model.product
+            val cpmData = model.cpmData
             productCardGridViewA.run {
-                setProductModel(mapperToProductModelReimagine(productCardViewModel))
+                setProductModel(mapperToProductModelReimagine(productCardViewModel, cpmData))
 
                 addOnImpressionListener(element) {
                     impressionListener?.onImpressionProductAdsItem(
@@ -50,7 +52,8 @@ class BannerShopProductRevampViewHolder(
         }
     }
 
-    private fun mapperToProductModelReimagine(item: ProductCardModel): com.tokopedia.productcard.reimagine.ProductCardModel {
+    private fun mapperToProductModelReimagine(item: ProductCardModel, cpmData: CpmData): com.tokopedia.productcard.reimagine.ProductCardModel {
+        val shopBadge = cpmData.cpm.badges.firstOrNull()
         return com.tokopedia.productcard.reimagine.ProductCardModel(
             imageUrl = item.productImageUrl,
             isAds = item.isTopAds,
@@ -66,6 +69,10 @@ class BannerShopProductRevampViewHolder(
                     imageUrl = labelGroup.imageUrl
                 )
             },
+            shopBadge = com.tokopedia.productcard.reimagine.ProductCardModel.ShopBadge(
+                shopBadge?.imageUrl.orEmpty(),
+                shopBadge?.title.orEmpty(),
+            ),
             rating = item.ratingString,
             freeShipping = com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping(item.freeOngkir.imageUrl),
             hasMultilineName = hasMultilineProductName

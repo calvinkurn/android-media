@@ -48,6 +48,7 @@ import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductRevampViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreRevampViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerUiModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
@@ -325,7 +326,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderSeeMoreCard(isReimagine: Boolean) {
         if (isReimagine)
-            BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more_revamp
+            BannerShowMoreRevampViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more_revamp
         else
             BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
     }

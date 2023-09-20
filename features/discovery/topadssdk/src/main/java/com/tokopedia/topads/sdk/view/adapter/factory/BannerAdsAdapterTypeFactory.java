@@ -11,6 +11,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerProductShim
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductRevampViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreRevampViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerUiModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel;
@@ -57,7 +58,11 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
 
     @Override
     public int type(BannerShopViewMoreUiModel viewModel) {
-        return BannerShowMoreViewHolder.LAYOUT;
+        if(isReimagine) {
+            return BannerShowMoreRevampViewHolder.LAYOUT;
+        } else {
+            return BannerShowMoreViewHolder.LAYOUT;
+        }
     }
 
     @Override
@@ -76,6 +81,8 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
             holder = new BannerShopProductRevampViewHolder(view, topAdsBannerClickListener, itemImpressionListener, hasMultilineProductName);
         } else if (viewType == BannerShowMoreViewHolder.LAYOUT) {
             holder = new BannerShowMoreViewHolder(view, topAdsBannerClickListener);
+        } else if(viewType == BannerShowMoreRevampViewHolder.LAYOUT){
+            holder = new BannerShowMoreRevampViewHolder(view, topAdsBannerClickListener);
         } else if (viewType == BannerProductShimmerViewHolder.Companion.getLAYOUT()) {
             holder = new BannerProductShimmerViewHolder(view);
         } else {
