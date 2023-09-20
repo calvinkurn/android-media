@@ -379,7 +379,7 @@ object DeeplinkMainApp {
         ),
         "gojek-account-link" to mutableListOf(
             DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW
+                ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW
             }
         ),
         "gold-merchant-statistic-dashboard" to mutableListOf(
