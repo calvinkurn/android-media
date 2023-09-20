@@ -93,6 +93,7 @@ class BmgmSectionViewHolder(
 
     private fun setupBundleAdapter() {
         binding.rvOrderBmgm.run {
+            isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = bmgmItemAdapter
             setupRecyclerViewItemDecoration()
@@ -115,13 +116,12 @@ class BmgmSectionViewHolder(
                         dividerDrawable,
                         ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
                         ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
-                        ITEM_DECORATION_HORIZONTAL_MARGIN.toPx(),
+                        ITEM_DECORATION_HORIZONTAL_MARGIN.toPx()
                     )
                 )
             }
         }
     }
-
 
     private fun setupBmgmHeader(bmgmName: String, bmgmIconUrl: String) {
         binding.tvOrderBmgmName.text = bmgmName

@@ -49,6 +49,7 @@ class BmgmAddOnSummaryViewHolder(
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewAdapter() {
+        rvAddOn.isNestedScrollingEnabled = false
         rvAddOn.adapter = adapter
     }
 
