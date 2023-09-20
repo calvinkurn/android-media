@@ -55,6 +55,19 @@ fun ImageView.grayscale() {
     this.colorFilter = filter
 }
 
+fun ImageView.grayScaleFilter() {
+    val colorMatrix = ColorMatrix()
+    colorMatrix.set(
+        floatArrayOf(
+            0.33f, 0.33f, 0.33f, 0f, 0f,
+            0.33f, 0.33f, 0.33f, 0f, 0f,
+            0.33f, 0.33f, 0.33f, 0f, 0f,
+            0f, 0f, 0f, 1f, 0f
+        )
+    )
+    colorFilter = ColorMatrixColorFilter(colorMatrix)
+}
+
 fun Typography.showTextOrHide(text: String?) {
     if (text.isNullOrEmpty()) {
         this.hide()

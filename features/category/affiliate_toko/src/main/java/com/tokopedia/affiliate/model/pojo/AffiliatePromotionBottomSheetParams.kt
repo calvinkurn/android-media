@@ -17,7 +17,8 @@ data class AffiliatePromotionBottomSheetParams(
     val commission: String = "",
     val status: String = "",
     val type: String? = "pdp",
-    val ssaInfo: SSAInfo? = null
+    val ssaInfo: SSAInfo? = null,
+    val imageArray: List<String?>? = null
 ) : Parcelable {
     @Parcelize
     data class SSAInfo(
