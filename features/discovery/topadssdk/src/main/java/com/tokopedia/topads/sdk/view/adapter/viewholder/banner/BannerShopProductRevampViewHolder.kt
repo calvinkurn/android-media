@@ -53,7 +53,7 @@ class BannerShopProductRevampViewHolder(
     }
 
     private fun mapperToProductModelReimagine(item: ProductCardModel, cpmData: CpmData): com.tokopedia.productcard.reimagine.ProductCardModel {
-        val shopBadge = cpmData.cpm.badges
+        val shopBadge = cpmData.cpm.badges.firstOrNull()
         return com.tokopedia.productcard.reimagine.ProductCardModel(
             imageUrl = item.productImageUrl,
             isAds = item.isTopAds,
@@ -70,8 +70,8 @@ class BannerShopProductRevampViewHolder(
                 )
             },
             shopBadge = com.tokopedia.productcard.reimagine.ProductCardModel.ShopBadge(
-                shopBadge.first().imageUrl,
-                shopBadge.first().title,
+                shopBadge?.imageUrl.orEmpty(),
+                shopBadge?.title.orEmpty(),
             ),
             rating = item.ratingString,
             freeShipping = com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping(item.freeOngkir.imageUrl),
