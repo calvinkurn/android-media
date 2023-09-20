@@ -1,6 +1,5 @@
 package com.tokopedia.home_component.viewholders
 
-import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -103,8 +102,8 @@ class TodoWidgetViewHolder(
     }
 
     override fun bind(element: TodoWidgetListDataModel) {
-        if (element.isShowTodoWidget()) {
-            binding?.homeComponentTodoWidgetRv?.show()
+        if (element.isShowWidget()) {
+            itemView.show()
             setHeaderComponent(element)
             setChannelDivider(element)
             when (element.status) {
@@ -119,16 +118,8 @@ class TodoWidgetViewHolder(
                 }
             }
         } else {
-            binding?.homeComponentTodoWidgetRv?.gone()
-            binding?.homeComponentHeaderView?.gone()
-            binding?.homeComponentDividerHeader?.gone()
-            binding?.homeComponentDividerFooter?.gone()
+            itemView.gone()
         }
-    }
-
-    override fun bind(element: TodoWidgetListDataModel, payloads: MutableList<Any>) {
-        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(TodoWidgetListDataModel.PAYLOAD_IS_REFRESH, false) == true) return
-        bind(element)
     }
 
     override fun dismiss(element: CarouselTodoWidgetDataModel, position: Int) {

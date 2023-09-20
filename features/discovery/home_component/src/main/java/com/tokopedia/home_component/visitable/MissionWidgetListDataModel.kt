@@ -45,7 +45,7 @@ data class MissionWidgetListDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return this === b
+        return this == b
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

@@ -30,7 +30,6 @@ data class TodoWidgetListDataModel(
         const val STATUS_LOADING = 0
         const val STATUS_ERROR = 1
         const val STATUS_SUCCESS = 2
-        const val PAYLOAD_NO_SHIMMER = "noShimmer"
     }
 
     fun isShowWidget() : Boolean {
@@ -50,16 +49,7 @@ data class TodoWidgetListDataModel(
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
-        val bundle = Bundle()
-        bundle.putBoolean(PAYLOAD_NO_SHIMMER, isRefresh(b))
-        return bundle
-    }
-
-    private fun isRefresh(b: Any?): Boolean {
-        return b is TodoWidgetListDataModel
-            && b.status == STATUS_LOADING
-            && this.status != STATUS_LOADING
-            && !b.showShimmering
+        return Bundle.EMPTY
     }
 
     override fun type(typeFactory: HomeComponentTypeFactory): Int {
