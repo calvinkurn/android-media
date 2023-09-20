@@ -839,7 +839,7 @@ class CartRevampFragment :
             dialog?.setPrimaryCTAClickListener {
                 var forceExpand = false
                 if (allDisabledCartItemDataList.size > 3 && unavailableItemAccordionCollapseState) {
-                    collapseOrExpandDisabledItem(viewModel.cartDataList.value)
+                    collapseOrExpandDisabledItem()
                     forceExpand = true
                 }
                 viewModel.processDeleteCartItem(
@@ -1071,7 +1071,7 @@ class CartRevampFragment :
                 viewModel.cartModel
             )
             if (allDisabledCartItemData.size > 3 && unavailableItemAccordionCollapseState) {
-                collapseOrExpandDisabledItem(viewModel.cartDataList.value)
+                collapseOrExpandDisabledItem()
                 forceExpand = true
             }
 
@@ -1596,9 +1596,9 @@ class CartRevampFragment :
         }
     }
 
-    private fun collapseOrExpandDisabledItem(cartDataList: ArrayList<Any>) {
+    private fun collapseOrExpandDisabledItem() {
         val disabledAccordionHolderData =
-            CartDataHelper.getDisabledAccordionHolderData(cartDataList)
+            CartDataHelper.getDisabledAccordionHolderData(viewModel.cartDataList.value)
         disabledAccordionHolderData?.let {
             it.isCollapsed = !it.isCollapsed
             unavailableItemAccordionCollapseState = it.isCollapsed
@@ -2405,7 +2405,7 @@ class CartRevampFragment :
                 is DeleteCartEvent.Failed -> {
                     deleteCartEvent.apply {
                         if (forceExpandCollapsedUnavailableItems) {
-                            collapseOrExpandDisabledItem(viewModel.cartDataList.value)
+                            collapseOrExpandDisabledItem()
                         }
                         hideProgressLoading()
                         showToastMessageRed(throwable)
@@ -3162,7 +3162,7 @@ class CartRevampFragment :
 
         if (allDisabledCartItemData.size > 3) {
             if (forceExpandCollapsedUnavailableItems) {
-                collapseOrExpandDisabledItem(updateListResult)
+                collapseOrExpandDisabledItem()
             }
         }
 
