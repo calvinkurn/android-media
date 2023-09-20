@@ -14,6 +14,7 @@ import com.tokopedia.logisticCommon.data.response.KeroAddAddress
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -43,6 +44,7 @@ class AddressFormViewModelTest {
 
     private val repo: KeroRepository = mockk(relaxed = true)
     private val getDefaultAddress: GetDefaultAddressUseCase = mockk(relaxed = true)
+    private val getAddressDetail: GetAddressDetailUseCase = mockk(relaxed = true)
     private val saveAddressDataModel = SaveAddressDataModel()
     private val addressId = "12345"
     private val sourceValue = ""
@@ -79,7 +81,7 @@ class AddressFormViewModelTest {
     }
 
     private fun initObserver() {
-        addressFormViewModel = AddressFormViewModel(repo, getDefaultAddress)
+        addressFormViewModel = AddressFormViewModel(repo, getAddressDetail, getDefaultAddress)
         addressFormViewModel.saveAddress.observeForever(saveAddressObserver)
         addressFormViewModel.defaultAddress.observeForever(defaultAddressObserver)
         addressFormViewModel.editAddress.observeForever(editAddressObserver)
@@ -188,7 +190,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Get Address Detail Data Success`() {
         // Given
-        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+        coEvery { getAddressDetail(any()) } returns KeroGetAddressResponse.Data(
             keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
                 data = arrayListOf(spyk())
             )
@@ -204,7 +206,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Get Address Detail Data Success but empty data list`() {
         // Given
-        coEvery { repo.getAddressDetail(any(), any()) } returns KeroGetAddressResponse.Data()
+        coEvery { getAddressDetail(any()) } returns KeroGetAddressResponse.Data()
 
         // When
         addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
@@ -216,7 +218,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Get Address Detail Data Fail`() {
         // Given
-        coEvery { repo.getAddressDetail(any(), any(), true) } throws defaultThrowable
+        coEvery { getAddressDetail(any()) } throws defaultThrowable
 
         // When
         addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
@@ -228,7 +230,7 @@ class AddressFormViewModelTest {
     @Test
     fun `WHEN user already editing address THEN dont hit detail address from BE again`() {
         // Given
-        coEvery { repo.getAddressDetail(any(), any()) } throws defaultThrowable
+        coEvery { getAddressDetail(any()) } throws defaultThrowable
         val saveDataModel = SaveAddressDataModel(
             receiverName = "name",
             phone = "081222222222",
@@ -963,7 +965,7 @@ class AddressFormViewModelTest {
         val longitude = "106.827153"
 
         // Given
-        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+        coEvery { getAddressDetail(any()) } returns KeroGetAddressResponse.Data(
             keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
                 data = arrayListOf(
                     spyk(
@@ -996,7 +998,7 @@ class AddressFormViewModelTest {
         val longitude = "106.827153"
 
         // Given
-        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+        coEvery { getAddressDetail(any()) } returns KeroGetAddressResponse.Data(
             keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
                 data = arrayListOf(
                     spyk(
@@ -1029,7 +1031,7 @@ class AddressFormViewModelTest {
         val longitude = "106.827153"
 
         // Given
-        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+        coEvery { getAddressDetail(any()) } returns KeroGetAddressResponse.Data(
             keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
                 data = arrayListOf(
                     spyk(
@@ -1062,7 +1064,7 @@ class AddressFormViewModelTest {
         val longitude = "106.827153"
 
         // Given
-        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+        coEvery { getAddressDetail(any()) } returns KeroGetAddressResponse.Data(
             keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
                 data = arrayListOf(
                     spyk(
@@ -1095,7 +1097,7 @@ class AddressFormViewModelTest {
         val longitude = "106.827153"
 
         // Given
-        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+        coEvery { getAddressDetail(any()) } returns KeroGetAddressResponse.Data(
             keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
                 data = arrayListOf(
                     spyk(
@@ -1128,7 +1130,7 @@ class AddressFormViewModelTest {
         val longitude = "106.827153"
 
         // Given
-        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
+        coEvery { getAddressDetail(any()) } returns KeroGetAddressResponse.Data(
             keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
                 data = arrayListOf(
                     spyk(

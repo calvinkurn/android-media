@@ -160,40 +160,6 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
-    val kero_get_address_detail = """
-        query getAddressDetail(${'$'}input: KeroGetAddressInput!){
-            kero_get_address(input: ${'$'}input) {
-                data {
-                  addr_id
-                  receiver_name
-                  addr_name
-                  address_1
-                  address_2
-                  postal_code
-                  province
-                  city
-                  district
-                  phone
-                  province_name
-                  city_name
-                  district_name
-                  status
-                  country
-                  latitude
-                  longitude
-                  is_primary
-                  is_active
-                  is_whitelist
-                  address_detail_street
-                  address_detail_notes
-                }
-                status
-                server_process_time
-                config
-            }
-        }
-    """.trimIndent()
-
     val kero_edit_address = """
         mutation editAddress(${'$'}input:KeroAddressInput!) {
           kero_edit_address(input:${'$'}input) {

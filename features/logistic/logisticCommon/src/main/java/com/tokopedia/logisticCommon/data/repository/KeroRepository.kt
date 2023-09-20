@@ -13,7 +13,6 @@ import com.tokopedia.logisticCommon.data.response.AddressResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
-import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
@@ -22,29 +21,8 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
 
     companion object {
         private const val LIMIT_ADDRESS_LIST = 5
-        private const val PARAM_ADDR_IDS = "addr_ids"
-        private const val PARAM_EXTRACT_ADDRESS_DETAIL = "extract_address_detail"
-        private const val PARAM_SOURCE = "source"
-        private const val PARAM_TRACK_ACTIVITY = "track_activity"
         private const val PARAM_LATLNG = "latlng"
         private const val PARAM_IS_MANAGE_ADDRESS_FLOW = "is_manage_address_flow"
-    }
-
-    suspend fun getAddressDetail(addressId: String, source: String, needToTrack: Boolean = false): KeroGetAddressResponse.Data {
-        val param = mapOf(
-            "input" to mapOf(
-                PARAM_ADDR_IDS to addressId,
-                PARAM_EXTRACT_ADDRESS_DETAIL to true,
-                PARAM_SOURCE to source,
-                PARAM_TRACK_ACTIVITY to needToTrack
-            )
-        )
-        val request = GraphqlRequest(
-            KeroLogisticQuery.kero_get_address_detail,
-            KeroGetAddressResponse.Data::class.java,
-            param
-        )
-        return gql.getResponse(request)
     }
 
     suspend fun getAddress(): AddressResponse {

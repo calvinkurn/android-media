@@ -13,6 +13,8 @@ import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.domain.param.GetDefaultAddressParam
+import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,7 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddressFormViewModel @Inject constructor(private val repo: KeroRepository, private val getDefaultAddress: GetDefaultAddressUseCase) : ViewModel() {
+class AddressFormViewModel @Inject constructor(private val repo: KeroRepository, private val getAddressDetail: GetAddressDetailUseCase, private val getDefaultAddress: GetDefaultAddressUseCase) : ViewModel() {
 
     companion object {
         const val MIN_CHAR_PHONE_NUMBER = 9
@@ -78,7 +80,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository,
         if (draftAddressDataModel == null) {
             viewModelScope.launch {
                 try {
-                    val addressDetail = repo.getAddressDetail(addressId, sourceValue, needToTrack = true)
+                    val addressDetail = getAddressDetail(GetDetailAddressParam(addressIds = addressId, source = sourceValue, needToTrack = true))
                     addressDetail.keroGetAddress.data.firstOrNull()?.let {
                         AddAddressMapper.mapAddressDetailToSaveAddressDataModel(it).apply {
                             saveDataModel = this
