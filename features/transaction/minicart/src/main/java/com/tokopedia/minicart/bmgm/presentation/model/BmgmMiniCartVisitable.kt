@@ -17,7 +17,7 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
         val priceBeforeBenefit: Double = 0.0,
         val priceAfterBenefit: Double = 0.0,
         val products: List<ProductUiModel> = emptyList(),
-        var impressHolder: ImpressHolder = ImpressHolder()
+        val impressHolder: ImpressHolder = ImpressHolder()
     ) : BmgmMiniCartVisitable {
 
         override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {

@@ -2,8 +2,22 @@ package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
 import com.tokopedia.cartrevamp.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
+import com.tokopedia.cartrevamp.view.uimodel.CartBmGmTickerData
+import com.tokopedia.cartrevamp.view.uimodel.CartDetailInfo
+import com.tokopedia.cartrevamp.view.uimodel.CartGroupBmGmHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
+import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cartrevamp.view.uimodel.GetBmGmGroupProductTickerState
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import io.mockk.coEvery
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -15,6 +29,7 @@ class CartBmGmTest : BaseCartViewModelTest() {
         // GIVEN
         val valueOfferId = 1L
         val bmGmData = BmGmGetGroupProductTickerResponse()
+        cartViewModel.cartModel.lastOfferId = 1L
 
         coEvery { bmGmGetGroupProductTickerUseCase(any()) } returns bmGmData
 
@@ -34,6 +49,7 @@ class CartBmGmTest : BaseCartViewModelTest() {
         val valueOfferId = 1L
         val exception =
             ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+        cartViewModel.cartModel.lastOfferId = 1L
 
         coEvery { bmGmGetGroupProductTickerUseCase(any()) } throws exception
 
@@ -45,5 +61,105 @@ class CartBmGmTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(GetBmGmGroupProductTickerState.Failed(Pair(valueOfferId, exception)), cartViewModel.bmGmGroupProductTickerState.value)
+    }
+
+    @Test
+    fun `WHEN removeProductByCartId THEN should return correct new list after being deleted`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartId = "123",
+            isSelected = true,
+            cartBmGmTickerData = CartBmGmTickerData(
+                isShowBmGmDivider = true,
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    CartDetailInfo.BmGmData(offerId = 1L)
+                )
+            )
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(
+            cartId = "124",
+            isSelected = false,
+            cartBmGmTickerData = CartBmGmTickerData(
+                isShowBmGmDivider = true,
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    CartDetailInfo.BmGmData(offerId = 1L)
+                )
+            )
+        )
+        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
+        val cartItemHolderDataFour = CartItemHolderData(cartId = "126", isSelected = false)
+        val cartGroupHolderData = CartGroupHolderData(
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo,
+                cartItemHolderDataThree,
+                cartItemHolderDataFour
+            ),
+            cartGroupBmGmHolderData = CartGroupBmGmHolderData(
+                hasBmGmOffer = true
+            )
+        )
+
+        val disabledReasonHolderData = DisabledReasonHolderData()
+        val cartItemHolderSecondData =
+            CartItemHolderData(cartId = "234", isSelected = true, isError = true)
+        val cartItemHolderSecondDataTwo =
+            CartItemHolderData(cartId = "235", isSelected = true, isError = true)
+        val cartGroupHolderDataTwo = CartGroupHolderData(
+            isError = true,
+            productUiModelList = mutableListOf(
+                cartItemHolderSecondData,
+                cartItemHolderSecondDataTwo
+            )
+        )
+
+        val cartItemHolderThirdData = CartItemHolderData(cartId = "345")
+        val cartGroupHolderDataThree = CartGroupHolderData(
+            productUiModelList = mutableListOf(cartItemHolderThirdData)
+        )
+
+        val cartItemHolderFourData = CartItemHolderData(cartId = "456")
+        val cartGroupHolderDataFour = CartGroupHolderData(
+            productUiModelList = mutableListOf(cartItemHolderFourData)
+        )
+
+        val selectedAmountHolderData = CartSelectedAmountHolderData()
+        val disabledItemHeaderHolderData = DisabledItemHeaderHolderData()
+        val disabledAccordionHolderData = DisabledAccordionHolderData()
+
+        cartViewModel.cartDataList.value = arrayListOf(
+            selectedAmountHolderData,
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo,
+            cartItemHolderDataThree,
+            cartItemHolderDataFour,
+            cartGroupHolderDataThree,
+            cartItemHolderThirdData,
+            cartGroupHolderDataFour,
+            cartItemHolderFourData,
+            disabledItemHeaderHolderData,
+            disabledReasonHolderData,
+            cartGroupHolderDataTwo,
+            cartItemHolderSecondData,
+            cartItemHolderSecondDataTwo,
+            disabledAccordionHolderData,
+            CartWishlistHolderData(),
+            CartRecommendationItemHolderData(recommendationItem = RecommendationItem()),
+            CartTopAdsHeadlineData(),
+            CartRecentViewHolderData()
+        )
+
+        // WHEN
+        val newCartDataList = cartViewModel.removeProductByCartId(
+            listOf("123", "124", "234", "235", "456"),
+            needRefresh = true,
+            isFromGlobalCheckbox = false
+        )
+
+        // THEN
+        assertEquals(10, newCartDataList.size)
     }
 }
