@@ -18,6 +18,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
@@ -37,6 +38,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBanne
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -61,7 +63,7 @@ class ShopHomeNplCampaignViewHolder(
     private val masterJob = SupervisorJob()
     private var isRemindMe: Boolean? = null
     private val rvProductCarousel: RecyclerView? = viewBinding?.rvProductCarousel
-    private val bannerBackground: ShopCarouselBannerImageUnify? = viewBinding?.bannerBackground
+    private val bannerBackground: ImageUnify? = viewBinding?.bannerBackground
     private val timerUnify: TimerUnifySingle? = viewBinding?.nplTimer
     private val timerMoreThanOneDay: Typography? = viewBinding?.textTimerMoreThan1Day
     private val textTimeDescription: Typography? = viewBinding?.nplTimerDescription
@@ -75,7 +77,7 @@ class ShopHomeNplCampaignViewHolder(
     private val textFollowersOnly: Typography? = viewBinding?.tvExclusiveFollower
     private val nplPromoOfferContainer: ConstraintLayout? = viewBinding?.nplPromoOfferContainer
     private val textVoucherWording: Typography? = viewBinding?.nplOfferText
-    private val containerProductList: View? = viewBinding?.containerProductList
+    private val containerBackground: View? = viewBinding?.containerBackground
     override val coroutineContext = masterJob + Dispatchers.Main
 
     companion object {
@@ -176,7 +178,7 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun setShopReimaginedContainerMargin() {
-        containerProductList?.let {
+        containerBackground?.let {
             it.clipToOutline = true
             it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
             (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
@@ -290,15 +292,7 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         bannerBackground?.apply {
-            try {
-                if (context.isValidGlideContext()) {
-                    if (DeviceScreenInfo.isTablet(context)) {
-                        setImageUrlTileMode(bannerUrl)
-                    } else {
-                        setImageUrl(bannerUrl, isOverrideScaleType = false)
-                    }
-                }
-            } catch (e: Exception) { }
+            loadImage(bannerUrl)
         }
     }
 
