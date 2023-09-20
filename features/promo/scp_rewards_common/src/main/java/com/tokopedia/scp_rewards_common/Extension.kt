@@ -97,3 +97,8 @@ fun ImageUnify.loadImageOrFallback(imageUrl: String?, fallback: Int = 0, onFallb
         }
     }
 }
+
+fun String.camelToSnakeCase(): String {
+    val pattern = "(?<=.)[A-Z]".toRegex()
+    return this.replace(pattern, "_$0").lowercase()
+}
