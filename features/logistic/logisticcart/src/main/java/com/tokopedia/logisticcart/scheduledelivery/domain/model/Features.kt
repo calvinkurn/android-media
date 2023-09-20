@@ -6,7 +6,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Ontim
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class Features(
+data class Features(
     @SerializedName("ontime_delivery_guarantee")
     val onTimeDeliveryGuarantee: OntimeDeliveryGuarantee = OntimeDeliveryGuarantee()
 ) : Parcelable
