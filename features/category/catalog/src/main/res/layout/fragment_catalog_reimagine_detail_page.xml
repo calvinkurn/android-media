@@ -74,7 +74,7 @@
                 android:maxLines="1"
                 android:textColor="@color/Unify_NN950"
                 android:textSize="12sp"
-                app:typographyWeight="reguler"
+                app:typographyWeight="bold"
                 tools:text="{05} Out west" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -85,7 +85,7 @@
                 android:maxLines="1"
                 android:textColor="@color/Unify_NN950"
                 android:textSize="14sp"
-                app:typographyWeight="reguler"
+                app:typographyWeight="bold"
                 tools:text="Rp100 rb - 250 rb" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
