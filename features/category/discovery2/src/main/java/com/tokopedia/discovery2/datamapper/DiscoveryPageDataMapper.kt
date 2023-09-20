@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.datamapper
 
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
@@ -20,6 +21,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
@@ -52,7 +54,7 @@ fun mapDiscoveryResponseToPageData(
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
     val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, discoveryResponse.queryParamMapWithRpc, discoveryResponse.queryParamMapWithoutRpc, userAddressData, isLoggedIn, shouldHideSingleProdCard)
-    if (!discoveryResponse.components.isNullOrEmpty()) {
+    if (discoveryResponse.components.isNotEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(
             discoveryResponse.components.filter {
                 pageInfo.identifier?.let { identifier ->
@@ -209,12 +211,10 @@ class DiscoveryPageDataMapper(
     }
 
     private fun getFiltersFromQuery(component: ComponentsItem) {
-        for ((key, v) in queryParameterMapWithRpc) {
-            v?.let { value ->
-                val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
-                if (adjustedValue.isNotEmpty()) {
-                    component.searchParameter.set(key, adjustedValue)
-                }
+        for ((key, value) in queryParameterMapWithRpc) {
+            val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
+            if (adjustedValue.isNotEmpty()) {
+                component.searchParameter.set(key, adjustedValue)
             }
         }
     }
@@ -229,9 +229,7 @@ class DiscoveryPageDataMapper(
         if (getSectionPositionMap(pageEndPoint) == null) {
             setSectionPositionMap(mutableMapOf(), pageEndPoint)
         }
-        getSectionPositionMap(pageEndPoint)?.let {
-            it.put(sectionId, position)
-        }
+        getSectionPositionMap(pageEndPoint)?.put(sectionId, position)
     }
 
     private fun addAutoPlayController(component: ComponentsItem) {
@@ -299,14 +297,16 @@ class DiscoveryPageDataMapper(
                     DiscoveryDataMapper.mapTabsListToComponentList(
                         component,
                         ComponentNames.TabsIconItem.componentName
-                    ), component.tabName
+                    ),
+                    component.tabName
                 )
             } else {
                 component.setComponentsItem(
                     DiscoveryDataMapper.mapTabsListToComponentList(
                         component,
                         ComponentNames.TabsItem.componentName
-                    ), component.tabName
+                    ),
+                    component.tabName
                 )
             }
         } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") { // this is for the forced redirection case only, whenever tabs position is change using the product click from one tab to other
@@ -334,7 +334,7 @@ class DiscoveryPageDataMapper(
                             }
                             if (!targetComponentIdList.isNullOrEmpty()) {
                                 val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
-                                targetComponentIdList.forEachIndexed { compIndex, componentId ->
+                                targetComponentIdList.forEachIndexed { _, componentId ->
                                     if (isDynamicTabs) {
                                         handleDynamicTabsComponents(componentId, index, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
@@ -545,8 +545,10 @@ class DiscoveryPageDataMapper(
     }
 
     private fun updateWithCart(list: List<ComponentsItem>, map: Map<MiniCartItemKey, MiniCartItem>?): Boolean {
+        if (map == null) return false
+
         var shouldRefresh = false
-        if (map == null) return shouldRefresh
+
         list.forEach { item ->
             item.data?.firstOrNull()?.let { dataItem ->
                 if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.parentProductId ?: "", type = MiniCartItemType.PARENT))) {
@@ -605,26 +607,43 @@ class DiscoveryPageDataMapper(
         return listComponents
     }
 
-    private fun handleQuickFilter(component: ComponentsItem){
+    private fun handleQuickFilter(component: ComponentsItem) {
         component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
-        if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
+
+        if (!component.isSelectedFiltersFromQueryApplied && queryParameterMapWithRpc.isNotEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
                 component
             )
         }
+
         Utils.getTargetComponentOfFilter(component)?.let {
-            if (it.selectedFilters.isNullOrEmpty() &&
-                component.searchParameter.getSearchParameterHashMap().isNotEmpty()
-            ) {
-                it.selectedFilters = component.searchParameter.getSearchParameterHashMap()
+            val parameterMap = component.searchParameter.getSearchParameterHashMap()
+
+            if (it.selectedFilters.isNullOrEmpty() && parameterMap.isNotEmpty()) {
+                it.selectedFilters = parameterMap
             }
         }
+
         component.properties?.targetId?.let {
-            getComponent(it, component.pageEndPoint).apply {
-                this?.parentFilterComponentId = component.id
+            getComponent(it, component.pageEndPoint)?.apply {
+                parentFilterComponentId = component.id
             }
         }
+
+        addQueryParentOnSearchParameter(component)
+    }
+
+    private fun addQueryParentOnSearchParameter(component: ComponentsItem) {
+        val query = discoComponentQuery?.get(QUERY_PARENT)
+
+        val existingParams = component.searchParameter.getSearchParameterMap()
+
+        val parameter = SearchParameterFactory
+            .withExistingParameter(existingParams)
+            .construct(query, component.pagePath)
+
+        parameter?.run { component.searchParameter = SearchParameter(this) }
     }
 }
 

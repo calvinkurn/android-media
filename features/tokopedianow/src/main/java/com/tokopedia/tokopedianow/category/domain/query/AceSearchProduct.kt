@@ -71,6 +71,7 @@ internal object AceSearchProduct: GqlQueryInterface {
                 stock
                 source_engine
                 boosterList
+                warehouseIdDefault
                 shop {
                   id
                   name

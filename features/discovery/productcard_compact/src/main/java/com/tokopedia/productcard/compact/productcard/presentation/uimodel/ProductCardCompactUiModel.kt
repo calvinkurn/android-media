@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 data class ProductCardCompactUiModel(
     val productId: String = "",
+    val warehouseId: String = "",
     val imageUrl: String = "",
     val minOrder: Int = 0,
     val maxOrder: Int = 0,
@@ -25,7 +26,6 @@ data class ProductCardCompactUiModel(
     val labelGroupList: List<LabelGroup> = listOf(),
     val needToChangeMaxLinesName: Boolean = false,
     val hasBlockedAddToCart: Boolean = false,
-    val warehouseId: String = "",
     /**
      * use pre draw only if need dynamic height of product card (ex: carousel)
      */

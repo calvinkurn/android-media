@@ -37,8 +37,9 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
         product: ProductCardCompactCarouselItemUiModel
     ) {
         val position = index + 1
+        val productCard = product.productCardModel
         val eventLabel = "$categoryIdL2 - $title - $position - ${product.getProductId()}"
-        val isAvailable = product.productCardModel.availableStock.isMoreThanZero()
+        val isAvailable = productCard.availableStock.isMoreThanZero()
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(
@@ -49,7 +50,7 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
                 price = product.getProductPrice(),
                 dimension40 = ""
             ).apply {
-                putString(KEY_DIMENSION_56, "")
+                putString(KEY_DIMENSION_56, productCard.warehouseId)
                 putBoolean(KEY_DIMENSION_98, isAvailable)
             }
         )
@@ -81,8 +82,9 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
         product: ProductCardCompactCarouselItemUiModel
     ) {
         val position = index + 1
+        val productCard = product.productCardModel
         val eventLabel = "$categoryIdL2 - $title - $position - ${product.getProductId()}"
-        val isAvailable = product.productCardModel.availableStock.isMoreThanZero()
+        val isAvailable = productCard.availableStock.isMoreThanZero()
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(
@@ -93,7 +95,7 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
                 price = product.getProductPrice(),
                 dimension40 = ""
             ).apply {
-                putString(KEY_DIMENSION_56, "")
+                putString(KEY_DIMENSION_56, productCard.warehouseId)
                 putBoolean(KEY_DIMENSION_98, isAvailable)
             }
         )
@@ -147,7 +149,7 @@ class CategoryL2ProductAdsAnalytic(private val userSession: UserSessionInterface
                 shopName = shopName,
                 shopType = shopType
             ).apply {
-                putString(KEY_DIMENSION_56, "")
+                putString(KEY_DIMENSION_56, product.warehouseId)
                 putBoolean(KEY_DIMENSION_98, isAvailable)
             }
         )
