@@ -1,6 +1,6 @@
 package com.tokopedia.stories.view.viewmodel
 
-import android.os.Bundle
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.ApplinkConst
@@ -13,25 +13,30 @@ import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
-import com.tokopedia.stories.utils.getRandomNumber
-import com.tokopedia.stories.view.model.BottomSheetStatusDefault
-import com.tokopedia.stories.view.model.BottomSheetType
-import com.tokopedia.stories.view.model.ProductBottomSheetUiState
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.PAUSE
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.RESUME
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
-import com.tokopedia.stories.view.model.StoriesGroupItemUiModel
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
-import com.tokopedia.stories.view.model.StoriesUiState
-import com.tokopedia.stories.view.model.isAnyShown
+import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
+import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
+import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
+import com.tokopedia.stories.view.model.StoriesGroupHeader
+import com.tokopedia.stories.view.model.StoriesGroupItem
+import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.utils.getRandomNumber
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.stories.view.viewmodel.state.BottomSheetStatusDefault
+import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
+import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
+import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,48 +46,87 @@ import kotlinx.coroutines.launch
 
 class StoriesViewModel @AssistedInject constructor(
     @Assisted private val authorId: String,
+    @Assisted private val handle: SavedStateHandle,
     private val repository: StoriesRepository,
     private val userSession: UserSessionInterface,
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory  {
-        fun create(
-            authorId: String,
-        ) : StoriesViewModel
+        fun create(authorId: String, handle: SavedStateHandle) : StoriesViewModel
     }
 
-    private val _storiesGroup = MutableStateFlow(StoriesGroupUiModel())
-    private val _storiesDetail = MutableStateFlow(StoriesDetailUiModel())
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
     private val products = MutableStateFlow(ProductBottomSheetUiState.Empty)
 
-    private val mGroupPos = MutableStateFlow(-1)
-    private val mDetailPos = MutableStateFlow(-1)
-    private val mResetValue = MutableStateFlow(-1)
-    private val combineState = MutableStateFlow(StoriesUiState.CombineState.Empty)
+    private val _storiesMainData = MutableStateFlow(StoriesUiModel())
 
-    val mGroupId: String
+    private val _storiesEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
+    val storiesEvent: Flow<StoriesUiEvent>
+        get() = _storiesEvent
+
+    private val _groupPos = MutableStateFlow(-1)
+    private val _detailPos = MutableStateFlow(-1)
+    private val _resetValue = MutableStateFlow(-1)
+
+    val mGroup: StoriesGroupItem
         get() {
-            val currPosition = mGroupPos.value
-            return if (currPosition < 0) ""
-            else _storiesGroup.value.groupItems[currPosition].groupId
+            val groupPosition = _groupPos.value
+            return if (groupPosition < 0) StoriesGroupItem()
+            else {
+                if (groupPosition >= _storiesMainData.value.groupItems.size) StoriesGroupItem()
+                else _storiesMainData.value.groupItems[groupPosition]
+            }
         }
 
-    private val mGroupSize: Int
-        get() = _storiesGroup.value.groupItems.size
-
-    private val mGroupItem: StoriesGroupItemUiModel
+    val mDetail: StoriesDetailItem
         get() {
-            val currPosition = mGroupPos.value
-            return if (currPosition < 0) StoriesGroupItemUiModel()
-            else _storiesGroup.value.groupItems[currPosition]
+            val groupPosition = _groupPos.value
+            val detailPosition = _detailPos.value
+            return if (groupPosition < 0 || detailPosition < 0) StoriesDetailItem()
+            else {
+                when {
+                    groupPosition >= _storiesMainData.value.groupItems.size -> StoriesDetailItem()
+                    detailPosition >= _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size -> StoriesDetailItem()
+                    else -> _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
+                }
+            }
+        }
+
+    private val _impressedGroupHeader = mutableListOf<StoriesGroupHeader>()
+    val impressedGroupHeader: List<StoriesGroupHeader>
+        get() = _impressedGroupHeader
+
+    private val mStoriesMainData: StoriesUiModel
+        get() = _storiesMainData.value
+
+    private val mGroupPos: Int
+        get() = _groupPos.value
+
+    private val mDetailPos: Int
+        get() = _detailPos.value
+
+    private val mGroupSize: Int
+        get() = _storiesMainData.value.groupItems.size
+
+    private val mGroupItem: StoriesGroupItem
+        get() {
+            val groupPosition = _groupPos.value
+            return if (groupPosition < 0) StoriesGroupItem()
+            else {
+                if (_storiesMainData.value.groupItems.size <= groupPosition) StoriesGroupItem()
+                else _storiesMainData.value.groupItems[groupPosition]
+            }
         }
 
     private val mDetailSize: Int
         get() {
-            val currPosition = mGroupPos.value
-            return _storiesGroup.value.groupItems[currPosition].detail.detailItems.size
+            val groupPosition = _groupPos.value
+            return if (groupPosition < 0) 0
+            else {
+                if (groupPosition >= _storiesMainData.value.groupItems.size) 0
+                else _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size
+            }
         }
 
     val storyId : String
@@ -101,34 +145,33 @@ class StoriesViewModel @AssistedInject constructor(
     val isAnyBottomSheetShown : Boolean
         get() = bottomSheetStatus.value.isAnyShown
 
-    private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
-    val uiEvent: Flow<StoriesUiEvent>
-        get() = _uiEvent
+    private val mResetValue: Int
+        get() = _resetValue.value
 
-    val uiState = combine(
-        _storiesGroup,
-        _storiesDetail,
-        bottomSheetStatus,
-        products,
-        combineState,
-    ) { storiesCategories, storiesItem, bottomSheet, product, combineState ->
-        StoriesUiState(
-            storiesGroup = storiesCategories,
-            storiesDetail = storiesItem,
-            bottomSheetStatus = bottomSheet,
-            productSheet = product,
-            combineState = combineState,
-        )
-    }
+    private var mLatestTrackPosition = -1
+
+    val storiesState: Flow<StoriesUiState>
+        get() = combine(
+            _storiesMainData,
+            bottomSheetStatus,
+            products,
+        ) { storiesMainData, sheetStatus, product ->
+            StoriesUiState(
+                storiesMainData = storiesMainData,
+                bottomSheetStatus = sheetStatus,
+                productSheet = product,
+            )
+        }
 
     val userId : String
         get() = userSession.userId.ifEmpty { "0" }
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
-            is StoriesUiAction.SetArgumentsData -> handleSetInitialData(action.data)
-            is StoriesUiAction.SetGroupMainData -> handleGroupMainData(action.selectedGroup)
-            is StoriesUiAction.SetGroup -> handleSetGroup(action.selectedGroup, action.showAnimation)
+            is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
+            is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
+            is StoriesUiAction.CollectImpressedGroup -> handleCollectImpressedGroup(action.data)
+            StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
@@ -143,48 +186,71 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
             StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
+            StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
             else -> {}
         }
     }
 
-    private fun handleSetInitialData(data: Bundle?) {
+    private fun handleSetInitialData() {
+        val storiesMainData = handle.get<StoriesUiModel>(SAVED_INSTANCE_STORIES_MAIN_DATA)
+        val groupPosition =  handle.get<Int>(SAVED_INSTANCE_STORIES_GROUP_POSITION) ?: 0
+        val detailPosition = handle.get<Int>(SAVED_INSTANCE_STORIES_DETAIL_POSITION) ?: 0
+
+        if (storiesMainData == null) launchRequestInitialData()
+        else {
+            _storiesMainData.value = storiesMainData
+            _groupPos.value = groupPosition
+            _detailPos.value = detailPosition
+        }
+    }
+
+    private fun handleSaveInstanceStateData() {
+        handle[SAVED_INSTANCE_STORIES_MAIN_DATA] = mStoriesMainData
+        handle[SAVED_INSTANCE_STORIES_GROUP_POSITION] = mGroupPos
+        handle[SAVED_INSTANCE_STORIES_DETAIL_POSITION] = mDetailPos
+    }
+
+    private fun handleMainData(selectedGroup: Int) {
+        mLatestTrackPosition = -1
+        _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
-            _storiesGroup.value = requestStoriesInitialData()
-            mGroupPos.value = _storiesGroup.value.selectedGroupPosition
+            setInitialData()
+            setCachingData()
         }) { exception ->
-            _uiEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
+            _storiesEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
         }
     }
 
-    private fun handleGroupMainData(selectedGroup: Int) {
-        mGroupPos.update { selectedGroup }
-        setInitialDetailData()
-    }
-
-    private fun handleSetGroup(position: Int, showAnimation: Boolean) {
+    private fun handleSelectGroup(position: Int, showAnimation: Boolean) {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.SelectGroup(position, showAnimation))
+            _storiesEvent.emit(StoriesUiEvent.SelectGroup(position, showAnimation))
         }
+    }
+
+    private fun handleCollectImpressedGroup(data: StoriesGroupHeader) {
+        val isExist = impressedGroupHeader.find { it.groupId == data.groupId }!= null
+        if (isExist) return
+        _impressedGroupHeader.add(data)
     }
 
     private fun handleNext() {
-        val newGroupPosition = mGroupPos.value.plus(1)
-        val newDetailPosition = mDetailPos.value.plus(1)
+        val newGroupPosition = mGroupPos.plus(1)
+        val newDetailPosition = mDetailPos.plus(1)
 
         when {
             newDetailPosition < mDetailSize -> updateDetailData(position = newDetailPosition)
-            newGroupPosition < mGroupSize -> handleSetGroup(position = newGroupPosition, true)
-            else -> viewModelScope.launch { _uiEvent.emit(StoriesUiEvent.FinishedAllStories) }
+            newGroupPosition < mGroupSize -> handleSelectGroup(position = newGroupPosition, true)
+            else -> viewModelScope.launch { _storiesEvent.emit(StoriesUiEvent.FinishedAllStories) }
         }
     }
 
     private fun handlePrevious() {
-        val newGroupPosition = mGroupPos.value.minus(1)
-        val newDetailPosition = mDetailPos.value.minus(1)
+        val newGroupPosition = mGroupPos.minus(1)
+        val newDetailPosition = mDetailPos.minus(1)
 
         when {
             newDetailPosition > -1 -> updateDetailData(position = newDetailPosition)
-            newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition, true)
+            newGroupPosition > -1 -> handleSelectGroup(position = newGroupPosition, true)
             else -> updateDetailData(isReset = true)
         }
     }
@@ -199,37 +265,71 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleContentIsLoaded() {
         updateDetailData(event = RESUME, isSameContent = true)
+        checkAndHitTrackActivity()
     }
 
-    private fun setInitialDetailData() {
+    private suspend fun setInitialData() {
+        val isCached = mGroupItem.detail.detailItems.isNotEmpty()
+        val currentDetail = if (isCached) mGroupItem.detail
+        else {
+            val detailData = requestStoriesDetailData(mGroup.groupId)
+            updateMainData(detail = detailData, groupPosition = mGroupPos)
+            detailData
+        }
+
+        updateDetailData(position = currentDetail.selectedDetailPositionCached, isReset = true)
+        if (currentDetail == StoriesDetail()) _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
+    }
+
+    private fun setCachingData() {
         viewModelScope.launchCatchError(block = {
-            val isCached = mGroupItem.detail != StoriesDetailUiModel()
-
-            val detailData = if (isCached) mGroupItem.detail
-            else requestStoriesDetailData()
-
-            updateGroupData(detail = detailData)
-
-            updateDetailData(
-                position = detailData.selectedDetailPositionCached,
-                isReset = true,
-            )
+            val prevRequest = async { fetchAndCachePreviousGroupDetail() }
+            val nextRequest = async { fetchAndCacheNextGroupDetail() }
+            prevRequest.await()
+            nextRequest.await()
         }) { exception ->
-            updateGroupData(detail = StoriesDetailUiModel())
-            _uiEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
+            _storiesEvent.emit(StoriesUiEvent.ErrorFetchCaching(exception))
         }
     }
 
-    private fun updateGroupData(detail: StoriesDetailUiModel) {
-        _storiesGroup.update { group ->
+    private suspend fun fetchAndCachePreviousGroupDetail() {
+        val prevGroupPos = mGroupPos.minus(1)
+        val prevGroupItem = mStoriesMainData.groupItems.getOrNull(prevGroupPos) ?: return
+        val isPrevGroupCached = prevGroupItem.detail.detailItems.isNotEmpty()
+        if (isPrevGroupCached) return
+
+        val prevGroupId = prevGroupItem.groupId
+
+        try {
+            val prevGroupData = requestStoriesDetailData(prevGroupId)
+            updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
+        } catch (throwable: Throwable) { throw throwable }
+    }
+
+    private suspend fun fetchAndCacheNextGroupDetail() {
+        val nextGroupPos = mGroupPos.plus(1)
+        val nextGroupItem = mStoriesMainData.groupItems.getOrNull(nextGroupPos) ?: return
+        val isNextGroupCached = nextGroupItem.detail.detailItems.isNotEmpty()
+        if (isNextGroupCached) return
+
+        val nextGroupId = nextGroupItem.groupId
+
+        try {
+            val nextGroupData = requestStoriesDetailData(nextGroupId)
+            updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
+        } catch (throwable: Throwable) { throw throwable }
+    }
+
+    private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
+        _storiesMainData.update { group ->
             group.copy(
-                selectedGroupId = mGroupId,
-                selectedGroupPosition = mGroupPos.value,
+                selectedGroupId = mGroup.groupId,
+                selectedGroupPosition = mGroupPos,
                 groupHeader = group.groupHeader.mapIndexed { index, storiesGroupHeader ->
-                    storiesGroupHeader.copy(isSelected = index == mGroupPos.value)
+                    storiesGroupHeader.copy(isSelected = index == mGroupPos)
                 },
                 groupItems = group.groupItems.mapIndexed { index, storiesGroupItemUiModel ->
-                    if (index == mGroupPos.value) {
+                    if (index == groupPosition) {
                         storiesGroupItemUiModel.copy(
                             detail = detail.copy(
                                 selectedGroupId = storiesGroupItemUiModel.groupId,
@@ -243,7 +343,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleOpenKebab() {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.OpenKebab)
+            _storiesEvent.emit(StoriesUiEvent.OpenKebab)
             bottomSheetStatus.update { bottomSheet ->
                 bottomSheet.mapValues {
                     if (it.key == BottomSheetType.Kebab)
@@ -266,7 +366,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleShowDialogDelete() {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.ShowDeleteDialog)
+            _storiesEvent.emit(StoriesUiEvent.ShowDeleteDialog)
         }
     }
 
@@ -274,7 +374,7 @@ class StoriesViewModel @AssistedInject constructor(
         if (bottomSheetStatus.value.isAnyShown || !isProductAvailable) return
 
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.OpenProduct)
+            _storiesEvent.emit(StoriesUiEvent.OpenProduct)
             bottomSheetStatus.update { bottomSheet ->
                 bottomSheet.mapValues {
                     if (it.key == BottomSheetType.Product)
@@ -288,7 +388,7 @@ class StoriesViewModel @AssistedInject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(authorId, storyId)
+            val productList = repository.getStoriesProducts(authorId, storyId, mGroupItem.groupName)
             products.update { productList }
         }, onError = {
             products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
@@ -306,18 +406,17 @@ class StoriesViewModel @AssistedInject constructor(
                 )
 
                 if (response) {
-                    _uiEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
-                } else {
-                    _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
-                }
-            }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
+                    _storiesEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
+                } else throw MessageErrorException()
+
+            }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
         }
     }
 
     private fun handleSharing() {
         viewModelScope.launch {
-            val data = _storiesDetail.value.detailItems.getOrNull(_storiesDetail.value.selectedDetailPosition)?.share ?: return@launch
-            _uiEvent.emit(StoriesUiEvent.TapSharing(data))
+            val data = mDetail.share
+            _storiesEvent.emit(StoriesUiEvent.TapSharing(data))
             bottomSheetStatus.update { bottomSheet ->
                 bottomSheet.mapValues {
                     if (it.key == BottomSheetType.Sharing) true
@@ -330,7 +429,7 @@ class StoriesViewModel @AssistedInject constructor(
         requiredLogin {
             if (action == StoriesProductAction.Buy) {
                 viewModelScope.launch {
-                    _uiEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
+                    _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
                 }
             } else {
                 addToCart(product)
@@ -340,7 +439,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleVariantSheet(product: ContentTaggedProductUiModel) {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
+            _storiesEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
             bottomSheetStatus.update { bottomSheet ->
                 bottomSheet.mapValues {
                     if (it.key == BottomSheetType.GVBS)
@@ -356,7 +455,7 @@ class StoriesViewModel @AssistedInject constructor(
             fn(true)
         } else {
             viewModelScope.launch {
-                _uiEvent.emit(
+                _storiesEvent.emit(
                     StoriesUiEvent.Login { fn(false) }
                 )
             }
@@ -368,48 +467,71 @@ class StoriesViewModel @AssistedInject constructor(
             val response = repository.deleteStory(storyId)
             if (response) {
                 //Remove story~
-                val newList = _storiesGroup.value.groupItems.map {
+                val newList = _storiesMainData.value.groupItems.map {
                     if (it == mGroupItem) it.copy(detail = it.detail.copy(detailItems = it.detail.detailItems.filterNot { item -> item.id == storyId }))
                     else it
                 }
-                _storiesGroup.update {
-                    group -> group.copy(groupItems = newList)
+                _storiesMainData.update {
+                        group -> group.copy(groupItems = newList)
                 }
             } else {
-                _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
+                _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
             }
-        }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
+        }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
     }
 
     private fun updateDetailData(
-        position: Int = mDetailPos.value,
+        position: Int = mDetailPos,
         event: StoriesDetailItemUiEvent = PAUSE,
         isReset: Boolean = false,
         isSameContent: Boolean = false,
     ) {
-        mDetailPos.value = position
+        if (position == -1) return
+        _detailPos.update { position }
         val positionCached = mGroupItem.detail.selectedDetailPositionCached
         val currentDetail = mGroupItem.detail.copy(
-            selectedGroupId = mGroupId,
+            selectedGroupId = mGroup.groupId,
             selectedDetailPosition = position,
             selectedDetailPositionCached = if (positionCached <= position) position else positionCached,
             detailItems = mGroupItem.detail.detailItems.map { item ->
                 item.copy(
                     event = event,
                     resetValue = if (isReset) {
-                        mResetValue.value = mResetValue.value.getRandomNumber()
-                        mResetValue.value
-                    } else mResetValue.value,
+                        _resetValue.update { it.getRandomNumber() }
+                        mResetValue
+                    } else mResetValue,
                     isSameContent = isSameContent,
                 )
             }
         )
 
-        updateGroupData(detail = currentDetail)
-        _storiesDetail.update { currentDetail }
+        updateMainData(detail = currentDetail, groupPosition = mGroupPos)
     }
 
-    private suspend fun requestStoriesInitialData(): StoriesGroupUiModel {
+    private fun launchRequestInitialData() {
+        viewModelScope.launchCatchError(block = {
+            _storiesMainData.value = requestStoriesInitialData()
+            _groupPos.value = mStoriesMainData.selectedGroupPosition
+
+            if (mGroup == StoriesGroupItem()) _storiesEvent.emit(StoriesUiEvent.EmptyGroupPage)
+        }) { exception ->
+            _storiesEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
+        }
+    }
+
+    private fun checkAndHitTrackActivity() {
+        viewModelScope.launchCatchError(block = {
+            val detailItem = mGroupItem.detail
+            if (mDetailPos <= mLatestTrackPosition) return@launchCatchError
+            mLatestTrackPosition = mDetailPos
+            val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker
+            requestSetStoriesTrackActivity(trackerId)
+        }) { exception ->
+            _storiesEvent.emit(StoriesUiEvent.ErrorSetTracking(exception))
+        }
+    }
+
+    private suspend fun requestStoriesInitialData(): StoriesUiModel {
         val request = StoriesRequestModel(
             authorID = authorId,
             authorType = StoriesAuthorType.SHOP.value,
@@ -419,18 +541,28 @@ class StoriesViewModel @AssistedInject constructor(
         return repository.getStoriesInitialData(request)
     }
 
-    private suspend fun requestStoriesDetailData(): StoriesDetailUiModel {
+    private suspend fun requestStoriesDetailData(sourceId: String): StoriesDetail {
         val request = StoriesRequestModel(
             authorID = authorId,
             authorType = StoriesAuthorType.SHOP.value,
             source = StoriesSource.STORY_GROUP.value,
-            sourceID = mGroupItem.groupId,
+            sourceID = sourceId,
         )
         return repository.getStoriesDetailData(request)
     }
 
+    private suspend fun requestSetStoriesTrackActivity(trackerId: String): Boolean {
+        val request = StoriesTrackActivityRequestModel(
+            id = trackerId,
+            action = StoriesTrackActivityActionType.LAST_SEEN.value,
+        )
+        return repository.setStoriesTrackActivity(request)
+    }
+
     companion object {
-        private const val SHOP_ID = "shop_id"
+        const val SAVED_INSTANCE_STORIES_MAIN_DATA = "stories_main_data"
+        const val SAVED_INSTANCE_STORIES_GROUP_POSITION = "stories_group_position"
+        const val SAVED_INSTANCE_STORIES_DETAIL_POSITION = "stories_detail_position"
     }
 
 }

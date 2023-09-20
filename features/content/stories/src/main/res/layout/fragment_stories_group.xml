@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/layout_group_loading"
-        layout="@layout/layout_loading_group" />
+        layout="@layout/layout_loading_page" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/stories_group_view_pager"
@@ -27,6 +27,7 @@
         android:animateLayoutChanges="true"
         android:background="@color/Unify_Static_Black_68"
         android:gravity="center"
+        android:visibility="gone"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

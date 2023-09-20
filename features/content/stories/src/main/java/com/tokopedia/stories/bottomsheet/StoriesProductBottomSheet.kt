@@ -11,17 +11,14 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
-import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
-import com.tokopedia.stories.view.model.BottomSheetType
-import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 import com.tokopedia.stories.view.model.StoriesCampaignUiModel
 import com.tokopedia.stories.view.model.isNotAvailable
 import com.tokopedia.stories.view.model.isOngoing
@@ -30,12 +27,14 @@ import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import kotlinx.coroutines.flow.collectLatest
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -44,7 +43,7 @@ import javax.inject.Inject
 class StoriesProductBottomSheet @Inject constructor(
 ) : BottomSheetUnify(), ContentTaggedProductBottomSheetViewHolder.Listener {
 
-    private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider }
+    private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider  }
 
     private var _binding: FragmentStoriesProductBinding? = null
     private val binding: FragmentStoriesProductBinding get() = _binding!!
@@ -78,7 +77,7 @@ class StoriesProductBottomSheet @Inject constructor(
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+            viewModel.storiesState.withCache().collectLatest { (prevState, state) ->
                 renderProducts(prevState?.productSheet, state.productSheet)
                 renderCampaign(prevState?.productSheet, state.productSheet)
             }
@@ -87,23 +86,19 @@ class StoriesProductBottomSheet @Inject constructor(
 
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.collectLatest { event ->
+            viewModel.storiesEvent.collectLatest { event ->
                 when (event) {
                     is StoriesUiEvent.ShowErrorEvent -> {
-                        requireView().showToaster(
+                        requireView().rootView.showToaster(
                             message = event.message.message.orEmpty(),
                             type = Toaster.TYPE_ERROR,
-                            bottomHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
-                                .orZero()
                         )
                     }
 
                     is StoriesUiEvent.ShowInfoEvent -> {
                         val message = getString(event.message)
-                        requireView().showToaster(
+                        requireView().rootView.showToaster(
                             message = message,
-                            bottomHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
-                                .orZero()
                         )
                     }
 

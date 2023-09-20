@@ -14,23 +14,22 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
-import com.tokopedia.stories.view.model.BottomSheetType
-import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.showDialog
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-import com.tokopedia.content.common.R as commonR
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.stories.R as storiesR
 
 /**
  * @author by astidhiyaa on 08/08/23
  */
-class StoriesThreeDotsBottomSheet @Inject constructor(
-) : BottomSheetUnify() {
+class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
 
     private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider }
     override fun onCreateView(
@@ -40,19 +39,19 @@ class StoriesThreeDotsBottomSheet @Inject constructor(
     ): View? {
         val composeView = ComposeView(requireContext()).apply {
             setContent {
-                val state by viewModel.uiState.collectAsState(initial = StoriesUiState.Empty)
+                val state by viewModel.storiesState.collectAsState(initial = StoriesUiState.Empty)
                 val ctx = LocalContext.current
                 LaunchedEffect(Unit) {
                     lifecycleScope.launchWhenStarted {
-                        viewModel.uiEvent.collectLatest { event ->
+                        viewModel.storiesEvent.collectLatest { event ->
                             when (event) {
                                 StoriesUiEvent.ShowDeleteDialog -> {
                                     dismiss()
                                     ctx.showDialog(
                                         title = getString(storiesR.string.stories_delete_story_title),
                                         description = getString(storiesR.string.stories_delete_story_description),
-                                        primaryCTAText = getString(commonR.string.card_dialog_title_delete),
-                                        secondaryCTAText = getString(commonR.string.card_dialog_title_cancel),
+                                        primaryCTAText = getString(contentcommonR.string.card_dialog_title_delete),
+                                        secondaryCTAText = getString(contentcommonR.string.card_dialog_title_cancel),
                                         primaryAction = {
                                             viewModel.submitAction(StoriesUiAction.DeleteStory)
                                         }
@@ -64,7 +63,8 @@ class StoriesThreeDotsBottomSheet @Inject constructor(
                         }
                     }
                 }
-                val currentItem = state.storiesDetail.detailItems.getOrNull(state.storiesDetail.selectedDetailPosition)?.menus ?: return@setContent
+                val selectedGroup = state.storiesMainData.groupItems.getOrNull(state.storiesMainData.selectedGroupPosition) ?: return@setContent
+                val currentItem = selectedGroup.detail.detailItems.getOrNull(selectedGroup.detail.selectedDetailPosition)?.menus ?: return@setContent
                 ThreeDotsPage(menuList = currentItem, onDeleteStoryClicked = { item ->
                     viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
                 })

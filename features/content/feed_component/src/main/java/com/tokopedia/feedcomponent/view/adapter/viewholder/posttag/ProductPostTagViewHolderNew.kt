@@ -26,8 +26,8 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
-import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.common.R as contentcommonR
 
 private const val RATING_FORMAT = 20.0
 
