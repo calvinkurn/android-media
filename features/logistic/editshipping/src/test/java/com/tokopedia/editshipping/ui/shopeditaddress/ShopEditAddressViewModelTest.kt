@@ -16,6 +16,7 @@ import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouri
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriersNewLocResponse
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationUpdateWarehouseResponse
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +39,7 @@ class ShopEditAddressViewModelTest {
 
     private val keroRepo: KeroRepository = mockk(relaxed = true)
     private val getDistrict: GetDistrictUseCase = mockk(relaxed = true)
+    private val getZipCode: GetZipCodeUseCase = mockk(relaxed = true)
     private val shopRepo: ShopLocationRepository = mockk(relaxed = true)
     private val autoCompleteMapper = AutoCompleteMapper()
 
@@ -57,7 +59,7 @@ class ShopEditAddressViewModelTest {
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         shopEditAddressViewModel =
-            ShopEditAddressViewModel(keroRepo, getDistrict, shopRepo, autoCompleteMapper)
+            ShopEditAddressViewModel(keroRepo, getDistrict, getZipCode, shopRepo, autoCompleteMapper)
         shopEditAddressViewModel.districtLocation.observeForever(districtLocationObserver)
         shopEditAddressViewModel.zipCodeList.observeForever(zipCodeListObserver)
         shopEditAddressViewModel.districtGeocode.observeForever(districtGeocodeObserver)
@@ -81,14 +83,14 @@ class ShopEditAddressViewModelTest {
 
     @Test
     fun `Get ZipCode list success`() {
-        coEvery { keroRepo.getZipCode(any()) } returns GetDistrictDetailsResponse()
+        coEvery { getZipCode(any()) } returns GetDistrictDetailsResponse()
         shopEditAddressViewModel.getZipCode("123")
         verify { zipCodeListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get ZipCpde list failed`() {
-        coEvery { keroRepo.getZipCode(any()) } throws defaultThrowable
+        coEvery { getZipCode(any()) } throws defaultThrowable
         shopEditAddressViewModel.getZipCode("123")
         verify { zipCodeListObserver.onChanged(match { it is Fail }) }
     }

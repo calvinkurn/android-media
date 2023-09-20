@@ -13,7 +13,9 @@ import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
 import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
+import com.tokopedia.logisticCommon.domain.param.GetZipCodeParam
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class ShopEditAddressViewModel @Inject constructor(
     private val repo: KeroRepository,
     private val getDistrict: GetDistrictUseCase,
+    private val getZipCodeUseCase: GetZipCodeUseCase,
     private val shopRepo: ShopLocationRepository,
     private val mapper: AutoCompleteMapper
 ) : ViewModel() {
@@ -57,7 +60,7 @@ class ShopEditAddressViewModel @Inject constructor(
 
     fun getZipCode(districtId: String) {
         viewModelScope.launch(onErrorGetZipCode) {
-            val zipCode = repo.getZipCode(districtId)
+            val zipCode = getZipCodeUseCase(GetZipCodeParam(districtId = districtId))
             _zipCodeList.value = Success(zipCode.keroDistrictDetails)
         }
     }
