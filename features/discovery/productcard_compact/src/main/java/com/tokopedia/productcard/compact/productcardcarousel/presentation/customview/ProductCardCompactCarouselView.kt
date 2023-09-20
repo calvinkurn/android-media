@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactCarouselViewBinding
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.adapter.ProductCardCompactCarouselAdapter
@@ -141,10 +140,6 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
         binding.root.post {
             layoutManager.scrollToPosition(position)
         }
-    }
-
-    fun addOnTouchListener(listener: RecyclerView.OnItemTouchListener) {
-        binding.recyclerView.addOnItemTouchListener(listener)
     }
 
     interface ProductCardCompactCarouselListener {

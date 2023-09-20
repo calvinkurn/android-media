@@ -173,10 +173,6 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         binding.productCardCarousel.scrollToPosition(position)
     }
 
-    fun addOnTouchListener(listener: RecyclerView.OnItemTouchListener) {
-        binding.productCardCarousel.addOnTouchListener(listener)
-    }
-
     interface TokoNowProductRecommendationListener {
         fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel?
         fun hideProductRecommendationWidget()
