@@ -22,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.scp_rewards.R
-import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.FragmentCouponListBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.CouponListViewModel

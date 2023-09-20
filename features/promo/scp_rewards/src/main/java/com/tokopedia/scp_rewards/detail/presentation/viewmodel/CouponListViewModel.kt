@@ -11,7 +11,7 @@ import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.GetMedalBenefitUseCase
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
 import com.tokopedia.scp_rewards.detail.mappers.MedalBenefitMapper
-import com.tokopedia.scp_rewards_common.MergerLiveData
+import com.tokopedia.scp_rewards_common.utils.MergerLiveData
 import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
 import com.tokopedia.scp_rewards_widgets.model.FilterModel
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
