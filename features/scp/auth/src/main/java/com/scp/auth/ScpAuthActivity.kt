@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.login.common.utils.LoginImageLoader
 import com.scp.login.core.domain.common.UserCredential
@@ -26,7 +25,6 @@ import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ScpAuthActivity: BaseActivity() {
@@ -96,9 +94,8 @@ class ScpAuthActivity: BaseActivity() {
                 }
 
                 override fun onLoginSuccessful() {
-                    lifecycleScope.launch {
-                        viewModel.getUserInfo()
-                    }
+                    GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
+                    viewModel.getUserInfo()
                 }
 
                 override fun onLoginError(failure: Failure) {

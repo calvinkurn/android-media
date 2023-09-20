@@ -1,22 +1,25 @@
 package com.scp.auth
 
+import android.content.Context
 import com.scp.verification.core.domain.common.entities.config.VerificationAppConfig
 import com.scp.verification.core.domain.common.entities.config.VerificationAuthConfig
 import com.scp.verification.core.domain.common.entities.config.VerificationEnvironment
 import com.scp.verification.core.domain.common.listener.VerificationSDKConfigs
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 
-class VerificationSdkConfig : VerificationSDKConfigs {
+class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
     override fun getAppConfigs(): VerificationAppConfig {
         return VerificationAppConfig(
             environment = VerificationEnvironment.DEV,
             isLogsEnabled = false,
             locale = "EN",
             userlang = "en",
-            userType = "customer"
+            userType = "customer",
+            uniqueId = FingerprintModelGenerator.getFCMId(context)
         )
     }
 
     override fun getAuthConfigs(): VerificationAuthConfig {
-        return VerificationAuthConfig(clientID = "tokopedia:consumer:app", clientSecret = "qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu")
+        return VerificationAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g")
     }
 }
