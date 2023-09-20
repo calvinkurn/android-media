@@ -84,9 +84,11 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
 
-                val indexVisible = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
+                val indexVisible = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
                 binding?.rvContent?.post {
-                    widgetAdapter.autoSelectNavigation(indexVisible)
+                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                        widgetAdapter.autoSelectNavigation(indexVisible)
+                    }
                 }
             }
         }
@@ -147,6 +149,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
+                binding?.stickySingleHeaderView?.stickyPosition =
+                    widgetAdapter.findPositionNavigation()
             } else if (it is Fail){
                 binding?.showPageError(it.throwable)
             }
@@ -273,22 +277,12 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 return SNAP_TO_START
             }
         }
-        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo) - 1
-
+        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
-        if (anchorToPosition >= Int.ZERO){
-            smoothScroller.targetPosition = anchorToPosition
+        if (anchorToPosition >= Int.ZERO) {
+            widgetAdapter.changeNavigationTabActive(tabPosition)
+            smoothScroller.targetPosition = anchorToPosition - 2
             layoutManager?.startSmoothScroll(smoothScroller)
-            view?.postDelayed({
-
-                val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPosition().orZero()
-                val lastVisibleItemPosition = layoutManager?.findLastVisibleItemPosition().orZero()
-
-                if (anchorToPosition !in firstVisibleItemPosition..lastVisibleItemPosition) {
-                    layoutManager?.scrollToPositionWithOffset(anchorToPosition, 0)
-
-                }
-            }, 500)
         }
     }
 }

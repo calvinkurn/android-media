@@ -12,6 +12,7 @@ import com.tokopedia.catalogcommon.databinding.WidgetItemBannerHeroNavigationBin
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension.createGradientDrawable
+import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -130,5 +131,7 @@ class HeroBannerViewHolder(
         binding?.carouselBanner?.addImages(ArrayList(element.brandImageUrls))
         binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
         binding?.navigation?.setupNavigation(element)
+        binding?.tfSubtitleBannerPremium?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
+        binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
     }
 }
