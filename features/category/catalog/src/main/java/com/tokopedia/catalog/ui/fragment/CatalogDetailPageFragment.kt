@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,14 +29,16 @@ import com.tokopedia.catalogcommon.util.DrawableExtension
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     StickyNavigationListener {
@@ -107,22 +108,12 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupObservers()
+        setupObservers(view)
         var catalogId = ""
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
             viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
-        }
-        binding?.globalerrorsAction?.setOnClickListener {
-            val catalogProductList =
-                Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
-                    .buildUpon()
-                    .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
-                    .appendQueryParameter(QUERY_PRODUCT_SORTING_STATUS, productSortingStatus.toString())
-                    .appendPath(title).toString()
-
-            RouteManager.route(context, catalogProductList)
         }
     }
 
@@ -143,7 +134,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         viewModel.refreshNotification()
     }
 
-    private fun setupObservers() {
+    private fun setupObservers(view: View) {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
                 productSortingStatus = productSortingStatus
@@ -151,11 +142,18 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
-                setupPriceCtaWidget(it.data.priceCtaProperties)
+                binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
+            } else {
+                binding?.showPageError()
             }
         }
         viewModel.totalCartItem.observe(viewLifecycleOwner) {
             binding?.toolbar?.cartCount = it
+        }
+        viewModel.errorsToaster.observe(viewLifecycleOwner) {
+            val errorMessage = ErrorHandler.getErrorMessage(view.context, it)
+            Toaster.build(view, errorMessage, duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -230,17 +228,30 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     // Call this methods if you want to override the CTA & Price widget's theme
-    private fun setupPriceCtaWidget(properties: PriceCtaProperties) {
-        binding?.let {
-            it.containerPriceCta.setBackgroundColor(properties.bgColor)
-            it.tgpCatalogName.setTextColor(properties.textColor)
-            it.tgpPriceRanges.setTextColor(properties.textColor)
+    private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaWidget(properties: PriceCtaProperties) {
+        containerPriceCta.setBackgroundColor(properties.bgColor)
+        tgpCatalogName.setTextColor(properties.textColor)
+        tgpPriceRanges.setTextColor(properties.textColor)
 
-            it.tgpCatalogName.text = properties.productName
-            it.tgpPriceRanges.text = properties.price
+        tgpCatalogName.text = properties.productName
+        tgpPriceRanges.text = properties.price
+
+        btnProductList.setOnClickListener {
+            val catalogProductList =
+                Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
+                    .buildUpon()
+                    .appendQueryParameter(QUERY_CATALOG_ID, properties.catalogId)
+                    .appendQueryParameter(QUERY_PRODUCT_SORTING_STATUS, productSortingStatus.toString())
+                    .appendPath(properties.productName).toString()
+
+            RouteManager.route(context, catalogProductList)
         }
     }
 
+    private fun FragmentCatalogReimagineDetailPageBinding.showPageError() {
+        groupContent.gone()
+        stickySingleHeaderView.show()
+    }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int) {
         val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
@@ -254,7 +265,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         if (anchorToPosition >= Int.ZERO){
             smoothScroller.targetPosition = anchorToPosition
             layoutManager?.startSmoothScroll(smoothScroller)
-            Handler().postDelayed({
+            view?.postDelayed({
 
                 val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPosition().orZero()
                 val lastVisibleItemPosition = layoutManager?.findLastVisibleItemPosition().orZero()

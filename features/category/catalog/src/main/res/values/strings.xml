@@ -46,5 +46,6 @@
     <string name="text_empty_state_title">Nggak ada barang yang sesuai dari filter ini</string>
     <string name="text_empty_state_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
     <string name="text_reset_filter">Reset Filter</string>
+    <string name="catalog_action_product_list">Lihat Pilihan</string>
 
 </resources>
