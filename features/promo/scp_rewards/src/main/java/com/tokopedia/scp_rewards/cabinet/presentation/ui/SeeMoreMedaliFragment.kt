@@ -217,7 +217,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
                 }
             }
             visitableList.addAll(
-                MedaliListMapper.getMedalList(response, badgeType, false)
+                MedaliListMapper.getMedalList(response, false)
             )
             submitAdapterList(visitableList)
             binding?.viewError?.gone()

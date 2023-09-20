@@ -40,16 +40,21 @@ class StackCouponView @JvmOverloads constructor(
                 onCardTap(it, list.size == 1)
             }
             if (list.size == 1) {
-                cardMore.gone()
-                cardMiddle.gone()
-                cardBack.gone()
+                cardMore.hide()
+                cardMiddle.hide()
+                cardBack.hide()
             } else {
-                cardMiddle.setData(list.first().copy().apply { statusBadgeEnabled = false })
-                cardBack.setData(list.first().copy().apply { statusBadgeEnabled = false })
+                cardMiddle.visible()
+                cardBack.visible()
+
+                val duplicate = list.first().copy().apply { statusBadgeEnabled = false }
+                cardMiddle.setData(duplicate)
+                cardBack.setData(duplicate)
 
                 if (benefitInfo.isNullOrEmpty()) {
-                    cardMore.invisible()
+                    cardMore.hide()
                 } else {
+                    cardMore.visible()
                     cardMore.apply {
                         shapeAppearanceModel = ShapeAppearanceModel.Builder()
                             .setAllCornerSizes(0f)
@@ -61,7 +66,8 @@ class StackCouponView @JvmOverloads constructor(
                             setTint(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0))
                         }
                     }
-                    tvMore.text = benefitInfo
+
+                    tvMore.text = benefitInfo.replace("[number]", "${list.size}")
                 }
             }
         }

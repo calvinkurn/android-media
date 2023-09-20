@@ -5,15 +5,24 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.utils.loadImageOrFallback
 import com.tokopedia.scp_rewards_common.utils.parseColor
 import com.tokopedia.scp_rewards_widgets.constants.CouponState
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetCouponViewBinding
+import com.tokopedia.scp_rewards_widgets.model.FilterModel
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitSectionModel
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.tokopedia.scp_rewards_widgets.R as scp_rewards_widgetsR
 
 class WidgetCouponView @JvmOverloads constructor(
@@ -37,16 +46,78 @@ class WidgetCouponView @JvmOverloads constructor(
     ) {
         binding.tvTitle.text = benefitSectionModel.title
         setBackgroundColor(parseColor(benefitSectionModel.backgroundColor) ?: Color.WHITE)
-        val benefitList = benefitSectionModel.benefitList
 
-        if (benefitList.isNullOrEmpty()) {
-            binding.stackCoupon.hide()
-            binding.cardEmptyCoupon.hide()
-            binding.ivErrorState.visible()
-        } else {
-            handleCouponState(benefitList, benefitSectionModel, onApplyClick, onCardTap, onCtaClick)
+        handleCouponFilters(
+            benefitSectionModel.filters,
+            benefitSectionModel.benefitList
+        ) { filteredList ->
+            if (filteredList.isNullOrEmpty()) {
+                binding.stackCoupon.hide()
+                binding.cardEmptyCoupon.hide()
+                binding.ivErrorState.visible()
+            } else {
+                handleCouponState(
+                    filteredList,
+                    benefitSectionModel,
+                    onApplyClick,
+                    onCardTap,
+                    onCtaClick
+                )
+            }
         }
         requestLayout()
+    }
+
+    private fun handleCouponFilters(
+        filters: List<FilterModel>?,
+        benefitList: List<MedalBenefitModel>?,
+        setOnFilterListener: (List<MedalBenefitModel>?) -> Unit
+    ) {
+        if (filters.isNullOrEmpty() || benefitList.isNullOrEmpty()) {
+            binding.filterCoupon.gone()
+            setOnFilterListener(benefitList)
+        } else {
+            val list = filters.map { filter ->
+                SortFilterItem(
+                    title = filter.text.orEmpty(),
+                    iconUrl = filter.iconImageURL.orEmpty(),
+                    listener = {
+                        filters.forEach { it.isSelected = false }
+                        filter.isSelected = true
+                        filterData(benefitList, filter, setOnFilterListener)
+                    }
+                ).apply {
+                    type = if (filter.isSelected) {
+                        ChipsUnify.TYPE_SELECTED
+                    } else {
+                        ChipsUnify.TYPE_NORMAL
+                    }
+                }
+            }
+            setFiltersLeftPadding()
+            binding.filterCoupon.addItem(list as ArrayList<SortFilterItem>)
+            filterData(benefitList, filters.find { it.isSelected }, setOnFilterListener)
+        }
+    }
+
+    private fun filterData(
+        benefitList: List<MedalBenefitModel>,
+        filter: FilterModel?,
+        setOnFilterListener: (List<MedalBenefitModel>?) -> Unit
+    ) {
+        CoroutineScope(Dispatchers.Default).launch {
+            var filteredList = benefitList.filter { benefit ->
+                benefit.categoryIds?.contains(filter?.id) ?: false
+            }
+
+            if (filteredList.isEmpty()) {
+                filteredList = benefitList
+            }
+
+            withContext(Dispatchers.Main) {
+                setOnFilterListener(filteredList)
+            }
+        }
     }
 
     fun updateLoadingStatus(showLoader: Boolean) {
@@ -62,14 +133,16 @@ class WidgetCouponView @JvmOverloads constructor(
     ) {
         val benefit = benefitList.first()
         when (benefit.status) {
-            CouponState.EMPTY -> {
+            CouponStatus.EMPTY -> {
+                binding.btnViewMore.hide()
                 binding.ivErrorState.hide()
                 binding.stackCoupon.hide()
                 binding.cardEmptyCoupon.visible()
                 binding.cardEmptyCoupon.setData(benefit, onCtaClick)
             }
 
-            CouponState.ERROR -> {
+            CouponStatus.ERROR -> {
+                binding.btnViewMore.hide()
                 binding.cardEmptyCoupon.hide()
                 binding.stackCoupon.hide()
                 binding.ivErrorState.visible()
@@ -83,17 +156,34 @@ class WidgetCouponView @JvmOverloads constructor(
                 binding.ivErrorState.hide()
                 binding.cardEmptyCoupon.hide()
                 binding.stackCoupon.visible()
-                binding.stackCoupon.setData(benefitList, benefitSectionModel.benefitInfo, onApplyClick, onCardTap)
+                binding.stackCoupon.setData(
+                    benefitList,
+                    benefitSectionModel.benefitInfo,
+                    onApplyClick,
+                    onCardTap
+                )
 
-                if (benefitList.size > 1 && benefitSectionModel.cta?.text.isNullOrEmpty().not()) {
+                if (benefitSectionModel.cta?.text.isNullOrEmpty().not()) {
                     binding.btnViewMore.visible()
                     binding.btnViewMore.text = benefitSectionModel.cta?.text
                     binding.btnViewMore.applyStyle(benefitSectionModel.cta?.style)
                     binding.btnViewMore.setOnClickListener {
-                        onCtaClick(benefitSectionModel.cta?.appLink, benefitSectionModel.cta?.deepLink)
+                        onCtaClick(
+                            benefitSectionModel.cta?.appLink,
+                            benefitSectionModel.cta?.deepLink
+                        )
                     }
+                } else {
+                    binding.btnViewMore.hide()
                 }
             }
+        }
+    }
+
+    private fun setFiltersLeftPadding() {
+        // Adding padding to the internal view so that the filters can scroll along with padding
+        binding.filterCoupon.sortFilterItems.apply {
+            post { setPadding(16.toPx(), paddingTop, paddingRight, paddingBottom) }
         }
     }
 
