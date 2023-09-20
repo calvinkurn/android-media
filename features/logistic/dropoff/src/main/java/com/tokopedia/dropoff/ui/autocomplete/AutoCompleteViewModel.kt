@@ -9,6 +9,8 @@ import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.domain.model.SavedAddress
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
+import com.tokopedia.logisticCommon.domain.param.GetAutoCompleteParam
+import com.tokopedia.logisticCommon.domain.usecase.GetAutoCompleteUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -18,6 +20,7 @@ import javax.inject.Inject
 
 class AutoCompleteViewModel @Inject constructor(
     private val repo: KeroRepository,
+    private val getAutoComplete: GetAutoCompleteUseCase,
     private val mapper: AutoCompleteMapper
 ) : ViewModel() {
 
@@ -33,7 +36,7 @@ class AutoCompleteViewModel @Inject constructor(
 
     fun getAutoCompleteList(keyword: String) {
         viewModelScope.launch(onErrorAutoComplete) {
-            val autoComplete = repo.getAutoComplete(keyword, "")
+            val autoComplete = getAutoComplete(GetAutoCompleteParam(keyword = keyword))
             mAutoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
         }
     }

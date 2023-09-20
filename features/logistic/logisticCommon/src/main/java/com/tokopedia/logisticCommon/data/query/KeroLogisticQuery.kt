@@ -2,37 +2,6 @@ package com.tokopedia.logisticCommon.data.query
 
 object KeroLogisticQuery {
 
-    val autoComplete = """
-        query KeroMapsAutoComplete(${'$'}param: String!, ${'$'}latlng: String, ${'$'}is_manage_address_flow: Boolean) {
-          kero_maps_autocomplete(input: ${'$'}param, latlng: ${'$'}latlng, is_manage_address_flow: ${'$'}is_manage_address_flow) {
-            error_code
-            data {
-              predictions {
-                description
-                place_id
-                types
-                matched_substrings {
-                  length
-                  offset
-                }
-                terms {
-                  value
-                  offset
-                }
-                structured_formatting {
-                  main_text
-                  main_text_matched_substrings {
-                    length
-                    offset
-                  }
-                  secondary_text
-                }
-              }
-            }
-          }
-        }
-    """.trimIndent()
-
     val addressCorner = """
         query keroAddressCorner(${'$'}input: KeroGetAddressInput){
           keroAddressCorner(input:${'$'}input) {

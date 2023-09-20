@@ -10,7 +10,6 @@ import com.tokopedia.logisticCommon.data.request.AddAddressParam
 import com.tokopedia.logisticCommon.data.request.EditAddressParam
 import com.tokopedia.logisticCommon.data.response.AddAddressResponse
 import com.tokopedia.logisticCommon.data.response.AddressResponse
-import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.data.response.GetDefaultAddressResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
@@ -33,24 +32,6 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         private const val PARAM = "param"
         private const val PARAM_LATLNG = "latlng"
         private const val PARAM_IS_MANAGE_ADDRESS_FLOW = "is_manage_address_flow"
-    }
-
-    suspend fun getAutoComplete(
-        keyword: String,
-        latlng: String,
-        isManageAddressFlow: Boolean = false
-    ): AutoCompleteResponse {
-        val param = mapOf(
-            PARAM to keyword,
-            PARAM_LATLNG to latlng,
-            PARAM_IS_MANAGE_ADDRESS_FLOW to isManageAddressFlow
-        )
-        val request = GraphqlRequest(
-            KeroLogisticQuery.autoComplete,
-            AutoCompleteResponse::class.java,
-            param
-        )
-        return gql.getResponse(request)
     }
 
     suspend fun getDistrict(
