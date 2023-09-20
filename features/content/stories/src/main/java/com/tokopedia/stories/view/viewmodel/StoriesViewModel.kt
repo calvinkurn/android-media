@@ -141,7 +141,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
-            else -> handleSaveInstanceStateData()
+            StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
         }
     }
 
