@@ -1,10 +1,12 @@
 package com.tokopedia.feedplus.presentation.util
 
 import android.graphics.Canvas
+import android.util.Log
 import android.widget.EdgeEffect
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.abs
 
 /**
  * Created by kenny.hadisaputra on 11/09/23
@@ -14,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 private const val OVERSCROLL_TRANSLATION_MAGNITUDE = 0.5f
 
 /** The magnitude of release threshold before considered as really over-scrolled **/
-private const val RELEASE_TRANSLATION_OVERSCROLL_MAGNITUDE = 0.3f
+private const val RELEASE_TRANSLATION_OVERSCROLL_HEIGHT_THRESHOLD = 0.13f
 
 /** The magnitude of translation distance when the list reaches the edge on fling. */
 private const val FLING_TRANSLATION_MAGNITUDE = 0.5f
@@ -57,7 +59,8 @@ class OverscrollEdgeEffectFactory(
                 super.onRelease()
                 // The finger is lifted. Start the animation to bring translation back to the resting state.
                 val sign = if (direction == DIRECTION_BOTTOM) -1 else 1
-                if (recyclerView.translationY < sign * RELEASE_TRANSLATION_OVERSCROLL_MAGNITUDE * recyclerView.width) {
+                Log.d("Overscroll", "Translation Y: ${recyclerView.translationY}, Height: ${recyclerView.height}")
+                if (abs(recyclerView.translationY) >= recyclerView.height * RELEASE_TRANSLATION_OVERSCROLL_HEIGHT_THRESHOLD) {
                     onReleaseBeyondThreshold()
                 }
 
