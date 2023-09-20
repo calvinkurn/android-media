@@ -48,6 +48,7 @@ data class StoriesDetailItem(
     val meta: Meta = Meta(),
     val author: @RawValue StoryAuthor = StoryAuthor.Unknown,
     val menus: @RawValue List<ContentMenuItem> = emptyList(),
+    val productCount: String = "",
 ) : Parcelable {
 
     @Parcelize
