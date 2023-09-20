@@ -3,7 +3,6 @@ package com.tokopedia.oldcatalog.repository.catalogdetail
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
-import com.tokopedia.oldcatalog.model.raw.gql.GQL_CATALOG_QUERY
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.oldcatalog.model.raw.gql.GQL_CATALOG_REIMAGINE_QUERY
 import com.tokopedia.usecase.RequestParams
