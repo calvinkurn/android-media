@@ -13,7 +13,7 @@ import dagger.assisted.AssistedInject
  * @author by astidhiyaa on 05/09/23
  */
 class StoriesSharingAnalyticsImpl @AssistedInject constructor(
-    @Assisted val shopId: String,
+    @Assisted private val shopId: String,
     private val userSession: UserSessionInterface
 ) : StoriesSharingAnalytics {
 
@@ -23,7 +23,6 @@ class StoriesSharingAnalyticsImpl @AssistedInject constructor(
             shopId: String,
         ): StoriesSharingAnalyticsImpl
     }
-
 
     private val role: String
         get() {
@@ -37,7 +36,7 @@ class StoriesSharingAnalyticsImpl @AssistedInject constructor(
     private val irisSession: String
         get() = TrackApp.getInstance().gtm.irisSessionId
 
-    override fun onClickShareIcon(storyId: String) {
+    override fun onClickShareIcon(storyId: String, ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 Key.event to KEY_TRACK_CLICK_COMMUNICATION,

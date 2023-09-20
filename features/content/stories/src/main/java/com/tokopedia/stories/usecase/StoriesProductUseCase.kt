@@ -31,12 +31,14 @@ class StoriesProductUseCase @Inject constructor(
                 REQ_WAREHOUSE_ID to whId,
                 REQ_LIMIT to 50,
                 REQ_WITH_TRACKING to true,
+                REQ_CAT_NAME to params.catName,
             )
         )
     }
 
     data class Param(
         val id: String,
+        val catName: String,
     )
 
     companion object {
@@ -45,6 +47,7 @@ class StoriesProductUseCase @Inject constructor(
         private const val REQ_WAREHOUSE_ID = "warehouseID"
         private const val REQ_LIMIT = "limit"
         private const val REQ_WITH_TRACKING = "withTracking"
+        private const val REQ_CAT_NAME = "storyCategory"
 
         private const val QUERY = """
             query StoriesProduct(${'$'}request: ContentStoryProductsRequest!){

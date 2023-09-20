@@ -1,11 +1,12 @@
 package com.tokopedia.stories.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -16,12 +17,15 @@ import com.airbnb.lottie.LottieDrawable
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -29,24 +33,28 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.showImmediately
+import com.tokopedia.stories.analytics.StoriesAnalytics
+import com.tokopedia.stories.analytics.StoriesEEModel
 import com.tokopedia.stories.bottomsheet.StoriesProductBottomSheet
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.uimodel.StoryAuthor
-import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.animation.StoriesProductNotch
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
-import com.tokopedia.stories.view.model.BottomSheetType
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
-import com.tokopedia.stories.view.model.isAnyShown
+import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
+import com.tokopedia.stories.view.model.StoriesGroupHeader
+import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.StoriesSharingComponent
+import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
+import com.tokopedia.stories.view.utils.loadImage
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.utils.showToaster
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -57,29 +65,40 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.stories.R
 
 class StoriesDetailFragment @Inject constructor(
+    private val analyticFactory: StoriesAnalytics.Factory,
     private val router: Router,
 ) : TkpdBaseV4Fragment() {
+
+    private val mParentPage: StoriesGroupFragment
+        get() = (requireParentFragment() as StoriesGroupFragment)
 
     private var _binding: FragmentStoriesDetailBinding? = null
     private val binding: FragmentStoriesDetailBinding
         get() = _binding!!
 
-    val viewModelProvider by lazyThreadSafetyNone {
-        (requireParentFragment() as StoriesGroupFragment).viewModelProvider
-    }
+    val viewModelProvider by lazyThreadSafetyNone { mParentPage.viewModelProvider }
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
-            override fun onClickGroup(position: Int) {
-                viewModelAction(StoriesUiAction.SetGroup(position, false))
+            override fun onClickGroup(position: Int, data: StoriesGroupHeader) {
+                trackClickGroup(position, data)
+                viewModelAction(StoriesUiAction.SelectGroup(position, false))
+            }
+
+            override fun onGroupImpressed(data: StoriesGroupHeader) {
+                viewModelAction(StoriesUiAction.CollectImpressedGroup(data))
             }
         })
     }
@@ -100,8 +119,21 @@ class StoriesDetailFragment @Inject constructor(
     private val shopId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(shopId)
+
+    private val activityResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let { data -> }
+        }
+    }
+
+    private val isEligiblePage: Boolean
+        get() = groupId == viewModel.mGroup.groupId
+
     override fun getScreenName(): String {
-        return TAG
+        return TAG_FRAGMENT_STORIES_DETAIL
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,9 +167,12 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroupHeader(prevState?.storiesGroup, state.storiesGroup)
-                renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)
+            viewModel.storiesState.withCache().collectLatest { (prevState, state) ->
+                renderStoriesGroupHeader(prevState?.storiesMainData, state.storiesMainData)
+                renderStoriesDetail(
+                    prevState?.storiesMainData?.groupItems?.get(prevState.storiesMainData.selectedGroupPosition.orZero())?.detail,
+                    state.storiesMainData.groupItems[state.storiesMainData.selectedGroupPosition].detail,
+                )
                 observeBottomSheetStatus(prevState?.bottomSheetStatus, state.bottomSheetStatus)
             }
         }
@@ -145,74 +180,82 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun setupUiEventObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiEvent.collectLatest { event ->
+            viewModel.storiesEvent.collect { event ->
+                if (!isEligiblePage) return@collect
                 when (event) {
+                    is StoriesUiEvent.EmptyDetailPage -> {
+                        // TODO handle empty data here
+                        showToast("data stories $groupId is empty")
+                        showPageLoading(false)
+                    }
+
+                    is StoriesUiEvent.ErrorDetailPage -> {
+                        if (!isEligiblePage) return@collect
+                        if (event.throwable.isNetworkError) {
+                            // TODO handle error network here
+                            showToast("error detail network ${event.throwable}")
+                        } else {
+                            // TODO handle error fetch here
+                            showToast("error detail content ${event.throwable}")
+                        }
+                        showPageLoading(false)
+                    }
+
                     StoriesUiEvent.OpenKebab -> {
-                        if (groupId != viewModel.mGroupId) return@collectLatest
                         StoriesThreeDotsBottomSheet
                             .getOrCreateFragment(
                                 childFragmentManager,
                                 requireActivity().classLoader
-                            )
-                            .show(childFragmentManager)
+                            ).show(childFragmentManager)
                     }
                     StoriesUiEvent.OpenProduct -> {
-                        if (groupId != viewModel.mGroupId) return@collectLatest
-
                         StoriesProductBottomSheet.getOrCreateFragment(
                             childFragmentManager,
                             requireActivity().classLoader
-                        )
-                            .show(childFragmentManager)
+                        ).show(childFragmentManager)
                     }
                     is StoriesUiEvent.Login -> {
-                        goTo(ApplinkConst.LOGIN)
+                        val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
+                        router.route(activityResult, intent)
                     }
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
                     is StoriesUiEvent.TapSharing -> {
-                        if (groupId != viewModel.mGroupId) return@collectLatest
                         val sheet = StoriesSharingComponent(rootView = requireView())
                         sheet.setListener(object : StoriesSharingComponent.Listener {
                             override fun onDismissEvent(view: StoriesSharingComponent) {
                                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
+                                analytic?.onCloseShareSheet(viewModel.storyId)
+                            }
+
+                            override fun onShareChannel(shareModel: ShareModel) {
+                                analytic?.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
                             }
                         })
-                        sheet.show(childFragmentManager, event.metadata)
+                        analytic?.onClickShareIcon(viewModel.storyId)
+                        sheet.show(childFragmentManager, event.metadata, viewModel.userId, viewModel.storyId)
                     }
                     is StoriesUiEvent.ShowErrorEvent -> {
-                        if (viewModel.isAnyBottomSheetShown) return@collectLatest
+                        if (viewModel.isAnyBottomSheetShown) return@collect
                         requireView().showToaster(
                             message = event.message.message.orEmpty(),
                             type = Toaster.TYPE_ERROR
                         )
                     }
                     is StoriesUiEvent.ShowInfoEvent -> {
-                        if (viewModel.isAnyBottomSheetShown) return@collectLatest
+                        if (viewModel.isAnyBottomSheetShown) return@collect
                         val message = getString(event.message)
                         requireView().showToaster(message = message,)
                     }
-                    is StoriesUiEvent.ErrorDetailPage -> {
-                        if (viewModel.mGroupId != groupId) return@collectLatest
-                        if (event.throwable.isNetworkError) {
-                            // TODO handle error network here
-                            showToast("error detail network ${event.throwable}")
-                        }
-                        else {
-                            // TODO handle error fetch here
-                            showToast("error detail content ${event.throwable}")
-                        }
-                        showPageLoading(false)
-                    }
-                    else -> {}
+                    else -> return@collect
                 }
             }
         }
     }
 
     private fun renderStoriesGroupHeader(
-        prevState: StoriesGroupUiModel?,
-        state: StoriesGroupUiModel,
+        prevState: StoriesUiModel?,
+        state: StoriesUiModel,
     ) {
         if (prevState?.groupHeader == state.groupHeader ||
             groupId != state.selectedGroupId
@@ -220,27 +263,22 @@ class StoriesDetailFragment @Inject constructor(
 
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
+        binding.layoutDetailLoading.categoriesLoader.hide()
     }
 
     private fun renderStoriesDetail(
-        prevState: StoriesDetailUiModel?,
-        state: StoriesDetailUiModel
+        prevState: StoriesDetail?,
+        state: StoriesDetail
     ) {
         if (prevState == state ||
-            state == StoriesDetailUiModel() ||
-            state.detailItems.isEmpty() ||
-            state.selectedGroupId != groupId || state.selectedDetailPosition < 0 || state.selectedDetailPositionCached < 0
+            state == StoriesDetail() ||
+            state.selectedGroupId != groupId
         ) return
 
         val currentItem = state.detailItems[state.selectedDetailPosition]
 
         if (state.detailItems.isEmpty()) {
             // TODO handle error empty data state here
-            Toast.makeText(
-                requireContext(),
-                "Don't worry this is debug: ask BE team why data stories $groupId is empty :)"
-                , Toast.LENGTH_LONG
-            ).show()
             return
         }
 
@@ -251,15 +289,30 @@ class StoriesDetailFragment @Inject constructor(
         val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
         if (currContent?.isSameContent == true || currContent == null) return
 
-        showPageLoading(false)
+        when (currContent.content.type) {
+            IMAGE -> {
+                binding.layoutStoriesContent.ivStoriesDetailContent.apply {
+                    loadImage(
+                        currContent.content.data,
+                        listener = object : ImageLoaderStateListener {
+                            override fun successLoad() {
+                                contentIsLoaded()
+                                analytic?.sendImpressionStoriesContent(currContent.id)
+                            }
 
-        binding.ivStoriesDetailContent.apply {
-            setImageUrl(currContent.imageContent)
-            onUrlLoaded = {
-                showStoriesComponent(true)
-                contentIsLoaded()
+                            override fun failedLoad() {
+                                // TODO add some action when fail load image?
+                            }
+                        })
+                }
+            }
+
+            VIDEO -> {
+                // TODO handle video content here
             }
         }
+
+        showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currContent.menus.isNotEmpty())
     }
 
@@ -269,9 +322,10 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state) return
         if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
+        showPageLoading(false)
     }
 
-    private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
+    private fun storiesDetailsTimer(state: StoriesDetail) {
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -280,23 +334,13 @@ class StoriesDetailFragment @Inject constructor(
                         currentPosition = state.selectedDetailPosition,
                         itemCount = state.detailItems.size,
                         data = state.detailItems[state.selectedDetailPosition],
-                    ) {
-                        /** TODO
-                         * all state already updated using the new groupId
-                         * but the oldest data that we left (ui action swipe) still there
-                         * need other way to stop the oldest data if the position is invalid
-                         * it also causing broken timer experience when (ui action swipe)
-                         * invalid -> groupId != viewModel.mGroupId
-                         **/
-                        if (groupId != viewModel.mGroupId) return@StoriesDetailTimer
-                        viewModelAction(NextDetail)
-                    }
+                    ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }
         }
     }
 
-    private fun renderAuthor(state: StoriesDetailItemUiModel) = with(binding.vStoriesPartner) {
+    private fun renderAuthor(state: StoriesDetailItem) = with(binding.vStoriesPartner) {
         tvPartnerName.text = state.author.name
         ivIcon.setImageUrl(state.author.thumbnailUrl)
         btnFollow.gone()
@@ -334,8 +378,11 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(true)
                     resumeStories()
                 }
+                TouchEventStories.NEXT_PREV -> {
+                    trackTapPreviousDetail()
+                    viewModelAction(PreviousDetail)
+                }
 
-                TouchEventStories.NEXT_PREV -> viewModelAction(PreviousDetail)
                 else -> {}
             }
         }
@@ -354,8 +401,11 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(true)
                     resumeStories()
                 }
+                TouchEventStories.NEXT_PREV -> {
+                    trackTapNextDetail()
+                    viewModelAction(NextDetail)
+                }
 
-                TouchEventStories.NEXT_PREV -> viewModelAction(NextDetail)
                 else -> {}
             }
         }
@@ -371,7 +421,7 @@ class StoriesDetailFragment @Inject constructor(
         flStoriesProduct.onTouchEventStories { event ->
             when (event) {
                 TouchEventStories.SWIPE_UP -> {
-                    if (groupId != viewModel.mGroupId) return@onTouchEventStories
+                    if (!isEligiblePage) return@onTouchEventStories
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
                 else -> {}
@@ -380,7 +430,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun renderNotch(state: StoriesDetailItemUiModel) {
+    private fun renderNotch(state: StoriesDetailItem) {
         binding.vStoriesProductIcon.root.showWithCondition(viewModel.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
         with(binding.notchStoriesProduct) {
@@ -416,10 +466,49 @@ class StoriesDetailFragment @Inject constructor(
         viewModel.submitAction(event)
     }
 
-    private fun showPageLoading(isShowLoading: Boolean) = with(binding){
-        layoutTimer.llTimer.showWithCondition(isShowLoading)
-        layoutDeclarative.loaderDecorativeWhite.showWithCondition(isShowLoading)
-        ivStoriesDetailContent.showWithCondition(!isShowLoading)
+    private fun showPageLoading(isShowLoading: Boolean) = with(binding) {
+        rvStoriesCategory.showWithCondition(!isShowLoading)
+        layoutStoriesContent.container.showWithCondition(!isShowLoading)
+        layoutDetailLoading.container.showWithCondition(isShowLoading)
+    }
+
+    private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {
+        analytic?.sendClickStoryCircleEvent(
+            entryPoint = mParentPage.entryPoint,
+            currentCircle = data.groupName,
+            promotions = listOf(
+                StoriesEEModel(
+                    creativeName = "",
+                    creativeSlot = position.plus(1).toString(),
+                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.authorId}",
+                    itemName = "/ - stories"
+                ),
+            ),
+        )
+    }
+
+    private fun trackImpressionDetail(storiesId: String) {
+        analytic?.sendImpressionStoriesContent(storiesId)
+    }
+
+    private fun trackTapPreviousDetail() {
+        analytic?.sendClickTapPreviousContentEvent(
+            entryPoint = mParentPage.entryPoint,
+            storiesId = viewModel.mDetail.id,
+            creatorType = "asgc",
+            contentType = viewModel.mDetail.content.type.value,
+            currentCircle = viewModel.mGroup.groupName,
+        )
+    }
+
+    private fun trackTapNextDetail() {
+        analytic?.sendClickTapNextContentEvent(
+            entryPoint = mParentPage.entryPoint,
+            storiesId = viewModel.mDetail.id,
+            creatorType = "asgc",
+            contentType = viewModel.mDetail.content.type.value,
+            currentCircle = viewModel.mGroup.groupName,
+        )
     }
 
     private fun goTo(appLink: String) {
@@ -460,7 +549,8 @@ class StoriesDetailFragment @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): StoriesDetailFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesDetailFragment
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG_FRAGMENT_STORIES_DETAIL) as? StoriesDetailFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 StoriesDetailFragment::class.java.name

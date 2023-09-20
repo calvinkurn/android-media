@@ -1,107 +1,125 @@
 package com.tokopedia.stories.data.mapper
 
-import com.tokopedia.content.common.R
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
+import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel.ContentStoriesDetails
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
+import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel.ContentStoriesGroups
 import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.uimodel.StoryAuthor
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
-import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.Meta
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesGroupHeader
-import com.tokopedia.stories.view.model.StoriesGroupItemUiModel
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.universal_sharing.view.model.LinkProperties
+import com.tokopedia.stories.view.model.StoriesGroupItem
+import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.stories.R as storiesR
 
 class StoriesMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :
     StoriesMapper {
 
     override fun mapStoriesInitialData(
         dataGroup: StoriesGroupsResponseModel,
-        dataDetail: StoriesDetailsResponseModel
-    ): StoriesGroupUiModel {
-        return StoriesGroupUiModel(
-            selectedGroupId = dataGroup.data.groups[dataGroup.data.meta.selectedGroupIndex].value,
-            selectedGroupPosition = dataGroup.data.meta.selectedGroupIndex,
-            groupHeader = dataGroup.data.groups.mapIndexed { indexGroupHeader, group ->
+        dataDetail: StoriesDetailsResponseModel,
+    ): StoriesUiModel {
+        val groupsData = dataGroup.data
+        if (groupsData == ContentStoriesGroups()) return StoriesUiModel()
+
+        val groupSelectedPos = dataGroup.data.meta.selectedGroupIndex
+        val groupsItem = groupsData.groups
+        return StoriesUiModel(
+            selectedGroupId = groupsItem[groupSelectedPos].value,
+            selectedGroupPosition = groupSelectedPos,
+            groupHeader = groupsItem.mapIndexed { indexGroupHeader, group ->
                 StoriesGroupHeader(
                     groupId = group.value,
                     image = group.image,
-                    title = group.name,
-                    isSelected = dataGroup.data.meta.selectedGroupIndex == indexGroupHeader,
+                    groupName = group.name,
+                    isSelected = groupSelectedPos == indexGroupHeader,
                 )
             },
-            groupItems = dataGroup.data.groups.mapIndexed { indexGroupItem, group ->
-                StoriesGroupItemUiModel(
+            groupItems = groupsItem.mapIndexed { indexGroupItem, group ->
+                StoriesGroupItem(
                     groupId = group.value,
                     groupName = group.name,
-                    detail = if (dataGroup.data.meta.selectedGroupIndex == indexGroupItem) {
-                        StoriesDetailUiModel(
+                    detail = if (groupSelectedPos == indexGroupItem) {
+                        mapStoriesDetailRequest(
                             selectedGroupId = group.value,
-                            selectedDetailPosition = dataDetail.data.meta.selectedStoriesIndex,
-                            selectedDetailPositionCached = dataDetail.data.meta.selectedStoriesIndex,
-                            detailItems = dataDetail.data.stories.map { stories ->
-                                StoriesDetailItemUiModel(
-                                    id = stories.id,
-                                    event = StoriesDetailItemUiEvent.PAUSE,
-                                    imageContent = stories.media.link,
-                                    author = StoryAuthor.Shop(
-                                        shopName = stories.author.name,
-                                        shopId = stories.author.id,
-                                        avatarUrl = stories.author.thumbnailURL,
-                                        badgeUrl = stories.author.badgeURL
-                                    ),
-                                    menus = buildMenu(stories.interaction, stories.author),
-                                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription)),
-                                    productCount = stories.totalProductsFmt.ifEmpty { "0" },
-                                )
-                            }
+                            dataDetail = dataDetail,
                         )
-                    } else StoriesDetailUiModel()
+                    } else StoriesDetail()
                 )
             }
         )
     }
 
-    override fun mapStoriesDetailRequest(dataDetail: StoriesDetailsResponseModel): StoriesDetailUiModel {
-        return StoriesDetailUiModel(
-            selectedGroupId = "",
-            selectedDetailPosition = dataDetail.data.meta.selectedStoriesIndex,
-            selectedDetailPositionCached = dataDetail.data.meta.selectedStoriesIndex,
-            detailItems = dataDetail.data.stories.map { stories ->
-                StoriesDetailItemUiModel(
+    override fun mapStoriesDetailRequest(
+        selectedGroupId: String,
+        dataDetail: StoriesDetailsResponseModel,
+    ): StoriesDetail {
+        val detailData = dataDetail.data
+        if (detailData == ContentStoriesDetails()) return StoriesDetail()
+
+        val storiesSelectedPos = detailData.meta.selectedStoriesIndex
+        val storiesItem = detailData.stories
+        return StoriesDetail(
+            selectedGroupId = selectedGroupId,
+            selectedDetailPosition = storiesSelectedPos,
+            selectedDetailPositionCached = storiesSelectedPos,
+            detailItems = storiesItem.map { stories ->
+                StoriesDetailItem(
                     id = stories.id,
                     event = StoriesDetailItemUiEvent.PAUSE,
-                    imageContent = stories.media.link,
+                    content = StoriesItemContent(
+                        type = if (stories.media.type == IMAGE.value) IMAGE else VIDEO,
+                        data = stories.media.link,
+                        duration = 7 * 1000,
+                    ),
                     resetValue = -1,
                     isSameContent = false,
                     author = buildAuthor(stories.author),
                     menus = buildMenu(stories.interaction, stories.author),
-                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription)),
+                    share = StoriesDetailItem.Sharing(
+                        isShareable = stories.interaction.shareable,
+                        metadata = LinkProperties(
+                            ogTitle = stories.meta.shareTitle,
+                            ogImageUrl = stories.meta.shareImage,
+                            ogDescription = stories.meta.shareDescription
+                        )
+                    ),
                     productCount = stories.totalProductsFmt.ifEmpty { "0" },
+                    meta = Meta(
+                        activityTracker = stories.meta.activityTracker,
+                        templateTracker = stories.meta.templateTracker,
+                    ),
                 )
             }
         )
     }
 
-    private fun isOwner(author: StoriesDetailsResponseModel.ContentStoriesDetails.Stories.Author): Boolean =
+    private fun isOwner(author: ContentStoriesDetails.Stories.Author): Boolean =
         author.id == userSession.shopId
 
     private fun buildMenu(
-        template: StoriesDetailsResponseModel.ContentStoriesDetails.Stories.Interaction,
-        author: StoriesDetailsResponseModel.ContentStoriesDetails.Stories.Author
+        template: ContentStoriesDetails.Stories.Interaction,
+        author: ContentStoriesDetails.Stories.Author
     ) =
         buildList {
             when {
                 !isOwner(author) && template.reportable -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.WARNING,
-                        name = R.string.content_common_menu_report,
+                        name = contentcommonR.string.content_common_menu_report,
                         type = ContentMenuIdentifier.Report
                     )
                 )
@@ -109,14 +127,14 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                 isOwner(author) && template.deletable -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.DELETE,
-                        name = com.tokopedia.stories.R.string.stories_delete_story_title,
+                        name = storiesR.string.stories_delete_story_title,
                         type = ContentMenuIdentifier.Delete,
                     )
                 )
             }
         }
 
-    private fun buildAuthor(author: StoriesDetailsResponseModel.ContentStoriesDetails.Stories.Author): StoryAuthor {
+    private fun buildAuthor(author: ContentStoriesDetails.Stories.Author): StoryAuthor {
         val type = AuthorType.convertValue(author.type)
 
         return if (type == AuthorType.User) {

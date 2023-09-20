@@ -66,6 +66,8 @@ class StoriesDetailsUseCase @Inject constructor(
                       shareDescription
                       shareImage
                       hasSeen
+                      activityTracker
+                      templateTracker
                     }
                   }
                meta{

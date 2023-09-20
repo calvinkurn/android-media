@@ -3,15 +3,18 @@ package com.tokopedia.stories.view.activity
 import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.stories.R
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
@@ -34,7 +37,7 @@ class StoriesActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: StoriesViewModelFactory.Creator
 
-    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory.create(shopId) }
+    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory.create( this, shopId) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -62,9 +65,11 @@ class StoriesActivity : BaseActivity() {
             return
         }
 
-        val path = data.pathSegments
+        val id = data.lastPathSegment.ifNullOrBlank {
+            "" //TODO() get from query param
+        }
         bundle = Bundle().apply {
-            putString(SHOP_ID, path[SHOP_ID_INDEX])
+            putString(SHOP_ID, id)
         }
     }
 
@@ -78,21 +83,26 @@ class StoriesActivity : BaseActivity() {
     }
 
     private fun openFragment() {
-        supportFragmentManager.executePendingTransactions()
-        val existingFragment = supportFragmentManager.findFragmentByTag(StoriesGroupFragment.TAG)
-        if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
+        supportFragmentManager.apply {
+            executePendingTransactions()
+            val existingFragment = findFragmentByTag(TAG_FRAGMENT_STORIES_GROUP)
+            if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
+            beginTransaction().apply {
+                replace(
+                    binding.fragmentContainer.id,
+                    getStoriesFragment(),
+                    TAG_FRAGMENT_STORIES_GROUP,
+                )
+            }.commit()
+        }
+    }
 
-        supportFragmentManager.beginTransaction().apply {
-            add(
-                binding.fragmentContainer.id,
-                StoriesGroupFragment.getFragment(
-                    fragmentManager = supportFragmentManager,
-                    classLoader = classLoader,
-                    bundle = bundle ?: Bundle(),
-                ),
-                StoriesGroupFragment.TAG,
-            )
-        }.commit()
+    private fun getStoriesFragment(): Fragment {
+        return StoriesGroupFragment.getFragment(
+            fragmentManager = supportFragmentManager,
+            classLoader = classLoader,
+            bundle = bundle ?: Bundle(),
+        )
     }
 
     override fun onDestroy() {
@@ -102,7 +112,7 @@ class StoriesActivity : BaseActivity() {
 
     private fun observeEvent() {
         lifecycleScope.launchWhenCreated {
-            viewModel.uiEvent.collectLatest { event ->
+            viewModel.storiesEvent.collectLatest { event ->
                 when (event) {
                     is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.root.showWithCondition(event.needToShow)
                     else -> {}
@@ -115,5 +125,4 @@ class StoriesActivity : BaseActivity() {
         private const val SHOP_ID = "shop_id"
         private const val SHOP_ID_INDEX = 1
     }
-
 }

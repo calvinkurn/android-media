@@ -2,12 +2,14 @@ package com.tokopedia.loginHelper
 
 import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
-import com.tokopedia.loginHelper.presentation.viewmodel.LoginHelperViewModel
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperAction
-import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperEvent
+import com.tokopedia.loginHelper.presentation.home.viewmodel.LoginHelperViewModel
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperAction
+import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperEvent
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.Error
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
@@ -49,6 +51,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import javax.crypto.SecretKey
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
@@ -65,13 +68,17 @@ class LoginHelperViewModelTest {
     private lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
     private lateinit var getProfileUseCase: GetProfileUseCase
     private lateinit var getAdminTypeUseCase: GetAdminTypeUseCase
+    private lateinit var aesEncryptorCBC: AESEncryptorCBC
+    private lateinit var secretKey: SecretKey
 
     private lateinit var viewModel: LoginHelperViewModel
     private lateinit var userSession: UserSessionInterface
 
     private val throwable = Throwable("Error")
-    private val email = "sourav.saikia@tokopedia.com"
-    private val password = "abc123456"
+
+    private val mockEmail = "test@tokopedia.com"
+    private val mockPassword = "password"
+    private val mockTribe = "test-tribe"
 
     @Before
     @Throws(Exception::class)
@@ -85,6 +92,8 @@ class LoginHelperViewModelTest {
         getProfileUseCase = mockk(relaxed = true)
         getAdminTypeUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
+        aesEncryptorCBC = mockk(relaxed = true)
+        secretKey = mockk(relaxed = true)
         viewModel =
             LoginHelperViewModel(
                 testRule.dispatchers,
@@ -150,7 +159,7 @@ class LoginHelperViewModelTest {
     @Test
     fun `processEvent with QueryEmail`() {
         runBlockingTest {
-            viewModel.processEvent(LoginHelperEvent.GetLoginData)
+            viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
 
             viewModel.processEvent(LoginHelperEvent.QueryEmail("pbs"))
             val result = viewModel.uiState.value.searchText
@@ -159,9 +168,10 @@ class LoginHelperViewModelTest {
     }
 
     @Test
-    fun `processEvent with QueryEmail throws exception`() {
+    fun `processEvent with QueryEmail with DataSource Local`() {
         runBlockingTest {
-            coEvery { getUserDetailsRestCase.executeOnBackground() } throws throwable
+            viewModel.processEvent(LoginHelperEvent.ChangeDataSourceType(LoginHelperDataSourceType.LOCAL))
+            viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
 
             viewModel.processEvent(LoginHelperEvent.QueryEmail("pbs"))
             val result = viewModel.uiState.value.searchText
@@ -249,7 +259,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Success
@@ -274,7 +284,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, false))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, false))
 
         assert(
             viewModel.uiState.value.loginToken is Success
@@ -283,7 +293,10 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `on Login Email V2 Success - has errors`() {
-        val loginToken = LoginToken(accessToken = "abc123", errors = arrayListOf(Error("msg", "error")))
+        val loginToken = LoginToken(
+            accessToken = "abc123",
+            errors = arrayListOf(Error("msg", "error"))
+        )
         val responseToken = LoginTokenPojoV2(loginToken = loginToken)
 
         val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
@@ -299,7 +312,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -325,7 +338,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -334,7 +347,10 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `on Login Email V2 Success - activation error`() {
-        val loginToken = LoginToken(accessToken = "", errors = arrayListOf(Error(message = "belum diaktivasi")))
+        val loginToken = LoginToken(
+            accessToken = "",
+            errors = arrayListOf(Error(message = "belum diaktivasi"))
+        )
         val responseToken = LoginTokenPojoV2(loginToken = loginToken)
 
         val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
@@ -350,7 +366,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -375,7 +391,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -389,7 +405,7 @@ class LoginHelperViewModelTest {
 
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -400,11 +416,53 @@ class LoginHelperViewModelTest {
     fun `on Login Email V2 Error`() {
         coEvery { generatePublicKeyUseCase() } throws throwable
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
         )
+    }
+
+    @Test
+    fun `On Log out user`() {
+        viewModel.processEvent(LoginHelperEvent.LogOutUser)
+
+        verify {
+            userSession.logoutSession()
+        }
+    }
+
+    @Test
+    fun `On GoToAccountSettings`() {
+        runBlockingTest {
+            val emittedValues = arrayListOf<LoginHelperAction>()
+            val job = launch {
+                viewModel.uiAction.toList(emittedValues)
+            }
+            viewModel.processEvent(LoginHelperEvent.GoToAccountsSetting)
+            val actualEvent = emittedValues.last()
+            val goToAccountSettings = actualEvent is LoginHelperAction.GoToAccountSettings
+            assertEquals(true, goToAccountSettings)
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `processEvent with Change Data Source Type = Remote`() {
+        viewModel.processEvent(
+            LoginHelperEvent.ChangeDataSourceType(LoginHelperDataSourceType.REMOTE)
+        )
+        val result = viewModel.uiState.value.dataSourceType
+        assertEquals(result, LoginHelperDataSourceType.REMOTE)
+    }
+
+    @Test
+    fun `processEvent with Change Data Source Type = Local`() {
+        viewModel.processEvent(
+            LoginHelperEvent.ChangeDataSourceType(LoginHelperDataSourceType.LOCAL)
+        )
+        val result = viewModel.uiState.value.dataSourceType
+        assertEquals(result, LoginHelperDataSourceType.LOCAL)
     }
 
     @Test
@@ -415,9 +473,6 @@ class LoginHelperViewModelTest {
         every {
             loginTokenV2UseCase.cancelJobs()
         } just runs
-        every {
-            getUserDetailsRestCase.cancelJobs()
-        } just runs
 
         val method = viewModel::class.java.getDeclaredMethod("onCleared")
         method.isAccessible = true
@@ -425,6 +480,5 @@ class LoginHelperViewModelTest {
 
         verify { getProfileUseCase.unsubscribe() }
         verify { loginTokenV2UseCase.cancelJobs() }
-        verify { getUserDetailsRestCase.cancelJobs() }
     }
 }
