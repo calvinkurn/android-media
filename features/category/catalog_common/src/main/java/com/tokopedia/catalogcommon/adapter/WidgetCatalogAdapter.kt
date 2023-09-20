@@ -96,13 +96,42 @@ class WidgetCatalogAdapter(
             val indexPartOfNavigation = stickyNav.content.indexOfFirst {
                 it.anchorTo == currentWidget?.widgetName.orEmpty()
             }
-            if (indexPartOfNavigation >= Int.ZERO){
-                navigation.currentSelectTab = indexPartOfNavigation
-                notifyItemChanged(indexNavigation, navigation)
+
+            val firstIndexPartOfNavigation = visitables.indexOfFirst {
+                val uiModel = it as BaseCatalogUiModel
+                stickyNav.content.firstOrNull()?.anchorTo.orEmpty() == uiModel.widgetName
             }
 
+            val lastIndexPartOfNavigation = visitables.indexOfFirst {
+                val uiModel = it as BaseCatalogUiModel
+                stickyNav.content.lastOrNull()?.anchorTo.orEmpty() == uiModel.widgetName
+            }
+
+            if (indexPartOfNavigation >= Int.ZERO) {
+                changeNavigationTabActive(indexPartOfNavigation)
+            } else if (position < firstIndexPartOfNavigation) {
+                changeNavigationTabActive(Int.ZERO)
+            } else if (position >= lastIndexPartOfNavigation) {
+                val lastTabPosition = navigation.content.size - 1
+                changeNavigationTabActive(lastTabPosition)
+            }
+        }
+    }
+
+    fun changeNavigationTabActive(
+        tabPosition: Int
+    ) {
+        val indexNavigation = visitables.indexOfFirst {
+            it is StickyNavigationUiModel
         }
 
+        val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
+
+        if (tabPosition != navigation?.currentSelectTab) {
+            navigation?.currentSelectTab = tabPosition
+            visitables[indexNavigation] = navigation
+            refreshSticky()
+        }
     }
 
     fun findPositionWidget(widgetName: String): Int {
@@ -112,11 +141,10 @@ class WidgetCatalogAdapter(
         }
     }
 
-    private fun findPositionNavigation(): Int {
+    fun findPositionNavigation(): Int {
         val index = visitables.indexOfFirst {
             it is StickyNavigationUiModel
         }
-
         return index
     }
 

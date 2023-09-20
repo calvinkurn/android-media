@@ -4,6 +4,9 @@ object ColorConstant {
     const val DARK_COLOR = "#AAB4C8"
     const val LIGHT_COLOR = "#FFFFFF"
 
+    const val DARK_COLOR_BANNER = "#F5F6FF"
+    const val LIGHT_COLOR_BANNER = "#212121"
+
     const val DARK_COLOR_01 = "#AEB2BF"
     const val LIGHT_COLOR_01 = "#6D7588"
 

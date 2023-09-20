@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -79,9 +77,11 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
 
-                val indexVisible = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
+                val indexVisible = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
                 binding?.rvContent?.post {
-                    widgetAdapter.autoSelectNavigation(indexVisible)
+                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                        widgetAdapter.autoSelectNavigation(indexVisible)
+                    }
                 }
             }
         }
@@ -119,7 +119,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
                     .buildUpon()
                     .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
-                    .appendQueryParameter(QUERY_PRODUCT_SORTING_STATUS, productSortingStatus.toString())
+                    .appendQueryParameter(
+                        QUERY_PRODUCT_SORTING_STATUS,
+                        productSortingStatus.toString()
+                    )
                     .appendPath(title).toString()
 
             RouteManager.route(context, catalogProductList)
@@ -151,6 +154,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
+                binding?.stickySingleHeaderView?.stickyPosition =
+                    widgetAdapter.findPositionNavigation()
                 setupPriceCtaWidget(it.data.priceCtaProperties)
             }
         }
@@ -248,22 +253,12 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 return SNAP_TO_START
             }
         }
-        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo) - 1
-
+        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
-        if (anchorToPosition >= Int.ZERO){
-            smoothScroller.targetPosition = anchorToPosition
+        if (anchorToPosition >= Int.ZERO) {
+            widgetAdapter.changeNavigationTabActive(tabPosition)
+            smoothScroller.targetPosition = anchorToPosition - 2
             layoutManager?.startSmoothScroll(smoothScroller)
-            Handler().postDelayed({
-
-                val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPosition().orZero()
-                val lastVisibleItemPosition = layoutManager?.findLastVisibleItemPosition().orZero()
-
-                if (anchorToPosition !in firstVisibleItemPosition..lastVisibleItemPosition) {
-                    layoutManager?.scrollToPositionWithOffset(anchorToPosition, 0)
-
-                }
-            }, 500)
         }
     }
 }
