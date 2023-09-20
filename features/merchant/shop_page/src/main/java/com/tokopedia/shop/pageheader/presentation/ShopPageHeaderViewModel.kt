@@ -55,6 +55,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
@@ -182,7 +183,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         isRefresh: Boolean,
         widgetUserAddressLocalData: LocalCacheModel,
         extParam: String,
-        tabName: String
+        tabName: String,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String> = mapOf()
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -268,7 +270,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                                 shopInfoCoreData = shopPageHeaderP1Data.shopInfoCoreAndAssetsData,
                                 shopPageGetDynamicTabResponse = shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
                                 feedWhitelistData = shopPageHeaderP1Data.feedWhitelist,
-                                shopPageHeaderLayoutData = shopPageHeaderWidgetData
+                                shopPageHeaderLayoutData = shopPageHeaderWidgetData,
+                                shopPageColorSchemaDefaultConfigColor = shopPageColorSchemaDefaultConfigColor
                             )
                         )
                     )

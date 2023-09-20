@@ -383,7 +383,7 @@ class ShopPageHeaderFragmentV2 :
     private var shopPageErrorState: View? = null
     private var viewPager: ViewPager2? = null
     private var tabLayout: TabLayout? = null
-    private var bottomViewContainer: LinearLayout? = null
+    private var bottomViewContainer: ViewGroup? = null
     private var miniCart: MiniCartGeneralWidget? = null
     private var viewBinding by autoClearedNullable<ShopHeaderFragmentBinding>()
     private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
@@ -1364,8 +1364,48 @@ class ShopPageHeaderFragmentV2 :
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
-            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab
+            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
+            shopPageColorSchemaDefaultConfigColor = getShopPageColorSchemaDefaultConfigColor()
         )
+    }
+
+    private fun getShopPageColorSchemaDefaultConfigColor(): Map<ShopPageColorSchema.ColorSchemaName, String> {
+        return context?.let {
+            mapOf(
+                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS to ShopUtil.getColorHexString(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                ),
+                ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS to ShopUtil.getColorHexString(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                ),
+                ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR to ShopUtil.getColorHexString(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                ),
+                ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR to ShopUtil.getColorHexString(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                ),
+                ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR to ShopUtil.getColorHexString(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                ),
+                ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR to ShopUtil.getColorHexString(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                ),
+                ShopPageColorSchema.ColorSchemaName.BG_PRIMARY_COLOR to ShopUtil.getColorHexString(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                ),
+                ShopPageColorSchema.ColorSchemaName.DIVIDER to ShopUtil.getColorHexString(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                ),
+            )
+        }.orEmpty()
     }
 
     private fun setDataFromAppLinkQueryParam() {
