@@ -2,9 +2,9 @@ package com.tokopedia.feedplus.oldFeed.view.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderModule
 import com.tokopedia.feedplus.oldFeed.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.play.widget.di.PlayWidgetModule
-import com.tokopedia.play_common.shortsuploader.di.uploader.PlayShortsUploaderModule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
@@ -15,7 +15,7 @@ import dagger.Component
         FeedContainerBindModule::class,
         FeedContainerViewModelModule::class,
         PlayWidgetModule::class,
-        PlayShortsUploaderModule::class,
+        CreationUploaderModule::class,
         ContentCoachMarkSharedPrefModule::class,
     ], dependencies = [BaseAppComponent::class])
 interface FeedContainerComponent{

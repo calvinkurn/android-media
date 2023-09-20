@@ -35,6 +35,9 @@ import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.creation.common.upload.model.CreationUploadResult
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
@@ -62,10 +65,6 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
-import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
-import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadResult
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -83,9 +82,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
@@ -156,7 +152,7 @@ class FeedPlusContainerFragment :
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
 
     @Inject
-    lateinit var playShortsUploader: PlayShortsUploader
+    lateinit var creationUploader: CreationUploader
 
     @Inject
     lateinit var playShortsInFeedAnalytic: PlayShortsInFeedAnalytic
@@ -572,27 +568,10 @@ class FeedPlusContainerFragment :
         )
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            callbackFlow {
-                val uploadLiveData = playShortsUploader.getUploadLiveData()
+            creationUploader.observe().collect { uploadResult ->
 
-                val observer = Observer<PlayShortsUploadResult> {
-                    if (it is PlayShortsUploadResult.Success) {
-                        val progress = it.progress
-                        val uploadData = it.data
-
-                        trySendBlocking(progress to uploadData)
-                    }
-                }
-
-                uploadLiveData.observeForever(observer)
-
-                awaitClose { uploadLiveData.removeObserver(observer) }
-
-            }.collect { data ->
-                val (progress, uploadData) = data
-
-                when (progress) {
-                    PlayShortsUploadConst.PROGRESS_COMPLETED -> {
+                when (uploadResult) {
+                    is CreationUploadResult.Success -> {
                         postProgressUpdateView?.hide()
                         Toaster.build(
                             view = requireView(),
@@ -602,31 +581,32 @@ class FeedPlusContainerFragment :
                             actionText = getString(R.string.feed_upload_shorts_see_video),
                             clickListener = View.OnClickListener {
                                 playShortsUploadAnalytic.clickRedirectToChannelRoom(
-                                    uploadData.authorId,
-                                    uploadData.authorType,
-                                    uploadData.shortsId
+                                    uploadResult.data.authorId,
+                                    uploadResult.data.authorType,
+                                    uploadResult.data.creationId
                                 )
                                 RouteManager.route(
                                     requireContext(),
                                     ApplinkConst.PLAY_DETAIL,
-                                    uploadData.shortsId
+                                    uploadResult.data.creationId
                                 )
                             }
                         ).show()
                     }
-                    PlayShortsUploadConst.PROGRESS_FAILED -> {
+                    is CreationUploadResult.Failed -> {
                         postProgressUpdateView?.show()
                         postProgressUpdateView?.handleShortsUploadFailed(
-                            uploadData,
-                            playShortsUploader,
+                            uploadResult.data,
+                            creationUploader,
                             playShortsInFeedAnalytic
                         )
                     }
-                    else -> {
+                    is CreationUploadResult.Progress -> {
                         postProgressUpdateView?.show()
-                        postProgressUpdateView?.setIcon(uploadData.coverUri.ifEmpty { uploadData.mediaUri })
-                        postProgressUpdateView?.setProgress(progress)
+                        postProgressUpdateView?.setIcon(uploadResult.data.coverUri.ifEmpty { uploadResult.data.mediaUri })
+                        postProgressUpdateView?.setProgress(uploadResult.progress)
                     }
+                    else -> {}
                 }
             }
         }

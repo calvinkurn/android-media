@@ -1,15 +1,8 @@
 package com.tokopedia.feedplus.presentation.receiver
 
-import androidx.lifecycle.Observer
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadResult
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 

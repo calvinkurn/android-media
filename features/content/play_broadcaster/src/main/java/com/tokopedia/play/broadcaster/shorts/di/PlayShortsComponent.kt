@@ -5,7 +5,6 @@ import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderModule
-import com.tokopedia.play_common.shortsuploader.di.uploader.PlayShortsUploaderModule
 import com.tokopedia.play.broadcaster.shorts.view.activity.PlayShortsActivity
 import dagger.Component
 
