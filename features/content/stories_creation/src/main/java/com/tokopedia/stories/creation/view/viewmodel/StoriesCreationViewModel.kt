@@ -7,6 +7,7 @@ import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
+import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
@@ -31,6 +32,9 @@ class StoriesCreationViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
     val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
+
+    val maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig
+        get() = _uiState.value.config.maxStoriesConfig
 
     private val storyId: String
         get() = _uiState.value.config.storiesId
@@ -83,8 +87,10 @@ class StoriesCreationViewModel @Inject constructor(
             else {
                 /** TODO JOE: handle this */
             }
-        }) {
-            /** TODO JOE: handle this */
+        }) { throwable ->
+            _uiEvent.emit(
+                StoriesCreationUiEvent.ErrorPreparePage(throwable)
+            )
         }
     }
 
