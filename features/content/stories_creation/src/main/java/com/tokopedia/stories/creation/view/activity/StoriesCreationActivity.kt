@@ -83,7 +83,8 @@ class StoriesCreationActivity : BaseActivity() {
                             fragment.dismiss()
                         }
 
-                        override fun onDismiss() {
+                        override fun onClose() {
+                            fragment.dismiss()
                             finish()
                         }
                     }
@@ -119,7 +120,6 @@ class StoriesCreationActivity : BaseActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
     private fun setupContentView() {
         setContent {
             LaunchedEffect(Unit) {
@@ -167,7 +167,7 @@ class StoriesCreationActivity : BaseActivity() {
                     is StoriesCreationUiEvent.ErrorPreparePage -> {
                         StoriesCreationErrorBottomSheet
                             .getFragment(supportFragmentManager, classLoader)
-                            .show(supportFragmentManager)
+                            .show(supportFragmentManager, event.throwable)
                     }
                     is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
                         StoriesCreationInfoBottomSheet

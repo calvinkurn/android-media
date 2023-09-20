@@ -4,17 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.creation.common.presentation.components.ContentCreationFailView
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /**
  * Created By : Jonathan Darwin on September 20, 2023
  */
 class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
+
+    private var throwable: Throwable = Throwable()
 
     var listener: Listener? = null
 
@@ -24,24 +33,38 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
 
-        showCloseIcon = false
-        isDragable = true
+        clearContentPadding = true
+        overlayClickDismiss = false
         isSkipCollapseState = true
-        isHideable = true
         isCancelable = false
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
 
-        setOnDismissListener {
-            listener?.onDismiss()
+        setCloseClickListener {
+            listener?.onClose()
         }
 
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-                ContentCreationFailView {
-                    listener?.onRetry()
-                }
+                AndroidView(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    factory = { context ->
+                        GlobalError(context).apply {
+                            setType(
+                                when (throwable) {
+                                    is ConnectException,
+                                    is UnknownHostException,
+                                    is SocketTimeoutException -> GlobalError.NO_CONNECTION
+                                    else -> GlobalError.SERVER_ERROR
+                                }
+                            )
+                            setActionClickListener {
+                                listener?.onRetry()
+                            }
+                        }
+                    }
+                )
             }
         }
 
@@ -50,14 +73,16 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    fun show(fragmentManager: FragmentManager) {
+    fun show(fragmentManager: FragmentManager, throwable: Throwable) {
+        this.throwable = throwable
+
         if (!isAdded) show(fragmentManager, TAG)
     }
 
     interface Listener {
         fun onRetry()
 
-        fun onDismiss()
+        fun onClose()
     }
 
     companion object {
