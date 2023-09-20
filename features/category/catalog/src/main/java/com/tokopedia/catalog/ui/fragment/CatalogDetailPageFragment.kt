@@ -68,7 +68,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
                 val indexVisible = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
                 binding?.rvContent?.post {
-                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE){
+                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
                         widgetAdapter.autoSelectNavigation(indexVisible)
                     }
                 }
@@ -124,7 +124,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
                     .buildUpon()
                     .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
-                    .appendQueryParameter(QUERY_PRODUCT_SORTING_STATUS, productSortingStatus.toString())
+                    .appendQueryParameter(
+                        QUERY_PRODUCT_SORTING_STATUS,
+                        productSortingStatus.toString()
+                    )
                     .appendPath(title).toString()
 
             RouteManager.route(context, catalogProductList)
@@ -156,6 +159,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
+                binding?.stickySingleHeaderView?.stickyPosition =
+                    widgetAdapter.findPositionNavigation()
                 setupPriceCtaWidget(it.data.priceCtaProperties)
             }
         }
@@ -255,8 +260,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
         val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
-        if (anchorToPosition >= Int.ZERO){
-            smoothScroller.targetPosition = anchorToPosition -2
+        if (anchorToPosition >= Int.ZERO) {
+            smoothScroller.targetPosition = anchorToPosition - 2
             layoutManager?.startSmoothScroll(smoothScroller)
         }
     }

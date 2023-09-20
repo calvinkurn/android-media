@@ -24,20 +24,17 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var mHeaderHeight = -1
     private var adapter: OnStickySingleHeaderAdapter? = null
     private var linearLayoutManager: LinearLayoutManager? = null
-    private var stickyPosition = 4
+    var stickyPosition = 4
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
-    private var headerContainerHeight = 162
+    private val headerContainerHeight = 162
 
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
-    var containerHeight: Int
-        set(newValue) {
-            headerContainerHeight = newValue
-        }
+    val containerHeight: Int
         get() {
             mHeaderContainer!!.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
             return headerContainerHeight
@@ -70,7 +67,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         recyclerViewPaddingTop = mRecyclerView?.paddingTop ?: 0
         mHeaderContainer = FrameLayout(context)
         mHeaderContainer?.let {
-            it.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            it.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, android.R.color.transparent))
             it.clipToPadding = false
             it.clipChildren = false
             val newLayoutParam = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -116,17 +113,16 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
         if (mHeaderHeight == -1 || adapter == null || linearLayoutManager == null) return
         val firstCompletelyVisiblePosition = linearLayoutManager?.findFirstCompletelyVisibleItemPosition()
-        val firstVisiblePosition = linearLayoutManager?.findFirstVisibleItemPosition()
+        val lastVisiblePosition = linearLayoutManager?.findLastVisibleItemPosition()
         if (firstCompletelyVisiblePosition != null) {
             if (firstCompletelyVisiblePosition > -1) {
-                val _stickyPosition = 4
-                if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
+                if (firstCompletelyVisiblePosition >= stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
                     if (!isStickyShowed || refreshSticky) {
                         showSticky()
                         mHeaderContainer?.visibility = View.VISIBLE
                         refreshSticky = false
                     }
-                    if (firstVisiblePosition == _stickyPosition) {
+                    if (lastVisiblePosition == stickyPosition) {
                         adapter?.updateEtalaseListViewHolderData()
                     }
                 } else { // make the etalase label always gone

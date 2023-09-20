@@ -115,7 +115,7 @@ class WidgetCatalogAdapter(
         }
     }
 
-    private fun findPositionNavigation(): Int {
+    fun findPositionNavigation(): Int {
         val index = visitables.indexOfFirst {
             it is StickyNavigationUiModel
         }
