@@ -8,15 +8,17 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.creation.common.presentation.components.ContentCreationFailView
+import com.tokopedia.stories.creation.view.screen.StoriesCreationInfoLayout
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
  * Created By : Jonathan Darwin on September 20, 2023
  */
-class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
+class StoriesCreationInfoBottomSheet : BottomSheetUnify() {
 
     var listener: Listener? = null
+
+    var info: Info = Info()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,24 +26,34 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
 
-        showCloseIcon = false
-        isDragable = true
+        isDragable = false
         isSkipCollapseState = true
-        isHideable = true
+        isHideable = false
         isCancelable = false
+        overlayClickDismiss = false
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
 
-        setOnDismissListener {
-            listener?.onDismiss()
+        setCloseClickListener {
+            listener?.onClose()
         }
 
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-                ContentCreationFailView {
-                    listener?.onRetry()
-                }
+                StoriesCreationInfoLayout(
+                    imageUrl = info.imageUrl,
+                    title = info.title,
+                    subtitle = info.subtitle,
+                    primaryText = info.primaryText,
+                    secondaryText = info.secondaryText,
+                    onPrimaryButtonClicked = {
+                        listener?.onPrimaryButtonClick()
+                    },
+                    onSecondaryButtonClicked = {
+                        listener?.onSecondaryButtonClick()
+                    }
+                )
             }
         }
 
@@ -54,25 +66,36 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    interface Listener {
-        fun onRetry()
+    data class Info(
+        var imageUrl: String = "",
+        var title: String = "",
+        var subtitle: String = "",
+        var primaryText: String = "",
+        var secondaryText: String = "",
+    )
 
-        fun onDismiss()
+    interface Listener {
+
+        fun onClose()
+
+        fun onPrimaryButtonClick()
+
+        fun onSecondaryButtonClick()
     }
 
     companion object {
-        private const val TAG = "StoriesCreationErrorBottomSheet"
+        private const val TAG = "StoriesCreationInfoBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): StoriesCreationErrorBottomSheet {
+        ): StoriesCreationInfoBottomSheet {
             val oldInstance =
-                fragmentManager.findFragmentByTag(TAG) as? StoriesCreationErrorBottomSheet
+                fragmentManager.findFragmentByTag(TAG) as? StoriesCreationInfoBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                StoriesCreationErrorBottomSheet::class.java.name
-            ) as StoriesCreationErrorBottomSheet
+                StoriesCreationInfoBottomSheet::class.java.name
+            ) as StoriesCreationInfoBottomSheet
         }
     }
 }

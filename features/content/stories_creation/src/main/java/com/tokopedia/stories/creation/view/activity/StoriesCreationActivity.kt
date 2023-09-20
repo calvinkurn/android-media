@@ -14,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.nest.components.NestBottomSheetScreen
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -28,11 +27,9 @@ import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
-import com.tokopedia.stories.creation.view.model.StoriesCreationBottomSheetType
+import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
-import com.tokopedia.stories.creation.view.screen.StoriesCreationInfoLayout
-import com.tokopedia.stories.creation.view.stateholder.StoriesCreationBottomSheetStateHolder
 import javax.inject.Inject
 
 /**
@@ -48,9 +45,6 @@ class StoriesCreationActivity : BaseActivity() {
 
     @Inject
     lateinit var router: Router
-
-    @Inject
-    lateinit var bottomSheetStateHolder: StoriesCreationBottomSheetStateHolder
 
     private val viewModel by viewModels<StoriesCreationViewModel> { viewModelFactory }
 
@@ -94,6 +88,33 @@ class StoriesCreationActivity : BaseActivity() {
                         }
                     }
                 }
+
+                is StoriesCreationInfoBottomSheet -> {
+                    fragment.info = StoriesCreationInfoBottomSheet.Info(
+                        imageUrl = viewModel.maxStoriesConfig.imageUrl,
+                        title = viewModel.maxStoriesConfig.title,
+                        subtitle = viewModel.maxStoriesConfig.description,
+                        primaryText = viewModel.maxStoriesConfig.primaryText,
+                        secondaryText = viewModel.maxStoriesConfig.secondaryText
+                    )
+
+                    fragment.listener = object : StoriesCreationInfoBottomSheet.Listener {
+                        override fun onClose() {
+                            fragment.dismiss()
+                            finish()
+                        }
+
+                        override fun onPrimaryButtonClick() {
+                            fragment.dismiss()
+                            openMediaPicker()
+                        }
+
+                        override fun onSecondaryButtonClick() {
+                            fragment.dismiss()
+                            finish()
+                        }
+                    }
+                }
             }
         }
     }
@@ -107,8 +128,6 @@ class StoriesCreationActivity : BaseActivity() {
                     val context = LocalContext.current
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-                    bottomSheetStateHolder.initState()
-
                     LaunchedEffect(Unit) {
                         observeUiEvent()
                     }
@@ -117,52 +136,24 @@ class StoriesCreationActivity : BaseActivity() {
                         openMediaPicker()
                     }
 
-                    NestBottomSheetScreen(
-                        state = bottomSheetStateHolder.sheetState,
-                        showCloseIcon = true,
-                        isHideable = true,
-                        bottomSheetContent = {
-                            when (bottomSheetStateHolder.bottomSheetType) {
-                                is StoriesCreationBottomSheetType.TooMuchStories -> {
+                    StoriesCreationScreen(
+                        uiState = uiState,
+                        onLoadMediaPreview = { mediaFilePath ->
+                            videoSnapshotHelper.snapVideoBitmap(context, mediaFilePath)
+                        },
+                        onBackPressed = {
 
-                                    /** TODO JOE: the content will be coming from BE */
-                                    StoriesCreationInfoLayout(
-                                        imageUrl = uiState.config.maxStories.imageUrl,
-                                        title = uiState.config.maxStories.title,
-                                        subtitle = uiState.config.maxStories.description,
-                                        primaryText = uiState.config.maxStories.primaryText,
-                                        secondaryText = uiState.config.maxStories.secondaryText,
-                                        onPrimaryButtonClicked = {
-
-                                        },
-                                        onSecondaryButtonClicked = {
-                                            bottomSheetStateHolder.dismissBottomSheet()
-                                        },
-                                    )
-                                }
-                                else -> {}
-                            }
+                        },
+                        onClickChangeAccount = {
+                            /** Won't handle for now since UGC is not supported yet */
+                        },
+                        onClickAddProduct = {
+                            viewModel.submitAction(StoriesCreationAction.ClickAddProduct)
+                        },
+                        onClickUpload = {
+                            viewModel.submitAction(StoriesCreationAction.ClickUpload)
                         }
-                    ) {
-                        StoriesCreationScreen(
-                            uiState = uiState,
-                            onLoadMediaPreview = { mediaFilePath ->
-                                videoSnapshotHelper.snapVideoBitmap(context, mediaFilePath)
-                            },
-                            onBackPressed = {
-
-                            },
-                            onClickChangeAccount = {
-                                /** Won't handle for now since UGC is not supported yet */
-                            },
-                            onClickAddProduct = {
-                                viewModel.submitAction(StoriesCreationAction.ClickAddProduct)
-                            },
-                            onClickUpload = {
-                                viewModel.submitAction(StoriesCreationAction.ClickUpload)
-                            }
-                        )
-                    }
+                    )
                 }
             }
         }
@@ -178,7 +169,9 @@ class StoriesCreationActivity : BaseActivity() {
                             .show(supportFragmentManager)
                     }
                     is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
-                        bottomSheetStateHolder.showBottomSheet(StoriesCreationBottomSheetType.TooMuchStories)
+                        StoriesCreationInfoBottomSheet
+                            .getFragment(supportFragmentManager, classLoader)
+                            .show(supportFragmentManager)
                     }
                 }
             }
