@@ -103,7 +103,7 @@ private fun ContentCreationSuccessView(
 }
 
 @Composable
-fun ContentCreationFailView(onRetry: () -> Unit) {
+private fun ContentCreationFailView(onRetry: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(bottom = 16.dp, top = 16.dp)
