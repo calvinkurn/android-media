@@ -966,7 +966,7 @@ open class BuyerOrderDetailFragment :
     override fun onClickWidgetListener(appLink: String) {
         val data = (scpMedalTouchPointViewModel.medalTouchPointData.value?.result as? com.tokopedia.scp_rewards_touchpoints.common.Success)?.data
         ScpRewardsCelebrationWidgetAnalytics.clickCelebrationWidget(
-            badgeId = data?.scpRewardsMedaliTouchpointOrder?.medaliTouchpointOrder?.medaliID.toString(),
+            badgeId = data?.scpRewardsMedaliTouchpointOrder?.medaliTouchpointOrder?.medaliID?.orZero().toString(),
             orderId = viewModel.getOrderId(),
             pagePath = BUYER_ORDER_DETAIL_PAGE,
             pageType = BUYER_ORDER_DETAIL_PAGE
