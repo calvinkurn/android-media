@@ -748,7 +748,8 @@ class VoucherGameDetailFragment :
     }
 
     override fun onClickMultiCheckout() {
-        //TODO("Not yet implemented")
+        addToCartViewModel.setAtcMultiCheckoutParam()
+        processCheckoutData()
     }
 
     override fun processSeamlessFavoriteNumbers(

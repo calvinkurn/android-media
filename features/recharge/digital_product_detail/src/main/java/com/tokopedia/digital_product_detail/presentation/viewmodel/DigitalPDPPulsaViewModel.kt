@@ -16,6 +16,7 @@ import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_ATC_MULTICHECKOUT
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
@@ -58,6 +59,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var selectedGridProduct = SelectedProduct()
     var recomCheckoutUrl = ""
     var multiCheckoutButtons: List<MultiCheckoutButtons> = listOf()
+    private var atcMultiCheckoutParam : String = ""
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -205,8 +207,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
-                userId
+                userId,
+                atcMultiCheckoutParam
             )
+            resetAtcMultiCheckoutParam()
             if (categoryIdAtc.errorAtc == null) {
                 _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
             } else {
@@ -351,5 +355,13 @@ class DigitalPDPPulsaViewModel @Inject constructor(
                 delay(skipMs)
             }
         }
+    }
+
+    fun setAtcMultiCheckoutParam() {
+        atcMultiCheckoutParam = PARAM_ATC_MULTICHECKOUT
+    }
+
+    private fun resetAtcMultiCheckoutParam() {
+        atcMultiCheckoutParam = ""
     }
 }

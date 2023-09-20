@@ -1283,7 +1283,18 @@ class DigitalPDPPulsaFragment :
     }
 
     override fun onClickedButtonMultiCheckout(denom: DenomData) {
-        //TODO("Not yet implemented")
+        viewModel.updateCheckoutPassData(
+            denom,
+            userSession.userId.generateRechargeCheckoutToken(),
+            binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "",
+            operator.id
+        )
+        viewModel.setAtcMultiCheckoutParam()
+        if (userSession.isLoggedIn) {
+            addToCart()
+        } else {
+            navigateToLoginPage()
+        }
     }
 
     override fun onClickedChevron(denom: DenomData) {

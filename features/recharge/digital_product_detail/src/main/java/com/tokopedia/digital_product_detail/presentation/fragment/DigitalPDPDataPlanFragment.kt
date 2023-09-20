@@ -1523,7 +1523,23 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onClickedButtonMultiCheckout(denom: DenomData) {
-        //TODO("Not yet implemented")
+        viewModel.updateCheckoutPassData(
+            denom,
+            userSession.userId.generateRechargeCheckoutToken(),
+            binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
+            operator.id
+        )
+        if (binding?.rechargePdpPaketDataClientNumberWidget?.isErrorMessageShown() == true) {
+            binding?.rechargePdpPaketDataClientNumberWidget?.startShakeAnimation()
+            productDescBottomSheet?.dismiss()
+        } else {
+            if (userSession.isLoggedIn) {
+                viewModel.setAtcMultiCheckoutParam()
+                addToCart()
+            } else {
+                navigateToLoginPage()
+            }
+        }
     }
 
     override fun onClickedChevron(denom: DenomData) {

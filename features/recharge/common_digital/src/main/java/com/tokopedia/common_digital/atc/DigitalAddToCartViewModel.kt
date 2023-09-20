@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_ATC_MULTICHECKOUT
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.network.exception.MessageErrorException
@@ -30,6 +31,8 @@ class DigitalAddToCartViewModel @Inject constructor(
     private val rechargeAnalytics: RechargeAnalytics
 ) : BaseViewModel(dispatcher) {
 
+    private var atcMultiCheckoutParam : String = ""
+
     private val _addToCartResult = MutableLiveData<Result<String>>()
     val addToCartResult: LiveData<Result<String>>
         get() = _addToCartResult
@@ -50,9 +53,12 @@ class DigitalAddToCartViewModel @Inject constructor(
                     digitalAddToCartUseCase.execute(
                         digitalCheckoutPassData,
                         userSession.userId,
-                        digitalIdentifierParam
+                        digitalIdentifierParam,
+                        atcMultiCheckoutParam
                     )
                 }
+
+                resetAtcMultiCheckoutParam()
 
                 data?.let {
                     rechargeAnalytics.eventAddToCart(it)
@@ -78,6 +84,14 @@ class DigitalAddToCartViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setAtcMultiCheckoutParam() {
+        atcMultiCheckoutParam = PARAM_ATC_MULTICHECKOUT
+    }
+
+    private fun resetAtcMultiCheckoutParam() {
+        atcMultiCheckoutParam = ""
     }
 
     class DigitalFailGetCartId : Exception()

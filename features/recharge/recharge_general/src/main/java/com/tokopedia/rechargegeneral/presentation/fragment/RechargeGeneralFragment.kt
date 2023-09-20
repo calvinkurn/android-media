@@ -1208,7 +1208,8 @@ class RechargeGeneralFragment :
     }
     private fun chooseListenerAction(type: String) {
         if (type.equals(ACTION_MULTIPLE)) {
-            //TODO ACTION MULTI CHECKOUT
+            addToCartViewModel.setAtcMultiCheckoutParam()
+            enquire()
         } else {
             enquire()
         }

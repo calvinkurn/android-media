@@ -377,7 +377,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun secondaryButtonClick() {
-                //TODO Multichekout
+                addToCartViewModel.setAtcMultiCheckoutParam()
+                if (postpaidClientNumberWidget.getInputNumber().isEmpty()) {
+                    postpaidClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
+                } else if (userSession.isLoggedIn) {
+                    initialProcessTransaction()
+                } else {
+                    navigateToLoginPage()
+                }
             }
         })
     }

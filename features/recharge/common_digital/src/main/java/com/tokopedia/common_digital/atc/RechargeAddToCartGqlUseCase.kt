@@ -34,7 +34,8 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
     fun setParams(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         userId: String,
-        digitalIdentifierParam: RequestBodyIdentifier
+        digitalIdentifierParam: RequestBodyIdentifier,
+        atcMultiCheckoutParam: String = ""
     ) {
         lateinit var requestParams: RechargeATCRequest
 
@@ -84,7 +85,7 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
             } else {
                 0
             },
-            atcSource = digitalCheckoutPassData.atcSource ?: ""
+            atcSource = if (atcMultiCheckoutParam.isNotEmpty()) atcMultiCheckoutParam else digitalCheckoutPassData.atcSource ?: ""
         )
 
         setRequestParams(mapOf(PARAMS_KEY to requestParams))

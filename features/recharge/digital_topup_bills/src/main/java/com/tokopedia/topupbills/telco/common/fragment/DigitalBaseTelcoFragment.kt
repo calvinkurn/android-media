@@ -130,7 +130,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 }
 
                 override fun onClickMultiCheckout() {
-                    //TODO("Not yet implemented")
+                    addToCartViewModel.setAtcMultiCheckoutParam()
+                    setupCheckoutData()
+                    processTransaction()
                 }
             }
         }
