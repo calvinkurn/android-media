@@ -31,7 +31,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TokoNowCategoryL2ViewModel @Inject constructor(
-    private val getCategoryLayout: GetCategoryLayoutUseCase,
+    private val getCategoryLayoutUseCase: GetCategoryLayoutUseCase,
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val addressData: TokoNowLocalAddress,
     getProductAdsUseCase: GetProductAdsUseCase,
@@ -73,7 +73,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
 
     override suspend fun loadFirstPage(tickerData: GetTickerData) {
         val warehouses = addressData.getWarehousesData()
-        val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL2)
+        val getCategoryLayoutResponse = getCategoryLayoutUseCase.execute(categoryIdL2)
         val getCategoryDetailResponse = getCategoryDetailUseCase.execute(warehouses, categoryIdL1)
 
         visitableList.clear()
