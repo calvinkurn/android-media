@@ -38,16 +38,7 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
 
     fun getWhitelabelServicePosition(): Int {
         for (i in cplItem.indices) {
-            if (cplItem[i].isWhitelabel) {
-                return i
-            }
-        }
-        return RecyclerView.NO_POSITION
-    }
-
-    fun getFirstNormalServicePosition(): Int {
-        for (i in cplItem.indices) {
-            if (!cplItem[i].isWhitelabel && cplItem[i].shipperId != KURIR_REKOMENDASI_SHIPPER_ID.toLong()) {
+            if (cplItem[i].isWhitelabel && cplItem[i].shipperName == "Sameday 8 Jam") {
                 return i
             }
         }
