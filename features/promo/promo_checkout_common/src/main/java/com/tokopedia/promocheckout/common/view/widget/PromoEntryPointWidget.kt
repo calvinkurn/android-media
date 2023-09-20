@@ -436,6 +436,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
 
     /**
      * show active state for checkout page with promo revamp with expandable & confetti
+     *
+     * onExpandCollapseListener: called with param true if user expand the summary
      */
     fun showActiveNewExpandable(
         leftImageUrl: String,
@@ -446,7 +448,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         isSecondaryTextEnabled: Boolean = false,
         isExpanded: Boolean = false,
         animateWording: Boolean = false,
-        onClickListener: () -> Unit = {}
+        onClickListener: () -> Unit = {},
+        onExpandCollapseListener: (Boolean) -> Unit = {}
     ) {
         activeViewConfettiFrame?.visibility = View.VISIBLE
         activeViewSummaryLayout?.visibility = View.GONE
@@ -578,10 +581,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                         activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
                         activeViewSummaryLayout?.visibility = View.GONE
                         activeViewDivider?.visibility = View.GONE
+                        onExpandCollapseListener.invoke(false)
                     } else {
                         activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
                         activeViewSummaryLayout?.visibility = View.VISIBLE
                         activeViewDivider?.visibility = View.VISIBLE
+                        onExpandCollapseListener.invoke(true)
                     }
                 }
             }
@@ -591,6 +596,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             activeViewRightIcon?.setOnClickListener {
                 /* no-op */
             }
+        }
+        activeView?.setOnClickListener {
+            /* no-op */
         }
         activeViewWording?.stopFlipping()
     }
@@ -621,7 +629,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         errorView?.visibility = View.GONE
         loadingView?.visibility = View.GONE
         activeView?.setOnClickListener {
-            onClickListener.invoke()
+            if (activeViewWording?.visibility == View.VISIBLE) {
+                onClickListener.invoke()
+            }
         }
         activeViewWording?.stopFlipping()
     }
