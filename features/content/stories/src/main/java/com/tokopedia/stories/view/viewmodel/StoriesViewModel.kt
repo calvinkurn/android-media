@@ -145,10 +145,6 @@ class StoriesViewModel @AssistedInject constructor(
     val isAnyBottomSheetShown : Boolean
         get() = bottomSheetStatus.value.isAnyShown
 
-    private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
-    val uiEvent: Flow<StoriesUiEvent>
-        get() = _uiEvent
-
     private val mResetValue: Int
         get() = _resetValue.value
 
@@ -343,7 +339,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleOpenKebab() {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.OpenKebab)
+            _storiesEvent.emit(StoriesUiEvent.OpenKebab)
             bottomSheetStatus.update { bottomSheet ->
                 bottomSheet.mapValues {
                     if (it.key == BottomSheetType.Kebab)
@@ -366,7 +362,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleShowDialogDelete() {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.ShowDeleteDialog)
+            _storiesEvent.emit(StoriesUiEvent.ShowDeleteDialog)
         }
     }
 
@@ -374,7 +370,7 @@ class StoriesViewModel @AssistedInject constructor(
         if (bottomSheetStatus.value.isAnyShown || !isProductAvailable) return
 
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.OpenProduct)
+            _storiesEvent.emit(StoriesUiEvent.OpenProduct)
             bottomSheetStatus.update { bottomSheet ->
                 bottomSheet.mapValues {
                     if (it.key == BottomSheetType.Product)
@@ -406,10 +402,10 @@ class StoriesViewModel @AssistedInject constructor(
                 )
 
                 if (response) {
-                    _uiEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
+                    _storiesEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
                 } else throw MessageErrorException()
 
-            }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
+            }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
         }
     }
 
@@ -417,7 +413,7 @@ class StoriesViewModel @AssistedInject constructor(
         requiredLogin {
             if (action == StoriesProductAction.Buy) {
                 viewModelScope.launch {
-                    _uiEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
+                    _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
                 }
             } else {
                 addToCart(product)
@@ -427,7 +423,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleVariantSheet(product: ContentTaggedProductUiModel) {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
+            _storiesEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
             bottomSheetStatus.update { bottomSheet ->
                 bottomSheet.mapValues {
                     if (it.key == BottomSheetType.GVBS)
@@ -443,7 +439,7 @@ class StoriesViewModel @AssistedInject constructor(
             fn(true)
         } else {
             viewModelScope.launch {
-                _uiEvent.emit(
+                _storiesEvent.emit(
                     StoriesUiEvent.Login { fn(false) }
                 )
             }
@@ -463,9 +459,9 @@ class StoriesViewModel @AssistedInject constructor(
                         group -> group.copy(groupItems = newList)
                 }
             } else {
-                _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
+                _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
             }
-        }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
+        }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
     }
 
     private fun updateDetailData(

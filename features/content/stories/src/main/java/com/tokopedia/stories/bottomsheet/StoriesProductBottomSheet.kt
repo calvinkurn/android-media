@@ -85,7 +85,7 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
 
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.collectLatest { event ->
+            viewModel.storiesEvent.collectLatest { event ->
                 when (event) {
                     is StoriesUiEvent.ShowErrorEvent -> {
                         requireView().rootView.showToaster(
