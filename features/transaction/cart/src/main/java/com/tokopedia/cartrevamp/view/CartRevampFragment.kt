@@ -530,6 +530,7 @@ class CartRevampFragment :
             if (checked) {
                 checkCartShopGroupTicker(data)
             }
+            checkBmGmOffers(data)
         }
         if (isCollapsed) {
             onNeedToUpdateViewItem(index)
@@ -618,6 +619,26 @@ class CartRevampFragment :
                 cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
             }
             viewModel.checkCartShopGroupTicker(cartGroupHolderData)
+        }
+    }
+
+    private fun checkBmGmOffers(cartGroupHolderData: CartGroupHolderData) {
+        val listOfferId = arrayListOf<Long>()
+        if (cartGroupHolderData.cartGroupBmGmHolderData.hasBmGmOffer) {
+            cartGroupHolderData.productUiModelList.forEach {
+                if (it.cartBmGmTickerData.isShowTickerBmGm) {
+                    listOfferId.add(it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
+                }
+            }
+            if (listOfferId.isNotEmpty()) {
+                listOfferId.forEach { offerId ->
+                    val (index, cartItem) = CartDataHelper.getCartItemHolderDataAndIndexByOfferId(viewModel.cartDataList.value, offerId)
+                    cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+                    cartAdapter?.notifyItemChanged(index)
+
+                    getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, offerId))
+                }
+            }
         }
     }
 
