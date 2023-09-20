@@ -44,5 +44,6 @@ class Cache(context: Context) {
 
     fun setVisit() {
         sharedPreferences.edit().putBoolean(IRIS_HAS_VISIT, true).apply()
+        hasVisitApp = true
     }
 }
