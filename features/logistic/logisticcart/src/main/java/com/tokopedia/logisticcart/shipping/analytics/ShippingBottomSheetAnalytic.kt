@@ -2,9 +2,6 @@ package com.tokopedia.logisticcart.shipping.analytics
 
 import android.os.Bundle
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RangePriceData
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendWithBackSlashOnCondition
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendWithCondition
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendWithStrip
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.track.TrackApp
@@ -46,6 +43,9 @@ object ShippingBottomSheetAnalytic {
     private const val KEY_USER_ID = "userId"
     private const val KEY_BUSINESS_UNIT = "businessUnit"
     private const val KEY_CURRENT_SITE = "currentSite"
+
+    private const val BACKSLASH = """\"""
+    private const val STRIP = "-"
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4193
     // Tracker ID: 46712
@@ -122,15 +122,14 @@ object ShippingBottomSheetAnalytic {
         cartId: String,
         shippingService: ShippingDurationUiModel,
         products: String,
-        shopId: String,
-        isDisableOrderPrioritas: Boolean
+        shopId: String
     ) {
         val bundle = Bundle()
         bundle.run {
             putString(KEY_EVENT, EVENT_NAME)
             putString(KEY_EVENT_ACTION, EVENT_ACTION_CLICK_SHIPPING_OPTION)
             putString(KEY_EVENT_CATEGORY, EVENT_CATEGORY)
-            putString(KEY_EVENT_LABEL, shippingService.eventLabel(isDisableOrderPrioritas))
+            putString(KEY_EVENT_LABEL, shippingService.eventLabel())
             putString(TRACKER_ID_KEY, TRACKER_ID_CLICK_SHIPPING_OPTION)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT)
             putString(KEY_CURRENT_SITE, CURRENT_SITE)
@@ -156,15 +155,14 @@ object ShippingBottomSheetAnalytic {
         cartId: String,
         products: String,
         shopId: String,
-        shippingService: ShippingDurationUiModel,
-        isDisableOrderPrioritas: Boolean
+        shippingService: ShippingDurationUiModel
     ) {
         val bundle = Bundle()
         bundle.run {
             putString(KEY_EVENT, EVENT_NAME)
             putString(KEY_EVENT_ACTION, EVENT_ACTION_VIEW_DURATION)
             putString(KEY_EVENT_CATEGORY, EVENT_CATEGORY)
-            putString(KEY_EVENT_LABEL, shippingService.eventLabel(isDisableOrderPrioritas))
+            putString(KEY_EVENT_LABEL, shippingService.eventLabel())
             putString(TRACKER_ID_KEY, TRACKER_ID_VIEW_SHIPPING_OPTION)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT)
             putString(KEY_CURRENT_SITE, CURRENT_SITE)
@@ -189,51 +187,47 @@ object ShippingBottomSheetAnalytic {
 
     private fun LogisticPromoUiModel.eventLabel(): String {
         val promo = this
-        return StringBuilder().apply {
-            appendWithStrip("${!promo.disabled}")
-            appendWithStrip(promo.etaData.textEta)
-            appendWithStrip(promo.discountedRate.toString())
-        }.toString()
+        return mutableListOf<String>().apply {
+            add("${!promo.disabled}")
+            add(promo.etaData.textEta)
+            add(promo.discountedRate.toString())
+        }.joinToString(STRIP)
     }
 
-    private fun ShippingDurationUiModel.eventLabel(isDisableOrderPrioritas: Boolean): String {
+    private fun ShippingDurationUiModel.eventLabel(): String {
         val shipping = this
-        return StringBuilder().apply {
-            appendWithStripWithDefault(shipping.serviceData.serviceName)
-            appendWithStripWithDefault(shipping.serviceData.texts.textEtaSummarize.ifEmpty { "Estimasi tidak tersedia" })
-            appendWithStripWithDefault(shipping.serviceData.rangePrice.toAnalyticLabel())
-            append(shipping.message(isDisableOrderPrioritas))
-        }.toString()
+        return mutableListOf<String>().apply {
+            add(shipping.serviceData.serviceName.ifEmpty { " " })
+            add(shipping.serviceData.texts.textEtaSummarize.ifEmpty { "Estimasi tidak tersedia" })
+            add(shipping.serviceData.rangePrice.toAnalyticLabel())
+            add(shipping.message())
+        }.joinToString(STRIP)
     }
 
-    private fun ShippingDurationUiModel.message(isDisableOrderPrioritas: Boolean): String {
+    private fun ShippingDurationUiModel.message(): String {
         val duration = this
-        return StringBuilder().apply {
-            appendWithBackSlashWithDefault(duration.errorMessage)
-            appendWithBackSlashWithDefault(duration.serviceData.texts.textServiceDesc)
-            appendWithBackSlashWithDefault(duration.serviceData.orderPriority.staticMessage.durationMessage)
-            appendWithBackSlashWithDefault(
-                duration.serviceData.orderPriority.staticMessage.durationMessage,
-                !isDisableOrderPrioritas && duration.serviceData.orderPriority.now
-            )
-            appendWithBackSlashWithDefault(
+        return mutableListOf<String>().apply {
+            appendWithDefault(duration.errorMessage)
+            appendWithDefault(duration.serviceData.texts.textServiceDesc)
+            appendWithDefault(duration.serviceData.orderPriority.staticMessage.durationMessage)
+            appendWithDefault(
                 duration.merchantVoucherModel.mvcErrorMessage,
                 duration.merchantVoucherModel.isMvc == -1
             )
-            appendWithBackSlashWithDefault(duration.codText, duration.isCodAvailable)
-            appendWithCondition(duration.dynamicPriceModel.textLabel, default = " ")
-        }.toString()
+            appendWithDefault(duration.codText, duration.isCodAvailable)
+            appendWithDefault(duration.dynamicPriceModel.textLabel)
+        }.joinToString(BACKSLASH)
+    }
+
+    private fun MutableList<String>.appendWithDefault(text: String?, condition: Boolean = true) {
+        if (text?.isNotEmpty() == true && condition) {
+            add(text)
+        } else {
+            add(STRIP)
+        }
     }
 
     private fun RangePriceData.toAnalyticLabel(): String {
         return "$minPrice to $maxPrice"
-    }
-
-    private fun StringBuilder.appendWithBackSlashWithDefault(text: String?, condition: Boolean = true) {
-        appendWithBackSlashOnCondition(text, condition, "-")
-    }
-
-    private fun StringBuilder.appendWithStripWithDefault(text: String?, condition: Boolean = true) {
-        appendWithStrip(text, condition, " ")
     }
 }
