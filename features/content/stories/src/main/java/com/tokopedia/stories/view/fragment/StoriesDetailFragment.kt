@@ -74,7 +74,6 @@ import javax.inject.Inject
 class StoriesDetailFragment @Inject constructor(
     private val analyticFactory: StoriesAnalytics.Factory,
     private val router: Router,
-    private val trackingQueue: TrackingQueue,
 ) : TkpdBaseV4Fragment() {
 
     private val mParentPage: StoriesGroupFragment
@@ -117,7 +116,7 @@ class StoriesDetailFragment @Inject constructor(
     private val shopId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
-    private var analytic: StoriesAnalytics? = null
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(shopId)
 
     private val activityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -312,9 +311,6 @@ class StoriesDetailFragment @Inject constructor(
 
         showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currContent.menus.isNotEmpty())
-        if (analytic == null && shopId.isNotEmpty()) {
-            analytic = analyticFactory.create(shopId = shopId, trackingQueue = trackingQueue)
-        }
     }
 
     private fun observeBottomSheetStatus(

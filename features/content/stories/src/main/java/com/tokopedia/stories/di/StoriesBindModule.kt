@@ -2,8 +2,8 @@ package com.tokopedia.stories.di
 
 import com.tokopedia.stories.analytics.StoriesSharingAnalytics
 import com.tokopedia.stories.analytics.StoriesSharingAnalyticsImpl
-import com.tokopedia.stories.analytic.StoriesRoomAnalytic
-import com.tokopedia.stories.analytic.StoriesRoomAnalyticImpl
+import com.tokopedia.stories.analytics.StoriesRoomAnalytic
+import com.tokopedia.stories.analytics.StoriesRoomAnalyticImpl
 import com.tokopedia.stories.data.mapper.StoriesMapper
 import com.tokopedia.stories.data.mapper.StoriesMapperImpl
 import com.tokopedia.stories.data.repository.StoriesRepository

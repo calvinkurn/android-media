@@ -1,4 +1,4 @@
-package com.tokopedia.stories.analytic
+package com.tokopedia.stories.analytics
 
 interface StoriesRoomAnalytic {
 

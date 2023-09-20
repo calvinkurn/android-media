@@ -1,14 +1,12 @@
 package com.tokopedia.stories.view.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-
 
 /**
  * @author by astidhiyaa on 16/08/23

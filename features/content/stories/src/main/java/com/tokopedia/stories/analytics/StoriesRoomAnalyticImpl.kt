@@ -1,12 +1,9 @@
-package com.tokopedia.stories.analytic
+package com.tokopedia.stories.analytics
 
 import android.os.Bundle
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
-import com.tokopedia.stories.analytics.STORIES_ROOM_CATEGORIES
-import com.tokopedia.stories.analytics.currentSite
-import com.tokopedia.stories.analytics.sessionIris
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
