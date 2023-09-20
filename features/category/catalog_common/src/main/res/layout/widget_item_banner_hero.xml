@@ -28,7 +28,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tfSubtitleBannerPremium"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_Static_White"
         android:layout_marginBottom="16dp"
@@ -36,7 +36,9 @@
         app:typographyType="display_1"
         android:maxLines="1"
         android:ellipsize="end"
-        android:maxLength="30"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/bannerIndicator" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -45,9 +47,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:textAlignment="center"
-        android:maxLines="2"
         android:ellipsize="end"
-        android:maxLength="255"
+        android:maxLines="2"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@+id/tfSubtitleBannerPremium"
         app:typographyType="heading_2" />
@@ -96,7 +100,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textAlignment="center"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textColor="@color/Unify_Static_White"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iuBrand"
         app:typographyType="heading_2" />
 
