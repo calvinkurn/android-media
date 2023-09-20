@@ -8,7 +8,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_height_component" />
+        android:layout_height="@dimen/thick_divider_height_component" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_headline"
