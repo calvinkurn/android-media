@@ -24,6 +24,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
+import com.tokopedia.shop_widget.common.util.WidgetState
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
@@ -47,20 +48,23 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
     private var tabTotalWidth = 0
     private val viewBinding: ItemShopHomeShowcaseNavigationLeftMainBannerBinding? by viewBinding()
+    private var isShowcaseSuccessfullyLoaded = false
 
 
     override fun bind(model: ShowcaseNavigationUiModel) {
-        val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
+        if (!isShowcaseSuccessfullyLoaded) {
+            val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
 
-        //Render tab only if it has 5 showcase or more than 5 showcase
-        val validatedTabs = tabs.filter {
-            val showcaseCount = it.showcases.size
-            showcaseCount >= MINIMAL_SHOWCASE_COUNT_ON_A_TAB
+            //Render tab only if it has 5 showcase or more than 5 showcase
+            val validatedTabs = tabs.filter {
+                val showcaseCount = it.showcases.size
+                showcaseCount >= MINIMAL_SHOWCASE_COUNT_ON_A_TAB
+            }
+
+            setupTitle(model, validatedTabs)
+            setupTabs(validatedTabs, model)
+            setupChevronViewAll(model, validatedTabs, model.header.isOverrideTheme, model.header.colorSchema)
         }
-
-        setupTitle(model, validatedTabs)
-        setupTabs(validatedTabs, model)
-        setupChevronViewAll(model, validatedTabs, model.header.isOverrideTheme, model.header.colorSchema)
     }
 
     private fun setupChevronViewAll(
@@ -120,7 +124,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     ) {
         val fragments = createFragments(tabs, uiModel)
         val pagerAdapter = TabPagerAdapter(provider.currentFragment, fragments)
-
 
         viewBinding?.run {
             viewPager.adapter = pagerAdapter
@@ -253,6 +256,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             }
 
             fragment.setOnShowcaseVisible { showcaseId, tabName ->
+                isShowcaseSuccessfullyLoaded = true
                 listener.onNavigationBannerImpression(
                     uiModel = uiModel,
                     tabCount = tabs.size,
