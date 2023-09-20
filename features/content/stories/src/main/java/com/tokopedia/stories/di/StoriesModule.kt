@@ -11,6 +11,8 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -20,6 +22,11 @@ import java.util.concurrent.TimeUnit
 
 @Module
 class StoriesModule {
+
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {
