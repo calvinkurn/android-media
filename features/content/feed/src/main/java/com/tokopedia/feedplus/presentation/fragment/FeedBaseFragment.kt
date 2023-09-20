@@ -318,7 +318,6 @@ class FeedBaseFragment :
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
-                    handleTabTransition(position)
                     if (!userSession.isLoggedIn &&
                         activeTabSource.tabName == null // not coming from appLink
                     ) {
