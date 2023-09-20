@@ -3159,7 +3159,7 @@ class CartRevampFragment :
                 collapseOrExpandDisabledItem(updateListResult)
             }
         } else {
-            viewModel.removeAccordionDisabledItem()
+            viewModel.removeAccordionDisabledItem(updateListResult)
         }
 
         viewModel.updateCartGroupFirstItemStatus(updateListResult)

@@ -301,29 +301,29 @@ class CartViewModelTest : BaseCartViewModelTest() {
 
     // region removeAccordionDisabledItem
     @Test
-    fun `WHEN removeAccordionDisabledItem THEN DisabledItemHeaderHolderData should be removed`() {
+    fun `WHEN removeAccordionDisabledItem THEN DisabledAccordionHolderData should be removed`() {
         // GIVEN
-        val disabledItemHeaderHolderData = DisabledItemHeaderHolderData()
-        cartViewModel.cartDataList.value = arrayListOf(disabledItemHeaderHolderData)
+        val disabledAccordionHolderData = DisabledAccordionHolderData()
+        val cartDataList = arrayListOf<Any>(disabledAccordionHolderData)
 
         // WHEN
-        cartViewModel.removeAccordionDisabledItem()
+        cartViewModel.removeAccordionDisabledItem(cartDataList)
 
         // THEN
         assertEquals(
-            true,
-            cartViewModel.cartDataList.value.any { it is DisabledItemHeaderHolderData }
+            false,
+            cartDataList.any { it is DisabledAccordionHolderData }
         )
     }
 
     @Test
     fun `WHEN removeAccordionDisabledItem but DisabledItemHeaderHolderData not found THEN cartDataList should have same size`() {
         // GIVEN
-        cartViewModel.cartDataList.value = arrayListOf(CartGroupHolderData(), CartItemHolderData())
+        val cartDataList = arrayListOf<Any>(CartGroupHolderData(), CartItemHolderData())
         val previousSize = cartViewModel.cartDataList.value.size
 
         // WHEN
-        cartViewModel.removeAccordionDisabledItem()
+        cartViewModel.removeAccordionDisabledItem(cartDataList)
 
         // THEN
         assertEquals(previousSize, cartViewModel.cartDataList.value.size)
