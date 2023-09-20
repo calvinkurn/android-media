@@ -82,6 +82,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         setBannerImage(uiModel)
         setWidgetImpressionListener(uiModel)
         configColorTheme(uiModel)
+        setShopReimaginedContainerMargin()
     }
 
     private fun setHeader(
@@ -246,7 +247,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
         val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
-        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
+        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
         textTitle?.setTextColor(titleColor)
         textTimeDescription?.setTextColor(subTitleColor)
@@ -258,7 +259,6 @@ class ShopHomeDisplayBannerTimerViewHolder(
                 MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
             setTextColor(titleColor)
         }
-        setShopReimaginedContainerMargin()
     }
 
     private fun configFestivity() {
@@ -281,7 +281,6 @@ class ShopHomeDisplayBannerTimerViewHolder(
                 )
             )
         }
-        setShopReimaginedContainerMargin()
     }
 
     private fun configDefaultColor() {
