@@ -502,7 +502,7 @@ object ApplinkConstInternalUserPlatform {
      * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
      **/
     @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-    const val ACCOUNT_LINKING_WEBVIEW = "$NEW_INTERNAL_USER/account-linking-webview"
+    const val LINK_ACCOUNT_WEBVIEW = "$NEW_INTERNAL_USER/account-linking-webview"
 
     /**
      * com.tokopedia.privacycenter.dsar.ui.DsarActivity
