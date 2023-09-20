@@ -7,5 +7,7 @@ sealed interface StoriesCreationUiEvent {
 
     object OpenMediaPicker : StoriesCreationUiEvent
 
+    object ErrorPreparePage : StoriesCreationUiEvent
+
     object ShowTooManyStoriesReminder : StoriesCreationUiEvent
 }

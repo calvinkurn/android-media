@@ -61,6 +61,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
+    implementation projectOrAar(rootProject.ext.features.creationCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

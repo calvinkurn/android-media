@@ -8,6 +8,7 @@ import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepositor
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
+import com.tokopedia.stories.creation.view.model.state.StoriesManualConfiguration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +28,9 @@ class StoriesCreationViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
     val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
+
+    val maxStoriesConfig: StoriesManualConfiguration.MaxStories
+        get() = _uiState.value.config.maxStories
 
     private val storyId: String
         get() = _uiState.value.config.storiesId
