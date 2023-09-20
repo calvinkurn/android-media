@@ -16,7 +16,7 @@ import kotlin.math.abs
 private const val OVERSCROLL_TRANSLATION_MAGNITUDE = 0.5f
 
 /** The magnitude of release threshold before considered as really over-scrolled **/
-private const val RELEASE_TRANSLATION_OVERSCROLL_HEIGHT_THRESHOLD = 0.13f
+private const val RELEASE_TRANSLATION_OVERSCROLL_HEIGHT_THRESHOLD = 0.1f
 
 /** The magnitude of translation distance when the list reaches the edge on fling. */
 private const val FLING_TRANSLATION_MAGNITUDE = 0.5f
