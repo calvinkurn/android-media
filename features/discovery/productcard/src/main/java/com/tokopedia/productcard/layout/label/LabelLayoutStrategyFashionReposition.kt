@@ -6,7 +6,6 @@ import android.widget.ImageView
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -92,63 +91,16 @@ internal class LabelLayoutStrategyFashionReposition: LabelLayoutStrategy {
         productCardModel: ProductCardModel,
     ): Int = 0
 
-    override fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel) {
-        val contentLayout = view.findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
-
-        contentLayout?.applyConstraintSet {
-            it.clear(R.id.labelDiscount, ConstraintSet.START)
-            it.clear(R.id.labelDiscount, ConstraintSet.TOP)
-
-            if (productCardModel.discountPercentage.isNotEmpty()) {
-                it.connect(
-                    R.id.labelDiscount,
-                    ConstraintSet.START,
-                    R.id.textViewPrice,
-                    ConstraintSet.END,
-                )
-
-                it.connect(
-                    R.id.labelDiscount,
-                    ConstraintSet.TOP,
-                    R.id.textViewPrice,
-                    ConstraintSet.TOP,
-                )
-            } else {
-                it.connect(
-                    R.id.labelDiscount,
-                    ConstraintSet.START,
-                    ConstraintSet.PARENT_ID,
-                    ConstraintSet.START,
-                )
-
-                it.connect(
-                    R.id.labelDiscount,
-                    ConstraintSet.TOP,
-                    R.id.textViewPrice,
-                    ConstraintSet.BOTTOM,
-                )
-            }
-        }
-    }
-
-    override fun setDiscountMargin(label: Label) {
-        val margin = 0
-        val marginLeft = label.context.resources.getDimensionPixelSize(
-            R.dimen.product_card_label_discount_margin_left_fashion
-        )
-        label.setMargin(marginLeft, margin, margin, margin)
-    }
-
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
-        val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
         val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
 
-        labelPrice?.initLabelGroup(null)
-
-        if (productCardModel.isShowDiscountOrSlashPrice())
-            labelPriceReposition?.initLabelGroup(null)
-        else
+        if (productCardModel.isShowLabelPrice())
             labelPriceReposition?.initLabelGroup(productCardModel.getLabelPrice())
+        else
+            labelPriceReposition?.initLabelGroup(null)
+
+        val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
+        labelPrice?.initLabelGroup(null)
     }
 
 

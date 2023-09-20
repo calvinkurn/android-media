@@ -13,6 +13,7 @@ import org.json.JSONObject
 import java.util.*
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.track.TrackApp
 import java.lang.Exception
 
 /**
@@ -175,9 +176,10 @@ class TrackingMapper {
 
         fun reformatEvent(event: String, sessionId: String, cache: Cache): JSONObject {
             return try {
-                var valueEvent = VALUE_EVENT_MAINAPP
-                if (GlobalConfig.isSellerApp()) {
-                    valueEvent = VALUE_EVENT_SELLERAPP
+                val valueEvent = if (GlobalConfig.isSellerApp()) {
+                    VALUE_EVENT_SELLERAPP
+                } else {
+                    VALUE_EVENT_MAINAPP
                 }
                 val item = JSONObject(event)
                 if (item.has(KEY_EVENT)) {
@@ -189,6 +191,7 @@ class TrackingMapper {
                     item.put(KEY_EVENT_GA, eventName)
                     item.remove(KEY_EVENT)
                 }
+                item.put(KEY_CLIENT_ID, TrackApp.getInstance().gtm.clientIDString)
                 item.put("iris_session_id", sessionId)
                 item.put("container", KEY_CONTAINER)
                 item.put(KEY_EVENT, valueEvent)
