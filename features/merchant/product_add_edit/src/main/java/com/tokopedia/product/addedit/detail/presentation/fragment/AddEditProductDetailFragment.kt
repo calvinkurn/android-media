@@ -1838,7 +1838,9 @@ class AddEditProductDetailFragment :
 
             priceSuggestionBottomSheet?.let { bottomSheet ->
                 bottomSheet.setShowListener {
-                    (bottomSheet.dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    bottomSheet.dialog?.let {
+                        (it as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    }
                     bottomSheet.bottomSheetWrapper.parent?.parent?.requestLayout()
                 }
                 bottomSheet.setCloseClickListener {
