@@ -3,7 +3,6 @@ package com.tokopedia.media.preview.ui.player
 import android.content.Context
 import android.net.Uri
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.LoopingMediaSource
@@ -27,7 +26,18 @@ class PickerVideoPlayer constructor(
 
     private val exoPlayer = SimpleExoPlayer
         .Builder(context)
-        .setLoadControl(DefaultLoadControl.Builder().setPrioritizeTimeOverSizeThresholds(false).createDefaultLoadControl())
+        .setLoadControl(
+//            DefaultLoadControl.Builder()
+//                .setBufferDurationsMs(
+//                    3000,
+//                    5000,
+//                    2000,
+//                    2000,
+//                )
+//                .setPrioritizeTimeOverSizeThresholds(false)
+//                .createDefaultLoadControl()
+            PickerVideoLoadControl()
+        )
         .build()
 
     private var loopingMediaSource: LoopingMediaSource? = null
@@ -99,5 +109,4 @@ class PickerVideoPlayer constructor(
     interface Listener {
         fun isPlayingOnChanged(isPlaying: Boolean)
     }
-
 }

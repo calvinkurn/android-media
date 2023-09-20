@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.shorts.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -11,8 +10,9 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
@@ -32,9 +32,9 @@ import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnal
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
+import com.tokopedia.play.broadcaster.shorts.util.PlayShortsVideoControl
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -79,7 +79,7 @@ class PlayShortsModule(
     @PlayShortsScope
     fun provideExoPlayer(): ExoPlayer {
         return SimpleExoPlayer.Builder(activityContext)
-            .setLoadControl(DefaultLoadControl.Builder().setPrioritizeTimeOverSizeThresholds(false).createDefaultLoadControl())
+            .setLoadControl(PlayShortsVideoControl())
             .build()
             .apply {
                 repeatMode = Player.REPEAT_MODE_ALL
@@ -114,7 +114,7 @@ class PlayShortsModule(
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
         playBroadcastPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
-        beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
+        beautificationAnalytic: PlayBroadcastBeautificationAnalytic
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -129,7 +129,7 @@ class PlayShortsModule(
             accountAnalytic,
             shortsEntryPointAnalytic,
             playBroadcastPerformanceDashboardEntryPointAnalytic,
-            beautificationAnalytic,
+            beautificationAnalytic
         )
     }
 
@@ -172,7 +172,7 @@ class PlayShortsModule(
     @PlayShortsScope
     fun provideBroadcastBeautificationApi(
         builder: Retrofit.Builder,
-        okHttpClient: OkHttpClient,
+        okHttpClient: OkHttpClient
     ): BeautificationAssetApi {
         return builder
             .baseUrl(TokopediaUrl.Companion.getInstance().GQL)
