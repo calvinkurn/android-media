@@ -32,6 +32,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search1InstAuto
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -109,8 +110,6 @@ class SuggestionFragment :
     private var coachMark: CoachMark2? = null
 
     private var mpsSuggestionListener: SuggestionMPSListener? = null
-
-    private var isMps: Boolean= false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -203,9 +202,8 @@ class SuggestionFragment :
         outState.putString(ACTIVE_KEYWORD_VALUE, activeKeyword.keyword)
     }
 
-    fun getSuggestion(searchParameter: Map<String, String>, activeKeyword: SearchBarKeyword, isMps: Boolean) {
+    fun getSuggestion(searchParameter: Map<String, String>, activeKeyword: SearchBarKeyword) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
-        this.isMps = isMps
         presenter?.getSuggestion(searchParameter, activeKeyword)
     }
 
@@ -218,7 +216,7 @@ class SuggestionFragment :
     }
 
     override fun onItemClicked(item: BaseSuggestionDataView) {
-        if(isMps) {
+        if(presenter?.isMPS().orFalse()) {
             mpsSuggestionListener?.clickSuggestionMPS(item)
         } else {
             presenter?.onSuggestionItemClicked(item)

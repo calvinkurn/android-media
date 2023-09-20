@@ -116,6 +116,9 @@ interface SuggestionContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
+
+        fun isMPS(): Boolean
+
         fun getSearchParameter(): Map<String, String>
 
         fun getActiveKeyword() : SearchBarKeyword

@@ -513,8 +513,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             getInitialStateFragment()?.show(searchParameterMap)
         } else {
             val activeKeyword = viewModel?.activeKeyword ?: return
-            val isMps = viewModel?.isMps().orFalse()
-            getSuggestionFragment()?.getSuggestion(searchParameterMap, activeKeyword, isMps)
+            getSuggestionFragment()?.getSuggestion(searchParameterMap, activeKeyword)
         }
     }
 
