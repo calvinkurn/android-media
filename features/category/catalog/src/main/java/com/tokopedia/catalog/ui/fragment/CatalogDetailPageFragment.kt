@@ -27,6 +27,7 @@ import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.util.DrawableExtension
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -36,8 +37,11 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
@@ -143,8 +147,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
-            } else {
-                binding?.showPageError()
+            } else if (it is Fail){
+                binding?.showPageError(it.throwable)
             }
         }
         viewModel.totalCartItem.observe(viewLifecycleOwner) {
@@ -248,7 +252,17 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
     }
 
-    private fun FragmentCatalogReimagineDetailPageBinding.showPageError() {
+    private fun FragmentCatalogReimagineDetailPageBinding.showPageError(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                gePageError.setType(GlobalError.NO_CONNECTION)
+            }
+            else -> {
+                gePageError.setType(GlobalError.SERVER_ERROR)
+            }
+        }
+        gePageError.errorDescription.text = errorMessage
         groupContent.gone()
         stickySingleHeaderView.show()
     }
