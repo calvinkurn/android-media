@@ -10,7 +10,6 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseC
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowsePlaceholderViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
-import com.tokopedia.feedplus.databinding.ItemFeedBrowseChannelBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowsePlaceholderBinding
 import kotlinx.coroutines.CoroutineScope
 import com.tokopedia.feedplus.R as feedplusR
@@ -84,12 +83,8 @@ class FeedBrowseAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): FeedBrowseChannelViewHolder {
-            return FeedBrowseChannelViewHolder(
-                binding = ItemFeedBrowseChannelBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                ),
+            return FeedBrowseChannelViewHolder.create(
+                parent = parent,
                 listener = listener,
                 lifecycleScope = lifeCycleScope,
                 coroutineDispatchers = coroutineDispatchers

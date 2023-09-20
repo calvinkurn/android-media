@@ -67,9 +67,7 @@ class FeedBrowseViewModel @Inject constructor(
     private fun handleFetchTitle() {
         viewModelScope.launch {
             val title = repository.getTitle()
-            _title.update {
-                title
-            }
+            _title.update { title }
         }
     }
 
@@ -94,9 +92,7 @@ class FeedBrowseViewModel @Inject constructor(
     private fun handleFetchWidget(extraParam: WidgetRequestModel, widgetId: String) {
         viewModelScope.launch {
             val response = repository.getWidget(extraParam)
-            updateChannelWidget(widgetId) { prevWidget ->
-                replaceContent(prevWidget, response)
-            }
+            updateChannelWidget(widgetId) { prevWidget -> prevWidget.replaceContent(response) }
         }
     }
 
@@ -134,20 +130,19 @@ class FeedBrowseViewModel @Inject constructor(
         }
     }
 
-    private fun replaceContent(
-        widget: FeedBrowseUiModel.Channel,
+    private fun FeedBrowseUiModel.Channel.replaceContent(
         newContent: FeedBrowseItemUiModel
     ): FeedBrowseUiModel {
-        return widget.copy(
+        return copy(
             chipUiState = if (newContent is ChipUiState) {
                 newContent
             } else {
-                widget.chipUiState
+                chipUiState
             },
             channelUiState = if (newContent is ChannelUiState) {
                 newContent
             } else {
-                widget.channelUiState
+                channelUiState
             }
         )
     }

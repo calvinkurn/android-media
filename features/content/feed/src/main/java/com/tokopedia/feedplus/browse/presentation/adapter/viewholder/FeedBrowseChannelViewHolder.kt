@@ -1,6 +1,8 @@
 package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +12,8 @@ import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.adapter.CenterScrollLayoutManager
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseCardAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChannelItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
@@ -31,7 +34,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-class FeedBrowseChannelViewHolder(
+class FeedBrowseChannelViewHolder private constructor(
     private val binding: ItemFeedBrowseChannelBinding,
     private val listener: Listener,
     lifecycleScope: CoroutineScope,
@@ -77,7 +80,7 @@ class FeedBrowseChannelViewHolder(
         }
     }
     private val chipAdapter by lazy { FeedBrowseChipAdapter(chipListener) }
-    private val chipItemDecoration = FeedBrowseItemDecoration(
+    private val chipItemDecoration = FeedBrowseChannelItemDecoration(
         context = binding.root.context,
         spacingHorizontal = feedplusR.dimen.feed_space_2,
         spacingTop = feedplusR.dimen.feed_space_12
@@ -97,7 +100,7 @@ class FeedBrowseChannelViewHolder(
         }
     }
     private val cardAdapter by lazy { FeedBrowseCardAdapter(cardListener) }
-    private val cardItemDecoration = FeedBrowseItemDecoration(
+    private val cardItemDecoration = FeedBrowseChannelItemDecoration(
         context = binding.root.context,
         spacingHorizontal = feedplusR.dimen.feed_space_8,
         spacingTop = unifyprinciplesR.dimen.layout_lvl0
@@ -129,6 +132,16 @@ class FeedBrowseChannelViewHolder(
         updateItem(item)
         setupTitle(item.title)
         setupContent(item)
+    }
+
+    fun bindPayloads(item: FeedBrowseUiModel.Channel, payloads: FeedBrowsePayloads) {
+        if (payloads.isChannelChipsChanged()) bindChipUiState(item.chipUiState)
+        if (payloads.isChannelItemsChanged()) bindChannelUiState(item.channelUiState, item)
+        if (payloads.isChannelRefresh()) {
+            if (item.channelUiState !is ChannelUiState.Data) return
+            configureAutoRefresh(item.channelUiState.config)
+        }
+        updateItem(item)
     }
 
     fun bindChipUiState(chipUiState: ChipUiState) {
@@ -291,5 +304,23 @@ class FeedBrowseChannelViewHolder(
         const val NOTIFY_CHANNEL_STATE = "NotifyChannelState"
         const val NOTIFY_CHIP_STATE = "NotifyChipState"
         const val NOTIFY_AUTO_REFRESH = "NotifyAutoRefresh"
+
+        fun create(
+            parent: ViewGroup,
+            listener: Listener,
+            lifecycleScope: CoroutineScope,
+            coroutineDispatchers: CoroutineDispatchers
+        ): FeedBrowseChannelViewHolder {
+            return FeedBrowseChannelViewHolder(
+                ItemFeedBrowseChannelBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+                listener,
+                lifecycleScope,
+                coroutineDispatchers,
+            )
+        }
     }
 }

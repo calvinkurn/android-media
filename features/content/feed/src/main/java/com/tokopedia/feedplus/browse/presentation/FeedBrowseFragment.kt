@@ -16,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -23,6 +24,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapterr
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
@@ -34,6 +38,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play_common.util.extension.withCache
@@ -148,7 +153,17 @@ class FeedBrowseFragment @Inject constructor(
             )
         }
     }
-    private val adapter by lazy { FeedBrowseAdapter(channelListener, lifecycleScope, coroutineDispatchers) }
+
+    private val bannerListener = object : FeedBrowseBannerViewHolder.Listener {
+        override fun onBannerClicked(
+            viewHolder: FeedBrowseBannerViewHolder,
+            item: FeedBrowseUiModel.Banner
+        ) {
+            showToast(item.title)
+        }
+    }
+//    private val adapter by lazy { FeedBrowseAdapter(channelListener, lifecycleScope, coroutineDispatchers) }
+    private val adapter by lazy { FeedBrowseAdapterr(channelListener, bannerListener, lifecycleScope, coroutineDispatchers) }
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 
@@ -231,6 +246,16 @@ class FeedBrowseFragment @Inject constructor(
             exitPage()
         }
 
+        val layoutManager = GridLayoutManager(context, 2).apply {
+            spanSizeLookup = adapter.getSpanSizeLookup()
+        }
+        binding.feedBrowseList.layoutManager = layoutManager
+        binding.feedBrowseList.addItemDecoration(
+            FeedBrowseItemDecoration(
+                binding.feedBrowseList.resources,
+                layoutManager.spanCount,
+            )
+        )
         binding.feedBrowseList.adapter = adapter
     }
 
@@ -298,7 +323,7 @@ class FeedBrowseFragment @Inject constructor(
         ) {
             return
         }
-        adapter.setItemsAndAnimateChanges(widgets)
+        adapter.submitList(widgets)
     }
 
     private fun goToPage(appLink: String) {

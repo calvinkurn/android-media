@@ -1,29 +1,36 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
-import android.content.Context
+import android.content.res.Resources
 import android.graphics.Rect
 import android.view.View
-import androidx.annotation.DimenRes
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.R as feedplusR
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
 
 /**
- * Created by meyta.taliti on 22/08/23.
+ * Created by kenny.hadisaputra on 19/09/23
  */
 class FeedBrowseItemDecoration(
-    private val context: Context,
-    @DimenRes spacingHorizontal: Int,
-    @DimenRes spacingTop: Int,
+    resources: Resources,
+    private val spanCount: Int,
 ) : RecyclerView.ItemDecoration() {
 
-    private val spacingStart = getDimensionInPixel(feedplusR.dimen.feed_space_16)
-    private val spacingEnd = getDimensionInPixel(feedplusR.dimen.feed_space_16)
-    private val spacingHorizontalPx = getDimensionInPixel(spacingHorizontal)
-    private val spacingTopPx = getDimensionInPixel(spacingTop)
-
-    private fun getDimensionInPixel(@DimenRes dimen: Int): Int {
-        return context.resources.getDimensionPixelOffset(dimen)
-    }
+    private val offset4 = resources.getDimensionPixelOffset(
+        unifyprinciplesR.dimen.spacing_lvl2
+    )
+    private val offset8 = resources.getDimensionPixelOffset(
+        unifyprinciplesR.dimen.spacing_lvl3
+    )
+    private val offset12 = resources.getDimensionPixelOffset(
+        R.dimen.feed_space_12
+    )
+    private val offset16 = resources.getDimensionPixelOffset(
+        unifyprinciplesR.dimen.spacing_lvl4
+    )
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -31,21 +38,46 @@ class FeedBrowseItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.left = if (isPositionStart(parent, view)) spacingStart else spacingHorizontalPx
-
-        if (isPositionEnd(parent, view, state)) {
-            outRect.right = spacingEnd
+        when (val viewHolder = parent.getChildViewHolder(view)) {
+            is FeedBrowseTitleViewHolder -> outRect.itemOffsetsTitle()
+            is FeedBrowseBannerViewHolder -> outRect.itemOffsetsBanner(viewHolder, parent, view)
+            is FeedBrowseChannelViewHolder -> outRect.itemOffsetsChannel()
         }
 
-        outRect.top = spacingTopPx
+        if (parent.getChildAdapterPosition(view) == parent.adapter!!.itemCount - 1) {
+            outRect.bottom = offset16
+        }
     }
 
-    private fun isPositionStart(parent: RecyclerView, view: View): Boolean {
-        return parent.getChildAdapterPosition(view) == 0
+    private fun Rect.itemOffsetsTitle() {
+        left = offset16
+        right = offset16
+        top = offset16
     }
 
-    private fun isPositionEnd(parent: RecyclerView, view: View, state: RecyclerView.State): Boolean {
-        val lastPosition = state.itemCount - 1
-        return parent.getChildAdapterPosition(view) == lastPosition
+    private fun Rect.itemOffsetsBanner(
+        viewHolder: FeedBrowseBannerViewHolder,
+        parent: RecyclerView,
+        child: View,
+    ) {
+        val lParams = viewHolder.itemView.layoutParams as? GridLayoutManager.LayoutParams ?: return
+        val spanIndex = lParams.spanIndex
+
+        val currPosition = parent.getChildAdapterPosition(child)
+
+        left = if (spanIndex == 0) offset16 else offset4
+        right = if (spanIndex == spanCount - 1) offset16 else offset4
+
+        val prevSpanRowPosition = currPosition - spanIndex - 1
+        if (prevSpanRowPosition < 0) return
+
+        top = when (parent.findViewHolderForAdapterPosition(prevSpanRowPosition)) {
+            is FeedBrowseBannerViewHolder -> offset8
+            else -> offset12
+        }
+    }
+
+    private fun Rect.itemOffsetsChannel() {
+        top = offset16
     }
 }
