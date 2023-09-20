@@ -108,13 +108,8 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     private var adapterTypeFactory: CategoryL2TabAdapterTypeFactory? = null
     private var categoryAdapter: CategoryL2TabAdapter? = null
 
-    private val viewModel: TokoNowCategoryL2TabViewModel by viewModels {
-        viewModelFactory
-    }
-
-    private val productRecommendationViewModel: TokoNowProductRecommendationViewModel by viewModels {
-        viewModelFactory
-    }
+    private lateinit var viewModel: TokoNowCategoryL2TabViewModel
+    private lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
 
     private var binding by autoClearedNullable<FragmentTokopedianowL2TabBinding>()
 
@@ -128,8 +123,9 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     var categoryL2View: CategoryL2View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        initViewModel()
         registerActivityResults()
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -166,6 +162,12 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     override fun onAttach(context: Context) {
         injectDependencies()
         super.onAttach(context)
+    }
+
+    private fun initViewModel() {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory)
+        viewModel = viewModelProvider[TokoNowCategoryL2TabViewModel::class.java]
+        productRecommendationViewModel = viewModelProvider[TokoNowProductRecommendationViewModel::class.java]
     }
 
     private fun observeLiveData() {
