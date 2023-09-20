@@ -2,6 +2,8 @@ package com.tokopedia.inbox.universalinbox.test
 
 import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
+import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
+import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertLabelMenu
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounter
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounterGone
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertNotificationCounter
@@ -137,10 +139,12 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         }
 
         // When
+        generalRobot {
+            scrollToPosition(0)
+        }
         menuRobot {
             swipeDown()
         }
-        Thread.sleep(1000)
 
         // Then
         assertNotificationCounter("1")
@@ -165,11 +169,24 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         }
 
         // When
+        generalRobot {
+            scrollToPosition(0)
+        }
         menuRobot {
             swipeDown()
         }
 
         // Then
         assertNotificationCounterGone()
+    }
+
+    @Test
+    fun should_show_label_when_menu_has_label() {
+        // When
+        launchActivity()
+        Thread.sleep(10000)
+
+        // Then
+        assertLabelMenu(position = 5)
     }
 }
