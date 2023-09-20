@@ -2,8 +2,11 @@ package com.tokopedia.recommendation_widget_common.infinite.main
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationViewModelDelegate
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 
 class InfiniteRecommendationManager(
@@ -12,6 +15,8 @@ class InfiniteRecommendationManager(
 
     val adapter: InfiniteRecommendationAdapter by getAdapter()
     private val viewModel: InfiniteRecommendationViewModel? by getViewModel()
+
+    var listener: InfiniteRecommendationListener? = null
 
     var requestParam: GetRecommendationRequestParam = GetRecommendationRequestParam()
         set(value) {
@@ -40,5 +45,18 @@ class InfiniteRecommendationManager(
 
     override fun fetchRecommendation() {
         viewModel?.fetchComponents(requestParam)
+    }
+
+    override fun onImpressProductCard(recommendationItem: RecommendationItem) {
+        listener?.onImpressProductCard(recommendationItem)
+    }
+
+    override fun onClickProductCard(recommendationItem: RecommendationItem) {
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            recommendationItem.productId.toString()
+        )
+        listener?.onClickProductCard(recommendationItem)
     }
 }

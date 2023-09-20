@@ -5,9 +5,12 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemInfiniteProductBinding
+import com.tokopedia.recommendation_widget_common.infinite.main.InfiniteRecommendationCallback
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 
-class InfiniteProductDelegate :
+class InfiniteProductDelegate(
+    private val callback: InfiniteRecommendationCallback
+) :
     TypedAdapterDelegate<InfiniteProductUiModel, InfiniteRecommendationUiModel, InfiniteProductViewHolder>(
         R.layout.item_infinite_product
     ) {
@@ -17,6 +20,6 @@ class InfiniteProductDelegate :
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): InfiniteProductViewHolder {
         val binding = ItemInfiniteProductBinding.bind(basicView)
-        return InfiniteProductViewHolder(binding)
+        return InfiniteProductViewHolder(binding, callback)
     }
 }

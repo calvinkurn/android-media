@@ -25,7 +25,7 @@ class InfiniteRecommendationAdapter(
     init {
         delegatesManager
             .addDelegate(InfiniteLoadingDelegate())
-            .addDelegate(InfiniteProductDelegate())
+            .addDelegate(InfiniteProductDelegate(callback))
             .addDelegate(InfiniteTitleDelegate())
     }
 
