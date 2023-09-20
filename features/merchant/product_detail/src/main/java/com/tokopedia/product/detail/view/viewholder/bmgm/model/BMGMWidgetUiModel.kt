@@ -14,7 +14,8 @@ data class BMGMWidgetUiModel(
     val backgroundColor: String = "",
     val action: Action = Action(),
     val titleColor: String = "",
-    val separator: String = ""
+    val separator: String = "",
+    val offerId: String = ""
 ) {
 
     data class Product(

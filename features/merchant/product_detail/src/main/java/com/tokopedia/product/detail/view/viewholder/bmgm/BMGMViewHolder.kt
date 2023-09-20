@@ -51,6 +51,7 @@ class BMGMViewHolder(
                 override fun onClick(data: BMGMWidgetUiModel) {
                     listener.onBMGMClicked(
                         title = data.title,
+                        offerId = data.offerId,
                         component = getComponentTrackData(element)
                     )
                 }
