@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.topads.sdk.R
@@ -81,7 +82,7 @@ class BannerShopProductRevampViewHolder(
 
     private fun getDiscountProduct(item: ProductCardModel): Int {
         val discount = item.discountPercentage.removeSuffix("%")
-        return if (discount.isNotEmpty()) discount.toInt() else 0
+        return discount.toIntOrZero()
     }
 
     companion object {
