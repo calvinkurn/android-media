@@ -124,24 +124,13 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         }
     }
 
-    private fun getNormalServiceView(): View? {
-        val normalServiceIndex = cplItemOnDemandAdapter.getFirstNormalServicePosition()
-        return if (normalServiceIndex != RecyclerView.NO_POSITION) {
-            binding?.rvOnDemandCpl?.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
-        } else {
-            null
-        }
-    }
-
     private fun showOnBoardingCoachmark(data: CustomProductLogisticModel) {
         val whitelabelView = getWhitelabelView()
 
         if (whitelabelView != null) {
             context?.let {
-                val normalServiceView = getNormalServiceView()
-
                 val coachMarkItems =
-                    generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
+                    generateOnBoardingCoachMark(it, whitelabelView)
                 whitelabelCoachmark = CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems, data)
                     setStateAfterOnBoardingShown()
@@ -153,38 +142,16 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun generateOnBoardingCoachMark(
         context: Context,
-        normalService: View?,
         whitelabelService: View
     ): ArrayList<CoachMark2Item> {
         val coachMarkItems = ArrayList<CoachMark2Item>()
-        // dummy only
-        binding?.tvAntarCpl?.apply {
-            coachMarkItems.add(
-                CoachMark2Item(
-                    this,
-                    context.getString(R.string.whitelabel_instan_title_coachmark),
-                    context.getString(R.string.whitelabel_instan_description_coachmark)
-                )
-            )
-        }
-
-        normalService?.let { view ->
-            coachMarkItems.add(
-                CoachMark2Item(
-                    view,
-                    context.getString(R.string.whitelabel_onboarding_title_coachmark),
-                    context.getString(R.string.whitelabel_onboarding_description_coachmark),
-                    CoachMark2.POSITION_TOP
-                )
-            )
-        }
 
         whitelabelService.let { view ->
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    context.getString(R.string.whitelabel_instan_title_coachmark),
-                    context.getString(R.string.whitelabel_instan_description_coachmark),
+                    context.getString(R.string.whitelabel_sameday_title_coachmark),
+                    context.getString(R.string.whitelabel_sameday_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )
@@ -211,7 +178,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun CoachMark2.manualScroll(
         coachMarkItems: ArrayList<CoachMark2Item>,
-        currentIndex: Int = 1
+        currentIndex: Int = 0
     ) {
         coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
             binding?.svShippingEditor?.smoothScrollTo(0, rv.top)
