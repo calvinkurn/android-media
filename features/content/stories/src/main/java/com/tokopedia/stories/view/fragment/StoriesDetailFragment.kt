@@ -196,22 +196,17 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     StoriesUiEvent.OpenKebab -> {
-                        if (groupId != viewModel.mGroup.groupId) return@collect
                         StoriesThreeDotsBottomSheet
                             .getOrCreateFragment(
                                 childFragmentManager,
                                 requireActivity().classLoader
-                            )
-                            .show(childFragmentManager)
+                            ).show(childFragmentManager)
                     }
                     StoriesUiEvent.OpenProduct -> {
-                        if (!isEligiblePage) return@collect
-
                         StoriesProductBottomSheet.getOrCreateFragment(
                             childFragmentManager,
                             requireActivity().classLoader
-                        )
-                            .show(childFragmentManager)
+                        ).show(childFragmentManager)
                     }
                     is StoriesUiEvent.Login -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
