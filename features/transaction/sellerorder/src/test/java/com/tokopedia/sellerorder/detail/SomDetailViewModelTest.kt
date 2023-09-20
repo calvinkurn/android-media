@@ -167,6 +167,123 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
+    fun `given the bmgm and bundling data when loadDetailOrder then should return success`() {
+        // given
+        val orderId = "123"
+        val expectedResponse =
+            SomDetailOrder.GetSomDetail.Details(
+                bundle = listOf(
+                    SomDetailOrder.GetSomDetail.Details.Bundle(
+                        bundleName = "bundling - Beli2DiskonDiskon30%",
+                        bundleId = "1:5:0",
+                        bundlePrice = "Rp600.000",
+                        bundleSubtotalPrice = "Rp200.000",
+                        orderDetail = listOf(
+                            SomDetailOrder.GetSomDetail.Details.Product(
+                                id = "2150865420",
+                                name = "Power Bank Original - Yellow",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            ),
+                            SomDetailOrder.GetSomDetail.Details.Product(
+                                id = "2150865421",
+                                name = "Power Bank Original - Black",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            )
+                        )
+                    )
+                ),
+                bmgmIcon = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
+                bmgms = listOf(
+                    SomDetailOrder.GetSomDetail.Bmgm(
+                        bmgmTierName = "offers - Beli2DiskonDiskon30%",
+                        id = "1:3:0",
+                        priceBeforeBenefitFormatted = "Rp400.000",
+                        orderDetail = listOf(
+                            SomDetailOrder.GetSomDetail.Bmgm.OrderDetail(
+                                id = "2150865420",
+                                productName = "Power Bank Original - Pink",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                price = 75000.00,
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            ),
+                            SomDetailOrder.GetSomDetail.Bmgm.OrderDetail(
+                                id = "2150865421",
+                                productName = "Power Bank Original - Blue",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                price = 75000.00,
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            )
+                        )
+                    )
+                )
+            )
+
+        coEvery {
+            somGetOrderDetailUseCase.execute(orderId)
+        } returns Success(
+            GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.GetSomDetail(
+                    details = expectedResponse
+                )
+            )
+        )
+
+        // when
+        viewModel.loadDetailOrder(orderId)
+
+        // then
+        coVerify {
+            somGetOrderDetailUseCase.execute(orderId)
+        }
+
+        val detailsActual =
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail!!.details
+
+        assert(viewModel.orderDetailResult.value is Success)
+
+        assertEquals(expectedResponse.bundle!!.first().bundleName, detailsActual.bundle!!.first().bundleName)
+        assertEquals(expectedResponse.bundle!!.first().bundlePrice, detailsActual.bundle!!.first().bundlePrice)
+        assertEquals(expectedResponse.bundle!!.first().bundleSubtotalPrice, detailsActual.bundle!!.first().bundleSubtotalPrice)
+
+        assertEquals(expectedResponse.bmgmIcon, detailsActual.bmgmIcon)
+        assertEquals(
+            expectedResponse.bmgms!!.first().bmgmTierName,
+            detailsActual.bmgms!!.first().bmgmTierName
+        )
+        assertEquals(
+            expectedResponse.bmgms!!.first().priceBeforeBenefitFormatted,
+            detailsActual.bmgms!!.first().priceBeforeBenefitFormatted
+        )
+
+        expectedResponse.bundle!!.first().orderDetail.forEachIndexed { index, product ->
+            val productActual = detailsActual.bundle!!.first().orderDetail[index]
+
+            assertEquals(product.id, productActual.id)
+            assertEquals(product.name, productActual.name)
+            assertEquals(product.priceText, productActual.priceText)
+            assertEquals(product.thumbnail, productActual.thumbnail)
+            assertEquals(product.note, productActual.note)
+        }
+
+        expectedResponse.bmgms!!.first().orderDetail.forEachIndexed { index, product ->
+            val productActual = detailsActual.bmgms!!.first().orderDetail[index]
+
+            assertEquals(product.id, productActual.id)
+            assertEquals(product.productName, productActual.productName)
+            assertTrue(product.price == productActual.price)
+            assertEquals(product.priceText, productActual.priceText)
+            assertEquals(product.thumbnail, productActual.thumbnail)
+            assertEquals(product.note, productActual.note)
+        }
+    }
+
+    @Test
     fun `given the bmgm null when loadDetailOrder then should return success`() {
         // given
         val orderId = "123"
