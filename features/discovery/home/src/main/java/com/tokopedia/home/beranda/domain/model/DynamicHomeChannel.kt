@@ -105,7 +105,7 @@ data class DynamicHomeChannel(
         var styleParam: String = "",
         @SerializedName("isShimmer")
         @Expose
-        var isShimmer: Boolean = false,
+        var isShimmer: Boolean = true,
     ) : ImpressHolder() {
 
         private var position: Int = 0
