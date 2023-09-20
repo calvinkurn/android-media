@@ -9,7 +9,6 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -28,6 +27,7 @@ import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
+import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.model.StoriesCreationBottomSheetType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
@@ -68,6 +68,7 @@ class StoriesCreationActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
+        setupAttachFragmentListener()
         setupContentView()
     }
 
@@ -77,6 +78,24 @@ class StoriesCreationActivity : BaseActivity() {
             .storiesCreationModule(StoriesCreationModule(this))
             .build()
             .inject(this)
+    }
+
+    private fun setupAttachFragmentListener() {
+        supportFragmentManager.addFragmentOnAttachListener { fragmentManager, fragment ->
+            when (fragment) {
+                is StoriesCreationErrorBottomSheet -> {
+                    fragment.listener = object : StoriesCreationErrorBottomSheet.Listener {
+                        override fun onRetry() {
+                            fragment.dismiss()
+                        }
+
+                        override fun onDismiss() {
+                            finish()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @OptIn(ExperimentalMaterialApi::class)
@@ -153,6 +172,11 @@ class StoriesCreationActivity : BaseActivity() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
+                    is StoriesCreationUiEvent.ErrorPreparePage -> {
+                        StoriesCreationErrorBottomSheet
+                            .getFragment(supportFragmentManager, classLoader)
+                            .show(supportFragmentManager)
+                    }
                     is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
                         bottomSheetStateHolder.showBottomSheet(StoriesCreationBottomSheetType.TooMuchStories)
                     }

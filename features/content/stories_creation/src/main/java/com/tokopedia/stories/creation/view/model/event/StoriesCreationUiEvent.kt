@@ -5,5 +5,7 @@ package com.tokopedia.stories.creation.view.model.event
  */
 sealed interface StoriesCreationUiEvent {
 
+    object ErrorPreparePage : StoriesCreationUiEvent
+
     object ShowTooManyStoriesReminder : StoriesCreationUiEvent
 }
