@@ -87,7 +87,7 @@ class ShopHomeNplCampaignViewHolder(
         private const val PADDING_LEFT_PERCENTAGE = 0.4f
         private const val NPL_RULE_ID_FOLLOWERS_ONLY = "33"
         private const val RV_CAROUSEL_MARGIN_TOP = 24f
-        private const val BANNER_IMAGE_RATION_EMPTY_PRODUCT = "1:1"
+        private const val BANNER_IMAGE_RATIO_EMPTY_PRODUCT = "1:1"
         private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
@@ -173,7 +173,7 @@ class ShopHomeNplCampaignViewHolder(
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
-            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         }
     }
 
@@ -282,6 +282,7 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setBannerImage(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
+        val isProductListEmpty = model.data?.firstOrNull()?.productList?.isEmpty().orFalse()
         val selectedBannerType = when {
             isStatusCampaignUpcoming(statusCampaign) -> BannerType.UPCOMING.bannerType
             isStatusCampaignOngoing(statusCampaign) -> BannerType.LIVE.bannerType
@@ -292,6 +293,12 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         bannerBackground?.apply {
+            val dimensionRatio = if (isProductListEmpty) {
+                BANNER_IMAGE_RATIO_EMPTY_PRODUCT
+            } else {
+                ""
+            }
+            (layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = dimensionRatio
             loadImage(bannerUrl)
         }
     }
