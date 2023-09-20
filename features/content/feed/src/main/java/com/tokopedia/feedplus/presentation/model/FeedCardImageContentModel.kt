@@ -43,6 +43,7 @@ data class FeedCardImageContentModel(
     val maxDiscountPercentageFmt: String,
     val adViewUri: String = "", // use only for topads
     val adViewUrl: String = "", // use only for topads
+    val adClickUrl: String = "", // use only for topads
     val isFetched: Boolean = false, // use only for topads
     val topAdsId: String = "" // use only for topads
 ) : Visitable<FeedAdapterTypeFactory> {
