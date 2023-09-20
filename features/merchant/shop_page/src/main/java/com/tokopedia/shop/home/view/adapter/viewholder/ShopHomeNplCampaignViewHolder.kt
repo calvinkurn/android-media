@@ -144,7 +144,7 @@ class ShopHomeNplCampaignViewHolder(
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
-            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.shop.common.R.color.dms_shop_festivity_timer_text_color))
+            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         }
     }
 
