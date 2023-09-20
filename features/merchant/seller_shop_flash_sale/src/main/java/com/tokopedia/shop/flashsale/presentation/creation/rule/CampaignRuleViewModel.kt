@@ -59,7 +59,7 @@ class CampaignRuleViewModel @Inject constructor(
     val selectedOosState: LiveData<Boolean>
         get() = _selectedOosState
 
-    private val _isUniqueBuyer = MutableLiveData<Boolean?>(null)
+    private val _isUniqueBuyer = MutableLiveData<Boolean?>(true)
     val isUniqueBuyer: LiveData<Boolean?>
         get() = _isUniqueBuyer
     private val isUniqueBuyerFlow = isUniqueBuyer.asFlow()
@@ -248,8 +248,8 @@ class CampaignRuleViewModel @Inject constructor(
 
         viewModelScope.launch {
             combine(
-                selectedPaymentTypeFlow,
-                isUniqueBuyerFlow,
+                selectedPaymentTypeFlow,    // Pilih Metode Pembayaran
+                isUniqueBuyerFlow,  // Apakah pembeli yang sama
                 isCampaignRelationFlow,
                 relatedCampaignsFlow,
                 ::validateCampaignRuleInput
