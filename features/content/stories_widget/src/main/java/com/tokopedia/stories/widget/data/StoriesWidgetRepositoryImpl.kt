@@ -81,7 +81,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
         }
         return@withContext StoriesWidgetInfo(
             result.associateBy { it.shopId },
-            "Test CoachMark"
+            response.response.meta.coachMark
         )
     }
 
