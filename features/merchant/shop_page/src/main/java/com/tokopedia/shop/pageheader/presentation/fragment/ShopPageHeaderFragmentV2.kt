@@ -383,7 +383,7 @@ class ShopPageHeaderFragmentV2 :
     private var shopPageErrorState: View? = null
     private var viewPager: ViewPager2? = null
     private var tabLayout: TabLayout? = null
-    private var bottomViewContainer: LinearLayout? = null
+    private var bottomViewContainer: ViewGroup? = null
     private var miniCart: MiniCartGeneralWidget? = null
     private var viewBinding by autoClearedNullable<ShopHeaderFragmentBinding>()
     private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
