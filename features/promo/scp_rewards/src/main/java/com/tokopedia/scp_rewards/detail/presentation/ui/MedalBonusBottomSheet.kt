@@ -141,8 +141,8 @@ class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponLis
         ) {
             val bundle = Bundle().apply {
                 putString(MEDALI_SLUG, medaliSlug)
-                putParcelableArrayList(COUPON_LIST, list as ArrayList<MedalBenefitModel>?)
-                putParcelableArrayList(FILTER_LIST, filterList as ArrayList<FilterModel>)
+                putParcelableArrayList(COUPON_LIST, list as? ArrayList<MedalBenefitModel>)
+                putParcelableArrayList(FILTER_LIST, filterList as? ArrayList<FilterModel>)
             }
             val medalBonusBottomSheet = MedalBonusBottomSheet().apply {
                 arguments = bundle
