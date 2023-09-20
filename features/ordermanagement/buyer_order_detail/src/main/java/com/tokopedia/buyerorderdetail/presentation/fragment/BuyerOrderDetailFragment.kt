@@ -487,9 +487,9 @@ open class BuyerOrderDetailFragment :
 
     private fun observeMedalTouchPoint() {
         scpMedalTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
-            when (it.result) {
+            when (val result = it.result) {
                 is com.tokopedia.scp_rewards_touchpoints.common.Success -> {
-                    val data = (it.result as com.tokopedia.scp_rewards_touchpoints.common.Success).data
+                    val data = result.data
                     if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { view ->
                             if (!it.initialLoad) {
