@@ -254,10 +254,8 @@ class StoriesViewModel @AssistedInject constructor(
 
         val prevGroupId = prevGroupItem.groupId
 
-        try {
-            val prevGroupData = requestStoriesDetailData(prevGroupId)
-            updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
-        } catch (throwable: Throwable) { throw throwable }
+        val prevGroupData = requestStoriesDetailData(prevGroupId)
+        updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
     }
 
     private suspend fun fetchAndCacheNextGroupDetail() {
@@ -268,10 +266,8 @@ class StoriesViewModel @AssistedInject constructor(
 
         val nextGroupId = nextGroupItem.groupId
 
-        try {
-            val nextGroupData = requestStoriesDetailData(nextGroupId)
-            updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
-        } catch (throwable: Throwable) { throw throwable }
+        val nextGroupData = requestStoriesDetailData(nextGroupId)
+        updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
     }
 
     private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {

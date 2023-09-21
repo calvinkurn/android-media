@@ -1,15 +1,15 @@
-package com.tokopedia.stories.viewmodel
+package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.stories.data.repository.StoriesRepository
-import com.tokopedia.stories.model.mockDetailResetValue
-import com.tokopedia.stories.model.mockGroupResetValue
-import com.tokopedia.stories.model.mockInitialDataModel
-import com.tokopedia.stories.model.mockInitialDataModelFetchNext
-import com.tokopedia.stories.model.mockInitialDataModelFetchPrev
-import com.tokopedia.stories.model.mockInitialDataModelFetchPrevAndNext
-import com.tokopedia.stories.model.mockMainDataResetValue
+import com.tokopedia.stories.data.utils.mockDetailResetValue
+import com.tokopedia.stories.data.utils.mockGroupResetValue
+import com.tokopedia.stories.data.utils.mockInitialDataModel
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchNext
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrev
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrevAndNext
+import com.tokopedia.stories.data.utils.mockMainDataResetValue
 import com.tokopedia.stories.robot.StoriesViewModelRobot
 import com.tokopedia.stories.util.assertEqualTo
 import com.tokopedia.stories.util.assertFalse
@@ -27,7 +27,7 @@ import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 
-class StoriesViewModelTest {
+class StoriesUnitTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
