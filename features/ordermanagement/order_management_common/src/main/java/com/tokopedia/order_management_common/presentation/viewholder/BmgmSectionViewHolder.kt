@@ -83,6 +83,18 @@ class BmgmSectionViewHolder(
         }
     }
 
+    override fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        listener.onBmgmItemAddToCart(uiModel)
+    }
+
+    override fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        listener.onBmgmItemSeeSimilarProducts(uiModel)
+    }
+
+    override fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        listener.onBmgmItemWarrantyClaim(uiModel)
+    }
+
     private fun showToaster(message: String) {
         itemView.parent?.parent?.parent?.let {
             if (it is View) {
@@ -143,5 +155,8 @@ class BmgmSectionViewHolder(
     interface Listener {
         fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+        fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+        fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+        fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
     }
 }

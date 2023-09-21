@@ -6,19 +6,24 @@ import android.view.ViewGroup
 import android.view.ViewStub
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
+import com.tokopedia.order_management_common.constants.OrderManagementConstants
 import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmListItemBinding
 import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.adapter.diffutil.ProductBmgmItemDiffUtilCallback
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.order_management_common.util.composeItalicNote
+import com.tokopedia.order_management_common.util.mapButtonType
+import com.tokopedia.order_management_common.util.mapButtonVariant
 
 class ProductBmgmItemAdapter(
     private val listener: ViewHolder.Listener,
@@ -91,6 +96,24 @@ class ProductBmgmItemAdapter(
                 setupAddonSection(it.addOnSummaryUiModel)
                 setupDividerAddonSummary(it)
                 setItemOnClickListener(it)
+                setupBmgmItemButton(model.button, model.isProcessing == true)
+            }
+        }
+
+        private fun setupBmgmItemButton(actionButton: ActionButtonsUiModel.ActionButton?, processing: Boolean) {
+            binding.btnItemBomDetailBmgmAction.run {
+                if (actionButton == null) {
+                    gone()
+                } else {
+                    isLoading = processing
+                    text = actionButton.label
+                    buttonVariant = mapButtonVariant(actionButton.variant)
+                    buttonType = mapButtonType(actionButton.type)
+                    showWithCondition(actionButton.label.isNotBlank())
+                    setOnClickListener {
+                        onItemActionClicked(actionButton.key)
+                    }
+                }
             }
         }
 
@@ -155,6 +178,23 @@ class ProductBmgmItemAdapter(
             }
         }
 
+        private fun onItemActionClicked(key: String) {
+            element?.let {
+                when (key) {
+                    OrderManagementConstants.OrderDetailActionButtonKey.BUY_AGAIN -> {
+                        listener.onBmgmItemAddToCart(it)
+                    }
+                    OrderManagementConstants.OrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> {
+                        listener.onBmgmItemSeeSimilarProducts(it)
+                    }
+                    OrderManagementConstants.OrderDetailActionButtonKey.WARRANTY_CLAIM -> {
+                        listener.onBmgmItemWarrantyClaim(it)
+                    }
+                    else -> {}
+                }
+            }
+        }
+
         override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
             listener.onCopyAddOnDescription(label, description)
         }
@@ -162,6 +202,9 @@ class ProductBmgmItemAdapter(
         interface Listener {
             fun onCopyAddOnDescription(label: String, description: CharSequence)
             fun onBmgmItemClicked(item: ProductBmgmSectionUiModel.ProductUiModel)
+            fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+            fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+            fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         }
     }
 }
