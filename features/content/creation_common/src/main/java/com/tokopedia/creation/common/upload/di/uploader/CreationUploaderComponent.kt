@@ -1,8 +1,11 @@
 package com.tokopedia.creation.common.upload.di.uploader
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
 import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
+import com.tokopedia.videouploader.di.VideoUploaderModule
 import dagger.Component
 
 /**
@@ -12,6 +15,9 @@ import dagger.Component
     modules = [
         CreationUploaderModule::class,
         CreationUploaderInternalModule::class,
+        CreatePostCommonModule::class,
+        VideoUploaderModule::class,
+        MediaUploaderModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
+import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import java.util.UUID
 
@@ -43,6 +44,55 @@ sealed interface CreationUploadData {
             gson.toJson(mapToEntity(gson))
         } catch (throwable: Throwable) {
             ""
+        }
+    }
+
+    data class Post(
+        @SerializedName(KEY_ID)
+        override val id: String,
+
+        @SerializedName(KEY_UPLOAD_TYPE)
+        override val uploadType: CreationUploadType,
+
+        @SerializedName(KEY_QUEUE_STATUS)
+        override val queueStatus: UploadQueueStatus,
+
+        @SerializedName(KEY_TIMESTAMP)
+        override val timestamp: Long,
+
+        @SerializedName(KEY_CREATION_ID)
+        override val creationId: String,
+
+        @SerializedName(KEY_MEDIA_URI_LIST)
+        override val mediaUriList: List<String>,
+
+        @SerializedName(KEY_COVER_URI)
+        override val coverUri: String,
+
+        @SerializedName(KEY_SOURCE_ID)
+        override val sourceId: String,
+
+        @SerializedName(KEY_AUTHOR_ID)
+        override val authorId: String,
+
+        @SerializedName(KEY_AUTHOR_TYPE)
+        override val authorType: String,
+    ) : CreationUploadData {
+
+        override fun mapToEntity(gson: Gson): CreationUploadQueueEntity {
+            return CreationUploadQueueEntity(
+                id = id,
+                creationId = creationId,
+                uploadType = uploadType.type,
+                queueStatus = queueStatus.value,
+                timestamp = timestamp,
+                data = gson.toJson(
+                    CreationUploadQueueEntity.Post(
+                        authorId = authorId,
+                        authorType = authorType,
+                    )
+                )
+            )
         }
     }
 
@@ -177,6 +227,25 @@ sealed interface CreationUploadData {
             gson: Gson,
         ): CreationUploadData {
             return when (val uploadType = CreationUploadType.mapFromValue(entity.uploadType)) {
+                CreationUploadType.Post -> {
+                    val postEntity = gson.fromJson<CreationUploadQueueEntity.Post>(
+                        entity.data,
+                        object : TypeToken<CreationUploadQueueEntity.Post>(){}.type
+                    )
+
+                    Post(
+                        id = entity.id,
+                        creationId = entity.creationId,
+                        uploadType = uploadType,
+                        queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
+                        timestamp = entity.timestamp,
+                        mediaUriList = emptyList(),
+                        coverUri = "",
+                        sourceId = "",
+                        authorId = postEntity.authorId,
+                        authorType = postEntity.authorType,
+                    )
+                }
                 CreationUploadType.Shorts -> {
                     val shortsEntity = gson.fromJson<CreationUploadQueueEntity.Shorts>(
                         entity.data,
@@ -217,6 +286,28 @@ sealed interface CreationUploadData {
                 }
                 else -> throw UnknownUploadTypeException()
             }
+        }
+
+        fun buildForPost(
+            creationId: String,
+            mediaUriList: List<String>,
+            coverUri: String,
+            sourceId: String,
+            authorId: String,
+            authorType: String,
+        ): CreationUploadData {
+            return Post(
+                id = UUID.randomUUID().toString(),
+                uploadType = CreationUploadType.Post,
+                queueStatus = UploadQueueStatus.Queued,
+                timestamp = System.currentTimeMillis(),
+                creationId = creationId,
+                mediaUriList = mediaUriList,
+                coverUri = coverUri,
+                sourceId = sourceId,
+                authorId = authorId,
+                authorType = authorType,
+            )
         }
 
         fun buildForShorts(

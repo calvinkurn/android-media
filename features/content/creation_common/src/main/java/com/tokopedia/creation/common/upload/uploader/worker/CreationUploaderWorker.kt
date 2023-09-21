@@ -14,7 +14,8 @@ import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueu
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
 import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.model.UnknownUploadTypeException
+import com.tokopedia.creation.common.upload.model.exception.NoUploadManagerException
+import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -88,7 +89,8 @@ class CreationUploaderWorker(
                 } catch (throwable: Throwable) {
                     when (throwable) {
                         is JsonSyntaxException,
-                        is UnknownUploadTypeException -> {
+                        is UnknownUploadTypeException,
+                        is NoUploadManagerException -> {
                             queueRepository.deleteTopQueue()
                             continue
                         }

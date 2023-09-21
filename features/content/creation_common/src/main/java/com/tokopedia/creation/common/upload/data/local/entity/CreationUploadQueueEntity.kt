@@ -33,6 +33,14 @@ data class CreationUploadQueueEntity(
     val data: String = "",
 ) {
 
+    data class Post(
+        @SerializedName("author_id")
+        val authorId: String = "",
+
+        @SerializedName("author_type")
+        val authorType: String = "",
+    )
+
     data class Shorts(
         @SerializedName("media_uri_list")
         val mediaUriList: List<String> = emptyList(),
