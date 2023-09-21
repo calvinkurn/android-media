@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
+import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -120,6 +121,11 @@ class TodoWidgetViewHolder(
         } else {
             itemView.gone()
         }
+    }
+
+    override fun bind(element: TodoWidgetListDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(TodoWidgetListDataModel.PAYLOAD_IS_REFRESH, false) == true) return
+        bind(element)
     }
 
     override fun dismiss(element: CarouselTodoWidgetDataModel, position: Int) {

@@ -20,6 +20,7 @@ data class MissionWidgetListDataModel(
     val verticalPosition: Int = 0,
     val status: Int = STATUS_LOADING,
     val showShimmering: Boolean = true,
+    val source: Int,
 ) : HomeComponentVisitable, ImpressHolder(),
     LoadableComponent by BlocksLoadableComponent(
         { status != STATUS_LOADING },
@@ -30,6 +31,9 @@ data class MissionWidgetListDataModel(
         const val STATUS_LOADING = 0
         const val STATUS_ERROR = 1
         const val STATUS_SUCCESS = 2
+        const val SOURCE_ATF = 0
+        const val SOURCE_DC = 1
+        const val PAYLOAD_IS_REFRESH = "isRefresh"
     }
 
     fun isShowMissionWidget(): Boolean {
@@ -49,7 +53,17 @@ data class MissionWidgetListDataModel(
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return Bundle.EMPTY
+        val bundle = Bundle()
+        if(isRefresh(b)) {
+            bundle.putBoolean(PAYLOAD_IS_REFRESH, true)
+        }
+        return bundle
+    }
+
+    private fun isRefresh(b: Any?): Boolean {
+        return b is MissionWidgetListDataModel
+            && this.status != STATUS_LOADING
+            && b.status == STATUS_LOADING
     }
 
     override fun type(typeFactory: HomeComponentTypeFactory): Int {

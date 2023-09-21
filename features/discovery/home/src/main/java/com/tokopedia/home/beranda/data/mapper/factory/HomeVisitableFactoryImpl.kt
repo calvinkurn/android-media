@@ -44,6 +44,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_INFORMATION
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.home_component.R as home_componentR
 
 class HomeVisitableFactoryImpl(
     val userSessionInterface: UserSessionInterface?,
@@ -323,6 +324,7 @@ class HomeVisitableFactoryImpl(
                                             TodoWidgetListDataModel(
                                                 status = TodoWidgetListDataModel.STATUS_LOADING,
                                                 showShimmering = data.isShimmer,
+                                                source = TodoWidgetListDataModel.SOURCE_ATF,
                                             )
                                         )
                                     },
@@ -345,6 +347,7 @@ class HomeVisitableFactoryImpl(
                                             MissionWidgetListDataModel(
                                                 status = MissionWidgetListDataModel.STATUS_LOADING,
                                                 showShimmering = data.isShimmer,
+                                                source = MissionWidgetListDataModel.SOURCE_ATF,
                                             )
                                         )
                                     },
@@ -435,8 +438,8 @@ class HomeVisitableFactoryImpl(
                     BannerDataModel(
                         channelModel = channelModel,
                         isCache = isCache,
-                        dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
-                        dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
+                        dimenMarginTop = home_componentR.dimen.home_banner_default_margin_vertical_design,
+                        dimenMarginBottom = home_componentR.dimen.home_banner_default_margin_vertical_design,
                         cardInteraction = true,
                         enableDotsAndInfiniteScroll = true,
                         scrollTransitionDuration = BannerDataModel.NEW_IDLE_DURATION
@@ -488,11 +491,13 @@ class HomeVisitableFactoryImpl(
                     verticalPosition = index,
                     status = TodoWidgetListDataModel.STATUS_SUCCESS,
                     showShimmering = isShimmer,
+                    source = TodoWidgetListDataModel.SOURCE_ATF,
                 )
             } else {
                 TodoWidgetListDataModel(
                     status = TodoWidgetListDataModel.STATUS_LOADING,
                     showShimmering = isShimmer,
+                    source = TodoWidgetListDataModel.SOURCE_ATF,
                 )
             }
             visitableList.add(todo)
@@ -518,11 +523,13 @@ class HomeVisitableFactoryImpl(
                     verticalPosition = index,
                     status = MissionWidgetListDataModel.STATUS_SUCCESS,
                     showShimmering = isShimmer,
+                    source = MissionWidgetListDataModel.SOURCE_ATF,
                 )
             } else {
                 MissionWidgetListDataModel(
                     status = MissionWidgetListDataModel.STATUS_LOADING,
                     showShimmering = isShimmer,
+                    source = MissionWidgetListDataModel.SOURCE_ATF,
                 )
             }
             visitableList.add(mission)

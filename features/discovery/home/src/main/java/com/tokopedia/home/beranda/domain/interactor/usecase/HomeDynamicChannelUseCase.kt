@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.core.os.bundleOf
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -159,7 +158,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         isLoadingAtf = true
                     )
                     dynamicChannelPlainResponse.apply {
-                        Log.d("Each merge list size:", ("" + this.list.size))
                         this.isCache = isCache
                         this.flowCompleted = true
                     }
@@ -258,6 +256,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
                         MissionWidgetListDataModel,
                         HomeMissionWidgetData.HomeMissionWidget>(
+                        predicate = { it?.source == MissionWidgetListDataModel.SOURCE_DC },
                         widgetRepository = homeMissionWidgetRepository,
                         bundleParam = {
                             Bundle().apply {
@@ -286,6 +285,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
                         TodoWidgetListDataModel,
                         HomeTodoWidgetData.HomeTodoWidget>(
+                        predicate = { it?.source == TodoWidgetListDataModel.SOURCE_DC },
                         widgetRepository = homeTodoWidgetRepository,
                         bundleParam = {
                             Bundle().apply {

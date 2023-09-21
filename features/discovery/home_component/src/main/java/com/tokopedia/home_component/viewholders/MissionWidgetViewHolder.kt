@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.viewholders
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -41,6 +42,10 @@ class MissionWidgetViewHolder(
             MissionWidgetTypeFactoryImpl(missionWidgetComponentListener),
             CommonCarouselDiffUtilCallback()
         )
+    }
+
+    init {
+        valuateRecyclerViewDecoration()
     }
 
     private fun setHeaderComponent(element: MissionWidgetListDataModel) {
@@ -126,7 +131,6 @@ class MissionWidgetViewHolder(
                     binding?.shimmeringMissionWidget?.gone()
                     binding?.homeComponentHeaderView?.show()
                     binding?.homeComponentMissionWidgetRcv?.setHasFixedSize(true)
-                    valuateRecyclerViewDecoration()
                     val visitables = convertDataToMissionWidgetData(element)
                     mappingItem(visitables)
                 }
@@ -146,5 +150,10 @@ class MissionWidgetViewHolder(
 
     override fun bind(element: MissionWidgetListDataModel) {
         setLayoutByStatus(element)
+    }
+
+    override fun bind(element: MissionWidgetListDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(MissionWidgetListDataModel.PAYLOAD_IS_REFRESH, false) == true) return
+        bind(element)
     }
 }

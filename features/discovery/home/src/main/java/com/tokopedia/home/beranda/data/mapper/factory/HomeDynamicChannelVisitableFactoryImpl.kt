@@ -726,6 +726,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             verticalPosition = verticalPosition,
             status = TodoWidgetListDataModel.STATUS_LOADING,
             showShimmering = channel.isShimmer,
+            source = TodoWidgetListDataModel.SOURCE_DC,
         )
     }
 
@@ -785,6 +786,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     verticalPosition = verticalPosition,
                     status = MissionWidgetListDataModel.STATUS_LOADING,
                     showShimmering = channel.isShimmer,
+                    source = MissionWidgetListDataModel.SOURCE_DC,
                 )
             )
         }
