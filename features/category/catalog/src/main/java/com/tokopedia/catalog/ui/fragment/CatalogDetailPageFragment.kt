@@ -34,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -124,18 +123,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
         }
-    }
-
-    override fun onNavBackClicked() {
-        activity?.finish()
-    }
-
-    override fun onNavShareClicked() {
-        // no-op
-    }
-
-    override fun onNavMoreMenuClicked() {
-        // no-op
     }
 
     override fun onResume() {
@@ -237,11 +224,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         toolbarShadow.background =
             DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
         toolbar.setColors(colorFont)
-        toolbarShadow.isVisible = !navigationProperties.isPremium
         toolbarBg.setBackgroundColor(navigationProperties.bgColor)
         toolbar.title = navigationProperties.title
         toolbar.setNavigationOnClickListener {
-            onNavBackClicked()
+            activity?.finish()
         }
         toolbar.cartButton?.setOnClickListener {
             if (viewModel.isUserLoggedIn()) {
@@ -259,10 +245,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         if (!navigationProperties.isDarkMode) {
             val colorProgress: Int = COLOR_VALUE_MAX - (COLOR_VALUE_MAX * scrollProgress).toInt()
             setColors(Color.rgb(colorProgress, colorProgress, colorProgress))
-        }
-
-        if (navigationProperties.isPremium) {
-            alpha = scrollProgress
         }
         binding?.toolbarBg?.alpha = scrollProgress
     }

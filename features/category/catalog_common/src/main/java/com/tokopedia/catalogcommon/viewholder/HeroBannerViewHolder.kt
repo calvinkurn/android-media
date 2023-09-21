@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemBannerHeroBinding
-import com.tokopedia.catalogcommon.databinding.WidgetItemBannerHeroNavigationBinding
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension.createGradientDrawable
@@ -86,7 +85,6 @@ class HeroBannerViewHolder(
         iuBrandPremium.isVisible = isPremium
         iuBrandPremiumCard.isVisible = isPremium
         bgGradient.isVisible = isPremium
-        navigation.root.isVisible = isPremium
 
         // regular views
         tfTitleBanner.isVisible = !isPremium
@@ -111,15 +109,6 @@ class HeroBannerViewHolder(
         iuBrandCard.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
     }
 
-    private fun WidgetItemBannerHeroNavigationBinding.setupNavigation(element: HeroBannerUiModel) {
-        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_68)
-        iconBack.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
-        bgRightMenu.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
-        iconBack.setOnClickListener { heroBannerListener?.onNavBackClicked() }
-        iconMoreMenu.setOnClickListener { heroBannerListener?.onNavMoreMenuClicked() }
-        iconShare.setOnClickListener { heroBannerListener?.onNavShareClicked() }
-    }
-
     override fun bind(element: HeroBannerUiModel) {
         brandImageCount = element.brandImageUrls.size
         binding?.configViewsVisibility(element.isPremium)
@@ -130,7 +119,6 @@ class HeroBannerViewHolder(
         }
         binding?.carouselBanner?.addImages(ArrayList(element.brandImageUrls))
         binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
-        binding?.navigation?.setupNavigation(element)
         binding?.tfSubtitleBannerPremium?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
         binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
     }
