@@ -20,6 +20,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
@@ -34,6 +35,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
+import com.tokopedia.kotlin.extensions.view.StringExtKt.*;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -205,9 +207,9 @@ public class SplashScreen extends AppCompatActivity {
     private Boolean isUnderMinVersion(String version) {
         try {
             String minVersionString = version.replaceAll("[^0-9]", "");
-            int minVersionInt = Integer.parseInt(minVersionString);
+            int minVersionInt = StringExtKt.toIntOrZero(minVersionString);
             String currentVersionString = GlobalConfig.VERSION_NAME.replaceAll("[^0-9]", "");
-            int currentVersionInt = Integer.parseInt(currentVersionString);
+            int currentVersionInt = StringExtKt.toIntOrZero(currentVersionString);
             return currentVersionInt < minVersionInt;
         } catch (Exception e) {
             return false;
