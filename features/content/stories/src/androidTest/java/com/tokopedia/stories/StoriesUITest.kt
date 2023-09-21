@@ -2,8 +2,8 @@ package com.tokopedia.stories
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.tokopedia.stories.data.mock.mockInitialDataModel
 import com.tokopedia.stories.data.repository.StoriesRepository
+import com.tokopedia.stories.data.utils.mockInitialDataModel
 import com.tokopedia.stories.robot.StoriesRobotUITest
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.user.session.UserSessionInterface

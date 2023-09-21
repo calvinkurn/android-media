@@ -2,14 +2,14 @@ package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.tokopedia.stories.data.mock.mockDetailResetValue
-import com.tokopedia.stories.data.mock.mockGroupResetValue
-import com.tokopedia.stories.data.mock.mockInitialDataModel
-import com.tokopedia.stories.data.mock.mockInitialDataModelFetchNext
-import com.tokopedia.stories.data.mock.mockInitialDataModelFetchPrev
-import com.tokopedia.stories.data.mock.mockInitialDataModelFetchPrevAndNext
-import com.tokopedia.stories.data.mock.mockMainDataResetValue
 import com.tokopedia.stories.data.repository.StoriesRepository
+import com.tokopedia.stories.data.utils.mockDetailResetValue
+import com.tokopedia.stories.data.utils.mockGroupResetValue
+import com.tokopedia.stories.data.utils.mockInitialDataModel
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchNext
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrev
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrevAndNext
+import com.tokopedia.stories.data.utils.mockMainDataResetValue
 import com.tokopedia.stories.robot.StoriesViewModelRobot
 import com.tokopedia.stories.util.assertEqualTo
 import com.tokopedia.stories.util.assertFalse
