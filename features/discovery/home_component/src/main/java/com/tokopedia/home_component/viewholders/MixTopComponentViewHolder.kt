@@ -311,7 +311,8 @@ class MixTopComponentViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    componentName = HOME_MIX_TOP
+                    componentName = HOME_MIX_TOP,
+                    listener = this,
             ))
         }
         return list
