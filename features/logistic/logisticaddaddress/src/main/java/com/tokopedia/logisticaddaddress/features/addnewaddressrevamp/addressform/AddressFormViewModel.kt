@@ -9,6 +9,7 @@ import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.request.AddAddressParam
+import com.tokopedia.logisticCommon.data.request.EditAddressParam
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
 import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
@@ -16,6 +17,7 @@ import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.domain.param.GetDefaultAddressParam
 import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
 import com.tokopedia.logisticCommon.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,7 +26,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddressFormViewModel @Inject constructor(private val repo: KeroRepository, private val getAddressDetail: GetAddressDetailUseCase, private val getDefaultAddress: GetDefaultAddressUseCase, private val addAddress: AddAddressUseCase) : ViewModel() {
+class AddressFormViewModel @Inject constructor(private val repo: KeroRepository, private val getAddressDetail: GetAddressDetailUseCase, private val getDefaultAddress: GetDefaultAddressUseCase, private val addAddress: AddAddressUseCase, private val saveEditAddress: EditAddressUseCase) : ViewModel() {
 
     companion object {
         const val MIN_CHAR_PHONE_NUMBER = 9
@@ -173,13 +175,32 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository,
     fun saveEditAddress(model: SaveAddressDataModel, sourceValue: String) {
         viewModelScope.launch {
             try {
-                val editAddressData = repo.editAddress(model, sourceValue)
+                val editAddressData = saveEditAddress(model.toEditAddressParam(sourceValue))
                 saveDataModel = editAddressData.keroEditAddress.data.toSaveAddressDataModel()
                 _editAddress.value = Success(editAddressData.keroEditAddress.data)
             } catch (e: Throwable) {
                 _editAddress.value = Fail(e)
             }
         }
+    }
+    private fun SaveAddressDataModel.toEditAddressParam(sourceValue: String): EditAddressParam {
+        return EditAddressParam(
+            addressId = this.id,
+            addressName = this.addressName,
+            receiverName = this.receiverName,
+            address1 = this.address1,
+            address1Notes = this.address1Notes,
+            address2 = this.address2,
+            postalCode = this.postalCode,
+            district = this.districtId.toString(),
+            city = this.cityId.toString(),
+            province = this.provinceId.toString(),
+            phone = this.phone,
+            latitude = this.latitude,
+            longitude = this.longitude,
+            source = sourceValue,
+            isTokonowRequest = this.isTokonowRequest
+        )
     }
 
     fun validatePinpoint(model: SaveAddressDataModel) {

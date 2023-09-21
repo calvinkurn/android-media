@@ -15,6 +15,7 @@ import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.url.TokopediaUrl
@@ -47,6 +48,7 @@ class AddressFormViewModelTest {
     private val getDefaultAddress: GetDefaultAddressUseCase = mockk(relaxed = true)
     private val getAddressDetail: GetAddressDetailUseCase = mockk(relaxed = true)
     private val addAddress: AddAddressUseCase = mockk(relaxed = true)
+    private val editAddress: EditAddressUseCase = mockk(relaxed = true)
     private val saveAddressDataModel = SaveAddressDataModel()
     private val addressId = "12345"
     private val sourceValue = ""
@@ -83,7 +85,7 @@ class AddressFormViewModelTest {
     }
 
     private fun initObserver() {
-        addressFormViewModel = AddressFormViewModel(repo, getAddressDetail, getDefaultAddress, addAddress)
+        addressFormViewModel = AddressFormViewModel(repo, getAddressDetail, getDefaultAddress, addAddress, editAddress)
         addressFormViewModel.saveAddress.observeForever(saveAddressObserver)
         addressFormViewModel.defaultAddress.observeForever(defaultAddressObserver)
         addressFormViewModel.editAddress.observeForever(editAddressObserver)
@@ -250,7 +252,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Save Edit Address Data Success`() {
         // Given
-        coEvery { repo.editAddress(any(), any()) } returns KeroEditAddressResponse.Data()
+        coEvery { editAddress(any()) } returns KeroEditAddressResponse.Data()
 
         // When
         addressFormViewModel.saveEditAddress(saveAddressDataModel, sourceValue)
@@ -262,7 +264,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Save Edit Address Data Fail`() {
         // Given
-        coEvery { repo.editAddress(any(), any()) } throws defaultThrowable
+        coEvery { editAddress(any()) } throws defaultThrowable
 
         // When
         addressFormViewModel.saveEditAddress(saveAddressDataModel, sourceValue)

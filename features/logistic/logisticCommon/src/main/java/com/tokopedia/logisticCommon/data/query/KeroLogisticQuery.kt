@@ -94,42 +94,6 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
-    val kero_edit_address = """
-        mutation editAddress(${'$'}input:KeroAddressInput!) {
-          kero_edit_address(input:${'$'}input) {
-            data{
-              is_success
-              is_state_chosen_address_changed
-              chosen_address { 
-                addr_id
-                receiver_name
-                addr_name
-                district
-                city
-                city_name
-                district_name
-                status
-                latitude
-                longitude
-                postal_code
-              }
-              tokonow {
-                shop_id
-                warehouse_id
-                warehouses {
-                    warehouse_id
-                    service_type
-                }
-                service_type
-              }
-            }
-            status
-            config
-            server_process_time
-          }
-        }
-    """.trimIndent()
-
     val pinpoint_validation = """
         mutation pinpoint_validation(${'$'}district_id: Int, ${'$'}latitude: String, ${'$'}longitude: String, ${'$'}postal_code: String) {
             pinpoint_validation(district_id: ${'$'}district_id, latitude: ${'$'}latitude, longitude: ${'$'}longitude, postal_code: ${'$'}postal_code) {
