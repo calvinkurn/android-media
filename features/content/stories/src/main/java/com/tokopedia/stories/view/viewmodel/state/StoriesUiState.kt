@@ -1,12 +1,14 @@
 package com.tokopedia.stories.view.viewmodel.state
 
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.stories.view.model.StoriesCampaignUiModel
 import com.tokopedia.stories.view.model.StoriesUiModel
 
 data class StoriesUiState(
     val storiesMainData: StoriesUiModel,
     val bottomSheetStatus: Map<BottomSheetType, Boolean>,
-    //val productSheet: ProductBottomSheetUiState,
+    val productSheet: ProductBottomSheetUiState,
    // val combineState: CombineState,
 ) {
     companion object {
@@ -14,7 +16,7 @@ data class StoriesUiState(
             get() = StoriesUiState(
                 storiesMainData = StoriesUiModel(),
                 bottomSheetStatus = BottomSheetStatusDefault,
-                //productSheet = ProductBottomSheetUiState.Empty,
+                productSheet = ProductBottomSheetUiState.Empty,
                 //combineState = CombineState.Empty,
             )
     }
@@ -33,15 +35,15 @@ enum class BottomSheetType {
 }
 
 data class ProductBottomSheetUiState(
-    //val products: List<ContentTaggedProductUiModel>,
-    //val campaign: StoriesCampaignUiModel,
+    val products: List<ContentTaggedProductUiModel>,
+    val campaign: StoriesCampaignUiModel,
     val resultState: ResultState,
 ) {
     companion object {
         val Empty
             get() = ProductBottomSheetUiState(
-                //products = emptyList(),
-                //campaign = StoriesCampaignUiModel.Unknown,
+                products = emptyList(),
+                campaign = StoriesCampaignUiModel.Unknown,
                 resultState = ResultState.Loading,
             )
     }

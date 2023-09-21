@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
@@ -50,9 +51,11 @@ class StoriesActivity : BaseActivity() {
             return
         }
 
-        val path = data.pathSegments
+        val id = data.lastPathSegment.ifNullOrBlank {
+            "" //TODO() get from query param
+        }
         bundle = Bundle().apply {
-            putString(SHOP_ID, path[SHOP_ID_INDEX_APP_LINK])
+            putString(SHOP_ID, id)
         }
     }
 
@@ -89,5 +92,4 @@ class StoriesActivity : BaseActivity() {
         super.onDestroy()
         _binding = null
     }
-
 }

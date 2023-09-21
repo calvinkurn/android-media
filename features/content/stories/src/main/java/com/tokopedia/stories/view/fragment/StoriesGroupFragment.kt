@@ -13,8 +13,8 @@ import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.stories.analytic.StoriesAnalytics
-import com.tokopedia.stories.analytic.StoriesEEModel
+import com.tokopedia.stories.analytics.StoriesAnalytics
+import com.tokopedia.stories.analytics.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation

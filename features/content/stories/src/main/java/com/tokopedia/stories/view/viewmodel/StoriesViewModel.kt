@@ -3,8 +3,12 @@ package com.tokopedia.stories.view.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.stories.R
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
@@ -20,11 +24,15 @@ import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.getRandomNumber
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetStatusDefault
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
+import com.tokopedia.stories.view.viewmodel.state.isAnyShown
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -40,6 +48,7 @@ class StoriesViewModel @AssistedInject constructor(
     @Assisted private val authorId: String,
     @Assisted private val handle: SavedStateHandle,
     private val repository: StoriesRepository,
+    private val userSession: UserSessionInterface,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -48,6 +57,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
+    private val products = MutableStateFlow(ProductBottomSheetUiState.Empty)
 
     private val _storiesMainData = MutableStateFlow(StoriesUiModel())
 
@@ -125,9 +135,15 @@ class StoriesViewModel @AssistedInject constructor(
             return currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.id.orEmpty()
         }
 
-    private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
-    val uiEvent: Flow<StoriesUiEvent>
-        get() = _uiEvent
+    val isProductAvailable : Boolean
+        get() {
+            val currentItem = mGroupItem.detail.detailItems
+            val productCount = currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.productCount
+            return productCount?.isNotEmpty() == true || productCount != "0"
+        }
+
+    val isAnyBottomSheetShown : Boolean
+        get() = bottomSheetStatus.value.isAnyShown
 
     private val mResetValue: Int
         get() = _resetValue.value
@@ -138,12 +154,17 @@ class StoriesViewModel @AssistedInject constructor(
         get() = combine(
             _storiesMainData,
             bottomSheetStatus,
-        ) { storiesMainData, sheetStatus ->
+            products,
+        ) { storiesMainData, sheetStatus, product ->
             StoriesUiState(
                 storiesMainData = storiesMainData,
                 bottomSheetStatus = sheetStatus,
+                productSheet = product,
             )
         }
+
+    val userId : String
+        get() = userSession.userId.ifEmpty { "0" }
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
@@ -156,8 +177,13 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
+            StoriesUiAction.TapSharing -> handleSharing()
             is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
+            StoriesUiAction.OpenProduct -> handleOpenProduct()
+            is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
+            StoriesUiAction.FetchProduct -> getProducts()
+            is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
             StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
@@ -317,9 +343,9 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleOpenKebab() {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.OpenKebab)
-            bottomSheetStatus.update {
-                bottomSheet -> bottomSheet.mapValues {
+            _storiesEvent.emit(StoriesUiEvent.OpenKebab)
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
                     if (it.key == BottomSheetType.Kebab)
                         true
                     else it.value
@@ -329,16 +355,110 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
-        bottomSheetStatus.update { bottomSheet -> bottomSheet.mapValues {
-            if (it.key == bottomSheetType)
-                false
-            else it.value
-        } }
+        bottomSheetStatus.update { bottomSheet ->
+            bottomSheet.mapValues {
+                if (it.key == bottomSheetType)
+                    false
+                else it.value
+            }
+        }
     }
 
     private fun handleShowDialogDelete() {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.ShowDeleteDialog)
+            _storiesEvent.emit(StoriesUiEvent.ShowDeleteDialog)
+        }
+    }
+
+    private fun handleOpenProduct() {
+        if (bottomSheetStatus.value.isAnyShown || !isProductAvailable) return
+
+        viewModelScope.launch {
+            _storiesEvent.emit(StoriesUiEvent.OpenProduct)
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
+                    if (it.key == BottomSheetType.Product)
+                        true
+                    else it.value
+                }
+            }
+        }
+    }
+
+    private fun getProducts() {
+        viewModelScope.launchCatchError(block = {
+            products.update { product -> product.copy(resultState = ResultState.Loading) }
+            val productList = repository.getStoriesProducts(authorId, storyId, mGroupItem.groupName)
+            products.update { productList }
+        }, onError = {
+            products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
+        })
+    }
+
+    private fun addToCart(product: ContentTaggedProductUiModel) {
+        requiredLogin {
+            viewModelScope.launchCatchError(block = {
+                val response = repository.addToCart(
+                    productId = product.id,
+                    price = product.finalPrice,
+                    shopId = authorId,
+                    productName = product.title
+                )
+
+                if (response) {
+                    _storiesEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
+                } else throw MessageErrorException()
+
+            }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
+        }
+    }
+
+    private fun handleSharing() {
+        viewModelScope.launch {
+            val data = mDetail.share
+            _storiesEvent.emit(StoriesUiEvent.TapSharing(data))
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
+                    if (it.key == BottomSheetType.Sharing) true
+                    else it.value
+                }
+            }
+        }
+    }
+    private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
+        requiredLogin {
+            if (action == StoriesProductAction.Buy) {
+                viewModelScope.launch {
+                    _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
+                }
+            } else {
+                addToCart(product)
+            }
+        }
+    }
+
+    private fun handleVariantSheet(product: ContentTaggedProductUiModel) {
+        viewModelScope.launch {
+            _storiesEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
+                    if (it.key == BottomSheetType.GVBS)
+                        true
+                    else it.value
+                }
+            }
+        }
+    }
+
+    private fun requiredLogin(fn: (isLoggedIn: Boolean) -> Unit) {
+        if (userSession.isLoggedIn) {
+            fn(true)
+        } else {
+            viewModelScope.launch {
+                _storiesEvent.emit(
+                    StoriesUiEvent.Login { fn(false) }
+                )
+            }
         }
     }
 
@@ -355,9 +475,9 @@ class StoriesViewModel @AssistedInject constructor(
                         group -> group.copy(groupItems = newList)
                 }
             } else {
-                _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
+                _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
             }
-        }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
+        }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
     }
 
     private fun updateDetailData(

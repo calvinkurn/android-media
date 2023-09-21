@@ -15,4 +15,7 @@
 
     <!--Partner Info-->
     <color name="content_dms_partner_icon_placeholder">#AD31353B</color>
+
+    <color name="content_dms_asgc_progress_0_color">#D6001C</color>
+    <color name="content_dms_asgc_progress_100_color">#FA591D</color>
 </resources>

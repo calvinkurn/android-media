@@ -26,6 +26,8 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.common.R as contentcommonR
 
 private const val RATING_FORMAT = 20.0
 
@@ -125,7 +127,7 @@ class ProductPostTagViewHolderNew(
         }
         menuBtn.showWithCondition((item.isFlashSaleToko || item.isRilisanSpl).not())
         rating.text = String.format("%.1f", item.rating.toDouble() / RATING_FORMAT)
-        val soldInfoText = getString(com.tokopedia.content.common.R.string.feed_common_terjual) + " " + item.totalSold.toString()
+        val soldInfoText = getString(contentcommonR.string.feed_common_terjual) + " " + item.totalSold.toString()
         soldInfo.text = soldInfoText
         star.showWithCondition(item.rating != 0)
         divider.showWithCondition(item.rating != 0 && item.totalSold != 0)
@@ -147,7 +149,7 @@ class ProductPostTagViewHolderNew(
             addToCartBtn.apply {
                 isEnabled = false
                 text =
-                    getString(com.tokopedia.content.common.R.string.btn_add_to_cart_text_disabled)
+                    getString(contentcommonR.string.btn_add_to_cart_text_disabled)
             }
         }
 
@@ -158,8 +160,8 @@ class ProductPostTagViewHolderNew(
 
     private fun setGradientColorForProgressBar(item: ProductPostTagModelNew ){
         val progressBarColor: IntArray = intArrayOf(
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
+            ContextCompat.getColor(itemView.context, contentcommonR.color.content_dms_asgc_progress_0_color),
+            ContextCompat.getColor(itemView.context, contentcommonR.color.content_dms_asgc_progress_100_color)
         )
 
         val value = (item.product.stockSoldPercentage).roundToInt()
@@ -175,13 +177,13 @@ class ProductPostTagViewHolderNew(
                 val colorRed =
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                        unifyprinciplesR.color.Unify_RN500
                     )
                 addToWishlistBtnIcon.setImage(IconUnify.HEART_FILLED, colorRed, colorRed)
             }else{ val colorRed =
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                    unifyprinciplesR.color.Unify_NN500
                 )
                 addToWishlistBtnIcon.setImage(IconUnify.HEART, colorRed, colorRed)
             }

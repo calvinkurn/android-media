@@ -18,6 +18,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesGroupHeader
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -88,6 +89,15 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     isSameContent = false,
                     author = buildAuthor(stories.author),
                     menus = buildMenu(stories.interaction, stories.author),
+                    share = StoriesDetailItem.Sharing(
+                        isShareable = stories.interaction.shareable,
+                        metadata = LinkProperties(
+                            ogTitle = stories.meta.shareTitle,
+                            ogImageUrl = stories.meta.shareImage,
+                            ogDescription = stories.meta.shareDescription
+                        )
+                    ),
+                    productCount = stories.totalProductsFmt.ifEmpty { "0" },
                     meta = Meta(
                         activityTracker = stories.meta.activityTracker,
                         templateTracker = stories.meta.templateTracker,

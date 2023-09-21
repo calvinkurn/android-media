@@ -1,4 +1,4 @@
-package com.tokopedia.stories.analytic
+package com.tokopedia.stories.analytics
 
 import android.os.Bundle
 import com.tokopedia.content.analytic.BusinessUnit

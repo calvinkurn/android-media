@@ -56,7 +56,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/voucher_view"
                 app:layout_goneMarginTop="@dimen/spacing_lvl4"
-                tools:listitem="@layout/item_play_product_sheet_section"
+                tools:listitem="@layout/item_content_product_sheet_section"
                 tools:visibility="visible"
                 />
 
