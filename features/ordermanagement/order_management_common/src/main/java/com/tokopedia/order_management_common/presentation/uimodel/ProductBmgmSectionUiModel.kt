@@ -34,6 +34,7 @@ data class ProductBmgmSectionUiModel(
         val quantity: Int,
         val productNote: String,
         val addOnSummaryUiModel: AddOnSummaryUiModel? = null,
+        val isProcessing: Boolean? = null,
         val button: ActionButtonsUiModel.ActionButton? = null
     )
 }

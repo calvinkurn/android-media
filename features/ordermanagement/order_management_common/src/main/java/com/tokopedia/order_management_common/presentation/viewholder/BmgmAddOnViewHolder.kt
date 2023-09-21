@@ -89,19 +89,15 @@ class BmgmAddOnViewHolder(
         addonItemUiModel: AddOnSummaryUiModel.AddonItemUiModel
     ) {
         layoutAddOnDescription.run {
-            if (addonItemUiModel.message.isEmpty()) {
-                hide()
-            } else {
-                setIsCopyable(copyable = addonItemUiModel.noteCopyable)
-                setReceiverName(addonItemUiModel.toStr)
-                setSenderName(addonItemUiModel.fromStr)
-                setDescription(
-                    addonItemUiModel.message.stripLastDot(),
-                    addonItemUiModel.descriptionExpanded
-                )
-                listener = this@BmgmAddOnViewHolder
-                show()
-            }
+            setIsCopyable(copyable = addonItemUiModel.noteCopyable)
+            setReceiverName(addonItemUiModel.toStr)
+            setSenderName(addonItemUiModel.fromStr)
+            setDescription(
+                addonItemUiModel.message.stripLastDot(),
+                addonItemUiModel.descriptionExpanded
+            )
+            listener = this@BmgmAddOnViewHolder
+            show()
         }
     }
 
