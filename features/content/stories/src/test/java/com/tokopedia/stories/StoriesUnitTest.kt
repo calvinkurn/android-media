@@ -27,7 +27,7 @@ import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 
-class StoriesViewModelTest {
+class StoriesUnitTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
