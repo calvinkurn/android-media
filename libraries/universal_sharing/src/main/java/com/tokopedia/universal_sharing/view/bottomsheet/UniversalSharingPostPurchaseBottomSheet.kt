@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -15,6 +14,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseBottomsheetBinding
 import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.util.Result
@@ -23,6 +23,7 @@ import com.tokopedia.universal_sharing.view.UniversalSharingPostPurchaseViewMode
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.UniversalSharingPostPurchaseAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.UniversalSharingPostPurchaseBottomSheetListener
 import com.tokopedia.universal_sharing.view.bottomsheet.typefactory.UniversalSharingTypeFactoryImpl
+import com.tokopedia.universal_sharing.view.model.UniversalSharingPostPurchaseShopTitleUiModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,9 +35,11 @@ class UniversalSharingPostPurchaseBottomSheet :
     @Inject
     lateinit var viewModel: UniversalSharingPostPurchaseViewModel
 
+    private var _binding: UniversalSharingPostPurchaseBottomsheetBinding? = null
+    private val binding: UniversalSharingPostPurchaseBottomsheetBinding get() = _binding!!
+
     private val typeFactory = UniversalSharingTypeFactoryImpl(this)
     private val adapter = UniversalSharingPostPurchaseAdapter(typeFactory)
-    private var loaderLayout: ConstraintLayout? = null
     private var data: UniversalSharingPostPurchaseModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,13 +64,10 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun setBottomSheetChildView() {
-        val view = LayoutInflater.from(context).inflate(
-            R.layout.universal_sharing_post_purchase_bottomsheet,
-            null,
-            false
+        _binding = UniversalSharingPostPurchaseBottomsheetBinding.inflate(
+            LayoutInflater.from(requireContext())
         )
-        loaderLayout = view.findViewById(R.id.universal_sharing_layout_loading)
-        setChild(view)
+        setChild(binding.root)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -89,40 +89,54 @@ class UniversalSharingPostPurchaseBottomSheet :
             this.layoutManager = LinearLayoutManager(context)
             this.setHasFixedSize(true)
         }
+        adapter.addElement(
+            UniversalSharingPostPurchaseShopTitleUiModel(
+                iconUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
+                name = "Xiaomi Official Store"
+            )
+        )
     }
 
     private fun setupObserver() {
         viewModel.setupViewModelObserver()
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collectLatest {
-                    when (it) {
-                        is Result.Success -> {
-                            adapter.setVisitables(it.data)
-                        }
-                        is Result.Error -> {
-                            val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                            view?.let { view ->
-                                Toaster.build(
-                                    view,
-                                    errorMessage,
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_ERROR
-                                ).show()
-                            }
-                        }
-                        Result.Loading -> Unit // no-op
-                    }
-                }
+                observeUiState()
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.sharingState.collectLatest {
-                    println(it)
-                }
+                observeSharingState()
             }
+        }
+    }
+
+    private suspend fun observeUiState() {
+        viewModel.uiState.collectLatest {
+            when (it) {
+                is Result.Success -> {
+                    adapter.setVisitables(it.data)
+                }
+                is Result.Error -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    view?.let { view ->
+                        Toaster.build(
+                            view,
+                            errorMessage,
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+                Result.Loading -> Unit // no-op
+            }
+        }
+    }
+
+    private suspend fun observeSharingState() {
+        viewModel.sharingState.collectLatest {
+            println(it)
         }
     }
 
@@ -134,11 +148,16 @@ class UniversalSharingPostPurchaseBottomSheet :
 
     override fun onClickShare(productId: String) {
         if (productId.isNotBlank()) {
-            loaderLayout?.show()
+            binding.universalSharingLayoutLoading.show()
             viewModel.processAction(UniversalSharingPostPurchaseAction.ClickShare(productId))
         } else {
             // todo: Handle
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun updateData(data: UniversalSharingPostPurchaseModel) {
