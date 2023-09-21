@@ -18,7 +18,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
 import com.tokopedia.logisticseller.common.LogisticSellerConst.RESULT_PROCESS_REQ_PICKUP
@@ -121,7 +124,6 @@ class RequestPickupFragment :
         setupHeader()
         observingConfirmReqPickup()
         loadingFullPage(true)
-
     }
 
     override fun onResume() {
@@ -177,11 +179,37 @@ class RequestPickupFragment :
                         LogisticSellerErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
-                    context?.run {
-                        Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
+
+                    when (it.throwable.localizedMessage?.toIntOrNull()) {
+                        ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                        ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                        ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+
+                        else -> {
+                            view?.let { view ->
+                                showGlobalError(GlobalError.SERVER_ERROR)
+                                Utils.showToasterError(
+                                    LogisticSellerErrorHandler.getErrorMessage(it.throwable, view.context),
+                                    view
+                                )
+                            }
+                        }
                     }
                 }
             }
+        }
+    }
+
+    private fun showGlobalError(type: Int) {
+        binding?.apply {
+            globalError.setType(type)
+            globalError.setActionClickListener {
+                loadConfirmRequestPickup()
+                binding?.globalError?.gone()
+            }
+            globalError.visible()
+            viewgroupParentFullView.gone()
+            llBtn.gone()
         }
     }
 
@@ -455,18 +483,15 @@ class RequestPickupFragment :
         RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    private fun loadingFullPage(isLoading: Boolean){
-        if(isLoading){
-            binding?.viewgroupParentFullView?.visibility = View.GONE
-            binding?.llBtn?.visibility = View.GONE
-            binding?.loadingRequestPickupLoading?.visibility = View.VISIBLE
-        }else{
-            binding?.viewgroupParentFullView?.visibility = View.VISIBLE
-            binding?.llBtn?.visibility = View.VISIBLE
-            binding?.loadingRequestPickupLoading?.visibility = View.GONE
-
+    private fun loadingFullPage(isLoading: Boolean) {
+        if (isLoading) {
+            binding?.viewgroupParentFullView?.gone()
+            binding?.llBtn?.gone()
+            binding?.loadingRequestPickupLoading?.visible()
+        } else {
+            binding?.viewgroupParentFullView?.visible()
+            binding?.llBtn?.visible()
+            binding?.loadingRequestPickupLoading?.gone()
         }
-
     }
-
 }
