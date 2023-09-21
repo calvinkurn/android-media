@@ -2276,26 +2276,32 @@ class CartViewModelTest : BaseCartViewModelTest() {
                     cartDetailType = "BMGM",
                     bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
                 ),
-                isShowTickerBmGm = true
+                isShowTickerBmGm = false
             ),
             productId = "2222"
         )
 
-        val cartGroupHolderData = CartGroupHolderData(
-            uiGroupType = 1,
-            productUiModelList = mutableListOf(
-                cartItemHolderData,
-                cartItemHolderDataTwo
-            )
+        val cartItemHolderDataThree = CartItemHolderData(
+            cartId = "126",
+            isShopShown = true,
+            cartStringOrder = "222",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
+                ),
+                isShowTickerBmGm = false
+            ),
+            productId = "3333"
         )
 
-        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
+        cartViewModel.cartDataList.value = arrayListOf(cartItemHolderData, cartItemHolderDataTwo, cartItemHolderDataThree)
 
         // WHEN
         cartViewModel.updateBmGmTickerData(listOf(cartItemHolderData))
 
         // THEN
-        assertTrue(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == "BMGM")
+        assertTrue(cartItemHolderDataTwo.cartBmGmTickerData.isShowTickerBmGm)
     }
 
     override fun tearDown() {
