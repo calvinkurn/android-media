@@ -1,4 +1,4 @@
-package com.tokopedia.stories.data.utils
+package com.tokopedia.stories.data.mock
 
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
