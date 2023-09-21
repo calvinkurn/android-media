@@ -229,6 +229,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         toolbar.setNavigationOnClickListener {
             activity?.finish()
         }
+        toolbar.shareButton?.gone()
         toolbar.cartButton?.setOnClickListener {
             if (viewModel.isUserLoggedIn()) {
                 RouteManager.route(context, ApplinkConst.CART)
