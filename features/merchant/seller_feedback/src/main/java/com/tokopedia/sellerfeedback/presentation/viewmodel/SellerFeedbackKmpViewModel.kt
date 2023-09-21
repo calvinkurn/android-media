@@ -8,8 +8,9 @@ import com.tokopedia.gql.Result
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.seller.feedback.data.param.FeedbackParam
-import com.tokopedia.seller.feedback.domain.SubmitFeedbackUseCase
+import com.tokopedia.multiplatform.seller.feedback.data.param.FeedbackParam
+import com.tokopedia.multiplatform.seller.feedback.domain.SubmitFeedbackUseCase
+import com.tokopedia.multiplatform.seller.feedback.domain.model.SubmitFeedbackModel
 import com.tokopedia.sellerfeedback.data.SubmitResult
 import com.tokopedia.sellerfeedback.domain.SubmitGlobalFeedbackUseCase
 import com.tokopedia.sellerfeedback.error.SubmitThrowable
@@ -44,6 +45,9 @@ class SellerFeedbackKmpViewModel @Inject constructor(
 
     private val submitResult = MutableLiveData<SubmitResult>()
     fun getSubmitResult(): LiveData<SubmitResult> = submitResult
+
+    private val submitResultKmp = MutableLiveData<Result<SubmitFeedbackModel>>()
+    fun getSubmitResultKmp(): LiveData<Result<SubmitFeedbackModel>> = submitResultKmp
 
     private val _getHostPolicy = MutableLiveData<Result<String>>()
     val getHostPolicy: LiveData<Result<String>>
@@ -113,13 +117,7 @@ class SellerFeedbackKmpViewModel @Inject constructor(
 
             val result = submitFeedbackUseCase.execute(submitFeedbackParam)
 
-            val successResult = (result as? Result.Success)?.data
-
-            if (successResult?.isError == true) {
-                throw SubmitThrowable(successResult.errorMessage)
-            }
-
-            submitResult.postValue(SubmitResult.SubmitFeedbackSuccess(successResult))
+            submitResultKmp.postValue(result)
         }, onError = {
                 val result = when (it) {
                     is UploadThrowable -> SubmitResult.UploadFail(it)

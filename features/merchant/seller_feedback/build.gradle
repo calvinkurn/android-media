@@ -34,6 +34,7 @@ dependencies {
     implementation rootProject.ext.ktorDependencies.ktorContentNegotiation
     implementation rootProject.ext.ktorDependencies.ktorSerializationJson
     implementation rootProject.ext.ktorDependencies.ktorLogging
+    implementation rootProject.ext.ktorDependencies.kermitLogging
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)

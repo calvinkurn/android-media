@@ -38,6 +38,7 @@ import com.tokopedia.imagepicker.common.ImagePickerTab
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.multiplatform.seller.feedback.domain.model.SubmitFeedbackModel
 import com.tokopedia.seller.active.common.features.sellerfeedback.ScreenshotPreferenceManager
 import com.tokopedia.seller.active.common.features.sellerfeedback.SuccessToasterHelper
 import com.tokopedia.sellerfeedback.BuildConfig
@@ -86,7 +87,11 @@ class SellerFeedbackKmpFragment :
         private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
         private const val EXTRA_SHOW_SETTINGS = "extra_show_settings"
 
-        fun createInstance(uri: Uri?, shouldShowSettings: Boolean, activityName: String): SellerFeedbackKmpFragment {
+        fun createInstance(
+            uri: Uri?,
+            shouldShowSettings: Boolean,
+            activityName: String
+        ): SellerFeedbackKmpFragment {
             return SellerFeedbackKmpFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_URI_IMAGE, uri)
@@ -241,9 +246,11 @@ class SellerFeedbackKmpFragment :
             SellerFeedbackTracking.Click.eventClickPutAttachment()
             val intent =
                 RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
-            val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
+            val currentSelectedImages =
+                getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
             imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
-            imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
+            imagePickerBuilder.imagePickerMultipleSelectionBuilder =
+                imagePickerMultipleSelectionBuilder
             intent.putImagePickerBuilder(imagePickerBuilder)
             intent.putParamPageSource(ImagePickerPageSource.SELLER_FEEDBACK_PAGE)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
@@ -430,6 +437,7 @@ class SellerFeedbackKmpFragment :
         viewModel?.run {
             getFeedbackImages().observe(viewLifecycleOwner, observerFeedbackImages)
             getSubmitResult().observe(viewLifecycleOwner, observerSubmitResult)
+            getSubmitResultKmp().observe(viewLifecycleOwner, observerSubmitFeedbackKmp)
             getHostPolicy.observe(viewLifecycleOwner, observerHostPolicy)
         }
     }
@@ -439,6 +447,7 @@ class SellerFeedbackKmpFragment :
             is Result.Success -> {
                 Log.d("hostPolicyResponse", it.data)
             }
+
             is Result.Failure -> {
                 Log.e("hostPolicyResponseError", it.toString())
             }
@@ -450,24 +459,35 @@ class SellerFeedbackKmpFragment :
         checkButtonSend()
     }
 
+    private val observerSubmitFeedbackKmp = Observer<Result<SubmitFeedbackModel>> {
+        when (it) {
+            is Result.Success -> {
+                Log.d("submitFeedbackKmpSuccess", it.data.toString())
+            }
+            is Result.Failure -> {
+                Log.d("submitFeedbackKmpFail", it.toString())
+            }
+        }
+    }
+
     private val observerSubmitResult = Observer<SubmitResult> {
         when (it) {
-            is SubmitResult.SubmitFeedbackSuccess -> {
-                Log.d("submitFeedbackSuccess", it.submitFeedbackModel.toString())
-            }
             is SubmitResult.Success -> {
                 setOnSuccessFeedbackSaved()
             }
+
             is SubmitResult.UploadFail -> {
                 Log.d("submitFeedbackUploadFail", it.cause.stackTraceToString())
                 logToCrashlytics(it.cause, ERROR_UPLOAD)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_upload))
             }
+
             is SubmitResult.SubmitFail -> {
                 Log.d("submitFeedbackSubmitFail", it.cause.stackTraceToString())
                 logToCrashlytics(it.cause, ERROR_SUBMIT)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_submit))
             }
+
             is SubmitResult.NetworkFail -> {
                 Log.d("submitFeedbackNetworkFail", it.cause.stackTraceToString())
                 logToCrashlytics(it.cause, ERROR_NETWORK)

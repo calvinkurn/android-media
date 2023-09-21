@@ -7,9 +7,9 @@ import com.tokopedia.gql.engine
 import com.tokopedia.gql.ktor.KtorClient
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.seller.feedback.data.repository.SubmitFeedbackRepository
-import com.tokopedia.seller.feedback.data.repository.SubmitFeedbackRepositoryImpl
-import com.tokopedia.seller.feedback.domain.SubmitFeedbackUseCase
+import com.tokopedia.multiplatform.seller.feedback.data.repository.SubmitFeedbackRepository
+import com.tokopedia.multiplatform.seller.feedback.data.repository.SubmitFeedbackRepositoryImpl
+import com.tokopedia.multiplatform.seller.feedback.domain.SubmitFeedbackUseCase
 import com.tokopedia.sellerfeedback.di.scope.SellerFeedbackScope
 import com.tokopedia.shared.data.UploadPolicyApiImpl
 import com.tokopedia.shared.data.repository.UploadPolicyRepository
