@@ -14,6 +14,7 @@ import com.tokopedia.logisticCommon.data.response.KeroAddAddress
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
+import com.tokopedia.logisticCommon.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.url.TokopediaUrl
@@ -45,6 +46,7 @@ class AddressFormViewModelTest {
     private val repo: KeroRepository = mockk(relaxed = true)
     private val getDefaultAddress: GetDefaultAddressUseCase = mockk(relaxed = true)
     private val getAddressDetail: GetAddressDetailUseCase = mockk(relaxed = true)
+    private val addAddress: AddAddressUseCase = mockk(relaxed = true)
     private val saveAddressDataModel = SaveAddressDataModel()
     private val addressId = "12345"
     private val sourceValue = ""
@@ -81,7 +83,7 @@ class AddressFormViewModelTest {
     }
 
     private fun initObserver() {
-        addressFormViewModel = AddressFormViewModel(repo, getAddressDetail, getDefaultAddress)
+        addressFormViewModel = AddressFormViewModel(repo, getAddressDetail, getDefaultAddress, addAddress)
         addressFormViewModel.saveAddress.observeForever(saveAddressObserver)
         addressFormViewModel.defaultAddress.observeForever(defaultAddressObserver)
         addressFormViewModel.editAddress.observeForever(editAddressObserver)
@@ -131,7 +133,7 @@ class AddressFormViewModelTest {
         )
 
         // Given
-        coEvery { repo.saveAddress(any(), any(), any()) } returns fakeResponse
+        coEvery { addAddress(any()) } returns fakeResponse
 
         // When
         addressFormViewModel.saveDataModel = saveAddressDataModel
@@ -159,7 +161,7 @@ class AddressFormViewModelTest {
         )
 
         // Given
-        coEvery { repo.saveAddress(any(), any(), any()) } returns fakeResponse
+        coEvery { addAddress(any()) } returns fakeResponse
 
         // When
         addressFormViewModel.saveDataModel = saveAddressDataModel
@@ -171,7 +173,7 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Save Address Data Fail`() {
-        coEvery { repo.saveAddress(any(), any(), any()) } throws defaultThrowable
+        coEvery { addAddress(any()) } throws defaultThrowable
         addressFormViewModel.saveDataModel = saveAddressDataModel
         addressFormViewModel.saveAddress("", sourceValue)
         verify { saveAddressObserver.onChanged(match { it is Fail }) }

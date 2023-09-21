@@ -77,43 +77,6 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
-    val kero_add_address_query = """
-        mutation Autofill(${'$'}input: KeroAgentAddressInput!) {
-          kero_add_address(input: ${'$'}input) {
-            data {
-              addr_id
-              is_success
-              is_state_chosen_address_changed
-              chosen_address { 
-                addr_id
-                receiver_name
-                addr_name
-                district
-                city
-                city_name
-                district_name
-                status
-                latitude
-                longitude
-                postal_code
-              }
-              tokonow {
-                shop_id
-                warehouse_id
-                warehouses {
-                    warehouse_id
-                    service_type
-                }
-                service_type
-              }
-            }
-            status
-            config
-            server_process_time
-          }
-        }
-    """.trimIndent()
-
     val district_recommendation = """
         query GetDistrictRecommendation(${'$'}query: String, ${'$'}page: String){
           kero_district_recommendation(query:${'$'}query, page:${'$'}page) {

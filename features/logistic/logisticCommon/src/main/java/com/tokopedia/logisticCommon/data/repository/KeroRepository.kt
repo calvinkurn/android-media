@@ -5,49 +5,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
-import com.tokopedia.logisticCommon.data.request.AddAddressParam
 import com.tokopedia.logisticCommon.data.request.EditAddressParam
-import com.tokopedia.logisticCommon.data.response.AddAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
 class KeroRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
-
-    suspend fun saveAddress(
-        model: SaveAddressDataModel,
-        source: String,
-        consentJson: String
-    ): AddAddressResponse {
-        val param = AddAddressParam(
-            addrName = model.addressName,
-            receiverName = model.receiverName,
-            address1 = model.address1,
-            address1Notes = model.address1Notes,
-            address2 = model.address2,
-            postalCode = model.postalCode,
-            phone = model.phone,
-            province = model.provinceId.toString(),
-            city = model.cityId.toString(),
-            district = model.districtId.toString(),
-            latitude = model.latitude,
-            longitude = model.longitude,
-            isAnaPositive = model.isAnaPositive,
-            setAsPrimaryAddress = model.setAsPrimaryAddresss,
-            applyNameAsNewUserFullname = model.applyNameAsNewUserFullname,
-            source = source,
-            isTokonowRequest = model.isTokonowRequest,
-            consentJson = consentJson
-        )
-        val gqlParam = mapOf("input" to param)
-        val request = GraphqlRequest(
-            KeroLogisticQuery.kero_add_address_query,
-            AddAddressResponse::class.java,
-            gqlParam
-        )
-        return gql.getResponse(request)
-    }
 
     suspend fun editAddress(
         model: SaveAddressDataModel,

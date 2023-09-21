@@ -8,12 +8,14 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.data.request.AddAddressParam
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
 import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.domain.param.GetDefaultAddressParam
 import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,7 +24,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddressFormViewModel @Inject constructor(private val repo: KeroRepository, private val getAddressDetail: GetAddressDetailUseCase, private val getDefaultAddress: GetDefaultAddressUseCase) : ViewModel() {
+class AddressFormViewModel @Inject constructor(private val repo: KeroRepository, private val getAddressDetail: GetAddressDetailUseCase, private val getDefaultAddress: GetDefaultAddressUseCase, private val addAddress: AddAddressUseCase) : ViewModel() {
 
     companion object {
         const val MIN_CHAR_PHONE_NUMBER = 9
@@ -121,7 +123,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository,
         saveDataModel?.let { model ->
             viewModelScope.launch {
                 try {
-                    val saveAddressData = repo.saveAddress(model, sourceValue, consentJson)
+                    val saveAddressData = addAddress(model.toAddAddressParam(sourceValue, consentJson))
 
                     saveAddressData.keroAddAddress.data.takeIf {
                         it.isSuccess == 1
@@ -134,6 +136,29 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository,
                 }
             }
         }
+    }
+
+    private fun SaveAddressDataModel.toAddAddressParam(source: String, consentJson: String): AddAddressParam {
+        return AddAddressParam(
+            addrName = this.addressName,
+            receiverName = this.receiverName,
+            address1 = this.address1,
+            address1Notes = this.address1Notes,
+            address2 = this.address2,
+            postalCode = this.postalCode,
+            phone = this.phone,
+            province = this.provinceId.toString(),
+            city = this.cityId.toString(),
+            district = this.districtId.toString(),
+            latitude = this.latitude,
+            longitude = this.longitude,
+            isAnaPositive = this.isAnaPositive,
+            setAsPrimaryAddress = this.setAsPrimaryAddresss,
+            applyNameAsNewUserFullname = this.applyNameAsNewUserFullname,
+            source = source,
+            isTokonowRequest = this.isTokonowRequest,
+            consentJson = consentJson
+        )
     }
 
     private fun SaveAddressDataModel.updateDataWarehouses(data: DataAddAddress) {
