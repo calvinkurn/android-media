@@ -38,6 +38,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.ceil
+import kotlin.math.min
 
 class LargeUploaderManager @Inject constructor(
     @UploaderQualifier private val policyManager: SourcePolicyManager,
@@ -59,9 +60,10 @@ class LargeUploaderManager @Inject constructor(
     private var progressUploader: ProgressUploader? = null
     private var requestId = ""
 
+    private var partUploadProgress = 0
+
     suspend operator fun invoke(param: VideoParam): UploadResult {
         val base = param.base as BaseParam
-
         val policy = policyManager.get()
         val videoPolicy = policy?.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
 
@@ -174,11 +176,40 @@ class LargeUploaderManager @Inject constructor(
         sourceId: String,
         policy: SourcePolicy
     ) = withContext(dispatchers.io) {
+        val maxUploadChunk = policy.videoPolicy?.largeMaxConcurrent ?: 1
+        val loopLimit = min(maxUploadChunk, chunkTotal)
+
         val jobList = mutableListOf<Job>()
 
         for (part in UPLOAD_PART_START..chunkTotal) {
             if (partUploaded[part] == true) continue
             if (requestId.isNotEmpty()) error(UNKNOWN_ERROR)
+
+            jobList.add(launch {
+                recursivePartUpload(
+                    file, sizePerChunk, sourceId, policy
+                )
+            })
+        }
+
+        jobList.forEach {
+            it.join()
+        }
+    }
+
+    private suspend fun recursivePartUpload(
+        file: File,
+        sizePerChunk: Int,
+        sourceId: String,
+        policy: SourcePolicy
+    ) {
+        partUploadProgress++
+        val part = partUploadProgress
+
+        withContext(dispatchers.io) {
+            if (partUploaded[part] == true) return@withContext
+            if (partUploadProgress > chunkTotal) return@withContext
+            var job: Job? = null
 
             file.slice(part, sizePerChunk)?.let {
                 val byteArrayToSend = it
@@ -186,24 +217,23 @@ class LargeUploaderManager @Inject constructor(
                 // trim zero byte from last for the last of part
                 if (part == chunkTotal) byteArrayToSend.trimLastZero()
 
-                jobList.add(
-                    launch {
-                        chunkUpload(
-                            sourceId,
-                            file,
-                            byteArrayToSend,
-                            policy.timeOut,
-                            part
-                        )
+                job = launch {
+                    chunkUpload(
+                        sourceId,
+                        file,
+                        byteArrayToSend,
+                        policy.timeOut,
+                        partNumber = part
+                    )
 
-                        updateProgressValue()
-                    }
-                )
+                    updateProgressValue()
+                    recursivePartUpload(
+                        file, sizePerChunk, sourceId, policy
+                    )
+                }
             }
-        }
 
-        jobList.forEach { job ->
-            job.join()
+            job?.join()
         }
     }
 
