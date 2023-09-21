@@ -80,7 +80,7 @@ class ShopPageHeaderActivity :
         initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if(ShopUtil.isEnableShopPageReImagined(this)){
             configStatusBarAndSetFullScreen()
         }
         super.onCreate(savedInstanceState)
@@ -96,7 +96,7 @@ class ShopPageHeaderActivity :
         return R.layout.activity_new_shop_page
     }
 
-    override fun getNewFragment(): Fragment = if (ShopUtil.isEnableShopPageReImagined()) {
+    override fun getNewFragment(): Fragment = if (ShopUtil.isEnableShopPageReImagined(this)) {
             ShopPageHeaderFragmentV2.createInstance()
         } else {
             ShopPageHeaderFragment.createInstance()
@@ -144,7 +144,7 @@ class ShopPageHeaderActivity :
         when (requestCode) {
             MvcView.REQUEST_CODE -> {
                 if (resultCode == MvcView.RESULT_CODE_OK) {
-                    if(ShopUtil.isEnableShopPageReImagined()) {
+                    if(ShopUtil.isEnableShopPageReImagined(this)) {
                         (fragment as? ShopPageHeaderFragmentV2)?.refreshData()
                     }else {
                         (fragment as? ShopPageHeaderFragment)?.refreshData()
@@ -222,7 +222,7 @@ class ShopPageHeaderActivity :
     }
 
     override fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return if(ShopUtil.isEnableShopPageReImagined()) {
+        return if(ShopUtil.isEnableShopPageReImagined(this)) {
             (fragment as? ShopPageHeaderFragmentV2)?.createPdpAffiliateLink(basePdpAppLink)
                 .orEmpty()
         } else {
@@ -236,7 +236,7 @@ class ShopPageHeaderActivity :
         isVariant: Boolean,
         stockQty: Int
     ) {
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if(ShopUtil.isEnableShopPageReImagined(this)){
             (fragment as? ShopPageHeaderFragmentV2)?.createAffiliateCookieAtcProduct(
                 productId,
                 isVariant,
