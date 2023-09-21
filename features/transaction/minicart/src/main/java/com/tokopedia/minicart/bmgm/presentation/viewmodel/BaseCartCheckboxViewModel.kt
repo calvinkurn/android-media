@@ -7,6 +7,7 @@ import com.tokopedia.minicart.bmgm.domain.usecase.SetCartListCheckboxStateUseCas
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -21,7 +22,7 @@ open class BaseCartCheckboxViewModel(
 
     private val _setCheckListState = MutableSharedFlow<BmgmState<Boolean>>()
     val setCheckListState: SharedFlow<BmgmState<Boolean>>
-        get() = _setCheckListState
+        get() = _setCheckListState.asSharedFlow()
 
     fun setCartListCheckboxState(cartIds: List<String>) {
         viewModelScope.launch {

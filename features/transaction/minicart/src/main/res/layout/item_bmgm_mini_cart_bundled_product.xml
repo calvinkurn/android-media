@@ -48,14 +48,15 @@
             tools:text="diskon 25%" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/viewBmgmShining"
         android:layout_width="12dp"
         android:layout_height="108dp"
         android:layout_marginStart="-32dp"
         android:layout_marginTop="-28dp"
         android:layout_marginBottom="-28dp"
-        android:background="@drawable/bmgm_shining_effect"
         android:rotation="135"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:unify_image_corner_radius="0"
+        app:unify_image_disable_shimmering_placeholder="true" />
 </RelativeLayout>

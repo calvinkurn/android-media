@@ -49,6 +49,7 @@ class BmgmAddOnSummaryViewHolder(
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewAdapter() {
+        rvAddOn.isNestedScrollingEnabled = false
         rvAddOn.adapter = adapter
     }
 
@@ -80,7 +81,9 @@ class BmgmAddOnSummaryViewHolder(
                 root.show()
                 setupAddOnSummaryIcon(element.addonsLogoUrl)
                 setupAddOnSummaryLabel(element.addonsTitle)
-                setupAddOnSummaryAddOns(element.addonItemList)
+                if (element.addonItemList.isNotEmpty()) {
+                    setupAddOnSummaryAddOns(element.addonItemList)
+                }
             }
         }
     }

@@ -17,6 +17,7 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -39,6 +40,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import dagger.Lazy
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 31/07/23.
@@ -102,9 +104,16 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setContainerBackground()
         setupProductList()
         observeCartList()
         observeCartCheckedListState()
+    }
+
+    private fun setContainerBackground() {
+        binding?.bottomSheetMiniCartContainer?.run {
+            setBackgroundColor(context.getResColor(unifyprinciplesR.color.Unify_Background))
+        }
     }
 
     private fun observeCartList() {
