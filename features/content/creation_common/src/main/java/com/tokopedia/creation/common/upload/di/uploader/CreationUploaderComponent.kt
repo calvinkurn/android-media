@@ -15,7 +15,6 @@ import dagger.Component
     modules = [
         CreationUploaderModule::class,
         CreationUploaderInternalModule::class,
-        CreatePostCommonModule::class,
         VideoUploaderModule::class,
         MediaUploaderModule::class,
     ],
