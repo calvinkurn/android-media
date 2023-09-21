@@ -15,7 +15,7 @@ import javax.inject.Inject
     PromoUsageGetPromoListRecommendationUseCase.QUERY
 )
 class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
-    @ApplicationContext private val repository: GraphqlRepository,
+    @ApplicationContext private val repository: GraphqlRepository
 ) : CoroutineUseCase<GetPromoListRecommendationParam, GetPromoListRecommendationResponse>(
     Dispatchers.IO
 ) {
@@ -56,6 +56,7 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                     }
                     coupons {
                       code
+                      title
                       benefit_type_str
                       benefit_amount_str
                       message
