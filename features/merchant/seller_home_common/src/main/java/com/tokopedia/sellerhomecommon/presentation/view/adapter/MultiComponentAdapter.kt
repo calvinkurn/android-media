@@ -2,18 +2,24 @@ package com.tokopedia.sellerhomecommon.presentation.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.multicomponent.MultiComponentTabViewHolder
 
-class MultiComponentAdapter(private val items: MutableList<MultiComponentTab>) :
-    RecyclerView.Adapter<MultiComponentTabViewHolder>() {
+
+class MultiComponentAdapter(
+    private val listener: WidgetListener
+) : RecyclerView.Adapter<MultiComponentTabViewHolder>() {
+
+    private val items: MutableList<MultiComponentTab> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiComponentTabViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.shc_multi_component_view, parent, false)
-        return MultiComponentTabViewHolder(itemView)
+        return MultiComponentTabViewHolder(itemView, listener)
     }
 
     override fun onBindViewHolder(holder: MultiComponentTabViewHolder, position: Int) {
@@ -24,10 +30,11 @@ class MultiComponentAdapter(private val items: MutableList<MultiComponentTab>) :
         return items.size
     }
 
-    fun updateTab(tab: MultiComponentTab) {
-        val tabIndex = items.indexOfFirst { it.id == tab.id }
-        items[tabIndex] = tab
-        notifyItemChanged(tabIndex)
+    fun updateEmployeeListItems(tabs: List<MultiComponentTab>) {
+        val diffCallback = MultiComponentTabDiffer(items, tabs)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        items.clear()
+        items.addAll(tabs)
+        diffResult.dispatchUpdatesTo(this)
     }
-
 }

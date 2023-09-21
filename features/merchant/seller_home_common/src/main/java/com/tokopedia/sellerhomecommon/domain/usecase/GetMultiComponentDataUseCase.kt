@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.MultiComponentMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.GetMultiComponentDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.FetchMultiComponentResponse
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -17,7 +17,7 @@ class GetMultiComponentDataUseCase(
     gqlRepository: GraphqlRepository,
     mapper: MultiComponentMapper,
     dispatchers: CoroutineDispatchers
-) : CloudAndCacheGraphqlUseCase<GetMultiComponentDataResponse, List<MultiComponentDataUiModel>>(
+) : CloudAndCacheGraphqlUseCase<FetchMultiComponentResponse, List<MultiComponentDataUiModel>>(
     gqlRepository,
     mapper,
     dispatchers,
@@ -30,7 +30,7 @@ class GetMultiComponentDataUseCase(
 
         val errors = gqlResponse.getError(classType)
         if (errors.isNullOrEmpty()) {
-            val response = gqlResponse.getData<GetMultiComponentDataResponse>()
+            val response = gqlResponse.getData<FetchMultiComponentResponse>()
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
             return mapper.mapRemoteDataToUiData(response, isFromCache)
         } else {
@@ -38,30 +38,31 @@ class GetMultiComponentDataUseCase(
         }
     }
 
-    override val classType: Class<GetMultiComponentDataResponse>
-        get() = GetMultiComponentDataResponse::class.java
+    override val classType: Class<FetchMultiComponentResponse>
+        get() = FetchMultiComponentResponse::class.java
 
     companion object {
-        // TODO: Update the query
         internal const val QUERY = """
           query GetMultiComponentDataQuery(${'$'}dataKeys: [dataKey!]!) {
-            fetchMultiComponentWidget(dataKeys:${'$'}dataKeys) {
-              datakey
-              tabs {
-                id
-                title
-                components {
-                  componentType
-                  datakey
-                  configuration
-                  metricsParam
+            fetchMultiComponentWidgetData(dataKeys:${'$'}dataKeys) {
+               data {
+                  dataKey
                   error
                   errorMsg
                   showWidget
+                  tabs {
+                    id
+                    title
+                    components {
+                      componentType
+                      dataKey
+                      configuration
+                      metricsParam
+                    }
+                  }
                 }
               }
-            }
-          }
+             }
         """
 
         private const val DATA_KEYS = "dataKeys"

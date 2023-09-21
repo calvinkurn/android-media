@@ -931,7 +931,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickWidgetPostDeleteEvent(element.dataKey)
     }
 
-    override fun onTabSelected(tab: MultiComponentTab) {
+    override fun multiComponentTabSelected(tab: MultiComponentTab) {
         // No - op
     }
 

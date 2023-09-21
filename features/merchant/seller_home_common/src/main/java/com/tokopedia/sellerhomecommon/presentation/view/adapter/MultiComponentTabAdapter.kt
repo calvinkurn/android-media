@@ -1,27 +1,18 @@
 package com.tokopedia.sellerhomecommon.presentation.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.sellerhomecommon.presentation.adapter.factory.MultiComponentAdapterFactory
+import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.multicomponent.LoadingMultiComponentUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.multicomponent.MultiComponentItemUiModel
 
 class MultiComponentTabAdapter(
-    typeFactory: MultiComponentAdapterFactory,
-) : BaseAdapter<MultiComponentAdapterFactory>(
+    typeFactory: WidgetAdapterFactoryImpl,
+) : BaseAdapter<WidgetAdapterFactoryImpl>(
     typeFactory,
-    listOf<MultiComponentItemUiModel>(LoadingMultiComponentUiModel)
+    listOf(LoadingMultiComponentUiModel)
 ) {
 
-    fun setData(data: List<MultiComponentItemUiModel>) {
+    fun setData(data: List<BaseWidgetUiModel<*>?>) {
         setVisitables(data)
     }
-
-    fun setLoading() {
-        setVisitables(
-            listOf(LoadingMultiComponentUiModel)
-        )
-    }
-
-
-
 }

@@ -1,51 +1,123 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
-import com.tokopedia.sellerhomecommon.domain.model.GetMultiComponentDataResponse
-import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
+import com.google.gson.Gson
+import com.tokopedia.kotlin.extensions.view.asLowerCase
+import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.domain.model.FetchMultiComponentResponse
+import com.tokopedia.sellerhomecommon.domain.model.MultiComponent
+import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentData
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
-import com.tokopedia.sellerhomecommon.presentation.model.multicomponent.MultiComponentItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import javax.inject.Inject
 
-class MultiComponentMapper @Inject constructor() :
-    BaseResponseMapper<GetMultiComponentDataResponse, List<MultiComponentDataUiModel>> {
+class MultiComponentMapper @Inject constructor(
+    private val gson: Gson,
+    private val tooltipMapper: TooltipMapper
+) :
+    BaseResponseMapper<FetchMultiComponentResponse, List<MultiComponentDataUiModel>> {
 
     override fun mapRemoteDataToUiData(
-        response: GetMultiComponentDataResponse,
+        response: FetchMultiComponentResponse,
         isFromCache: Boolean
     ): List<MultiComponentDataUiModel> {
-        return listOf(
+        return response.fetchMultiComponentWidget.data.map { widgets ->
             MultiComponentDataUiModel(
-                dataKey = response.fetchMultiComponentWidget.dataKey,
-                tabs = response.fetchMultiComponentWidget.tabs.map {
+                dataKey = widgets.dataKey,
+                tabs = widgets.tabs.mapIndexed { index, it ->
                     MultiComponentTab(
                         id = it.id,
                         title = it.title,
                         components = it.components.map { component ->
+                            val tabConfig = getTabConfig(component.configuration)
                             MultiComponentData(
                                 componentType = component.componentType,
                                 dataKey = component.dataKey,
                                 configuration = component.configuration,
                                 metricParam = component.metricsParam,
-                                data = null
+                                data = mapToWidgetUiModel(component, tabConfig)
                             )
                         },
-                        isSelected = false,
                         isLoaded = false,
-                        isError = it.components.all { multiComponent -> !multiComponent.error }
+                        isError = widgets.error
                     )
                 }
             )
+        }
+    }
+
+    private fun getTabConfig(configStr: String): WidgetModel {
+        return gson.fromJson(configStr, WidgetModel::class.java)
+    }
+
+    private fun mapToWidgetUiModel(
+        data: MultiComponent,
+        tabConfig: WidgetModel
+    ): BaseWidgetUiModel<*>? {
+        return when (data.componentType.asLowerCase()) {
+            WidgetType.PIE_CHART.asLowerCase() -> {
+                mapToPieChartUiModel(data, tabConfig)
+            }
+            WidgetType.MULTI_LINE_GRAPH.asLowerCase() -> {
+                mapToMultiTrendLineUiData(data, tabConfig)
+            }
+            else -> {
+                null
+            }
+        }
+    }
+
+    private fun mapToPieChartUiModel(
+        data: MultiComponent,
+        tabConfig: WidgetModel
+    ): PieChartWidgetUiModel {
+        return PieChartWidgetUiModel(
+            id = tabConfig.id.toString(),
+            widgetType = data.componentType,
+            title = tabConfig.title ?: "",
+            subtitle = tabConfig.subtitle ?: "",
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(tabConfig.tooltip),
+            tag = tabConfig.tag ?: "",
+            appLink = tabConfig.appLink ?: "",
+            dataKey = data.dataKey,
+            ctaText = tabConfig.ctaText ?: "",
+            gridSize = tabConfig.gridSize ?: 1,
+            isShowEmpty = tabConfig.isShowEmpty ?: false,
+            data = null,
+            isLoaded = false,
+            isLoading = true,
+            isFromCache = false,
+            emptyState = tabConfig.emptyStateModel.mapToUiModel(),
+            useRealtime = tabConfig.useRealtime
         )
     }
 
-    fun mapToMultiComponentData(data: BaseDataUiModel): MultiComponentItemUiModel? {
-        return when (data) {
-            // TODO: Map to line chart later
-            is BarChartDataUiModel -> null
-            else -> null
-        }
+    private fun mapToMultiTrendLineUiData(
+        data: MultiComponent,
+        tabConfig: WidgetModel
+    ): MultiLineGraphWidgetUiModel {
+        return MultiLineGraphWidgetUiModel(
+            id = tabConfig.id.toString(),
+            widgetType = data.componentType,
+            title = tabConfig.title ?: "",
+            subtitle = tabConfig.subtitle ?: "",
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(tabConfig.tooltip),
+            tag = tabConfig.tag ?: "",
+            appLink = tabConfig.appLink ?: "",
+            dataKey = data.dataKey,
+            ctaText = tabConfig.ctaText ?: "",
+            gridSize = tabConfig.gridSize ?: 1,
+            isShowEmpty = tabConfig.isShowEmpty ?: false,
+            data = null,
+            isLoaded = false,
+            isLoading = true,
+            isFromCache = false,
+            emptyState = tabConfig.emptyStateModel.mapToUiModel(),
+            useRealtime = tabConfig.useRealtime,
+            isComparePeriodOnly = tabConfig.isComparePeriodOnly
+        )
     }
 }

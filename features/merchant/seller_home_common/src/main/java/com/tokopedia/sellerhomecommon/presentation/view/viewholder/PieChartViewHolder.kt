@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -192,8 +193,14 @@ class PieChartViewHolder(
     private fun setupPieChart(element: PieChartWidgetUiModel) {
         with(binding) {
             val data = element.data?.data
-            tvPieChartValue.text = data?.summary?.valueFmt.orEmpty()
-            tvPieChartSubValue.text = data?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
+            tvPieChartValue.shouldShowWithAction(data?.summary?.valueFmt.orEmpty().isNotEmpty()) {
+                tvPieChartValue.text = data?.summary?.valueFmt.orEmpty()
+            }
+            tvPieChartSubValue.shouldShowWithAction(
+                data?.summary?.diffPercentageFmt.orEmpty().isNotEmpty()
+            ) {
+                tvPieChartSubValue.text = data?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
+            }
 
             pieChartShc.init(PieChartConfig.getDefaultConfig())
             pieChartShc.setData(getPieChartData(element))

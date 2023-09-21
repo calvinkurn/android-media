@@ -524,9 +524,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    override fun onTabSelected(tab: MultiComponentTab) {
+    override fun multiComponentTabSelected(tab: MultiComponentTab) {
         if (!tab.isLoaded) {
-            mViewModel.getMultiComponentInfoWidgetData(tab)
+            mViewModel.getMultiComponentDetailTabWidgetData(tab)
         }
     }
 
@@ -1053,22 +1053,32 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         widget: MultiComponentWidgetUiModel,
         tab: MultiComponentTab
     ) {
-        widget.run {
-            data = widget.data?.let { widgetData ->
-                val widgetTabs = widgetData.tabs.toMutableList()
-                widgetTabs.let { tabs ->
-                    val tabIndex = tabs.indexOfFirst { it.id == tab.id }
-                    if (tabIndex > RecyclerView.NO_POSITION) {
-                        tabs[tabIndex] = tab
-                        tabs.getOrNull(tabIndex)?.isLoaded = true
-                    }
+        val test = widget.apply {
+            val widgetTabs = data?.tabs?.toMutableList() ?: mutableListOf()
+            val mapWidget = widgetTabs.map {
+                if (it.id == tab.id) {
+                    tab.copy(isLoaded = true)
+                } else {
+                    it
                 }
-                widgetData.copy(
-                    tabs = widgetTabs.toList()
-                )
+            }
+
+            data = data?.copy(
+                tabs = mapWidget
+            )
+        }
+
+        notifyWidgetChangedPayload(test, 123)
+    }
+
+    private fun notifyWidgetChangedPayload(widget: BaseWidgetUiModel<*>, payload:Int) {
+        recyclerView?.post {
+            val widgetPosition = adapter.data.indexOf(widget)
+            if (widgetPosition != RecyclerView.NO_POSITION) {
+                adapter.notifyItemChanged(widgetPosition, payload)
+                binding?.swipeRefreshStc?.isRefreshing = false
             }
         }
-        notifyWidgetChanged(widget)
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
@@ -1123,6 +1133,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun observeMultiComponentData() {
         mViewModel.multiComponentTabsData.observe(viewLifecycleOwner) { tab ->
+            //todo need to check all multiComponent and update
             adapter.data.filterIsInstance<MultiComponentWidgetUiModel>().find { widget ->
                 widget.data?.tabs?.any {
                     it.id == tab.id

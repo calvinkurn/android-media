@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerhomecommon.common.WidgetType
-import com.tokopedia.sellerhomecommon.domain.mapper.MultiComponentMapper
 import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
@@ -18,6 +17,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiComponentDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiComponentDetailDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
@@ -46,9 +46,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -72,7 +69,7 @@ class StatisticViewModel @Inject constructor(
     private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
     private val getAnnouncementDataUseCase: Lazy<GetAnnouncementDataUseCase>,
     private val getMultiComponentDataUseCase: Lazy<GetMultiComponentDataUseCase>,
-    private val multiComponentMapper: Lazy<MultiComponentMapper>,
+    private val getMultiComponentDetailData: Lazy<GetMultiComponentDetailDataUseCase>,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -123,7 +120,8 @@ class StatisticViewModel @Inject constructor(
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
     private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
-    private val _multiComponentWidgetData = MutableLiveData<Result<List<MultiComponentDataUiModel>>>()
+    private val _multiComponentWidgetData =
+        MutableLiveData<Result<List<MultiComponentDataUiModel>>>()
     private val _multiComponentTabsData = MutableLiveData<MultiComponentTab>()
 
     private var dynamicParameter = ParamCommonWidgetModel()
@@ -150,8 +148,8 @@ class StatisticViewModel @Inject constructor(
             )
             _widgetLayout.postValue(result)
         }, onError = {
-                _widgetLayout.postValue(Fail(it))
-            })
+            _widgetLayout.postValue(Fail(it))
+        })
     }
 
     fun getTickers(tickerPageName: String) {
@@ -164,8 +162,8 @@ class StatisticViewModel @Inject constructor(
             )
             _tickers.postValue(result)
         }, onError = {
-                _tickers.postValue(Fail(it))
-            })
+            _tickers.postValue(Fail(it))
+        })
     }
 
     fun getCardWidgetData(dataKeys: List<String>) {
@@ -179,8 +177,8 @@ class StatisticViewModel @Inject constructor(
             )
             _cardWidgetData.postValue(result)
         }, onError = {
-                _cardWidgetData.postValue(Fail(it))
-            })
+            _cardWidgetData.postValue(Fail(it))
+        })
     }
 
     fun getLineGraphWidgetData(dataKeys: List<String>) {
@@ -196,8 +194,8 @@ class StatisticViewModel @Inject constructor(
             )
             _lineGraphWidgetData.postValue(result)
         }, onError = {
-                _lineGraphWidgetData.postValue(Fail(it))
-            })
+            _lineGraphWidgetData.postValue(Fail(it))
+        })
     }
 
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
@@ -215,8 +213,8 @@ class StatisticViewModel @Inject constructor(
                 )
             _multiLineGraphWidgetData.value = result
         }, onError = {
-                _multiLineGraphWidgetData.value = Fail(it)
-            })
+            _multiLineGraphWidgetData.value = Fail(it)
+        })
     }
 
     fun getProgressWidgetData(dataKeys: List<String>) {
@@ -231,8 +229,8 @@ class StatisticViewModel @Inject constructor(
             )
             _progressWidgetData.postValue(result)
         }, onError = {
-                _progressWidgetData.postValue(Fail(it))
-            })
+            _progressWidgetData.postValue(Fail(it))
+        })
     }
 
     fun getPostWidgetData(dataKeys: List<TableAndPostDataKey>) {
@@ -249,8 +247,8 @@ class StatisticViewModel @Inject constructor(
             )
             _postListWidgetData.postValue(result)
         }, onError = {
-                _postListWidgetData.postValue(Fail(it))
-            })
+            _postListWidgetData.postValue(Fail(it))
+        })
     }
 
     fun getCarouselWidgetData(dataKeys: List<String>) {
@@ -264,8 +262,8 @@ class StatisticViewModel @Inject constructor(
             )
             _carouselWidgetData.postValue(result)
         }, onError = {
-                _carouselWidgetData.postValue(Fail(it))
-            })
+            _carouselWidgetData.postValue(Fail(it))
+        })
     }
 
     fun getTableWidgetData(dataKeys: List<TableAndPostDataKey>) {
@@ -277,8 +275,8 @@ class StatisticViewModel @Inject constructor(
             )
             _tableWidgetData.postValue(result)
         }, onError = {
-                _tableWidgetData.postValue(Fail(it))
-            })
+            _tableWidgetData.postValue(Fail(it))
+        })
     }
 
     fun getPieChartWidgetData(dataKeys: List<String>) {
@@ -290,8 +288,8 @@ class StatisticViewModel @Inject constructor(
             )
             _pieChartWidgetData.postValue(result)
         }, onError = {
-                _pieChartWidgetData.postValue(Fail(it))
-            })
+            _pieChartWidgetData.postValue(Fail(it))
+        })
     }
 
     fun getBarChartWidgetData(dataKeys: List<String>) {
@@ -303,8 +301,8 @@ class StatisticViewModel @Inject constructor(
             )
             _barChartWidgetData.postValue(result)
         }, onError = {
-                _barChartWidgetData.postValue(Fail(it))
-            })
+            _barChartWidgetData.postValue(Fail(it))
+        })
     }
 
     fun getAnnouncementWidgetData(dataKeys: List<String>) {
@@ -318,8 +316,8 @@ class StatisticViewModel @Inject constructor(
             )
             _announcementWidgetData.postValue(result)
         }, onError = {
-                _announcementWidgetData.postValue(Fail(it))
-            })
+            _announcementWidgetData.postValue(Fail(it))
+        })
     }
 
     fun getMultiComponentWidgetData(dataKeys: List<String>) {
@@ -333,44 +331,25 @@ class StatisticViewModel @Inject constructor(
             )
             _multiComponentWidgetData.postValue(result)
         }, onError = {
-                _multiComponentWidgetData.postValue(Fail(it))
-            })
+            _multiComponentWidgetData.postValue(Fail(it))
+        })
     }
 
-    fun getMultiComponentInfoWidgetData(tab: MultiComponentTab) {
+    fun getMultiComponentDetailTabWidgetData(tab: MultiComponentTab) {
         launchCatchError(block = {
-            val shouldLoadData = tab.components.all { it.data == null }
-            if (shouldLoadData) {
-                val updatedComponents = getLoadedMultiComponents(tab)
-                val updatedTab = tab.copy(
-                    components = updatedComponents,
-                    isLoaded = true,
-                    isError = false
-                )
-                _multiComponentTabsData.postValue(updatedTab)
-            }
+            val result =
+                getMultiComponentDetailData.get().executeOnBackground(tab, dynamicParameter)
+            val mapTab = tab.copy(
+                components = result.toMutableList(),
+                isError = result.any { it.data == null })
+            _multiComponentTabsData.postValue(mapTab)
         }, onError = {
-                val updatedTab = tab.copy(
-                    isLoaded = true,
-                    isError = true
-                )
-                _multiComponentTabsData.postValue(updatedTab)
-            })
-    }
-
-    private suspend fun getLoadedMultiComponents(tab: MultiComponentTab): List<MultiComponentData> {
-        delay(1000)
-        return withContext(dispatcher.io) {
-            tab.components.map {
-                async {
-                    val componentData = getComponentData(it)
-                    val data = componentData?.mapNotNull {
-                        multiComponentMapper.get().mapToMultiComponentData(it)
-                    }
-                    it.copy(data = data)
-                }
-            }.awaitAll()
-        }
+            val updatedTab = tab.copy(
+                isLoaded = true,
+                isError = true
+            )
+            _multiComponentTabsData.postValue(updatedTab)
+        })
     }
 
     private suspend fun getComponentData(component: MultiComponentData): List<BaseDataUiModel>? {

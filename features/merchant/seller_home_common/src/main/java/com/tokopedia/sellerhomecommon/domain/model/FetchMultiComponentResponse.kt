@@ -3,16 +3,27 @@ package com.tokopedia.sellerhomecommon.domain.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 
-data class GetMultiComponentDataResponse(
-    @SerializedName("fetchMultiComponentWidget")
-    val fetchMultiComponentWidget: GetMultiComponentWidgetData = GetMultiComponentWidgetData()
+data class FetchMultiComponentResponse(
+    @SerializedName("fetchMultiComponentWidgetData")
+    val fetchMultiComponentWidget: FetchMultiComponentDataResponse = FetchMultiComponentDataResponse()
+)
+
+data class FetchMultiComponentDataResponse(
+    @SerializedName("data")
+    val data: List<GetMultiComponentWidgetData> = listOf()
 )
 
 data class GetMultiComponentWidgetData(
-    @SerializedName("datakey")
+    @SerializedName("dataKey")
     val dataKey: String = String.EMPTY,
     @SerializedName("tabs")
-    val tabs: List<GetMultiComponentTab> = listOf()
+    val tabs: List<GetMultiComponentTab> = listOf(),
+    @SerializedName("error")
+    val error: Boolean = false,
+    @SerializedName("errorMsg")
+    val errorMessage: String = String.EMPTY,
+    @SerializedName("showWidget")
+    val showWidget: Boolean = true
 )
 
 data class GetMultiComponentTab(
@@ -27,16 +38,11 @@ data class GetMultiComponentTab(
 data class MultiComponent(
     @SerializedName("componentType")
     val componentType: String = String.EMPTY,
-    @SerializedName("datakey")
+    @SerializedName("dataKey")
     val dataKey: String = String.EMPTY,
     @SerializedName("configuration")
     val configuration: String = String.EMPTY,
     @SerializedName("metricsParam")
-    val metricsParam: String = String.EMPTY,
-    @SerializedName("error")
-    val error: Boolean = false,
-    @SerializedName("errorMsg")
-    val errorMessage: String = String.EMPTY,
-    @SerializedName("showWidget")
-    val showWidget: Boolean = true
+    val metricsParam: String = String.EMPTY
+
 )
