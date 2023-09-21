@@ -500,10 +500,13 @@ class StoriesDetailFragment @Inject constructor(
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
             variantSheet = AtcVariantBottomSheet()
             variantSheet?.setOnDismissListener { }
+            variantSheet ?: AtcVariantBottomSheet()
+        }
+
+        variantSheet?.setShowListener {
             variantSheet?.bottomSheetClose?.setOnClickListener {
                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
             }
-            variantSheet ?: AtcVariantBottomSheet()
         }
     }
 

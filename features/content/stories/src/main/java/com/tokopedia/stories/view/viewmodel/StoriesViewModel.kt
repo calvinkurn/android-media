@@ -391,7 +391,7 @@ class StoriesViewModel @AssistedInject constructor(
         })
     }
 
-    private fun addToCart(product: ContentTaggedProductUiModel) {
+    private fun addToCart(product: ContentTaggedProductUiModel, action: StoriesProductAction) {
         requiredLogin {
             viewModelScope.launchCatchError(block = {
                 val response = repository.addToCart(
@@ -402,7 +402,9 @@ class StoriesViewModel @AssistedInject constructor(
                 )
 
                 if (response) {
-                    _storiesEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
+                    if (action == StoriesProductAction.ATC)
+                        _storiesEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
+                    else _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
                 } else throw MessageErrorException()
 
             }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
@@ -411,13 +413,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
         requiredLogin {
-            if (action == StoriesProductAction.Buy) {
-                viewModelScope.launch {
-                    _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
-                }
-            } else {
-                addToCart(product)
-            }
+            addToCart(product, action)
         }
     }
 
