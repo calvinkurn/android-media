@@ -154,11 +154,9 @@ class StoriesGroupFragment @Inject constructor(
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     is StoriesUiEvent.ErrorGroupPage -> {
                         if (event.throwable.isNetworkError) {
-                            // TODO handle error network here
-                            showToast("error group network ${event.throwable}")
+                            setNoInternet(true)
                         } else {
-                            // TODO handle error fetch here
-                            showToast("error group content ${event.throwable}")
+                            setFailed(true)
                         }
                         showPageLoading(false)
                     }
@@ -180,6 +178,9 @@ class StoriesGroupFragment @Inject constructor(
     ) {
         if (prevState == state || pagerAdapter.getCurrentData().size == state.groupItems.size) return
 
+        setNoInternet(false)
+        setFailed(false)
+
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
         selectGroupPosition(state.selectedGroupPosition, false)
@@ -196,6 +197,20 @@ class StoriesGroupFragment @Inject constructor(
     private fun showPageLoading(isShowLoading: Boolean) = with(binding) {
         layoutGroupLoading.container.showWithCondition(isShowLoading)
         storiesGroupViewPager.showWithCondition(!isShowLoading)
+    }
+
+    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
+        root.showWithCondition(isShow)
+        btnStoriesNoInetRetry.setOnClickListener {
+            viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
+        }
+    }
+
+    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
+        root.showWithCondition(isShow)
+        btnStoriesFailedLoad.setOnClickListener {
+            viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
+        }
     }
 
     private fun trackImpressionGroup() {

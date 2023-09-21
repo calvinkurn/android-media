@@ -15,6 +15,16 @@
         android:id="@+id/layout_stories_content"
         layout="@layout/layout_stories_content"/>
 
+    <include
+        android:id="@+id/layout_stories_no_inet"
+        layout="@layout/layout_no_internet"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/layout_stories_failed"
+        layout="@layout/layout_failed_load"
+        android:visibility="gone"/>
+
     <View
         android:id="@+id/view_gradient_top"
         android:layout_width="0dp"

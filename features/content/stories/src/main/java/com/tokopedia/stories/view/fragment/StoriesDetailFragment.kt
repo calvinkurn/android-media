@@ -37,8 +37,6 @@ import com.tokopedia.stories.bottomsheet.StoriesProductBottomSheet
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.uimodel.StoryAuthor
-import com.tokopedia.stories.view.StoriesFailedLoad
-import com.tokopedia.stories.view.StoriesUnavailable
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.animation.StoriesProductNotch
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
@@ -65,7 +63,6 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.unifycomponents.Toaster
@@ -189,14 +186,8 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (!isEligiblePage) return@collect
-                        if (event.throwable.isNetworkError) {
-                            // TODO handle error network here
-                            showToast("error detail network ${event.throwable}")
-                        } else {
-                            // TODO handle error fetch here
-                            showToast("error detail content ${event.throwable}")
-                        }
+                        if (event.throwable.isNetworkError) setNoInternet(true)
+                        else setFailed(true)
                         showPageLoading(false)
                     }
 
@@ -532,26 +523,24 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setNoInternet(isShow: Boolean) = with(binding.vStoriesNoInet) {
-        apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                StoriesFailedLoad (onRetryClicked = {
-                    viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
-                })
-            }
+    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
+        root.showWithCondition(isShow)
+        btnStoriesNoInetRetry.setOnClickListener {
+            viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
         }
-        showWithCondition(isShow)
+    }
+
+    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
+        root.showWithCondition(isShow)
+        btnStoriesFailedLoad.setOnClickListener {
+            viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
+        }
     }
 
     private fun setNoContent(isShow: Boolean) = with(binding.vStoriesNoInet) {
         apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                StoriesUnavailable (onRetryClicked = {
-                    viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
-                })
-            }
+            setContent {}
         }
         showWithCondition(isShow)
     }
