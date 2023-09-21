@@ -6,8 +6,10 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_VIEW
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_PG
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CATEGORY_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CLICK_HOMEPAGE
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CLICK_PG
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENCY_CODE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DEFAULT_VALUE
@@ -41,6 +43,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.ADJUST_QTY_PDP_RECOM_WITH_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.ATC_PDP_RECOM_WITH_ATC
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.CLICK_BMGM_RECOM_SEE_ALL
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.CLICK_PDP_RECOM_SEE_ALL
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.CLICK_PDP_RECOM_WITH_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.DELETE_PDP_RECOM_WITH_ATC
@@ -53,6 +56,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.global.Recomme
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.CLICK_RECOMMENDATION_ITEM_PDP_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.DELETE_RECOMMENDATION_ITEM_PDP_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.SEE_ALL_RECOMMENDATION_PDP_ATC
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.SEE_ALL_RECOMMENDATION_PDP_ATC_BMGM
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
@@ -236,6 +240,16 @@ class RecommendationCarouselWidgetTrackingPDPATC(
     }
 
     override fun sendEventSeeAll() {
+        if (isBMGM()) {
+            sendEventSeeAllOfBMGM()
+        } else {
+            sendEventSeeAllOfGeneral()
+        }
+    }
+
+    private fun isBMGM() = source.offerId.isNotEmpty()
+
+    private fun sendEventSeeAllOfGeneral() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, CLICK_HOMEPAGE,
@@ -245,6 +259,22 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                 TRACKER_ID, SEE_ALL_RECOMMENDATION_PDP_ATC,
                 BUSINESS_UNIT, BUSINESS_UNIT_HOME,
                 CURRENT_SITE, CURRENT_SITE_MP
+            )
+        )
+    }
+
+    private fun sendEventSeeAllOfBMGM() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, CLICK_PG,
+                EVENT_ACTION, CLICK_BMGM_RECOM_SEE_ALL,
+                EVENT_CATEGORY, PDP,
+                EVENT_LABEL, source.offerId,
+                TRACKER_ID, SEE_ALL_RECOMMENDATION_PDP_ATC_BMGM,
+                BUSINESS_UNIT, BUSINESS_UNIT_PG,
+                CURRENT_SITE, CURRENT_SITE_MP,
+                PRODUCT_ID, source.anchorProductId,
+                USERID, userId
             )
         )
     }

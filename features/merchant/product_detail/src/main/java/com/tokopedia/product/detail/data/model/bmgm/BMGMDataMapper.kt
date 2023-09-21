@@ -35,5 +35,6 @@ fun BMGMData.Data.asUiModel(separator: String) =
         backgroundColor = backgroundColor,
         action = action.asUiModel(),
         titleColor = titleColor,
-        separator = separator
+        separator = separator,
+        offerId = offerId
     )

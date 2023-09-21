@@ -618,11 +618,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
                 loadMoreText
                 productIDs
+                offerID
               }
             }
           }
         }
-""".trimIndent()
+        """.trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null

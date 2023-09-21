@@ -44,7 +44,8 @@ private fun toRecommendationUiModel(
         type = component.type,
         queryParam = data?.queryParam.orEmpty(),
         warehouseId = postAtcInfo.warehouseInfo.warehouseId,
-        productId = postAtcInfo.productId
+        productId = postAtcInfo.productId,
+        offerId = data?.offerId.orEmpty()
     )
 }
 

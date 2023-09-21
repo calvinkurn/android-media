@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
  * Project name: android-tokopedia-core
  **/
 
-data class BMGMDataModel(
+data class BMGMUiModel(
     val type: String = "",
     val name: String = "",
     var state: BMGMWidgetUiState = BMGMWidgetUiState.Loading
@@ -28,7 +28,7 @@ data class BMGMDataModel(
     }
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return newData is BMGMDataModel && state == newData.state
+        return newData is BMGMUiModel && state == newData.state
     }
 
     override fun newInstance(): DynamicPdpDataModel = copy()

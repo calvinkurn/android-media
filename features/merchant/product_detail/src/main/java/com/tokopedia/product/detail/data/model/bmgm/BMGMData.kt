@@ -43,7 +43,10 @@ data class BMGMData(
         @SuppressLint("Invalid Data Type")
         @SerializedName("productIDs")
         @Expose
-        val productIDs: List<String> = emptyList()
+        val productIDs: List<String> = emptyList(),
+        @SerializedName("offerID")
+        @Expose
+        val offerId: String = ""
     ) {
 
         data class Action(
