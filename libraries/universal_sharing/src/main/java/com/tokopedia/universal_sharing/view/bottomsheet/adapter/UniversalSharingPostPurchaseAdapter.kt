@@ -8,4 +8,6 @@ class UniversalSharingPostPurchaseAdapter(
     typeFactory: UniversalSharingTypeFactory
 ) : BaseListAdapter<Visitable<in UniversalSharingTypeFactory>, UniversalSharingTypeFactory>(
     typeFactory
-)
+) {
+
+}

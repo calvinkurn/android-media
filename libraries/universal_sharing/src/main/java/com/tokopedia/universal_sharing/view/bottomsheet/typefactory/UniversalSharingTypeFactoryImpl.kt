@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.UniversalSharingPostPurchaseBottomSheetListener
 import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.UniversalSharingGlobalErrorViewHolder
 import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.UniversalSharingPostPurchaseProductViewHolder
 import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.UniversalSharingPostPurchaseShopTitleViewHolder
@@ -15,7 +16,9 @@ import com.tokopedia.universal_sharing.view.model.UniversalSharingPostPurchaseSh
  * Reuse this interface for other recycler view
  * Add override new type here, add it to createViewHolder too
  */
-class UniversalSharingTypeFactoryImpl() : BaseAdapterTypeFactory(), UniversalSharingTypeFactory {
+class UniversalSharingTypeFactoryImpl(
+    private val postPurchaseBottomSheetListener: UniversalSharingPostPurchaseBottomSheetListener
+) : BaseAdapterTypeFactory(), UniversalSharingTypeFactory {
 
     override fun type(uiModel: UniversalSharingPostPurchaseShopTitleUiModel): Int {
         return UniversalSharingPostPurchaseShopTitleViewHolder.LAYOUT
@@ -35,7 +38,9 @@ class UniversalSharingTypeFactoryImpl() : BaseAdapterTypeFactory(), UniversalSha
                 UniversalSharingPostPurchaseShopTitleViewHolder(parent)
             }
             UniversalSharingPostPurchaseProductViewHolder.LAYOUT -> {
-                UniversalSharingPostPurchaseProductViewHolder(parent)
+                UniversalSharingPostPurchaseProductViewHolder(
+                    parent, postPurchaseBottomSheetListener
+                )
             }
             UniversalSharingGlobalErrorViewHolder.LAYOUT -> {
                 UniversalSharingGlobalErrorViewHolder(parent)

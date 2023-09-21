@@ -5,6 +5,9 @@ apply plugin: 'io.hansel.preprocessor.module'
 android {
     namespace 'com.tokopedia.universal_sharing'
     testNamespace 'com.tokopedia.universal_sharing.test'
+    buildFeatures {
+        viewBinding = true
+    }
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }

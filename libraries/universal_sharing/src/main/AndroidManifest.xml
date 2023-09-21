@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.UniversalSharingPostPurchaseSharingActivity"
+            android:name=".view.activity.UniversalSharingUniversalSharingPostPurchaseSharingActivity"
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.GlobalSharing">
