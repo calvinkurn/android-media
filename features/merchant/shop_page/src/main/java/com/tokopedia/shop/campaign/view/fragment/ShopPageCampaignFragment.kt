@@ -541,7 +541,7 @@ class ShopPageCampaignFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    if(ShopUtil.isEnableShopPageReImagined()){
+                    if(ShopUtil.isEnableShopPageReImagined(context)){
                         (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
                     } else {
                         (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
@@ -685,7 +685,7 @@ class ShopPageCampaignFragment :
     }
 
     private fun hideScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if(ShopUtil.isEnableShopPageReImagined(context)){
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
@@ -693,7 +693,7 @@ class ShopPageCampaignFragment :
     }
 
     private fun showScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if(ShopUtil.isEnableShopPageReImagined(context)){
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
@@ -795,7 +795,7 @@ class ShopPageCampaignFragment :
     private fun checkShouldSelectHomeTab(appLink: String) {
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.HOME) {
-            if(ShopUtil.isEnableShopPageReImagined()){
+            if(ShopUtil.isEnableShopPageReImagined(context)){
                 (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.selectShopTab(ShopPageHeaderTabName.HOME, true)
             } else {
                 (getRealParentFragment() as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME, true)
@@ -1348,7 +1348,7 @@ class ShopPageCampaignFragment :
     }
 
     private fun getRealParentFragment(): Fragment? {
-        return if (ShopUtil.isEnableShopPageReImagined()) {
+        return if (ShopUtil.isEnableShopPageReImagined(context)) {
             parentFragment?.parentFragment
         } else {
             parentFragment
