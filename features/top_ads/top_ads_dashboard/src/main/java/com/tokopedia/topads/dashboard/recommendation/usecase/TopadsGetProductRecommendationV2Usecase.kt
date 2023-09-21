@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.SHOP_Id_KEY
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -25,7 +25,7 @@ class TopadsGetProductRecommendationV2Usecase @Inject constructor(
 
     private fun createRequestParam(shopId: String): RequestParams {
         val requestParam = RequestParams.create()
-        requestParam.putString(SHOP_Id_KEY, shopId)
+        requestParam.putString(ParamObject.SHOP_id, shopId)
         return requestParam
     }
 
@@ -60,6 +60,5 @@ class TopadsGetProductRecommendationV2Usecase @Inject constructor(
         override fun getQuery(): String = QUERY
 
         override fun getTopOperationName(): String = OPERATION_NAME
-
     }
 }

@@ -30,8 +30,6 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
-import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.unit.test.rule.StandardTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -113,7 +111,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         quantity = 1,
         totalPrice = "500000",
         totalPriceText = "Rp500.000",
-        isProcessing = false
+        isProcessing = false,
+        productUrl = ""
     )
 
     val atcExpectedParams = arrayListOf(
@@ -351,11 +350,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     fun EpharmacyInfoUiModel.isEmptyData(): Boolean {
         return this.consultationDate.isEmpty() &&
-                this.consultationDoctorName.isEmpty() &&
-                this.consultationExpiryDate.isEmpty() &&
-                this.consultationPatientName.isEmpty() &&
-                this.consultationName.isEmpty() &&
-                this.consultationPrescriptionNumber.isEmpty()
+            this.consultationDoctorName.isEmpty() &&
+            this.consultationExpiryDate.isEmpty() &&
+            this.consultationPatientName.isEmpty() &&
+            this.consultationName.isEmpty() &&
+            this.consultationPrescriptionNumber.isEmpty()
     }
 
     fun isProductListCollapsed(): Boolean {

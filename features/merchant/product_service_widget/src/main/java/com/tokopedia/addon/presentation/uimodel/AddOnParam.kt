@@ -13,5 +13,6 @@ data class AddOnParam(
     val quantity: Long = 0,
     val price: Long = 0,
     val discountedPrice: Long = 0,
-    val condition: String = ""
+    val condition: String = "",
+    val pageSource: String = ""
 ) : Parcelable

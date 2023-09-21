@@ -15,7 +15,9 @@ data class ConsentGroupListDataModel(
     @SerializedName("errorMessages")
     var errorMessages: List<String> = listOf(),
     @SerializedName("groups")
-    var groups: List<ConsentGroupDataModel> = listOf()
+    var groups: List<ConsentGroupDataModel> = listOf(),
+    @SerializedName("ticker")
+    var ticker: String = ""
 )
 
 data class ConsentGroupDataModel(

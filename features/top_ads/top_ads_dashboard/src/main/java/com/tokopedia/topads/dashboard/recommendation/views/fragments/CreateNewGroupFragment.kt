@@ -50,6 +50,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     private var minDailyBudget: Int = MINIMUM_DAILY_BUDGET_DEFAULT_VALUE
     private var maxDailyBudget: Int = MAXIMUM_DAILY_BUDGET_DEFAULT_VALUE
     private var topadsDeposits: Int = DEFAULT_TOPADS_DEPOSITS
+    private val tipsBottomSheet = CreateGroupBudgetHelpSheet()
 
     @JvmField
     @Inject
@@ -252,7 +253,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
                     checkAllFieldsValidations()
                 } else if (number > maxDailyBudget) {
                     binding?.dailyBudget?.isInputError = true
-                    binding?.dailyBudget?.setMessage(String.format(getString(R.string.topads_insight_max_budget_rp),minDailyBudget))
+                    binding?.dailyBudget?.setMessage(String.format(getString(R.string.topads_insight_max_budget_rp),maxDailyBudget))
                     validBudget = false
                     checkAllFieldsValidations()
                 } else {
@@ -277,10 +278,12 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     }
 
     private fun showDailyBudgetTipsBottomsheet() {
-        CreateGroupBudgetHelpSheet().show(
-            childFragmentManager,
-            javaClass.name
-        )
+        if(!tipsBottomSheet.isVisible){
+            tipsBottomSheet.show(
+                childFragmentManager,
+                javaClass.name
+            )
+        }
     }
 
     private fun getSelectedProductIds(): List<String> {

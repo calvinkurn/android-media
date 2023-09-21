@@ -238,9 +238,8 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
         renderProductCardContent(
-            productCardModel,
-            productCardModel.isWideContent,
-            productCardModel.isWideContent,
+            productCardModel = productCardModel,
+            isWideContent = productCardModel.isWideContent,
         )
 
         productCardModel

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
+import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
@@ -208,6 +209,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPECIAL_RELEASE_REVAMP -> {
                     createSpecialReleaseRevamp(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPECIAL_SHOP_FLASH_SALE -> {
+                    createShopFlashSale(channel, position)
                 }
             }
         }
@@ -949,6 +953,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 verticalPosition
             )
         )
+    }
+
+    private fun createShopFlashSale(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        if(!isCache) {
+            visitableList.add(ShopFlashSaleMapper.mapShopFlashSaleWidgetDataModel(channel, verticalPosition))
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList

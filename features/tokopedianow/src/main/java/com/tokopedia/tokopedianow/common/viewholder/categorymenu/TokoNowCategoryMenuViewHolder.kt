@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,6 +38,7 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     private var binding: ItemTokopedianowCategoryMenuBinding? by viewBinding()
+    private var headerName: String = String.EMPTY
 
     private val adapter by lazy {
         TokoNowCategoryMenuAdapter(
@@ -72,12 +74,18 @@ class TokoNowCategoryMenuViewHolder(
         onClickSeeAll(appLink)
     }
 
-    override fun onCategoryItemClicked(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
-        listener?.onCategoryMenuItemClicked(data, itemPosition)
+    override fun onCategoryItemClicked(
+        data: TokoNowCategoryMenuItemUiModel,
+        itemPosition: Int
+    ) {
+        listener?.onCategoryMenuItemClicked(data.copy(headerName = headerName), itemPosition)
     }
 
-    override fun onCategoryItemImpressed(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
-        listener?.onCategoryMenuItemImpressed(data, itemPosition)
+    override fun onCategoryItemImpressed(
+        data: TokoNowCategoryMenuItemUiModel,
+        itemPosition: Int
+    ) {
+        listener?.onCategoryMenuItemImpressed(data.copy(headerName = headerName), itemPosition)
     }
 
     override fun onChannelExpired() { /* nothing to do */ }
@@ -115,16 +123,17 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     private fun ItemTokopedianowCategoryMenuBinding.setHeader(data: TokoNowCategoryMenuUiModel) {
+        headerName = data.title.ifEmpty {
+            if (data.source == TOKONOW_CATEGORY_L1) {
+                root.context.getString(R.string.tokopedianow_category_l1_category_menu_title)
+            } else {
+                root.context.getString(R.string.tokopedianow_repurchase_category_menu_title)
+            }
+        }
         header.setListener(this@TokoNowCategoryMenuViewHolder)
         header.setModel(
             model = TokoNowDynamicHeaderUiModel(
-                title = data.title.ifEmpty {
-                    if (data.source == TOKONOW_CATEGORY_L1) {
-                        root.context.getString(R.string.tokopedianow_category_l1_category_menu_title)
-                    } else {
-                        root.context.getString(R.string.tokopedianow_repurchase_category_menu_title)
-                    }
-                },
+                title = headerName,
                 ctaText = root.context.getString(R.string.tokopedianow_see_all),
                 ctaTextLink = data.seeAllAppLink
             )
