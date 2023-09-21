@@ -12,6 +12,7 @@ import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictBoundariesUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictCenterUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
@@ -32,6 +33,7 @@ class PinpointNewPageViewModel @Inject constructor(
     private val repo: KeroRepository,
     private val getDistrict: GetDistrictUseCase,
     private val getDistrictBoundaries: GetDistrictBoundariesUseCase,
+    private val getDistrictCenter: GetDistrictCenterUseCase,
     private val getDistrictMapper: GetDistrictMapper,
     private val districtBoundaryMapper: DistrictBoundaryMapper,
     private val mapsGeocodeUseCase: MapsGeocodeUseCase
@@ -110,7 +112,7 @@ class PinpointNewPageViewModel @Inject constructor(
     fun getDistrictCenter() {
         viewModelScope.launch {
             try {
-                val data = repo.getDistrictCenter(saveAddressDataModel.districtId)
+                val data = getDistrictCenter(saveAddressDataModel.districtId)
                 _districtCenter.value = Success(mapDistrictCenterResponseToUiModel(data))
             } catch (e: Throwable) {
                 _districtCenter.value = Fail(e)

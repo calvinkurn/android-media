@@ -13,6 +13,7 @@ import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictBoundariesUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictCenterUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
@@ -52,6 +53,7 @@ class PinpointNewPageViewModelTest {
     private val repo: KeroRepository = mockk(relaxed = true)
     private val getDistrict: GetDistrictUseCase = mockk(relaxed = true)
     private val getDistrictBoundaries: GetDistrictBoundariesUseCase = mockk(relaxed = true)
+    private val getDistrictCenter: GetDistrictCenterUseCase = mockk(relaxed = true)
     private val getDistrictMapper = GetDistrictMapper()
     private val districtBoundaryMapper = DistrictBoundaryMapper()
 
@@ -80,6 +82,7 @@ class PinpointNewPageViewModelTest {
                 repo,
                 getDistrict,
                 getDistrictBoundaries,
+                getDistrictCenter,
                 getDistrictMapper,
                 districtBoundaryMapper,
                 mapsGeocodeUseCase
@@ -135,14 +138,14 @@ class PinpointNewPageViewModelTest {
 
     @Test
     fun `Get District Center by District ID Success`() {
-        coEvery { repo.getDistrictCenter(any()) } returns KeroAddrGetDistrictCenterResponse.Data()
+        coEvery { getDistrictCenter(any()) } returns KeroAddrGetDistrictCenterResponse.Data()
         pinpointNewPageViewModel.getDistrictCenter()
         verify { districtCenterObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Center by District ID Fail`() {
-        coEvery { repo.getDistrictCenter(any()) } throws defaultThrowable
+        coEvery { getDistrictCenter(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictCenter()
         verify { districtCenterObserver.onChanged(match { it is Fail }) }
     }

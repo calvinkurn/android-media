@@ -9,7 +9,6 @@ import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.request.AddAddressParam
 import com.tokopedia.logisticCommon.data.request.EditAddressParam
 import com.tokopedia.logisticCommon.data.response.AddAddressResponse
-import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.data.utils.getResponse
@@ -20,16 +19,6 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
     companion object {
         private const val PARAM_LATLNG = "latlng"
         private const val PARAM_IS_MANAGE_ADDRESS_FLOW = "is_manage_address_flow"
-    }
-
-    suspend fun getDistrictCenter(districtId: Long): KeroAddrGetDistrictCenterResponse.Data {
-        val param = mapOf("districtId" to districtId)
-        val request = GraphqlRequest(
-            KeroLogisticQuery.kero_addr_get_district_center,
-            KeroAddrGetDistrictCenterResponse.Data::class.java,
-            param
-        )
-        return gql.getResponse(request)
     }
 
     suspend fun getDistrictGeocode(
