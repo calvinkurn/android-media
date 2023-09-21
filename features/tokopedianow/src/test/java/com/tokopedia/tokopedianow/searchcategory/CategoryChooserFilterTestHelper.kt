@@ -3,16 +3,19 @@ package com.tokopedia.tokopedianow.searchcategory
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.CapturingSlot
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.slot
 import org.hamcrest.CoreMatchers.nullValue
@@ -22,9 +25,10 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 class CategoryChooserFilterTestHelper(
         private val baseViewModel: BaseSearchCategoryViewModel,
         private val getProductCountUseCase: UseCase<String>,
+        private val getFilterUseCase: GetFilterUseCase,
         private val callback: Callback,
 ) {
-
+    private val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
     private var chosenCategoryFilter = Option()
 
     fun `test category chooser cannot be spammed` () {
@@ -190,12 +194,14 @@ class CategoryChooserFilterTestHelper(
         val requestParams by lazy { requestParamsSlot.last() }
 
         `Given view setup from created until open category chooser`()
+        `Given get filter API will be successful`(dynamicFilterModel)
 
         `When view apply filter from category chooser`()
 
         callback.`Then assert first page use case is called twice`(requestParamsSlot)
         `Then verify query params is updated from category filter`(requestParams)
         `Then verify category chooser is dismissed`()
+        `Then verify success getting filter`()
     }
 
     private fun `When view apply filter from category chooser`() {
@@ -259,6 +265,19 @@ class CategoryChooserFilterTestHelper(
             .filter
             .options
             .find { it.key.contains(OptionHelper.EXCLUDE_PREFIX) }!!
+    }
+
+    private fun `Then verify success getting filter`() {
+        assert(baseViewModel.dynamicFilterModelLiveData.value != null)
+        assert(baseViewModel.isFilterPageOpenLiveData.value != true)
+    }
+
+    private fun `Given get filter API will be successful`(
+        dynamicFilterModel: DynamicFilterModel
+    ) {
+        coEvery {
+            getFilterUseCase.execute(any())
+        } returns dynamicFilterModel
     }
 
     interface Callback {

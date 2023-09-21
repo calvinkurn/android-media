@@ -26,7 +26,7 @@ import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeySelectedAdapter
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsHeadlineKeyViewModel
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
@@ -211,10 +211,10 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         val tooltipView =
             layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
                 .apply {
-                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_text)
                     tvToolTipText?.text =
                         getString(R.string.topads_headline_keyword_bottomsheet_title1)
-                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+                    imgTooltipIcon = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_icon)
                     imgTooltipIcon?.setImageDrawable(this.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
         tipBtn?.addItem(tooltipView)
@@ -226,20 +226,20 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
             tipsList.apply {
                 add(TipsUiHeaderModel(R.string.topads_headline_keyword_bottomsheet_title1))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc1,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc2,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc3,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc4,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiHeaderModel(R.string.topads_headline_keyword_bottomsheet_title2))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc5,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc6,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc7,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet =
                 context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
@@ -370,7 +370,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     private fun showAlreadyExistError() {
         view?.let { it1 ->
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_60)
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60)
             Toaster.build(it1,
                 getString(R.string.topads_headline_keyword_already_exist),
                 Toaster.LENGTH_LONG,

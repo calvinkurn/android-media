@@ -271,6 +271,9 @@ data class SomDetailOrder(
                 @Expose
                 val productName: String = "",
 
+                @SerializedName("courier_info")
+                val courierInfo: String = "",
+
                 @SerializedName("is_same_day")
                 @Expose
                 val isSameDay: Int = 0,

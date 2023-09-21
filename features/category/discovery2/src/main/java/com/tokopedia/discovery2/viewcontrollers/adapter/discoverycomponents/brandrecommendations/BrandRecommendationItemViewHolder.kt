@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.Constant.BrandRecommendation.RECTANGLE_DESIGN
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -53,7 +54,7 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
     private fun updateCardDesign() {
         when (brandRecommendationItemViewModel?.getDesignType()) {
             RECTANGLE_DESIGN -> {
-                val cardPadding = context.resources.getDimension(R.dimen.dp_4).toInt()
+                val cardPadding = context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
                 val layoutParams: ViewGroup.LayoutParams = itemView.layoutParams
                 layoutParams.width = context.resources.getDimension(R.dimen.dp_90).toInt()
                 layoutParams.height = context.resources.getDimension(R.dimen.dp_60).toInt()
@@ -65,11 +66,13 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
     }
 
     private fun setClick(data: DataItem?) {
-        data?.let {
-            if (!it.applinks.isNullOrEmpty()) {
-                itemView.setOnClickListener { itemView ->
-                    RouteManager.route(itemView.context, it.applinks)
-                    sendClickBrandRecommendationClickEvent(it)
+        itemView.setOnClickListener {
+            data?.let { dataItem ->
+                sendClickBrandRecommendationClickEvent(dataItem)
+                if (dataItem.moveAction?.type != null) {
+                    Utils.routingBasedOnMoveAction(dataItem.moveAction, fragment)
+                } else {
+                    if (!dataItem.applinks.isNullOrEmpty()) RouteManager.route(itemView.context, dataItem.applinks)
                 }
             }
         }

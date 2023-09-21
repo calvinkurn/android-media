@@ -325,13 +325,14 @@ object GetPromoListDataProvider {
     }
 
     fun provideCurrentSelectedPromoListResponseWithClashingData(): ArrayList<Visitable<*>> {
+        val potentialClashingPromo = "NPNVTU0Z"
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val response = provideGetPromoListResponseSuccessWithClashingData()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
         val recommendedPromo = response.couponListRecommendation.data.promoRecommendation.codes
         val selectedPromoSubSection = response.couponListRecommendation.data.couponSections[0].subSections[0]
         val selectedPromoSection = response.couponListRecommendation.data.couponSections[0]
-        val selectedPromoUiModel = UI_MODEL_MAPPER.mapPromoListItemUiModel(selectedPromo, selectedPromoSubSection, selectedPromoSection, 0, emptyList(), recommendedPromo)
+        val selectedPromoUiModel = UI_MODEL_MAPPER.mapPromoListItemUiModel(selectedPromo, selectedPromoSubSection, selectedPromoSection, 0, listOf(potentialClashingPromo), recommendedPromo)
         selectedPromoUiModel.uiState.isSelected = true
         promoListUiModelList.add(selectedPromoUiModel)
 

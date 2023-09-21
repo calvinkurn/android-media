@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_PARENT_ID
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
@@ -42,7 +43,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
     var originalPrice = ""
     var discountPercentage = 0
     var categoryID = 0
-    var categoryName: String? = ""
+    var categoryName: String = ""
     var categoryBreadcrumb: String? = ""
     var isTopAds = false
     var isOrganicAds = false
@@ -113,6 +114,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
                 "dimension100", sourceEngine,
                 "dimension115", getDimension115(additionalPositionMap),
                 "dimension131", dimension131.orNone(),
+                "dimension58", hasLabelGroupFulfillment.toString(),
         )
     }
 
@@ -141,7 +143,8 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
             "quantity", minOrder,
             "shop_id", shopID,
             "shop_name", shopName,
-            "shop_type", "none / other"
+            "shop_type", "none / other",
+            "dimension58", hasLabelGroupFulfillment.toString(),
         )
     }
 
@@ -167,7 +170,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
         get() = freeOngkirDataView.isActive
 
     val hasLabelGroupFulfillment: Boolean
-        get() = labelGroupList?.any { it.position == ProductCardLabel.LABEL_FULFILLMENT } == true
+        get() = hasFulfillment(labelGroupList)
 
     fun getDimension115(positionMap: Map<String, String>): String {
         return labelGroupList.getPositionNameMap().plus(positionMap)

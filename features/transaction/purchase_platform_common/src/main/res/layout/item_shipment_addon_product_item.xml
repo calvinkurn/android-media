@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_cart_addon_info"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_addon_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shipment_add_on_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/cb_addon_item"
+        app:layout_constraintBottom_toBottomOf="@id/cb_addon_item"
+        app:layout_constraintStart_toEndOf="@id/cb_addon_item"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="6dp"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_product_addon_info"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginStart="6dp"
+        app:layout_constraintStart_toEndOf="@id/tv_shipment_add_on_name"
+        app:layout_constraintTop_toTopOf="@id/tv_shipment_add_on_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_shipment_add_on_name"
+        app:icon_name="INFORMATION"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shipment_add_on_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cb_addon_item"
+        app:layout_constraintBottom_toBottomOf="@id/cb_addon_item"
+        app:typographyWeight="bold"
+        app:typographyType="display_3"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

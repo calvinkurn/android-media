@@ -75,6 +75,10 @@ import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
@@ -153,7 +157,9 @@ class ProductListPresenter @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val responseCodeImpl: ResponseCodeImpl,
     private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
-): BaseDaggerPresenter<ProductListSectionContract.View>(),
+    private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
+    private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
+    ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
@@ -166,7 +172,9 @@ class ProductListPresenter @Inject constructor(
     WishlistPresenter by wishlistPresenterDelegate,
     BottomSheetFilterPresenter by bottomSheetFilterPresenter,
     InspirationCarouselPresenter by inspirationCarouselPresenter,
-    ResponseCodeProvider by responseCodeImpl {
+    ResponseCodeProvider by responseCodeImpl,
+    InspirationKeywordPresenter by inspirationKeywordPresenter,
+    InspirationProductPresenter by inspirationProductItemPresenter{
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -1089,8 +1097,7 @@ class ProductListPresenter @Inject constructor(
 
         val afProdIds = JSONArray()
         val moengageTrackingCategory = HashMap<String?, String?>()
-        val categoryIdMapping = HashSet<String?>()
-        val categoryNameMapping = HashSet<String?>()
+        val categoryIdNameMapping = mutableMapOf<String, String>()
         val prodIdArray = ArrayList<String?>()
         val allProdIdArray = ArrayList<String?>()
 
@@ -1106,8 +1113,7 @@ class ProductListPresenter @Inject constructor(
                 moengageTrackingCategory[categoryIdString] = categoryName
             }
 
-            categoryIdMapping.add(categoryIdString)
-            categoryNameMapping.add(categoryName)
+            categoryIdNameMapping[categoryIdString] = categoryName
         }
 
         view.sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray, allProdIdArray)
@@ -1118,8 +1124,8 @@ class ProductListPresenter @Inject constructor(
                 createGeneralSearchTrackingEventLabel(productDataView, query),
                 userId,
                 productDataView.productList.isNotEmpty().toString(),
-                StringUtils.join(categoryIdMapping, ","),
-                StringUtils.join(categoryNameMapping, ","),
+                categoryIdNameMapping.keys.joinToString(","),
+                categoryIdNameMapping.values.joinToString(","),
                 createGeneralSearchTrackingRelatedKeyword(productDataView),
                 dimension90,
                 productDataView.backendFilters,
@@ -1292,15 +1298,6 @@ class ProductListPresenter @Inject constructor(
                 view.showOnBoarding(firstProductPositionWithBOELabel)
     }
 
-    private fun checkShouldShowViewTypeOnBoarding(productListType: String) {
-        if (isViewAttached
-            && productListType == SearchConstant.ProductListType.LIST_VIEW
-            && shouldShowViewTypeCoachmark()
-        ) {
-            view.enableProductViewTypeOnBoarding()
-        }
-    }
-
     private fun checkProductWithBOELabel(position: Int): Boolean {
         return firstProductPositionWithBOELabel >= 0
                 && firstProductPositionWithBOELabel == position
@@ -1308,6 +1305,12 @@ class ProductListPresenter @Inject constructor(
 
     private fun shouldShowBoeCoachmark(): Boolean {
         return searchCoachMarkLocalCache.shouldShowBoeCoachmark()
+    }
+
+    private fun checkShouldShowViewTypeOnBoarding(productListType: String) {
+        if (productListType == SearchConstant.ProductListType.LIST_VIEW
+            && shouldShowViewTypeCoachmark())
+            view.enableProductViewTypeOnBoarding()
     }
 
     private fun shouldShowViewTypeCoachmark(): Boolean {

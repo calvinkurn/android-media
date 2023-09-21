@@ -26,6 +26,10 @@ data class ShopPageGetDynamicTabResponse(
             var errorMessage: String = "",
             @SerializedName("text")
             var text: String = "",
+            @SerializedName("chipWording")
+            var chipWording: String = "",
+            @SerializedName("shareWording")
+            var shareWording: String = "",
             @SerializedName("icon")
             var icon: String = "",
             @SerializedName("iconFocus")

@@ -92,7 +92,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingnotif)
     implementation projectOrAar(rootProject.ext.features.attachinvoice)
 //    implementation projectOrAar(rootProject.ext.features.notifCenter)
-    implementation projectOrAar(rootProject.ext.features.talk)
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
     implementation projectOrAar(rootProject.ext.features.attachproduct)
 //    implementation projectOrAar(rootProject.ext.features.topchat)
@@ -116,9 +115,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopAdmin)
-
-    // Content
-    implementation projectOrAar(rootProject.ext.features.stories)
 
     // Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)

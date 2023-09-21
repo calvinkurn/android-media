@@ -21,6 +21,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.CapturingSlot
 import io.mockk.every
@@ -41,7 +42,7 @@ open class SearchTestFixtures {
     protected val defaultQueryParamMap = mapOf(SearchApiConst.Q to defaultKeyword)
     protected val getSearchFirstPageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
     protected val getSearchLoadMorePageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
-    protected val getFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
+    protected val getFilterUseCase = mockk<GetFilterUseCase>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)

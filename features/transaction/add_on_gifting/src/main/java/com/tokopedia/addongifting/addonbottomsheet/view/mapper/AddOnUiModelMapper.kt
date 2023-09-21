@@ -35,13 +35,19 @@ object AddOnUiModelMapper {
         val addOn = addOnByProduct?.addOns?.firstOrNull()
         return if (addOnSavedStateResponse != null) {
             // Get saved state from API
-            val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
-                    ?: "", addOnSavedStateResponse)
+            val addonSavedStateData = getAddOnSavedStateById(
+                addOn?.basicInfo?.id
+                    ?: "",
+                addOnSavedStateResponse
+            )
             addonSavedStateData != null
         } else {
             // Get saved state from previous page (Checkout / OSP)
-            val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
-                    ?: "", addOnProductData.availableBottomSheetData.addOnSavedStates)
+            val addonSavedStateData = getAddOnSavedStateById(
+                addOn?.basicInfo?.id
+                    ?: "",
+                addOnProductData.availableBottomSheetData.addOnSavedStates
+            )
             addonSavedStateData != null
         }
     }
@@ -53,8 +59,9 @@ object AddOnUiModelMapper {
             isTokoCabang = addOnProductData.availableBottomSheetData.isTokoCabang
             productCount = addOnProductData.availableBottomSheetData.products.size
             mainProductQuantity = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productQuantity
-                    ?: 0
+                ?: 0
             addOnId = addOn?.basicInfo?.id ?: ""
+            addOnUniqueId = addOn?.basicInfo?.addOnUniqueId ?: ""
             addOnType = addOn?.basicInfo?.productAddOnType ?: ""
             addOnTypeName = getAddOnTypeName(addOnType)
             addOnName = addOn?.basicInfo?.name ?: ""
@@ -68,8 +75,11 @@ object AddOnUiModelMapper {
             addOnAllImageUrls = imageUrls
             if (addOnSavedStateResponse != null) {
                 // Get saved state from API
-                val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
-                        ?: "", addOnSavedStateResponse)
+                val addonSavedStateData = getAddOnSavedStateById(
+                    addOn?.basicInfo?.id
+                        ?: "",
+                    addOnSavedStateResponse
+                )
                 initialSelectedState = addonSavedStateData != null
                 isAddOnSelected = initialSelectedState
                 initialAddOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
@@ -80,8 +90,11 @@ object AddOnUiModelMapper {
                 addOnNote = initialAddOnNote
             } else {
                 // Get saved state from previous page (Checkout / OSP)
-                val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
-                        ?: "", addOnProductData.availableBottomSheetData.addOnSavedStates)
+                val addonSavedStateData = getAddOnSavedStateById(
+                    addOn?.basicInfo?.id
+                        ?: "",
+                    addOnProductData.availableBottomSheetData.addOnSavedStates
+                )
                 initialSelectedState = addonSavedStateData != null
                 isAddOnSelected = initialSelectedState
                 initialAddOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
@@ -156,5 +169,4 @@ object AddOnUiModelMapper {
 
         return null
     }
-
 }

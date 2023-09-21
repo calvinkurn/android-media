@@ -67,6 +67,8 @@ import com.tokopedia.unifycomponents.toPx
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.design.R as designR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
@@ -215,9 +217,9 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun setCloseBtnColor(whiteBtn: Boolean = true) {
         val iconColor = if (whiteBtn) {
-            ResourcesCompat.getColor(resources, R.color.Unify_NN0, null)
+            ResourcesCompat.getColor(resources, unifyprinciplesR.color.Unify_NN0, null)
         } else {
-            ResourcesCompat.getColor(resources, R.color.Unify_NN900, null)
+            ResourcesCompat.getColor(resources, unifyprinciplesR.color.Unify_NN900, null)
         }
         binding?.btnClose?.setImage(
             newLightEnable = iconColor,
@@ -777,7 +779,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun showErrorView(error: Throwable) {
         context?.let {
-            val defaultBg = ContextCompat.getColor(it, R.color.white)
+            val defaultBg = ContextCompat.getColor(it, designR.color.white)
             binding?.mainFlipper?.backgroundTintList = ColorStateList.valueOf(defaultBg)
         }
         binding?.mainFlipper?.displayedChild = ERROR_STATE

@@ -74,7 +74,6 @@
         <activity
             android:name=".ui.gotoKyc.transparent.GotoKycTransparentActivity"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent"
-            android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

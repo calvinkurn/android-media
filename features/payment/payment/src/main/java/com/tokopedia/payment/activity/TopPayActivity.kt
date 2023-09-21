@@ -261,6 +261,12 @@ class TopPayActivity :
         startActivityForResult(goToIntent, REQURST_CODE_AUTO_RELOAD)
     }
 
+    fun navigateToActivityAndFinish(goToIntent: Intent) {
+        startActivity(goToIntent)
+        setResult(Activity.RESULT_OK)
+        finish()
+    }
+
     fun callbackPaymentCanceled() {
         hideProgressLoading()
         var hasClearRedState = false
@@ -633,15 +639,7 @@ class TopPayActivity :
 
                 // applink
                 if (RouteManager.isSupportApplink(this@TopPayActivity, url) && !URLUtil.isNetworkUrl(url)) {
-                    val intent = RouteManager.getIntent(this@TopPayActivity, url).apply {
-                        data = Uri.parse(url)
-                    }
-                    if (isURLReloadParamExist(url)) {
-                        reloadUrl = scroogeWebView?.url.orEmpty()
-                        navigateAutoReload(intent)
-                    } else {
-                        startActivity(intent)
-                    }
+                    applinkRedirect(url)
                     return true
                 }
                 // applink for link aja...
@@ -878,13 +876,12 @@ class TopPayActivity :
         return url.contains(LINK_AJA_APP_LINK)
     }
 
-    private fun isURLReloadParamExist(url: String): Boolean {
-        val decodedURL = try {
-            URLDecoder.decode(url, CHARSET_UTF_8)
-        } catch (e: Exception) {
-            ""
-        }
+    private fun isPaymentReloadTrue(decodedURL: String): Boolean {
         return decodedURL.contains(PAYMENT_RELOAD_IS_TRUE)
+    }
+
+    private fun isPaymentReloadFalse(decodedURL: String): Boolean {
+        return decodedURL.contains(PAYMENT_RELOAD_IS_FALSE)
     }
 
     private fun redirectToLinkAjaApp(url: String) {
@@ -899,6 +896,27 @@ class TopPayActivity :
             }
         } catch (e: ActivityNotFoundException) {
             Timber.e(e)
+        }
+    }
+
+    private fun applinkRedirect(url: String) {
+        val intent = RouteManager.getIntent(this@TopPayActivity, url).apply {
+            data = Uri.parse(url)
+        }
+        val decodedURL = try {
+            URLDecoder.decode(url, CHARSET_UTF_8)
+        } catch (e: Exception) {
+            Timber.e(e)
+            ""
+        }
+
+        if (isPaymentReloadTrue(decodedURL)) {
+            reloadUrl = scroogeWebView?.url.orEmpty()
+            navigateAutoReload(intent)
+        } else if (isPaymentReloadFalse(decodedURL)) {
+            startActivity(intent)
+        } else {
+            navigateToActivityAndFinish(intent)
         }
     }
 
@@ -937,6 +955,7 @@ class TopPayActivity :
         private const val REQURST_CODE_AUTO_RELOAD = 103
 
         private const val PAYMENT_RELOAD_IS_TRUE = "payment_reload=true"
+        private const val PAYMENT_RELOAD_IS_FALSE = "payment_reload=false"
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {

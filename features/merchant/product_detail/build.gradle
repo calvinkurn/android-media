@@ -8,6 +8,17 @@ android {
     namespace 'com.tokopedia.product.detail'
     testNamespace 'com.tokopedia.product.detail.test'
 
+    def pathSources = "src/main/res/"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    pathSources,
+                    pathSources + 'detail',
+                    pathSources + 'detail/a_plus_content'
+            ]
+        }
+    }
+
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
     }

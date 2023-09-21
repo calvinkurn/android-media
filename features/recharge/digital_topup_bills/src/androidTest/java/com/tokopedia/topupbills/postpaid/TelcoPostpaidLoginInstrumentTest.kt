@@ -216,8 +216,8 @@ class TelcoPostpaidLoginInstrumentTest {
         tabLayout_clickTabWithText("Transaksi Terakhir")
         val viewInteraction = onView(
             AllOf.allOf(
-                isDescendantOfA(withId(R.id.layout_widget)),
-                withId(R.id.recycler_view_menu_component),
+                isDescendantOfA(withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
+                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
                 isDisplayed()
             )
         ).check(matches(isDisplayed()))

@@ -372,8 +372,7 @@ class ChatItemListViewHolder constructor(
 
     private fun bindLabelIcon(chat: ItemChatListPojo) {
         chat.labelIcon.run {
-            val validation = isNotEmpty() && listener.getRollenceValue(ROLLENCE_MVC_ICON)
-            if (validation) {
+            if (isNotEmpty()) {
                 labelIcon?.showWithCondition(!listener.isTabSeller())
                 labelIcon?.loadImage(chat.labelIcon)
             } else {
@@ -396,9 +395,6 @@ class ChatItemListViewHolder constructor(
         const val PAYLOAD_STOP_TYPING_STATE = 5431
         const val PAYLOAD_UPDATE_PIN_STATUS = 5432
         const val PAYLOAD_NEW_INCOMING_CHAT = 5433
-
-        // rollence MVC icon
-        const val ROLLENCE_MVC_ICON = "MVC_BCchatlist"
 
         const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"

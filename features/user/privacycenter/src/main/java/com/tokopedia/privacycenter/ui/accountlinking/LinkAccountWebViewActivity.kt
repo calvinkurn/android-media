@@ -26,7 +26,7 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity
 /**
  * Created by Yoris on 10/08/21.
  */
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountWebViewActivity : BaseSimpleWebViewActivity(), HasComponent<PrivacyCenterComponent> {
 
     companion object {

@@ -41,8 +41,15 @@ android {
     buildFeatures {
         buildConfig true
     }
-
-
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res',
+                        'src/main/res/layouts/chatroom',
+                        'src/main/res/layouts/chatlist'
+            }
+        }
+    }
     testOptions {
         unitTests.all {
             jacoco {
@@ -101,10 +108,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.coreKtx
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.workManager
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.playServicesDependencies.maps
@@ -136,6 +145,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.testCoreKtx
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)

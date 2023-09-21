@@ -2,7 +2,6 @@ package com.tokopedia.inbox.universalinbox.stub.common
 
 import com.tokopedia.inbox.universalinbox.stub.common.util.AndroidFileUtil
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
-import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsBannerViewHolder.Companion.DIMEN_ID
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
@@ -12,9 +11,8 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import javax.inject.Inject
 
 class UniversalInboxMenuMapperStub @Inject constructor(
-    resourceProvider: UniversalInboxResourceProvider,
-    abTestPlatform: UniversalInboxAbPlatform
-) : UniversalInboxMenuMapper(resourceProvider, abTestPlatform) {
+    resourceProvider: UniversalInboxResourceProvider
+) : UniversalInboxMenuMapper(resourceProvider) {
 
     override fun getTopAdsUiModel(): UniversalInboxTopAdsBannerUiModel {
         val response = AndroidFileUtil.parse<TopAdsBannerResponse>(

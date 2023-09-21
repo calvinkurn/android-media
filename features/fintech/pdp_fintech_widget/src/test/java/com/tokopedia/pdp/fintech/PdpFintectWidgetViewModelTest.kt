@@ -41,11 +41,11 @@ class PdpFintechWidgetViewModelTest {
     fun successFintechWidget() {
         val widgetDetail = mockk<WidgetDetail>(relaxed = true)
         coEvery {
-            fintechWidgetUseCase.getWidgetData(any(), any(), "", hashMapOf(), "")
+            fintechWidgetUseCase.getWidgetData(any(), any(), "", hashMapOf(), "", "")
         } coAnswers {
             firstArg<(WidgetDetail) -> Unit>().invoke(widgetDetail)
         }
-        viewModel.getWidgetData("", hashMapOf(), "")
+        viewModel.getWidgetData("", hashMapOf(), "", "")
         Assert.assertEquals(
             (viewModel.widgetDetailLiveData.value as Success).data,
             widgetDetail
@@ -56,11 +56,11 @@ class PdpFintechWidgetViewModelTest {
     fun failFintechWidget() {
 
         coEvery {
-            fintechWidgetUseCase.getWidgetData(any(), any(), "", hashMapOf(), "")
+            fintechWidgetUseCase.getWidgetData(any(), any(), "", hashMapOf(), "", "")
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getWidgetData("", hashMapOf(), "")
+        viewModel.getWidgetData("", hashMapOf(), "", "")
         Assert.assertEquals(
             (viewModel.widgetDetailLiveData.value as Fail).throwable,
             mockThrowable

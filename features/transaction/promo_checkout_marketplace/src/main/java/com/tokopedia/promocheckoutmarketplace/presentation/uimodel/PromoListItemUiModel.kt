@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.data.response.AdditionalBoData
 import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
 import com.tokopedia.promocheckoutmarketplace.data.response.BoClashingInfo
+import com.tokopedia.promocheckoutmarketplace.data.response.CTA
 import com.tokopedia.promocheckoutmarketplace.data.response.ClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoCoachmark
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
@@ -57,6 +58,7 @@ data class PromoListItemUiModel(
         var shippingOptions: String = "",
         var paymentOptions: String = "",
         var benefitDetail: BenefitDetail = BenefitDetail(),
+        var cta: CTA = CTA(),
         var benefitAdjustmentMessage: String = "",
         var secondaryCoupons: List<SecondaryCoupon> = emptyList(),
 
@@ -94,6 +96,7 @@ data class PromoListItemUiModel(
         var isUpdateSelectionStateAction: Boolean = false,
         var isLastPromoItem: Boolean = false,
         var isBebasOngkir: Boolean = false,
+        var isContainActionableGopayCicilCTA: Boolean = false,
         var isLoading: Boolean = false
     )
 }

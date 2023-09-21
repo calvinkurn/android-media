@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PaymentInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 
 object BuyerOrderDetailUiStateMapper {
@@ -22,7 +23,8 @@ object BuyerOrderDetailUiStateMapper {
         pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
         orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
         orderInsuranceUiState: OrderInsuranceUiState,
-        epharmacyInfoUiState: EpharmacyInfoUiState
+        epharmacyInfoUiState: EpharmacyInfoUiState,
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
     ): BuyerOrderDetailUiState {
         return if (
             actionButtonsUiState is ActionButtonsUiState.HasData &&
@@ -32,7 +34,8 @@ object BuyerOrderDetailUiStateMapper {
             shipmentInfoUiState is ShipmentInfoUiState.HasData &&
             pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.HasData &&
             epharmacyInfoUiState is EpharmacyInfoUiState.HasData &&
-            orderResolutionTicketStatusUiState !is OrderResolutionTicketStatusUiState.Loading
+            orderResolutionTicketStatusUiState !is OrderResolutionTicketStatusUiState.Loading &&
+            scpRewardsMedalTouchPointWidgetUiState is ScpRewardsMedalTouchPointWidgetUiState.HasData
         ) {
             if (
                 actionButtonsUiState is ActionButtonsUiState.HasData.Reloading ||
@@ -54,7 +57,8 @@ object BuyerOrderDetailUiStateMapper {
                     pgRecommendationWidgetUiState,
                     orderResolutionTicketStatusUiState,
                     orderInsuranceUiState,
-                    epharmacyInfoUiState
+                    epharmacyInfoUiState,
+                    scpRewardsMedalTouchPointWidgetUiState
                 )
             } else {
                 BuyerOrderDetailUiState.HasData.Showing(
@@ -66,7 +70,8 @@ object BuyerOrderDetailUiStateMapper {
                     pgRecommendationWidgetUiState,
                     orderResolutionTicketStatusUiState,
                     orderInsuranceUiState,
-                    epharmacyInfoUiState
+                    epharmacyInfoUiState,
+                    scpRewardsMedalTouchPointWidgetUiState
                 )
             }
         } else if (actionButtonsUiState is ActionButtonsUiState.Error) {

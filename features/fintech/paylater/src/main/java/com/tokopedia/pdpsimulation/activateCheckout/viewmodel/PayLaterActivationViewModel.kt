@@ -54,6 +54,8 @@ class PayLaterActivationViewModel @Inject constructor(
     var selectedGatewayCode = ""
     var occRedirectionUrl = ""
     var variantName = ""
+    var parentId = ""
+    var categoryId = ""
 
 
     fun getProductDetail(productId: String) {
@@ -122,7 +124,12 @@ class PayLaterActivationViewModel @Inject constructor(
     }
 
 
-    fun getOptimizedCheckoutDetail(productId: String, price: Double, gatewayCode: String, shopId: String) {
+    fun getOptimizedCheckoutDetail(
+        productId: String,
+        price: Double,
+        gatewayCode: String,
+        shopId: String
+    ) {
         paylaterActivationUseCase.cancelJobs()
         paylaterActivationUseCase.getPayLaterActivationDetail(
             ::onSuccessActivationData,
@@ -131,6 +138,8 @@ class PayLaterActivationViewModel @Inject constructor(
             productId,
             gatewayCode,
             shopId,
+            parentId,
+            categoryId
         )
     }
 

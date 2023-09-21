@@ -146,4 +146,5 @@
     <string name="search_mps_empty_state_filter_description">Coba kurangi filter yang lagi aktif atau reset filter.</string>
     <string name="search_mps_empty_state_filter_reset_button_text">Reset Filter</string>
 
+    <string name="search_inspiration_keyword_match_title">Banyak juga yang mencari</string>
 </resources>

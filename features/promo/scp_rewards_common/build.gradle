@@ -13,6 +13,14 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.scp_rewards_common'
+    testNamespace 'com.tokopedia.scp_rewards_common.test'
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 dependencies {
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7

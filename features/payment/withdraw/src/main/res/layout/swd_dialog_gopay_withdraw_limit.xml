@@ -52,6 +52,7 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="18dp"
                 android:src="@drawable/swd_ic_gopay"
+                android:scaleType="fitCenter"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tvGopayLimitDialogTitle"
                 app:layout_constraintBottom_toBottomOf="@id/tvGopayTickerDescription"/>

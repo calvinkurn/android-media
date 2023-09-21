@@ -401,12 +401,18 @@ abstract class BaseSearchCategoryFragment:
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
-            refreshLayout()
+            refreshLayout(
+                needToResetQueryParams = false
+            )
         }
     }
 
-    protected open fun refreshLayout() {
-        getViewModel().onViewReloadPage()
+    protected open fun refreshLayout(
+        needToResetQueryParams: Boolean = true
+    ) {
+        getViewModel().onViewReloadPage(
+            needToResetQueryParams = needToResetQueryParams
+        )
         refreshProductRecommendation(TOKONOW_NO_RESULT)
     }
 

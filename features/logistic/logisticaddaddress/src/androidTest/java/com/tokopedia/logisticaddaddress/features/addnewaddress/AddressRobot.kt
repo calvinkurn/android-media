@@ -29,7 +29,7 @@ class AddressRobot {
 
     fun searchWithKeyword(keyword: String) {
         onView(withId(R.id.layout_search)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), closeSoftKeyboard())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText(keyword), closeSoftKeyboard())
         waitForData()
     }
 
@@ -50,7 +50,7 @@ class AddressRobot {
 
     fun searchCityWithKeyword(keyword: String) {
         onView(withId(R.id.layout_search)).perform(click())
-        onView(allOf(withId(R.id.searchbar_textfield), withEffectiveVisibility(Visibility.VISIBLE)))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield), withEffectiveVisibility(Visibility.VISIBLE)))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
         waitForData()

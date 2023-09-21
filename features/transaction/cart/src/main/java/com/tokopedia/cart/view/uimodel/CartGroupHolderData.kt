@@ -160,6 +160,18 @@ class CartShopCoachmarkPlusData(
     val content: String = ""
 )
 
+class AddOnProductData(
+        val id: Long = 0L,
+        val status: Int = -1,
+        val type: Int = -1
+)
+
+class AddOnProductWidget(
+        val wording: String = "",
+        val leftIcon: String = "",
+        val rightIcon: String = ""
+)
+
 enum class CartShopGroupTickerState {
     FIRST_LOAD, LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY
 }

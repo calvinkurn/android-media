@@ -15,8 +15,6 @@
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
-        app:cardBackgroundColor="@color/product_card_dms_card_background"
-        android:foreground="?attr/selectableItemBackground"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,38 +82,6 @@
                 app:layout_constraintEnd_toEndOf="@id/mediaAnchorProduct"
                 app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
                 tools:visibility="visible" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/imageRibbonContent"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:srcCompat="@drawable/product_card_ribbon_content_red"
-                android:contentDescription="@string/product_card_content_desc_ribbon"
-                app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
-                app:layout_constraintTop_toTopOf="@id/textRibbon"
-                app:layout_constraintEnd_toEndOf="@id/textRibbon"
-                app:layout_constraintBottom_toBottomOf="@id/textRibbon" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/textRibbon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="3dp"
-                android:text="90% OFF"
-                android:textColor="@color/Unify_Static_White"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
-                app:layout_constraintTop_toTopOf="@id/mediaAnchorProduct"
-                app:typographyType="display_3"
-                app:typographyWeight="bold" />
 
             <ImageView
                 android:id="@+id/imageRibbonArch"
@@ -404,6 +370,38 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="1.0" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageRibbonContent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:srcCompat="@drawable/product_card_ribbon_content_red"
+                android:contentDescription="@string/product_card_content_desc_ribbon"
+                app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
+                app:layout_constraintTop_toTopOf="@id/textRibbon"
+                app:layout_constraintEnd_toEndOf="@id/textRibbon"
+                app:layout_constraintBottom_toBottomOf="@id/textRibbon" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textRibbon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="3dp"
+                android:text="90% OFF"
+                android:textColor="@color/Unify_Static_White"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
+                app:layout_constraintTop_toTopOf="@id/mediaAnchorProduct"
+                app:typographyType="display_3"
+                app:typographyWeight="bold" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify2>

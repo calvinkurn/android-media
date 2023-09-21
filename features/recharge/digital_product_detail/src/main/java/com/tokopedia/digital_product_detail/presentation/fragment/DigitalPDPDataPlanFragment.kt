@@ -160,7 +160,6 @@ class DigitalPDPDataPlanFragment :
     private var isMCCMEmpty: Boolean = false
     private var isProductListEmpty: Boolean = false
 
-
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
 
@@ -350,7 +349,7 @@ class DigitalPDPDataPlanFragment :
                     binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(true)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -359,7 +358,7 @@ class DigitalPDPDataPlanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -368,7 +367,7 @@ class DigitalPDPDataPlanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -378,7 +377,7 @@ class DigitalPDPDataPlanFragment :
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -392,7 +391,7 @@ class DigitalPDPDataPlanFragment :
         }
 
         viewModel.mccmProductsData.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is RechargeNetworkResult.Success -> {
                     if (it.data.listDenomData.isNotEmpty()) {
                         if (productId >= 0) {
@@ -420,7 +419,7 @@ class DigitalPDPDataPlanFragment :
 
                         isMCCMEmpty = true
 
-                        if(isMCCMEmpty && isProductListEmpty){
+                        if (isMCCMEmpty && isProductListEmpty) {
                             showGlobalErrorState()
                             isMCCMEmpty = false
                         } else {
@@ -458,11 +457,11 @@ class DigitalPDPDataPlanFragment :
                     }
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
 
-                    if (denomData.data.denomFull.listDenomData.isEmpty()){
+                    if (denomData.data.denomFull.listDenomData.isEmpty()) {
                         isProductListEmpty = true
                     }
 
-                    if(isMCCMEmpty && isProductListEmpty){
+                    if (isMCCMEmpty && isProductListEmpty) {
                         showGlobalErrorState()
                         isProductListEmpty = false
                     } else {
@@ -1354,8 +1353,12 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
-    override fun onImpressProductBottomSheet(denomData: DenomData, layoutType: DenomWidgetEnum,
-                                             productListTitle: String, position: Int) {
+    override fun onImpressProductBottomSheet(
+        denomData: DenomData,
+        layoutType: DenomWidgetEnum,
+        productListTitle: String,
+        position: Int
+    ) {
         digitalPDPAnalytics.impressProductDescription(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
@@ -1597,9 +1600,7 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
-
-        } else if(layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE){
-
+        } else if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
                 onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
             }
@@ -1613,7 +1614,6 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
-
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_TYPE ||
                 viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE ||
@@ -1659,7 +1659,7 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
-        } else if(layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
+        } else if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
             digitalPDPAnalytics.impressMCCMProductNew(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1725,7 +1725,7 @@ class DigitalPDPDataPlanFragment :
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
-            userSession.userId,
+            userSession.userId
         )
     }
     //endregion

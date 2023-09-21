@@ -8,11 +8,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,26 +46,7 @@ class BannerCarouselItemViewModelTest {
     }
 
     @Test
-    fun `test image click url`() {
-        every { componentsItem.data } returns null
-        assert(viewModel.getNavigationUrl() == null)
-        every { componentsItem.data } returns ArrayList()
-        assert(viewModel.getNavigationUrl() == null)
-        val list = ArrayList<DataItem>()
-        val dataItem = DataItem()
-        list.add(dataItem)
-        every { componentsItem.data } returns list
-        assert(viewModel.getNavigationUrl() == "")
-        dataItem.imageClickUrl = null
-        assert(viewModel.getNavigationUrl() == null)
-        dataItem.imageClickUrl = "testUrl"
-        assert(viewModel.getNavigationUrl() == "testUrl")
-    }
-
-    @Test
-    fun `test for position passed`(){
+    fun `test for position passed`() {
         assert(viewModel.position == 99)
     }
-
-
 }

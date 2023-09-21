@@ -12,6 +12,7 @@ import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupProductModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingProductCardView
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection
+import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingSelectedGroupModel
 
 class CarouselPagingProductCardActivityTest: AppCompatActivity(), Listener {
@@ -59,7 +60,6 @@ class CarouselPagingProductCardActivityTest: AppCompatActivity(), Listener {
             position,
             carouselPagingModel.copy(
                 productCardGroupList = productCardGroupList,
-                currentGroupIndex = carouselGroupProductModelIndex,
                 currentPageInGroup = when (selectedGroupModel.direction) {
                     CarouselPagingGroupChangeDirection.PREVIOUS -> CarouselPagingModel.LAST_PAGE_IN_GROUP
                     CarouselPagingGroupChangeDirection.NEXT -> CarouselPagingModel.FIRST_PAGE_IN_GROUP
@@ -134,6 +134,20 @@ class CarouselPagingProductCardActivityTest: AppCompatActivity(), Listener {
                         ).show()
 
                         listener.onGroupChanged(bindingAdapterPosition, selectedGroupModel)
+                    }
+
+                    override fun onItemImpress(
+                        groupModel: CarouselPagingGroupModel,
+                        itemPosition: Int
+                    ) {
+
+                    }
+
+                    override fun onItemClick(
+                        groupModel: CarouselPagingGroupModel,
+                        itemPosition: Int
+                    ) {
+
                     }
                 }
             )

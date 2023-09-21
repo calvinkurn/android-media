@@ -434,5 +434,7 @@ produk eksklusif ini.</string>
     <string name="feed_product_add_to_cart">+ Keranjang</string>
     <string name="feed_product_buy">Beli</string>
 
+    <string description="Title of the side sheet&apos;s accessibility pane that is spoken by TalkBack when the side sheet appears on screen. [CHAR_LIMIT=NONE]" name="side_sheet_accessibility_pane_title">Side Sheet</string>
+
     <string name="content_follow">Follow</string>
 </resources>

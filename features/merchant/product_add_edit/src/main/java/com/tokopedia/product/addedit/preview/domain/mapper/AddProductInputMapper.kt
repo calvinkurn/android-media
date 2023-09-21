@@ -7,12 +7,14 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.tokopedia.product.addedit.detail.presentation.model.CategoryMetadataInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.add.CPLData
 import com.tokopedia.product.addedit.preview.data.model.params.add.Category
+import com.tokopedia.product.addedit.preview.data.model.params.add.Metadata
 import com.tokopedia.product.addedit.preview.data.model.params.add.Option
 import com.tokopedia.product.addedit.preview.data.model.params.add.Picture
 import com.tokopedia.product.addedit.preview.data.model.params.add.Pictures
@@ -80,7 +82,8 @@ class AddProductInputMapper @Inject constructor() {
             mapVideoParam(descriptionInputModel.videoLinkList),
             mapVariantParam(variantInputModel),
             mapCPLData(shipmentInputModel.cplModel),
-            mapSpecificationParam(detailInputModel.specifications)
+            mapSpecificationParam(detailInputModel.specifications),
+            mapMetadataParam(detailInputModel.categoryMetadata)
         )
     }
 
@@ -242,4 +245,20 @@ class AddProductInputMapper @Inject constructor() {
 
     private fun mapSpecificationParam(specifications: List<SpecificationInputModel>?) =
         specifications?.map { it.id }
+
+    private fun mapMetadataParam(categoryMetadataInputModel: CategoryMetadataInputModel): Metadata {
+        return Metadata(
+            Metadata.Category(
+                isFromRecommendation = categoryMetadataInputModel.isFromRecommendation,
+                recommendationRank = categoryMetadataInputModel.recommendationRank,
+                recommendationList = categoryMetadataInputModel.recommendationList.map {
+                    Metadata.Recommendation(
+                        categoryId = it.categoryID,
+                        confidenceScore = it.confidenceScore,
+                        precision = it.precision
+                    )
+                }
+            )
+        )
+    }
 }

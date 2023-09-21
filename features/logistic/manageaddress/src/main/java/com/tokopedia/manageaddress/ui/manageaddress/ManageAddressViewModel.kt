@@ -28,6 +28,8 @@ import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsReceiverParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsSenderParam
+import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressData
+import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressResponse
 import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsReceiverUseCase
@@ -86,12 +88,12 @@ class ManageAddressViewModel @Inject constructor(
     val addressList: LiveData<ManageAddressState<AddressListModel>>
         get() = _addressList
 
-    private val _resultRemovedAddress = MutableLiveData<ManageAddressState<String>>()
-    val resultRemovedAddress: LiveData<ManageAddressState<String>>
+    private val _resultRemovedAddress = MutableLiveData<ManageAddressState<DeletePeopleAddressData>>()
+    val resultRemovedAddress: LiveData<ManageAddressState<DeletePeopleAddressData>>
         get() = _resultRemovedAddress
 
-    private val _setDefault = MutableLiveData<ManageAddressState<String>>()
-    val setDefault: LiveData<ManageAddressState<String>>
+    private val _setDefault = MutableLiveData<ManageAddressState<SetDefaultPeopleAddressResponse>>()
+    val setDefault: LiveData<ManageAddressState<SetDefaultPeopleAddressResponse>>
         get() = _setDefault
 
     private val _getChosenAddress = MutableLiveData<Result<ChosenAddressModel>>()
@@ -201,15 +203,15 @@ class ManageAddressViewModel @Inject constructor(
                 val resultDelete =
                     deletePeopleAddressUseCase(
                         DeleteAddressParam(
-                            id.toLong(),
-                            isTokonow,
-                            consentJson
+                            inputAddressId = id.toLong(),
+                            isTokonowRequest = true,
+                            consentJson = consentJson
                         )
                     )
                 if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
                     resultDelete.response.data.success == STATUS_SUCCESS
                 ) {
-                    _resultRemovedAddress.value = ManageAddressState.Success("Success")
+                    _resultRemovedAddress.value = ManageAddressState.Success(resultDelete.response.data)
                     isClearData = true
                     getStateChosenAddress("address")
                 } else {
@@ -233,7 +235,7 @@ class ManageAddressViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val defaultAddressParam =
-                    DefaultAddressParam(id.toLong(), setAsStateChosenAddress, isTokonow)
+                    DefaultAddressParam(id.toLong(), setAsStateChosenAddress, true)
                 val resultDefaultAddress = setDefaultPeopleAddressUseCase(defaultAddressParam)
                 if (
                     resultDefaultAddress.response.status.equals(
@@ -242,7 +244,7 @@ class ManageAddressViewModel @Inject constructor(
                     ) &&
                     resultDefaultAddress.response.data.success == STATUS_SUCCESS
                 ) {
-                    _setDefault.value = ManageAddressState.Success("Success")
+                    _setDefault.value = ManageAddressState.Success(resultDefaultAddress.response)
                     isClearData = true
                     searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
                 } else {
@@ -386,7 +388,8 @@ class ManageAddressViewModel @Inject constructor(
                         firstTickerContent = firstTickerContent
                     )
                 )
-            }, onError = {
+            },
+            onError = {
                 if (firstTickerContent?.isNotBlank() == true) {
                     _tickerState.value = Success(
                         convertTargetedTickerToUiModel(

@@ -2,7 +2,7 @@ package com.tokopedia.stories.view.viewmodel.event
 
 
 sealed interface StoriesUiEvent {
-    data class SelectGroup(val position: Int) : StoriesUiEvent
+    data class SelectGroup(val position: Int, val showAnimation: Boolean) : StoriesUiEvent
     object OpenKebab : StoriesUiEvent
     object ShowDeleteDialog : StoriesUiEvent
     object FinishedAllStories: StoriesUiEvent
@@ -10,4 +10,10 @@ sealed interface StoriesUiEvent {
     data class ShowErrorEvent(val message: Throwable) : StoriesUiEvent
     data class ErrorGroupPage(val throwable: Throwable): StoriesUiEvent
     data class ErrorDetailPage(val throwable: Throwable): StoriesUiEvent
+    data class ErrorFetchCaching(val throwable: Throwable): StoriesUiEvent
+    data class ErrorSetTracking(val throwable: Throwable): StoriesUiEvent
+
+    object EmptyGroupPage: StoriesUiEvent
+    object EmptyDetailPage: StoriesUiEvent
+    object FinishedAllStories : StoriesUiEvent
 }

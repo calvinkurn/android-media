@@ -176,20 +176,36 @@ class ChooseAddressBottomSheet :
         }
     }
 
+    private fun updateChooseAddressPref(data: SaveAddressDataModel) {
+        isSnippetAddressFlow = false
+        isAddressListFlow = false
+
+        val localData = ChooseAddressUtils.setLocalizingAddressData(
+            addressId = data.id.toString(),
+            cityId = data.cityId.toString(),
+            districtId = data.districtId.toString(),
+            lat = data.latitude,
+            long = data.longitude,
+            label = "${data.addressName} ${data.receiverName}",
+            postalCode = data.postalCode,
+            warehouseId = data.warehouseId.toString(),
+            shopId = data.shopId.toString(),
+            warehouses = TokonowWarehouseMapper.mapWarehousesDataModelToLocal(data.warehouses),
+            serviceType = data.serviceType
+        )
+
+        chooseAddressPref?.setLocalCache(localData)
+        listener?.onAddressDataChanged()
+        dismissBottomSheet()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_ADD_ADDRESS -> {
                 val saveAddressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
                 if (saveAddressDataModel != null) {
-                    val param = StateChooseAddressParam(
-                        ADDRESS_STATUS_FROM_ANA, saveAddressDataModel.id, saveAddressDataModel.receiverName,
-                        saveAddressDataModel.addressName, saveAddressDataModel.latitude, saveAddressDataModel.longitude,
-                        saveAddressDataModel.districtId, saveAddressDataModel.postalCode, isSupportWarehouseLoc
-                    )
-                    viewModel.setStateChosenAddress(param)
-                    isSnippetAddressFlow = false
-                    isAddressListFlow = false
+                    updateChooseAddressPref(saveAddressDataModel)
                 }
             }
             REQUEST_CODE_GET_DISTRICT_RECOM -> {

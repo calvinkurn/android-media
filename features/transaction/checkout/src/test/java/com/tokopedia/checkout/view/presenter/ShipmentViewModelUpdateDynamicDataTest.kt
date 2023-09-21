@@ -12,15 +12,15 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingTickerModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -172,7 +172,7 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
             false,
             false
         )
-        viewModel.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+        viewModel.updateAddOnGiftingProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
         // Then
         assertEquals(isDdp, viewModel.isUsingDynamicDataPassing())
@@ -221,7 +221,7 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
             false,
             false
         )
-        viewModel.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+        viewModel.updateAddOnGiftingProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
         // Then
         verify {
@@ -289,12 +289,12 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
         val isDdp = true
         val listGroupAddress = arrayListOf<GroupAddress>()
         val listGroupShop = arrayListOf<GroupShop>()
-        val listAddOnDataItemModel = arrayListOf<AddOnDataItemModel>()
-        val addOnDataItemModel = AddOnDataItemModel(
+        val listAddOnDataItemModel = arrayListOf<AddOnGiftingDataItemModel>()
+        val addOnDataItemModel = AddOnGiftingDataItemModel(
             addOnPrice = 5000.0,
             addOnId = "id",
-            addOnMetadata = AddOnMetadataItemModel(
-                addOnNoteItemModel = AddOnNoteItemModel(
+            addOnMetadata = AddOnGiftingMetadataItemModel(
+                addOnNoteItemModel = AddOnGiftingNoteItemModel(
                     isCustomNote = true,
                     to = "to",
                     from = "from",
@@ -307,16 +307,16 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
             groupShopData = listOf(
                 GroupShopV2()
             ),
-            addOns = AddOnsDataModel(
+            addOns = AddOnGiftingDataModel(
                 status = 1,
-                addOnsButtonModel = AddOnButtonModel(
+                addOnsButtonModel = AddOnGiftingButtonModel(
                     title = "test title button",
                     description = "test description button"
                 ),
-                addOnsBottomSheetModel = AddOnBottomSheetModel(
+                addOnsBottomSheetModel = AddOnGiftingBottomSheetModel(
                     headerTitle = "test header title bottom sheet",
                     description = "test description bottom sheet",
-                    ticker = AddOnTickerModel(
+                    ticker = AddOnGiftingTickerModel(
                         text = "test ticker model"
                     )
                 ),
@@ -352,7 +352,7 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
                         cartStringGroup = "239594-0-301643"
                     )
                 ),
-                addOnWordingModel = AddOnWordingModel(
+                addOnWordingModel = AddOnGiftingWordingModel(
                     packagingAndGreetingCard = "packaging and greeting",
                     onlyGreetingCard = "only greeting card",
                     invoiceNotSendToRecipient = "invoice not send"
@@ -380,12 +380,12 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
         val isDdp = true
         val listGroupAddress = arrayListOf<GroupAddress>()
         val listGroupShop = arrayListOf<GroupShop>()
-        val listAddOnDataItemModel = arrayListOf<AddOnDataItemModel>()
-        val addOnDataItemModel = AddOnDataItemModel(
+        val listAddOnDataItemModel = arrayListOf<AddOnGiftingDataItemModel>()
+        val addOnDataItemModel = AddOnGiftingDataItemModel(
             addOnPrice = 5000.0,
             addOnId = "id",
-            addOnMetadata = AddOnMetadataItemModel(
-                addOnNoteItemModel = AddOnNoteItemModel(
+            addOnMetadata = AddOnGiftingMetadataItemModel(
+                addOnNoteItemModel = AddOnGiftingNoteItemModel(
                     isCustomNote = true,
                     to = "to",
                     from = "from",
@@ -395,12 +395,12 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
         )
         listAddOnDataItemModel.add(addOnDataItemModel)
         val listProduct = arrayListOf<Product>()
-        val listAddonItem = arrayListOf<AddOnsResponse.AddOnDataItem>()
-        val addOnDataItem = AddOnsResponse.AddOnDataItem(
+        val listAddonItem = arrayListOf<AddOnGiftingResponse.AddOnDataItem>()
+        val addOnDataItem = AddOnGiftingResponse.AddOnDataItem(
             addOnPrice = 5000.0,
             addOnId = "id",
-            addOnMetadata = AddOnsResponse.AddOnDataItem.AddOnMetadata(
-                addOnNote = AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote(
+            addOnMetadata = AddOnGiftingResponse.AddOnDataItem.AddOnMetadata(
+                addOnNote = AddOnGiftingResponse.AddOnDataItem.AddOnMetadata.AddOnNote(
                     isCustomNote = true,
                     to = "to",
                     from = "from",
@@ -410,16 +410,16 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
         )
         listAddonItem.add(addOnDataItem)
         val product = Product(
-            addOnProduct = AddOnsDataModel(
+            addOnGiftingProduct = AddOnGiftingDataModel(
                 status = 1,
-                addOnsButtonModel = AddOnButtonModel(
+                addOnsButtonModel = AddOnGiftingButtonModel(
                     title = "test title button",
                     description = "test description button"
                 ),
-                addOnsBottomSheetModel = AddOnBottomSheetModel(
+                addOnsBottomSheetModel = AddOnGiftingBottomSheetModel(
                     headerTitle = "test header title bottom sheet",
                     description = "test description bottom sheet",
-                    ticker = AddOnTickerModel(
+                    ticker = AddOnGiftingTickerModel(
                         text = "test ticker model"
                     )
                 ),
@@ -463,7 +463,7 @@ class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
                         cartStringGroup = "239594-0-301643"
                     )
                 ),
-                addOnWordingModel = AddOnWordingModel(
+                addOnWordingModel = AddOnGiftingWordingModel(
                     packagingAndGreetingCard = "packaging and greeting",
                     onlyGreetingCard = "only greeting card",
                     invoiceNotSendToRecipient = "invoice not send"

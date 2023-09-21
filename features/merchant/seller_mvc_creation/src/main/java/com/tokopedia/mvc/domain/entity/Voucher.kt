@@ -52,7 +52,8 @@ data class Voucher(
     val isParent: Boolean = false,
     val labelVoucher: LabelVoucher = LabelVoucher(),
     val isEditable: Boolean = false,
-    val subsidyDetail: SubsidyDetail = SubsidyDetail()
+    val subsidyDetail: SubsidyDetail = SubsidyDetail(),
+    val galadrielVoucherId: Long = 0
 ) : Parcelable {
     fun isOngoingPromo() = status == VoucherStatus.ONGOING
     fun isUpComingPromo() = status == VoucherStatus.NOT_STARTED
@@ -86,7 +87,8 @@ data class Voucher(
 
     @Parcelize
     data class SubsidyDetail(
-        val programDetail: ProgramDetail = ProgramDetail()
+        val programDetail: ProgramDetail = ProgramDetail(),
+        val quotaSubsidized: QuotaSubsidized = QuotaSubsidized()
     ) : Parcelable {
         @Parcelize
         data class ProgramDetail(
@@ -96,6 +98,14 @@ data class Voucher(
             val programLabelDetail: String = "",
             val promotionStatus: PromotionStatus = PromotionStatus.REGISTERED,
             val promotionLabel: String = ""
+        ) : Parcelable
+
+        @Parcelize
+        data class QuotaSubsidized(
+            val voucherQuota: Int = 0,
+            val remainingQuota: Int = 0,
+            val bookedGlobalQuota: Int = 0,
+            val confirmedGlobalQuota: Int = 0
         ) : Parcelable
     }
 

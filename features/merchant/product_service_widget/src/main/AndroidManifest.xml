@@ -38,5 +38,22 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.tokopedia.addon.presentation.activity.AddOnBottomsheetActivity"
+            android:configChanges="orientation"
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_merchant"
+                    android:pathPattern="@string/path_addon_bottomsheet"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
     </application>
 </manifest>

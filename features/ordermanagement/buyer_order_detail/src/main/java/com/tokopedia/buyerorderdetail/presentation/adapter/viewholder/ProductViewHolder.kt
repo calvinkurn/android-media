@@ -62,6 +62,9 @@ open class ProductViewHolder(
                     if (oldItem.button != newItem.button || oldItem.isProcessing != newItem.isProcessing) {
                         setupButton(newItem.button, newItem.isProcessing)
                     }
+                    if (oldItem.addonsListUiModel != newItem.addonsListUiModel) {
+                        setupAddonSection(newItem.addonsListUiModel)
+                    }
                     return
                 }
             }

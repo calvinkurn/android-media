@@ -26,6 +26,8 @@ object Utils {
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 
+fun String.removeSingleDecimalSuffix(): String = this.removeSuffix(".0")
+
 fun String.isNotBlankOrZero(): Boolean {
     return this.isNotBlank() && this.toLongOrZero() != 0L
 }

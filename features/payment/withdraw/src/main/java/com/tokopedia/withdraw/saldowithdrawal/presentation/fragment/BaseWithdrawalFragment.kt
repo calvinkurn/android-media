@@ -18,9 +18,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.*
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -36,7 +35,6 @@ import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.GopayData
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.DisabledAccountBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.GopayRedirectionBottomSheet
@@ -370,9 +368,13 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                 ApplinkConst.LINK_ACCOUNT))) {
             activity?.let {
                 GopayRedirectionBottomSheet.getInstance(
-                    "",
-                    "",
-                    "",
+                    TokopediaImageUrl.IMG_OPEN_IN_MAIN_APP_WITHDRAW,
+                    if (isUpgradeApplink(applink))
+                        getString(R.string.swd_dialog_gopay_redirection_upgrade_title)
+                    else getString(R.string.swd_dialog_gopay_redirection_activate_title),
+                    if (isUpgradeApplink(applink))
+                        getString(R.string.swd_dialog_gopay_redirection_upgrade_description)
+                    else getString(R.string.swd_dialog_gopay_redirection_activate_description),
                     applink
                 ).show(it.supportFragmentManager, GopayRedirectionBottomSheet.TAG)
             }
@@ -440,25 +442,29 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         }
     }
 
-    override fun showCoachMarkOnGopayBank(view: View) {
+    override fun showCoachMarkOnGopayBank(view: View, bankAccount: BankAccount) {
         if (!isGopayWithdrawCoachMarkShown() && context != null) {
             updateGopayWithdrawCoachmarkShown()
-            val coachMarks = ArrayList<CoachMarkItem>()
-            coachMarks.add(
-                CoachMarkItem(
+
+            val ctaLink = bankAccount.walletAppData.ctaLink
+
+            val description = if (ctaLink.isEmpty()) getString(R.string.swd_coachmark_gopay_wd_description)
+            else if (isUpgradeApplink(ctaLink)) getString(R.string.swd_coachmark_gopay_wd_upgrade_description)
+            else getString(R.string.swd_coachmark_gopay_wd_activate_description)
+
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            coachMarkItem.add(
+                CoachMark2Item(
                     view,
                     getString(R.string.swd_coachmark_gopay_wd_title),
-                    getString(R.string.swd_coachmark_gopay_wd_description),
-                    CoachMarkContentPosition.TOP,
-                    ContextCompat.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                    )
+                    description,
+                    CoachMark2.POSITION_BOTTOM
                 )
             )
-            val coachMark = CoachMarkBuilder()
-                .build()
-            coachMark.show(activity, KEY_CAN_SHOW_GOPAY_WITHDRAW_COACH_MARK, coachMarks, 0)
+
+            context?.let {
+                CoachMark2(it).showCoachMark(coachMarkItem, null, 0)
+            }
         }
     }
 
@@ -538,6 +544,8 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             CoachMarkPreference.setShown(it, KEY_CAN_SHOW_GOPAY_WITHDRAW_COACH_MARK, true)
         }
     }
+
+    private fun isUpgradeApplink(applink: String): Boolean = applink.contains(ApplinkConst.GOPAY_KYC)
 
     protected fun getExceedingWording(bankAccount: BankAccount?): String {
         return context?.let {

@@ -159,7 +159,7 @@ class ContentCommentBottomSheet @Inject constructor(
                     prevLength - selEnd // calculate cursor distance from end of text
 
                 val newText =
-                    TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero())
+                    TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero(), ctx = requireContext())
                 binding.newComment.text?.clear()
                 binding.newComment.append(newText)
 

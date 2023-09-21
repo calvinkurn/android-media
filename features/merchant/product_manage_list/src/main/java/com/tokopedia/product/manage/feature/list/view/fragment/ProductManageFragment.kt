@@ -1461,10 +1461,14 @@ open class ProductManageFragment :
         val keyword = searchBar?.searchBarTextField?.text?.toString().orEmpty()
         val selectedFilter = viewModel.selectedFilterAndSort.value
         val filterOptions = createFilterOptions(page, keyword)
-        val sortOption = selectedFilter?.sortOption
+        var sortOption = selectedFilter?.sortOption
 
         filterTab?.getSelectedFilter()?.let {
-            filterOptions.add(FilterByStatus(it))
+            if (it.name == FilterTabUiModel.FilterId.isProductArchival.name){
+                filterOptions.add(FilterByCondition.ProductArchival)
+            }else{
+                filterOptions.add(FilterByStatus(it))
+            }
         }
         if (isRefreshFromSortFilter) {
             tabSortFilter?.show()
@@ -2117,6 +2121,9 @@ open class ProductManageFragment :
 
     override fun onClickContactCsButton(product: ProductUiModel) {
         when {
+            product.isArchived || product.isInGracePeriod  -> {
+                showProductArchivalBottomSheet(product.id, product.isInGracePeriod, product.isArchived)
+            }
             product.isViolation() -> {
                 goToProductViolationHelpPage()
             }
@@ -2893,17 +2900,17 @@ open class ProductManageFragment :
         context?.let { it ->
             val htmlText = HtmlLinkHelper(
                 it,
-                getString(R.string.product_manage_confirm_inactive_dt_product_desc)
+                getString(com.tokopedia.product.manage.common.R.string.product_manage_confirm_inactive_dt_product_desc)
             )
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
-                        R.string.product_manage_confirm_inactive_dt_product_title
+                        com.tokopedia.product.manage.common.R.string.product_manage_confirm_inactive_dt_product_title
                     )
                 )
                 setDescription(htmlText.spannedString ?: String.EMPTY)
-                setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
-                setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
+                setPrimaryCTAText(getString(com.tokopedia.product.manage.common.R.string.product_manage_confirm_inactive_dt_product_positive_button))
+                setSecondaryCTAText(getString(com.tokopedia.product.manage.common.R.string.product_manage_confirm_dt_product_cancel_button))
                 setPrimaryCTAClickListener {
                     val productIds = itemsChecked.map { item -> item.id }
                     viewModel.editProductsByStatus(
@@ -3361,6 +3368,16 @@ open class ProductManageFragment :
         SuspendReasonBottomSheet.createInstance(productId, this).show(childFragmentManager)
     }
 
+    private fun showProductArchivalBottomSheet(
+        productId: String,
+        inGracePeriod: Boolean,
+        archived: Boolean
+    ) {
+        ProductArchivalBottomSheet.createInstance(productId,archived, inGracePeriod) {
+            showErrorToast(it)
+        }.show(childFragmentManager)
+    }
+
     private fun showToaster(message: String) {
         constraintLayout?.let {
             Toaster.build(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
@@ -3579,7 +3596,7 @@ open class ProductManageFragment :
                 context?.let { context ->
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifycomponents.R.color.Unify_NN300
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN300
                     )
                 }?.let { color ->
                     iconMenuAddProduct?.setColorFilter(

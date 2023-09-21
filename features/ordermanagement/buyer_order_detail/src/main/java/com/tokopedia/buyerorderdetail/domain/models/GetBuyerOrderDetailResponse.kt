@@ -45,6 +45,9 @@ data class GetBuyerOrderDetailResponse(
             @SerializedName("order_id")
             val orderId: String = "0",
             @Expose
+            @SerializedName("group_type")
+            val groupType: String = "0",
+            @Expose
             @SerializedName("order_status")
             val orderStatus: OrderStatus = OrderStatus(),
             @Expose
@@ -100,8 +103,21 @@ data class GetBuyerOrderDetailResponse(
             data class BomAdditionalData(
                 @SerializedName("epharmacy_data")
                 @Expose
-                val epharmacyData: EpharmacyData = EpharmacyData()
+                val epharmacyData: EpharmacyData = EpharmacyData(),
+                @SerializedName("group_order_data")
+                val groupOrderData: GroupOrderData? = GroupOrderData()
             ) {
+
+                data class GroupOrderData(
+                    @SerializedName("tx_id")
+                    val txId: String = "0",
+                    @SerializedName("icon_url")
+                    val iconUrl: String = "",
+                    @SerializedName("title")
+                    val title: String = "",
+                    @SerializedName("description")
+                    val description: String = ""
+                )
                 data class EpharmacyData(
                     @SerializedName("consultation_date")
                     @Expose

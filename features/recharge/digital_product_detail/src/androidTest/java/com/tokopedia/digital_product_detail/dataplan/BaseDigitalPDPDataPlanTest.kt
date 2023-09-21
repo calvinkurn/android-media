@@ -112,17 +112,17 @@ abstract class BaseDigitalPDPDataPlanTest {
     }
 
     protected fun clientNumberWidget_clickClearIcon() {
-        onView(withId(com.tokopedia.recharge_component.R.id.text_field_icon_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_close)).perform(click())
     }
 
     protected fun clientNumberWidget_clickContactIcon() {
-        onView(withId(com.tokopedia.recharge_component.R.id.text_field_icon_2)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())
     }
 
     protected fun favoriteChips_clickChip_withText(text: String) {
         onView(allOf(
-            withId(com.tokopedia.recharge_component.R.id.chip_text),
-            isDescendantOfA(withId(com.tokopedia.recharge_component.R.id.sort_filter_items)),
+            withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
+            isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
             withText(text))
         ).perform(click())
     }
@@ -179,8 +179,8 @@ abstract class BaseDigitalPDPDataPlanTest {
 
     protected fun filterChip_clickChip_withText(text: String) {
         onView(allOf(
-            withId(com.tokopedia.recharge_component.R.id.chip_text),
-            isDescendantOfA(withId(com.tokopedia.recharge_component.R.id.sort_filter_items)),
+            withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
+            isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
             withText(text))
         ).perform(click())
     }

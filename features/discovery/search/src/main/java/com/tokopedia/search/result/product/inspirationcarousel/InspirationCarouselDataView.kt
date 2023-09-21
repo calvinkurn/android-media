@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_DILAYANI_TOKOPEDIA
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -11,6 +12,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
@@ -178,6 +180,7 @@ class InspirationCarouselDataView(
                     "dimension90", dimension90,
                     "dimension131", externalReference.orNone(),
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
+                    "dimension58", isFulfillment(),
                 )
             }
 
@@ -205,8 +208,13 @@ class InspirationCarouselDataView(
                     "shop_type", "none / other",
                     "variant", "none / other",
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
+                    "dimension58", isFulfillment(),
                 )
             }
+
+            private fun isFulfillment() =
+                (hasFulfillment(labelGroupDataList)
+                    || inspirationCarouselType == TYPE_DILAYANI_TOKOPEDIA).toString()
 
             fun asSearchComponentTracking(keyword: String): SearchComponentTracking =
                 searchComponentTracking(

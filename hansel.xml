@@ -11,9 +11,14 @@
         <name>com.gojek</name>
     </includePackage>
 
-    <exceptPackname name="exceptPackage">
+    <exceptPackage name="exceptPackage">
         <name>com.tokopedia.tkpd.R</name>
         <name>com.tokopedia.sellerapp.R</name>
         <name>com.tokopedia.stability</name>
-    </exceptPackname>
+    </exceptPackage>
+
+    <exceptClass name="exceptClass">
+        <name>.R</name>
+        <name>.BuildConfig</name>
+    </exceptClass>
 </resources>

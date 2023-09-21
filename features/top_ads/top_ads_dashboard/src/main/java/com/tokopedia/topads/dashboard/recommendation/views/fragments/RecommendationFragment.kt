@@ -17,12 +17,11 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_0
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -142,6 +141,11 @@ class RecommendationFragment : BaseDaggerFragment() {
         settingClickListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel?.fetchRecommendationStatistics()
+    }
+
     private fun setAppBarListener() {
         layoutAppBar?.addOnOffsetChangedListener { appBarLayout, offset ->
             when {
@@ -175,10 +179,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         }
 
         potentialProductCard?.setOnClickListener {
-            RouteManager.route(
-                activity,
-                "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
-            )
+            RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_PRODUCT_RECOMMENDATION)
         }
     }
 
@@ -213,6 +214,24 @@ class RecommendationFragment : BaseDaggerFragment() {
                 }
             }
         }
+
+        viewModel?.recommendationStatsLiveData?.observe(viewLifecycleOwner){
+            when(it){
+                is Success -> {
+                    if(it.data.productRecommendationStats.count > CONST_0) {
+                        potentialProductCard?.showWithCondition(true)
+                        potentialProductCard?.findViewById<com.tokopedia.unifyprinciples.Typography>(
+                            R.id.title
+                        )?.text = String.format(getString(R.string.topads_insight_centre_suggestion_insight_count),it.data.productRecommendationStats.count)
+                    } else {
+                        potentialProductCard?.showWithCondition(false)
+                    }
+                }
+                is Fail -> {
+                    potentialProductCard?.showWithCondition(false)
+                }
+            }
+        }
     }
 
     private fun showGlobalError() {
@@ -236,7 +255,7 @@ class RecommendationFragment : BaseDaggerFragment() {
                 context?.getString(R.string.topads_insight_no_active_ads_title)
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )
@@ -269,7 +288,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             insightWidgetTitle?.text = context?.getString(R.string.topads_insight_max_out_title)
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.perfomace_widget_optimized_icon
                 )
             )
@@ -282,7 +301,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             )
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )
@@ -293,7 +312,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             )
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )
@@ -360,6 +379,10 @@ class RecommendationFragment : BaseDaggerFragment() {
         collapseStateCallBack?.setAppBarStateHeadline(state)
     }
 
+    fun selectTab(tabIndex: Int) {
+        saranAdsTypeTab?.getUnifyTabLayout()?.getTabAt(tabIndex)?.select()
+    }
+    
     companion object {
         fun createInstance(): RecommendationFragment {
             return RecommendationFragment()

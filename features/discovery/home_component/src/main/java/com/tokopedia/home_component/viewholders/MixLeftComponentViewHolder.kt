@@ -157,7 +157,7 @@ class MixLeftComponentViewHolder (itemView: View,
                     mixLeftComponentListener?.onImageBannerImpressed(channel, channel.verticalPosition)
             }
             parallaxBackground.setBackgroundColor(
-                    ContextCompat.getColor(itemView.context, R.color.transparent)
+                    ContextCompat.getColor(itemView.context, android.R.color.transparent)
             )
             image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
@@ -182,7 +182,7 @@ class MixLeftComponentViewHolder (itemView: View,
         recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction, this)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(CarouselEmptyCardDataModel(channel, channel.verticalPosition, this, channel.channelBanner.applink))
         val productDataList = convertDataToProductData(channel)
@@ -258,7 +258,6 @@ class MixLeftComponentViewHolder (itemView: View,
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this,
                     componentName = FPM_MIX_LEFT
             ))
         }

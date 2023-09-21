@@ -33,7 +33,7 @@ class AddressRevampRobot {
 
     fun searchAddressStreet(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), pressImeActionButton())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText(keyword), pressImeActionButton())
         waitForData()
     }
 
@@ -49,28 +49,28 @@ class AddressRevampRobot {
     }
 
     fun fillAddress(address: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
                 .perform(click())
         waitForData()
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
             .perform(replaceText(address), closeSoftKeyboard())
         waitForData(2000)
     }
 
     fun fillReceiver(receiver: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
                 .perform(click())
         waitForData()
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
             .perform(replaceText(receiver), closeSoftKeyboard())
         waitForData(2000)
     }
 
     fun fillPhoneNumber(phone: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
                 .perform(click())
         waitForData()
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
             .perform(replaceText(phone), closeSoftKeyboard())
         waitForData(2000)
     }
@@ -86,7 +86,7 @@ class AddressRevampRobot {
 
     fun searchKotaKecamatan(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
-        onView(withId(R.id.searchbar_textfield))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
                 .perform(click(), replaceText(keyword), closeSoftKeyboard())
         waitForData()
     }
@@ -112,10 +112,10 @@ class AddressRevampRobot {
     }
 
     fun fillAddressNegative(address: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
             .perform(nestedScrollTo(), click())
         waitForData()
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
             .perform(replaceText(address), closeSoftKeyboard())
         waitForData()
     }

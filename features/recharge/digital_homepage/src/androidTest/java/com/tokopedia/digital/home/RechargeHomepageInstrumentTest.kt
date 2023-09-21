@@ -90,7 +90,7 @@ class RechargeHomepageInstrumentTest {
         onView(withId(R.id.digital_homepage_search_view)).check(matches(isDisplayed()))
                 .perform(click())
         Thread.sleep(1000)
-        onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("pulsa"))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("pulsa"))
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<DigitalHomePageSearchViewHolder>(
@@ -149,8 +149,8 @@ class RechargeHomepageInstrumentTest {
                 RecyclerViewActions.scrollToPosition<ReminderWidgetViewHolder>(8)
         )
         Thread.sleep(1000)
-        onView(withId(R.id.reminder_recommendation_widget_container)).check(matches(isDisplayed()))
-        onView(withId(R.id.btn_reminder_recommendation)).perform(click())
+        onView(withId(com.tokopedia.home_component.R.id.reminder_recommendation_widget_container)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.home_component.R.id.btn_reminder_recommendation)).perform(click())
         Thread.sleep(1000)
     }
 
@@ -216,8 +216,8 @@ class RechargeHomepageInstrumentTest {
             RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(13)
         )
         Thread.sleep(2000)
-        onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
-        onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
+        onView(withId(com.tokopedia.banner.R.id.banner_recyclerview)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.banner.R.id.banner_recyclerview)).perform(RecyclerViewActions
             .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
     }
 

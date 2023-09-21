@@ -295,11 +295,12 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
     }
 
     private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
-        val isOverlayBounce =
-            remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
-                && productCardModel.cardInteraction
-
-        return if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
+        return if(productCardModel.cardInteraction != null) {
+            val isOverlayBounce =
+                remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
+                    && productCardModel.cardInteraction
+            if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
+        } else productCardModel.animateOnPress
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {

@@ -59,7 +59,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
         val position = holder.absoluteAdapterPosition
         val isGopay = bankAccountList[position].isGopay()
         if (holder is BankAccountViewHolder && isGopay) {
-            listener.showCoachMarkOnGopayBank(holder.itemView)
+            listener.showCoachMarkOnGopayBank(holder.itemView, bankAccountList[position])
         }
     }
 
@@ -94,8 +94,10 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
     }
 
     private fun onBankAccountSelected(newSelectedBankAccount: BankAccount) {
+        if (newSelectedBankAccount.isGopay() && !newSelectedBankAccount.isGopayEligible()) return
+
         if (::currentSelectedBankAccount.isInitialized) {
-            if (currentSelectedBankAccount == newSelectedBankAccount || (newSelectedBankAccount.isGopay() && !newSelectedBankAccount.isGopayEligible())) {
+            if (currentSelectedBankAccount == newSelectedBankAccount) {
                 return
             } else {
                 currentSelectedBankAccount.isChecked = false
@@ -135,7 +137,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
 
         fun showCoachMarkOnRPIcon(iconView: View)
 
-        fun showCoachMarkOnGopayBank(view: View)
+        fun showCoachMarkOnGopayBank(view: View, bankAccount: BankAccount)
 
         fun showPremiumAccountDialog(bankAccount: BankAccount)
 

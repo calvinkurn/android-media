@@ -31,17 +31,16 @@ import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.launchLink
-import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.medal.BannerData
 import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
-import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MedalCabinetFragment : BaseDaggerFragment() {
 
@@ -232,9 +231,9 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
     private fun setWhiteStatusBar() {
         (activity as AppCompatActivity?)?.apply {
-            window?.statusBarColor = Color.WHITE
-            binding.toolbar.setBackgroundColor(Color.WHITE)
-            setToolbarBackButtonTint(R.color.Unify_NN900)
+            window?.statusBarColor = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            binding.toolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            setToolbarBackButtonTint(unifyprinciplesR.color.Unify_NN900)
 
             windowInsetsController?.isAppearanceLightStatusBars = true
         }
@@ -244,7 +243,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
         (activity as AppCompatActivity?)?.apply {
             activity?.window?.statusBarColor = Color.TRANSPARENT
             binding.toolbar.setBackgroundColor(Color.TRANSPARENT)
-            setToolbarBackButtonTint(R.color.Unify_NN0)
+            setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
             windowInsetsController?.isAppearanceLightStatusBars = false
         }
@@ -286,7 +285,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
     private fun handleError(scpError: Error) {
         setWhiteStatusBar()
-        setToolbarBackButtonTint(R.color.Unify_NN900)
+        setToolbarBackButtonTint(unifyprinciplesR.color.Unify_NN900)
         binding.loadContainer.loaderFlipper.displayedChild = 1
 
         val error = scpError.error
@@ -328,15 +327,6 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                     setActionClickListener {
                         resetPage()
                         MedalCabinetAnalyticsImpl.sendClickCobaLagiMedalCabinetPageApiErrorEvent()
-                    }
-                    errorSecondaryAction.show()
-                    if (errorSecondaryAction is UnifyButton) {
-                        (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
-                    }
-                    errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
-                    setSecondaryActionClickListener {
-                        MedalCabinetAnalyticsImpl.sendClickHalamanUtamaMedalCabinetPageApiErrorEvent()
-                        activity?.finish()
                     }
                 }
             }

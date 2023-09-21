@@ -52,7 +52,12 @@ data class HelpPageData(
    val gatewayName: String,
    @SerializedName("channel")
    val channelList: ArrayList<HtpPaymentChannel>
-)
+) {
+    fun isVA(): Boolean = gatewayType == VA
+    companion object {
+        private const val VA = "VIRTUAL_ACCOUNT"
+    }
+}
 
 data class HtpPaymentChannel(
         @SerializedName("payment_channel")

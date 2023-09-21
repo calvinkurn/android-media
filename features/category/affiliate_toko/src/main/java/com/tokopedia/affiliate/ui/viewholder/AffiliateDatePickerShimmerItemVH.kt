@@ -13,7 +13,5 @@ class AffiliateDatePickerShimmerItemVH(itemView: View) : AbstractViewHolder<Affi
         var LAYOUT = R.layout.affiliate_date_filter_shimmer_item_layout
     }
 
-    override fun bind(element: AffiliateShimmerViewModel?) {
-
-    }
+    override fun bind(element: AffiliateShimmerViewModel?) = Unit
 }

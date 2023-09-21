@@ -40,6 +40,7 @@ import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductRespo
 import com.tokopedia.product.manage.feature.list.data.model.GetTargetedTickerResponse
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
+import com.tokopedia.product.manage.feature.list.data.model.ProductArchivalInfo
 import com.tokopedia.product.manage.feature.list.data.model.ShopWarehouseResponse
 import com.tokopedia.product.manage.feature.list.data.repository.MockedUploadStatusRepository
 import com.tokopedia.product.manage.feature.list.data.repository.MockedUploadStatusRepositoryException
@@ -79,6 +80,7 @@ import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditPro
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.Result
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
+import com.tokopedia.product.manage.feature.suspend.view.uimodel.SuspendReasonUiModel
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_STOCK_AVAILABLE
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
@@ -658,6 +660,114 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val paramsProductList = createFilterOptions(1)
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
+
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
+
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
+            val productViewModelList = listOf(
+                createProductUiModel(
+                    name = "Tolak Angin Madu",
+                    minPrice = minPrice,
+                    maxPrice = maxPrice,
+                    topAds = topAdsInfo,
+                    access = createDefaultAccess()
+                )
+            )
+            val expectedProductList = Success(productViewModelList)
+
+            verifyGetWarehouseIdCalled()
+
+            viewModel.productListResult
+                .verifySuccessEquals(expectedProductList)
+
+            viewModel.showTicker
+                .verifyValueEquals(null)
+
+            verifyHideProgressBar()
+        }
+    }
+
+
+    @Test
+    fun `get product list archival should map product to view model`() {
+        runBlocking {
+            val shopId = "1500"
+
+            val minPrice = PriceUiModel("10000", "Rp10.000")
+            val maxPrice = PriceUiModel("100000", "Rp100.000")
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            val paramsProductList = createFilterOptions(1)
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            paramsProductList.add(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
+
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
+
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
+            val productViewModelList = listOf(
+                createProductUiModel(
+                    name = "Tolak Angin Madu",
+                    minPrice = minPrice,
+                    maxPrice = maxPrice,
+                    topAds = topAdsInfo,
+                    access = createDefaultAccess()
+                )
+            )
+            val expectedProductList = Success(productViewModelList)
+
+            verifyGetWarehouseIdCalled()
+
+            viewModel.productListResult
+                .verifySuccessEquals(expectedProductList)
+
+            viewModel.showTicker
+                .verifyValueEquals(null)
+
+            verifyHideProgressBar()
+        }
+    }
+
+    @Test
+    fun `get product list arhival or potential archival should map product to view model`() {
+        runBlocking {
+            val shopId = "1500"
+
+            val minPrice = PriceUiModel("10000", "Rp10.000")
+            val maxPrice = PriceUiModel("100000", "Rp100.000")
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            val paramsProductList = createFilterOptions(1)
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            paramsProductList.add(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
+            paramsProductList.add(FilterOption.FilterByCondition.ProductArchival)
 
             viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
@@ -2633,6 +2743,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getStatusShopUseCase,
             getTickerUseCase,
             getShopWarehouse,
+            productArchivalInfoUseCase,
             tickerStaticDataProvider,
             CoroutineTestDispatchersProvider
         )
@@ -2681,6 +2792,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getStatusShopUseCase,
             getTickerUseCase,
             getShopWarehouse,
+            productArchivalInfoUseCase,
             tickerStaticDataProvider,
             CoroutineTestDispatchersProvider
         )
@@ -2724,11 +2836,40 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getStatusShopUseCase,
             getTickerUseCase,
             getShopWarehouse,
+            productArchivalInfoUseCase,
             tickerStaticDataProvider,
             CoroutineTestDispatchersProvider
         )
 
         viewModel.clearUploadStatus()
+    }
+
+    @Test
+    fun `when getProductArchivalInfo success, should set live data success`() {
+        val successResponse = ProductArchivalInfo(ProductArchivalInfo.ProductarchivalGetProductArchiveInfo(
+            "","","","",0
+        ))
+        coEvery {
+            productArchivalInfoUseCase.execute(any())
+        } returns successResponse
+
+        viewModel.getProductArchivalInfo("")
+
+        coVerify { productArchivalInfoUseCase.execute(any()) }
+        assert(viewModel.productArchivalInfo.value == Success(successResponse))
+    }
+
+    @Test
+    fun `when getProductArchivalInfo  error, should set live data fail`() {
+        val throwable = NullPointerException()
+        coEvery {
+            productArchivalInfoUseCase.execute(any())
+        } throws throwable
+
+        viewModel.getProductArchivalInfo("")
+
+        coVerify { productArchivalInfoUseCase.execute(any()) }
+        assert(viewModel.productArchivalInfo.value is Fail)
     }
 
     private fun testGetProductManageAccess(

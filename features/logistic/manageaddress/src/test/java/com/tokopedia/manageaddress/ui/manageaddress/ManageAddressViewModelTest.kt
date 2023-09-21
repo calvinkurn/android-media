@@ -24,7 +24,12 @@ import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.TickerDataProvider
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
-import com.tokopedia.manageaddress.domain.response.*
+import com.tokopedia.manageaddress.domain.response.DefaultPeopleAddressData
+import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressData
+import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressGqlResponse
+import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressResponse
+import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressGqlResponse
+import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsReceiverResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsSenderResponse
 import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
@@ -41,13 +46,20 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -76,11 +88,11 @@ class ManageAddressViewModelTest {
     private val tickerUseCase: GetTargetedTickerUseCase = mockk(relaxed = true)
 
     private var observerManageAddressState =
-        mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+        mockk<Observer<ManageAddressState<SetDefaultPeopleAddressResponse>>>(relaxed = true)
     private var observerManageAddressStateAddressList =
         mockk<Observer<ManageAddressState<AddressListModel>>>(relaxed = true)
     private var observerResultRemovedAddress =
-        mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+        mockk<Observer<ManageAddressState<DeletePeopleAddressData>>>(relaxed = true)
     private var observerValidateShareAddressState =
         mockk<Observer<ValidateShareAddressState>>(relaxed = true)
     private val mockThrowable = mockk<Throwable>(relaxed = true)

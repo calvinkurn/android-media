@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/unify_space_16"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         android:layout_gravity="center_vertical"
         app:typographyType="heading_5"
         tools:text="@string/swd_title_add_account_bank" />

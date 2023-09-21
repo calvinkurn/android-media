@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/dp_16"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             app:typographyType="display_2"
             app:typographyWeight="bold" />
     </androidx.appcompat.widget.Toolbar>

@@ -30,8 +30,8 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequ
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
@@ -2094,8 +2094,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 OrderProduct(
                     cartId = "456",
                     orderQuantity = 1,
-                    addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
+                    addOn = AddOnGiftingDataModel(
+                        addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 1000.0))
                     )
                 )
             ),
@@ -2123,8 +2123,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateEmptyResult
         orderSummaryPageViewModel.orderCart = OrderCart(
             shop = OrderShop(
-                addOn = AddOnsDataModel(
-                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
+                addOn = AddOnGiftingDataModel(
+                    addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 2000.0))
                 ),
                 isFulfillment = true
             ),
@@ -2156,8 +2156,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 OrderProduct(
                     cartId = "123",
                     orderQuantity = 1,
-                    addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
+                    addOn = AddOnGiftingDataModel(
+                        addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 1000.0))
                     )
                 )
             ),
@@ -2185,8 +2185,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
         orderSummaryPageViewModel.orderCart = OrderCart(
             shop = OrderShop(
-                addOn = AddOnsDataModel(
-                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
+                addOn = AddOnGiftingDataModel(
+                    addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 2000.0))
                 ),
                 isFulfillment = true
             ),
@@ -2218,8 +2218,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 OrderProduct(
                     cartId = "123",
                     orderQuantity = 1,
-                    addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
+                    addOn = AddOnGiftingDataModel(
+                        addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 1000.0))
                     )
                 )
             ),
@@ -2247,8 +2247,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateShopLevelResultNegativeTest
         orderSummaryPageViewModel.orderCart = OrderCart(
             shop = OrderShop(
-                addOn = AddOnsDataModel(
-                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
+                addOn = AddOnGiftingDataModel(
+                    addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 2000.0))
                 ),
                 isFulfillment = true
             ),

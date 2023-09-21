@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.list.presentation.models
 
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 
 // mappers -> loadFilters -> mergeWithCurrent -> Update Tabs -> select tab -> loadFilters
@@ -31,7 +32,7 @@ data class SomListFilterUiModel(
             }
         }
         // highlightedStatusKey: new order, all order, confirm_shipping when it first load
-        else if (highLightedStatusKey.isNotBlank() && isFirstPageOpened) {
+        else if (isEnableAutoTabbing(highLightedStatusKey, isFirstPageOpened)) {
             statusList.find {
                 it.key == highLightedStatusKey
             }?.run {
@@ -75,6 +76,10 @@ data class SomListFilterUiModel(
                 else -> quickFilter.isChecked
             }
         }
+    }
+
+    private fun isEnableAutoTabbing(highLightedStatusKey: String, isFirstPageOpened: Boolean): Boolean {
+        return highLightedStatusKey.isNotBlank() && isFirstPageOpened && Utils.isEnableOperationalGuideline()
     }
 
     data class Status(

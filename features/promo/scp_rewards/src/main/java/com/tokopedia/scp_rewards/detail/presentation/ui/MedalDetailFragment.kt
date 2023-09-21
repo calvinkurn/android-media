@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.constants.TrackerConstants
 import com.tokopedia.scp_rewards.common.data.Error
@@ -37,7 +36,6 @@ import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.common.utils.launchWeblink
-import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.analytics.MedalDetailAnalyticsImpl
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
@@ -53,10 +51,10 @@ import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MedalDetailFragment : BaseDaggerFragment() {
 
@@ -422,15 +420,15 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun setWhiteStatusBar() {
         (activity as? AppCompatActivity)?.apply {
-            window?.statusBarColor = Color.WHITE
-            binding.toolbar.setBackgroundColor(Color.WHITE)
-            setToolbarBackButtonTint(R.color.Unify_NN900)
+            window?.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
 
             windowInsetsController?.isAppearanceLightStatusBars = true
             binding.tvTermsConditions.setTextColor(
                 ContextCompat.getColor(
                     this,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
             )
         }
@@ -440,13 +438,13 @@ class MedalDetailFragment : BaseDaggerFragment() {
         (activity as? AppCompatActivity)?.apply {
             activity?.window?.statusBarColor = Color.TRANSPARENT
             binding.toolbar.setBackgroundColor(Color.TRANSPARENT)
-            setToolbarBackButtonTint(R.color.Unify_NN0)
+            setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
             windowInsetsController?.isAppearanceLightStatusBars = false
             binding.tvTermsConditions.setTextColor(
                 ContextCompat.getColor(
                     this,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             )
         }
@@ -479,7 +477,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun handleError(scpError: Error) {
         binding.loadContainer.loaderFlipper.displayedChild = 1
-        setToolbarBackButtonTint(R.color.Unify_NN900)
+        setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         val error = scpError.error
 
         when {
@@ -493,9 +491,9 @@ class MedalDetailFragment : BaseDaggerFragment() {
             scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
                 binding.loadContainer.mdpError.apply {
                     setType(GlobalError.PAGE_NOT_FOUND)
-                    errorTitle.text = context.getText(R.string.error_non_whitelisted_user_title)
-                    errorDescription.text = context.getText(R.string.error_non_whitelisted_user_description)
-                    errorAction.text = context.getText(R.string.error_non_whitelisted_user_action)
+                    errorTitle.text = context.getText(com.tokopedia.scp_rewards.R.string.error_non_whitelisted_user_title)
+                    errorDescription.text = context.getText(com.tokopedia.scp_rewards.R.string.error_non_whitelisted_user_description)
+                    errorAction.text = context.getText(com.tokopedia.scp_rewards.R.string.error_non_whitelisted_user_action)
                     setActionClickListener {
                         MedalDetailAnalyticsImpl.sendNonWhitelistedUserCtaClick()
                         RouteManager.route(context, ApplinkConst.HOME)
@@ -511,15 +509,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     setActionClickListener {
                         resetPage()
                     }
-                    errorSecondaryAction.show()
-                    if (errorSecondaryAction is UnifyButton) {
-                        (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
-                    }
-                    errorSecondaryAction.text = context.getText(R.string.goto_medali_cabinet_text)
-                    setSecondaryActionClickListener {
-                        RouteManager.route(context, ApplinkConstInternalPromo.MEDAL_CABINET)
-                        activity?.finish()
-                    }
                 }
             }
         }
@@ -529,7 +518,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         binding.mainFlipper.displayedChild = 0
         binding.loadContainer.loaderFlipper.displayedChild = 0
         getMedaliDetail()
-        setToolbarBackButtonTint(R.color.Unify_NN0)
+        setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
     }
 
     private fun setToolbarBackButtonTint(color: Int) {

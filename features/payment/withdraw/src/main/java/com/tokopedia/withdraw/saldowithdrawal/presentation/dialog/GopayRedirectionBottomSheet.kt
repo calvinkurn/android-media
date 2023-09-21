@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.appaidl.data.CUSTOMER_APP
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.isAppInstalled
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -33,12 +34,13 @@ class GopayRedirectionBottomSheet: BottomSheetUnify() {
                 null, false)
 
             setChild(childView)
-            setUpView()
 
             image = it.getString(ARG_IMAGE, "")
             title = it.getString(ARG_TITLE, "")
             description = it.getString(ARG_DESCRIPTION, "")
             applink = it.getString(ARG_APPLINK, "")
+
+            setUpView()
         }
     }
 
@@ -58,21 +60,21 @@ class GopayRedirectionBottomSheet: BottomSheetUnify() {
         ctaView?.setOnClickListener {
             context?.let {
                 if (it.isAppInstalled(CUSTOMER_APP)) {
-                    RouteManager.route(it, applink)
+                    startApplink(applink.orEmpty())
                 } else {
-                    goToTkpdPlayStore()
+                    startApplink(TKPD_MARKET_APPLINK)
                 }
             }
         }
     }
 
-    private fun goToTkpdPlayStore() {
+    private fun startApplink(applink: String) {
         activity?.let {
-            val uri = Uri.parse(TKPD_MARKET_APPLINK)
-            val goToMarket = Intent(Intent.ACTION_VIEW, uri)
-            goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            val uri = Uri.parse(applink)
+            val goToApplink = Intent(Intent.ACTION_VIEW, uri)
+            goToApplink.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
             try {
-                it.startActivity(goToMarket)
+                it.startActivity(goToApplink)
             } catch (e: ActivityNotFoundException) {
                 Timber.e(e)
                 it.startActivity(
