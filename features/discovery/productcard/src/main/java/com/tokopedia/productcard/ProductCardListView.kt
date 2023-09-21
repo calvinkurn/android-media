@@ -37,6 +37,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY
 import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY_BOUNCE
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
 import kotlin.LazyThreadSafetyMode.NONE
@@ -464,6 +465,7 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
             textViewFulfillment?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
             textViewStockLabel?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
             progressBarStock?.trackDrawable?.apply { setColor(ContextCompat.getColor(context, R.color.dms_static_light_NN100)) }
+            buttonAddToCart?.applyColorMode(ColorMode.LIGHT_MODE)
         }
     }
 
