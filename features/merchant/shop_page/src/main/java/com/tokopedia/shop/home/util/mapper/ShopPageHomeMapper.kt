@@ -142,7 +142,8 @@ object ShopPageHomeMapper {
         isHasATC: Boolean,
         isHasOCCButton: Boolean,
         occButtonText: String = "",
-        widgetName: String = ""
+        widgetName: String = "",
+        forceLightModeColor: Boolean
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -173,7 +174,8 @@ object ShopPageHomeMapper {
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
-                }
+                },
+                forceLightModeColor = forceLightModeColor
             )
         } else {
             ProductCardModel(
@@ -187,7 +189,8 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                hasAddToCartButton = isHasATC
+                hasAddToCartButton = isHasATC,
+                forceLightModeColor = forceLightModeColor
             )
         }
         return if (isShopPersonalizationWidgetEnableDirectPurchase(
@@ -228,7 +231,8 @@ object ShopPageHomeMapper {
         hasThreeDots: Boolean,
         shopHomeProductViewModel: ShopHomeProductUiModel,
         isWideContent: Boolean,
-        productRating: String
+        productRating: String,
+        forceLightModeColor: Boolean
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -258,7 +262,8 @@ object ShopPageHomeMapper {
             hasThreeDots = hasThreeDots,
             hasAddToCartButton = isHasAddToCartButton,
             addToCartButtonType = UnifyButton.Type.MAIN,
-            isWideContent = isWideContent
+            isWideContent = isWideContent,
+            forceLightModeColor = forceLightModeColor
         )
         return if (shopHomeProductViewModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(
                 shopHomeProductViewModel.isSoldOut
@@ -327,7 +332,8 @@ object ShopPageHomeMapper {
         hasThreeDots: Boolean,
         shopHomeProductViewModel: ShopHomeProductUiModel,
         widgetName: String,
-        statusCampaign: String
+        statusCampaign: String,
+        forceLightModeColor: Boolean
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -360,7 +366,8 @@ object ShopPageHomeMapper {
             hasAddToCartButton = isHasAddToCartButton,
             addToCartButtonType = UnifyButton.Type.MAIN,
             stockBarLabel = shopHomeProductViewModel.stockLabel,
-            stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage
+            stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage,
+            forceLightModeColor = forceLightModeColor
         )
         return if (isShopCampaignWidgetEnableDirectPurchase(
                 shopHomeProductViewModel.isEnableDirectPurchase,

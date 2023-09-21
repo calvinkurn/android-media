@@ -247,7 +247,8 @@ class ShopHomeNplCampaignViewHolder(
                                 hasThreeDots = false,
                                 shopHomeProductViewModel = it,
                                 widgetName = model.name,
-                                statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
+                                statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty(),
+                                forceLightModeColor = shopHomeCampaignNplWidgetListener.isForceLightModeColorOnCampaignNplWidget()
                             )
                         }
                     )

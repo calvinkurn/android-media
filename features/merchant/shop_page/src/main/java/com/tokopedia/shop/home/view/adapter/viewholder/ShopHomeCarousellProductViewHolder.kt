@@ -159,7 +159,8 @@ class ShopHomeCarousellProductViewHolder(
                 hasThreeDots = false,
                 shopHomeProductViewModel = it,
                 isWideContent = false,
-                productRating = if (it.rating != 0.0) it.rating.toString() else ""
+                productRating = if (it.rating != 0.0) it.rating.toString() else "",
+                forceLightModeColor = shopHomeListener.isOverrideTheme()
             )
         }
         if (isProductCardSingleOrDouble(shopHomeProductViewModelList)) {

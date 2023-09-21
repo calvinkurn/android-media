@@ -58,17 +58,14 @@ class ShopHomeFlashSaleProductListViewHolder(
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
-            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
+            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
+            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
         productCardList?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
         setProductImpressionListener(productCardModel, listener)
-
-        if (listener.isForceLightModeColorOnShopFlashSaleWidget()) {
-            productCardList?.forceLightModeColor(productCardList)
-        }
     }
 
     private fun setProductImpressionListener(

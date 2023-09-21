@@ -6,13 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardListTypeFactoryImpl
 
 internal class CarouselProductCardListAdapter(
-    internalListener: CarouselProductCardInternalListener,
-    forceLightModeColor: Boolean
+    internalListener: CarouselProductCardInternalListener
 ): ListAdapter<BaseCarouselCardModel,
     BaseProductCardViewHolder<BaseCarouselCardModel>>(ProductCardModelDiffUtil()),
     CarouselProductCardAdapter {
 
-    private val adapterTypeFactory = CarouselProductCardListTypeFactoryImpl(internalListener, forceLightModeColor)
+    private val adapterTypeFactory = CarouselProductCardListTypeFactoryImpl(internalListener)
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {
         return adapterTypeFactory.onCreateViewHolder(viewGroup, viewType)

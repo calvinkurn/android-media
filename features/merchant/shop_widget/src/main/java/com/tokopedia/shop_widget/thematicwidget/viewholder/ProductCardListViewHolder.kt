@@ -32,7 +32,8 @@ class ProductCardListViewHolder(
                 mapToProductCardCampaignModel(
                     isHasAddToCartButton = false,
                     hasThreeDots = false,
-                    productCardUiModel = element
+                    productCardUiModel = element,
+                    forceLightModeColor = isOverrideWidgetTheme
                 )
             )
             setImageProductViewHintListener(
@@ -43,9 +44,6 @@ class ProductCardListViewHolder(
                     }
                 }
             )
-            if (isOverrideWidgetTheme) {
-                forceLightModeColor(productCard = this)
-            }
         }
 
         binding?.productCardGridView?.setOnClickListener {

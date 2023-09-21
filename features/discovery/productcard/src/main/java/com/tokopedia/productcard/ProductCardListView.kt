@@ -300,6 +300,10 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
         video.setVideoURL(productCardModel.customVideoURL)
 
         cardViewProductCard?.animateOnPress = cardViewAnimationOnPress(productCardModel)
+
+        if (productCardModel.forceLightModeColor) {
+            forceLightModeColor(this)
+        }
     }
 
     private fun setMediaAnchorToInfoSpaceSize(productCardModel: ProductCardModel) {
@@ -448,7 +452,7 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
         cardViewProductCard?.setOnLongClickListener(l)
     }
 
-    fun forceLightModeColor(productCard: ProductCardListView?) {
+    private fun forceLightModeColor(productCard: ProductCardListView?) {
         val context = productCard?.context
 
         if (productCard != null && context != null) {
