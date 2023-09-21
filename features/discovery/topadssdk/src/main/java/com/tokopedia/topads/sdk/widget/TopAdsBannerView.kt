@@ -104,7 +104,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (isFlashSaleTokoLabel && flashSaleTimerData != null) {
-            if (Calendar.getInstance().time > flashSaleTimerData) {
+            if ((Calendar.getInstance().time > flashSaleTimerData) || isReimagine) {
                 hideFlashSaleToko()
             } else {
                 showFlashSaleToko()
@@ -379,7 +379,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val startDate = TopAdsSdkUtil.parseData(flashSaleCampaignDetail.startTime)
         val endDate = TopAdsSdkUtil.parseData(flashSaleCampaignDetail.endTime)
         val isTimerValid = TopAdsSdkUtil.isTimerValid(startDate, endDate)
-        if (isTimerValid && endDate != null) {
+        if ((isTimerValid && endDate != null) && !isReimagine) {
             flashSaleTimerData = endDate
             val currentSystemTime = Calendar.getInstance().time
             val saleTimeMillis = endDate.time - currentSystemTime.time
@@ -393,7 +393,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
         } else {
-            if (isFlashSaleTokoLabel) {
+            if (isFlashSaleTokoLabel || isReimagine) {
                 hideFlashSaleToko()
             }
         }
