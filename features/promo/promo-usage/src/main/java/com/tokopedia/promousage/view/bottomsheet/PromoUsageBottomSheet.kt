@@ -943,7 +943,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun showPromoTncBottomSheet(item: PromoTncItem) {
         val tncBottomSheet = PromoUsageTncBottomSheet.newInstance(
-            promoCodes = item.selectedPromoCodes,
+            promoCodesWithTitle = item.selectedPromoCodesWithTitle,
             source = entryPoint,
             userId = userSession.userId
         )

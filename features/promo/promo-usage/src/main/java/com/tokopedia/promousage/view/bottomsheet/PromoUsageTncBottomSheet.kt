@@ -25,7 +25,7 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val TAG = "PromoUsageTncBottomSheet"
-        private const val BUNDLE_KEY_PROMO_CODES = "promo_codes"
+        private const val BUNDLE_KEY_PROMO_CODES_WITH_TITLE = "promo_codes"
         private const val BUNDLE_KEY_SOURCE = "source"
         private const val BUNDLE_KEY_USER_ID = "user_id"
 
@@ -37,13 +37,13 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
         private const val QUERY_VALUE_THEME_DARK = "dark"
 
         fun newInstance(
-            promoCodes: List<String>,
+            promoCodesWithTitle: List<String>,
             source: PromoPageEntryPoint,
             userId: String
         ): PromoUsageTncBottomSheet {
             return PromoUsageTncBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putStringArrayList(BUNDLE_KEY_PROMO_CODES, ArrayList(promoCodes))
+                    putStringArrayList(BUNDLE_KEY_PROMO_CODES_WITH_TITLE, ArrayList(promoCodesWithTitle))
                     putParcelable(BUNDLE_KEY_SOURCE, source)
                     putString(BUNDLE_KEY_USER_ID, userId)
                 }
@@ -59,13 +59,13 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
             .inflate(LayoutInflater.from(context), null, false)
         setChild(binding?.root)
 
-        val promoCodes = arguments?.getStringArrayList(BUNDLE_KEY_PROMO_CODES) ?: emptyList()
+        val promoCodesWithTitle = arguments?.getStringArrayList(BUNDLE_KEY_PROMO_CODES_WITH_TITLE) ?: emptyList()
         val source = arguments?.getParcelable(BUNDLE_KEY_SOURCE)
             ?: PromoPageEntryPoint.CART_PAGE
         val userId = arguments?.getString(BUNDLE_KEY_USER_ID) ?: ""
 
-        if (promoCodes.isNotEmpty() && source.toSourceString().isNotBlank() && userId.isNotBlank()) {
-            renderContent(promoCodes, source.toSourceString(), userId)
+        if (promoCodesWithTitle.isNotEmpty() && source.toSourceString().isNotBlank() && userId.isNotBlank()) {
+            renderContent(promoCodesWithTitle, source.toSourceString(), userId)
         } else {
             dismiss()
         }
@@ -80,16 +80,16 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
     }
 
     private fun renderContent(
-        promoCodes: List<String>,
+        promoCodesWithTitle: List<String>,
         source: String,
         userId: String
     ) {
-        if (promoCodes.isEmpty()) {
+        if (promoCodesWithTitle.isEmpty()) {
             dismiss()
         }
         setTitle(getString(R.string.promo_usage_tnc_title))
 
-        val tncUrl = generateTncUrl(promoCodes, source, userId)
+        val tncUrl = generateTncUrl(promoCodesWithTitle, source, userId)
         val webViewFragment = BaseSessionWebViewFragment.newInstance(tncUrl, true, false, false)
         childFragmentManager.beginTransaction()
             .replace(R.id.container_promo_tnc, webViewFragment)
@@ -97,14 +97,14 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
     }
 
     private fun generateTncUrl(
-        promoCodes: List<String>,
+        promoCodesWithTitle: List<String>,
         source: String,
         userId: String
     ): String {
         val builder = Uri.parse(TokopediaUrl.getInstance().WEB)
             .buildUpon()
             .path(PATH_PROMO_TNC)
-            .appendQueryParameter(QUERY_KEY_CODES, promoCodes.joinToString(","))
+            .appendQueryParameter(QUERY_KEY_CODES, promoCodesWithTitle.joinToString(","))
             .appendQueryParameter(QUERY_KEY_SOURCE, source)
             .appendQueryParameter(QUERY_KEY_ID, userId)
         val isDarkMode = context?.isDarkMode() ?: false

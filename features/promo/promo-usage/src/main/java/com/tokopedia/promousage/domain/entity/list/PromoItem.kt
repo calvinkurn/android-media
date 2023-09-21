@@ -16,6 +16,7 @@ data class PromoItem(
     val headerId: String = "",
 
     val index: Int = 0,
+    val title: String = "",
     val code: String = "",
     val uniqueId: String = "",
     val shopId: Long = 0,
@@ -68,6 +69,6 @@ data class PromoItem(
         get() = secondaryPromo.code.isNotBlank() && secondaryPromo.id.isNotBlankOrZero()
 
     val useSecondaryPromo: Boolean
-        get() = currentClashingPromoCodes.isNotEmpty() && hasSecondaryPromo
-            && currentClashingSecondaryPromoCodes.isEmpty()
+        get() = currentClashingPromoCodes.isNotEmpty() && hasSecondaryPromo &&
+            currentClashingSecondaryPromoCodes.isEmpty()
 }

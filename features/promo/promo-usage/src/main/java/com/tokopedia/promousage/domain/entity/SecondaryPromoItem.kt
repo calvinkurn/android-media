@@ -6,6 +6,7 @@ data class SecondaryPromoItem(
     override val id: String = "",
     val headerId: String = "",
     val index: Int = 0,
+    val title: String = "",
     val code: String = "",
     val uniqueId: String = "",
     val shopId: Long = 0,
@@ -22,5 +23,5 @@ data class SecondaryPromoItem(
     val expiryTimestamp: Long = 0,
     val cta: PromoCta = PromoCta(),
     val couponUrl: String = "",
-    val couponType: List<String> = emptyList(),
+    val couponType: List<String> = emptyList()
 ) : DelegateAdapterItem

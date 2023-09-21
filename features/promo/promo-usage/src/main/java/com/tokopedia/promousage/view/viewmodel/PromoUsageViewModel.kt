@@ -884,8 +884,20 @@ internal class PromoUsageViewModel @Inject constructor(
                     "${it.couponUrl}${it.code}"
                 }
             }
+            val selectedPromoCodesWithTitle = selectedPromos.map {
+                if (it.useSecondaryPromo) {
+                    "${it.couponUrl}${it.secondaryPromo.code}|${it.secondaryPromo.title}"
+                } else {
+                    "${it.couponUrl}${it.code}|${it.title}"
+                }
+            }
             items.filterNot { it is PromoTncItem }
-                .plus(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
+                .plus(
+                    tncItem.copy(
+                        selectedPromoCodes = selectedPromoCodes,
+                        selectedPromoCodesWithTitle = selectedPromoCodesWithTitle
+                    )
+                )
         } else {
             items.filterNot { it is PromoTncItem }
         }
