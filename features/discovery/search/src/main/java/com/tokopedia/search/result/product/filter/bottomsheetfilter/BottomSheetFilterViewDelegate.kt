@@ -128,7 +128,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
             val parameter = filterController.getParameter() +
                 selectedSort.toMapParam() +
                 manualFilterToggleMap() +
-                componentIdMap(SearchSortFilterTracking.FILTER_COMPONENT_ID)
+                componentIdMap(SearchSortFilterTracking.SORT_COMPONENT_ID)
 
             applyParameter(parameter)
         }
