@@ -11,49 +11,44 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurc
 
 class UniversalSharingUniversalSharingPostPurchaseSharingActivity : BaseActivity() {
 
-    private var bottomSheet = UniversalSharingPostPurchaseBottomSheet()
-    private var data: UniversalSharingPostPurchaseModel? = null
+    private var bottomSheet: UniversalSharingPostPurchaseBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getExtras()
-        setBottomSheetData()
+        setupBottomSheet()
         setBottomSheetListener()
         showBottomSheet()
     }
 
     @SuppressLint("DeprecatedMethod")
-    private fun getExtras() {
-        data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private fun setupBottomSheet() {
+        val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(
                 ApplinkConstInternalCommunication.PRODUCT_LIST_DATA,
                 UniversalSharingPostPurchaseModel::class.java
-            )
+            ) ?: UniversalSharingPostPurchaseModel()
         } else {
             intent.getParcelableExtra(ApplinkConstInternalCommunication.PRODUCT_LIST_DATA)
+                ?: UniversalSharingPostPurchaseModel()
         }
+
+        bottomSheet = UniversalSharingPostPurchaseBottomSheet.newInstance(data)
     }
 
     private fun showBottomSheet() {
         currentFocus?.hideKeyboard()
-        bottomSheet.show(
+        bottomSheet?.show(
             supportFragmentManager,
             ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
         )
     }
 
     private fun setBottomSheetListener() {
-        bottomSheet.setCloseClickListener {
+        bottomSheet?.setCloseClickListener {
             finish()
         }
-        bottomSheet.setOnDismissListener {
+        bottomSheet?.setOnDismissListener {
             finish()
-        }
-    }
-
-    private fun setBottomSheetData() {
-        data?.let {
-            bottomSheet.updateData(it)
         }
     }
 }

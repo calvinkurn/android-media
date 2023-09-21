@@ -1,6 +1,8 @@
 package com.tokopedia.universal_sharing.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.app.Application
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,13 +46,26 @@ class UniversalSharingPostPurchaseBottomSheet :
 
     private val typeFactory = UniversalSharingTypeFactoryImpl(this)
     private val adapter = UniversalSharingPostPurchaseAdapter(typeFactory)
-    private var data: UniversalSharingPostPurchaseModel? = null
+    private var data = UniversalSharingPostPurchaseModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        getBundle()
         setupBottomSheetConfig()
         setBottomSheetChildView()
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    private fun getBundle() {
+        data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(
+                DATA_KEY,
+                UniversalSharingPostPurchaseModel::class.java
+            ) ?: UniversalSharingPostPurchaseModel()
+        } else {
+            arguments?.getParcelable(DATA_KEY) ?: UniversalSharingPostPurchaseModel()
+        }
     }
 
     private fun initInjector() {
@@ -135,7 +150,7 @@ class UniversalSharingPostPurchaseBottomSheet :
             when (it) {
                 is Result.Success -> {
                     binding.universalSharingLayoutLoading.hide()
-                    //todo: ask rama how to use branch link
+                    // todo: ask rama how to use branch link
                 }
                 is Result.Error -> {
                     binding.universalSharingLayoutLoading.hide()
@@ -159,9 +174,7 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun setupInitialData() {
-        data?.let {
-            viewModel.processAction(UniversalSharingPostPurchaseAction.RefreshData(it))
-        }
+        viewModel.processAction(UniversalSharingPostPurchaseAction.RefreshData(data))
     }
 
     override fun onClickShare(productId: String) {
@@ -175,7 +188,17 @@ class UniversalSharingPostPurchaseBottomSheet :
         _binding = null
     }
 
-    fun updateData(data: UniversalSharingPostPurchaseModel) {
-        this.data = data
+    companion object {
+        private const val DATA_KEY = "data_key"
+
+        fun newInstance(
+            data: UniversalSharingPostPurchaseModel
+        ): UniversalSharingPostPurchaseBottomSheet {
+            val bottomSheet = UniversalSharingPostPurchaseBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelable(DATA_KEY, data)
+            bottomSheet.arguments = bundle
+            return bottomSheet
+        }
     }
 }
