@@ -95,7 +95,7 @@ class StoriesGroupFragment @Inject constructor(
         setupViews()
         setupObserver()
 
-        initializeData(savedInstanceState)
+        viewModelAction(StoriesUiAction.SetInitialData)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -107,11 +107,6 @@ class StoriesGroupFragment @Inject constructor(
         super.onPause()
         viewModelAction(PauseStories)
         trackImpressionGroup()
-    }
-
-    private fun initializeData(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) viewModelAction(StoriesUiAction.SetInitialData(arguments))
-        else viewModelAction(StoriesUiAction.GetSavedInstanceStateData)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
@@ -145,8 +140,8 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.storiesMainData.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroup(prevState, state)
+            viewModel.storiesState.withCache().collectLatest { (prevState, state) ->
+                renderStoriesGroup(prevState?.storiesMainData, state.storiesMainData)
             }
         }
     }

@@ -1,10 +1,8 @@
 package com.tokopedia.stories.view.viewmodel
 
-import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesAuthorType
@@ -17,18 +15,21 @@ import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
-import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesGroupHeader
+import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.getRandomNumber
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -44,8 +45,6 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private val _storiesMainData = MutableStateFlow(StoriesUiModel())
-    val storiesMainData: Flow<StoriesUiModel>
-        get() = _storiesMainData
 
     private val _storiesEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val storiesEvent: Flow<StoriesUiEvent>
@@ -60,7 +59,7 @@ class StoriesViewModel @AssistedInject constructor(
             val groupPosition = _groupPos.value
             return if (groupPosition < 0) StoriesGroupItem()
             else {
-                if (_storiesMainData.value.groupItems.size <= groupPosition) StoriesGroupItem()
+                if (groupPosition >= _storiesMainData.value.groupItems.size) StoriesGroupItem()
                 else _storiesMainData.value.groupItems[groupPosition]
             }
         }
@@ -72,8 +71,8 @@ class StoriesViewModel @AssistedInject constructor(
             return if (groupPosition < 0 || detailPosition < 0) StoriesDetailItem()
             else {
                 when {
-                    _storiesMainData.value.groupItems.size <= groupPosition -> StoriesDetailItem()
-                    _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size <= detailPosition -> StoriesDetailItem()
+                    groupPosition >= _storiesMainData.value.groupItems.size -> StoriesDetailItem()
+                    detailPosition >= _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size -> StoriesDetailItem()
                     else -> _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
                 }
             }
@@ -110,7 +109,7 @@ class StoriesViewModel @AssistedInject constructor(
             val groupPosition = _groupPos.value
             return if (groupPosition < 0) 0
             else {
-                if (_storiesMainData.value.groupItems.size <= groupPosition) 0
+                if (groupPosition >= _storiesMainData.value.groupItems.size) 0
                 else _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size
             }
         }
@@ -120,35 +119,33 @@ class StoriesViewModel @AssistedInject constructor(
 
     private var mLatestTrackPosition = -1
 
+    val storiesState: Flow<StoriesUiState>
+        get() = combine(
+            _storiesMainData,
+            MutableStateFlow(Any())
+        ) { storiesMainData, product ->
+            StoriesUiState(
+                storiesMainData = storiesMainData,
+                product = product,
+            )
+        }
+
     fun submitAction(action: StoriesUiAction) {
         when (action) {
-            is StoriesUiAction.SetInitialData -> handleSetInitialData(action.bundle)
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
             is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
             is StoriesUiAction.CollectImpressedGroup -> handleCollectImpressedGroup(action.data)
+            StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
-            StoriesUiAction.GetSavedInstanceStateData -> handleGetSavedInstanceStateData()
         }
     }
 
-    private fun handleSetInitialData(bundle: Bundle?) {
-        if (bundle == null) return
-
-        launchRequestInitialData()
-    }
-
-    private fun handleSaveInstanceStateData() {
-        handle[SAVED_INSTANCE_STORIES_MAIN_DATA] = mStoriesMainData
-        handle[SAVED_INSTANCE_STORIES_GROUP_POSITION] = mGroupPos
-        handle[SAVED_INSTANCE_STORIES_DETAIL_POSITION] = mDetailPos
-    }
-
-    private fun handleGetSavedInstanceStateData() {
+    private fun handleSetInitialData() {
         val storiesMainData = handle.get<StoriesUiModel>(SAVED_INSTANCE_STORIES_MAIN_DATA)
         val groupPosition =  handle.get<Int>(SAVED_INSTANCE_STORIES_GROUP_POSITION) ?: 0
         val detailPosition = handle.get<Int>(SAVED_INSTANCE_STORIES_DETAIL_POSITION) ?: 0
@@ -159,6 +156,12 @@ class StoriesViewModel @AssistedInject constructor(
             _groupPos.value = groupPosition
             _detailPos.value = detailPosition
         }
+    }
+
+    private fun handleSaveInstanceStateData() {
+        handle[SAVED_INSTANCE_STORIES_MAIN_DATA] = mStoriesMainData
+        handle[SAVED_INSTANCE_STORIES_GROUP_POSITION] = mGroupPos
+        handle[SAVED_INSTANCE_STORIES_DETAIL_POSITION] = mDetailPos
     }
 
     private fun handleMainData(selectedGroup: Int) {
@@ -234,45 +237,37 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun setCachingData() {
         viewModelScope.launchCatchError(block = {
-            val prevRequest = asyncCatchError(block = {
-                fetchAndCachePreviousGroupDetail()
-            }) { it }
-            val nextRequest = asyncCatchError(block = {
-                fetchAndCacheNextGroupDetail()
-            }) { it }
+            val prevRequest = async { fetchAndCachePreviousGroupDetail() }
+            val nextRequest = async { fetchAndCacheNextGroupDetail() }
             prevRequest.await()
             nextRequest.await()
-        }) { }
+        }) { exception ->
+            _storiesEvent.emit(StoriesUiEvent.ErrorFetchCaching(exception))
+        }
     }
 
     private suspend fun fetchAndCachePreviousGroupDetail() {
         val prevGroupPos = mGroupPos.minus(1)
         val prevGroupItem = mStoriesMainData.groupItems.getOrNull(prevGroupPos) ?: return
-        val isNotFirstGroup = prevGroupPos > -1
         val isPrevGroupCached = prevGroupItem.detail.detailItems.isNotEmpty()
-        if (isNotFirstGroup && isPrevGroupCached) return
+        if (isPrevGroupCached) return
 
         val prevGroupId = prevGroupItem.groupId
 
-        try {
-            val prevGroupData = requestStoriesDetailData(prevGroupId)
-            updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
-        } catch (_: Throwable) { }
+        val prevGroupData = requestStoriesDetailData(prevGroupId)
+        updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
     }
 
     private suspend fun fetchAndCacheNextGroupDetail() {
         val nextGroupPos = mGroupPos.plus(1)
         val nextGroupItem = mStoriesMainData.groupItems.getOrNull(nextGroupPos) ?: return
-        val isNotLastGroup = nextGroupPos < mGroupSize
         val isNextGroupCached = nextGroupItem.detail.detailItems.isNotEmpty()
-        if (isNotLastGroup && isNextGroupCached) return
+        if (isNextGroupCached) return
 
         val nextGroupId = nextGroupItem.groupId
 
-        try {
-            val nextGroupData = requestStoriesDetailData(nextGroupId)
-            updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
-        } catch (_: Throwable) { }
+        val nextGroupData = requestStoriesDetailData(nextGroupId)
+        updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
     }
 
     private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
@@ -342,7 +337,9 @@ class StoriesViewModel @AssistedInject constructor(
             mLatestTrackPosition = mDetailPos
             val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker
             requestSetStoriesTrackActivity(trackerId)
-        }) {}
+        }) { exception ->
+            _storiesEvent.emit(StoriesUiEvent.ErrorSetTracking(exception))
+        }
     }
 
     private suspend fun requestStoriesInitialData(): StoriesUiModel {
@@ -374,9 +371,9 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     companion object {
-        private const val SAVED_INSTANCE_STORIES_MAIN_DATA = "stories_main_data"
-        private const val SAVED_INSTANCE_STORIES_GROUP_POSITION = "stories_group_position"
-        private const val SAVED_INSTANCE_STORIES_DETAIL_POSITION = "stories_detail_position"
+        const val SAVED_INSTANCE_STORIES_MAIN_DATA = "stories_main_data"
+        const val SAVED_INSTANCE_STORIES_GROUP_POSITION = "stories_group_position"
+        const val SAVED_INSTANCE_STORIES_DETAIL_POSITION = "stories_detail_position"
     }
 
 }

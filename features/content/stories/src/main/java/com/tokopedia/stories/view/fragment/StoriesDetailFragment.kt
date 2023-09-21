@@ -110,11 +110,11 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.storiesMainData.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroupHeader(prevState, state)
+            viewModel.storiesState.withCache().collectLatest { (prevState, state) ->
+                renderStoriesGroupHeader(prevState?.storiesMainData, state.storiesMainData)
                 renderStoriesDetail(
-                    prevState?.groupItems?.get(prevState.selectedGroupPosition)?.detail,
-                    state.groupItems[state.selectedGroupPosition].detail,
+                    prevState?.storiesMainData?.groupItems?.get(prevState.storiesMainData.selectedGroupPosition)?.detail,
+                    state.storiesMainData.groupItems[state.storiesMainData.selectedGroupPosition].detail,
                 )
             }
         }
