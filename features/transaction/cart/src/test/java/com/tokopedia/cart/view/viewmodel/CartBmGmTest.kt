@@ -246,4 +246,48 @@ class CartBmGmTest : BaseCartViewModelTest() {
         // THEN
         Assert.assertFalse(cartItemHolderDataTwo.cartBmGmTickerData.isShowTickerBmGm)
     }
+
+    @Test
+    fun `WHEN updateBmGmTickerData called but no product is matched`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartId = "124",
+            cartStringOrder = "222",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
+                ),
+                isShowTickerBmGm = true
+            ),
+            productId = "1111"
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(
+            cartId = "125",
+            isShopShown = true,
+            cartStringOrder = "223",
+            productId = "2222"
+        )
+
+        val cartItemHolderDataWillDeleted = CartItemHolderData(
+            cartId = "120",
+            cartStringOrder = "221",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    bmGmData = CartDetailInfo.BmGmData(offerId = 10L)
+                ),
+                isShowTickerBmGm = true
+            ),
+            productId = "1212"
+        )
+
+        cartViewModel.cartDataList.value = arrayListOf(cartItemHolderData, cartItemHolderDataTwo)
+
+        // WHEN
+        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderDataWillDeleted))
+
+        // THEN
+        Assert.assertTrue(cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm)
+    }
 }
