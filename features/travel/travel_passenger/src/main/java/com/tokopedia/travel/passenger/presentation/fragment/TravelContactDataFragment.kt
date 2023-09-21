@@ -1,5 +1,6 @@
 package com.tokopedia.travel.passenger.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -106,6 +107,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun initView() {
         binding?.run {
             tilContactName.setLabel(getString(R.string.travel_contact_data_name_title))

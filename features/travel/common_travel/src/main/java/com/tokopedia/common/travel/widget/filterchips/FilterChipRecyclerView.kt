@@ -50,7 +50,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
 
     fun getFirstSelectedItem(): String {
         for (i in 0 until adapter.itemCount) {
-            with(binding.chipRecyclerView.findViewHolderForAdapterPosition(i) as FilterChipAdapter.ViewHolder?) {
+            with(binding.chipRecyclerView.findViewHolderForAdapterPosition(i) as? FilterChipAdapter.ViewHolder) {
                 if (this?.chips?.isSelected == true) return this.chips.chipText.toString()
             }
         }
@@ -59,7 +59,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
 
     override fun onResetChip() {
         for (i in 0 until adapter.itemCount) {
-            with(binding.chipRecyclerView.findViewHolderForAdapterPosition(i) as FilterChipAdapter.ViewHolder?) {
+            with(binding.chipRecyclerView.findViewHolderForAdapterPosition(i) as? FilterChipAdapter.ViewHolder) {
                 this?.chips?.isSelected = false
                 this?.chips?.chipType = ChipsUnify.TYPE_NORMAL
             }
@@ -77,7 +77,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
 
     fun selectChipByPosition(position: Int) {
         if (position < adapter.itemCount) {
-            with(binding.chipRecyclerView.findViewHolderForAdapterPosition(position) as FilterChipAdapter.ViewHolder?) {
+            with(binding.chipRecyclerView.findViewHolderForAdapterPosition(position) as? FilterChipAdapter.ViewHolder) {
                 this?.selectChip()
             }
         }
