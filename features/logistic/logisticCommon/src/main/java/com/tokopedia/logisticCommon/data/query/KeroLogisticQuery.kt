@@ -49,23 +49,6 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
-    val getDistrictDetails = """
-        query KeroDistrictQuery(${'$'}query: String, ${'$'}page: String){
-          keroGetDistrictDetails(query:${'$'}query, page:${'$'}page) {
-            district {
-              district_id
-              district_name
-              city_id
-              city_name
-              province_id
-              province_name
-              zip_code
-            }
-            next_available
-          }
-        }
-    """.trimIndent()
-
     val keroMapsAutofill = """
         query kero_maps_autofill(${'$'}latlng: String!, ${'$'}err: Boolean, ${'$'}is_manage_address_flow: Boolean){
           kero_maps_autofill(latlng: ${'$'}latlng, error_data: ${'$'}err, is_manage_address_flow: ${'$'}is_manage_address_flow) {
