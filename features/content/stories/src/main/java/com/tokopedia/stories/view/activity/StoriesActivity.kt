@@ -5,16 +5,21 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.stories.R
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.utils.KEY_CONFIG_ENABLE_STORIES_ROOM
 import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.SHOP_ID_INDEX_APP_LINK
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
 import javax.inject.Inject
+import com.tokopedia.stories.R as storiesR
 
 class StoriesActivity : BaseActivity() {
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -27,19 +32,23 @@ class StoriesActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        getData()
+        initFragmentFactory()
         super.onCreate(savedInstanceState)
+        getData()
         setupViews()
     }
 
     override fun getTheme(): Resources.Theme {
         val theme = super.getTheme()
-        theme.applyStyle(R.style.Stories_Theme, true)
+        theme.applyStyle(storiesR.style.Stories_Theme, true)
         return theme
     }
 
     private fun inject() {
         StoriesInjector.get(this).inject(this)
+    }
+
+    private fun initFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
@@ -59,7 +68,13 @@ class StoriesActivity : BaseActivity() {
     private fun setupViews() {
         _binding = ActivityStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        openFragment()
+
+        if (isEnableStoriesRoom()) openFragment()
+        else finish()
+    }
+
+    private fun isEnableStoriesRoom(): Boolean {
+        return remoteConfig.getBoolean(KEY_CONFIG_ENABLE_STORIES_ROOM, true)
     }
 
     private fun openFragment() {
