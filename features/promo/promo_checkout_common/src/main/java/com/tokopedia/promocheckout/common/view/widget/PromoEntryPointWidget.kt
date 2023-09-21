@@ -448,8 +448,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         isSecondaryTextEnabled: Boolean = false,
         isExpanded: Boolean = false,
         animateWording: Boolean = false,
-        onClickListener: (isSummary: Boolean) -> Unit = {},
-        onExpandCollapseListener: (isExpanded: Boolean) -> Unit = {}
+        onClickListener: () -> Unit = {},
+        onChevronExpandClickListener: (isExpanded: Boolean) -> Unit = {},
+        onSummaryExpandedListener: () -> Unit = {}
     ) {
         activeViewConfettiFrame?.visibility = View.VISIBLE
         activeViewSummaryLayout?.visibility = View.GONE
@@ -520,7 +521,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                         View.GONE
                     summaryView.setOnClickListener {
                         if (activeViewWording?.visibility == View.VISIBLE) {
-                            onClickListener.invoke(true)
+                            onClickListener.invoke()
                         }
                     }
                     this.addView(summaryView)
@@ -559,7 +560,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     }
                     groupContainer.setOnClickListener {
                         if (activeViewWording?.visibility == View.VISIBLE) {
-                            onClickListener.invoke(false)
+                            onClickListener.invoke()
                         }
                     }
                 }
@@ -568,6 +569,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
                 activeViewSummaryLayout?.visibility = View.VISIBLE
                 activeViewDivider?.visibility = View.VISIBLE
+                onSummaryExpandedListener.invoke()
             } else {
                 activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
                 activeViewSummaryLayout?.visibility = View.GONE
@@ -579,12 +581,13 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                         activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
                         activeViewSummaryLayout?.visibility = View.GONE
                         activeViewDivider?.visibility = View.GONE
-                        onExpandCollapseListener.invoke(false)
+                        onChevronExpandClickListener.invoke(false)
                     } else {
                         activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
                         activeViewSummaryLayout?.visibility = View.VISIBLE
                         activeViewDivider?.visibility = View.VISIBLE
-                        onExpandCollapseListener.invoke(true)
+                        onChevronExpandClickListener.invoke(true)
+                        onSummaryExpandedListener.invoke()
                     }
                 }
             }

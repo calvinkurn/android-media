@@ -299,37 +299,31 @@ class OrderPromoCard(
                             isSecondaryTextEnabled = isSecondaryTextEnabled,
                             isExpanded = isDetailExpanded,
                             animateWording = orderPromo.isAnimateWording,
-                            onClickListener = { isSummary ->
+                            onClickListener = {
                                 if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
                                     listener.onClickPromo()
-                                    if (isSummary) {
-                                        listener.sendClickUserSavingAndPromoEntryPointEvent(
-                                            entryPointMessages = listOf(message),
-                                            entryPointInfo = entryPointInfo,
-                                            lastApply = lastApply
-                                        )
-                                    } else {
-                                        listener.sendClickUserSavingDetailTotalSubsidyEvent(
-                                            entryPointMessages = listOf(message),
-                                            entryPointInfo = entryPointInfo,
-                                            lastApply = lastApply
-                                        )
-                                    }
+                                    listener.sendClickUserSavingDetailTotalSubsidyEvent(
+                                        entryPointMessages = listOf(message),
+                                        entryPointInfo = entryPointInfo,
+                                        lastApply = lastApply
+                                    )
                                 }
                             },
-                            onExpandCollapseListener = { isExpanded ->
+                            onChevronExpandClickListener = { isExpanded ->
                                 if (isExpanded) {
                                     listener.sendClickUserSavingAndPromoEntryPointEvent(
                                         entryPointMessages = listOf(message),
                                         entryPointInfo = entryPointInfo,
                                         lastApply = lastApply
                                     )
-                                    listener.sendImpressionUserSavingDetailTotalSubsidyEvent(
-                                        entryPointMessages = listOf(message),
-                                        entryPointInfo = entryPointInfo,
-                                        lastApply = lastApply
-                                    )
                                 }
+                            },
+                            onSummaryExpandedListener = {
+                                listener.sendImpressionUserSavingDetailTotalSubsidyEvent(
+                                    entryPointMessages = listOf(message),
+                                    entryPointInfo = entryPointInfo,
+                                    lastApply = lastApply
+                                )
                             }
                         )
                         listener.sendImpressionUserSavingTotalSubsidyEvent(

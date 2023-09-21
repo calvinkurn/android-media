@@ -16,7 +16,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
-class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, private val listener: CheckoutAdapterListener) :
+class CheckoutPromoViewHolder(
+    private val binding: ItemCheckoutPromoBinding,
+    private val listener: CheckoutAdapterListener
+) :
     RecyclerView.ViewHolder(binding.root) {
 
     private var isApplied = false
@@ -41,7 +44,8 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
         val lastApply = model.promo
         val entryPointInfo = model.entryPointInfo
         if (!model.isLoading) {
-            val defaultMessage = itemView.context.getString(purchase_platformcommonR.string.promo_funnel_label)
+            val defaultMessage =
+                itemView.context.getString(purchase_platformcommonR.string.promo_funnel_label)
             if (!entryPointInfo.isSuccess) {
                 if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED ||
                     entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED ||
@@ -171,37 +175,31 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                         isSecondaryTextEnabled = isSecondaryTextEnabled,
                         isExpanded = isDetailExpanded,
                         animateWording = model.isAnimateWording,
-                        onClickListener = { isSummary ->
+                        onClickListener = {
                             if (entryPointInfo.isClickable) {
                                 listener.onClickPromoCheckout(lastApply)
-                                if (isSummary) {
-                                    listener.sendClickUserSavingAndPromoEntryPointEvent(
-                                        entryPointMessages = listOf(message),
-                                        entryPointInfo = entryPointInfo,
-                                        lastApply = lastApply
-                                    )
-                                } else {
-                                    listener.sendClickUserSavingDetailTotalSubsidyEvent(
-                                        entryPointMessages = listOf(message),
-                                        entryPointInfo = entryPointInfo,
-                                        lastApply = lastApply
-                                    )
-                                }
+                                listener.sendClickUserSavingDetailTotalSubsidyEvent(
+                                    entryPointMessages = listOf(message),
+                                    entryPointInfo = entryPointInfo,
+                                    lastApply = lastApply
+                                )
                             }
                         },
-                        onExpandCollapseListener = { isExpanded ->
+                        onChevronExpandClickListener = { isExpanded ->
                             if (isExpanded) {
                                 listener.sendClickUserSavingAndPromoEntryPointEvent(
                                     entryPointMessages = listOf(message),
                                     entryPointInfo = entryPointInfo,
                                     lastApply = lastApply
                                 )
-                                listener.sendImpressionUserSavingDetailTotalSubsidyEvent(
-                                    entryPointMessages = listOf(message),
-                                    entryPointInfo = entryPointInfo,
-                                    lastApply = lastApply
-                                )
                             }
+                        },
+                        onSummaryExpandedListener = {
+                            listener.sendImpressionUserSavingDetailTotalSubsidyEvent(
+                                entryPointMessages = listOf(message),
+                                entryPointInfo = entryPointInfo,
+                                lastApply = lastApply
+                            )
                         }
                     )
                     listener.sendImpressionUserSavingTotalSubsidyEvent(
@@ -228,12 +226,15 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                     isApplied = false
                 }
             }
+
             promo.defaultEmptyPromoMessage.isNotBlank() -> {
                 titleValue = promo.defaultEmptyPromoMessage
                 isApplied = false
             }
+
             else -> {
-                titleValue = itemView.context.getString(purchase_platformcommonR.string.promo_funnel_label)
+                titleValue =
+                    itemView.context.getString(purchase_platformcommonR.string.promo_funnel_label)
                 isApplied = false
             }
         }
@@ -243,7 +244,13 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                 titleValue,
                 promo.additionalInfo.messageInfo.detail,
                 IconUnify.CHEVRON_RIGHT,
-                promo.additionalInfo.usageSummaries.map { PromoEntryPointSummaryItem(it.description, it.amountStr, it.currencyDetailsStr) },
+                promo.additionalInfo.usageSummaries.map {
+                    PromoEntryPointSummaryItem(
+                        it.description,
+                        it.amountStr,
+                        it.currencyDetailsStr
+                    )
+                },
                 showConfetti = true
             ) {
                 listener.onClickPromoCheckout(promo)
