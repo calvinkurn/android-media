@@ -18,6 +18,7 @@ object RecommendationCarouselTrackingConst {
         const val ADJUST_QTY_PDP_RECOM_WITH_ATC = "click pdp recom with atc - adjust quantity"
         const val DELETE_PDP_RECOM_WITH_ATC = "click pdp recom with atc - delete"
         const val CLICK_PDP_RECOM_SEE_ALL = "click pdp recom with atc - lihat semua"
+        const val CLICK_BMGM_RECOM_SEE_ALL = "click lihat semua bmgm"
     }
 
     object List {
