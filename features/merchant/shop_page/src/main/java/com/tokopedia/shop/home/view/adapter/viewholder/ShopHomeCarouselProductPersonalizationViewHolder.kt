@@ -382,13 +382,14 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         recyclerViewCarouselSingleOrDoubleProduct?.show()
         productCarouselSingleOrDoubleAdapter = ShopHomeCarouselProductAdapter(
             ShopHomeCarouselProductAdapterTypeFactory(
-                element,
-                listProductCardModel,
-                carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemClickListener,
-                carouselProductCardOnItemImpressedListener,
-                carouselProductCardOnItemATCNonVariantClickListener,
-                carouselProductCardOnItemAddVariantClickListener
+                shopHomeCarouselProductUiModel = element,
+                listProductCardModel = listProductCardModel,
+                carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
+                carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
+                carouselProductCardOnItemATCNonVariantClickListener = carouselProductCardOnItemATCNonVariantClickListener,
+                carouselProductCardOnItemAddVariantClickListener = carouselProductCardOnItemAddVariantClickListener,
+                isOverrideWidgetTheme = element.header.isOverrideTheme
             )
         )
         val totalProductSize = listShopHomeProductUiModel.size
@@ -416,7 +417,6 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         tvCarouselTitle?.setTextColor(titleColor)
         tvCarouselSubTitle?.setTextColor(subTitleColor)
-
     }
 
     private fun configFestivity() {
