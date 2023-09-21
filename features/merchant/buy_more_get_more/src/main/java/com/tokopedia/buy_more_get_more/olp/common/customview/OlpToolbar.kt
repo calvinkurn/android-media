@@ -11,9 +11,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.toPx
@@ -39,22 +38,10 @@ class OlpToolbar : Toolbar {
     var cartCount: Int = 0
         set(value) {
             field = value
-            if (value > Int.ZERO) {
-                notification?.run {
-                    visible()
-                    setNotification(
-                        notif = value.toString(),
-                        notificationType = NotificationUnify.COUNTER_TYPE,
-                        colorType = NotificationUnify.COLOR_PRIMARY
-                    )
-                }
-            } else {
-                notification?.gone()
-            }
             refreshViews()
         }
 
-    var showShareButton:Boolean = false
+    var showShareButton: Boolean = false
         set(value) {
             field = value
             shareButton?.visibleWithCondition(value)
@@ -147,6 +134,15 @@ class OlpToolbar : Toolbar {
     private fun refreshViews() {
         tpgTitle?.text = title
         tpgSubTitle?.text = subTitle
+        notification?.run {
+            clearAnimation()
+            showWithCondition(cartCount.isMoreThanZero())
+            setNotification(
+                notif = cartCount.toString(),
+                notificationType = NotificationUnify.COUNTER_TYPE,
+                colorType = NotificationUnify.COLOR_PRIMARY
+            )
+        }
     }
 
     private fun IconUnify.setBlackIconValue() {

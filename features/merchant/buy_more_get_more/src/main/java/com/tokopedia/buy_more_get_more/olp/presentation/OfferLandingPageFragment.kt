@@ -62,9 +62,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
-import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -788,13 +786,6 @@ class OfferLandingPageFragment :
 
     private fun openShareBottomSheet(sharingData: SharingDataByOfferIdUiModel) {
         UniversalShareBottomSheet.createInstance().apply {
-            init(object : ShareBottomsheetListener {
-                override fun onShareOptionClicked(shareModel: ShareModel) {
-                }
-
-                override fun onCloseOptionClicked() {
-                }
-            })
             enableDefaultShareIntent()
             setMetaData(
                 tnTitle = sharingData.offerData.title,
@@ -802,6 +793,8 @@ class OfferLandingPageFragment :
             )
             setLinkProperties(
                 LinkProperties(
+                    linkerType = sharingData.offerData.pageType,
+                    id = currentState.offerIds.toSafeString(),
                     ogTitle = sharingData.offerData.title,
                     ogDescription = sharingData.offerData.description,
                     ogImageUrl = sharingData.offerData.imageUrl,
@@ -810,10 +803,14 @@ class OfferLandingPageFragment :
                 )
             )
             setUtmCampaignData(
-                pageName = "BMGM",
+                pageName = Constant.SHARING_PAGE_NAME,
                 userId = userSession.userId.toString(),
-                pageId = viewModel.getPageIdForSharing(),
-                feature = "share"
+                pageIdConstituents = listOf(
+                    currentState.shopData.shopId.toString(),
+                    currentState.offerIds.toSafeString(),
+                    currentState.offerTypeId.toString()
+                ),
+                feature = Constant.SHARING_FEATURE
             )
 
             val shareText = sharingData.offerData.description.replace("%", "%%")

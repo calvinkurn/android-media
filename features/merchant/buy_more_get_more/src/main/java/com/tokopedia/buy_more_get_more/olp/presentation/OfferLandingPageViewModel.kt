@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
@@ -81,7 +80,7 @@ class OfferLandingPageViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    private val userId: String
+    val userId: String
         get() = userSession.userId
 
     val isLogin: Boolean
@@ -345,10 +344,6 @@ class OfferLandingPageViewModel @Inject constructor(
                 availableProductImpressionList = mutableSetOf()
             )
         }
-    }
-
-    fun getPageIdForSharing(): String {
-        return "BMGM-${userSession.userId}-${currentState.shopData.shopId}-${currentState.offerIds.firstOrNull()}-${currentState.offerTypeId}-${Date()}-default"
     }
 
     fun getDeeplink(): String {
