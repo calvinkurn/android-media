@@ -102,7 +102,7 @@ internal class StoriesRobotUITest(
         scenario.moveToState(Lifecycle.State.RESUMED)
     }
 
-    fun moveToDestroyState() {
+    fun moveToDestroyState() = chainable {
         scenario.moveToState(Lifecycle.State.DESTROYED)
     }
 
@@ -131,11 +131,13 @@ internal class StoriesRobotUITest(
             .perform(click())
             .perform(click())
             .perform(click())
+            .perform(click())
     }
 
     fun tapPrevUntilPrevGroup() = chainable {
         Espresso
             .onView(withId(storiesR.id.fl_stories_prev))
+            .perform(click())
             .perform(click())
             .perform(click())
             .perform(click())
