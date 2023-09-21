@@ -1486,6 +1486,16 @@ class RechargeGeneralFragment :
         processCheckout()
     }
 
+    override fun onClickMultiCheckout(data: TopupBillsEnquiry) {
+        if (!isAddSBM) {
+            rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, productName)
+            rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
+        }
+
+        addToCartViewModel.setAtcMultiCheckoutParam()
+        processCheckout()
+    }
+
     private fun processCheckout() {
         // Setup checkout pass data
         if (validateEnquiry()) {

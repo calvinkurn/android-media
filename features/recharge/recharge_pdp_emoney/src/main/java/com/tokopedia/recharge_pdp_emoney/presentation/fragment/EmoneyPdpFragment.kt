@@ -754,7 +754,15 @@ open class EmoneyPdpFragment :
     }
 
     override fun onClickMultiCheckoutButton() {
-        //TODO("Not yet implemented")
+        binding.emoneyBuyWidget.onBuyButtonLoading(true)
+        addToCartViewModel.setAtcMultiCheckoutParam()
+        proceedAddToCart(
+            emoneyPdpViewModel.generateCheckoutPassData(
+                (requireActivity() as EmoneyPdpActivity).promoCode,
+                binding.emoneyPdpInputCardWidget.getNumber(),
+                categoryIdFromPDP = detailPassData.categoryId
+            )
+        )
     }
 
     private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {
