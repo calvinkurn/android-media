@@ -2919,7 +2919,7 @@ open class ShopPageHomeFragment :
         AtcVariantHelper.goToAtcVariant(
             context = requireContext(),
             productId = shopHomeProductViewModel.id.orEmpty(),
-            pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
+            pageSource = VariantPageSource.SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE,
             shopId = shopId,
             startActivitResult = this::startActivityForResult,
             showQuantityEditor = true
