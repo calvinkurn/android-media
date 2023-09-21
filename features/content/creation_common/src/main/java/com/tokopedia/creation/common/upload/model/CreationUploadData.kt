@@ -77,6 +77,9 @@ sealed interface CreationUploadData {
 
         @SerializedName(KEY_AUTHOR_TYPE)
         override val authorType: String,
+
+        @SerializedName(KEY_DRAFT_ID)
+        val draftId: String,
     ) : CreationUploadData {
 
         override fun mapToEntity(gson: Gson): CreationUploadQueueEntity {
@@ -88,8 +91,7 @@ sealed interface CreationUploadData {
                 timestamp = timestamp,
                 data = gson.toJson(
                     CreationUploadQueueEntity.Post(
-                        authorId = authorId,
-                        authorType = authorType,
+                        draftId = draftId
                     )
                 )
             )
@@ -211,7 +213,8 @@ sealed interface CreationUploadData {
         private const val KEY_AUTHOR_TYPE = "authorType"
         private const val KEY_MEDIA_URI_LIST = "mediaUriList"
         private const val KEY_COVER_URI = "coverUri"
-        private const val KEY_SOURCE_ID = "sourceid"
+        private const val KEY_SOURCE_ID = "sourceId"
+        private const val KEY_DRAFT_ID = "draftId"
 
         fun parseFromJson(json: String, gson: Gson): CreationUploadData {
             val uploadDataEntity = gson.fromJson<CreationUploadQueueEntity>(
@@ -242,8 +245,9 @@ sealed interface CreationUploadData {
                         mediaUriList = emptyList(),
                         coverUri = "",
                         sourceId = "",
-                        authorId = postEntity.authorId,
-                        authorType = postEntity.authorType,
+                        authorId = "",
+                        authorType = "",
+                        draftId = postEntity.draftId,
                     )
                 }
                 CreationUploadType.Shorts -> {
@@ -289,24 +293,20 @@ sealed interface CreationUploadData {
         }
 
         fun buildForPost(
-            creationId: String,
-            mediaUriList: List<String>,
-            coverUri: String,
-            sourceId: String,
-            authorId: String,
-            authorType: String,
+            draftId: String,
         ): CreationUploadData {
             return Post(
                 queueId = 0,
                 uploadType = CreationUploadType.Post,
                 queueStatus = UploadQueueStatus.Queued,
                 timestamp = System.currentTimeMillis(),
-                creationId = creationId,
-                mediaUriList = mediaUriList,
-                coverUri = coverUri,
-                sourceId = sourceId,
-                authorId = authorId,
-                authorType = authorType,
+                creationId = "",
+                mediaUriList = emptyList(),
+                coverUri = "",
+                sourceId = "",
+                authorId = "",
+                authorType = "",
+                draftId = draftId,
             )
         }
 

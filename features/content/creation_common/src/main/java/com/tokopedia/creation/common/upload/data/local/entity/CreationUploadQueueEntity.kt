@@ -34,11 +34,8 @@ data class CreationUploadQueueEntity(
 ) {
 
     data class Post(
-        @SerializedName("author_id")
-        val authorId: String = "",
-
-        @SerializedName("author_type")
-        val authorType: String = "",
+        @SerializedName("draft_id")
+        val draftId: String = "",
     )
 
     data class Shorts(
