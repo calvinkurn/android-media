@@ -32,8 +32,8 @@ class StoriesActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        super.onCreate(savedInstanceState)
         initFragmentFactory()
+        super.onCreate(savedInstanceState)
         getData()
         setupViews()
     }
