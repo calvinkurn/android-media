@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.AddAddressResponse
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
 import com.tokopedia.logisticCommon.data.response.DefaultAddressData
@@ -18,6 +17,7 @@ import com.tokopedia.logisticCommon.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.PinpointValidationUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -44,11 +44,11 @@ class AddressFormViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val repo: KeroRepository = mockk(relaxed = true)
     private val getDefaultAddress: GetDefaultAddressUseCase = mockk(relaxed = true)
     private val getAddressDetail: GetAddressDetailUseCase = mockk(relaxed = true)
     private val addAddress: AddAddressUseCase = mockk(relaxed = true)
     private val editAddress: EditAddressUseCase = mockk(relaxed = true)
+    private val validatePinpoint: PinpointValidationUseCase = mockk(relaxed = true)
     private val saveAddressDataModel = SaveAddressDataModel()
     private val addressId = "12345"
     private val sourceValue = ""
@@ -85,7 +85,13 @@ class AddressFormViewModelTest {
     }
 
     private fun initObserver() {
-        addressFormViewModel = AddressFormViewModel(repo, getAddressDetail, getDefaultAddress, addAddress, editAddress)
+        addressFormViewModel = AddressFormViewModel(
+            getAddressDetail,
+            getDefaultAddress,
+            addAddress,
+            editAddress,
+            validatePinpoint
+        )
         addressFormViewModel.saveAddress.observeForever(saveAddressObserver)
         addressFormViewModel.defaultAddress.observeForever(defaultAddressObserver)
         addressFormViewModel.editAddress.observeForever(editAddressObserver)
@@ -276,14 +282,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Pinpoint Validation Data Success`() {
         // Given
-        coEvery {
-            repo.pinpointValidation(
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } returns PinpointValidationResponse()
+        coEvery { validatePinpoint(any()) } returns PinpointValidationResponse()
 
         // When
         addressFormViewModel.validatePinpoint(saveAddressDataModel)
@@ -294,7 +293,7 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Pinpoint Validation Data Fail`() {
-        coEvery { repo.pinpointValidation(any(), any(), any(), any()) } throws Exception()
+        coEvery { validatePinpoint(any()) } throws Exception()
         addressFormViewModel.validatePinpoint(saveAddressDataModel)
         verify { pinpointValidationObserver.onChanged(match { it is Fail }) }
     }
@@ -316,14 +315,7 @@ class AddressFormViewModelTest {
 
         // Given
         coEvery { addressFormViewModel.saveEditAddress(any(), any()) } just Runs
-        coEvery {
-            repo.pinpointValidation(
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } returns mockResponse
+        coEvery { validatePinpoint(any()) } returns mockResponse
 
         // When
         addressFormViewModel.saveDataModel = saveAddressDataModel

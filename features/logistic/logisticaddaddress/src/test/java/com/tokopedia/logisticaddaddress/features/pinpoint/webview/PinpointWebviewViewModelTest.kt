@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.AddAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
@@ -30,7 +29,6 @@ class PinpointWebviewViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val repo: KeroRepository = mockk(relaxed = true)
     private val getDistrictGeocode: GetDistrictGeoCodeUseCase = mockk(relaxed = true)
     private val liveDataObserver: Observer<PinpointWebviewState> = mockk(relaxed = true)
 

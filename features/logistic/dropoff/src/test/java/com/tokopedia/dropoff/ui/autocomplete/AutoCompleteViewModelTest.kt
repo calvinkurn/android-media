@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.dropoff.domain.mapper.AutoCompleteMapper
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.AddressResponse
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
@@ -35,7 +34,6 @@ class AutoCompleteViewModelTest {
     @get:Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val repo: KeroRepository = mockk(relaxed = true)
     private val getDistrict: GetDistrictUseCase = mockk(relaxed = true)
     private val getAutoCompleteUseCase: GetAutoCompleteUseCase = mockk(relaxed = true)
     private val getAddress: GetAddressUseCase = mockk(relaxed = true)

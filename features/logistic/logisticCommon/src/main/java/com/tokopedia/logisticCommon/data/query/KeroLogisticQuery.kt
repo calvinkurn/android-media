@@ -93,19 +93,4 @@ object KeroLogisticQuery {
           }
         }
     """.trimIndent()
-
-    val pinpoint_validation = """
-        mutation pinpoint_validation(${'$'}district_id: Int, ${'$'}latitude: String, ${'$'}longitude: String, ${'$'}postal_code: String) {
-            pinpoint_validation(district_id: ${'$'}district_id, latitude: ${'$'}latitude, longitude: ${'$'}longitude, postal_code: ${'$'}postal_code) {
-                data {
-                    checksum
-                    district_id
-                    latitude
-                    longitude
-                    result
-                    result_text
-                }
-            }
-        }
-    """.trimIndent()
 }
