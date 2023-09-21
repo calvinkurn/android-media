@@ -14,7 +14,7 @@ fun String.stringHexColorParseToInt(alphaPercentage:Int = 100): Int {
         val alphaValue: Int = (alphaPercentage * 255) / 100
         Color.argb(alphaValue, Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue))
     }catch (e:Exception){
-        Color.RED
+        Color.TRANSPARENT
     }
 }
 
@@ -23,7 +23,7 @@ fun Int.alphaColor(alphaPercentage:Int = 100): Int {
         val alphaValue: Int = (alphaPercentage * 255) / 100
         Color.argb(alphaValue, Color.red(this), Color.green(this), Color.blue(this))
     }catch (e:Exception){
-        Color.RED
+        Color.TRANSPARENT
     }
 }
 

@@ -13,9 +13,9 @@ class CatalogLandingPageViewModel @Inject constructor(
     private val catalogDetailUseCase: CatalogDetailUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _errorsToaster = MutableLiveData<Throwable>()
-    val errorsToaster: LiveData<Throwable>
-        get() = _errorsToaster
+    private val _errorPage = MutableLiveData<Throwable>()
+    val errorPage: LiveData<Throwable>
+        get() = _errorPage
 
     private val _usingV4AboveLayout = MutableLiveData<Boolean>()
     val usingV4AboveLayout: LiveData<Boolean>
@@ -29,7 +29,7 @@ class CatalogLandingPageViewModel @Inject constructor(
                 _usingV4AboveLayout.postValue(result)
             },
             onError = {
-                _errorsToaster.postValue(it)
+                _errorPage.postValue(it)
             }
         )
     }

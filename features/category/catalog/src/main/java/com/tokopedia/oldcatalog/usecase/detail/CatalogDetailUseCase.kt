@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.catalog.ui.mapper.CatalogDetailUiMapper
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_NULL_DATA_SHORT
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oldcatalog.model.datamodel.CatalogDetailDataModel
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
@@ -29,7 +30,7 @@ class CatalogDetailUseCase @Inject constructor(
         if(data?.catalogGetDetailModular != null)
             catalogDetailDataModel.value = Success(mapIntoModel(comparedCatalogId,data.catalogGetDetailModular))
         else{
-            catalogDetailDataModel.value = Fail(Throwable("No data found"))
+            catalogDetailDataModel.value = Fail(Throwable(MESSAGE_ERROR_NULL_DATA_SHORT))
         }
     }
 
@@ -44,7 +45,7 @@ class CatalogDetailUseCase @Inject constructor(
         if (data?.catalogGetDetailModular != null)
             catalogDetailDataModel.postValue(Success(catalogDetailUiMapper.mapToCatalogDetailUiModel(data.catalogGetDetailModular)))
         else{
-            catalogDetailDataModel.postValue(Fail(Throwable("No data found")))
+            catalogDetailDataModel.postValue(Fail(Throwable(MESSAGE_ERROR_NULL_DATA_SHORT)))
         }
     }
 
@@ -60,9 +61,14 @@ class CatalogDetailUseCase @Inject constructor(
         )
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
         return if (data?.catalogGetDetailModular != null){
-            catalogDetailUiMapper.isUsingAboveV4Layout(data.catalogGetDetailModular.version)
+            if (data.catalogGetDetailModular.layouts.orEmpty().isEmpty()
+                && data.catalogGetDetailModular.components.orEmpty().isEmpty()) {
+                throw MessageErrorException(MESSAGE_ERROR_NULL_DATA_SHORT)
+            } else {
+                catalogDetailUiMapper.isUsingAboveV4Layout(data.catalogGetDetailModular.version)
+            }
         } else {
-            throw MessageErrorException("Invalid Data")
+            throw MessageErrorException(MESSAGE_ERROR_NULL_DATA_SHORT)
         }
     }
 

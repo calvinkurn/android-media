@@ -9,9 +9,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.catalog.databinding.FragmentCatalogLoaderPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.viewmodel.CatalogLandingPageViewModel
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CatalogLandingPageFragment: BaseDaggerFragment() {
@@ -38,6 +42,9 @@ class CatalogLandingPageFragment: BaseDaggerFragment() {
     lateinit var viewModel: CatalogLandingPageViewModel
     private var binding by autoClearedNullable<FragmentCatalogLoaderPageBinding>()
     private var fragmentListener: CatalogLandingPageFragmentListener? = null
+    private val catalogId by lazy {
+        arguments?.getString(ARG_EXTRA_CATALOG_ID, "").orEmpty()
+    }
 
     override fun getScreenName() = CatalogLandingPageFragment::class.java.canonicalName.orEmpty()
 
@@ -59,14 +66,8 @@ class CatalogLandingPageFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializePage()
+        viewModel.getProductCatalogVersion(catalogId)
         setupObservers(view)
-    }
-
-    private fun initializePage() {
-        arguments?.getString(ARG_EXTRA_CATALOG_ID, "")?.let { catalogId ->
-            viewModel.getProductCatalogVersion(catalogId)
-        }
     }
 
     private fun setupObservers(view: View) {
@@ -76,11 +77,30 @@ class CatalogLandingPageFragment: BaseDaggerFragment() {
             } else {
                 fragmentListener?.onLayoutBelowVersion3()
             }
+            binding?.gePageError?.errorDescription?.gone()
+            binding?.groupContent?.show()
         }
 
-        viewModel.errorsToaster.observe(viewLifecycleOwner) {
-            val errorMessage = ErrorHandler.getErrorMessage(view.context, it)
-            Toaster.build(view, errorMessage, duration = Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR).show()
+        viewModel.errorPage.observe(viewLifecycleOwner) {
+            binding?.showError(view, it)
+        }
+    }
+
+    private fun FragmentCatalogLoaderPageBinding.showError(view: View, throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(view.context, throwable)
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                gePageError.setType(GlobalError.NO_CONNECTION)
+            }
+            else -> {
+                gePageError.setType(GlobalError.SERVER_ERROR)
+            }
+        }
+        gePageError.errorDescription.text = errorMessage
+        gePageError.show()
+        groupContent.gone()
+        gePageError.setActionClickListener {
+            viewModel.getProductCatalogVersion(catalogId)
         }
     }
 

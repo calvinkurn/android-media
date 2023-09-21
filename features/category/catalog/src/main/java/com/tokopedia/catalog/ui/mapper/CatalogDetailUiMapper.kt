@@ -125,6 +125,7 @@ class CatalogDetailUiMapper @Inject constructor(
             }
 
             PriceCtaProperties(
+                catalogId = remoteModel.basicInfo.id,
                 price = displayedPrice,
                 productName = priceCta.name,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
