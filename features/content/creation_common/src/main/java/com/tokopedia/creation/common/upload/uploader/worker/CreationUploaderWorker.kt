@@ -6,6 +6,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
@@ -13,6 +14,7 @@ import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueu
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
 import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.UnknownUploadTypeException
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -55,11 +57,9 @@ class CreationUploaderWorker(
              */
 
             while(true) {
-                val data = queueRepository.getTopQueue() ?: break
-
-                if (data == CreationUploadData.Empty) continue
-
                 try {
+                    val data = queueRepository.getTopQueue() ?: break
+
                     val uploadManager = uploadManagerProvider.get(data.uploadType)
 
                     val uploadResult = uploadManager.execute(
@@ -86,7 +86,14 @@ class CreationUploaderWorker(
                         break
                     }
                 } catch (throwable: Throwable) {
-                    break
+                    when (throwable) {
+                        is JsonSyntaxException,
+                        is UnknownUploadTypeException -> {
+                            queueRepository.deleteTopQueue()
+                            continue
+                        }
+                        else -> break
+                    }
                 }
             }
 

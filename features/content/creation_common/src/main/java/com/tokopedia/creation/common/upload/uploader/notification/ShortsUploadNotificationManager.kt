@@ -4,13 +4,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
-import com.tokopedia.creation.common.upload.model.orEmpty
 import javax.inject.Inject
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.upload.model.CreationUploadData
@@ -21,7 +21,8 @@ import com.tokopedia.creation.common.upload.model.CreationUploadData
 class ShortsUploadNotificationManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dispatchers: CoroutineDispatchers,
-) : CreationUploadNotificationManager(context, dispatchers) {
+    private val gson: Gson,
+) : CreationUploadNotificationManager(context, dispatchers, gson) {
 
     override val uploadNotificationText: CreationUploadNotificationText = CreationUploadNotificationText(
         progressTitle = context.getString(R.string.content_creation_upload_notification_shorts_progress_title),
@@ -39,7 +40,7 @@ class ShortsUploadNotificationManager @Inject constructor(
             channelId = uploadData?.creationId.orEmpty(),
             authorId = uploadData?.authorId.orEmpty(),
             authorType = uploadData?.authorType.orEmpty(),
-            appLink = getPlayRoomAppLink(uploadData.orEmpty())
+            appLink = uploadData?.let { getPlayRoomAppLink(it) }.orEmpty()
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }

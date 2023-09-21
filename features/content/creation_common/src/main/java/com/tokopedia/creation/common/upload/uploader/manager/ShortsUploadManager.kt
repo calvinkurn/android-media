@@ -99,7 +99,7 @@ class ShortsUploadManager @Inject constructor(
                 broadcastInit(uploadData)
                 updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 
-                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri, withUpdateProgress = true)
+                val mediaUrl = uploadMedia(UploadType.Video, uploadData.firstMediaUri, withUpdateProgress = true)
 
                 if (uploadData.coverUri.isEmpty()) {
                     uploadFirstSnapshotAsCover(uploadData)
@@ -161,7 +161,7 @@ class ShortsUploadManager @Inject constructor(
     private suspend fun uploadFirstSnapshotAsCover(
         uploadData: CreationUploadData
     ) {
-        val bitmap = snapshotHelper.snapVideo(appContext, uploadData.mediaUri)
+        val bitmap = snapshotHelper.snapVideo(appContext, uploadData.firstMediaUri)
             ?: throw Exception("Gagal upload cover")
 
         val uploadId = uploadMedia(UploadType.Image, bitmap.absolutePath, withUpdateProgress = false)

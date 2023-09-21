@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
@@ -34,13 +35,16 @@ class CreationUploadReceiver : BroadcastReceiver() {
     @Inject
     lateinit var uploadQueueRepository: CreationUploadQueueRepository
 
+    @Inject
+    lateinit var gson: Gson
+
     override fun onReceive(context: Context, intent: Intent?) {
         inject(context)
 
         val scope = CoroutineScope(dispatchers.io)
 
         val uploadDataRaw = intent?.getStringExtra(EXTRA_UPLOAD_DATA).orEmpty()
-        val uploadData = CreationUploadData.parse(uploadDataRaw)
+        val uploadData = CreationUploadData.parseFromJson(uploadDataRaw, gson)
 
         NotificationManagerCompat.from(context).cancel(uploadData.notificationIdAfterUpload)
 
@@ -82,11 +86,11 @@ class CreationUploadReceiver : BroadcastReceiver() {
 
         fun getIntent(
             context: Context,
-            uploadData: CreationUploadData,
+            jsonUploadData: String,
             action: Action,
         ): Intent {
             return Intent(context, CreationUploadReceiver::class.java).apply {
-                putExtra(EXTRA_UPLOAD_DATA, uploadData.toString())
+                putExtra(EXTRA_UPLOAD_DATA, jsonUploadData)
                 putExtra(EXTRA_ACTION, action.value)
             }
         }

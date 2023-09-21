@@ -618,7 +618,7 @@ class PlayShortsViewModel @Inject constructor(
     private suspend fun uploadMedia() {
         val uploadData = CreationUploadData.buildForShorts(
             creationId = shortsId,
-            mediaUri = _media.value.mediaUri,
+            mediaUriList = listOf(_media.value.mediaUri),
             coverUri = _coverForm.value.coverUri,
             sourceId = _config.value.shortsVideoSourceId,
             authorId = selectedAccount.id,

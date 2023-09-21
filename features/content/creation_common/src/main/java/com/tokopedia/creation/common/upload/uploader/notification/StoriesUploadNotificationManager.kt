@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.R
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class StoriesUploadNotificationManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dispatchers: CoroutineDispatchers,
-) : CreationUploadNotificationManager(context, dispatchers) {
+    private val gson: Gson,
+) : CreationUploadNotificationManager(context, dispatchers, gson) {
 
     override val uploadNotificationText: CreationUploadNotificationText = CreationUploadNotificationText(
         progressTitle = context.getString(R.string.content_creation_upload_notification_stories_progress_title),

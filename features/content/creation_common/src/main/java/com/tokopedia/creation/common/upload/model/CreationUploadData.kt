@@ -1,25 +1,29 @@
 package com.tokopedia.creation.common.upload.model
 
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import java.util.UUID
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
  */
-data class CreationUploadData private constructor(
-    val id: String,
-    val uploadType: CreationUploadType,
-    val queueStatus: UploadQueueStatus,
-    val timestamp: Long = 0L,
-    val creationId: String,
-    val mediaUri: String,
-    val coverUri: String,
-    val sourceId: String,
-    val authorId: String,
-    val authorType: String,
-) {
+sealed interface CreationUploadData {
+    val id: String
+    val uploadType: CreationUploadType
+    val queueStatus: UploadQueueStatus
+    val timestamp: Long
+    val creationId: String
+    val mediaUriList: List<String>
+    val coverUri: String
+    val sourceId: String
+    val authorId: String
+    val authorType: String
+
+    val firstMediaUri: String
+        get() = mediaUriList.firstOrNull().orEmpty()
 
     val notificationId: Int
         get() = creationId.toIntOrZero()
@@ -32,137 +36,205 @@ data class CreationUploadData private constructor(
     val notificationIdAfterUpload: Int
         get() = notificationId + 1
 
-    override fun toString(): String {
-        return mapOf(
-            KEY_ID to id,
-            KEY_UPLOAD_TYPE to uploadType.type,
-            KEY_QUEUE_STATUS to queueStatus.value,
-            KEY_TIMESTAMP to timestamp,
-            KEY_CREATION_ID to creationId,
-            KEY_MEDIA_URI to mediaUri,
-            KEY_COVER_URI to coverUri,
-            KEY_SOURCE_ID to sourceId,
-            KEY_AUTHOR_ID to authorId,
-            KEY_AUTHOR_TYPE to authorType,
-        ).toString()
+    fun mapToEntity(gson: Gson): CreationUploadQueueEntity
+
+    fun mapToJson(gson: Gson): String {
+        return try {
+            gson.toJson(mapToEntity(gson))
+        } catch (throwable: Throwable) {
+            ""
+        }
     }
 
-    fun mapToEntity(): CreationUploadQueueEntity {
-        return CreationUploadQueueEntity(
-            id = id,
-            uploadType = uploadType.type,
-            queueStatus = queueStatus.value,
-            timestamp = timestamp,
-            creationId = creationId,
-            mediaUri = mediaUri,
-            coverUri = coverUri,
-            sourceId = sourceId,
-            authorId = authorId,
-            authorType = authorType,
-        )
+    data class Shorts(
+        @SerializedName(KEY_ID)
+        override val id: String,
+
+        @SerializedName(KEY_UPLOAD_TYPE)
+        override val uploadType: CreationUploadType,
+
+        @SerializedName(KEY_QUEUE_STATUS)
+        override val queueStatus: UploadQueueStatus,
+
+        @SerializedName(KEY_TIMESTAMP)
+        override val timestamp: Long,
+
+        @SerializedName(KEY_CREATION_ID)
+        override val creationId: String,
+
+        @SerializedName(KEY_MEDIA_URI_LIST)
+        override val mediaUriList: List<String>,
+
+        @SerializedName(KEY_COVER_URI)
+        override val coverUri: String,
+
+        @SerializedName(KEY_SOURCE_ID)
+        override val sourceId: String,
+
+        @SerializedName(KEY_AUTHOR_ID)
+        override val authorId: String,
+
+        @SerializedName(KEY_AUTHOR_TYPE)
+        override val authorType: String,
+    ) : CreationUploadData {
+
+        override fun mapToEntity(gson: Gson): CreationUploadQueueEntity {
+            return CreationUploadQueueEntity(
+                id = id,
+                creationId = creationId,
+                uploadType = uploadType.type,
+                queueStatus = queueStatus.value,
+                timestamp = timestamp,
+                data = gson.toJson(
+                    CreationUploadQueueEntity.Shorts(
+                        mediaUriList = mediaUriList,
+                        coverUri = coverUri,
+                        sourceId = sourceId,
+                        authorId = authorId,
+                        authorType = authorType,
+                    )
+                )
+            )
+        }
+    }
+
+    data class Stories(
+        @SerializedName(KEY_ID)
+        override val id: String,
+
+        @SerializedName(KEY_UPLOAD_TYPE)
+        override val uploadType: CreationUploadType,
+
+        @SerializedName(KEY_QUEUE_STATUS)
+        override val queueStatus: UploadQueueStatus,
+
+        @SerializedName(KEY_TIMESTAMP)
+        override val timestamp: Long,
+
+        @SerializedName(KEY_CREATION_ID)
+        override val creationId: String,
+
+        @SerializedName(KEY_MEDIA_URI_LIST)
+        override val mediaUriList: List<String>,
+
+        @SerializedName(KEY_COVER_URI)
+        override val coverUri: String,
+
+        @SerializedName(KEY_SOURCE_ID)
+        override val sourceId: String,
+
+        @SerializedName(KEY_AUTHOR_ID)
+        override val authorId: String,
+
+        @SerializedName(KEY_AUTHOR_TYPE)
+        override val authorType: String,
+    ) : CreationUploadData {
+
+        override fun mapToEntity(gson: Gson): CreationUploadQueueEntity {
+            return CreationUploadQueueEntity(
+                id = id,
+                creationId = creationId,
+                uploadType = uploadType.type,
+                queueStatus = queueStatus.value,
+                timestamp = timestamp,
+                data = gson.toJson(
+                    CreationUploadQueueEntity.Stories(
+                        mediaUriList = mediaUriList,
+                        coverUri = coverUri,
+                        sourceId = sourceId,
+                        authorId = authorId,
+                        authorType = authorType,
+                    )
+                )
+            )
+        }
     }
 
     companion object {
 
-        private const val KEY_ID = "KEY_ID"
-        private const val KEY_UPLOAD_TYPE = "KEY_UPLOAD_TYPE"
-        private const val KEY_QUEUE_STATUS = "KEY_QUEUE_STATUS"
-        private const val KEY_TIMESTAMP = "KEY_TIMESTAMP"
-        private const val KEY_CREATION_ID = "KEY_CREATION_ID"
-        private const val KEY_AUTHOR_ID = "KEY_AUTHOR_ID"
-        private const val KEY_AUTHOR_TYPE = "KEY_AUTHOR_TYPE"
-        private const val KEY_MEDIA_URI = "KEY_MEDIA_URI"
-        private const val KEY_COVER_URI = "KEY_COVER_URI"
-        private const val KEY_SOURCE_ID = "KEY_SOURCE_ID"
+        private const val KEY_ID = "id"
+        private const val KEY_UPLOAD_TYPE = "uploadType"
+        private const val KEY_QUEUE_STATUS = "queueStatus"
+        private const val KEY_TIMESTAMP = "timestamp"
+        private const val KEY_CREATION_ID = "creationId"
+        private const val KEY_AUTHOR_ID = "authorId"
+        private const val KEY_AUTHOR_TYPE = "authorType"
+        private const val KEY_MEDIA_URI_LIST = "mediaUriList"
+        private const val KEY_COVER_URI = "coverUri"
+        private const val KEY_SOURCE_ID = "sourceid"
 
-        private const val OPEN_BRACKET = "{"
-        private const val CLOSE_BRACKET = "}"
-        private const val ELEMENT_SEPARATOR = ", "
-        private const val KEY_VALUE_SEPARATOR = "="
-
-        val Empty: CreationUploadData
-            get() = CreationUploadData(
-                id = "",
-                uploadType = CreationUploadType.Unknown,
-                queueStatus = UploadQueueStatus.Unknown,
-                timestamp = 0L,
-                creationId = "",
-                mediaUri = "",
-                coverUri = "",
-                sourceId = "",
-                authorId = "",
-                authorType = "",
+        fun parseFromJson(json: String, gson: Gson): CreationUploadData {
+            val uploadDataEntity = gson.fromJson<CreationUploadQueueEntity>(
+                json,
+                object : TypeToken<CreationUploadQueueEntity>(){}.type
             )
 
-        fun parse(rawData: String): CreationUploadData {
-            return try {
-                val map: Map<String, Any> = if (rawData.isEmpty()) {
-                    mapOf()
-                } else {
-                    rawData
-                        .replace(OPEN_BRACKET, "")
-                        .replace(CLOSE_BRACKET, "")
-                        .split(ELEMENT_SEPARATOR)
-                        .associate {
-                            val (key, value) = it.split(KEY_VALUE_SEPARATOR)
-                            key to value
-                        }
-                }
-
-                CreationUploadData(
-                    id = (map[KEY_ID] as? String).orEmpty(),
-                    uploadType = CreationUploadType.mapFromValue((map[KEY_UPLOAD_TYPE] as? String).orEmpty()),
-                    queueStatus = UploadQueueStatus.mapFromValue((map[KEY_QUEUE_STATUS] as? String).orEmpty()),
-                    timestamp = (map[KEY_TIMESTAMP] as? Long).orZero(),
-                    creationId = (map[KEY_CREATION_ID] as? String).orEmpty(),
-                    authorId = (map[KEY_AUTHOR_ID] as? String).orEmpty(),
-                    authorType = (map[KEY_AUTHOR_TYPE] as? String).orEmpty(),
-                    mediaUri = (map[KEY_MEDIA_URI] as? String).orEmpty(),
-                    coverUri = (map[KEY_COVER_URI] as? String).orEmpty(),
-                    sourceId = (map[KEY_SOURCE_ID] as? String).orEmpty()
-                )
-            } catch (e: Exception) {
-                Empty
-            }
+            return parseFromEntity(uploadDataEntity, gson)
         }
 
-        fun parseFromEntity(entity: CreationUploadQueueEntity): CreationUploadData {
-            return when (CreationUploadType.mapFromValue(entity.uploadType)) {
-                CreationUploadType.Shorts -> buildForShorts(
-                    creationId = entity.creationId,
-                    mediaUri = entity.mediaUri,
-                    coverUri = entity.coverUri,
-                    sourceId = entity.sourceId,
-                    authorId = entity.authorId,
-                    authorType = entity.authorType,
-                )
-                CreationUploadType.Stories -> buildForStories(
-                    creationId = entity.creationId,
-                    mediaUri = entity.mediaUri,
-                    coverUri = entity.coverUri,
-                    sourceId = entity.sourceId,
-                    authorId = entity.authorId,
-                    authorType = entity.authorType,
-                )
-                CreationUploadType.Unknown -> Empty
+        fun parseFromEntity(
+            entity: CreationUploadQueueEntity,
+            gson: Gson,
+        ): CreationUploadData {
+            return when (val uploadType = CreationUploadType.mapFromValue(entity.uploadType)) {
+                CreationUploadType.Shorts -> {
+                    val shortsEntity = gson.fromJson<CreationUploadQueueEntity.Shorts>(
+                        entity.data,
+                        object : TypeToken<CreationUploadQueueEntity.Shorts>(){}.type
+                    )
+
+                    Shorts(
+                        id = entity.id,
+                        creationId = entity.creationId,
+                        uploadType = uploadType,
+                        queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
+                        timestamp = entity.timestamp,
+                        mediaUriList = shortsEntity.mediaUriList,
+                        coverUri = shortsEntity.coverUri,
+                        sourceId = shortsEntity.sourceId,
+                        authorId = shortsEntity.authorId,
+                        authorType = shortsEntity.authorType,
+                    )
+                }
+                CreationUploadType.Stories ->  {
+                    val storiesEntity = gson.fromJson<CreationUploadQueueEntity.Stories>(
+                        entity.data,
+                        object : TypeToken<CreationUploadQueueEntity.Stories>(){}.type
+                    )
+
+                    Stories(
+                        id = entity.id,
+                        creationId = entity.creationId,
+                        uploadType = uploadType,
+                        queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
+                        timestamp = entity.timestamp,
+                        mediaUriList = storiesEntity.mediaUriList,
+                        coverUri = storiesEntity.coverUri,
+                        sourceId = storiesEntity.sourceId,
+                        authorId = storiesEntity.authorId,
+                        authorType = storiesEntity.authorType,
+                    )
+                }
+                else -> throw UnknownUploadTypeException()
             }
         }
 
         fun buildForShorts(
             creationId: String,
-            mediaUri: String,
+            mediaUriList: List<String>,
             coverUri: String,
             sourceId: String,
             authorId: String,
             authorType: String,
         ): CreationUploadData {
-            return CreationUploadData(
+
+            return Shorts(
                 id = UUID.randomUUID().toString(),
                 uploadType = CreationUploadType.Shorts,
                 queueStatus = UploadQueueStatus.Queued,
                 timestamp = System.currentTimeMillis(),
                 creationId = creationId,
-                mediaUri = mediaUri,
+                mediaUriList = mediaUriList,
                 coverUri = coverUri,
                 sourceId = sourceId,
                 authorId = authorId,
@@ -172,19 +244,19 @@ data class CreationUploadData private constructor(
 
         fun buildForStories(
             creationId: String,
-            mediaUri: String,
+            mediaUriList: List<String>,
             coverUri: String,
             sourceId: String,
             authorId: String,
             authorType: String,
         ): CreationUploadData {
-            return CreationUploadData(
+            return Stories(
                 id = UUID.randomUUID().toString(),
                 uploadType = CreationUploadType.Stories,
                 queueStatus = UploadQueueStatus.Queued,
                 timestamp = System.currentTimeMillis(),
                 creationId = creationId,
-                mediaUri = mediaUri,
+                mediaUriList = mediaUriList,
                 coverUri = coverUri,
                 sourceId = sourceId,
                 authorId = authorId,
@@ -193,5 +265,3 @@ data class CreationUploadData private constructor(
         }
     }
 }
-
-fun CreationUploadData?.orEmpty() = this ?: CreationUploadData.Empty

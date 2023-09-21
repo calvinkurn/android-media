@@ -127,7 +127,7 @@ class StoriesCreationViewModel @Inject constructor(
 
             val data = CreationUploadData.buildForStories(
                 creationId = state.config.storiesId,
-                mediaUri = state.mediaFilePath,
+                mediaUriList = listOf(state.mediaFilePath),
                 coverUri = "",
                 sourceId = "",
                 authorId = state.selectedAccount.id,
