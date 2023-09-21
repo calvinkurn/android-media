@@ -7,17 +7,29 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurc
 
 class UniversalSharingUniversalSharingPostPurchaseSharingActivity : BaseActivity() {
 
+    private var bottomSheet = UniversalSharingPostPurchaseBottomSheet()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setBottomSheetListener()
         showBottomSheet()
     }
 
     private fun showBottomSheet() {
         currentFocus?.hideKeyboard()
-        val bottomSheet = UniversalSharingPostPurchaseBottomSheet()
         bottomSheet.show(
             supportFragmentManager,
             ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
         )
+    }
+
+    private fun setBottomSheetListener() {
+        bottomSheet.setCloseClickListener {
+            finish()
+        }
+
+        bottomSheet.setOnDismissListener {
+            finish()
+        }
     }
 }

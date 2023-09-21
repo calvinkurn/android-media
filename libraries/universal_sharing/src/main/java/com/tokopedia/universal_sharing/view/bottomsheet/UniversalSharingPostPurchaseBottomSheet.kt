@@ -32,8 +32,6 @@ class UniversalSharingPostPurchaseBottomSheet :
         showCloseIcon = true // show close button
         clearContentPadding = true // remove default margin
         isDragable = false // should be not draggable
-        // set max peek height
-        customPeekHeight = 100
     }
 
     private fun setBottomSheetChildView() {
@@ -63,6 +61,7 @@ class UniversalSharingPostPurchaseBottomSheet :
         recyclerView?.apply {
             this.adapter = adapter
             this.layoutManager = LinearLayoutManager(context)
+            this.setHasFixedSize(true)
         }
         adapter.addElement(
             UniversalSharingPostPurchaseShopTitleUiModel(
