@@ -94,7 +94,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
         isActive: Boolean
     ) {
         setDynamicTabIcon(shopPageDynamicTabViewBinding, position, isActive)
-        if (ShopUtil.isEnableShopPageReImagined()) {
+        if (ShopUtil.isEnableShopPageReImagined(ctx)) {
             setTabName(shopPageDynamicTabViewBinding.textTabName, position, isActive)
         } else {
             shopPageDynamicTabViewBinding.textTabName.hide()
@@ -264,7 +264,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 
     fun getFragmentPosition(classType: Class<*>): Int {
         var fragmentPosition = 0
-        if(ShopUtil.isEnableShopPageReImagined()) {
+        if(ShopUtil.isEnableShopPageReImagined(ctx)) {
             listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
                 val tabFragmentInsideWrapper = (shopPageTabModel.tabFragment as? ShopPageHeaderFragmentTabContentWrapper)?.getTabFragment()
                 tabFragmentInsideWrapper?.let {
@@ -284,7 +284,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     }
 
     fun isFragmentObjectExists(classType: Class<*>): Boolean {
-        return if (ShopUtil.isEnableShopPageReImagined()) {
+        return if (ShopUtil.isEnableShopPageReImagined(ctx)) {
             listShopPageTabModel.firstOrNull {
                 val tabFragmentInsideWrapper =
                     (it.tabFragment as? ShopPageHeaderFragmentTabContentWrapper)?.getTabFragment()
