@@ -1,4 +1,4 @@
-package com.tokopedia.universal_sharing.usecase
+package com.tokopedia.universal_sharing.domain.usecase
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

@@ -18,8 +18,7 @@ object ApplinkConstInternalCommunication {
     const val SOURCE = "source"
 
     // Sharing Experience
-    const val PRODUCT_IDS = "product_ids"
-
+    const val PRODUCT_LIST_DATA = "product_list_data"
 
     /**
      * Internal applink communication list

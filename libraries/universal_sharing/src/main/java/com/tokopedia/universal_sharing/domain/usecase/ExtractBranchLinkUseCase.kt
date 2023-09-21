@@ -1,4 +1,4 @@
-package com.tokopedia.universal_sharing.usecase
+package com.tokopedia.universal_sharing.domain.usecase
 
 import com.tokopedia.universal_sharing.data.model.BranchLinkResponse
 import com.tokopedia.universal_sharing.data.repository.ExtractBranchLinkRepository

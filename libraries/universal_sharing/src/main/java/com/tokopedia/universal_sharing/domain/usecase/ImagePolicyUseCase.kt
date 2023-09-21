@@ -1,4 +1,4 @@
-package com.tokopedia.universal_sharing.usecase
+package com.tokopedia.universal_sharing.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.request

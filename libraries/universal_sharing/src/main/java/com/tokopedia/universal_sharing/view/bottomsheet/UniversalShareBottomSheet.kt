@@ -58,6 +58,9 @@ import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
 import com.tokopedia.universal_sharing.di.UniversalShareUseCaseModule
+import com.tokopedia.universal_sharing.domain.usecase.ExtractBranchLinkUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ImageGeneratorUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.model.BroadcastChannelModel
 import com.tokopedia.universal_sharing.model.CampaignStatus
 import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
@@ -69,9 +72,6 @@ import com.tokopedia.universal_sharing.model.TickerShareModel
 import com.tokopedia.universal_sharing.model.WishlistCollectionParamModel
 import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
-import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
-import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
-import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.util.MimeType
 import com.tokopedia.universal_sharing.util.UniversalShareConst
