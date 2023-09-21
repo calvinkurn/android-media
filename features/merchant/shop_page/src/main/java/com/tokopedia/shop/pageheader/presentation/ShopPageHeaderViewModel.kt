@@ -184,7 +184,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         widgetUserAddressLocalData: LocalCacheModel,
         extParam: String,
         tabName: String,
-        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String> = mapOf()
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String> = mapOf(),
+        isEnableShopReimagined: Boolean
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -271,7 +272,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                                 shopPageGetDynamicTabResponse = shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
                                 feedWhitelistData = shopPageHeaderP1Data.feedWhitelist,
                                 shopPageHeaderLayoutData = shopPageHeaderWidgetData,
-                                shopPageColorSchemaDefaultConfigColor = shopPageColorSchemaDefaultConfigColor
+                                shopPageColorSchemaDefaultConfigColor = shopPageColorSchemaDefaultConfigColor,
+                                isEnableShopReimagined = isEnableShopReimagined
                             )
                         )
                     )

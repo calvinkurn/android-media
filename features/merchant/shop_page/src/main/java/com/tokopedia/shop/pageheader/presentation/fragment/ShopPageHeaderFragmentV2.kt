@@ -1365,7 +1365,8 @@ class ShopPageHeaderFragmentV2 :
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
             tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
-            shopPageColorSchemaDefaultConfigColor = getShopPageColorSchemaDefaultConfigColor()
+            shopPageColorSchemaDefaultConfigColor = getShopPageColorSchemaDefaultConfigColor(),
+            isEnableShopReimagined = ShopUtil.isEnableShopPageReImagined(context)
         )
     }
 

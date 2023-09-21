@@ -62,7 +62,8 @@ object ShopPageHeaderMapper {
         shopPageGetDynamicTabResponse: ShopPageGetDynamicTabResponse,
         feedWhitelistData: Whitelist,
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse,
-        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>,
+        isEnableShopReimagined: Boolean
     ): ShopPageHeaderP1HeaderData {
         val listShopHeaderWidget = mapToShopPageHeaderLayoutWidgetUiModel(shopPageHeaderLayoutData)
         val shopName = getShopHeaderWidgetComponentData<ShopPageHeaderBadgeTextValueComponentUiModel>(
@@ -77,7 +78,8 @@ object ShopPageHeaderMapper {
         )?.image.orEmpty()
         val shopPageHeaderLayoutUiModel = mapToShopPageHeaderLayoutUiModel(
             shopPageHeaderLayoutData,
-            shopPageColorSchemaDefaultConfigColor
+            shopPageColorSchemaDefaultConfigColor,
+            isEnableShopReimagined
         )
         return ShopPageHeaderP1HeaderData(
             isOfficial = shopInfoCoreData.goldOS.shopTier == ShopPageConstant.ShopTierType.OFFICIAL_STORE,
@@ -91,20 +93,21 @@ object ShopPageHeaderMapper {
             feedUrl = feedWhitelistData.url,
             listShopPageHeaderWidget = listShopHeaderWidget,
             listDynamicTabData = shopPageGetDynamicTabResponse.shopPageGetDynamicTab.tabData,
-            shopHeaderLayoutData = shopPageHeaderLayoutUiModel
+            shopHeaderLayoutData = shopPageHeaderLayoutUiModel,
         )
     }
 
     private fun mapToShopPageHeaderLayoutUiModel(
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse,
-        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>,
+        isEnableShopReimagined: Boolean
     ): ShopPageHeaderLayoutUiModel {
         return ShopPageHeaderLayoutUiModel(
             mapToShopPageHeaderLayoutListConfig(
                 shopPageHeaderLayoutData.shopPageGetHeaderLayout.generalComponentConfigList,
                 shopPageColorSchemaDefaultConfigColor
             ),
-            shopPageHeaderLayoutData.shopPageGetHeaderLayout.isOverrideTheme
+            shopPageHeaderLayoutData.shopPageGetHeaderLayout.isOverrideTheme && isEnableShopReimagined
         )
     }
 
