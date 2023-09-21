@@ -66,11 +66,16 @@ class BMGMWidget @JvmOverloads constructor(
         }
     }
 
-    private var previousUiModel: BMGMWidgetUiModel? = null
+    private var previousState: BMGMWidgetUiState? = null
     // endregion
 
     // region expose function
     fun setData(uiState: BMGMWidgetUiState, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
+        if (previousState?.hasSame(newUiModel = uiState) == true) {
+            return
+        }
+        previousState = uiState
+
         when (uiState) {
             is BMGMWidgetUiState.Loading -> {
                 // no - ops
@@ -81,17 +86,12 @@ class BMGMWidget @JvmOverloads constructor(
             }
 
             is BMGMWidgetUiState.Show -> {
-                if (previousUiModel?.hasSame(newUiModel = uiState.uiModel) == true) {
-                    return
-                }
-
-                previousUiModel = uiState.uiModel
                 showContent(uiModel = uiState.uiModel, router = router, tracker = tracker)
             }
         }
     }
 
-    private fun BMGMWidgetUiModel?.hasSame(newUiModel: BMGMWidgetUiModel): Boolean {
+    private fun BMGMWidgetUiState?.hasSame(newUiModel: BMGMWidgetUiState): Boolean {
         return this?.hashCode() == newUiModel.hashCode()
     }
     // endregion
