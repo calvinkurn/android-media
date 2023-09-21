@@ -27,27 +27,27 @@ import org.hamcrest.CoreMatchers
 
 class UniversalSharingRobot {
 
-    fun atClickChips(position: Int) {
+    fun clickOnSpecificChip(position: Int) {
         onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(position)).perform(ViewActions.click())
     }
 
-    fun atScrollChips(position: Int) {
+    fun scrollHorizontalOnChips(position: Int) {
         onView(withId(R.id.lst_chip)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position))
     }
 
-    fun atScrollImagesOptions(position: Int) {
+    fun scrollHorizontalIOnImagesOptions(position: Int) {
         onView(withId(R.id.image_list_container)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position))
     }
 
-    fun atClickOneImageOptions(position: Int) {
+    fun clickOnSpecificImageOption(position: Int) {
         onView(RecyclerViewMatcher(R.id.image_list_container).atPosition(position)).perform(ViewActions.click())
     }
 
-    fun atClickShareLainnya() {
+    fun clickShareLainnyaButton() {
         onView(withId(R.id.others_img)).perform(ViewActions.click())
     }
 
-    fun atClickRegisterAffiliate() {
+    fun clickOnRegisterAffiliateButton() {
         onView(withId(R.id.card_register_affiliate)).perform(ViewActions.click())
         Thread.sleep(2000)
     }

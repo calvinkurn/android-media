@@ -8,9 +8,8 @@ import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import com.tokopedia.universal_sharing.model.ImageGeneratorModel
 import com.tokopedia.universal_sharing.model.ImagePolicyResponse
-import com.tokopedia.universal_sharing.test.R as universal_sharingtestR
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
-import timber.log.Timber
+import com.tokopedia.universal_sharing.test.R as universal_sharingtestR
 
 class FakeGraphqlRepository : GraphqlRepository {
 
@@ -27,12 +26,15 @@ class FakeGraphqlRepository : GraphqlRepository {
                     GqlMockUtil.createSuccessResponse<GenerateAffiliateLinkEligibility.Response>(universal_sharingtestR.raw.pdp_not_eligible_affiliate)
                 }
             }
+
             "imagenerator_generate_image" -> {
                 return GqlMockUtil.createSuccessResponse<ImageGeneratorModel.Response>(universal_sharingtestR.raw.imageneratorgenerateimage)
             }
+
             "imagenerator_policy" -> {
                 return GqlMockUtil.createSuccessResponse<ImagePolicyResponse>(universal_sharingtestR.raw.imagenerator_policy)
             }
+
             else -> {
                 throw Exception("request empty")
             }

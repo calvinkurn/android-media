@@ -1,14 +1,14 @@
 package com.tokopedia.universal_sharing.di
 
+import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.linker.LinkerManager
 
 open class ActivityComponentFactory {
 
-    open fun createActivityComponent(): UniversalShareComponent {
+    open fun createActivityComponent(context: Context): UniversalShareComponent {
         return DaggerUniversalShareComponent.builder()
-            .baseAppComponent((LinkerManager.getInstance().context.applicationContext as BaseMainApplication).baseAppComponent)
+            .baseAppComponent((context as BaseMainApplication).baseAppComponent)
             .universalShareModule(UniversalShareModule())
             .universalShareUseCaseModule(UniversalShareUseCaseModule())
             .build()

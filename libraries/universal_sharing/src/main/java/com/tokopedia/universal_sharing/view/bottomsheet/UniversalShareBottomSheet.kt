@@ -252,7 +252,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     }
 
     override fun getComponent(): UniversalShareComponent? {
-        return ActivityComponentFactory.instance.createActivityComponent()
+        return ActivityComponentFactory.instance.createActivityComponent(LinkerManager.getInstance().context.applicationContext)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

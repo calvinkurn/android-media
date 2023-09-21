@@ -49,8 +49,8 @@ class UniversalShareBottomSheetTest {
 
         universalSharingRobot {
             runTest(UniversalShareModel.getDefaultPDPBottomSheet())
-            atScrollImagesOptions(3)
-            atClickOneImageOptions(2)
+            scrollHorizontalIOnImagesOptions(3)
+            clickOnSpecificImageOption(2)
         } validate {
             shouldShowTitleBottomSheet()
             shouldShowTitleHeadingImageOptions()
@@ -69,8 +69,8 @@ class UniversalShareBottomSheetTest {
             runTest(UniversalShareModel.getDefaultPDPBottomSheet().apply {
                 enableAffiliateCommission(anyInput())
             })
-            atScrollImagesOptions(3)
-            atClickOneImageOptions(2)
+            scrollHorizontalIOnImagesOptions(3)
+            clickOnSpecificImageOption(2)
         } validate {
             shouldShowTitleBottomSheet()
             shouldShowTitleHeadingImageOptions()
@@ -90,8 +90,8 @@ class UniversalShareBottomSheetTest {
             runTest(UniversalShareModel.getPDPBottomSheetWith2ImagesOption().apply {
                 enableAffiliateCommission(anyInput())
             })
-            atScrollImagesOptions(1)
-            atClickOneImageOptions(1)
+            scrollHorizontalIOnImagesOptions(1)
+            clickOnSpecificImageOption(1)
         } validate {
             shouldShowTitleBottomSheet()
             shouldShowTitleHeadingImageOptions()
@@ -111,8 +111,8 @@ class UniversalShareBottomSheetTest {
             runTest(UniversalShareModel.getPDPBottomSheetWith2ImagesOption().apply {
                 enableAffiliateCommission(anyInput())
             })
-            atScrollImagesOptions(1)
-            atClickOneImageOptions(1)
+            scrollHorizontalIOnImagesOptions(1)
+            clickOnSpecificImageOption(1)
         } validate {
             shouldShowTitleBottomSheet()
             shouldShowTitleHeadingImageOptions()
@@ -134,8 +134,8 @@ class UniversalShareBottomSheetTest {
                     onTitleChipPropertiesSelected = it.title
                 }
             })
-            atScrollChips(4)
-            atClickChips(2)
+            scrollHorizontalOnChips(4)
+            clickOnSpecificChip(2)
         } validate {
             shouldShowTitleBottomSheet()
             shouldShowTitleChipOptions()
