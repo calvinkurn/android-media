@@ -33,7 +33,8 @@ class HomeLeftCarouselAtcViewHolder(
     itemView: View,
     private val homeLeftCarouselAtcCallback: HomeLeftCarouselAtcCallback? = null,
     private val rtrListener: RealTimeRecommendationListener? = null,
-    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null,
+    parentRecycledViewPool: RecyclerView.RecycledViewPool? = null
 ) : AbstractViewHolder<HomeLeftCarouselAtcUiModel>(itemView), CoroutineScope {
 
     companion object {
@@ -77,6 +78,7 @@ class HomeLeftCarouselAtcViewHolder(
             rvProduct.addItemDecoration(ProductCardCarouselDecoration(rvProduct.context))
             rvProduct.layoutManager = layoutManager
             rvProduct.adapter = adapter
+            rvProduct.setRecycledViewPool(parentRecycledViewPool)
         }
     }
 
