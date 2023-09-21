@@ -1,15 +1,17 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
@@ -19,11 +21,11 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.FragmentCatalogProductListBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.domain.model.CatalogProductItem
+import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapter
 import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapterFactoryImpl
+import com.tokopedia.catalog.ui.adapter.EmptyStateFilterListener
 import com.tokopedia.catalog.ui.adapter.ProductListAdapterListener
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
-import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapter
-import com.tokopedia.catalog.ui.adapter.EmptyStateFilterListener
 import com.tokopedia.catalog.ui.model.CatalogProductListEmptyModel
 import com.tokopedia.catalog.ui.viewmodel.CatalogProductListViewModel
 import com.tokopedia.common_category.constants.CategoryNavConstants
@@ -31,7 +33,6 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -41,17 +42,16 @@ import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.imageassets.TokopediaImageUrl.ILLUSTRATION_EMPTY_CATALOG_PRODUCT_LIST
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.oldcatalog.model.util.CatalogConstant
 import com.tokopedia.oldcatalog.model.util.CatalogSearchApiConst
-import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.sortfilter.SortFilterItem
@@ -64,28 +64,45 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-
 class CatalogProductListFragment :
     BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
     ChooseAddressWidget.ChooseAddressWidgetListener,
     QuickFilterListener, SortFilterBottomSheet.Callback, ProductListAdapterListener, 
     EmptyStateFilterListener {
 
-    private val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
+    companion object {
+        private const val LOGIN_REQUEST_CODE = 1003
+        private const val SHOP_TIER_VALUE = 2
+        private const val PAGING_ROW_COUNT = 20
+        private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val ARG_EXTRA_PRODUCT_SORTING_STATUS = "ARG_EXTRA_PRODUCT_SORTING_STATUS"
+        private const val ARG_EXTRA_CATALOG_TITLE = "ARG_EXTRA_CATALOG_TITLE"
+        const val CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG = "CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG"
+
+        fun newInstance(
+            catalogId: String,
+            catalogTitle: String,
+            productSortingStatus: String
+        ): CatalogProductListFragment {
+            val fragment = CatalogProductListFragment()
+            val bundle = Bundle()
+            bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+            bundle.putString(ARG_EXTRA_CATALOG_TITLE, catalogTitle)
+            bundle.putString(ARG_EXTRA_PRODUCT_SORTING_STATUS, productSortingStatus)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 
     @Inject
     lateinit var viewModel: CatalogProductListViewModel
 
     private var binding by autoClearedNullable<FragmentCatalogProductListBinding>()
+    private var userAddressData: LocalCacheModel? = null
+    private val products = ArrayList<Visitable<*>>()
 
     private val sortFilterBottomSheet: SortFilterBottomSheet by lazy {
         SortFilterBottomSheet()
-    }
-
-    private var userAddressData: LocalCacheModel? = null
-
-    private val userSession: UserSession by lazy {
-        UserSession(activity)
     }
 
     private val catalogTitle: String by lazy {
@@ -116,31 +133,6 @@ class CatalogProductListFragment :
         }
     }
 
-    private val PAGING_ROW_COUNT = 20
-
-    private val products = ArrayList<Visitable<*>>()
-
-    companion object {
-        private const val SHOP_TIER_VALUE = 2
-        private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        private const val ARG_EXTRA_PRODUCT_SORTING_STATUS = "ARG_EXTRA_PRODUCT_SORTING_STATUS"
-        private const val ARG_EXTRA_CATALOG_TITLE = "ARG_EXTRA_CATALOG_TITLE"
-        const val CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG = "CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG"
-        fun newInstance(
-            catalogId: String,
-            catalogTitle: String,
-            productSortingStatus: String
-        ): CatalogProductListFragment {
-            val fragment = CatalogProductListFragment()
-            val bundle = Bundle()
-            bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
-            bundle.putString(ARG_EXTRA_CATALOG_TITLE, catalogTitle)
-            bundle.putString(ARG_EXTRA_PRODUCT_SORTING_STATUS, productSortingStatus)
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -160,20 +152,6 @@ class CatalogProductListFragment :
         binding?.errorPage?.run {
             setActionClickListener {
                 loadInitialData()
-            }
-        }
-    }
-
-    private fun initToolbar() {
-        binding?.apply {
-            toolbar.shareButton?.hide()
-            toolbar.searchButton?.hide()
-            toolbar.title = catalogTitle
-            toolbar.cartButton?.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.CART)
-            }
-            toolbar.setNavigationOnClickListener {
-                activity?.finish()
             }
         }
     }
@@ -577,7 +555,7 @@ class CatalogProductListFragment :
         searchProductRequestParams.apply {
             putString(CategoryNavConstants.START, (start * PAGING_ROW_COUNT).toString())
             putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE_MOBILE)
-            putString(CategoryNavConstants.USER_ID, userSession.userId)
+            putString(CategoryNavConstants.USER_ID, viewModel.getUserId())
             putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
@@ -606,10 +584,14 @@ class CatalogProductListFragment :
     override fun getSwipeRefreshLayout(view: View?) = binding?.swipeRefreshLayout
 
     private fun addToCart(atcModel: CatalogProductAtcUiModel) {
-        if (atcModel.isVariant) {
-            openVariantBottomSheet(atcModel)
+        if (viewModel.isUserLoggedIn()) {
+            if (atcModel.isVariant) {
+                openVariantBottomSheet(atcModel)
+            } else {
+                viewModel.addProductToCart(atcModel)
+            }
         } else {
-            viewModel.addProductToCart(atcModel)
+            goToLoginPage()
         }
     }
 
@@ -686,6 +668,36 @@ class CatalogProductListFragment :
 
     override fun callInitialLoadAutomatically(): Boolean {
         return false
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            viewModel.refreshNotification()
+        }
+    }
+
+    private fun initToolbar() {
+        binding?.apply {
+            toolbar.shareButton?.hide()
+            toolbar.searchButton?.hide()
+            toolbar.title = catalogTitle
+            toolbar.cartButton?.setOnClickListener {
+                if (viewModel.isUserLoggedIn()) {
+                    RouteManager.route(context, ApplinkConst.CART)
+                } else {
+                    goToLoginPage()
+                }
+            }
+            toolbar.setNavigationOnClickListener {
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun goToLoginPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, LOGIN_REQUEST_CODE)
     }
 
 }
