@@ -1964,8 +1964,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
                         subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     } else {
-                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                     }
                     return@map it.copy(
                         titleTextColorId = titleTextColor, subTitleTextColorId = subTitleTextColor
