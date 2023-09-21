@@ -98,7 +98,7 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when open stories from entry point and success fetch initial data but data group is invalid`() {
+    fun `when open stories from entry point and success fetch initial data but data group is index out of bound`() {
         val selectedGroup = 5
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
@@ -114,7 +114,7 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when open stories from entry point and success fetch initial data but data detail is invalid 1`() {
+    fun `when open stories from entry point and success fetch initial data but data detail is index out of bound 1`() {
         val selectedGroup = -1
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
@@ -130,7 +130,7 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when open stories from entry point and success fetch initial data but data detail is invalid 2`() {
+    fun `when open stories from entry point and success fetch initial data but data detail is index out of bound 2`() {
         val selectedGroup = 0
         val selectedDetail = -1
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
@@ -146,7 +146,7 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when open stories from entry point and success fetch initial data but data detail is invalid 3`() {
+    fun `when open stories from entry point and success fetch initial data but data detail is index out of bound 3`() {
         val selectedGroup = 3
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
@@ -163,7 +163,7 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when open stories from entry point and success fetch initial data but data detail is invalid 4`() {
+    fun `when open stories from entry point and success fetch initial data but data detail is index out of bound 4`() {
         val selectedGroup = 0
         val selectedDetail = 5
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
@@ -414,7 +414,7 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when stories open and invalid hit stories track activity`() {
+    fun `when stories open and index out of bound hit stories track activity`() {
         val selectedGroup = 0
         val selectedDetail = -1
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
@@ -471,7 +471,7 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when stories open and user tap next detail to next stories with invalid group position 1`() {
+    fun `when stories open and user tap next detail to next stories with index out of bound group position 1`() {
         val selectedGroup = -1
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup.plus(1), selectedDetail)
@@ -490,7 +490,7 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when stories open and user tap next detail to next stories with invalid group position 2`() {
+    fun `when stories open and user tap next detail to next stories with index out of bound group position 2`() {
         val selectedGroup = 5
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(0, selectedDetail)
