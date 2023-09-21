@@ -319,6 +319,10 @@ data class SearchProductModel(
             @SerializedName("componentId")
             @Expose
             val componentId: String = "",
+
+            @SerializedName("warehouseIdDefault")
+            @Expose
+            val warehouseIdDefault: String = "",
     ) {
             fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }

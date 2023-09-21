@@ -230,8 +230,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         if (isLoginReminder() && isCanShowLoginReminder(page) && !isOnDelay(page)) {
             showLoginReminder(page)
         } else if (isCanShowStickyLogin(page) && !isOnDelay(page)) {
-            if (viewModel == null) initInjector()
-
+            initInjector()
             initObserver(lifecycleOwner)
             viewModel?.getStickyContent(page)
         } else {
