@@ -13,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
 class SendTrackQueueJobService : JobService(), CoroutineScope {
 
     val trackRepository: TrackRepository by lazy {
-        TrackRepository(this)
+        TrackRepository(this.applicationContext)
     }
 
     val handler: CoroutineExceptionHandler by lazy {
