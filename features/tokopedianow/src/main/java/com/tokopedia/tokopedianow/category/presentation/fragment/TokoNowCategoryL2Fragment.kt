@@ -19,7 +19,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytic.CategoryL2Analytic
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryL2Component
@@ -68,6 +70,8 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
     private var binding by autoClearedNullable<FragmentTokopedianowCategoryL2Binding>()
 
     private val tabSelectedListener by lazy { createTabSelectedListener() }
+
+    private var viewPagerAdapter: CategoryL2TabViewPagerAdapter? = null
 
     override val viewModel: TokoNowCategoryL2ViewModel by lazy {
         ViewModelProvider(
@@ -155,6 +159,21 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
         }
     }
 
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        val tabLiveData = viewModel.categoryTabLiveData.value
+        val selectedTabPosition = tabLiveData?.selectedTabPosition.orZero()
+        val selectedTabFragment = viewPagerAdapter?.fragments?.getOrNull(selectedTabPosition)
+        selectedTabFragment?.onCartItemsUpdated(miniCartSimplifiedData)
+    }
+
+    override fun updateMiniCartWidget(data: MiniCartSimplifiedData?) {
+        if(data != null) {
+            renderMiniCartWidget(data)
+        } else {
+            updateMiniCartData()
+        }
+    }
+
     private fun observeLiveData() {
         observe(viewModel.categoryTabLiveData) { data ->
             removeTabSelectedListener()
@@ -192,10 +211,11 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
                 fragment.categoryL2View = this@TokoNowCategoryL2Fragment
                 fragment
             }
-            viewPager.adapter = CategoryL2TabViewPagerAdapter(
+            viewPagerAdapter = CategoryL2TabViewPagerAdapter(
                 fragment = this@TokoNowCategoryL2Fragment,
                 fragments = fragments
             )
+            viewPager.adapter = viewPagerAdapter
         }
     }
 

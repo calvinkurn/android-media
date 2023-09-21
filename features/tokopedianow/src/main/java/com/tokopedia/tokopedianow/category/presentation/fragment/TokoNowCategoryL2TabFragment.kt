@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -164,6 +163,11 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         super.onAttach(context)
     }
 
+    fun onCartItemsUpdated(data: MiniCartSimplifiedData) {
+        viewModel.updateProductCartQuantity(data)
+        updateProductRecommendationCart(data)
+    }
+
     private fun initViewModel() {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModel = viewModelProvider[TokoNowCategoryL2TabViewModel::class.java]
@@ -181,14 +185,14 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
         observe(viewModel.updateCartItem) {
             when (it) {
-                is Success -> {}
+                is Success -> categoryL2View?.updateMiniCartWidget()
                 is Fail -> showErrorToaster(it.throwable)
             }
         }
 
         observe(viewModel.removeCartItem) {
             when (it) {
-                is Success -> onSuccessRemoveCartItem(it)
+                is Success -> onSuccessRemoveCartItem(it.data.second)
                 is Fail -> showErrorToaster(it.throwable)
             }
         }
@@ -217,6 +221,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         observe(viewModel.miniCart) {
             when(it) {
                 is Success -> {
+                    categoryL2View?.updateMiniCartWidget(it.data)
                     updateProductRecommendationCart(it.data)
                 }
                 else -> {
@@ -295,6 +300,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             }
             adapter = categoryAdapter
             addProductItemDecoration()
+            itemAnimator = null
         }
     }
 
@@ -389,8 +395,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         getMiniCart()
     }
 
-    private fun onSuccessRemoveCartItem(result: Success<Pair<String, String>>) {
-        val message = result.data.second
+    private fun onSuccessRemoveCartItem(message: String) {
         val actionText = getString(R.string.tokopedianow_toaster_ok)
         showToaster(message = message, actionText = actionText)
         getMiniCart()

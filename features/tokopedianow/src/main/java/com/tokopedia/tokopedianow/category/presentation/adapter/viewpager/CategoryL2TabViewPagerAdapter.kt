@@ -6,7 +6,7 @@ import com.tokopedia.tokopedianow.category.presentation.fragment.TokoNowCategory
 
 class CategoryL2TabViewPagerAdapter(
     fragment: Fragment,
-    private val fragments: List<TokoNowCategoryL2TabFragment>
+    val fragments: List<TokoNowCategoryL2TabFragment>
 ) : FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int = fragments.count()

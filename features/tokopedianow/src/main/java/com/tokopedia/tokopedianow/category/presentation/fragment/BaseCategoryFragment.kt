@@ -319,7 +319,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     protected open fun onGetMiniCartSuccess(
         data: MiniCartSimplifiedData
     ) {
-        showMiniCart(data)
+        renderMiniCartWidget(data)
     }
 
     protected fun submitList(items: List<Visitable<*>>) {
@@ -358,7 +358,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         getMiniCart()
     }
 
-    protected fun onSuccessUpdateCartItem() {
+    protected fun updateMiniCartData() {
         val shopIds = listOf(shopId)
         binding?.miniCartWidget?.updateData(shopIds)
     }
@@ -421,6 +421,29 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         ).show()
     }
 
+    protected fun renderMiniCartWidget(data: MiniCartSimplifiedData) {
+        binding?.miniCartWidget?.apply {
+            val showMiniCartWidget = data.isShowMiniCartWidget
+            if (showMiniCartWidget) {
+                val pageName = MiniCartAnalytics.Page.CATEGORY_PAGE
+                val shopIds = listOf(shopId)
+                val source = MiniCartSource.TokonowHome
+                initialize(
+                    shopIds = shopIds,
+                    fragment = this@BaseCategoryFragment,
+                    listener = this@BaseCategoryFragment,
+                    pageName = pageName,
+                    source = source
+                )
+                binding?.miniCartWidgetShadow?.show()
+                hideTopContentView()
+                show()
+            } else {
+                hideMiniCart()
+            }
+        }
+    }
+
     private fun observeLiveData() {
         observePageLoading()
         observeVisitableList()
@@ -470,7 +493,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     private fun observeUpdateCartItem() {
         observe(viewModel.updateCartItem) {
             when (it) {
-                is Success -> onSuccessUpdateCartItem()
+                is Success -> updateMiniCartData()
                 is Fail -> showErrorToaster(it)
             }
         }
@@ -640,29 +663,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
             setOnRefreshListener {
                 isRefreshing = false
                 refreshLayout()
-            }
-        }
-    }
-
-    private fun showMiniCart(data: MiniCartSimplifiedData) {
-        binding?.miniCartWidget?.apply {
-            val showMiniCartWidget = data.isShowMiniCartWidget
-            if (showMiniCartWidget) {
-                val pageName = MiniCartAnalytics.Page.CATEGORY_PAGE
-                val shopIds = listOf(shopId)
-                val source = MiniCartSource.TokonowHome
-                initialize(
-                    shopIds = shopIds,
-                    fragment = this@BaseCategoryFragment,
-                    listener = this@BaseCategoryFragment,
-                    pageName = pageName,
-                    source = source
-                )
-                binding?.miniCartWidgetShadow?.show()
-                hideTopContentView()
-                show()
-            } else {
-                hideMiniCart()
             }
         }
     }

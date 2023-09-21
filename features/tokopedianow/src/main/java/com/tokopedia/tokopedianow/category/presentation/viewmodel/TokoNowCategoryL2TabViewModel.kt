@@ -156,11 +156,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
         super.onSuccessGetMiniCartData(miniCartData)
-        visitableList.updateAllProductQuantity(
-            miniCartData = miniCartData,
-            hasBlockedAddToCart = hasBlockedAddToCart
-        )
-        updateVisitableListLiveData()
+        updateProductCartQuantity(miniCartData)
     }
 
     fun onViewCreated(data: CategoryL2TabData) {
@@ -190,18 +186,20 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = { _, _ ->
-                visitableList.updateAllProductQuantity(
-                    productId = productId,
-                    quantity = quantity,
-                    hasBlockedAddToCart = hasBlockedAddToCart
-                )
-                updateVisitableListLiveData()
                 updateToolbarNotification()
             },
             onSuccessDeleteCart = { _, _ ->
                 updateToolbarNotification()
             }
         )
+    }
+
+    fun updateProductCartQuantity(miniCartData: MiniCartSimplifiedData) {
+        visitableList.updateAllProductQuantity(
+            miniCartData = miniCartData,
+            hasBlockedAddToCart = hasBlockedAddToCart
+        )
+        updateVisitableListLiveData()
     }
 
     fun removeProductRecommendationWidget() {
