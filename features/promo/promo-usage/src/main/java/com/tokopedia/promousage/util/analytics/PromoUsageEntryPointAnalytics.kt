@@ -25,7 +25,7 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
         recommendedPromoCodes: List<String>
     ) {
         sendEnhancedEcommerceEvent(
-            eventName = EventName.VIEW_ITEM,
+            event = EventName.VIEW_ITEM,
             eventAction = EventAction.IMPRESSION_CART_PROMO_ENTRY_POINT,
             eventCategory = generateEntryPoint(entryPoint),
             eventLabel = generateEntryPointCartEventLabel(entryPointMessages, entryPointInfo, lastApply, recommendedPromoCodes),
@@ -51,7 +51,7 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
         recommendedPromoCodes: List<String>
     ) {
         sendEnhancedEcommerceEvent(
-            eventName = EventName.SELECT_CONTENT,
+            event = EventName.SELECT_CONTENT,
             eventAction = EventAction.CLICK_CART_PROMO_ENTRY_POINT,
             eventCategory = generateEntryPoint(entryPoint),
             eventLabel = generateEntryPointCartEventLabel(entryPointMessages, entryPointInfo, lastApply, recommendedPromoCodes),
@@ -101,7 +101,7 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
         lastApply: LastApplyUiModel
     ) {
         sendEnhancedEcommerceEvent(
-            eventName = EventName.VIEW_ITEM,
+            event = EventName.VIEW_ITEM,
             eventAction = EventAction.IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT,
             eventCategory = generateEntryPoint(entryPoint),
             eventLabel = generateEntryPointCheckoutOccEventLabel(entryPoint, entryPointMessages, entryPointInfo),
@@ -126,7 +126,7 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
         lastApply: LastApplyUiModel
     ) {
         sendEnhancedEcommerceEvent(
-            eventName = EventName.SELECT_CONTENT,
+            event = EventName.SELECT_CONTENT,
             eventAction = EventAction.CLICK_CHECKOUT_PROMO_ENTRY_POINT,
             eventCategory = generateEntryPoint(entryPoint),
             eventLabel = generateEntryPointCheckoutOccEventLabel(entryPoint, entryPointMessages, entryPointInfo),
@@ -151,7 +151,7 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
         lastApply: LastApplyUiModel
     ) {
         sendEnhancedEcommerceEvent(
-            eventName = EventName.VIEW_ITEM,
+            event = EventName.VIEW_ITEM,
             eventAction = EventAction.IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_DETAIL,
             eventCategory = generateEntryPoint(entryPoint),
             eventLabel = generateEntryPointCheckoutOccEventLabel(entryPoint, entryPointMessages, entryPointInfo),
@@ -176,7 +176,7 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
         lastApply: LastApplyUiModel
     ) {
         sendEnhancedEcommerceEvent(
-            eventName = EventName.SELECT_CONTENT,
+            event = EventName.SELECT_CONTENT,
             eventAction = EventAction.CLICK_CHECKOUT_PROMO_ENTRY_POINT_DETAIL,
             eventCategory = generateEntryPoint(entryPoint),
             eventLabel = generateEntryPointCheckoutOccEventLabel(entryPoint, entryPointMessages, entryPointInfo),
@@ -200,7 +200,7 @@ class PromoUsageEntryPointAnalytics @Inject constructor() : PromoAnalytics() {
         lastApply: LastApplyUiModel
     ) {
         sendEnhancedEcommerceEvent(
-            eventName = EventName.VIEW_ITEM,
+            event = EventName.VIEW_ITEM,
             eventAction = EventAction.IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_ERROR,
             eventCategory = generateEntryPoint(entryPoint),
             eventLabel = errorMessage,

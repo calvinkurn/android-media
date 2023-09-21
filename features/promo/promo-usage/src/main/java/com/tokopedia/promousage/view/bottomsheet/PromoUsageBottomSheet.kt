@@ -154,7 +154,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var analytics: PromoUsageAnalytics
+    lateinit var promoUsageAnalytics: PromoUsageAnalytics
+
     private val viewModel: PromoUsageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PromoUsageViewModel::class.java]
     }
@@ -169,7 +170,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         CompositeAdapter.Builder()
             .add(PromoRecommendationDelegateAdapter(onClickUsePromoRecommendation))
             .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
-            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem))
+            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem, onImpressionPromo))
             .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
             .add(PromoTncDelegateAdapter(onClickPromoTnc))
             .add(PromoAttemptCodeDelegateAdapter(onAttemptPromoCode))
@@ -570,6 +571,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderTickerInfo(state.tickerInfo)
                     refreshBottomSheetHeight(state)
                     adjustDummyBackground(state.items)
+                    processAndSendViewAvailablePromoListNewEvent(items = state.items)
                 }
 
                 is PromoPageUiState.Error -> {
@@ -581,6 +583,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     hidePromoRecommendationBackground()
                     hideSavingInfo()
                     refreshBottomSheetHeight(state)
+                    processAndSendViewAvailablePromoListNewEvent(isError = true)
                 }
 
                 else -> {
@@ -958,6 +961,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         viewModel.onClickPromo(clickedItem)
     }
 
+    private val onImpressionPromo = { item: PromoItem ->
+        processAndSendImpressionOfPromoCardNewEvent(item)
+    }
+
     private val onClickPromoAccordionHeader: (PromoAccordionHeaderItem) -> Unit =
         { headerItem: PromoAccordionHeaderItem ->
             viewModel.onClickAccordionHeader(headerItem)
@@ -1079,4 +1086,27 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
         fun onClearPromoFailed(throwable: Throwable)
     }
+
+    // region Tracker
+    private fun processAndSendViewAvailablePromoListNewEvent(
+        items: List<DelegateAdapterItem>? = null,
+        isError: Boolean = false
+    ) {
+        val promos = items?.filterIsInstance<PromoItem>()
+        promoUsageAnalytics.sendViewAvailablePromoListNewEvent(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            items = promos,
+            isError = isError
+        )
+    }
+
+    private fun processAndSendImpressionOfPromoCardNewEvent(promo: PromoItem) {
+        promoUsageAnalytics.sendImpressionOfPromoCardNewEvent(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            promo = promo
+        )
+    }
+    // endregion
 }

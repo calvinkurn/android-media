@@ -10,15 +10,18 @@ abstract class PromoAnalytics {
     object EventName {
         const val SELECT_CONTENT = "select_content"
         const val VIEW_ITEM = "view_item"
+        const val VIEW_PG_IRIS = "viewPGIris"
     }
 
     object EventCategory {
         const val CART = "cart"
         const val CHECKOUT = "courier selection"
         const val OCC = "order summary"
+        const val PROMO = "promo page"
     }
 
     object EventAction {
+        // Promo Usage Entry Point
         const val CLICK_CART_PROMO_ENTRY_POINT = "click promo entry point"
         const val CLICK_CHECKOUT_PROMO_ENTRY_POINT = "click user saving and promo entry point"
         const val CLICK_CHECKOUT_PROMO_ENTRY_POINT_DETAIL = "click user saving detail - total subsidy"
@@ -26,6 +29,10 @@ abstract class PromoAnalytics {
         const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT = "impression user saving - total subsidy"
         const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_DETAIL = "impression user saving detail - total subsidy"
         const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_ERROR = "impression promo entry point - error"
+
+        // Promo Usage Bottom Sheet
+        const val VIEW_AVAILABLE_PROMO_LIST_NEW = "view available promo list - new"
+        const val IMPRESSION_OF_PROMO_CARD_NEW = "impression of promo card - new"
     }
 
     object ExtraKey {
@@ -48,6 +55,7 @@ abstract class PromoAnalytics {
     }
 
     object TrackerId {
+        // Promo Usage Entry Point
         const val CLICK_CART_PROMO_ENTRY_POINT = "46340"
         const val CLICK_CHECKOUT_PROMO_ENTRY_POINT = "46629"
         const val CLICK_CHECKOUT_PROMO_ENTRY_POINT_DETAIL = "46631"
@@ -55,6 +63,10 @@ abstract class PromoAnalytics {
         const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT = "46628"
         const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_DETAIL = "46630"
         const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_ERROR = "46650"
+
+        // Promo Usage Bottom Sheet
+        const val VIEW_AVAILABLE_PROMO_LIST_NEW = "47112"
+        const val IMPRESSION_OF_PROMO_CARD_NEW = "47113"
     }
 
     object CustomDimension {
@@ -62,29 +74,31 @@ abstract class PromoAnalytics {
         const val BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
         const val CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
         const val DIMENSION_45 = "dimension45"
+        const val DIMENSION_79 = "dimension79"
     }
 
     protected fun sendGeneralEvent(
         event: String,
         eventCategory: String,
         eventAction: String,
-        eventLabel: String = ""
+        eventLabel: String = "",
+        additionalData: Map<String, Any> = emptyMap()
     ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
-        )
+        val data = TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
+        data.putAll(additionalData)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     protected fun sendEnhancedEcommerceEvent(
-        eventName: String,
+        event: String,
         eventCategory: String,
         eventAction: String,
         eventLabel: String = "",
         additionalData: Bundle = Bundle()
     ) {
         val data = bundleOf(
-            ExtraKey.EVENT to eventName,
-            ExtraKey.EVENT_NAME to eventName,
+            ExtraKey.EVENT to event,
+            ExtraKey.EVENT_NAME to event,
             ExtraKey.EVENT_CATEGORY to eventCategory,
             ExtraKey.EVENT_ACTION to eventAction,
             ExtraKey.EVENT_LABEL to eventLabel,
@@ -92,7 +106,7 @@ abstract class PromoAnalytics {
         )
         data.putAll(additionalData)
         sendEnhancedEcommerceEvent(
-            eventName = eventName,
+            eventName = event,
             bundle = data
         )
     }

@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoBinding
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoItem
@@ -16,7 +18,8 @@ import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.unifycomponents.toPx
 
 class PromoAccordionItemDelegateAdapter(
-    private val onClickPromo: (PromoItem) -> Unit
+    private val onClickPromo: (PromoItem) -> Unit,
+    private val onImpressionPromo: (PromoItem) -> Unit
 ) : DelegateAdapter<PromoItem, PromoAccordionItemDelegateAdapter.ViewHolder>(
     PromoItem::class.java
 ) {
@@ -66,8 +69,10 @@ class PromoAccordionItemDelegateAdapter(
                 } else if (item.isAttempted) {
                     clPromoBackground.background = ColorDrawable(
                         ContextCompat
-                            .getColor(root.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                            .getColor(
+                                root.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_Background
+                            )
                     )
                     vcvPromo.setMargin(
                         NORMAL_MARGIN_START_END_IN_DP.toPx(),
@@ -100,6 +105,11 @@ class PromoAccordionItemDelegateAdapter(
                 }
                 vcvPromo.bind(item)
                 vcvPromo.isVisible = item.isExpanded && item.isVisible
+                if (vcvPromo.isVisible) {
+                    vcvPromo.addOnImpressionListener(ImpressHolder()) {
+                        onImpressionPromo(item)
+                    }
+                }
             }
         }
     }
