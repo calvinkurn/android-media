@@ -12,6 +12,7 @@ object TokopediaImageUrl {
     const val URL_IMG_EMPTY_SEARCH_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_search_list.png"
     const val URL_IMG_EMPTY_ORDER_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_order_list.png"
     const val CART_EMPTY_DEFAULT_IMG_URL = "https://images.tokopedia.net/android/others/empty_cart_3_x.png"
+    const val CART_EMPTY_NEW_DEFAULT_IMG_URL = "https://images.tokopedia.net/img/android/cart/empty_cart_new.png"
     const val CART_EMPTY_WITH_PROMO_IMG_URL = "https://images.tokopedia.net/android/others/empty_cart_1.png"
     const val E_PHARMACY_COUNT_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_sucess_image_uploaded_count.png"
     const val IMAGE_URL_SHIPPING_INSURANCE = "https://images.tokopedia.net/img/logistic/assets/shipping-insurance.png"
