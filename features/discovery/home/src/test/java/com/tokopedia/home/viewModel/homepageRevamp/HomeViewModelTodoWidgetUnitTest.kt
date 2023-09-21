@@ -38,14 +38,16 @@ class HomeViewModelTodoWidgetUnitTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val mockFailedTodoWidget = TodoWidgetListDataModel(
         id = "123",
-        status = TodoWidgetListDataModel.STATUS_ERROR
+        status = TodoWidgetListDataModel.STATUS_ERROR,
+        source = TodoWidgetListDataModel.SOURCE_DC,
     )
     private val todoWidgetItem1 = TodoWidgetDataModel(id = 1)
     private val todoWidgetItem2 = TodoWidgetDataModel(id = 2)
     private val mockSuccessTodoWidget = TodoWidgetListDataModel(
         id = "123",
         todoWidgetList = listOf(todoWidgetItem1, todoWidgetItem2),
-        status = TodoWidgetListDataModel.STATUS_SUCCESS
+        status = TodoWidgetListDataModel.STATUS_SUCCESS,
+        source = TodoWidgetListDataModel.SOURCE_DC,
     )
 
     @Before
