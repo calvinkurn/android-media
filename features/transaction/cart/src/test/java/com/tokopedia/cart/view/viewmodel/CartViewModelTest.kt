@@ -2260,14 +2260,25 @@ class CartViewModelTest : BaseCartViewModelTest() {
             cartStringOrder = "222",
             cartBmGmTickerData = CartBmGmTickerData(
                 bmGmCartInfoData = CartDetailInfo(
-                    cartDetailType = "BMGM"
-                )
-            )
+                    cartDetailType = "BMGM",
+                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
+                ),
+                isShowTickerBmGm = true
+            ),
+            productId = "1111"
         )
         val cartItemHolderDataTwo = CartItemHolderData(
             cartId = "125",
             isShopShown = true,
-            cartStringOrder = "222"
+            cartStringOrder = "222",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
+                ),
+                isShowTickerBmGm = true
+            ),
+            productId = "2222"
         )
 
         val cartGroupHolderData = CartGroupHolderData(
