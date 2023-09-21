@@ -30,13 +30,6 @@ class ChipAdapterDelegate(
         parent: ViewGroup,
         basicView: View
     ): FeedBrowseChipViewHolder {
-        return FeedBrowseChipViewHolder(
-            ItemFeedBrowseChipBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false,
-            ),
-            listener
-        )
+        return FeedBrowseChipViewHolder.create(parent, listener)
     }
 }

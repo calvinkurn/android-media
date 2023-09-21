@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <com.tokopedia.play_common.view.RoundedFrameLayout
+        android:id="@+id/fl_media"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_title"
+        app:layout_constraintDimensionRatio="0.56"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rfl_cornerRadius="8dp"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintVertical_bias="0"
+        >
+        
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+        
+    </com.tokopedia.play_common.view.RoundedFrameLayout>
+    
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@id/ll_partner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fl_media"
+        app:typographyType="display_2"
+        tools:text="Terong goreng super simple hanya 4 bahan"
+        />
+    
+    <LinearLayout
+        android:id="@+id/ll_partner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        >
+        
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_avatar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:unify_image_type="circle"
+            />
+        
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_badge"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="6dp"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_partner_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_3"
+            tools:text="Chef Devina Cooking"
+            />
+        
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

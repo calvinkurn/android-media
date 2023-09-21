@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
@@ -9,7 +11,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-class FeedBrowseChipViewHolder(
+class FeedBrowseChipViewHolder private constructor(
     binding: ItemFeedBrowseChipBinding,
     private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -43,6 +45,22 @@ class FeedBrowseChipViewHolder(
 
         if (item.isSelected) {
             listener.onChipSelected(item, bindingAdapterPosition)
+        }
+    }
+
+    companion object {
+        fun create(
+            parent: ViewGroup,
+            listener: Listener,
+        ): FeedBrowseChipViewHolder {
+            return FeedBrowseChipViewHolder(
+                ItemFeedBrowseChipBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
+                listener
+            )
         }
     }
 
