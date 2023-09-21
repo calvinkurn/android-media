@@ -2,6 +2,14 @@ package com.scp.auth
 
 import android.app.Application
 import android.content.Context
+import com.gojek.pin.AppInfo
+import com.gojek.pin.DeviceInfo
+import com.gojek.pin.PinConfig
+import com.gojek.pin.PinManager
+import com.gojek.pin.PinNetwork
+import com.gojek.pin.PinProvider
+import com.gojek.pin.validation.PinSdkValidationListener
+import com.gojek.pin.validation.PinValidationResults
 import com.scp.login.core.domain.contracts.configs.LSdkAppConfig
 import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
 import com.scp.login.core.domain.contracts.configs.LSdkConfig
@@ -17,11 +25,18 @@ import com.scp.verification.core.data.common.services.LocalCVLogService
 import com.scp.verification.core.data.common.services.VerificationServices
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsEvent
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsService
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import kotlinx.coroutines.CoroutineScope
+import okhttp3.OkHttpClient
 
 object GotoSdk {
     var LSDKINSTANCE: LSdkProvider? = null
     var CVSDKINSTANCE: CvSdkProvider? = null
+    var GOTOPINSDKINSTANCE: PinManager? = null
+
+    private const val TOKOPEDIA_APP_TYPE = "Tokopedia"
+
 
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
@@ -60,12 +75,45 @@ object GotoSdk {
     }
 
     private fun getCvSdkProvider(application: Application): CvSdkProvider {
-        return GotoVerification.getInstance(
+        CVSDKINSTANCE = GotoVerification.getInstance(
             context = application,
             configurations = VerificationSdkConfig(application),
             services = VerificationServices(),
             identifier = CvsdkFlowType.Main
         )
+        return CVSDKINSTANCE!!
+    }
+
+    private fun getGotoPinSdkProvider(application: Application): PinManager {
+        GOTOPINSDKINSTANCE = PinProvider.providePinManager(
+            context = application,
+            config = PinConfig(
+                network = PinNetwork(
+                    okHttpClient = OkHttpClient().newBuilder().build()
+                ),
+                appInfo = AppInfo(
+                    appType = TOKOPEDIA_APP_TYPE,
+                    isDebug = GlobalConfig.isAllowDebuggingTools(),
+                    language = "id"
+                ),
+                deviceInfo = DeviceInfo(
+                    appVersion = "",
+                    deviceName = "",
+                    osVersion = "",
+                    type = ""
+                ),
+                validationListener = object : PinSdkValidationListener {
+                    override fun handleOtpError(errorCode: Int, errorMessage: String, coroutineScope: CoroutineScope) {
+
+                    }
+
+                    override fun provideAuthenticationResult(context: Context, callback: (PinValidationResults) -> Unit) {
+
+                    }
+                }
+            )
+        )
+        return GOTOPINSDKINSTANCE!!
     }
 }
 
