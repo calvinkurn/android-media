@@ -14,6 +14,7 @@ import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.PREFERENCE_MULTICHECKOUT
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.SHOW_COACH_MARK_MULTICHECKOUT_KEY
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.WHITE_COLOR
+import com.tokopedia.common.topupbills.data.constant.showMultiCheckoutButton
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -34,7 +35,7 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
     private var rechargeBuyWidgetBinding = WidgetRechargeBuyWidgetBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderBuyWidget(denom: DenomData, listener: RechargeBuyWidgetListener, multiCheckoutButtons: List<MultiCheckoutButtons>){
-        val localCacheHandler = LocalCacheHandler(context, PREFERENCE_MULTICHECKOUT)
+
         with(rechargeBuyWidgetBinding){
             tgBuyWidgetTotalPrice.run {
                 text = denom.price
@@ -74,101 +75,11 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                 listener.onClickedChevron(denom)
             }
 
-            val coachMarkList = arrayListOf<CoachMark2Item>()
-
-            if (multiCheckoutButtons.size > Int.ONE) {
-                val (leftButton, rightButton)  = multiCheckoutButtonSeparator(multiCheckoutButtons)
-                if (leftButton.position.isNotEmpty() && leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.type.isNotEmpty()) {
-                    btnBuyLeft.show()
-                    btnBuyLeft.text = leftButton.text
-                    btnBuyLeft.buttonVariant = variantButton(leftButton.color)
-                    btnBuyLeft.setOnClickListener {
-                        chooseListenerAction(listener, denom,  leftButton.type)
-                    }
-
-                    if (leftButton.coachmark.isNotEmpty()) {
-                        coachMarkList.add(
-                            CoachMark2Item(
-                                btnBuyLeft, "", leftButton.coachmark
-                            )
-                        )
-                    }
-                } else {
-                    btnBuyLeft.hide()
-                }
-
-                if (rightButton.position.isNotEmpty() && rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty() && rightButton.type.isNotEmpty()) {
-                    btnBuyRight.text = rightButton.text
-                    btnBuyRight.buttonVariant = variantButton(rightButton.color)
-                    btnBuyRight.setOnClickListener {
-                        chooseListenerAction(listener, denom, rightButton.type)
-                    }
-
-                    if (rightButton.coachmark.isNotEmpty()) {
-                        coachMarkList.add(CoachMark2Item(
-                            btnBuyRight, "", rightButton.coachmark
-                        ))
-                    }
-                }
-
-            } else if(multiCheckoutButtons.size == Int.ONE) {
-                val button = multiCheckoutButtons.first()
-                btnBuyRight.text = button.text
-                btnBuyRight.buttonVariant = variantButton(button.color)
-                btnBuyRight.setOnClickListener {
-                    chooseListenerAction(listener, denom, button.type)
-                }
-
-                if (button.coachmark.isNotEmpty()) {
-                    coachMarkList.add(CoachMark2Item(
-                        btnBuyRight, "", button.coachmark
-                    ))
-                }
-            } else {
-                btnBuyRight.setOnClickListener {
-                    chooseListenerAction(listener, denom, "")
-                }
-            }
-
-            val isCoachMarkClosed = localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
-
-            if (!isCoachMarkClosed) {
-                val coachmark = CoachMark2(context)
-                coachmark.showCoachMark(coachMarkList)
-                coachmark.setOnDismissListener {
-                    localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
-                    localCacheHandler.applyEditor()
-                }
-            }
-        }
-    }
-
-
-    private fun multiCheckoutButtonSeparator(multiCheckoutButtons: List<MultiCheckoutButtons>): Pair<MultiCheckoutButtons, MultiCheckoutButtons> {
-        val leftButton = multiCheckoutButtons.first {
-            it.position == POSITION_LEFT
-        }
-
-        val rightButton = multiCheckoutButtons.first {
-            it.position == POSITION_RIGHT
-        }
-
-        return Pair(leftButton, rightButton)
-    }
-
-    private fun chooseListenerAction(listener: RechargeBuyWidgetListener, denom: DenomData, type: String) {
-        if (type.equals(ACTION_MULTIPLE)) {
-            listener.onClickedButtonMultiCheckout(denom)
-        } else {
-            listener.onClickedButtonLanjutkan(denom)
-        }
-    }
-
-    private fun variantButton(color: String): Int {
-        return if (color.equals(WHITE_COLOR)) {
-            UnifyButton.Variant.GHOST
-        } else {
-            UnifyButton.Variant.FILLED
+            showMultiCheckoutButton(multiCheckoutButtons, context, btnBuyRight, btnBuyLeft, {
+                listener.onClickedButtonLanjutkan(denom)
+            }, {
+                listener.onClickedButtonMultiCheckout(denom)
+            })
         }
     }
 }
