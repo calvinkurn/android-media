@@ -1,5 +1,6 @@
 package com.tokopedia.trackingoptimizer.repository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -17,12 +18,30 @@ import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
 
-class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)) : TrackRepositoryImpl<TrackingRegularDbModel, TrackingEEDbModel,
+class TrackRepository private constructor(
+    val context: Context,
+    val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(
+        context
+    )
+) : TrackRepositoryImpl<TrackingRegularDbModel, TrackingEEDbModel,
         TrackingEEFullDbModel, TrackingScreenNameDbModel> {
 
-    val trackingEEDataSource by lazy {
-        TrackingEEDataSource(context)
+    companion object {
+        const val ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT = 6700L // bytes
+
+        @SuppressLint("StaticFieldLeak")
+        @Volatile
+        private var INSTANCE: TrackRepository? = null
+
+        @JvmStatic
+        fun getInstance(context: Context): TrackRepository {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: TrackRepository(context.applicationContext)
+            }
+        }
     }
+
+    val trackingEEDataSource = TrackingEEDataSource.getInstance(context)
 
     override fun putRegular(event: EventModel, customDimension: HashMap<String, Any>?) {
         TrackApp.getInstance().gtm.sendEvent(event.event, customDimension)
@@ -46,21 +65,39 @@ class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = Fir
             }
         }
         if (ecommerceMap.isEmpty()) {
-            putRegular(EventModel(event.toString(), category.toString(), action.toString(), label.toString()), map)
+            putRegular(
+                EventModel(
+                    event.toString(),
+                    category.toString(),
+                    action.toString(),
+                    label.toString()
+                ), map
+            )
         } else {
-            putEE(EventModel(event.toString(), category.toString(), action.toString(), label.toString()),
-                    map,
-                    ecommerceMap)
+            putEE(
+                EventModel(
+                    event.toString(),
+                    category.toString(),
+                    action.toString(),
+                    label.toString()
+                ),
+                map,
+                ecommerceMap
+            )
         }
     }
 
-    override fun putEE(map: HashMap<String, Any>?, inputEnhanceECommerceMap: HashMap<String, Any>?) {
+    override fun putEE(
+        map: HashMap<String, Any>?,
+        inputEnhanceECommerceMap: HashMap<String, Any>?
+    ) {
         if (map == null) return
         val event = map.get(Constant.EVENT) ?: return
         val category = map.get(Constant.EVENT_CATEGORY) ?: return
         val action = map.get(Constant.EVENT_ACTION) ?: return
         val label = map.get(Constant.EVENT_LABEL) ?: return
-        val eventModel = EventModel(event.toString(), category.toString(), action.toString(), label.toString())
+        val eventModel =
+            EventModel(event.toString(), category.toString(), action.toString(), label.toString())
         map.remove(Constant.EVENT)
         map.remove(Constant.EVENT_ACTION)
         map.remove(Constant.EVENT_CATEGORY)
@@ -68,8 +105,10 @@ class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = Fir
         trackingEEDataSource.put(eventModel, map, inputEnhanceECommerceMap)
     }
 
-    override fun putEE(inputEvent: EventModel, inputCustomDimensionMap: HashMap<String, Any>?,
-                       inputEnhanceECommerceMap: HashMap<String, Any>?) {
+    override fun putEE(
+        inputEvent: EventModel, inputCustomDimensionMap: HashMap<String, Any>?,
+        inputEnhanceECommerceMap: HashMap<String, Any>?
+    ) {
         // if it is EE click, go to Full EE, it cannot be appended.
         val isImpressionEE = inputEvent.event in impressionEventList
         if (!isImpressionEE) {
@@ -98,11 +137,17 @@ class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = Fir
                 trackingEEDbModel.customDimension.length
 
         val enhanceEcommerceSizeLimit = remoteConfig.getLong(
-                TRACKING_QUEUE_SIZE_LIMIT_VALUE_REMOTECONFIGKEY,
-                ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT).toInt()
+            TRACKING_QUEUE_SIZE_LIMIT_VALUE_REMOTECONFIGKEY,
+            ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT
+        ).toInt()
 
         if (currentEESize >= enhanceEcommerceSizeLimit) {
-            moveEETrackingToFull(trackingEEDbModel, inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
+            moveEETrackingToFull(
+                trackingEEDbModel,
+                inputEvent,
+                inputCustomDimensionMap,
+                inputEnhanceECommerceMap
+            )
             return
         }
 
@@ -110,19 +155,29 @@ class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = Fir
         val dbList: ArrayList<Any>? = HashMapJsonUtil.findList(dbEnhanceECommerceMap)
         // no list found in db, put directly to DB (will replace)
         if (dbList == null || dbList.size == 0) {
-            moveEETrackingToFull(trackingEEDbModel, inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
+            moveEETrackingToFull(
+                trackingEEDbModel,
+                inputEvent,
+                inputCustomDimensionMap,
+                inputEnhanceECommerceMap
+            )
             return
         }
 
         val inputEnhanceECommerceMapString = HashMapJsonUtil.mapToJson(inputEnhanceECommerceMap)
-                ?: return
+            ?: return
         val estimatedSizePerItem = inputEnhanceECommerceMapString.length / inputList.size
         var itemCountToAdd = (enhanceEcommerceSizeLimit - currentEESize) / estimatedSizePerItem
         if (itemCountToAdd > inputList.size) {
             itemCountToAdd = inputList.size
         }
         if (itemCountToAdd == 0) {
-            moveEETrackingToFull(trackingEEDbModel, inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
+            moveEETrackingToFull(
+                trackingEEDbModel,
+                inputEvent,
+                inputCustomDimensionMap,
+                inputEnhanceECommerceMap
+            )
             return
         }
         // previous EE tracking have space, so we add to previous EE
@@ -134,22 +189,34 @@ class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = Fir
         if (inputList.size == 0) {
             directPutEE(inputEvent, inputCustomDimensionMap, dbEnhanceECommerceMap)
         } else {
-            sendData(inputEvent, HashMapJsonUtil.jsonToMap(trackingEEDbModel.customDimension), dbEnhanceECommerceMap)
+            sendData(
+                inputEvent,
+                HashMapJsonUtil.jsonToMap(trackingEEDbModel.customDimension),
+                dbEnhanceECommerceMap
+            )
             // replacing old data
             directPutEE(inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
         }
 
     }
 
-    fun moveEETrackingToFull(trackingEEDbModel: TrackingEEDbModel,
-                             inputEvent: EventModel, inputCustomDimension: HashMap<String, Any>?,
-                             inputEnhanceECommerceMap: HashMap<String, Any>?) {
-        sendData(inputEvent, HashMapJsonUtil.jsonToMap(trackingEEDbModel.customDimension), HashMapJsonUtil.jsonToMap(trackingEEDbModel.enhanceEcommerce))
+    fun moveEETrackingToFull(
+        trackingEEDbModel: TrackingEEDbModel,
+        inputEvent: EventModel, inputCustomDimension: HashMap<String, Any>?,
+        inputEnhanceECommerceMap: HashMap<String, Any>?
+    ) {
+        sendData(
+            inputEvent,
+            HashMapJsonUtil.jsonToMap(trackingEEDbModel.customDimension),
+            HashMapJsonUtil.jsonToMap(trackingEEDbModel.enhanceEcommerce)
+        )
         directPutEE(inputEvent, inputCustomDimension, inputEnhanceECommerceMap)
     }
 
-    fun directPutEE(inputEvent: EventModel, inputCustomDimensionMap: HashMap<String, Any>?,
-                    inputEnhanceECommerceMap: HashMap<String, Any>?) {
+    fun directPutEE(
+        inputEvent: EventModel, inputCustomDimensionMap: HashMap<String, Any>?,
+        inputEnhanceECommerceMap: HashMap<String, Any>?
+    ) {
         if (inputEnhanceECommerceMap == null && inputCustomDimensionMap!!.isEmpty()) {
             trackingEEDataSource.delete(inputEvent)
         } else {
@@ -168,12 +235,10 @@ class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = Fir
         trackingEEDataSource.delete()
     }
 
-    companion object {
-        const val ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT = 6700L // bytes
-    }
-
-    private fun sendData(inputEvent: EventModel, inputCustomDimensionMap: HashMap<String, Any>?,
-                         inputEnhanceECommerceMap: HashMap<String, Any>?) {
+    private fun sendData(
+        inputEvent: EventModel, inputCustomDimensionMap: HashMap<String, Any>?,
+        inputEnhanceECommerceMap: HashMap<String, Any>?
+    ) {
         val map = mutableMapOf<String, Any?>()
         map.put(Constant.EVENT, inputEvent.event)
         map.put(Constant.EVENT_CATEGORY, inputEvent.category)
