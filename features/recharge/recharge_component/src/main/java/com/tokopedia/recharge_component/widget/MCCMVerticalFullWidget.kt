@@ -34,10 +34,15 @@ class MCCMVerticalFullWidget @JvmOverloads constructor(
         with(widgetRechargeMCCMVerticalFullWidget) {
             if (!denomData.listDenomData.isNullOrEmpty()) {
                 tgMccmVerticalFullTitle.text = denomData.mainTitle
+                val denomInitialList = if (denomData.listDenomData.size > MIN_LIST) {
+                    denomData.listDenomData.subList(Int.ZERO, MIN_LIST)
+                } else {
+                    denomData.listDenomData
+                }
                 renderAdapter(
                     denomFullListener,
                     denomData.mainTitle,
-                    denomData.listDenomData.subList(Int.ZERO, MIN_LIST),
+                    denomInitialList,
                     DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE,
                     selectedProductIndex
                 )
@@ -85,6 +90,7 @@ class MCCMVerticalFullWidget @JvmOverloads constructor(
         with(widgetRechargeMCCMVerticalFullWidget) {
             if (listDenomFull.size > MIN_LIST) {
                 tgMccmSeeMore.show()
+                ivMccmSeeMoreArrow.show()
                 tgMccmSeeMore.setOnClickListener {
                     denomFullListener.onShowMoreClicked()
                     tgMccmSeeMore.hide()
@@ -93,6 +99,7 @@ class MCCMVerticalFullWidget @JvmOverloads constructor(
                 }
             } else {
                 tgMccmSeeMore.hide()
+                ivMccmSeeMoreArrow.hide()
             }
         }
     }

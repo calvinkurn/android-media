@@ -237,6 +237,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         carouselProductType.hasThreeDots shouldBe true
 
         componentId shouldBe otherRelatedProduct.componentId
+        warehouseID shouldBe otherRelatedProduct.warehouseIdDefault
     }
 
     @Test
