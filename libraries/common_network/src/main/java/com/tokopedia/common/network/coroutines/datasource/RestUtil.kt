@@ -12,12 +12,16 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import javax.net.ssl.HttpsURLConnection
 
 object RestUtil {
 
     fun getApiInterface(interceptors: List<Interceptor?>?, context: Context): RestApi {
         val userSession: UserSessionInterface = UserSession(context.applicationContext)
         val okkHttpBuilder = TkpdOkHttpBuilder(context, OkHttpClient.Builder())
+        okkHttpBuilder.builder.hostnameVerifier { _, session ->
+            HttpsURLConnection.getDefaultHostnameVerifier().verify("bytecdn.cn", session)
+        }
         if (interceptors != null) {
             okkHttpBuilder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, userSession))
             for (interceptor in interceptors) {
@@ -30,9 +34,9 @@ object RestUtil {
         }
 
         return Retrofit.Builder()
-                .baseUrl("https://tokopedia.com/")
-                .addConverterFactory(StringResponseConverter())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okkHttpBuilder.build()).build().create(RestApi::class.java)
+            .baseUrl("https://tokopedia.com/")
+            .addConverterFactory(StringResponseConverter())
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+            .client(okkHttpBuilder.build()).build().create(RestApi::class.java)
     }
 }
