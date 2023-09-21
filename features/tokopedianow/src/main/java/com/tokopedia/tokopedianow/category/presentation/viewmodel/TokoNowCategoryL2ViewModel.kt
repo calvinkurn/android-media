@@ -96,36 +96,6 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         trackOpenScreen(getCategoryDetailResponse)
     }
 
-    fun onCartQuantityChanged(
-        product: ProductCardCompactUiModel,
-        shopId: String,
-        quantity: Int
-    ) {
-        val productId = product.productId
-        val isVariant = product.isVariant
-        val stock = product.availableStock
-
-        onCartQuantityChanged(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity,
-            stock = stock,
-            isVariant = isVariant,
-            onSuccessAddToCart = {
-
-            },
-            onSuccessUpdateCart = { _, _ ->
-
-            },
-            onSuccessDeleteCart = { _, _ ->
-
-            },
-            onError = {
-
-            }
-        )
-    }
-
     fun showPageLoading() {
         visitableList.clear()
         visitableList.addChooseAddress()
