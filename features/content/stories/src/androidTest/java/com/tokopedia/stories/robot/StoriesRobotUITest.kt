@@ -102,6 +102,10 @@ internal class StoriesRobotUITest(
         scenario.moveToState(Lifecycle.State.RESUMED)
     }
 
+    fun moveToDestroyState() {
+        scenario.moveToState(Lifecycle.State.DESTROYED)
+    }
+
     fun openStoriesRoom() = chainable {
         Espresso
             .onView(withId(storiesR.id.rv_stories_category))
@@ -118,6 +122,7 @@ internal class StoriesRobotUITest(
 
     fun doNothingUntilNextGroup(duration: Int) = chainable {
         delay(duration.times(3L))
+        delay()
     }
 
     fun tapNextUntilNextGroup() = chainable {

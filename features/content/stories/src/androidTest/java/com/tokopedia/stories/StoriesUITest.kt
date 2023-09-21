@@ -1,20 +1,31 @@
 package com.tokopedia.stories
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.stories.data.mock.mockInitialDataModel
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.robot.StoriesRobotUITest
+import com.tokopedia.stories.utils.containsEventAction
+import com.tokopedia.stories.utils.containsTrackerId
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @UiTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class StoriesUITest {
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
+
+    private val analyticStoriesMainTracker = "tracker/content/stories/stories_main_tracker.json"
+    private val analyticStoriesOpenScreen = "tracker/content/stories/stories_open_screen.json"
 
     private val authorId: String = "123"
     private val handle: SavedStateHandle = SavedStateHandle()
@@ -36,6 +47,22 @@ class StoriesUITest {
 
         getStoriesRobot()
             .openStoriesRoom()
+            .moveToDestroyState()
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesOpenScreen),
+            containsTrackerId("46042")
+        )
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("view - story circle")
+        )
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("click - exit story room")
+        )
     }
 
     @Test
@@ -48,6 +75,11 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .doNothingUntilNextGroup(duration)
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("click - move to other group")
+        )
     }
 
     @Test
@@ -59,6 +91,16 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .tapNextUntilNextGroup()
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("click - tap next content"),
+        )
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("click - move to other group")
+        )
     }
 
     @Test
@@ -73,6 +115,16 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .tapPrevUntilPrevGroup()
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("click - tap previous content"),
+        )
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("click - move to other group")
+        )
     }
 
     @Test
@@ -95,6 +147,16 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .tapGroup()
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("click - story circle"),
+        )
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("click - move to other group")
+        )
     }
 
     @Test
@@ -106,6 +168,11 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .swipeGroup()
+
+        assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction("click - move to other group")
+        )
     }
 
 }
