@@ -73,8 +73,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/Unify_NN950"
-                android:textSize="12sp"
-                app:typographyWeight="bold"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
                 tools:text="{05} Out west" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -84,7 +84,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/Unify_NN950"
-                android:textSize="14sp"
+                app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="Rp100 rb - 250 rb" />
 
