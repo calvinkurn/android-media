@@ -167,7 +167,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
     }
 
     override fun updateMiniCartWidget(data: MiniCartSimplifiedData?) {
-        if(data != null) {
+        if (data != null) {
             renderMiniCartWidget(data)
         } else {
             updateMiniCartData()
@@ -190,8 +190,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
     private fun setupAppBarLayout() {
         binding?.apply {
             appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
-                val isEmptyState = viewModel.isEmptyState()
-                swipeToRefresh.isEnabled = (verticalOffset == 0) && !isEmptyState
+                swipeToRefresh.isEnabled = (verticalOffset == 0)
             }
         }
     }
@@ -272,7 +271,9 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
     private fun setupTracker() {
         binding?.tabsUnify?.addViewOnScreenObserver {
             categoryL2Analytic.sendImpressionLCategoryNavigationEvent(
-                categoryIdL1, categoryIdL2, viewModel.getWarehouseIds()
+                categoryIdL1,
+                categoryIdL2,
+                viewModel.getWarehouseIds()
             )
         }
     }
@@ -286,7 +287,8 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
 
     private fun trackClickOtherCategory() {
         categoryL2Analytic.sendClickOtherCategoriesEvent(
-            categoryIdL1, viewModel.getWarehouseIds()
+            categoryIdL1,
+            viewModel.getWarehouseIds()
         )
     }
 
@@ -312,9 +314,8 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
     private fun createOnPageChangeCallback(): OnPageChangeCallback {
         return object : OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
-                val isEmptyState = viewModel.isEmptyState()
                 binding?.swipeToRefresh?.isEnabled =
-                    state == ViewPager2.SCROLL_STATE_IDLE && !isEmptyState
+                    state == ViewPager2.SCROLL_STATE_IDLE
             }
         }
     }

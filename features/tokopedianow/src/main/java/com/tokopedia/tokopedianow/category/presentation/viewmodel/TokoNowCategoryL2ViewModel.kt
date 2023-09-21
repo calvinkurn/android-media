@@ -22,7 +22,6 @@ import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.user.session.UserSessionInterface
@@ -100,10 +99,6 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         visitableList.addChooseAddress()
         visitableList.add(CategoryL2ShimmerUiModel)
         updateVisitableListLiveData()
-    }
-
-    fun isEmptyState(): Boolean {
-        return visitableList.find { it is TokoNowEmptyStateNoResultUiModel } != null
     }
 
     fun removeChooseAddressWidget() {
