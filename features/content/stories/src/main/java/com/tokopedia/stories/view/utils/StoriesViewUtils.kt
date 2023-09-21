@@ -62,6 +62,7 @@ internal enum class TouchEventStories {
     PAUSE, RESUME, NEXT_PREV
 }
 
+internal const val KEY_CONFIG_ENABLE_STORIES_ROOM = "android_enable_content_stories_room"
 internal const val SHOP_ID = "shop_id"
 internal const val SHOP_ID_INDEX_APP_LINK = 1
 internal const val STORY_GROUP_ID = "stories_group_id"
