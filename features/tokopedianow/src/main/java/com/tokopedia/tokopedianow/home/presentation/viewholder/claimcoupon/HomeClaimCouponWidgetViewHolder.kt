@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -41,12 +42,14 @@ class HomeClaimCouponWidgetViewHolder(
     private var widgets: MutableList<Visitable<*>> = mutableListOf()
 
     private val adapter by lazy {
+        val asyncDifferConfig = AsyncDifferConfig.Builder(HomeListDiffer())
+            .build()
         HomeAdapter(
+            asyncDifferConfig = asyncDifferConfig,
             typeFactory = HomeAdapterTypeFactory(
                 claimCouponWidgetItemListener = claimCouponWidgetItemListener,
                 claimCouponWidgetItemTracker = claimCouponWidgetItemTracker
-            ),
-            differ = HomeListDiffer(),
+            )
         )
     }
 

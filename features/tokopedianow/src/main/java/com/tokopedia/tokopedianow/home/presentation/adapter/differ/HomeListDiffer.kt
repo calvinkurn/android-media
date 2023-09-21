@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.home.presentation.adapter.differ
 
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
@@ -12,14 +12,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselC
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 
-class HomeListDiffer : BaseTokopediaNowDiffer() {
-    private var oldList: List<Visitable<*>> = emptyList()
-    private var newList: List<Visitable<*>> = emptyList()
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-
+class HomeListDiffer : DiffUtil.ItemCallback<Visitable<*>>() {
+    override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
         return if (oldItem is HomeProductRecomUiModel && newItem is HomeProductRecomUiModel) {
             oldItem.id == newItem.id
         } else if (oldItem is HomeProductCarouselChipsUiModel && newItem is HomeProductCarouselChipsUiModel) {
@@ -41,31 +35,15 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
         }
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
+        return oldItem.equals(newItem)
     }
 
-    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-
+    override fun getChangePayload(oldItem: Visitable<*>, newItem: Visitable<*>): Any? {
         return if (oldItem is HomeLayoutUiModel && newItem is HomeLayoutUiModel) {
             oldItem.getChangePayload(newItem)
         } else {
-            super.getChangePayload(oldItemPosition, newItemPosition)
+            super.getChangePayload(oldItem, newItem)
         }
-    }
-
-    override fun getOldListSize() = oldList.size
-
-    override fun getNewListSize() = newList.size
-
-    override fun create(
-        oldList: List<Visitable<*>>,
-        newList: List<Visitable<*>>
-    ): BaseTokopediaNowDiffer {
-        this.oldList = oldList
-        this.newList = newList
-        return this
     }
 }

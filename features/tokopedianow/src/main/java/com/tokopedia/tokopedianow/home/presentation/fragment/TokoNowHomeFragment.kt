@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -251,8 +252,10 @@ class TokoNowHomeFragment :
     private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
 
     private val adapter by lazy {
+        val asyncDifferConfig = AsyncDifferConfig.Builder(HomeListDiffer()).build()
         val bundleWidgetCallback = createBundleWidgetCallback()
         HomeAdapter(
+            asyncDifferConfig = asyncDifferConfig,
             typeFactory = HomeAdapterTypeFactory(
                 tokoNowView = this,
                 tokoNowChooseAddressWidgetListener = this,
@@ -282,8 +285,7 @@ class TokoNowHomeFragment :
                 productBundleWidgetListener = bundleWidgetCallback,
                 tokoNowBundleWidgetListener = bundleWidgetCallback,
                 homeHeaderListener = createHomeHeaderListener()
-            ),
-            differ = HomeListDiffer()
+            )
         )
     }
 
@@ -551,7 +553,7 @@ class TokoNowHomeFragment :
     }
 
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
-        adapter.data.filterIsInstance<HomePlayWidgetUiModel>().forEach {
+        adapter.currentList.filterIsInstance<HomePlayWidgetUiModel>().forEach {
             viewModelTokoNow.autoRefreshPlayWidget(it)
         }
     }
