@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 
 @UiTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-class StoriesRoomUITest {
+class StoriesUITest {
 
     private val authorId: String = "123"
     private val handle: SavedStateHandle = SavedStateHandle()
