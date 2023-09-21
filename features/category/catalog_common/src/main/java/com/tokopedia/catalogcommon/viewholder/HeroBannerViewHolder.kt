@@ -100,6 +100,7 @@ class HeroBannerViewHolder(
         iuBrandPremiumCard.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
         bgGradient.background = createGradientDrawable(colorBottom = colorBg)
         brandDescriptions = element.brandDescriptions
+        tfSubtitleBannerPremium.text = brandDescriptions.firstOrNull().orEmpty()
     }
 
     private fun WidgetItemBannerHeroBinding.renderRegularBrandData(element: HeroBannerUiModel) {
@@ -119,7 +120,6 @@ class HeroBannerViewHolder(
         }
         binding?.carouselBanner?.addImages(ArrayList(element.brandImageUrls))
         binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
-        binding?.tfSubtitleBannerPremium?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
         binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
     }
 }
