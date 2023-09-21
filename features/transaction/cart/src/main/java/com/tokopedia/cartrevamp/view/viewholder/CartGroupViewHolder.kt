@@ -9,9 +9,11 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemGroupRevampBinding
+import com.tokopedia.cart.view.viewholder.CartGroupViewHolder
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cartrevamp.view.decorator.CartHorizontalItemDecoration
@@ -48,6 +50,10 @@ class CartGroupViewHolder(
     private var plusCoachmark: CoachMark2?
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    private val localCacheHandler: LocalCacheHandler by lazy {
+        LocalCacheHandler(itemView.context, CartGroupViewHolder.KEY_ONBOARDING_ICON_PIN)
+    }
+
     private val plusCoachmarkPrefs: PlusCoachmarkPrefs by lazy {
         PlusCoachmarkPrefs(itemView.context)
     }
@@ -66,10 +72,44 @@ class CartGroupViewHolder(
         renderCheckBox(cartGroupHolderData)
         renderFulfillment(cartGroupHolderData)
         renderFreeShipping(cartGroupHolderData)
+        renderIconPin(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
         renderCartShopGroupTicker(cartGroupHolderData)
         validateGroupConstraintLayout(cartGroupHolderData)
         validateProductPoliciesMargin(cartGroupHolderData)
+    }
+
+    private fun renderIconPin(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.isShowPin) {
+            binding.iconPin.show()
+            cartGroupHolderData.pinCoachmarkMessage.let {
+                if (it.isNotBlank()) {
+                    showIconPinOnboarding(it)
+                }
+            }
+        } else {
+            binding.iconPin.gone()
+        }
+    }
+
+    private fun showIconPinOnboarding(coachmarkMessage: String) {
+        val hasShownOnboarding = localCacheHandler.getBoolean(CartGroupViewHolder.KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, false)
+        if (hasShownOnboarding) return
+
+        itemView.context.let {
+            val onboardingItems = ArrayList<CoachMark2Item>().apply {
+                add(CoachMark2Item(binding.iconPin, coachmarkMessage, ""))
+            }
+
+            CoachMark2(it).apply {
+                showCoachMark(onboardingItems)
+            }
+
+            localCacheHandler.apply {
+                putBoolean(CartGroupViewHolder.KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, true)
+                applyEditor()
+            }
+        }
     }
 
     private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
