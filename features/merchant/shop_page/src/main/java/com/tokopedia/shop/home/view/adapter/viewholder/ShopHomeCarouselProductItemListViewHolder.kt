@@ -41,15 +41,6 @@ class ShopHomeCarouselProductItemListViewHolder(
     override fun bind(shopHomeProductUiModel: ShopHomeProductUiModel) {
         setProductData()
         setProductListener()
-        configureReimagine()
-    }
-
-    private fun configureReimagine() {
-        if (isOverrideWidgetTheme) {
-            viewBinding?.productCard?.apply {
-                forceLightModeColor(productCard = this)
-            }
-        }
     }
 
     private fun setProductListener() {
@@ -122,7 +113,7 @@ class ShopHomeCarouselProductItemListViewHolder(
     }
 
     private fun setProductData() {
-        productCardModel = getProductCardModel()
+        productCardModel = getProductCardModel()?.copy(forceLightModeColor = isOverrideWidgetTheme)
         productCardModel?.let {
             viewBinding?.productCard?.setProductModel(it)
         }

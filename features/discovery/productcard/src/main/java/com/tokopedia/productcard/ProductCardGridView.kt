@@ -288,6 +288,10 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         )
 
         productCardModel.layoutStrategy.renderCardHeight(this, cardViewProductCard)
+
+        if (productCardModel.forceLightModeColor) {
+            forceLightModeColor(this)
+        }
     }
 
     private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
@@ -390,7 +394,7 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         cardViewProductCard?.setOnLongClickListener(l)
     }
 
-    fun forceLightModeColor(productCard: ProductCardGridView?) {
+    private fun forceLightModeColor(productCard: ProductCardGridView?) {
         val context = productCard?.context
 
         if (productCard != null && context != null) {

@@ -61,16 +61,13 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
                 hasThreeDots = false,
                 shopHomeProductViewModel = shopHomeProductViewModel,
                 widgetName = shopHomeNewProductLaunchCampaignUiModel.name,
-                statusCampaign = shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.statusCampaign.orEmpty()
+                statusCampaign = shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.statusCampaign.orEmpty(),
+                forceLightModeColor = shopHomeCampaignNplWidgetListener.isForceLightModeColorOnCampaignNplWidget()
             ).copy(
                 stockBarLabelColor = stockBarLabelColor
             )
         )
         setListener()
-
-        if (shopHomeCampaignNplWidgetListener.isForceLightModeColorOnCampaignNplWidget()) {
-            productCard?.forceLightModeColor(productCard)
-        }
     }
 
     protected open fun setListener() {

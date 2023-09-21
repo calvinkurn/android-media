@@ -76,8 +76,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 occButtonText = if (isAtcOcc(element.name)) {
                     itemView.context.getString(R.string.occ_text)
                 } else "",
-                element.name
-
+                element.name,
+                forceLightModeColor = shopHomeListener.isOverrideTheme()
             )
         }
 
@@ -264,9 +264,6 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     }
                     else -> {
                         recyclerView?.show()
-                        if (shopHomeListener.isOverrideTheme()) {
-                            recyclerView?.forceLightModeColor()
-                        }
                         recyclerViewCarouselSingleOrDoubleProduct?.hide()
                         recyclerView?.bindCarouselProductCardViewGrid(
                             scrollToPosition = getScrollPosition(),
@@ -295,9 +292,6 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     }
                     else -> {
                         recyclerView?.show()
-                        if (shopHomeListener.isOverrideTheme()) {
-                            recyclerView?.forceLightModeColor()
-                        }
                         recyclerViewCarouselSingleOrDoubleProduct?.hide()
                         recyclerView?.bindCarouselProductCardViewGrid(
                             scrollToPosition = getScrollPosition(),
@@ -324,9 +318,6 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     )
                 } else {
                     recyclerView?.show()
-                    if (shopHomeListener.isOverrideTheme()) {
-                        recyclerView?.forceLightModeColor()
-                    }
                     recyclerViewCarouselSingleOrDoubleProduct?.hide()
                     recyclerView?.bindCarouselProductCardViewList(
                         productCardModelList = carouselProductList,
@@ -351,9 +342,6 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     )
                 } else {
                     recyclerView?.show()
-                    if (shopHomeListener.isOverrideTheme()) {
-                        recyclerView?.forceLightModeColor()
-                    }
                     recyclerViewCarouselSingleOrDoubleProduct?.hide()
                     recyclerView?.bindCarouselProductCardViewList(
                         productCardModelList = carouselProductList,

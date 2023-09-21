@@ -51,14 +51,11 @@ open class ShopHomeProductItemBigGridViewHolder(
             hasThreeDots = isShowTripleDot,
             shopHomeProductViewModel = shopHomeProductViewModel,
             isWideContent = true,
-            productRating = shopHomeProductViewModel.averageRating
+            productRating = shopHomeProductViewModel.averageRating,
+            forceLightModeColor = shopHomeListener.isOverrideTheme()
         )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)
-
-        if (shopHomeListener.isOverrideTheme()) {
-            productCard?.forceLightModeColor(productCard)
-        }
     }
 
     protected open fun setListener(productCardModel: ProductCardModel) {

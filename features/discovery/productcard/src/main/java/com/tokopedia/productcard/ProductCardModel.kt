@@ -94,6 +94,7 @@ data class ProductCardModel (
         val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
         val pageSource: PageSource = PageSource.OTHER,
         val abTestRemoteConfig: Lazy<RemoteConfig?> = rollenceRemoteConfig(),
+        val forceLightModeColor: Boolean = false
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

@@ -103,17 +103,14 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
-            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
+            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
+            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
         productCardBigGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
         setProductImpressionListener(productCardModel, listener)
-
-        if (listener.isForceLightModeColorOnShopFlashSaleWidget()) {
-            productCardBigGrid?.forceLightModeColor(productCardBigGrid)
-        }
     }
 
     fun getHeightOfImageProduct(action: (Int) -> Unit){
