@@ -212,6 +212,7 @@ import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantStrin
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.APlusContentTracking
+import com.tokopedia.product.detail.tracking.BMGMTracking
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
@@ -1114,16 +1115,19 @@ open class DynamicProductDetailFragment :
 
     private fun reloadMiniCart() {
         val hasQuantityEditor =
-            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
-                || (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
+            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true ||
+                (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
                     ?.data
                     ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
-        if (viewModel.getDynamicProductInfoP1 == null
-            || context == null
-            || !hasQuantityEditor
-            || firstOpenPage == true
-            || !viewModel.isUserSessionActive) return
+        if (viewModel.getDynamicProductInfoP1 == null ||
+            context == null ||
+            !hasQuantityEditor ||
+            firstOpenPage == true ||
+            !viewModel.isUserSessionActive
+        ) {
+            return
+        }
 
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
@@ -2668,7 +2672,6 @@ open class DynamicProductDetailFragment :
 
         pdpUiUpdater?.updateVariantData(title = title, processedVariant = variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
-
         updateProductInfoOnVariantChanged(selectedChild)
 
         updateUi()
@@ -2728,6 +2731,11 @@ open class DynamicProductDetailFragment :
             productId ?: "",
             viewModel.p2Data.value?.arInfo ?: ProductArInfo()
         )
+
+        // update BMGM data
+        viewModel.getP2()?.bmgm?.let {
+            pdpUiUpdater?.updateBMGMSneakPeak(productId = productId.orEmpty(), bmgm = it)
+        }
     }
 
     /**
@@ -6047,6 +6055,17 @@ open class DynamicProductDetailFragment :
             title,
             commonTracker,
             component
+        )
+    }
+
+    override fun onBMGMClicked(title: String, component: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+
+        BMGMTracking.onClicked(
+            title = title,
+            commonTracker = commonTracker,
+            component = component,
+            trackingQueue = trackingQueue
         )
     }
 }

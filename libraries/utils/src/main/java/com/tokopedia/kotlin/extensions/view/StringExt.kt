@@ -62,6 +62,14 @@ fun String?.toIntSafely(): Int {
     }
 }
 
+fun String?.toLongSafely(): Long {
+    return try {
+        toLongOrZero()
+    } catch (e: Exception) {
+        0L
+    }
+}
+
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }

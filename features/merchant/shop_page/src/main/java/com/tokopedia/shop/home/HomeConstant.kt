@@ -59,6 +59,7 @@ object WidgetName {
     const val ADVANCED_SLIDER_BANNER = "advanced_slider_banner"
     const val BANNER_PRODUCT_GROUP = "banner_product_group"
     const val DIRECT_PURCHASED_BY_ETALASE = "direct_purchased_by_etalase"
+    const val BMGM_BANNER = "bmgm_banner_group" // Buy More Get More Widget Banner
 
     // showcase widget name list
     const val SHOWCASE_SLIDER_SMALL = "etalase_slider_kecil"
@@ -113,5 +114,6 @@ enum class WidgetNameEnum(val value: String) {
     SHOWCASE_SLIDER_TWO_ROWS("etalase_slider_kecil_2_baris"),
     SHOWCASE_GRID_SMALL("etalase_banner_3_x_2"),
     SHOWCASE_GRID_MEDIUM("etalase_banner_besar_2x2"),
-    SHOWCASE_GRID_BIG("etalase_banner_besar_2x1")
+    SHOWCASE_GRID_BIG("etalase_banner_besar_2x1"),
+    BMGM_BANNER("bmgm_banner_group") // Buy More Get More Widget Banner
 }
