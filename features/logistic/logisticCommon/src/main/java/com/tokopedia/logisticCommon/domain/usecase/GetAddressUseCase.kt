@@ -24,8 +24,7 @@ class GetAddressUseCase @Inject constructor(
 
     companion object {
         private const val QUERY =
-            """
-        query keroAddressCorner(${'$'}input: KeroGetAddressInput){
+            """query keroAddressCorner(${'$'}input: KeroGetAddressInput){
           keroAddressCorner(input:${'$'}input) {
             status
             config

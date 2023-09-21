@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.request.AddAddressParam
 import com.tokopedia.logisticCommon.data.request.EditAddressParam
@@ -15,27 +14,6 @@ import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
 class KeroRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
-
-    companion object {
-        private const val PARAM_LATLNG = "latlng"
-        private const val PARAM_IS_MANAGE_ADDRESS_FLOW = "is_manage_address_flow"
-    }
-
-    suspend fun getDistrictGeocode(
-        latlong: String?,
-        isManageAddressFlow: Boolean = false
-    ): AutoFillResponse {
-        val param = mapOf(
-            PARAM_LATLNG to latlong,
-            PARAM_IS_MANAGE_ADDRESS_FLOW to isManageAddressFlow
-        )
-        val request = GraphqlRequest(
-            KeroLogisticQuery.keroMapsAutofill,
-            AutoFillResponse::class.java,
-            param
-        )
-        return gql.getResponse(request)
-    }
 
     suspend fun saveAddress(
         model: SaveAddressDataModel,

@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.AddAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.helper.KeroMapsAutofillProvider
@@ -30,6 +31,7 @@ class PinpointWebviewViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val repo: KeroRepository = mockk(relaxed = true)
+    private val getDistrictGeocode: GetDistrictGeoCodeUseCase = mockk(relaxed = true)
     private val liveDataObserver: Observer<PinpointWebviewState> = mockk(relaxed = true)
 
     private lateinit var viewModel: PinpointWebviewViewModel
@@ -39,7 +41,7 @@ class PinpointWebviewViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = PinpointWebviewViewModel(repo)
+        viewModel = PinpointWebviewViewModel(getDistrictGeocode)
         viewModel.pinpointState.observeForever(liveDataObserver)
         every { liveDataObserver.onChanged(any()) } just Runs
     }
@@ -51,7 +53,7 @@ class PinpointWebviewViewModelTest {
         val long = 106.76730046907339
         val locationPass = LocationPass()
         viewModel.setLocationPass(locationPass)
-        coEvery { repo.getDistrictGeocode(any()) } returns data
+        coEvery { getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
         val result = viewModel.pinpointState.value
@@ -71,7 +73,7 @@ class PinpointWebviewViewModelTest {
         val long = 106.76730046907339
         val addressData = SaveAddressDataModel()
         viewModel.setAddressDataModel(addressData)
-        coEvery { repo.getDistrictGeocode(any()) } returns data
+        coEvery { getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
         val result = viewModel.pinpointState.value
@@ -98,7 +100,7 @@ class PinpointWebviewViewModelTest {
         val long = 106.76730046907339
         val addressData = SaveAddressDataModel()
         viewModel.setAddressDataModel(addressData)
-        coEvery { repo.getDistrictGeocode(any()) } returns data
+        coEvery { getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
         val result = viewModel.pinpointState.value
@@ -113,7 +115,7 @@ class PinpointWebviewViewModelTest {
     fun `WHEN saveLatLong failed THEN should return error`() {
         val lat = -6.571004247136069
         val long = 106.76730046907339
-        coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
+        coEvery { getDistrictGeocode(any()) } throws defaultThrowable
 
         viewModel.saveLatLong(lat, long)
         val result = viewModel.pinpointState.value
@@ -127,7 +129,7 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         viewModel.setSource("ADD_ADDRESS_POSITIVE")
-        coEvery { repo.getDistrictGeocode(any(), any()) } returns data
+        coEvery { getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
 
@@ -149,7 +151,7 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         viewModel.setSource("ADD_ADDRESS_NEGATIVE")
-        coEvery { repo.getDistrictGeocode(any(), any()) } returns data
+        coEvery { getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
 
@@ -172,7 +174,7 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         viewModel.setSource("EDIT_ADDRESS")
-        coEvery { repo.getDistrictGeocode(any(), any()) } returns data
+        coEvery { getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
 
@@ -193,7 +195,7 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         viewModel.setSource("ADD_ADDRESS_NEGATIVE")
-        coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
+        coEvery { getDistrictGeocode(any()) } throws defaultThrowable
 
         viewModel.saveLatLong(lat, long)
 
@@ -270,7 +272,7 @@ class PinpointWebviewViewModelTest {
         val data = KeroMapsAutofillProvider.provideAutofillResponse()
         val lat = -6.571004247136069
         val long = 106.76730046907339
-        coEvery { repo.getDistrictGeocode(any()) } returns data
+        coEvery { getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
 
@@ -292,7 +294,7 @@ class PinpointWebviewViewModelTest {
         val data = KeroMapsAutofillProvider.provideAutofillResponse()
         val lat = -6.571004247136069
         val long = 106.76730046907339
-        coEvery { repo.getDistrictGeocode(any()) } returns data
+        coEvery { getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
 
@@ -313,7 +315,7 @@ class PinpointWebviewViewModelTest {
 
         val lat = -6.571004247136069
         val long = 106.76730046907339
-        coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
+        coEvery { getDistrictGeocode(any()) } throws defaultThrowable
 
         viewModel.saveLatLong(lat, long)
 
@@ -338,7 +340,7 @@ class PinpointWebviewViewModelTest {
         val data = KeroMapsAutofillProvider.provideAutofillResponse()
         val lat = -6.571004247136069
         val long = 106.76730046907339
-        coEvery { repo.getDistrictGeocode(any()) } returns data
+        coEvery { getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
 

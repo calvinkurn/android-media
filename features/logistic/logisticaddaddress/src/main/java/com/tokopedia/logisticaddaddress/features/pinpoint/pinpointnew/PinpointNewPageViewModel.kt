@@ -8,11 +8,12 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
 import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictBoundariesUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictCenterUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
@@ -30,10 +31,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PinpointNewPageViewModel @Inject constructor(
-    private val repo: KeroRepository,
     private val getDistrict: GetDistrictUseCase,
     private val getDistrictBoundaries: GetDistrictBoundariesUseCase,
     private val getDistrictCenter: GetDistrictCenterUseCase,
+    private val getDistrictGeoCode: GetDistrictGeoCodeUseCase,
     private val getDistrictMapper: GetDistrictMapper,
     private val districtBoundaryMapper: DistrictBoundaryMapper,
     private val mapsGeocodeUseCase: MapsGeocodeUseCase
@@ -75,9 +76,11 @@ class PinpointNewPageViewModel @Inject constructor(
         val param = "$lat,$long"
         viewModelScope.launch {
             try {
-                val districtData = repo.getDistrictGeocode(
-                    latlong = param,
-                    isManageAddressFlow = true
+                val districtData = getDistrictGeoCode(
+                    GetDistrictGeoCodeParam(
+                        latLng = param,
+                        isManageAddressFlow = true
+                    )
                 )
                 _autofillDistrictData.value = Success(districtData.keroMapsAutofill)
             } catch (e: Throwable) {

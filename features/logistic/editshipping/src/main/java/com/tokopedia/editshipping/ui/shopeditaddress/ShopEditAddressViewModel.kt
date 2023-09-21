@@ -8,12 +8,13 @@ import com.tokopedia.editshipping.domain.mapper.AutoCompleteMapper
 import com.tokopedia.editshipping.domain.model.shopeditaddress.DistrictLocation
 import com.tokopedia.editshipping.domain.model.shopeditaddress.ShopEditAddressState
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
+import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
 import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
 import com.tokopedia.logisticCommon.domain.param.GetZipCodeParam
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,9 +25,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShopEditAddressViewModel @Inject constructor(
-    private val repo: KeroRepository,
     private val getDistrict: GetDistrictUseCase,
     private val getZipCodeUseCase: GetZipCodeUseCase,
+    private val getDistrictGeoCode: GetDistrictGeoCodeUseCase,
     private val shopRepo: ShopLocationRepository,
     private val mapper: AutoCompleteMapper
 ) : ViewModel() {
@@ -67,7 +68,7 @@ class ShopEditAddressViewModel @Inject constructor(
 
     fun getDistrictGeocode(latlon: String?) {
         viewModelScope.launch(onErrorGetDistrictGeocode) {
-            val reverseGeocode = repo.getDistrictGeocode(latlon)
+            val reverseGeocode = getDistrictGeoCode(GetDistrictGeoCodeParam(latLng = latlon.orEmpty()))
             _districtGeocode.value = Success(reverseGeocode.keroMapsAutofill)
         }
     }

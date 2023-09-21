@@ -7,7 +7,6 @@ import com.tokopedia.editshipping.domain.model.shopeditaddress.DistrictLocation
 import com.tokopedia.editshipping.domain.model.shopeditaddress.ShopEditAddressState
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
@@ -15,6 +14,7 @@ import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriersNewLocResponse
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationUpdateWarehouseResponse
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -37,9 +37,9 @@ class ShopEditAddressViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val keroRepo: KeroRepository = mockk(relaxed = true)
     private val getDistrict: GetDistrictUseCase = mockk(relaxed = true)
     private val getZipCode: GetZipCodeUseCase = mockk(relaxed = true)
+    private val getDistrictGeoCode: GetDistrictGeoCodeUseCase = mockk(relaxed = true)
     private val shopRepo: ShopLocationRepository = mockk(relaxed = true)
     private val autoCompleteMapper = AutoCompleteMapper()
 
@@ -59,7 +59,7 @@ class ShopEditAddressViewModelTest {
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         shopEditAddressViewModel =
-            ShopEditAddressViewModel(keroRepo, getDistrict, getZipCode, shopRepo, autoCompleteMapper)
+            ShopEditAddressViewModel(getDistrict, getZipCode, getDistrictGeoCode, shopRepo, autoCompleteMapper)
         shopEditAddressViewModel.districtLocation.observeForever(districtLocationObserver)
         shopEditAddressViewModel.zipCodeList.observeForever(zipCodeListObserver)
         shopEditAddressViewModel.districtGeocode.observeForever(districtGeocodeObserver)
@@ -97,14 +97,14 @@ class ShopEditAddressViewModelTest {
 
     @Test
     fun `Get formatted address from latlon Success`() {
-        coEvery { keroRepo.getDistrictGeocode(any()) } returns AutoFillResponse()
+        coEvery { getDistrictGeoCode(any()) } returns AutoFillResponse()
         shopEditAddressViewModel.getDistrictGeocode("123,123")
         verify { districtGeocodeObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get formatted address from latlon failed`() {
-        coEvery { keroRepo.getDistrictGeocode(any()) } throws defaultThrowable
+        coEvery { getDistrictGeoCode(any()) } throws defaultThrowable
         shopEditAddressViewModel.getDistrictGeocode("123,123")
         verify { districtGeocodeObserver.onChanged(match { it is Fail }) }
     }

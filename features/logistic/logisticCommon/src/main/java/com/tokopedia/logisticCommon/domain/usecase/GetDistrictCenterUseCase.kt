@@ -23,7 +23,7 @@ class GetDistrictCenterUseCase @Inject constructor(
 
     companion object {
         private const val QUERY =
-            """"${'"'}
+            """
         query kero_addr_get_district_center(${'$'}districtId: Int!) {
             kero_addr_get_district_center(districtId:${'$'}districtId) {
                 district {
