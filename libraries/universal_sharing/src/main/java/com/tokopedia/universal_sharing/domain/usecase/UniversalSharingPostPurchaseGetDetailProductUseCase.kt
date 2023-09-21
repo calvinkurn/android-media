@@ -16,9 +16,7 @@ class UniversalSharingPostPurchaseGetDetailProductUseCase @Inject constructor(
     private val dispatcher: CoroutineDispatchers
 ) {
 
-    private val productDetailFlow = MutableStateFlow<Result<String>>(
-        Result.Loading
-    )
+    private val productDetailFlow = MutableStateFlow<Result<String>?>(null)
 
     private fun graphqlQuery(): String = """
         query getProductV3(

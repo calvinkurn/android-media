@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.universal_sharing.domain.mapper.UniversalSharingPostPurchaseMapper
 import com.tokopedia.universal_sharing.domain.usecase.UniversalSharingPostPurchaseGetDetailProductUseCase
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
@@ -12,6 +13,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.typefactory.UniversalSha
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -33,9 +35,6 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
         Result<List<Visitable<in UniversalSharingTypeFactory>>>>(Result.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val _sharingState = MutableStateFlow<Result<Boolean>>(Result.Loading)
-    val sharingState = _sharingState.asStateFlow()
-
     fun setupViewModelObserver() {
         _actionFlow.process()
     }
@@ -55,6 +54,9 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    fun observeDetailProductFlow(): StateFlow<Result<String>?> =
+        getDetailProductUseCase.observe()
+
     fun processAction(action: UniversalSharingPostPurchaseAction) {
         viewModelScope.launch {
             _actionFlow.tryEmit(action)
@@ -64,8 +66,12 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
     private fun loadData(data: UniversalSharingPostPurchaseModel) {
         viewModelScope.launch {
             try {
-                val result = mapper.mapToUiModel(data)
-                _uiState.value = Result.Success(result)
+                if (data.shopList.isEmpty()) {
+                    _uiState.value = Result.Error(MessageErrorException("Product is empty"))
+                } else {
+                    val result = mapper.mapToUiModel(data)
+                    _uiState.value = Result.Success(result)
+                }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
                 _uiState.value = Result.Error(throwable)

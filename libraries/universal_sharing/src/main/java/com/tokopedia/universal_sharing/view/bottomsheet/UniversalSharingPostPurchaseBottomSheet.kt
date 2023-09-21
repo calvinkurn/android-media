@@ -8,7 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -17,13 +17,14 @@ import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseBottomsheetBinding
 import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
+import com.tokopedia.universal_sharing.util.NetworkUtil
 import com.tokopedia.universal_sharing.util.Result
 import com.tokopedia.universal_sharing.view.UniversalSharingPostPurchaseAction
 import com.tokopedia.universal_sharing.view.UniversalSharingPostPurchaseViewModel
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.UniversalSharingPostPurchaseAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.UniversalSharingPostPurchaseBottomSheetListener
 import com.tokopedia.universal_sharing.view.bottomsheet.typefactory.UniversalSharingTypeFactoryImpl
-import com.tokopedia.universal_sharing.view.model.UniversalSharingPostPurchaseShopTitleUiModel
+import com.tokopedia.universal_sharing.view.model.UniversalSharingGlobalErrorUiModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,6 +35,9 @@ class UniversalSharingPostPurchaseBottomSheet :
 
     @Inject
     lateinit var viewModel: UniversalSharingPostPurchaseViewModel
+
+    @Inject
+    lateinit var networkUtil: NetworkUtil
 
     private var _binding: UniversalSharingPostPurchaseBottomsheetBinding? = null
     private val binding: UniversalSharingPostPurchaseBottomsheetBinding get() = _binding!!
@@ -60,7 +64,6 @@ class UniversalSharingPostPurchaseBottomSheet :
         showCloseIcon = true // show close button
         clearContentPadding = true // remove default margin
         isDragable = false // should be not draggable
-        isFullpage = true
     }
 
     private fun setBottomSheetChildView() {
@@ -73,7 +76,7 @@ class UniversalSharingPostPurchaseBottomSheet :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBottomSheetTitle()
-        setRecyclerView(view)
+        setRecyclerView()
         setupObserver()
         setupInitialData()
     }
@@ -82,19 +85,10 @@ class UniversalSharingPostPurchaseBottomSheet :
         setTitle(getString(R.string.universal_sharing_post_purchase_bottomsheet_title))
     }
 
-    private fun setRecyclerView(view: View) {
-        val recyclerView: RecyclerView? = view.findViewById(R.id.universal_sharing_post_purchase_rv)
-        recyclerView?.apply {
-            this.adapter = adapter
-            this.layoutManager = LinearLayoutManager(context)
-            this.setHasFixedSize(true)
-        }
-        adapter.addElement(
-            UniversalSharingPostPurchaseShopTitleUiModel(
-                iconUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
-                name = "Xiaomi Official Store"
-            )
-        )
+    private fun setRecyclerView() {
+        binding.universalSharingPostPurchaseRv.adapter = adapter
+        binding.universalSharingPostPurchaseRv.layoutManager = LinearLayoutManager(context)
+        binding.universalSharingPostPurchaseRv.setHasFixedSize(true)
     }
 
     private fun setupObserver() {
@@ -116,9 +110,35 @@ class UniversalSharingPostPurchaseBottomSheet :
         viewModel.uiState.collectLatest {
             when (it) {
                 is Result.Success -> {
-                    adapter.setVisitables(it.data)
+                    adapter.updateData(it.data)
                 }
                 is Result.Error -> {
+                    setErrorView()
+                }
+                Result.Loading -> Unit // no-op
+            }
+        }
+    }
+
+    private fun setErrorView() {
+        val errorType = if (networkUtil.isNetworkAvailable(requireContext())) {
+            UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_NETWORK
+        } else {
+            UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_GENERAL
+        }
+        val errorUi = UniversalSharingGlobalErrorUiModel(errorType)
+        adapter.updateData(listOf(errorUi))
+    }
+
+    private suspend fun observeSharingState() {
+        viewModel.observeDetailProductFlow().collectLatest {
+            when (it) {
+                is Result.Success -> {
+                    binding.universalSharingLayoutLoading.hide()
+                    //todo: ask rama how to use branch link
+                }
+                is Result.Error -> {
+                    binding.universalSharingLayoutLoading.hide()
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     view?.let { view ->
                         Toaster.build(
@@ -129,13 +149,11 @@ class UniversalSharingPostPurchaseBottomSheet :
                         ).show()
                     }
                 }
-                Result.Loading -> Unit // no-op
+                Result.Loading -> {
+                    binding.universalSharingLayoutLoading.show()
+                }
+                else -> Unit // no-op
             }
-        }
-    }
-
-    private suspend fun observeSharingState() {
-        viewModel.sharingState.collectLatest {
             println(it)
         }
     }
@@ -148,10 +166,7 @@ class UniversalSharingPostPurchaseBottomSheet :
 
     override fun onClickShare(productId: String) {
         if (productId.isNotBlank()) {
-            binding.universalSharingLayoutLoading.show()
             viewModel.processAction(UniversalSharingPostPurchaseAction.ClickShare(productId))
-        } else {
-            // todo: Handle
         }
     }
 
