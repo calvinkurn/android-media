@@ -13,12 +13,38 @@ import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 class CategoryShowcaseItemCallback(
     private val shopId: String,
     private val categoryIdL1: String,
-    private val onClickProductCard: (appLink: String, headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
-    private val onImpressProductCard: (headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
+    private val onClickProductCard: (
+        appLink: String,
+        headerName: String,
+        index: Int,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        isOos: Boolean,
+        warehouseId: String
+    ) -> Unit,
+    private val onImpressProductCard: (
+        headerName: String,
+        index: Int,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        isOos: Boolean,
+        warehouseId: String
+    ) -> Unit,
     private val onAddToCartBlocked: () -> Unit,
-    private val onProductCartQuantityChanged: (product: CategoryShowcaseItemUiModel, quantity: Int) -> Unit,
+    private val onProductCartQuantityChanged: (
+        product: CategoryShowcaseItemUiModel,
+        quantity: Int
+    ) -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit,
-    private val onWishlistButtonClicked: (productId: String, isWishlistSelected: Boolean, descriptionToaster: String, ctaToaster: String, type: Int, ctaClickListener: (() -> Unit)?) -> Unit
+    private val onWishlistButtonClicked: (
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int, ctaClickListener: (() -> Unit)?
+    ) -> Unit
 ): CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener {
     override fun onProductCardAddVariantClicked(
         context: Context,
@@ -60,7 +86,8 @@ class CategoryShowcaseItemCallback(
             product.productCardModel.productId,
             product.productCardModel.name,
             product.productCardModel.price,
-            product.productCardModel.isOos()
+            product.productCardModel.isOos(),
+            product.productCardModel.warehouseId
         )
     }
 
@@ -73,7 +100,8 @@ class CategoryShowcaseItemCallback(
             product.productCardModel.productId,
             product.productCardModel.name,
             product.productCardModel.price,
-            product.productCardModel.isOos()
+            product.productCardModel.isOos(),
+            product.productCardModel.warehouseId
     )
 
     override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
