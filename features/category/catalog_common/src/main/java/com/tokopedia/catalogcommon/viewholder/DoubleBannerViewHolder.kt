@@ -11,6 +11,7 @@ import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemDoubleBannerImageBinding
 import com.tokopedia.catalogcommon.databinding.WidgetItemDoubleBannerImageContentBinding
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -39,7 +40,7 @@ class DoubleBannerViewHolder(itemView: View) : AbstractViewHolder<DoubleBannerCa
         }
 
         override fun onBindViewHolder(holder: DoubleImageViewHolder, position: Int) {
-            holder.bind(items[position])
+            holder.bind(items[position], position != itemCount.dec())
         }
 
         override fun getItemCount() = items.size
@@ -53,10 +54,11 @@ class DoubleBannerViewHolder(itemView: View) : AbstractViewHolder<DoubleBannerCa
 
         private val binding: WidgetItemDoubleBannerImageContentBinding? by viewBinding()
 
-        fun bind(item: Pair<String, String>) {
+        fun bind(item: Pair<String, String>, drawSeparator: Boolean = true) {
             binding?.apply {
                 contentLeft.loadImage(item.first)
                 contentRight.loadImage(item.second)
+                separator.isVisible = drawSeparator
             }
         }
     }
