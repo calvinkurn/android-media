@@ -61,6 +61,7 @@ import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel.Companion.mapperForShopShowCase
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageHeaderModule
@@ -93,6 +94,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
         private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
+        private const val FRAGMENT_SHOWCASE_KEY_FOR_SHARE = "shop_header_for_sharing"
         private const val QUERY_PARAM_EXT_PARAM = "extParam"
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
@@ -217,19 +219,46 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private fun setupAppBarLayout() {
         appBarLayout?.addOnOffsetChangedListener { _, verticalOffset ->
             refreshLayout?.isEnabled = (verticalOffset == 0)
+            val isOverrideTheme = shopHeaderLayoutData.isOverrideTheme
             setNavToolbarScrollColorTransition(verticalOffset)
-            if (appbarOffsetRatio < Int.ONE.toFloat()) {
-                resumeHeaderVideo()
-            } else {
-                pauseHeaderVideo()
+            if(isOverrideTheme) {
+                if (appbarOffsetRatio < Int.ONE.toFloat()) {
+                    resumeHeaderVideo()
+                    setToolbarColorFromHeaderConfig()
+                    setStatusBarColor(getShopHeaderConfig()?.patternColorType.orEmpty())
+                } else {
+                    pauseHeaderVideo()
+                    setToolbarColorFromBodyConfig()
+                    setStatusBarColor(getShopBodyConfig()?.patternColorType.orEmpty())
+                }
             }
         }
     }
 
+    private fun setToolbarColorFromBodyConfig() {
+        navToolbar?.let {
+            val intColor = getShopBodyConfig()?.colorSchema?.getColorIntValue(
+                ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
+            ).orZero()
+            val patternColorType = getShopBodyConfig()?.patternColorType
+            configToolbarColor(it, intColor, patternColorType)
+        }
+    }
+
+    private fun setToolbarColorFromHeaderConfig() {
+        navToolbar?.let {
+            val intColor = getShopHeaderConfig()?.colorSchema?.getColorIntValue(
+                ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
+            ).orZero()
+            val patternColorType = getShopHeaderConfig()?.patternColorType
+            configToolbarColor(it, intColor, patternColorType)
+        }
+    }
+
     private fun setNavToolbarScrollColorTransition(verticalOffset: Int) {
-        val headerBackgroundColor = getShopHeaderConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+        val bodyBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
         val endColor = if(shopHeaderLayoutData.isOverrideTheme){
-            ShopUtil.parseColorFromHexString(headerBackgroundColor)
+            ShopUtil.parseColorFromHexString(bodyBackgroundColor)
         } else {
             MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
@@ -375,24 +404,33 @@ class ShopPageHeaderFragmentTabContentWrapper :
                     ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
                 )?.value.orEmpty()
                 setupSearchBarWithStaticLightModeColor()
-                setNavToolbarIconCustomColor(
-                    navToolbarIconCustomLightColor = ShopUtil.parseColorFromHexString(hexIconColor),
-                    navToolbarIconCustomDarkColor = ShopUtil.parseColorFromHexString(hexIconColor)
-                )
-                setIconCustomColor(
-                    darkColor = ShopUtil.parseColorFromHexString(hexIconColor),
-                    lightColor = ShopUtil.parseColorFromHexString(hexIconColor)
-                )
-                if (getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value) {
-                    switchToDarkToolbar()
-                } else {
-                    switchToLightToolbar()
-                }
+                val color = ShopUtil.parseColorFromHexString(hexIconColor)
+                val patternColorType = getShopHeaderConfig()?.patternColorType
+                configToolbarColor(this, color, patternColorType)
             }
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
             viewLifecycleOwner.lifecycle.addObserver(this)
             setToolbarPageName(SHOP_PAGE)
         }
+    }
+
+    private fun configToolbarColor(navToolbar: NavToolbar, color: Int, patternColorType: String?) {
+        navToolbar.apply {
+            setNavToolbarIconCustomColor(
+                navToolbarIconCustomLightColor = color,
+                navToolbarIconCustomDarkColor = color
+            )
+            setIconCustomColor(
+                darkColor = color,
+                lightColor = color
+            )
+            if (patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value) {
+                switchToLightToolbar()
+            } else {
+                switchToDarkToolbar()
+            }
+        }
+
     }
 
     private fun getCartCounter(): Int {
@@ -475,7 +513,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     private fun renderPageAfterOnViewCreated() {
         if (isLoadInitialData) {
-            setStatusBarColor()
+            setStatusBarColor(getShopHeaderConfig()?.patternColorType.orEmpty())
             setupToolbar()
             setupAppBarLayout()
             setupChooseAddressWidget()
@@ -488,12 +526,12 @@ class ShopPageHeaderFragmentTabContentWrapper :
         }
     }
 
-    private fun setStatusBarColor() {
+    private fun setStatusBarColor(patternColorType: String) {
         if (shopHeaderLayoutData.isOverrideTheme) {
-            if (getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value) {
-                setStatusBarLightColor()
-            } else {
+            if (patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value) {
                 setStatusBarDarkColor()
+            } else {
+                setStatusBarLightColor()
             }
         } else {
             if (context?.isDarkMode() == false) {
@@ -625,6 +663,10 @@ class ShopPageHeaderFragmentTabContentWrapper :
                             putBoolean(
                                 FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT,
                                 shopPageHeaderDataModel?.isGoldMerchant ?: false
+                            )
+                            putParcelable(
+                                FRAGMENT_SHOWCASE_KEY_FOR_SHARE,
+                                shopPageHeaderDataModel?.mapperForShopShowCase()
                             )
                         }
                     )

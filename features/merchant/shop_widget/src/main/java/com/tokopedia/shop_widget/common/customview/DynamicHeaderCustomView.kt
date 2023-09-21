@@ -169,7 +169,7 @@ class DynamicHeaderCustomView: FrameLayout {
     fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
         val highEmphasizeColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         val lowEmphasizeColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
-        val ctaTextColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
+        val ctaTextColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         tpTitle?.setTextColor(highEmphasizeColor)
         tpSubtitle?.setTextColor(lowEmphasizeColor)
         iconCtaChevron?.setColorFilter(ctaTextColor, PorterDuff.Mode.SRC_ATOP)

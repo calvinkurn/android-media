@@ -163,7 +163,7 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override fun getRecomCategoryId(pageName: String): List<String> = listOf(recommendationCategoryId)
 
-    override fun createProductAdsParam(): GetProductAdsParam {
+    override fun createProductAdsParam(): MutableMap<String?, Any> {
         val query = queryParamMutable[SearchApiConst.Q].orEmpty()
 
         return GetProductAdsParam(
@@ -171,7 +171,7 @@ class TokoNowSearchViewModel @Inject constructor (
             src = GetProductAdsParam.SRC_SEARCH_TOKONOW,
             userId = userSession.userId,
             addressData = chooseAddressData
-        )
+        ).generateQueryParams()
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {

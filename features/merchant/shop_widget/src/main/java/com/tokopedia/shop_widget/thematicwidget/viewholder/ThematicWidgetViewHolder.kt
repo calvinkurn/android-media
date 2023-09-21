@@ -121,6 +121,7 @@ class ThematicWidgetViewHolder(
         resetShopReimaginedContainerMargin()
         configColorTheme(element)
         checkTotalProduct(element)
+        setShopReimaginedContainerMargin()
     }
 
     private fun resetShopReimaginedContainerMargin() {
@@ -145,7 +146,6 @@ class ThematicWidgetViewHolder(
 
     private fun configReimagined(uiModel: ThematicWidgetUiModel) {
         dynamicHeaderCustomView?.configReimaginedColor(uiModel.header.colorSchema)
-        setShopReimaginedContainerMargin()
     }
 
     private fun configDefaultColor(uiModel: ThematicWidgetUiModel) {
@@ -170,17 +170,23 @@ class ThematicWidgetViewHolder(
                     startBackGroundColor = uiModel.firstBackgroundColor,
                     endBackGroundColor = uiModel.secondBackgroundColor
                 )
-                setShopReimaginedContainerMargin()
             }
         }
     }
 
     private fun setShopReimaginedContainerMargin() {
-        containerMixLeft?.let {
-            it.clipToOutline = true
-            it.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_reimagined_rounded)
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
+        if(uiModel?.isFestivity == false) {
+            containerMixLeft?.let {
+                it.clipToOutline = true
+                it.background = MethodChecker.getDrawable(
+                    itemView.context,
+                    R.drawable.bg_shop_reimagined_rounded
+                )
+                (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
+                    SHOP_RE_IMAGINE_MARGIN.toInt()
+                (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd =
+                    SHOP_RE_IMAGINE_MARGIN.toInt()
+            }
         }
     }
 

@@ -280,8 +280,12 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         tfTitle?.setTextAndCheckShow(text)
     }
 
-    fun setTitleTextColor(@ColorRes color: Int) {
-        tfTitle?.setTextColor(MethodChecker.getColor(context, color))
+    fun setTitleTextColor(@ColorRes color: Int? = null, intColor: Int? = null) {
+        if (null != color) {
+            tfTitle?.setTextColor(MethodChecker.getColor(context, color))
+        } else if (null != intColor) {
+            tfTitle?.setTextColor(intColor)
+        }
     }
 
     fun setListener(listener: ProductBundleWidgetListener) {

@@ -5,13 +5,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.gojek.OneKycSdk
-import com.gojek.jago.onekyc.configs.UnifiedKycConfigsDefault
 import com.gojek.kyc.sdk.config.DefaultRemoteConfigProvider
 import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.config.KycSdkClientConfig
 import com.gojek.kyc.sdk.config.KycSdkConfig
 import com.gojek.kyc.sdk.config.KycSdkUserInfo
+import com.gojek.kyc.sdk.config.parseDataFromString
 import com.gojek.kyc.sdk.core.constants.KycPlusNetworkConfig
+import com.gojek.kyc.sdk.core.model.UnifiedKycAuroraConfigs
+import com.gojek.kyc.sdk.core.model.UnifiedKycConfigs
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -23,13 +25,15 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycDefaultCard
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycUnifiedConfigs
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
-import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -169,14 +173,30 @@ open class GoToKycModule {
     @ActivityScope
     fun provideDefaultRemoteConfigProvider(
         @ApplicationContext context: Context,
-        gson: Gson
+        remoteConfigImpl: FirebaseRemoteConfigImpl
     ): DefaultRemoteConfigProvider {
-        return DefaultRemoteConfigProvider(context, gson)
+
+        val gson = Gson()
+
+        val kycConfigString = remoteConfigImpl.getString(RemoteConfigKey.GOTO_ONE_KYC_CONFIG)
+        val kycAuroraConfigString = remoteConfigImpl.getString(RemoteConfigKey.GOTO_ONE_KYC_AURORA)
+
+        val customKycConfigs = gson.parseDataFromString(
+            kycConfigString,
+            UnifiedKycConfigs::class.java
+        )
+
+        val customAuroraConfigs = gson.parseDataFromString(
+            kycAuroraConfigString,
+            UnifiedKycAuroraConfigs::class.java
+        )
+
+        return DefaultRemoteConfigProvider(context, gson, customKycConfigs, customAuroraConfigs)
     }
 
     @Provides
     @ActivityScope
-    fun provideUnifiedKycConfigsDefault() = UnifiedKycConfigsDefault()
+    fun provideUnifiedKycConfigsDefault() = GotoKycUnifiedConfigs()
 
     @Provides
     @ActivityScope
@@ -208,7 +228,7 @@ open class GoToKycModule {
         gotoKycEventTrackingProvider: GotoKycEventTrackingProvider,
         gotoKycErrorHandler: GotoKycErrorHandler,
         gotoKycImageLoader: GotoKycImageLoader,
-        unifiedKycConfigsDefault: UnifiedKycConfigsDefault,
+        gotoKycUnifiedConfigs: GotoKycUnifiedConfigs,
         kycPlusDefaultCard: GotoKycDefaultCard,
         okHttpClient: OkHttpClient,
         kycSdkConfig: KycSdkConfig
@@ -219,7 +239,7 @@ open class GoToKycModule {
             gotoKycEventTrackingProvider,
             gotoKycErrorHandler,
             gotoKycImageLoader,
-            unifiedKycConfigsDefault,
+            gotoKycUnifiedConfigs,
             kycPlusDefaultCard,
             okHttpClient,
             kycSdkConfig

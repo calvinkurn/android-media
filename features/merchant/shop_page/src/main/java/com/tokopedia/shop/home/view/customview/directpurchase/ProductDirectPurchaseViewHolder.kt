@@ -139,6 +139,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
             tvSlashedPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
             tvRating.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
             tvSoldCount.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
+            tvDotSeparator.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
         }
 
         companion object {
@@ -204,12 +205,12 @@ class ProductDirectPurchaseViewHolder private constructor() {
                 tvSoldCount.hide()
             }
             else {
-                tvSoldCount.text = data.ratingAverage
+                tvSoldCount.text = data.label
             }
-            if(data.label.isEmpty() || data.ratingAverage.isEmpty()){
-                tvDotSeparator.hide()
-            } else {
+            if(data.label.isNotEmpty() && data.ratingAverage.isNotEmpty()){
                 tvDotSeparator.show()
+            } else {
+                tvDotSeparator.hide()
             }
 
             addButtonView.setOnClickListener { listener.onAddButtonProductDirectPurchaseClick(data) }

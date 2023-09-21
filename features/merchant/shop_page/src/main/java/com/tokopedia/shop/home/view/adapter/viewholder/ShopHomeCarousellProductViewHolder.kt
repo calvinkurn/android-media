@@ -109,7 +109,7 @@ class ShopHomeCarousellProductViewHolder(
 
     private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
         val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-        val ctaColor  = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val ctaColor  = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         textViewTitle?.setTextColor(titleColor)
         iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
     }

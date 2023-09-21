@@ -11,6 +11,8 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.common.ColorPallete
 import com.tokopedia.common.setRetainTextColor
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.shop.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ImageUnify.Companion.TYPE_CIRCLE
@@ -107,7 +109,11 @@ class ImageTabs(val tabsUnify: TabsUnify) {
 
             tabView.findViewById<ImageUnify>(R.id.icon).type = tabType
             tab?.customView = tabView
-            (tabView.findViewById<ImageUnify>(R.id.icon)).setImageUrl(dataListInput[i].imageUrl)
+            if (tabType == TYPE_CIRCLE) {
+                (tabView.findViewById<ImageUnify>(R.id.icon)).loadImageCircle(dataListInput[i].imageUrl)
+            } else {
+                (tabView.findViewById<ImageUnify>(R.id.icon)).loadImage(dataListInput[i].imageUrl)
+            }
             val tv = (tabView.findViewById<TextView>(R.id.text1))
             tv.text = dataListInput[i].name
             tv.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)

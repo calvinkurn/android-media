@@ -75,7 +75,7 @@ object ApplinkConstInternalPromo {
 
     // Scp Rewards
     private const val HOST_SCP_REWARDS = "scp-rewards"
-    private const val INTERNAL_SCP_REWARDS = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SCP_REWARDS"
+    const val INTERNAL_SCP_REWARDS = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SCP_REWARDS"
     const val CELEBRATION_PAGE = "$INTERNAL_SCP_REWARDS/celebration/{medali_slug}"
     const val MEDAL_DETAIL = "$INTERNAL_SCP_REWARDS/medali/detail/{medali_slug}"
     const val CELEBRATION_BOTTOMSHEET_BASE = "${DeeplinkConstant.SCHEME_INTERNAL}://scp-rewards/medali/celebration-bottomsheet"

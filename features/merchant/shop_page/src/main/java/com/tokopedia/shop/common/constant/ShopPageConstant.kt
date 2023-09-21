@@ -65,6 +65,7 @@ object ShopPageConstant {
     object ShopTickerType {
         const val WARNING = "warning"
         const val INFO = "info"
+        const val DANGER = "danger"
     }
 
     object ShopTierType {
@@ -75,7 +76,7 @@ object ShopPageConstant {
         const val POWER_MERCHANT_PRO = 3
     }
 
-    object RequestParamValue{
+    object RequestParamValue {
         const val PAGE_NAME_SHOP_COMPARISON_WIDGET = "shop_comparison"
     }
 }

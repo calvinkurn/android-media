@@ -1,6 +1,9 @@
 package com.tokopedia.shop.pageheader.util
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
@@ -58,7 +61,8 @@ object ShopPageHeaderMapper {
         shopInfoCoreData: ShopInfo,
         shopPageGetDynamicTabResponse: ShopPageGetDynamicTabResponse,
         feedWhitelistData: Whitelist,
-        shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
+        shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
     ): ShopPageHeaderP1HeaderData {
         val listShopHeaderWidget = mapToShopPageHeaderLayoutWidgetUiModel(shopPageHeaderLayoutData)
         val shopName = getShopHeaderWidgetComponentData<ShopPageHeaderBadgeTextValueComponentUiModel>(
@@ -71,7 +75,10 @@ object ShopPageHeaderMapper {
             SHOP_BASIC_INFO,
             SHOP_LOGO
         )?.image.orEmpty()
-        val shopPageHeaderLayoutUiModel = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData)
+        val shopPageHeaderLayoutUiModel = mapToShopPageHeaderLayoutUiModel(
+            shopPageHeaderLayoutData,
+            shopPageColorSchemaDefaultConfigColor
+        )
         return ShopPageHeaderP1HeaderData(
             isOfficial = shopInfoCoreData.goldOS.shopTier == ShopPageConstant.ShopTierType.OFFICIAL_STORE,
             isGoldMerchant = shopInfoCoreData.goldOS.shopTier == ShopPageConstant.ShopTierType.POWER_MERCHANT_PRO,
@@ -88,36 +95,94 @@ object ShopPageHeaderMapper {
         )
     }
 
-    private fun mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse): ShopPageHeaderLayoutUiModel {
+    private fun mapToShopPageHeaderLayoutUiModel(
+        shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
+    ): ShopPageHeaderLayoutUiModel {
         return ShopPageHeaderLayoutUiModel(
-            mapToShopPageHeaderLayoutListConfig(shopPageHeaderLayoutData.shopPageGetHeaderLayout.generalComponentConfigList),
+            mapToShopPageHeaderLayoutListConfig(
+                shopPageHeaderLayoutData.shopPageGetHeaderLayout.generalComponentConfigList,
+                shopPageColorSchemaDefaultConfigColor
+            ),
             shopPageHeaderLayoutData.shopPageGetHeaderLayout.isOverrideTheme
         )
     }
 
-    private fun mapToShopPageHeaderLayoutListConfig(generalComponentConfigList: List<ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.GeneralComponentConfigList>): List<ShopPageHeaderLayoutUiModel.Config> {
+    private fun mapToShopPageHeaderLayoutListConfig(
+        generalComponentConfigList: List<ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.GeneralComponentConfigList>,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
+    ): List<ShopPageHeaderLayoutUiModel.Config> {
         return generalComponentConfigList.map {
             ShopPageHeaderLayoutUiModel.Config(
                 it.name,
                 it.type,
-                it.data.patternColorType,
+                it.data.patternColorType.lowercase(),
                 it.data.listBackgroundColor,
                 mapToListBackgroundObject(it.data.listBackgroundObject),
-                mapToListColorSchema(it.data.listColorSchema),
+                mapToListColorSchema(it.data.listColorSchema, shopPageColorSchemaDefaultConfigColor),
             )
         }
     }
 
-    private fun mapToListColorSchema(listColorSchema: List<ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.GeneralComponentConfigList.DataComponentConfig.ColorSchema>): ShopPageColorSchema {
+    private fun mapToListColorSchema(
+        listColorSchema: List<ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.GeneralComponentConfigList.DataComponentConfig.ColorSchema>,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
+    ): ShopPageColorSchema {
         return ShopPageColorSchema(
             listColorSchema = listColorSchema.map {
                 ShopPageColorSchema.ColorSchema(
                     it.name,
                     it.type,
-                    it.value
+                    getHexColor(it.name, it.value, shopPageColorSchemaDefaultConfigColor)
                 )
             }
         )
+    }
+
+    private fun getHexColor(
+        name: String,
+        hexStringValue: String,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
+    ): String {
+        return if (hexStringValue.isEmpty()) {
+            shopPageColorSchemaDefaultConfigColor[ShopPageColorSchema.ColorSchemaName.valueOf(name)].orEmpty()
+        } else {
+            parseFormattedHexString(hexStringValue)
+        }
+    }
+
+    /**
+     * This function check whether hexStringValue is formatted like #212121-20
+     * If it's match the format, then it will convert it to string hex with opacity (e.g. #33212121)
+     * otherwise it will return current hexStringValue
+     */
+    private fun parseFormattedHexString(hexStringValue: String): String {
+        val splitHexColor = hexStringValue.split("-")
+        return if (splitHexColor.size > Int.ONE) {
+            try {
+                val hexString = splitHexColor.getOrNull(Int.ZERO).orEmpty()
+                val opacityPercentage = splitHexColor.getOrNull(Int.ONE).toIntOrZero()
+                val opacityHexString = convertPercentageToOpacityHexString(opacityPercentage)
+                hexString.substring(
+                    Int.ZERO,
+                    Int.ONE
+                ) + opacityHexString + hexString.substring(Int.ONE)
+            } catch (_: Exception) {
+                ""
+            }
+        } else {
+            hexStringValue
+        }
+    }
+
+    private fun convertPercentageToOpacityHexString(opacityPercentage: Int): String {
+        return if (opacityPercentage in 0 until 100) {
+            val decimalOpacity = opacityPercentage / 100.0
+            val roundedValue = (decimalOpacity * 255).toInt()
+            String.format("%02X", roundedValue)
+        } else {
+            ""
+        }
     }
 
     private fun mapToListBackgroundObject(listBackgroundObject: List<ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.GeneralComponentConfigList.DataComponentConfig.BackgroundObject>): List<ShopPageHeaderLayoutUiModel.Config.BackgroundObject> {

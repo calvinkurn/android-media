@@ -69,17 +69,25 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <Space
+                        android:id="@+id/header_top_anchor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="74dp"
+                        app:layout_constraintBottom_toTopOf="@id/choose_address_widget"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
                         android:id="@+id/choose_address_widget"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="74dp"
                         android:layout_marginBottom="8dp"
                         android:visibility="gone"
                         app:layout_constraintBottom_toTopOf="@id/tickerShopStatus"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/header_top_anchor"
                         tools:layout_height="1dp" />
 
                     <com.tokopedia.unifycomponents.ticker.Ticker

@@ -15,6 +15,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.databinding.HotspotBubbleViewBinding
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 
@@ -35,6 +36,7 @@ class HotspotBubbleView @JvmOverloads constructor(
         private const val ALPHA_SHOW = 1f
         private const val SCALE_X_SHOW = 1f
         private const val SCALE_Y_SHOW = 1f
+        private val MINIMUM_HORIZONTAL_MARGIN = 8f.dpToPx()
     }
 
     private var viewBinding: HotspotBubbleViewBinding
@@ -72,7 +74,7 @@ class HotspotBubbleView @JvmOverloads constructor(
         index: Int
     ) {
         setBubbleProductData(hotspotData)
-        determineBubbleVerticalPosition(hotspotData)
+        determineBubbleVerticalPosition(hotspotData.y)
         setBubblePosition(hotspotData, bannerImageWidth, bannerImageHeight, hotspotTagView)
         setPivotXYForAnimation()
         setOnClickListener {
@@ -94,32 +96,92 @@ class HotspotBubbleView @JvmOverloads constructor(
     ) {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
         hotspotTagView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-        finalPointerView?.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        finalPointerView?.apply {
+            measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+            show()
+        }
+        determineXPosition(bannerImageWidth, hotspotData.x, hotspotTagView.measuredWidth)
+        determineYPosition(bannerImageHeight, hotspotData.y, hotspotTagView.measuredHeight)
+    }
+
+    private fun determineYPosition(bannerImageHeight: Int, taggingYPos: Float, hotspotTagViewMeasuredHeight: Int) {
+        y = getYPosition(bannerImageHeight, taggingYPos, hotspotTagViewMeasuredHeight)
+    }
+
+    private fun determineXPosition(bannerImageWidth: Int, taggingXPos: Float, hotspotTagViewMeasuredWidth: Int) {
+        val xPosRaw = getXPosition(bannerImageWidth, taggingXPos, hotspotTagViewMeasuredWidth)
+        val xPosActual = adjustXPos(xPosRaw, bannerImageWidth)
+        x = xPosActual
+        finalPointerView?.x = getPointerXPos(xPosRaw, bannerImageWidth)
         finalPointerView?.show()
-        x =
-            (bannerImageWidth.toFloat() * (hotspotData.x)) - (measuredWidth.toFloat() / INT_TWO) + (hotspotTagView.measuredWidth.toFloat() / INT_TWO)
-        finalPointerView?.x =
-            (measuredWidth.toFloat() / INT_TWO) - finalPointerView?.measuredWidth?.toFloat()
-                ?.div(INT_TWO)
-                .orZero()
-        y = if (position == POSITION_TOP) {
-            (bannerImageHeight.toFloat() * (hotspotData.y)) - measuredHeight - finalPointerView?.measuredHeight.orZero()
+    }
+
+    /***
+    *   Set bubble view pointer x position by finding the middle of bubble view width
+    *   Then adjust the pointer position if bubble position is out of bound
+    */
+    private fun getPointerXPos(xPosRaw: Float, bannerImageWidth: Int): Float {
+        val middleBubbleView = (measuredWidth.toFloat() / INT_TWO)
+        val middlePointerView = finalPointerView?.measuredWidth?.toFloat()?.div(INT_TWO).orZero()
+        var pointerXPos = middleBubbleView - middlePointerView
+        if (xPosRaw <= Int.ZERO) {
+            pointerXPos-=MINIMUM_HORIZONTAL_MARGIN - xPosRaw
+        } else if (xPosRaw + measuredWidth.toFloat() >= bannerImageWidth.toFloat()) {
+            val excessBubbleWidth = (xPosRaw + measuredWidth.toFloat() - bannerImageWidth.toFloat())
+            pointerXPos+=excessBubbleWidth + MINIMUM_HORIZONTAL_MARGIN
+        }
+        return pointerXPos
+    }
+
+    /***
+     *  Adjust raw x value by checking if it will cause out of bounds
+     */
+    private fun adjustXPos(xPosRaw: Float, bannerImageWidth: Int): Float {
+        return if (xPosRaw <= Float.ZERO) {
+            Float.ZERO + MINIMUM_HORIZONTAL_MARGIN
+        } else if (xPosRaw + measuredWidth.toFloat() >= bannerImageWidth.toFloat()) {
+            val excessBubbleWidth = (xPosRaw + measuredWidth.toFloat() - bannerImageWidth.toFloat())
+            (xPosRaw - excessBubbleWidth - MINIMUM_HORIZONTAL_MARGIN)
         } else {
-            (bannerImageHeight.toFloat() * (hotspotData.y)) + hotspotTagView.measuredHeight
+            xPosRaw
+        }
+    }
+
+    /***
+     *  Get x position for bubble view, but the value is still raw
+     *  meaning that it's possible this x value will cause out of bounds
+     */
+    private fun getXPosition(bannerImageWidth: Int, x: Float, hotspotTagViewMeasuredWidth: Int): Float {
+        return (bannerImageWidth.toFloat() * x) - (measuredWidth.toFloat() / INT_TWO) + (hotspotTagViewMeasuredWidth.toFloat() / INT_TWO)
+    }
+
+    /***
+     *  Get y position for bubble view, while also validate the position of the bubble
+     *  so that it won't cause out of bound on vertical position
+     */
+    private fun getYPosition(bannerImageHeight: Int, y: Float, hotspotTagViewMeasuredHeight: Int): Float {
+        return if (position == POSITION_TOP) {
+            (bannerImageHeight.toFloat() * y) - measuredHeight - finalPointerView?.measuredHeight.orZero()
+        } else {
+            (bannerImageHeight.toFloat() * y) + hotspotTagViewMeasuredHeight
         }
     }
 
     private fun setPivotXYForAnimation() {
-        pivotX = (measuredWidth.toFloat() / INT_TWO)
+        val middlePointerView = finalPointerView?.measuredWidth?.toFloat()?.div(INT_TWO).orZero()
+        pivotX = finalPointerView?.x.orZero() + middlePointerView
         pivotY = if (position == POSITION_TOP) {
-            Int.ZERO.toFloat()
-        } else {
             measuredHeight.toFloat()
+        } else {
+            Int.ZERO.toFloat()
         }
     }
 
-    private fun determineBubbleVerticalPosition(hotspotData: ImageHotspotData.HotspotData) {
-        position = if (hotspotData.y > THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD) {
+    /***
+     *  Determine bubble vertical position and which pointer should be taken based on defined threshold
+     */
+    private fun determineBubbleVerticalPosition(taggingYPos: Float) {
+        position = if (taggingYPos > THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD) {
             finalPointerView = productTagPointerBottom
             POSITION_TOP
         } else {
