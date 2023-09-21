@@ -239,7 +239,7 @@ class StatisticPageHelper @Inject constructor() {
         filters.add(
             getDateFilterCustom(
                 context,
-                Const.DAYS_365,
+                Const.DAYS_91,
                 DateFilterItem.TYPE_CUSTOM_SAME_MONTH
             )
         )
