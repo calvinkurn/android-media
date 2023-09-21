@@ -1,4 +1,4 @@
-package com.tokopedia.stories.model
+package com.tokopedia.stories.data.mock
 
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -19,26 +19,20 @@ fun mockInitialDataModel(
             StoriesGroupHeader(
                 groupId = "groupId 0",
                 groupName = "Group Name 0",
-                image = "Image Group 0",
+                image = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
                 isSelected = 0 == selectedGroup,
             ),
             StoriesGroupHeader(
                 groupId = "groupId 1",
                 groupName = "Group Name 1",
-                image = "Image Group 1",
+                image = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
                 isSelected = 1 == selectedGroup,
             ),
             StoriesGroupHeader(
                 groupId = "groupId 3",
                 groupName = "Group Name 3",
-                image = "Image Group 3",
+                image = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
                 isSelected = 2 == selectedGroup,
-            ),
-            StoriesGroupHeader(
-                groupId = "groupId 4",
-                groupName = "Group Name 4",
-                image = "Image Group 4",
-                isSelected = 3 == selectedGroup,
             ),
         ),
         groupItems = listOf(
@@ -56,8 +50,8 @@ fun mockInitialDataModel(
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 0",
-                                    duration = 7 * 1000,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                                    duration = 1000
                                 ),
                                 resetValue = -1,
                                 isSameContent = false,
@@ -71,8 +65,8 @@ fun mockInitialDataModel(
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 1",
-                                    duration = 7 * 1000,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                                    duration = 1000
                                 ),
                                 resetValue = -1,
                                 isSameContent = false,
@@ -86,8 +80,8 @@ fun mockInitialDataModel(
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 2",
-                                    duration = 7 * 1000,
+                                    data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                                    duration = 1000
                                 ),
                                 resetValue = -1,
                                 isSameContent = false,
@@ -114,8 +108,8 @@ fun mockInitialDataModel(
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 0",
-                                    duration = 7 * 1000,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                                    duration = 1000
                                 ),
                                 resetValue = -1,
                                 isSameContent = false,
@@ -129,8 +123,8 @@ fun mockInitialDataModel(
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 1",
-                                    duration = 7 * 1000,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                                    duration = 1000
                                 ),
                                 resetValue = -1,
                                 isSameContent = false,
@@ -144,8 +138,8 @@ fun mockInitialDataModel(
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 2",
-                                    duration = 7 * 1000,
+                                    data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                                    duration = 1000
                                 ),
                                 resetValue = -1,
                                 isSameContent = false,
@@ -172,8 +166,8 @@ fun mockInitialDataModel(
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 0",
-                                    duration = 7 * 1000,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                                    duration = 1000
                                 ),
                                 resetValue = -1,
                                 isSameContent = false,
@@ -187,8 +181,8 @@ fun mockInitialDataModel(
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 1",
-                                    duration = 7 * 1000,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                                    duration = 1000
                                 ),
                                 resetValue = -1,
                                 isSameContent = false,
@@ -202,8 +196,8 @@ fun mockInitialDataModel(
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
                                     type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                    data = "data 2",
-                                    duration = 7 * 1000,
+                                    data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                                    duration = 1000
                                 ),
                                 resetValue = -1,
                                 isSameContent = false,
@@ -265,8 +259,8 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
                                 type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                data = "data 0",
-                                duration = 7 * 1000,
+                                data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                                duration = 1000
                             ),
                             resetValue = -1,
                             isSameContent = false,
@@ -280,8 +274,8 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
                                 type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                data = "data 1",
-                                duration = 7 * 1000,
+                                data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                                duration = 1000
                             ),
                             resetValue = -1,
                             isSameContent = false,
@@ -295,8 +289,8 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
                                 type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                data = "data 2",
-                                duration = 7 * 1000,
+                                data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                                duration = 1000
                             ),
                             resetValue = -1,
                             isSameContent = false,
@@ -359,8 +353,8 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
                                 type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                data = "data 0",
-                                duration = 7 * 1000,
+                                data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                                duration = 1000
                             ),
                             resetValue = -1,
                             isSameContent = false,
@@ -374,8 +368,8 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
                                 type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                data = "data 1",
-                                duration = 7 * 1000,
+                                data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                                duration = 1000
                             ),
                             resetValue = -1,
                             isSameContent = false,
@@ -389,8 +383,8 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
                                 type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                data = "data 2",
-                                duration = 7 * 1000,
+                                data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                                duration = 1000
                             ),
                             resetValue = -1,
                             isSameContent = false,
@@ -450,8 +444,8 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
                                 type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                data = "data 0",
-                                duration = 7 * 1000,
+                                data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                                duration = 1000
                             ),
                             resetValue = -1,
                             isSameContent = false,
@@ -465,8 +459,8 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
                                 type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                data = "data 1",
-                                duration = 7 * 1000,
+                                data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                                duration = 1000
                             ),
                             resetValue = -1,
                             isSameContent = false,
@@ -480,8 +474,8 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
                                 type = StoriesDetailItem.StoriesItemContentType.IMAGE,
-                                data = "data 2",
-                                duration = 7 * 1000,
+                                data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                                duration = 1000
                             ),
                             resetValue = -1,
                             isSameContent = false,
