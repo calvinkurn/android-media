@@ -24,11 +24,13 @@ import java.util.concurrent.TimeUnit
 class StoriesModule {
 
     @Provides
+    @StoriesScope
     fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
 
     @Provides
+    @StoriesScope
     fun provideGraphQLRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
