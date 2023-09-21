@@ -12,7 +12,7 @@ import java.util.UUID
  * Created By : Jonathan Darwin on September 15, 2023
  */
 sealed interface CreationUploadData {
-    val id: String
+    val queueId: Int
     val uploadType: CreationUploadType
     val queueStatus: UploadQueueStatus
     val timestamp: Long
@@ -27,7 +27,7 @@ sealed interface CreationUploadData {
         get() = mediaUriList.firstOrNull().orEmpty()
 
     val notificationId: Int
-        get() = creationId.toIntOrZero()
+        get() = queueId
 
     /**
      * Need to differentiate notification Id between in progress & success / error
@@ -48,8 +48,8 @@ sealed interface CreationUploadData {
     }
 
     data class Post(
-        @SerializedName(KEY_ID)
-        override val id: String,
+        @SerializedName(KEY_QUEUE_ID)
+        override val queueId: Int,
 
         @SerializedName(KEY_UPLOAD_TYPE)
         override val uploadType: CreationUploadType,
@@ -81,7 +81,7 @@ sealed interface CreationUploadData {
 
         override fun mapToEntity(gson: Gson): CreationUploadQueueEntity {
             return CreationUploadQueueEntity(
-                id = id,
+                queueId = queueId,
                 creationId = creationId,
                 uploadType = uploadType.type,
                 queueStatus = queueStatus.value,
@@ -97,8 +97,8 @@ sealed interface CreationUploadData {
     }
 
     data class Shorts(
-        @SerializedName(KEY_ID)
-        override val id: String,
+        @SerializedName(KEY_QUEUE_ID)
+        override val queueId: Int,
 
         @SerializedName(KEY_UPLOAD_TYPE)
         override val uploadType: CreationUploadType,
@@ -130,7 +130,7 @@ sealed interface CreationUploadData {
 
         override fun mapToEntity(gson: Gson): CreationUploadQueueEntity {
             return CreationUploadQueueEntity(
-                id = id,
+                queueId = queueId,
                 creationId = creationId,
                 uploadType = uploadType.type,
                 queueStatus = queueStatus.value,
@@ -149,8 +149,8 @@ sealed interface CreationUploadData {
     }
 
     data class Stories(
-        @SerializedName(KEY_ID)
-        override val id: String,
+        @SerializedName(KEY_QUEUE_ID)
+        override val queueId: Int,
 
         @SerializedName(KEY_UPLOAD_TYPE)
         override val uploadType: CreationUploadType,
@@ -182,7 +182,7 @@ sealed interface CreationUploadData {
 
         override fun mapToEntity(gson: Gson): CreationUploadQueueEntity {
             return CreationUploadQueueEntity(
-                id = id,
+                queueId = queueId,
                 creationId = creationId,
                 uploadType = uploadType.type,
                 queueStatus = queueStatus.value,
@@ -202,7 +202,7 @@ sealed interface CreationUploadData {
 
     companion object {
 
-        private const val KEY_ID = "id"
+        private const val KEY_QUEUE_ID = "queueId"
         private const val KEY_UPLOAD_TYPE = "uploadType"
         private const val KEY_QUEUE_STATUS = "queueStatus"
         private const val KEY_TIMESTAMP = "timestamp"
@@ -234,7 +234,7 @@ sealed interface CreationUploadData {
                     )
 
                     Post(
-                        id = entity.id,
+                        queueId = entity.queueId,
                         creationId = entity.creationId,
                         uploadType = uploadType,
                         queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
@@ -253,7 +253,7 @@ sealed interface CreationUploadData {
                     )
 
                     Shorts(
-                        id = entity.id,
+                        queueId = entity.queueId,
                         creationId = entity.creationId,
                         uploadType = uploadType,
                         queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
@@ -272,7 +272,7 @@ sealed interface CreationUploadData {
                     )
 
                     Stories(
-                        id = entity.id,
+                        queueId = entity.queueId,
                         creationId = entity.creationId,
                         uploadType = uploadType,
                         queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
@@ -297,7 +297,7 @@ sealed interface CreationUploadData {
             authorType: String,
         ): CreationUploadData {
             return Post(
-                id = UUID.randomUUID().toString(),
+                queueId = 0,
                 uploadType = CreationUploadType.Post,
                 queueStatus = UploadQueueStatus.Queued,
                 timestamp = System.currentTimeMillis(),
@@ -320,7 +320,7 @@ sealed interface CreationUploadData {
         ): CreationUploadData {
 
             return Shorts(
-                id = UUID.randomUUID().toString(),
+                queueId = 0,
                 uploadType = CreationUploadType.Shorts,
                 queueStatus = UploadQueueStatus.Queued,
                 timestamp = System.currentTimeMillis(),
@@ -342,7 +342,7 @@ sealed interface CreationUploadData {
             authorType: String,
         ): CreationUploadData {
             return Stories(
-                id = UUID.randomUUID().toString(),
+                queueId = 0,
                 uploadType = CreationUploadType.Stories,
                 queueStatus = UploadQueueStatus.Queued,
                 timestamp = System.currentTimeMillis(),

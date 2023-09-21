@@ -82,7 +82,7 @@ class CreationUploaderWorker(
                     )
 
                     if (uploadResult) {
-                        queueRepository.delete(data.creationId)
+                        queueRepository.delete(data.queueId)
                     } else {
                         break
                     }

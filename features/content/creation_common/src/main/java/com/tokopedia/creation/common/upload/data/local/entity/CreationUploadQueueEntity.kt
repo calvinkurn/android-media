@@ -13,9 +13,9 @@ const val CREATION_UPLOAD_QUEUE = "creation_upload_queue"
 @Entity(tableName = CREATION_UPLOAD_QUEUE)
 data class CreationUploadQueueEntity(
 
-    @PrimaryKey
-    @ColumnInfo(name = "id")
-    val id: String = "",
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "queue_id")
+    val queueId: Int = 0,
 
     @ColumnInfo(name = "creation_id")
     val creationId: String = "",

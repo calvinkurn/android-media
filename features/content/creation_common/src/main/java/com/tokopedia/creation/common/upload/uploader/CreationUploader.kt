@@ -11,5 +11,5 @@ interface CreationUploader {
 
     fun retry()
 
-    suspend fun deleteFromQueue(creationId: String)
+    suspend fun deleteFromQueue(queueId: Int)
 }
