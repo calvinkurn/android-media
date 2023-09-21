@@ -3897,14 +3897,13 @@ class ShipmentFragment :
     }
 
     override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
-        // RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$addOnDataInfoLink")
         val activity: Activity? = activity
         if (activity != null) {
             val intent =
-                    RouteManager.getIntent(activity, ApplinkConstInternalFintech.INSURANCE_INFO)
+                RouteManager.getIntent(activity, ApplinkConstInternalFintech.INSURANCE_INFO)
             intent.putExtra(
-                    ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL,
-                    addOnDataInfoLink
+                ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL,
+                addOnDataInfoLink
             )
             startActivity(intent)
         }
