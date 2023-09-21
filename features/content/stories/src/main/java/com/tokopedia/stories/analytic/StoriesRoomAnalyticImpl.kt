@@ -319,10 +319,10 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickMoveToOtherGroup(entryPoint: String) {
         Tracker.Builder()
             .setEvent(Event.clickContent)
-            .setEventAction("click - move to other group")
+            .setEventAction("click - move to other category")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
             .setEventLabel("$entryPoint - $authorId")
-            .setCustomProperty(Key.trackerId, "46059")
+            .setCustomProperty(Key.trackerId, "46060")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
             .setCustomProperty(Key.sessionIris, sessionIris)

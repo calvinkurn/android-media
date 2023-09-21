@@ -78,7 +78,7 @@ class StoriesUITest {
 
         assertThat(
             cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other group")
+            containsEventAction("click - move to other category")
         )
     }
 
@@ -99,7 +99,7 @@ class StoriesUITest {
 
         assertThat(
             cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other group")
+            containsEventAction("click - move to other category")
         )
     }
 
@@ -123,7 +123,7 @@ class StoriesUITest {
 
         assertThat(
             cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other group")
+            containsEventAction("click - move to other category")
         )
     }
 
@@ -155,7 +155,7 @@ class StoriesUITest {
 
         assertThat(
             cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other group")
+            containsEventAction("click - move to other category")
         )
     }
 
@@ -171,7 +171,7 @@ class StoriesUITest {
 
         assertThat(
             cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other group")
+            containsEventAction("click - move to other category")
         )
     }
 
