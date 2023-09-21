@@ -86,6 +86,15 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                 )
                 show()
             }
+            checkBalanceWarningChevron.run {
+                setImage(
+                    IconUnify.CHEVRON_RIGHT,
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                    )
+                )
+            }
             checkBalanceWarningContainer.run {
                 background = MethodChecker.getDrawable(
                     context,
@@ -114,6 +123,15 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                 )
                 show()
             }
+            checkBalanceWarningChevron.run {
+                setImage(
+                    IconUnify.CHEVRON_RIGHT,
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    )
+                )
+            }
             checkBalanceWarningContainer.run {
                 background = MethodChecker.getDrawable(
                     context,
@@ -133,6 +151,15 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         showWidgetMessage(message, isClickable)
         binding.run {
             checkBalanceWarningIcon.hide()
+            checkBalanceWarningChevron.run {
+                setImage(
+                    IconUnify.CHEVRON_RIGHT,
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+            }
             checkBalanceWarningContainer.run {
                 background = MethodChecker.getDrawable(
                     context,
