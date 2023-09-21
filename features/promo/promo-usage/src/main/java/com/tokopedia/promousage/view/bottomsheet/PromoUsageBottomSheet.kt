@@ -926,7 +926,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         val isIdle = binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
                         if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
                             Handler().postDelayed({
-                                binding?.rvPromo?.smoothScrollToPosition(itemPosition)
+                                binding?.rvPromo?.scrollToPosition(itemPosition)
                             }, 300L)
                         }
                     } catch (ignored: Exception) {

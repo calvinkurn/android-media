@@ -14,11 +14,18 @@ abstract class PromoAnalytics {
 
     object EventCategory {
         const val CART = "cart"
+        const val CHECKOUT = "courier selection"
+        const val OCC = "order summary"
     }
 
     object EventAction {
-        const val CLICK_PROMO_ENTRY_POINT = "click promo entry point"
-        const val IMPRESSION_PROMO_ENTRY_POINT = "impression promo entry point"
+        const val CLICK_CART_PROMO_ENTRY_POINT = "click promo entry point"
+        const val CLICK_CHECKOUT_PROMO_ENTRY_POINT = "click user saving and promo entry point"
+        const val CLICK_CHECKOUT_PROMO_ENTRY_POINT_DETAIL = "click user saving detail - total subsidy"
+        const val IMPRESSION_CART_PROMO_ENTRY_POINT = "impression promo entry point"
+        const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT = "impression user saving - total subsidy"
+        const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_DETAIL = "impression user saving detail - total subsidy"
+        const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_ERROR = "impression promo entry point - error"
     }
 
     object ExtraKey {
@@ -41,12 +48,18 @@ abstract class PromoAnalytics {
     }
 
     object TrackerId {
-        const val CLICK_PROMO_ENTRY_POINT = "46340"
-        const val IMPRESSION_PROMO_ENTRY_POINT = "46339"
+        const val CLICK_CART_PROMO_ENTRY_POINT = "46340"
+        const val CLICK_CHECKOUT_PROMO_ENTRY_POINT = "46629"
+        const val CLICK_CHECKOUT_PROMO_ENTRY_POINT_DETAIL = "46631"
+        const val IMPRESSION_CART_PROMO_ENTRY_POINT = "46339"
+        const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT = "46628"
+        const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_DETAIL = "46630"
+        const val IMPRESSION_CHECKOUT_PROMO_ENTRY_POINT_ERROR = "46650"
     }
 
     object CustomDimension {
         const val BUSINESS_UNIT_PHYSICAL_GOODS = "physical goods"
+        const val BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
         const val CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
         const val DIMENSION_45 = "dimension45"
     }
@@ -84,7 +97,7 @@ abstract class PromoAnalytics {
         )
     }
 
-    protected fun sendEnhancedEcommerceEvent(eventName: String, bundle: Bundle) {
+    private fun sendEnhancedEcommerceEvent(eventName: String, bundle: Bundle) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, bundle)
     }
 }

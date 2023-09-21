@@ -104,7 +104,9 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
+import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -194,6 +196,9 @@ class CheckoutFragment :
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var promoEntryPointAnalytics: PromoUsageEntryPointAnalytics
 
     private val viewModel: CheckoutViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
@@ -1903,6 +1908,79 @@ class CheckoutFragment :
 
     override fun onSendAnalyticsViewPromoCheckoutApplied() {
         PromoRevampAnalytics.eventCheckoutViewPromoAlreadyApplied()
+    }
+
+    override fun sendImpressionUserSavingTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendImpressionUserSavingTotalSubsidyEvent(
+                userSessionInterface.userId,
+                PromoPageEntryPoint.CHECKOUT_PAGE,
+                entryPointMessages,
+                entryPointInfo,
+                lastApply
+            )
+    }
+
+    override fun sendClickUserSavingAndPromoEntryPointEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendClickUserSavingAndPromoEntryPointEvent(
+                userSessionInterface.userId,
+                PromoPageEntryPoint.CHECKOUT_PAGE,
+                entryPointMessages,
+                entryPointInfo,
+                lastApply
+            )
+    }
+
+    override fun sendImpressionUserSavingDetailTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendImpressionUserSavingDetailTotalSubsidyEvent(
+                userSessionInterface.userId,
+                PromoPageEntryPoint.CHECKOUT_PAGE,
+                entryPointMessages,
+                entryPointInfo,
+                lastApply
+            )
+    }
+
+    override fun sendClickUserSavingDetailTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendClickUserSavingDetailTotalSubsidyEvent(
+                userSessionInterface.userId,
+                PromoPageEntryPoint.CHECKOUT_PAGE,
+                entryPointMessages,
+                entryPointInfo,
+                lastApply
+            )
+    }
+
+    override fun sendImpressionPromoEntryPointErrorEvent(
+        errorMessage: String,
+        lastApply: LastApplyUiModel
+    ) {
+        promoEntryPointAnalytics
+            .sendImpressionPromoEntryPointErrorEvent(
+                userId = userSessionInterface.userId,
+                entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
+                errorMessage = errorMessage,
+                lastApply = lastApply
+            )
     }
 
     override fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel) {

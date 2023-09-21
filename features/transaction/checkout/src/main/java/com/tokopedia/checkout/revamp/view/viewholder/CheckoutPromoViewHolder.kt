@@ -13,6 +13,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryIte
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, private val listener: CheckoutAdapterListener) :
@@ -56,6 +57,11 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                             onClickListener = {
                                 if (entryPointInfo.isClickable) {
                                     listener.onClickPromoCheckout(lastApply)
+                                    listener.sendClickUserSavingAndPromoEntryPointEvent(
+                                        entryPointMessages = listOf(message),
+                                        entryPointInfo = entryPointInfo,
+                                        lastApply = lastApply
+                                    )
                                 }
                             }
                         )
@@ -66,14 +72,29 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                             onClickListener = {
                                 if (entryPointInfo.isClickable) {
                                     listener.onClickPromoCheckout(lastApply)
+                                    listener.sendClickUserSavingAndPromoEntryPointEvent(
+                                        entryPointMessages = listOf(message),
+                                        entryPointInfo = entryPointInfo,
+                                        lastApply = lastApply
+                                    )
                                 }
                             }
                         )
                     }
+                    listener.sendImpressionPromoEntryPointErrorEvent(
+                        errorMessage = message,
+                        lastApply = lastApply
+                    )
                 } else {
                     binding.btnCheckoutPromo.showError {
                         listener.onClickReloadPromoWidget()
                     }
+                    val errorMessage = binding.btnCheckoutPromo.context
+                        .getString(promocheckoutcommonR.string.promo_checkout_failed_label_new)
+                    listener.sendImpressionPromoEntryPointErrorEvent(
+                        errorMessage = errorMessage,
+                        lastApply = lastApply
+                    )
                 }
             } else {
                 val isUsingPromo = lastApply.additionalInfo.usageSummaries.isNotEmpty()
@@ -140,7 +161,7 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                     val isSecondaryTextEnabled = otherPromoSummaries.isEmpty() &&
                         secondaryText.isNotEmpty() &&
                         entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN
-                    val isExpanded = boPromoSummaries.isNotEmpty() && isSecondaryTextEnabled
+                    val isDetailExpanded = boPromoSummaries.isNotEmpty() && isSecondaryTextEnabled
                     binding.btnCheckoutPromo.showActiveNewExpandable(
                         leftImageUrl = PromoEntryPointInfo.ICON_URL_ENTRY_POINT_APPLIED,
                         wording = message,
@@ -148,13 +169,45 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                         groupedSummary = otherPromoSummaries,
                         secondaryText = secondaryText,
                         isSecondaryTextEnabled = isSecondaryTextEnabled,
-                        isExpanded = isExpanded,
+                        isExpanded = isDetailExpanded,
                         animateWording = model.isAnimateWording,
-                        onClickListener = {
+                        onClickListener = { isSummary ->
                             if (entryPointInfo.isClickable) {
                                 listener.onClickPromoCheckout(lastApply)
+                                if (isSummary) {
+                                    listener.sendClickUserSavingAndPromoEntryPointEvent(
+                                        entryPointMessages = listOf(message),
+                                        entryPointInfo = entryPointInfo,
+                                        lastApply = lastApply
+                                    )
+                                } else {
+                                    listener.sendClickUserSavingDetailTotalSubsidyEvent(
+                                        entryPointMessages = listOf(message),
+                                        entryPointInfo = entryPointInfo,
+                                        lastApply = lastApply
+                                    )
+                                }
+                            }
+                        },
+                        onExpandCollapseListener = { isExpanded ->
+                            if (isExpanded) {
+                                listener.sendClickUserSavingAndPromoEntryPointEvent(
+                                    entryPointMessages = listOf(message),
+                                    entryPointInfo = entryPointInfo,
+                                    lastApply = lastApply
+                                )
+                                listener.sendImpressionUserSavingDetailTotalSubsidyEvent(
+                                    entryPointMessages = listOf(message),
+                                    entryPointInfo = entryPointInfo,
+                                    lastApply = lastApply
+                                )
                             }
                         }
+                    )
+                    listener.sendImpressionUserSavingTotalSubsidyEvent(
+                        entryPointMessages = listOf(message),
+                        entryPointInfo = entryPointInfo,
+                        lastApply = lastApply
                     )
                 }
             }

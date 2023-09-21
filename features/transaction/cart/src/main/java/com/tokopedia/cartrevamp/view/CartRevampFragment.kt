@@ -2659,6 +2659,7 @@ class CartRevampFragment :
                                     checkGoToPromo()
                                     promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
                                         userId = userSession.userId,
+                                        entryPoint = PromoPageEntryPoint.CART_PAGE,
                                         entryPointMessages = listOf(message),
                                         entryPointInfo = data.entryPointInfo,
                                         lastApply = data.lastApply,
@@ -2670,6 +2671,7 @@ class CartRevampFragment :
                         promoEntryPointAnalytics
                             .sendImpressionPromoEntryPointEvent(
                                 userId = userSession.userId,
+                                entryPoint = PromoPageEntryPoint.CART_PAGE,
                                 entryPointMessages = listOf(message),
                                 entryPointInfo = data.entryPointInfo,
                                 lastApply = data.lastApply,
@@ -2711,6 +2713,7 @@ class CartRevampFragment :
                                     checkGoToPromo()
                                     promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
                                         userId = userSession.userId,
+                                        entryPoint = PromoPageEntryPoint.CART_PAGE,
                                         entryPointMessages = messages,
                                         entryPointInfo = data.entryPointInfo,
                                         lastApply = data.lastApply,
@@ -2722,6 +2725,7 @@ class CartRevampFragment :
                         promoEntryPointAnalytics
                             .sendImpressionPromoEntryPointEvent(
                                 userId = userSession.userId,
+                                entryPoint = PromoPageEntryPoint.CART_PAGE,
                                 entryPointMessages = messages,
                                 entryPointInfo = data.entryPointInfo,
                                 lastApply = data.lastApply,
@@ -2737,6 +2741,7 @@ class CartRevampFragment :
                                     checkGoToPromo()
                                     promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
                                         userId = userSession.userId,
+                                        entryPoint = PromoPageEntryPoint.CART_PAGE,
                                         entryPointMessages = messages,
                                         entryPointInfo = data.entryPointInfo,
                                         lastApply = data.lastApply,
@@ -2748,6 +2753,7 @@ class CartRevampFragment :
                         promoEntryPointAnalytics
                             .sendImpressionPromoEntryPointEvent(
                                 userId = userSession.userId,
+                                entryPoint = PromoPageEntryPoint.CART_PAGE,
                                 entryPointMessages = messages,
                                 entryPointInfo = data.entryPointInfo,
                                 lastApply = data.lastApply,
@@ -2800,6 +2806,7 @@ class CartRevampFragment :
                                 checkGoToPromo()
                                 promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
                                     userId = userSession.userId,
+                                    entryPoint = PromoPageEntryPoint.CART_PAGE,
                                     entryPointMessages = listOf(data.message),
                                     entryPointInfo = null,
                                     lastApply = data.lastApply,
@@ -2810,6 +2817,7 @@ class CartRevampFragment :
                         promoEntryPointAnalytics
                             .sendImpressionPromoEntryPointEvent(
                                 userId = userSession.userId,
+                                entryPoint = PromoPageEntryPoint.CART_PAGE,
                                 entryPointMessages = listOf(data.message),
                                 entryPointInfo = null,
                                 lastApply = data.lastApply,

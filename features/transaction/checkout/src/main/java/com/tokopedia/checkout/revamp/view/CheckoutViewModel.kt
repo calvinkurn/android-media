@@ -2178,7 +2178,8 @@ class CheckoutViewModel @Inject constructor(
             val newPromo = list.promo()!!.copy(
                 promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
                     promoUiModel
-                )
+                ),
+                isLoading = true
             )
             list[list.size - 4] = newPromo
             listData.value = list

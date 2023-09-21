@@ -448,8 +448,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         isSecondaryTextEnabled: Boolean = false,
         isExpanded: Boolean = false,
         animateWording: Boolean = false,
-        onClickListener: () -> Unit = {},
-        onExpandCollapseListener: (Boolean) -> Unit = {}
+        onClickListener: (isSummary: Boolean) -> Unit = {},
+        onExpandCollapseListener: (isExpanded: Boolean) -> Unit = {}
     ) {
         activeViewConfettiFrame?.visibility = View.VISIBLE
         activeViewSummaryLayout?.visibility = View.GONE
@@ -467,8 +467,6 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 switcherView?.displayedChild = 0
             } else if (animateWording) {
                 activeViewWording?.setText(HtmlLinkHelper(context, wording).spannedString)
-            } else {
-                activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             }
             errorView?.visibility = View.GONE
             loadingView?.visibility = View.GONE
@@ -522,7 +520,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                         View.GONE
                     summaryView.setOnClickListener {
                         if (activeViewWording?.visibility == View.VISIBLE) {
-                            onClickListener.invoke()
+                            onClickListener.invoke(true)
                         }
                     }
                     this.addView(summaryView)
@@ -561,7 +559,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     }
                     groupContainer.setOnClickListener {
                         if (activeViewWording?.visibility == View.VISIBLE) {
-                            onClickListener.invoke()
+                            onClickListener.invoke(false)
                         }
                     }
                 }

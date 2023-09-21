@@ -7,6 +7,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -92,6 +93,35 @@ interface CheckoutAdapterListener {
     fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean, listAllPromoCodes: List<String>)
 
     fun onSendAnalyticsViewPromoCheckoutApplied()
+
+    fun sendImpressionUserSavingTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    )
+
+    fun sendClickUserSavingAndPromoEntryPointEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    )
+
+    fun sendImpressionUserSavingDetailTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    )
+
+    fun sendClickUserSavingDetailTotalSubsidyEvent(
+        entryPointMessages: List<String>,
+        entryPointInfo: PromoEntryPointInfo?,
+        lastApply: LastApplyUiModel
+    )
+
+    fun sendImpressionPromoEntryPointErrorEvent(
+        errorMessage: String,
+        lastApply: LastApplyUiModel
+    )
 
     fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel)
 

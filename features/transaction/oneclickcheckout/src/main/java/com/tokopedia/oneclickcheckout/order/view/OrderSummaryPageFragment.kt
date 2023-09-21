@@ -122,7 +122,9 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardI
 import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
+import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
@@ -160,6 +162,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
@@ -203,6 +206,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
     @Inject
     lateinit var getTargetedTickerUseCase: Lazy<GetTargetedTickerUseCase>
+
+    @Inject
+    lateinit var promoEntryPointAnalytics: PromoUsageEntryPointAnalytics
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -1980,6 +1986,79 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                         goToOldPromoPage(validateUsePromoRequest, promoRequest, bboCodes)
                     }
                 }
+            }
+
+            override fun sendImpressionUserSavingTotalSubsidyEvent(
+                entryPointMessages: List<String>,
+                entryPointInfo: PromoEntryPointInfo?,
+                lastApply: LastApplyUiModel
+            ) {
+                promoEntryPointAnalytics
+                    .sendImpressionUserSavingTotalSubsidyEvent(
+                        userSession.get().userId,
+                        PromoPageEntryPoint.CHECKOUT_PAGE,
+                        entryPointMessages,
+                        entryPointInfo,
+                        lastApply
+                    )
+            }
+
+            override fun sendClickUserSavingAndPromoEntryPointEvent(
+                entryPointMessages: List<String>,
+                entryPointInfo: PromoEntryPointInfo?,
+                lastApply: LastApplyUiModel
+            ) {
+                promoEntryPointAnalytics
+                    .sendClickUserSavingAndPromoEntryPointEvent(
+                        userSession.get().userId,
+                        PromoPageEntryPoint.CHECKOUT_PAGE,
+                        entryPointMessages,
+                        entryPointInfo,
+                        lastApply
+                    )
+            }
+
+            override fun sendImpressionUserSavingDetailTotalSubsidyEvent(
+                entryPointMessages: List<String>,
+                entryPointInfo: PromoEntryPointInfo?,
+                lastApply: LastApplyUiModel
+            ) {
+                promoEntryPointAnalytics
+                    .sendImpressionUserSavingDetailTotalSubsidyEvent(
+                        userSession.get().userId,
+                        PromoPageEntryPoint.CHECKOUT_PAGE,
+                        entryPointMessages,
+                        entryPointInfo,
+                        lastApply
+                    )
+            }
+
+            override fun sendClickUserSavingDetailTotalSubsidyEvent(
+                entryPointMessages: List<String>,
+                entryPointInfo: PromoEntryPointInfo?,
+                lastApply: LastApplyUiModel
+            ) {
+                promoEntryPointAnalytics
+                    .sendClickUserSavingDetailTotalSubsidyEvent(
+                        userSession.get().userId,
+                        PromoPageEntryPoint.CHECKOUT_PAGE,
+                        entryPointMessages,
+                        entryPointInfo,
+                        lastApply
+                    )
+            }
+
+            override fun sendImpressionPromoEntryPointErrorEvent(
+                errorMessage: String,
+                lastApply: LastApplyUiModel
+            ) {
+                promoEntryPointAnalytics
+                    .sendImpressionPromoEntryPointErrorEvent(
+                        userId = userSession.get().userId,
+                        entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
+                        errorMessage = errorMessage,
+                        lastApply = lastApply
+                    )
             }
         }
     }
