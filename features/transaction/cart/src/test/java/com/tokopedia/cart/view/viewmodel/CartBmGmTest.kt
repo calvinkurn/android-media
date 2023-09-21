@@ -19,6 +19,7 @@ import com.tokopedia.cartrevamp.view.uimodel.GetBmGmGroupProductTickerState
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import io.mockk.coEvery
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -161,5 +162,88 @@ class CartBmGmTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(10, newCartDataList.size)
+    }
+
+    @Test
+    fun `WHEN updateBmGmTickerData THEN second product on the same offer list is updated with BMGM data with first product data`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartId = "124",
+            cartStringOrder = "222",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
+                ),
+                isShowTickerBmGm = true
+            ),
+            productId = "1111"
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(
+            cartId = "125",
+            isShopShown = true,
+            cartStringOrder = "222",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
+                ),
+                isShowTickerBmGm = false
+            ),
+            productId = "2222"
+        )
+
+        val cartItemHolderDataThree = CartItemHolderData(
+            cartId = "126",
+            isShopShown = true,
+            cartStringOrder = "222",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
+                ),
+                isShowTickerBmGm = false
+            ),
+            productId = "3333"
+        )
+
+        cartViewModel.cartDataList.value = arrayListOf(cartItemHolderData, cartItemHolderDataTwo, cartItemHolderDataThree)
+
+        // WHEN
+        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderData))
+
+        // THEN
+        Assert.assertTrue(cartItemHolderDataTwo.cartBmGmTickerData.isShowTickerBmGm)
+    }
+
+    @Test
+    fun `WHEN updateBmGmTickerData called but no other products left in same offer id`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartId = "124",
+            cartStringOrder = "222",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    cartDetailType = "BMGM",
+                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
+                ),
+                isShowTickerBmGm = true
+            ),
+            productId = "1111"
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(
+            cartId = "125",
+            isShopShown = true,
+            cartStringOrder = "223",
+            productId = "2222"
+        )
+
+        cartViewModel.cartDataList.value = arrayListOf(cartItemHolderData, cartItemHolderDataTwo)
+
+        // WHEN
+        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderData))
+
+        // THEN
+        Assert.assertFalse(cartItemHolderDataTwo.cartBmGmTickerData.isShowTickerBmGm)
     }
 }

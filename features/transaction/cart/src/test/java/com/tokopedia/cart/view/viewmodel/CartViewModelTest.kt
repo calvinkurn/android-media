@@ -7,9 +7,7 @@ import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnData
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
-import com.tokopedia.cartrevamp.view.uimodel.CartBmGmTickerData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
-import com.tokopedia.cartrevamp.view.uimodel.CartDetailInfo
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
@@ -2250,59 +2248,6 @@ class CartViewModelTest : BaseCartViewModelTest() {
         assertEquals(3, cartViewModel.cartModel.availableCartItemImpressionList.size)
     }
     // endregion
-
-    // region updateBmGmTickerData
-    @Test
-    fun `WHEN updateBmGmTickerData THEN second product on the same offer list is updated with BMGM data with first product data`() {
-        // GIVEN
-        val cartItemHolderData = CartItemHolderData(
-            cartId = "124",
-            cartStringOrder = "222",
-            cartBmGmTickerData = CartBmGmTickerData(
-                bmGmCartInfoData = CartDetailInfo(
-                    cartDetailType = "BMGM",
-                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
-                ),
-                isShowTickerBmGm = true
-            ),
-            productId = "1111"
-        )
-        val cartItemHolderDataTwo = CartItemHolderData(
-            cartId = "125",
-            isShopShown = true,
-            cartStringOrder = "222",
-            cartBmGmTickerData = CartBmGmTickerData(
-                bmGmCartInfoData = CartDetailInfo(
-                    cartDetailType = "BMGM",
-                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
-                ),
-                isShowTickerBmGm = false
-            ),
-            productId = "2222"
-        )
-
-        val cartItemHolderDataThree = CartItemHolderData(
-            cartId = "126",
-            isShopShown = true,
-            cartStringOrder = "222",
-            cartBmGmTickerData = CartBmGmTickerData(
-                bmGmCartInfoData = CartDetailInfo(
-                    cartDetailType = "BMGM",
-                    bmGmData = CartDetailInfo.BmGmData(offerId = 1L)
-                ),
-                isShowTickerBmGm = false
-            ),
-            productId = "3333"
-        )
-
-        cartViewModel.cartDataList.value = arrayListOf(cartItemHolderData, cartItemHolderDataTwo, cartItemHolderDataThree)
-
-        // WHEN
-        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderData))
-
-        // THEN
-        assertTrue(cartItemHolderDataTwo.cartBmGmTickerData.isShowTickerBmGm)
-    }
 
     override fun tearDown() {
         super.tearDown()
