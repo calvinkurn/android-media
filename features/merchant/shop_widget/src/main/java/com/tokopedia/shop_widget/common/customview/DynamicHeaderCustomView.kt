@@ -159,7 +159,7 @@ class DynamicHeaderCustomView: FrameLayout {
     fun configDefaultColor(){
         val defaultTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        val defaultCtaColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        val defaultCtaColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         tpTitle?.setTextColor(defaultTitleColor)
         tpSubtitle?.setTextColor(defaultSubTitleColor)
         iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
