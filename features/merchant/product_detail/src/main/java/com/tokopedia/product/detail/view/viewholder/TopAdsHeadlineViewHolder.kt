@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
@@ -117,11 +118,8 @@ class TopAdsHeadlineViewHolder(
     private fun handlingHeadlineTitle(data: List<CpmData>?) {
         data?.let {
             val cpmLayout = it.firstOrNull()?.cpm?.layout
-            if (cpmLayout != null && (cpmLayout == LAYOUT_6 || cpmLayout == LAYOUT_5)) {
-                binding.titleHeadline.hide()
-            } else {
-                binding.titleHeadline.show()
-            }
+            val hideTitleHeadline = cpmLayout != null && (cpmLayout == LAYOUT_6 || cpmLayout == LAYOUT_5)
+            binding.titleHeadline.showWithCondition(hideTitleHeadline.not())
         }
     }
 
