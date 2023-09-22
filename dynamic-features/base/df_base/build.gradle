@@ -60,7 +60,6 @@ dependencies {
 
     //Base
     implementation projectOrAar(rootProject.ext.features.onboarding)
-    implementation projectOrAar(rootProject.ext.features.buyMoreGetMore)
 
     //Category
     implementation projectOrAar(rootProject.ext.features.exploreCategory)

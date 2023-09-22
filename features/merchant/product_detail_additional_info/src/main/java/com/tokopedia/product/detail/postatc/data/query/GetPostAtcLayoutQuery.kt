@@ -43,9 +43,6 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
                     originalPrice
                     condition
                 }
-                warehouseInfo {
-                    warehouseID
-                }
                 postATCInfo {
                     title
                     image
@@ -69,9 +66,6 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
                         }
                         ... on pdpProductPostATCAddOns {
                             title
-                        }
-                        ... on pdpProductPostATCBMGM {
-                            queryParam
                         }
                     }
                 }

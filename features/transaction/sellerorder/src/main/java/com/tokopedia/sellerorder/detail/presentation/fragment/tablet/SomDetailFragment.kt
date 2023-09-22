@@ -128,7 +128,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     }
 
     override fun renderDetail(
-        somDetail: SomDetailOrder.GetSomDetail?,
+        somDetail: SomDetailOrder.Data.GetSomDetail?,
         somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?,
         resolutionTicketStatusResponse: GetResolutionTicketStatusResponse
         .ResolutionGetTicketStatus.ResolutionData?

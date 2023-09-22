@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
-import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmTierProductModel
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
@@ -62,17 +61,6 @@ data class Product(
     var addOnGiftingProduct: AddOnGiftingDataModel = AddOnGiftingDataModel(),
     var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel(),
     var addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
-
-    // bmgm
-    var isBmgmItem: Boolean = false,
-    var bmgmIconUrl: String = "",
-    var bmgmOfferId: Long = 0,
-    var bmgmOfferName: String = "",
-    var bmgmOfferMessage: List<String> = emptyList(),
-    var bmgmOfferStatus: Int = 0,
-    var bmgmItemPosition: Int = 0,
-    var bmgmTotalDiscount: Double = 0.0,
-    var bmgmTierProductList: List<CheckoutBmgmTierProductModel> = emptyList(),
 
     // new
     val shouldShowShopInfo: Boolean = false,

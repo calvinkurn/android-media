@@ -413,7 +413,6 @@ class CartAdapter constructor(
         }
         return Pair(startingIndex, cartGroupList)
     }
-    // TODO: remove
 
     fun getData(): ArrayList<Any> {
         return cartDataList

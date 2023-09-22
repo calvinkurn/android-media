@@ -13,7 +13,6 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DEFAULT_VALUE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_40
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_45
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_56
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_84
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_90
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ECOMMERCE
@@ -66,8 +65,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class RecommendationCarouselWidgetTrackingPDPATC(
     private val widget: RecommendationWidget,
-    private val source: RecommendationWidgetSource.PDPAfterATC
-) : RecommendationCarouselWidgetTracking {
+    private val source: RecommendationWidgetSource.PDPAfterATC,
+): RecommendationCarouselWidgetTracking {
 
     private val anchorProductId = source.anchorProductId
     private val userId = source.userId
@@ -80,7 +79,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
 
     override fun sendEventItemImpression(
         trackingQueue: TrackingQueue,
-        item: RecommendationItem
+        item: RecommendationItem,
     ) {
         trackingQueue.putEETracking(impressionMap(item))
     }
@@ -98,22 +97,19 @@ class RecommendationCarouselWidgetTrackingPDPATC(
             USERID to userId,
             ECOMMERCE to mapOf(
                 CURRENCY_CODE to IDR,
-                IMPRESSIONS to arrayListOf(
-                    mapOf(
-                        LIST to listName(item),
-                        KEY_INDEX to item.position + 1,
-                        ITEM_BRAND to VALUE_NONE_OTHER,
-                        ITEM_CATEGORY to item.categoryBreadcrumbs,
-                        ITEM_ID to item.productId,
-                        ITEM_NAME to item.name,
-                        ITEM_VARIANT to VALUE_NONE_OTHER,
-                        PRICE to item.priceInt.toDouble(),
-                        DIMENSION_84 to VALUE_NONE_OTHER,
-                        DIMENSION_90 to "$PDP.${item.recommendationType}",
-                        DIMENSION_56 to source.warehouseId
-                    )
-                )
-            )
+                IMPRESSIONS to arrayListOf(mapOf(
+                    LIST to listName(item),
+                    KEY_INDEX to item.position + 1,
+                    ITEM_BRAND to VALUE_NONE_OTHER,
+                    ITEM_CATEGORY to item.categoryBreadcrumbs,
+                    ITEM_ID to item.productId,
+                    ITEM_NAME to item.name,
+                    ITEM_VARIANT to VALUE_NONE_OTHER,
+                    PRICE to item.priceInt.toDouble(),
+                    DIMENSION_84 to VALUE_NONE_OTHER,
+                    DIMENSION_90 to "$PDP.${item.recommendationType}",
+                )),
+            ),
         )
     }
 
@@ -124,7 +120,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
             REKOMENDASI_UNTUK_ANDA,
             item.recommendationType + topAdsListName(item),
             widget.layoutType,
-            anchorProductId
+            anchorProductId,
         ).joinToString(separator = " - ")
 
     private fun topAdsListName(item: RecommendationItem) =
@@ -146,8 +142,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
             putString(PRODUCT_ID, anchorProductId)
             putString(USERID, userId)
             putParcelableArrayList(
-                ITEMS,
-                arrayListOf(
+                ITEMS, arrayListOf(
                     bundle {
                         putString(DIMENSION_40, listName(item))
                         putInt(KEY_INDEX, item.position + 1)
@@ -159,7 +154,6 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                         putDouble(PRICE, item.priceInt.toDouble())
                         putString(DIMENSION_84, VALUE_NONE_OTHER)
                         putString(DIMENSION_90, "$PDP.${item.recommendationType}")
-                        putString(DIMENSION_56, source.warehouseId)
                     }
                 )
             )
@@ -183,8 +177,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
             putString(PRODUCT_ID, anchorProductId)
             putString(USERID, userId)
             putParcelableArrayList(
-                ITEMS,
-                arrayListOf(
+                ITEMS, arrayListOf(
                     bundle {
                         putString(CATEGORY_ID, VALUE_NONE_OTHER)
                         putString(DIMENSION_40, listName(item))
@@ -216,7 +209,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                 EVENT_LABEL, anchorProductId,
                 TRACKER_ID, ADJUST_QTY_ITEM_PDP_ATC,
                 BUSINESS_UNIT, BUSINESS_UNIT_HOME,
-                CURRENT_SITE, CURRENT_SITE_MP
+                CURRENT_SITE, CURRENT_SITE_MP,
             )
         )
     }
@@ -230,7 +223,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                 EVENT_LABEL, anchorProductId,
                 TRACKER_ID, DELETE_RECOMMENDATION_ITEM_PDP_ATC,
                 BUSINESS_UNIT, BUSINESS_UNIT_HOME,
-                CURRENT_SITE, CURRENT_SITE_MP
+                CURRENT_SITE, CURRENT_SITE_MP,
             )
         )
     }
@@ -244,7 +237,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                 EVENT_LABEL, anchorProductId,
                 TRACKER_ID, SEE_ALL_RECOMMENDATION_PDP_ATC,
                 BUSINESS_UNIT, BUSINESS_UNIT_HOME,
-                CURRENT_SITE, CURRENT_SITE_MP
+                CURRENT_SITE, CURRENT_SITE_MP,
             )
         )
     }
@@ -252,7 +245,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
     object Factory {
         fun create(
             widget: RecommendationWidget,
-            source: RecommendationWidgetSource.PDPAfterATC
+            source: RecommendationWidgetSource.PDPAfterATC,
         ): RecommendationCarouselWidgetTracking =
             RecommendationCarouselWidgetTrackingPDPATC(widget, source)
     }

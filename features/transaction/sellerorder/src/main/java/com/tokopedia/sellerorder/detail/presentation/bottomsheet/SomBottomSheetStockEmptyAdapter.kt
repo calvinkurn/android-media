@@ -17,14 +17,12 @@ import com.tokopedia.utils.view.binding.viewBinding
 class SomBottomSheetStockEmptyAdapter(
     private val listener: ProductCheckChangedListener
 ) : RecyclerView.Adapter<SomBottomSheetStockEmptyAdapter.ViewHolder>() {
-    var listProduct = mutableListOf<SomDetailOrder.GetSomDetail.Details.Product>()
-    var listToBeEmptied = ArrayList<SomDetailOrder.GetSomDetail.Details.Product>()
+    var listProduct = mutableListOf<SomDetailOrder.Data.GetSomDetail.Details.Product>()
+    var listToBeEmptied = ArrayList<SomDetailOrder.Data.GetSomDetail.Details.Product>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.bottomsheet_empty_product_item, parent, false)
-        )
+        return ViewHolder(LayoutInflater.from(parent.context)
+            .inflate(R.layout.bottomsheet_empty_product_item, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -60,7 +58,7 @@ class SomBottomSheetStockEmptyAdapter(
         }
     }
 
-    fun getListProductEmptied(): ArrayList<SomDetailOrder.GetSomDetail.Details.Product> {
+    fun getListProductEmptied(): ArrayList<SomDetailOrder.Data.GetSomDetail.Details.Product> {
         return listToBeEmptied
     }
 

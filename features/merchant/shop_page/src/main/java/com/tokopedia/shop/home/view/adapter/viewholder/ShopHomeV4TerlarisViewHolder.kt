@@ -68,7 +68,7 @@ class ShopHomeV4TerlarisViewHolder(
     private var productPrice2: TextView? = viewBinding?.terlarisProductPrice2
     private var productRank2: TextView? = viewBinding?.terlarisProductRankNumber2
     private var containerDiscount2: LinearLayoutCompat? = viewBinding?.terlarisContainerDiscount2
-    private var labelDiscount2: Label? = viewBinding?.terlarisLabelDiscountPercentage2
+    private var labelDiscount2: Label? = viewBinding?.terlarisLabelDiscountPercentage1
     private var productOriginalPrice2: TextView? = viewBinding?.terlarisOriginalPrice2
     private var prodcutCard3: ConstraintLayout? = viewBinding?.terlarisProductDetail3
     private var productImg3: ImageUnify? = viewBinding?.terlarisImgProduct3
@@ -76,7 +76,7 @@ class ShopHomeV4TerlarisViewHolder(
     private var productPrice3: TextView? = viewBinding?.terlarisProductPrice3
     private var productRank3: TextView? = viewBinding?.terlarisProductRankNumber3
     private var containerDiscount3: LinearLayoutCompat? = viewBinding?.terlarisContainerDiscount3
-    private var labelDiscount3: Label? = viewBinding?.terlarisLabelDiscountPercentage3
+    private var labelDiscount3: Label? = viewBinding?.terlarisLabelDiscountPercentage1
     private var productOriginalPrice3: TextView? = viewBinding?.terlarisOriginalPrice3
 
     override fun bind(element: ShopHomeCarousellProductUiModel?) {

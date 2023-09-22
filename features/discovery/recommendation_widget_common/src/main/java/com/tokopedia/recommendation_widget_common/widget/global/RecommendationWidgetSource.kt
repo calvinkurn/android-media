@@ -15,8 +15,7 @@ sealed interface RecommendationWidgetSource {
         val anchorProductId: String,
         val isUserLoggedIn: Boolean,
         val userId: String,
-        val warehouseId: String
-    ) : RecommendationWidgetSource {
+    ): RecommendationWidgetSource {
         override val xSourceValue: String
             get() = "pdp"
         override val trackingValue: String

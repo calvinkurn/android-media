@@ -1,4 +1,4 @@
-package com.tokopedia.order_management_common.presentation.uimodel
+package com.tokopedia.buyerorderdetail.presentation.model
 
 data class ActionButtonsUiModel(
     val primaryActionButton: ActionButton,

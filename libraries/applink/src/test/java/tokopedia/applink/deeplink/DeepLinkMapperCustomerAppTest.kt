@@ -3117,14 +3117,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check bmgm applink`() {
-        assertEqualsDeepLinkMapper(
-            ApplinkConst.BUY_MORE_GET_MORE_OLP,
-            ApplinkConstInternalMechant.BUY_MORE_GET_MORE_OLP
-        )
-    }
-
-    @Test
     fun `check feed browse appLink then should return tokopedia internal feed browse in customerapp`() {
         val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_FEED}/browse"
         assertEqualsDeepLinkMapper("tokopedia://feed/browse", expectedDeepLink)

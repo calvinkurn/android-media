@@ -54,8 +54,6 @@ class ThematicWidgetViewHolder(
         private const val IMG_PARALLAX_ALPHA_MULTIPLIER = 0.80f
         private const val RV_DEFAULT_MARGIN_TOP = 16f
         private const val RV_DEFAULT_MARGIN_BOTTOM = 12f
-        private const val RV_MARGIN_HORIZONTAL_THEMATIC_NORMAL = 6f
-        private const val RV_MARGIN_VERTICAL_THEMATIC_NORMAL = 12f
         private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 8f
         private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 10f
         private const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
@@ -167,7 +165,7 @@ class ThematicWidgetViewHolder(
                 viewParallaxBackground?.background = null
             }
             else -> {
-                configMarginThematicNormal()
+                configMarginNonFestivity()
                 setupBackgroundColor(
                     startBackGroundColor = uiModel.firstBackgroundColor,
                     endBackGroundColor = uiModel.secondBackgroundColor
@@ -177,17 +175,18 @@ class ThematicWidgetViewHolder(
     }
 
     private fun setShopReimaginedContainerMargin() {
-        if (uiModel?.isFestivity == true && uiModel?.name == BIG_CAMPAIGN_THEMATIC) return
-        containerMixLeft?.let {
-            it.clipToOutline = true
-            it.background = MethodChecker.getDrawable(
-                itemView.context,
-                R.drawable.bg_shop_reimagined_rounded
-            )
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
-                SHOP_RE_IMAGINE_MARGIN.toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd =
-                SHOP_RE_IMAGINE_MARGIN.toInt()
+        if(uiModel?.isFestivity == false) {
+            containerMixLeft?.let {
+                it.clipToOutline = true
+                it.background = MethodChecker.getDrawable(
+                    itemView.context,
+                    R.drawable.bg_shop_reimagined_rounded
+                )
+                (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
+                    SHOP_RE_IMAGINE_MARGIN.toInt()
+                (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd =
+                    SHOP_RE_IMAGINE_MARGIN.toInt()
+            }
         }
     }
 
@@ -217,25 +216,6 @@ class ThematicWidgetViewHolder(
             RV_DEFAULT_MARGIN_TOP.dpToPx().toInt(),
             rvLayoutParams.rightMargin,
             RV_DEFAULT_MARGIN_BOTTOM.dpToPx().toInt()
-        )
-        rvProduct?.layoutParams = rvLayoutParams
-        val contentContainerLayoutParams = contentContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
-        contentContainerLayoutParams?.setMargins(
-            contentContainerLayoutParams.leftMargin,
-            contentContainerLayoutParams.topMargin,
-            contentContainerLayoutParams.rightMargin,
-            CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM.dpToPx().toInt()
-        )
-        contentContainer?.layoutParams = contentContainerLayoutParams
-    }
-
-    private fun configMarginThematicNormal(){
-        val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
-        rvLayoutParams?.setMargins(
-            RV_MARGIN_HORIZONTAL_THEMATIC_NORMAL.dpToPx().toInt(),
-            RV_MARGIN_VERTICAL_THEMATIC_NORMAL.dpToPx().toInt(),
-            RV_MARGIN_HORIZONTAL_THEMATIC_NORMAL.dpToPx().toInt(),
-            RV_MARGIN_VERTICAL_THEMATIC_NORMAL.dpToPx().toInt()
         )
         rvProduct?.layoutParams = rvLayoutParams
         val contentContainerLayoutParams = contentContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
