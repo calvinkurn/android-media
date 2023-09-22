@@ -62,6 +62,18 @@ object SomDetailMapper {
         add(SomDynamicPaymentResponseMapper.mapResponseToPaymentsUiModel(somGetSomDynamicPrice))
     }
 
+    private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeIncomeDetail(
+        somGetSomDynamicPrice: SomDynamicPriceResponse.GetSomDynamicPrice?
+    ) {
+        if (!somGetSomDynamicPrice?.incomeDetailLabel.isNullOrBlank())  {
+            SomDynamicPaymentResponseMapper.mapResponseToDetailIncomeUiModel(somGetSomDynamicPrice)?.let {
+                includeDivider()
+                add(it)
+            }
+        }
+    }
+
+
     private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeMvc(
         somGetSomDynamicPrice: SomDynamicPriceResponse.GetSomDynamicPrice?
     ) {
@@ -106,6 +118,7 @@ object SomDetailMapper {
             includeShipment(somGetOrderDetailResponse)
             includeDivider()
             includePayment(somGetSomDynamicPrice)
+            includeIncomeDetail(somGetSomDynamicPrice)
             includePofData(somGetSomDynamicPrice?.pofData)
             includeMvc(somGetSomDynamicPrice)
         }

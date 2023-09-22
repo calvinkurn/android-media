@@ -40,6 +40,9 @@ class SomDetailAdapterFactoryImpl(
             SomConsts.DETAIL_POF_DATA_TYPE -> {
                 SomDetailPofDataViewHolder.LAYOUT
             }
+            SomConsts.DETAIL_INCOME_TYPE -> {
+                SomDetailIncomeViewHolder.LAYOUT
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -90,6 +93,9 @@ class SomDetailAdapterFactoryImpl(
             SomDetailPofDataViewHolder.LAYOUT -> {
                 SomDetailPofDataViewHolder(parent)
             }
+            SomDetailIncomeViewHolder.LAYOUT -> {
+                SomDetailIncomeViewHolder(actionListener, parent)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -107,5 +113,6 @@ class SomDetailAdapterFactoryImpl(
         fun onCopiedAddress(address: String, str: String)
         fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onResoClicked(redirectPath: String)
+        fun onDetailIncomeClicked()
     }
 }

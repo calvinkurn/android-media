@@ -994,6 +994,10 @@ open class SomDetailFragment :
         SomAnalytics.sendClickOnResolutionWidgetEvent(userSession.userId)
     }
 
+    override fun onDetailIncomeClicked() {
+
+    }
+
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
             somDetailViewModel.rejectOrder(orderRejectRequestParam)
