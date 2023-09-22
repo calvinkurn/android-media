@@ -9,21 +9,20 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
 import com.tokopedia.viewallcard.ViewAllCard
 
-class BannerShowMoreRevampViewHolder(
+class BannerShowMoreReimagineViewHolder(
     container: View,
     private val topAdsBannerClickListener: TopAdsBannerClickListener?
 ) : AbstractViewHolder<BannerShopViewMoreUiModel>(container) {
 
-    override fun bind(element: BannerShopViewMoreUiModel?) {
+    override fun bind(element: BannerShopViewMoreUiModel) {
         val viewAll = itemView.findViewById<ViewAllCard>(R.id.viewAllAdsBannerShop)
         viewAll.cardView.cardType = CARD_TYPE_BORDER
         viewAll.setCta("") {
-            invokeClickListener(element!!)
-            Unit
+            invokeClickListener(element)
         }
-        itemView.setOnClickListener { v: View? ->
+        itemView.setOnClickListener { _: View? ->
             invokeClickListener(
-                element!!
+                element
             )
         }
     }
@@ -48,8 +47,8 @@ class BannerShowMoreRevampViewHolder(
     companion object {
         @JvmField
         @LayoutRes
-        var LAYOUT = R.layout.layout_ads_banner_shop_a_more_revamp
-        private val className = BannerShowMoreRevampViewHolder::class.java.simpleName
+        var LAYOUT = R.layout.layout_ads_banner_shop_a_more_reimagine
+        private val className = BannerShowMoreReimagineViewHolder::class.java.simpleName
         private const val CARD_TYPE_BORDER = 1
     }
 }
