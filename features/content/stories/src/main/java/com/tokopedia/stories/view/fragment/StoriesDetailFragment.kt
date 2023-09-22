@@ -278,31 +278,38 @@ class StoriesDetailFragment @Inject constructor(
         val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
         if (currContent?.isSameContent == true || currContent == null) return
 
-        when (currContent.content.type) {
-            IMAGE -> {
-                binding.layoutStoriesContent.ivStoriesDetailContent.apply {
-                    loadImage(
-                        currContent.content.data,
-                        listener = object : ImageLoaderStateListener {
-                            override fun successLoad() {
-                                contentIsLoaded()
-                                analytic.sendImpressionStoriesContent(currContent.id)
-                            }
-
-                            override fun failedLoad() {
-                                // TODO add some action when fail load image?
-                            }
-                        })
-                }
-            }
-
-            VIDEO -> {
-                // TODO handle video content here
-            }
-        }
+        renderMedia(currContent.content, currContent.status)
 
         showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currContent.menus.isNotEmpty())
+    }
+
+    private fun renderMedia(content: StoriesDetailItem.StoriesItemContent, status: StoriesDetailItem.StoryStatus) {
+        if (status == StoriesDetailItem.StoryStatus.Active) {
+            when (content.type) {
+                IMAGE -> {
+                    binding.layoutStoriesContent.ivStoriesDetailContent.apply {
+                        loadImage(
+                            content.data,
+                            listener = object : ImageLoaderStateListener {
+                                override fun successLoad() {
+                                    contentIsLoaded()
+                                    analytic.sendImpressionStoriesContent(viewModel.storyId)
+                                }
+
+                                override fun failedLoad() {
+                                    // TODO add some action when fail load image?
+                                }
+                            })
+                    }
+                }
+
+                VIDEO -> {
+                    // TODO handle video content here
+                }
+            }
+        }
+        binding.layoutNoContent.root.showWithCondition(status != StoriesDetailItem.StoryStatus.Active)
     }
 
     private fun observeBottomSheetStatus(

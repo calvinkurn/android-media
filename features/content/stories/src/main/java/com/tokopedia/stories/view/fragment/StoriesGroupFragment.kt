@@ -161,8 +161,7 @@ class StoriesGroupFragment @Inject constructor(
                         }
                     }
                     StoriesUiEvent.EmptyGroupPage -> {
-                        // TODO handle empty data here
-                        showToast("data group is empty")
+                        setEmptyPage(true)
                         showPageLoading(false)
                     }
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
@@ -216,6 +215,15 @@ class StoriesGroupFragment @Inject constructor(
         }
         btnStoriesFailedLoad.setOnClickListener {
             onClick()
+        }
+    }
+
+    private fun setEmptyPage(isShow: Boolean) = with(binding.layoutNoContent) {
+        root.translationZ = 1f
+        root.showWithCondition(isShow)
+        icCloseLoading.show()
+        icCloseLoading.setOnClickListener {
+            activity?.finish()
         }
     }
 

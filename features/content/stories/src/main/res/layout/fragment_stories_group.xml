@@ -20,6 +20,11 @@
         layout="@layout/layout_failed_load"
         android:visibility="gone"/>
 
+    <include
+        android:id="@+id/layout_no_content"
+        layout="@layout/layout_empty_page"
+        android:visibility="gone" />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/stories_group_view_pager"
         android:layout_width="0dp"

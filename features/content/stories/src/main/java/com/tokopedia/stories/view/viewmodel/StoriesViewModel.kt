@@ -507,6 +507,7 @@ class StoriesViewModel @AssistedInject constructor(
                         mResetValue
                     } else mResetValue,
                     isSameContent = isSameContent,
+                    status = item.status,
                 )
             }
         )
