@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -68,6 +70,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         productRecommendation: TokoNowProductRecommendationViewUiModel
     ) {
         binding.apply {
+            root.show()
             productCardCarousel.bindItems(
                 items = productRecommendation.productModels,
                 seeMoreModel = productRecommendation.seeMoreModel
@@ -79,6 +82,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     }
 
     private fun hideWidget() {
+        binding.root.hide()
         listener?.hideProductRecommendationWidget()
     }
 

@@ -35,9 +35,6 @@ open class CampaignRuleViewModelTestFixture {
     lateinit var validateCampaignCreationEligibilityUseCase: ValidateCampaignCreationEligibilityUseCase
 
     @RelaxedMockK
-    lateinit var getRollenceGradualRolloutUseCase: RolloutFeatureVariantsUseCase
-
-    @RelaxedMockK
     lateinit var tracker: ShopFlashSaleTracker
 
     @RelaxedMockK
@@ -106,8 +103,7 @@ open class CampaignRuleViewModelTestFixture {
             doSellerCampaignCreationUseCase,
             validateCampaignCreationEligibilityUseCase,
             tracker,
-            dispatchers(),
-            getRollenceGradualRolloutUseCase
+            dispatchers()
         )
 
         with(viewModel) {

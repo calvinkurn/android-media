@@ -279,8 +279,7 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
 
         renderProductCardContent(
             productCardModel = productCardModel,
-            isMergePriceSection = productCardModel.isWideContent,
-            isMergeShippingSection = productCardModel.isWideContent,
+            isWideContent = productCardModel.isWideContent,
         )
 
         productCardModel

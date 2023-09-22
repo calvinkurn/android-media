@@ -402,7 +402,8 @@ ext {
             robolectric           : "org.robolectric:robolectric:$robolectricVersion",
             orchestrator          : "androidx.test:orchestrator:$orchestratorVersion",
             workManagerTest       : "androidx.work:work-testing:$workManagerVersion",
-            leakCanaryInstrument  : "com.squareup.leakcanary:leakcanary-android-instrumentation:$leakCanaryVersion"
+            leakCanaryInstrument  : "com.squareup.leakcanary:leakcanary-android-instrumentation:$leakCanaryVersion",
+            turbine               : "app.cash.turbine:turbine:0.12.3"
     ]
 
     debugToolsDependencies = [

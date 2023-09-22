@@ -1455,7 +1455,8 @@ class ShopPageHeaderFragment :
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
-            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab
+            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
+            isEnableShopReimagined = ShopUtil.isEnableShopPageReImagined(context)
         )
     }
 

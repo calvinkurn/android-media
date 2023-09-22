@@ -295,7 +295,7 @@ class ShopPageProductListFragment :
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
             it.itemAnimator = null
             recyclerViewTopPadding = it.paddingTop
-            if(ShopUtil.isEnableShopPageReImagined()){
+            if(ShopUtil.isEnableShopPageReImagined(context)){
                 it.isNestedScrollingEnabled = true
             }
         }
@@ -309,7 +309,7 @@ class ShopPageProductListFragment :
                 val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    if(ShopUtil.isEnableShopPageReImagined()){
+                    if(ShopUtil.isEnableShopPageReImagined(context)){
                         (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
                     } else {
                         (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
@@ -622,7 +622,7 @@ class ShopPageProductListFragment :
     }
 
     private fun getSelectedTabName(): String {
-        return if(ShopUtil.isEnableShopPageReImagined()){
+        return if(ShopUtil.isEnableShopPageReImagined(context)){
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedTabName().orEmpty()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
@@ -1362,7 +1362,7 @@ class ShopPageProductListFragment :
     }
 
     private fun updateMiniCartWidget() {
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if(ShopUtil.isEnableShopPageReImagined(context)){
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.updateMiniCartWidget()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.updateMiniCartWidget()
@@ -1382,7 +1382,7 @@ class ShopPageProductListFragment :
     }
 
     private fun getSelectedFragment(): Fragment? {
-        return if(ShopUtil.isEnableShopPageReImagined()){
+        return if(ShopUtil.isEnableShopPageReImagined(context)){
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedFragmentInstance()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
@@ -1728,7 +1728,7 @@ class ShopPageProductListFragment :
     }
 
     private fun isShopWidgetAlreadyShown(): Boolean {
-        return if(ShopUtil.isEnableShopPageReImagined()){
+        return if(ShopUtil.isEnableShopPageReImagined(context)){
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.isShopWidgetAlreadyShown() ?: false
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.isShopWidgetAlreadyShown() ?: false
@@ -1950,7 +1950,7 @@ class ShopPageProductListFragment :
     }
 
     private fun hideScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if(ShopUtil.isEnableShopPageReImagined(context)){
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
@@ -1958,7 +1958,7 @@ class ShopPageProductListFragment :
     }
 
     private fun showScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined()){
+        if(ShopUtil.isEnableShopPageReImagined(context)){
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
@@ -1984,7 +1984,7 @@ class ShopPageProductListFragment :
     }
 
     private fun getRealParentFragment(): Fragment? {
-        return if (ShopUtil.isEnableShopPageReImagined()) {
+        return if (ShopUtil.isEnableShopPageReImagined(context)) {
             parentFragment?.parentFragment
         } else {
             parentFragment

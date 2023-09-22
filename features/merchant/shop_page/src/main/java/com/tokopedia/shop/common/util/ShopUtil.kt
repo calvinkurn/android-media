@@ -14,7 +14,9 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_RE_IMAGINED
@@ -175,11 +177,10 @@ object ShopUtil {
         }
     }
 
-    fun isEnableShopPageReImagined(): Boolean {
-//        return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-//            AB_TEST_SHOP_RE_IMAGINED,
-//            AB_TEST_SHOP_RE_IMAGINED
-//        ) == AB_TEST_SHOP_RE_IMAGINED
-        return true
+    fun isEnableShopPageReImagined(context: Context?): Boolean {
+        return FirebaseRemoteConfigImpl(context).getBoolean(
+            RemoteConfigKey.ENABLE_SHOP_PAGE_REIMAGINED,
+            true
+        )
     }
 }
