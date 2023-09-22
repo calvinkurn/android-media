@@ -103,6 +103,11 @@ class StoriesDetailFragment @Inject constructor(
         setupObserver()
     }
 
+    override fun onResume() {
+        super.onResume()
+        showStoriesComponent(true)
+    }
+
     private fun setupObserver() {
         setupUiStateObserver()
         setupUiEventObserver()
