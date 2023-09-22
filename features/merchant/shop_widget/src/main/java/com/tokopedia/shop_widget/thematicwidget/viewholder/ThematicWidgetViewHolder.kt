@@ -17,16 +17,16 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_widget.R
-import com.tokopedia.shop_widget.thematicwidget.adapter.ProductCardAdapter
-import com.tokopedia.shop_widget.thematicwidget.adapter.ProductCardDiffer
 import com.tokopedia.shop_widget.common.customview.DynamicHeaderCustomView
 import com.tokopedia.shop_widget.common.customview.DynamicHeaderCustomView.HeaderCustomViewListener
+import com.tokopedia.shop_widget.common.util.ColorUtil.getBackGroundColor
+import com.tokopedia.shop_widget.databinding.ItemThematicWidgetBinding
+import com.tokopedia.shop_widget.thematicwidget.adapter.ProductCardAdapter
+import com.tokopedia.shop_widget.thematicwidget.adapter.ProductCardDiffer
 import com.tokopedia.shop_widget.thematicwidget.typefactory.ProductCardTypeFactoryImpl
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSeeAllUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSpaceUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
-import com.tokopedia.shop_widget.common.util.ColorUtil.getBackGroundColor
-import com.tokopedia.shop_widget.databinding.ItemThematicWidgetBinding
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
@@ -36,7 +36,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-//need to surpress this one, since there are no pii related data defined on this class
+// need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
 class ThematicWidgetViewHolder(
     itemView: View,
@@ -54,8 +54,6 @@ class ThematicWidgetViewHolder(
         private const val IMG_PARALLAX_ALPHA_MULTIPLIER = 0.80f
         private const val RV_DEFAULT_MARGIN_TOP = 16f
         private const val RV_DEFAULT_MARGIN_BOTTOM = 12f
-        private const val RV_MARGIN_HORIZONTAL_THEMATIC_NORMAL = 6f
-        private const val RV_MARGIN_VERTICAL_THEMATIC_NORMAL = 12f
         private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 8f
         private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 10f
         private const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
@@ -83,7 +81,8 @@ class ThematicWidgetViewHolder(
                 productCardGridListener = productCardGridListenerImpl(),
                 productCardListListener = productCardListListenerImpl(),
                 productCardSeeAllListener = productCardSeeAllListenerImpl(),
-                totalProductSize = uiModel?.productList?.size.orZero()
+                totalProductSize = uiModel?.productList?.size.orZero(),
+                isOverrideWidgetTheme = isOverrideTheme
             ),
             differ = ProductCardDiffer()
         )
@@ -161,13 +160,13 @@ class ThematicWidgetViewHolder(
 
     private fun configFestivity(uiModel: ThematicWidgetUiModel) {
         dynamicHeaderCustomView?.configShopPageFestivityColor()
-        when(uiModel.name){
+        when (uiModel.name) {
             BIG_CAMPAIGN_THEMATIC -> {
                 configMarginFestivity()
                 viewParallaxBackground?.background = null
             }
             else -> {
-                configMarginThematicNormal()
+                configMarginNonFestivity()
                 setupBackgroundColor(
                     startBackGroundColor = uiModel.firstBackgroundColor,
                     endBackGroundColor = uiModel.secondBackgroundColor
@@ -177,21 +176,22 @@ class ThematicWidgetViewHolder(
     }
 
     private fun setShopReimaginedContainerMargin() {
-        if (uiModel?.isFestivity == true && uiModel?.name == BIG_CAMPAIGN_THEMATIC) return
-        containerMixLeft?.let {
-            it.clipToOutline = true
-            it.background = MethodChecker.getDrawable(
-                itemView.context,
-                R.drawable.bg_shop_reimagined_rounded
-            )
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
-                SHOP_RE_IMAGINE_MARGIN.toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd =
-                SHOP_RE_IMAGINE_MARGIN.toInt()
+        if(uiModel?.isFestivity == false) {
+            containerMixLeft?.let {
+                it.clipToOutline = true
+                it.background = MethodChecker.getDrawable(
+                    itemView.context,
+                    R.drawable.bg_shop_reimagined_rounded
+                )
+                (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
+                    SHOP_RE_IMAGINE_MARGIN.toInt()
+                (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd =
+                    SHOP_RE_IMAGINE_MARGIN.toInt()
+            }
         }
     }
 
-    private fun configMarginFestivity(){
+    private fun configMarginFestivity() {
         val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
         rvLayoutParams?.setMargins(
             rvLayoutParams.leftMargin,
@@ -210,32 +210,13 @@ class ThematicWidgetViewHolder(
         contentContainer?.layoutParams = contentContainerLayoutParams
     }
 
-    private fun configMarginNonFestivity(){
+    private fun configMarginNonFestivity() {
         val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
         rvLayoutParams?.setMargins(
             rvLayoutParams.leftMargin,
             RV_DEFAULT_MARGIN_TOP.dpToPx().toInt(),
             rvLayoutParams.rightMargin,
             RV_DEFAULT_MARGIN_BOTTOM.dpToPx().toInt()
-        )
-        rvProduct?.layoutParams = rvLayoutParams
-        val contentContainerLayoutParams = contentContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
-        contentContainerLayoutParams?.setMargins(
-            contentContainerLayoutParams.leftMargin,
-            contentContainerLayoutParams.topMargin,
-            contentContainerLayoutParams.rightMargin,
-            CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM.dpToPx().toInt()
-        )
-        contentContainer?.layoutParams = contentContainerLayoutParams
-    }
-
-    private fun configMarginThematicNormal(){
-        val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
-        rvLayoutParams?.setMargins(
-            RV_MARGIN_HORIZONTAL_THEMATIC_NORMAL.dpToPx().toInt(),
-            RV_MARGIN_VERTICAL_THEMATIC_NORMAL.dpToPx().toInt(),
-            RV_MARGIN_HORIZONTAL_THEMATIC_NORMAL.dpToPx().toInt(),
-            RV_MARGIN_VERTICAL_THEMATIC_NORMAL.dpToPx().toInt()
         )
         rvProduct?.layoutParams = rvLayoutParams
         val contentContainerLayoutParams = contentContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
@@ -352,7 +333,7 @@ class ThematicWidgetViewHolder(
 
     private fun restoreInstanceStateToLayoutManager() {
         launch {
-            val rvState =  uiModel?.productList?.firstOrNull()?.rvState
+            val rvState = uiModel?.productList?.firstOrNull()?.rvState
             if (null != rvState) {
                 rvProduct?.layoutManager?.onRestoreInstanceState(rvState)
             }
