@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
-import android.util.TypedValue
 import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewStub
@@ -46,8 +45,6 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
-
-private val smallTextSizePx by lazy { 10.toPx().toFloat() }
 private val horizontalPaddingPx by lazy { 4.toPx() }
 private val verticalPaddingPx by lazy { 3.toPx() }
 
@@ -744,13 +741,8 @@ internal fun rollenceRemoteConfig(): Lazy<RemoteConfig?> =
         }
     }
 
-internal fun Label.forceLightRed() {
-    setTextSize(TypedValue.COMPLEX_UNIT_PX, smallTextSizePx)
-    typeface = Typography.getFontType(context, true, Typography.SMALL)
+fun Label.forceLightRed() {
     setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_RN500))
-
-    setPadding(horizontalPaddingPx, verticalPaddingPx, horizontalPaddingPx, verticalPaddingPx)
-
     val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
     drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_light_RN100), PorterDuff.Mode.SRC_ATOP)
 

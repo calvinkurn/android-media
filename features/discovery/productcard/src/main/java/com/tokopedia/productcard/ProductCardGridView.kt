@@ -142,18 +142,42 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     }
     private var isUsingViewStub = false
 
-    private val progressBarStock: ProgressBarUnify? by lazy(NONE) { findViewById(R.id.progressBarStock) }
-    private val textViewStockLabel: Typography? by lazy(NONE) { findViewById(R.id.textViewStockLabel) }
-    private val productName: Typography? by lazy(NONE) { findViewById(R.id.textViewProductName) }
-    private val productPrice: Typography? by lazy(NONE) { findViewById(R.id.textViewPrice) }
-    private val labelDiscount: Label? by lazy(NONE) { findViewById(R.id.labelDiscount) }
-    private val productSlashPrice: Typography? by lazy(NONE) { findViewById(R.id.textViewSlashedPrice) }
-    private val soldCount: Typography? by lazy(NONE) { findViewById(R.id.textViewSales) }
-    private val rating: Typography? by lazy(NONE) { findViewById(R.id.salesRatingFloat) }
-    private val gimmick: Typography? by lazy(NONE) { findViewById(R.id.textViewGimmick) }
-    private val salesRatingFloatLine: View? by lazy(NONE) { findViewById(R.id.salesRatingFloatLine) }
-    private val textViewIntegrity: Typography? by lazy(NONE) { findViewById(R.id.textViewIntegrity) }
-    private val textViewFulfillment: Typography? by lazy(NONE) { findViewById(R.id.textViewFulfillment) }
+    private val progressBarStock: ProgressBarUnify? by lazy(NONE) {
+        findViewById(R.id.progressBarStock)
+    }
+    private val textViewStockLabel: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewStockLabel)
+    }
+    private val productName: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewProductName)
+    }
+    private val productPrice: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewPrice)
+    }
+    private val labelDiscount: Label? by lazy(NONE) {
+        findViewById(R.id.labelDiscount)
+    }
+    private val productSlashPrice: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewSlashedPrice)
+    }
+    private val soldCount: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewSales)
+    }
+    private val rating: Typography? by lazy(NONE) {
+        findViewById(R.id.salesRatingFloat)
+    }
+    private val gimmick: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewGimmick)
+    }
+    private val salesRatingFloatLine: View? by lazy(NONE) {
+        findViewById(R.id.salesRatingFloatLine)
+    }
+    private val textViewIntegrity: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewIntegrity)
+    }
+    private val textViewFulfillment: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewFulfillment)
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -395,9 +419,9 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     }
 
     private fun forceLightModeColor(productCard: ProductCardGridView?) {
-        val context = productCard?.context
+        val context = productCard?.context ?: return
 
-        if (productCard != null && context != null) {
+        if (productCard != null) {
             cardViewProductCard?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_white))
             productName?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
             productPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
