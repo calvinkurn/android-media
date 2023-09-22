@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.pdp.fintech.view.FintechPriceURLDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
-data class FintechWidgetDataModel(
+data class FintechWidgetV2DataModel(
     val name: String = "",
     val type: String = "",
     var productId: String = "",
@@ -23,7 +23,7 @@ data class FintechWidgetDataModel(
     override fun name() = name
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return newData is FintechWidgetDataModel &&
+        return newData is FintechWidgetV2DataModel &&
             (newData.productId == this.productId &&
                 newData.idToPriceUrlMap == this.idToPriceUrlMap &&
                 newData.isLoggedIn == this.isLoggedIn)

@@ -43,7 +43,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
 
-    private var idToPriceMap = HashMap<String, FintechPriceDataModel>()
+    private var idToPriceUrlMap = HashMap<String, FintechPriceURLDataModel>()
     private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
     private var categoryId: String? = null
     private var productID: String? = ""
@@ -71,24 +71,6 @@ class PdpFintechWidget @JvmOverloads constructor(
         initInjector()
         initView()
         initRecycler()
-
-        val v1 = Typography(context).apply {
-            text = Html.fromHtml("<span style=\"color:#212121;\">Bisa cicil mulai </span> <b>Rp474.916/bulan! <span style=\"color:#00AA5B\">Lihat Cicilan</span></b>")
-        }
-
-        val v2 = Typography(context).apply {
-            text = Html.fromHtml("<span style=\"color: #009F92\">+ Diskon 25% s.d. Rp100.000</span>")
-        }
-
-        val v3 = Typography(context).apply {
-            text = "Third Row"
-        }
-
-        val v4 = Typography(context).apply {
-            text = "Fourth Row"
-        }
-        binding.installmentIcon.setImageUrl("https://images.tokopedia.net/img/fintech/paylater/gopay-later-pdp-logo.png")
-        binding.sliderView.setItems(arrayListOf(v1, v2))
     }
 
 
@@ -121,7 +103,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun onSuccessData(it: Success<WidgetDetail>) {
         setPriceToChipMap(it.data)
         updateTestForChip(it.data)
-        getChipDataAndUpdate(idToPriceMap[productID]?.price)
+        getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
     }
 
     private fun updateTestForChip(widgetDetail: WidgetDetail) {
@@ -137,7 +119,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun setSeeMoreButton(chips: ArrayList<ChipsData>) {
         if(chips[chips.size-1].gatewayId == LIHAT_SEMU_GATEWAY_ID)
         {
-//            binding.pdpFintechWidgetSeeMore.visibility = VISIBLE
+            binding.pdpFintechWidgetSeeMore.visibility = VISIBLE
             binding.pdpFintechWidgetSeeMore.text = chips[chips.size-1].header?.parseAsHtml()
             setSeeMoreListner(chips[chips.size-1])
         }
@@ -254,8 +236,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     ) {
         try {
             if (this.productID == productID && this.logInStatus == loggedIn && priceToChip.isNotEmpty()) {
-                if (idToPriceMap[productID] != null)
-                    getChipDataAndUpdate(idToPriceMap[productID]?.price)
+                if (idToPriceUrlMap[productID] != null)
+                    getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
                 else
                     getDetailFromApi(productID, fintechWidgetViewHolder, shopID, parentId)
             } else {
@@ -281,7 +263,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         categoryId?.let {
             fintechWidgetViewModel.getWidgetData(
                 it,
-                idToPriceMap,
+                idToPriceUrlMap,
                 shopID,
                 parentId
             )
@@ -337,11 +319,11 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     fun updateIdToPriceMap(
-        productIdToPrice: HashMap<String, FintechPriceDataModel>,
+        productIdToPrice: HashMap<String, FintechPriceURLDataModel>,
         productCategoryId: String?
 
     ) {
-        idToPriceMap = productIdToPrice
+        idToPriceUrlMap = productIdToPrice
         categoryId = productCategoryId
     }
 
@@ -354,6 +336,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
 }
 
-data class FintechPriceDataModel(
-    var price: String? = null
+data class FintechPriceURLDataModel(
+    var price: String? = null,
+    var url: String
 )

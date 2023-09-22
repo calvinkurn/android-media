@@ -10,9 +10,13 @@ data class WidgetDetailV3(
 
 @Parcelize
 data class WidgetDetailV3Data(
-    @SerializedName("data") var baseData: List<WidgetDetailV3Item> = arrayListOf()
+    @SerializedName("data") var baseData: WidgetDetailV3List = WidgetDetailV3List()
 ) : Parcelable
 
+@Parcelize
+data class WidgetDetailV3List(
+    @SerializedName("list") var list: List<WidgetDetailV3Item> = arrayListOf()
+) : Parcelable
 
 @Parcelize
 data class WidgetDetailV3Item(
@@ -26,12 +30,12 @@ data class WidgetDetailV3Item(
     var messages: List<String> = arrayListOf(),
     @SerializedName("price")
     var price: Double = 0.0,
-    @SerializedName("product_id")
-    var productId: String = "",
+    @SerializedName("parent_product_id")
+    var parentProductId: String = "",
     @SerializedName("usecase_rank")
-    var usecaseRank: String = "",
+    var usecaseRank: Int = 0,
     @SerializedName("installment_amt")
-    var installmentAmt: String = "",
+    var installmentAmt: Float = 0f,
     @SerializedName("linking_status")
     var linkingStatus: String = "",
     @SerializedName("user_state")
