@@ -9,7 +9,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselProductCardListViewHolder(
     itemView: View,
-    internalListener: CarouselProductCardInternalListener
+    internalListener: CarouselProductCardInternalListener,
 ): BaseProductCardViewHolder<CarouselProductCardModel>(itemView, internalListener) {
 
     companion object {
