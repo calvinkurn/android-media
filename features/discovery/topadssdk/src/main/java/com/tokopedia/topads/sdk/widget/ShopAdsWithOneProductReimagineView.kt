@@ -10,13 +10,14 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel
 import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
-import com.tokopedia.topads.sdk.view.adapter.ShopAdsProductAdapter
+import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopCardAdsReimagine
+import com.tokopedia.topads.sdk.view.adapter.ShopAdsProductReimagineAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopAdsWithOneProductView : BaseCustomView {
+class ShopAdsWithOneProductReimagineView : BaseCustomView {
 
-    private var shopAdsProductAdapter: ShopAdsProductAdapter? = null
+    private var shopAdsProductAdapter: ShopAdsProductReimagineAdapter? = null
 
     constructor(context: Context) : super(context) {
         init()
@@ -31,10 +32,11 @@ class ShopAdsWithOneProductView : BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.topads_with_one_product_layout, this)
+        View.inflate(context, R.layout.topads_with_one_product_layout_reimagine, this)
     }
 
-    fun setShopProductModel(shopProductModel: ShopProductModel, shopAdsProductListener: ShopAdsProductListener, followButtonClickListener:FollowButtonClickListener?) {
+    fun setShopProductModel(shopProductModel: ShopProductModel, shopAdsProductListener: ShopAdsProductListener,
+                            followButtonClickListener:FollowButtonClickListener?,) {
 
         initTShopProductTitle(shopProductModel)
         initTopAdsCarouselItem(shopProductModel, shopAdsProductListener, followButtonClickListener)
@@ -43,16 +45,17 @@ class ShopAdsWithOneProductView : BaseCustomView {
 
     private fun initTopAdsCarouselItem(shopProductModel: ShopProductModel, shopAdsProductListener: ShopAdsProductListener,
                                        followButtonClickListener: FollowButtonClickListener?) {
-        shopAdsProductAdapter = ShopAdsProductAdapter(shopAdsProductListener, followButtonClickListener)
+        shopAdsProductAdapter = ShopAdsProductReimagineAdapter(shopAdsProductListener, followButtonClickListener)
         val list = findViewById<RecyclerView>(R.id.shopAdsProductRv)
         list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         list.adapter = shopAdsProductAdapter
+        list.addItemDecoratorShopCardAdsReimagine()
         shopAdsProductAdapter?.setList(shopProductModel.items)
 
     }
 
     private fun initTShopProductTitle(shopProductModel: ShopProductModel) {
-        val title  = findViewById<Typography>(R.id.shopProductTitle)
+        val title = findViewById<Typography>(R.id.shopProductTitle)
         title.text = shopProductModel.title
         title.showWithCondition(shopProductModel.title.isNotEmpty())
     }

@@ -5,26 +5,12 @@ import com.tokopedia.unifycomponents.toPx
 
 internal object ApplyItemDecorationReimagineHelper {
 
-    fun RecyclerView.setItemDecorationShopAdsReimagineSearch(isReimagine: Boolean) {
-        if (isReimagine)
-            addItemDecoratorShopAdsReimagine()
-        else
-            removeItemDecorationIfExist()
-    }
-
-    fun RecyclerView.setItemDecorationShopCardAdsReimagineSearch(isReimagine: Boolean) {
-        if (isReimagine)
-            addItemDecoratorShopCardAdsReimagine()
-        else
-            removeItemDecorationIfExist()
-    }
-
-    private fun RecyclerView.addItemDecoratorShopAdsReimagine() {
+    fun RecyclerView.addItemDecoratorShopAdsReimagine() {
         removeItemDecorationIfExist()
         addItemDecoration(ItemDecorationShopAdsReimagine(16.toPx()))
     }
 
-    private fun RecyclerView.addItemDecoratorShopCardAdsReimagine() {
+    fun RecyclerView.addItemDecoratorShopCardAdsReimagine() {
         removeItemDecorationIfExist()
         addItemDecoration(ItemDecorationShopAdsReimagine(0.toPx()))
     }

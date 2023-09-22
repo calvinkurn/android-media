@@ -13,7 +13,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 
-class BannerShopProductRevampViewHolder(
+class BannerShopProductReimagineViewHolder(
     container: View,
     private val topAdsBannerClickListener: TopAdsBannerClickListener?,
     private val impressionListener: TopAdsItemImpressionListener?,
@@ -84,6 +84,6 @@ class BannerShopProductRevampViewHolder(
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.layout_ads_banner_shop_a_product_reimagine
-        private val className = BannerShopProductRevampViewHolder::class.java.simpleName
+        private val className = BannerShopProductReimagineViewHolder::class.java.simpleName
     }
 }

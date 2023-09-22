@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.tokopedia.unifycomponents.CardUnify2
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/topAdsShopWithOneProductContainer"
     android:layout_width="@dimen/layout_5_item_width"
     android:layout_height="wrap_content"
+    app:card_type="border"
     app:cardCornerRadius="@dimen/unify_space_8"
-    app:cardElevation="@dimen/unify_space_4"
-    app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true">
+    app:cardElevation="@dimen/unify_space_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/unify_space_16">
         <ImageView
-            android:id="@+id/productImage"
+            android:id="@+id/topAdsProductImage"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
             android:contentDescription="@null"
@@ -27,18 +27,18 @@
             tools:visibility="visible" />
 
         <FrameLayout
-            android:id="@+id/containerProductLogoShop"
+            android:id="@+id/topAdsContainerProductLogoShop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/margin_3"
             android:background="@drawable/featured_shop_border_image"
-            app:layout_constraintBottom_toBottomOf="@+id/productImage"
+            app:layout_constraintBottom_toBottomOf="@+id/topAdsProductImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productImage">
+            app:layout_constraintTop_toBottomOf="@+id/topAdsProductImage">
 
             <ImageView
-                android:id="@+id/productLogoShop"
+                android:id="@+id/topAdsProductLogoShop"
                 android:layout_width="@dimen/layout_5_item_shop_logo_size"
                 android:layout_height="@dimen/layout_5_item_shop_logo_size"
                 android:contentDescription="@null"
@@ -50,16 +50,16 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/containerProductShopBadge"
+            android:id="@+id/topAdsContainerProductShopBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/containerProductLogoShop"
-            app:layout_constraintEnd_toEndOf="@+id/containerProductLogoShop"
+            app:layout_constraintBottom_toBottomOf="@+id/topAdsContainerProductLogoShop"
+            app:layout_constraintEnd_toEndOf="@+id/topAdsContainerProductLogoShop"
             android:background="@drawable/featured_shop_border_image"
             android:padding="@dimen/margin_3">
 
             <ImageView
-                android:id="@+id/productShopBadge"
+                android:id="@+id/topAdsProductShopBadge"
                 android:layout_width="@dimen/margin_18"
                 android:layout_height="@dimen/margin_18"
                 android:contentDescription="@null"
@@ -72,7 +72,7 @@
 
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/productShopTopAds"
+            android:id="@+id/topAdsProductShopTopAds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/product_card_topads"
@@ -81,8 +81,8 @@
             android:shadowColor="@color/Unify_NN950_32"
             android:shadowDy="1"
             android:shadowRadius="2"
-            app:layout_constraintBottom_toBottomOf="@id/productImage"
-            app:layout_constraintRight_toRightOf="@id/productImage"
+            app:layout_constraintBottom_toBottomOf="@id/topAdsProductImage"
+            app:layout_constraintRight_toRightOf="@id/topAdsProductImage"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:visibility="visible"/>
@@ -91,7 +91,7 @@
             app:typographyType="heading_6"
             app:typographyWeight="bold"
             android:textColor="@color/Unify_NN950_96"
-            android:id="@+id/productShopName"
+            android:id="@+id/topAdsProductShopName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -104,25 +104,25 @@
             android:layout_marginTop="@dimen/unify_space_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/containerProductLogoShop"
+            app:layout_constraintTop_toBottomOf="@+id/topAdsContainerProductLogoShop"
             tools:text="Shop Name"
             tools:visibility="visible" />
 
         <LinearLayout
-            android:id="@+id/shopProductReviews"
+            android:id="@+id/topAdsShopProductReviews"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:orientation="horizontal"
             android:visibility="gone"
             tools:visibility="visible"
-            app:layout_constraintEnd_toStartOf="@+id/reviewCount"
+            app:layout_constraintEnd_toStartOf="@+id/topAdsReviewCount"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productShopName" >
+            app:layout_constraintTop_toBottomOf="@+id/topAdsProductShopName" >
 
             <ImageView
-                android:id="@+id/shopProductReviews1"
+                android:id="@+id/topAdsShopProductReviews1"
                 android:layout_width="@dimen/rating_star_size"
                 android:layout_height="@dimen/rating_star_size"
                 android:adjustViewBounds="true"
@@ -132,7 +132,7 @@
                 tools:src="@drawable/product_card_ic_rating_active" />
 
             <ImageView
-                android:id="@+id/shopProductReviews2"
+                android:id="@+id/topAdsShopProductReviews2"
                 android:layout_width="@dimen/rating_star_size"
                 android:layout_height="@dimen/rating_star_size"
                 android:adjustViewBounds="true"
@@ -142,7 +142,7 @@
                 tools:src="@drawable/product_card_ic_rating_active" />
 
             <ImageView
-                android:id="@+id/shopProductReviews3"
+                android:id="@+id/topAdsShopProductReviews3"
                 android:layout_width="@dimen/rating_star_size"
                 android:layout_height="@dimen/rating_star_size"
                 android:adjustViewBounds="true"
@@ -152,7 +152,7 @@
                 tools:src="@drawable/product_card_ic_rating_active" />
 
             <ImageView
-                android:id="@+id/shopProductReviews4"
+                android:id="@+id/topAdsShopProductReviews4"
                 android:layout_width="@dimen/rating_star_size"
                 android:layout_height="@dimen/rating_star_size"
                 android:adjustViewBounds="true"
@@ -162,7 +162,7 @@
                 tools:src="@drawable/product_card_ic_rating_active" />
 
             <ImageView
-                android:id="@+id/shopProductReviews5"
+                android:id="@+id/topAdsShopProductReviews5"
                 android:layout_width="@dimen/rating_star_size"
                 android:layout_height="@dimen/rating_star_size"
                 android:adjustViewBounds="true"
@@ -173,7 +173,7 @@
         </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/reviewCount"
+            android:id="@+id/topAdsReviewCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
@@ -181,14 +181,14 @@
             android:textColor="@color/Unify_NN500"
             app:typographyType="small"
             tools:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/shopProductReviews"
+            app:layout_constraintBottom_toBottomOf="@+id/topAdsShopProductReviews"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/shopProductReviews"
-            app:layout_constraintTop_toTopOf="@+id/shopProductReviews"
+            app:layout_constraintStart_toEndOf="@+id/topAdsShopProductReviews"
+            app:layout_constraintTop_toTopOf="@+id/topAdsShopProductReviews"
             tools:text="(30)" />
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/locationIcon"
+            android:id="@+id/topAdsLocationIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl2"
@@ -197,14 +197,14 @@
             tools:visibility="visible"
             android:contentDescription="@null"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintBottom_toBottomOf="@+id/locationName"
-            app:layout_constraintEnd_toStartOf="@+id/locationName"
+            app:layout_constraintBottom_toBottomOf="@+id/topAdsLocationName"
+            app:layout_constraintEnd_toStartOf="@+id/topAdsLocationName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/locationName"
+            app:layout_constraintTop_toTopOf="@+id/topAdsLocationName"
             app:srcCompat="@drawable/ic_location_grey"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/locationName"
+            android:id="@+id/topAdsLocationName"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
@@ -219,11 +219,11 @@
             tools:text="Surabaya asdada asdasd"
             app:layout_goneMarginTop="@dimen/spacing_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/locationIcon"
-            app:layout_constraintTop_toBottomOf="@id/productShopName" />
+            app:layout_constraintStart_toEndOf="@id/topAdsLocationIcon"
+            app:layout_constraintTop_toBottomOf="@id/topAdsProductShopName" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/buttonFollow"
+            android:id="@+id/topAdsButtonFollow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/unify_space_32"
             android:layout_marginLeft="@dimen/unify_space_8"
@@ -233,7 +233,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/locationName"
+            app:layout_constraintTop_toBottomOf="@id/topAdsLocationName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
@@ -242,4 +242,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify2>

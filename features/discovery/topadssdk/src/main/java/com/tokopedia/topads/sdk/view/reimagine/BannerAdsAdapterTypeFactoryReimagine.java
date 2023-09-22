@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.view.adapter.factory;
+package com.tokopedia.topads.sdk.view.reimagine;
 
 import android.view.ViewGroup;
 
@@ -7,9 +7,12 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
+import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerProductShimmerViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductReimagineViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreReimagineViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerUiModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel;
@@ -20,18 +23,18 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMore
  * Created by errysuprayogi on 4/16/18.
  */
 
-public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
+public class BannerAdsAdapterTypeFactoryReimagine implements BannerAdsTypeFactory {
 
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener itemImpressionListener;
-    private final TopAdsAddToCartClickListener topAdsAddToCartClickListener;
+    private Boolean hasMultilineProductName;
 
-    public BannerAdsAdapterTypeFactory(TopAdsBannerClickListener topAdsBannerClickListener,
-                                       TopAdsItemImpressionListener itemImpressionListener,
-                                       TopAdsAddToCartClickListener topAdsAddToCartClickListener) {
+    public BannerAdsAdapterTypeFactoryReimagine(TopAdsBannerClickListener topAdsBannerClickListener,
+                                                TopAdsItemImpressionListener itemImpressionListener,
+                                                Boolean hasMultilineProductName) {
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         this.itemImpressionListener = itemImpressionListener;
-        this.topAdsAddToCartClickListener = topAdsAddToCartClickListener;
+        this.hasMultilineProductName = hasMultilineProductName;
     }
 
     @Override
@@ -41,12 +44,12 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
 
     @Override
     public int type(BannerShopProductUiModel viewModel) {
-        return BannerShopProductViewHolder.LAYOUT;
+            return BannerShopProductReimagineViewHolder.LAYOUT;
     }
 
     @Override
     public int type(BannerShopViewMoreUiModel viewModel) {
-        return BannerShowMoreViewHolder.LAYOUT;
+            return BannerShowMoreReimagineViewHolder.LAYOUT;
     }
 
     @Override
@@ -59,10 +62,10 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
         AbstractViewHolder holder;
         if (viewType == BannerShopViewHolder.LAYOUT) {
             holder = new BannerShopViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
-        } else if (viewType == BannerShopProductViewHolder.LAYOUT) {
-            holder = new BannerShopProductViewHolder(view, topAdsBannerClickListener, itemImpressionListener, topAdsAddToCartClickListener);
-        } else if (viewType == BannerShowMoreViewHolder.LAYOUT) {
-            holder = new BannerShowMoreViewHolder(view, topAdsBannerClickListener);
+        }  else if(viewType == BannerShopProductReimagineViewHolder.LAYOUT) {
+            holder = new BannerShopProductReimagineViewHolder(view, topAdsBannerClickListener, itemImpressionListener, hasMultilineProductName);
+        } else if(viewType == BannerShowMoreReimagineViewHolder.LAYOUT){
+            holder = new BannerShowMoreReimagineViewHolder(view, topAdsBannerClickListener);
         } else if (viewType == BannerProductShimmerViewHolder.Companion.getLAYOUT()) {
             holder = new BannerProductShimmerViewHolder(view);
         } else {

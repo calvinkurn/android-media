@@ -392,7 +392,7 @@ class ShopCardView : BaseCustomView {
 
     fun getRadius() = shopWidgetCardViewShopCard?.radius ?: 0f
 
-    fun setCardUnifyStyle(isReimagine: Boolean) {
+    fun setCardUnifyStyle(isReimagine: Boolean = false) {
         if (isReimagine) {
             renderShopCardReimagine()
         } else {
