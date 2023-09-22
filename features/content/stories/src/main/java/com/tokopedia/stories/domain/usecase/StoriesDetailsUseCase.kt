@@ -33,6 +33,7 @@ class StoriesDetailsUseCase @Inject constructor(
                stories{
                     id
                     slug
+                    status
                     category
                     author {
                       id

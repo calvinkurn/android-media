@@ -102,6 +102,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                         activityTracker = stories.meta.activityTracker,
                         templateTracker = stories.meta.templateTracker,
                     ),
+                    status = StoriesDetailItem.StoryStatus.getByValue(stories.status),
                 )
             }
         )
