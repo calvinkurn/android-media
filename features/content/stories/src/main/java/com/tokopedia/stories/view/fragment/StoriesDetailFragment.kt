@@ -166,7 +166,8 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state ||
             state == StoriesDetail() ||
-            state.selectedGroupId != groupId
+            state.selectedGroupId != groupId ||
+            state.selectedDetailPosition < 0
         ) return
 
         storiesDetailsTimer(state)

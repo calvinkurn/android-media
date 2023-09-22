@@ -177,7 +177,10 @@ class StoriesGroupFragment @Inject constructor(
         prevState: StoriesUiModel?,
         state: StoriesUiModel
     ) {
-        if (prevState == state || pagerAdapter.getCurrentData().size == state.groupItems.size) return
+        if (prevState == state ||
+            pagerAdapter.getCurrentData().size == state.groupItems.size ||
+            state.selectedGroupPosition < 0
+        ) return
 
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
