@@ -50,7 +50,7 @@ class ShortsUploadManager @Inject constructor(
 
     private var currentProgress = 0
 
-    private lateinit var uploadData: CreationUploadData
+    private lateinit var uploadData: CreationUploadData.Shorts
 
     private var mListener: CreationUploadManagerListener? = null
 
@@ -91,6 +91,8 @@ class ShortsUploadManager @Inject constructor(
         uploadData: CreationUploadData,
         listener: CreationUploadManagerListener
     ): Boolean {
+        if (uploadData !is CreationUploadData.Shorts) return false
+
         this.uploadData = uploadData
         this.mListener = listener
 
@@ -159,7 +161,7 @@ class ShortsUploadManager @Inject constructor(
     }
 
     private suspend fun uploadFirstSnapshotAsCover(
-        uploadData: CreationUploadData
+        uploadData: CreationUploadData.Shorts
     ) {
         val bitmap = snapshotHelper.snapVideo(appContext, uploadData.firstMediaUri)
             ?: throw Exception("Gagal upload cover")
@@ -180,7 +182,7 @@ class ShortsUploadManager @Inject constructor(
     }
 
     private suspend fun addMedia(
-        uploadData: CreationUploadData,
+        uploadData: CreationUploadData.Shorts,
         mediaUrl: String
     ): String {
         val request = addMediaUseCase.getShortsRequest(
@@ -198,7 +200,7 @@ class ShortsUploadManager @Inject constructor(
     }
 
     private suspend fun updateChannelStatus(
-        uploadData: CreationUploadData,
+        uploadData: CreationUploadData.Shorts,
         status: PlayChannelStatusType
     ) {
         updateChannelUseCase.apply {
@@ -218,7 +220,7 @@ class ShortsUploadManager @Inject constructor(
 
     private suspend fun updateChannelStatusWithMedia(
         activeMediaId: String,
-        uploadData: CreationUploadData,
+        uploadData: CreationUploadData.Shorts,
         status: PlayChannelStatusType
     ) {
         updateChannelUseCase.apply {

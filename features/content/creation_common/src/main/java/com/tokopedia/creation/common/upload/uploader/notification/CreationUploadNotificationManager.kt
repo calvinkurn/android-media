@@ -96,7 +96,7 @@ abstract class CreationUploadNotificationManager(
             try {
                 val bitmap = Glide.with(context)
                     .asBitmap()
-                    .load(uploadData.coverUri.ifEmpty { uploadData.firstMediaUri })
+                    .load(uploadData.notificationCover)
                     .submit(COVER_PREVIEW_SIZE, COVER_PREVIEW_SIZE)
                     .get()
 

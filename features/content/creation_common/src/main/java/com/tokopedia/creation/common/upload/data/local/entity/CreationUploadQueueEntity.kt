@@ -29,6 +29,18 @@ data class CreationUploadQueueEntity(
     @ColumnInfo(name = "timestamp")
     val timestamp: Long = 0L,
 
+    @ColumnInfo(name = "cover_uri")
+    val coverUri: String = "",
+
+    @ColumnInfo(name = "source_id")
+    val sourceId: String = "",
+
+    @ColumnInfo(name = "author_id")
+    val authorId: String = "",
+
+    @ColumnInfo(name = "author_type")
+    val authorType: String = "",
+
     @ColumnInfo(name = "data")
     val data: String = "",
 ) {
@@ -41,34 +53,10 @@ data class CreationUploadQueueEntity(
     data class Shorts(
         @SerializedName("media_uri_list")
         val mediaUriList: List<String> = emptyList(),
-
-        @SerializedName("cover_uri")
-        val coverUri: String = "",
-
-        @SerializedName("source_id")
-        val sourceId: String = "",
-
-        @SerializedName("author_id")
-        val authorId: String = "",
-
-        @SerializedName("author_type")
-        val authorType: String = "",
     )
 
     data class Stories(
         @SerializedName("media_uri_list")
         val mediaUriList: List<String> = emptyList(),
-
-        @SerializedName("cover_uri")
-        val coverUri: String = "",
-
-        @SerializedName("source_id")
-        val sourceId: String = "",
-
-        @SerializedName("author_id")
-        val authorId: String = "",
-
-        @SerializedName("author_type")
-        val authorType: String = "",
     )
 }
