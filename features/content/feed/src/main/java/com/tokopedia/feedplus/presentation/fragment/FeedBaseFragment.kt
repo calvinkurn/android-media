@@ -554,8 +554,7 @@ class FeedBaseFragment :
 
                                 override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                     launch {
-                                        /** TODO: deleteTopQueue here */
-//                                        uploadReceiver.releaseCurrent()
+                                        creationUploader.deleteTopQueue()
                                         binding.uploadView.hide()
                                     }
 
