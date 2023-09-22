@@ -16,6 +16,7 @@ import com.tokopedia.productcard.compact.productcardcarousel.helper.ProductCardC
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardDiffer
@@ -48,6 +49,7 @@ class HomeLeftCarouselAtcViewHolder(
     }
 
     private val binding: ItemTokopedianowHomeLeftCarouselAtcBinding? by viewBinding()
+    private var realtimeRecommendationView: RealTimeRecommendationCarouselView? = null
 
     private val adapter by lazy {
         HomeLeftCarouselAtcProductCardAdapter(
@@ -171,10 +173,19 @@ class HomeLeftCarouselAtcViewHolder(
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRealTimeRecommendation(
         element: HomeLeftCarouselAtcUiModel
     ) {
-        realTimeRecommendationCarousel.apply {
-            listener = rtrListener
-            analytics = rtrAnalytics
-            bind(element.realTimeRecom)
+        if(element.realTimeRecom.productList.isNotEmpty()) {
+            if(realtimeRecommendationView == null) {
+                realTimeRecommendationViewStub
+                    .layoutResource = R.layout.layout_tokopedianow_real_time_recommendation_carousel
+                val view = realTimeRecommendationViewStub.inflate()
+                realtimeRecommendationView = view.findViewById(R.id.real_time_recommendation_carousel)
+            }
+
+            realtimeRecommendationView?.apply {
+                listener = rtrListener
+                analytics = rtrAnalytics
+                bind(element.realTimeRecom)
+            }
         }
     }
 
