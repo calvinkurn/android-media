@@ -172,8 +172,8 @@
     <string name="onekyc_consent_accountlink_point2">Nggak perlu foto selfie lagi</string>
     <string name="onekyc_consent_accountlink_point3">Prosesnya cepat dan gampang</string>
     <string name="onekyc_consent_supervised_title">Diawasi oleh Bank Indonesia</string>
-    <string name="onekyc_consent_supervised_description">Data pribadimu dijamin aman dan digunakan hanya untuk verifikasi.</string>
-    <string name="onekyc_consent_link_gopayplus">Sambungin ke GoPay Plus</string>
+    <string name="onekyc_consent_supervised_description">Infomu dirahasiakan dan akan kami gunakan hanya untuk verifikasi.</string>
+    <string name="onekyc_consent_link_gopayplus">Hubungkan ke GoPay Plus</string>
     <string name="onekyc_consent_help">Bantuan</string>
     <string name="onekyc_consent_terms_and_policy">Dengan melanjutkan, kamu menyetujui Kebijakan Privasi serta Syarat &amp; Ketentuan.</string>
     <string name="onekyc_consent_terms_link">Syarat &amp; Ketentuan</string>
