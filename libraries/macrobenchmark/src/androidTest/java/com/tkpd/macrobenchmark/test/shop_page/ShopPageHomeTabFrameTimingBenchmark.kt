@@ -27,8 +27,8 @@ class ShopPageHomeTabFrameTimingBenchmark : BaseFrameTimingBenchmark() {
 
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicFlingInteraction(
-            MacroIntent.SearchResult.PACKAGE_NAME,
-            MacroIntent.SearchResult.RV_RESOURCE_ID,
+            MacroIntent.ShopPage.PACKAGE_NAME,
+            MacroIntent.ShopPage.RV_HOME_TAB_RESOURCE_ID,
             flingSpeed = 3000
         )
     }

@@ -27,8 +27,8 @@ class TokoNowHomeFrameTimingBenchmark : BaseFrameTimingBenchmark() {
 
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicFlingInteraction(
-            MacroIntent.SearchResult.PACKAGE_NAME,
-            MacroIntent.SearchResult.RV_RESOURCE_ID,
+            MacroIntent.TokopediaNow.PACKAGE_NAME,
+            MacroIntent.TokopediaNow.RV_RESOURCE_ID,
             flingSpeed = 3000
         )
     }

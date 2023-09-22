@@ -27,8 +27,8 @@ class OfficialStoreFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun pageInteractionTest(currentIteration: Int) {
         Thread.sleep(5000)
         MacroInteration.basicFlingInteraction(
-            MacroIntent.SearchResult.PACKAGE_NAME,
-            MacroIntent.SearchResult.RV_RESOURCE_ID,
+            MacroIntent.TKPD_PACKAGE_NAME,
+            MacroIntent.OfficialStore.RV_RESOURCE_ID,
             flingSpeed = 3000
         )
     }
