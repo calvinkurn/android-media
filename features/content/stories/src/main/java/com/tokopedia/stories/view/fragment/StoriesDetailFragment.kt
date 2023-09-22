@@ -324,7 +324,7 @@ class StoriesDetailFragment @Inject constructor(
             }
 
             root.setOnClickListener {
-                goTo(state.author.appLink)
+                viewModelAction(StoriesUiAction.Navigate(state.author.appLink))
             }
         }
     }
