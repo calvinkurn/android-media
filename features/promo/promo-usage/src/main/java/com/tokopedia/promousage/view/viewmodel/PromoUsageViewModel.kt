@@ -1874,5 +1874,11 @@ internal fun List<DelegateAdapterItem>.getSelectedPromoCodes(): List<String> {
 internal fun List<DelegateAdapterItem>.sumSelectedPromoBenefit(): Double {
     return filterIsInstance<PromoItem>()
         .filter { it.state is PromoItemState.Selected }
-        .sumOf { it.benefitAmount }
+        .sumOf {
+            if (it.useSecondaryPromo) {
+                it.secondaryPromo.benefitAmount
+            } else {
+                it.benefitAmount
+            }
+        }
 }
