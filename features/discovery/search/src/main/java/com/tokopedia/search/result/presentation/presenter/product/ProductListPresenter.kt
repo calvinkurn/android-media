@@ -70,6 +70,7 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
+import com.tokopedia.search.result.product.requestparamgenerator.LastClickedProductIdProviderImpl
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
@@ -158,7 +159,8 @@ class ProductListPresenter @Inject constructor(
     private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
     private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
-    ): BaseDaggerPresenter<ProductListSectionContract.View>(),
+    private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
+): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
@@ -173,7 +175,7 @@ class ProductListPresenter @Inject constructor(
     InspirationCarouselPresenter by inspirationCarouselPresenter,
     ResponseCodeProvider by responseCodeImpl,
     InspirationKeywordPresenter by inspirationKeywordPresenter,
-    InspirationProductPresenter by inspirationProductItemPresenter{
+    InspirationProductPresenter by inspirationProductItemPresenter {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -186,7 +188,6 @@ class ProductListPresenter @Inject constructor(
         private const val RESPONSE_CODE_RELATED = "3"
         private const val RESPONSE_CODE_SUGGESTION = "6"
         private const val REQUEST_TIMEOUT_RESPONSE_CODE = "15"
-        private const val REQUEST_PARAMS_LAST_CLICK = "last_click"
     }
 
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
@@ -223,8 +224,6 @@ class ProductListPresenter @Inject constructor(
             ""
         }
     }
-    private var productLastClicked= ""
-
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -290,7 +289,6 @@ class ProductListPresenter @Inject constructor(
             searchParameter,
             chooseAddressDelegate.getChooseAddressParams(),
         )
-        requestParams.addParamsLastClickProductIfNotEmpty()
         requestParamsGenerator.enrichWithRelatedSearchParam(requestParams)
         enrichWithAdditionalParams(requestParams)
 
@@ -349,7 +347,6 @@ class ProductListPresenter @Inject constructor(
         val productDataView = createProductDataView(searchProductModel)
 
         additionalParams = productDataView.additionalParams
-        productLastClicked = ""
 
         if (productDataView.productList.isEmpty()) {
             postProcessingFilter.checkPostProcessingFilter(
@@ -512,6 +509,7 @@ class ProductListPresenter @Inject constructor(
         externalReference = searchParameter.getValueString(SearchApiConst.SRP_EXT_REF)
         dimension90 = Dimension90Utils.getDimension90(searchParameter)
         additionalParams = ""
+        lastClickProductIdProvider.lastClickedProductId = ""
 
         val requestParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
@@ -1340,10 +1338,8 @@ class ProductListPresenter @Inject constructor(
         )
 
         view.routeToProductDetail(item, adapterPosition)
-    }
 
-    override fun trackLastProductClicked(product: ProductItemDataView?) {
-        productLastClicked = product?.productID.orEmpty()
+        lastClickProductIdProvider.lastClickedProductId = item.productID
     }
 
     override fun trackProductClick(item: ProductItemDataView) {
@@ -1492,10 +1488,5 @@ class ProductListPresenter @Inject constructor(
     private fun unsubscribeCompositeSubscription() {
         compositeSubscription?.unsubscribe()
         compositeSubscription = null
-    }
-
-    private fun RequestParams.addParamsLastClickProductIfNotEmpty() {
-        if(productLastClicked.isNotEmpty())
-            this.putString(REQUEST_PARAMS_LAST_CLICK, productLastClicked)
     }
 }

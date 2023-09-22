@@ -6,6 +6,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
@@ -15,109 +16,26 @@ import io.mockk.slot
 import org.junit.Test
 import rx.Subscriber
 
-private const val searchProductThirdPageJSON = "searchproduct/loaddata/third-page.json"
-private const val REQUEST_PARAMS_LAST_CLICK = "last_click"
-
 internal class SearchProductLoadMoreTrackLastProductTest: ProductListPresenterTestFixtures() {
 
     private val requestParamsSlot = slot<RequestParams>()
     private val visitableListSlot = slot<List<Visitable<*>>>()
 
     @Test
-    fun `Load More Data Success with last clicked param from already Load Data`() {
-        val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
-
+    fun `Load More params will have last clicked product id from regular product card`() {
         `Given View already load data`(searchProductFirstPageJSON)
-        val productItemViewModel = getProductItemFromVisitableList(2)
-        `Given product click`(productItemViewModel)
-        `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
 
+        val productPosition = 2
+        val productItem = getProductItemFromVisitableList(productPosition)
+        `Given a product is clicked`(productItem, productPosition)
+        `Given Search Product Load More API will be successful`()
 
         val loadMoreSearchParameter = createLoadMoreSearchParameter()
-        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
+        `When Load More Data`(loadMoreSearchParameter)
 
-        `Then verify load more use case request params with last clicked correct id`(productItemViewModel)
-    }
-
-    @Test
-    fun `Load More Data Success without last clicked param from already Load Data`() {
-        val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
-
-        `Given View already load data`(searchProductFirstPageJSON)
-        `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
-
-        val loadMoreSearchParameter = createLoadMoreSearchParameter()
-        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
-
-        `Then verify load more use case request params without last clicked params`()
-    }
-
-    @Test
-    fun `Load More for third page should send last clicked product from second page`() {
-        val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
-        val searchProductModelThirdPage = searchProductThirdPageJSON.jsonToObject<SearchProductModel>()
-
-        `Given View already load data`(searchProductFirstPageJSON)
-        `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
-
-        every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelSecondPage)
-        } andThenAnswer {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelThirdPage)
-        }
-
-        `Given Search Load Second Page`()
-        val productItemViewModelClicked = getProductItemFromVisitableList(10)
-        `When Product Card Clicked`(searchProductModelSecondPage, productItemViewModelClicked)
-        `When Product List Presenter Load More Data`(createLoadMoreSearchParameter())
-
-        `Then verify load more use case request params with last clicked correct id`(productItemViewModelClicked)
-    }
-
-    @Test
-    fun `Load More for third page should not send last clicked product from first page product clicked`() {
-        val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
-        val searchProductModelThirdPage = searchProductThirdPageJSON.jsonToObject<SearchProductModel>()
-
-        `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
-
-        every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelSecondPage)
-        } andThenAnswer {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelThirdPage)
-        }
-
-        `Given First Page Load and Clicked Product Card`()
-        `Given Search Load Second Page`()
-        `When Product List Presenter Load More Data`(createLoadMoreSearchParameter())
-
-        `Then verify load more use case request params without last clicked params`()
-    }
-
-    private fun `Given Search Load Second Page`(){
-        val loadMoreSearchParameter = createLoadMoreSearchParameter()
-        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
-    }
-
-    private fun `Given First Page Load and Clicked Product Card`() {
-        `Given View already load data`(searchProductFirstPageJSON)
-        val productItemViewModel = getProductItemFromVisitableList(2)
-        `Given product click`(productItemViewModel)
-    }
-
-    private fun `When Product Card Clicked`(searchProductModel: SearchProductModel,  productItemViewModel: ProductItemDataView) {
-        `Given product click`(productItemViewModel)
-        `Given Search Product Load More API will return SearchProductModel`(searchProductModel)
-    }
-
-    private fun getProductItemFromVisitableList(position: Int): ProductItemDataView {
-        val visitableList = visitableListSlot.captured
-
-        return visitableList[position] as ProductItemDataView
-    }
-
-    private fun `Given product click`(productItem : ProductItemDataView) {
-        productListPresenter.trackLastProductClicked(productItem)
+        `Then verify load more use case request params with last clicked correct id`(
+            productItem.productID
+        )
     }
 
     private fun `Given View already load data`(responseJSON: String) {
@@ -125,6 +43,12 @@ internal class SearchProductLoadMoreTrackLastProductTest: ProductListPresenterTe
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given className from view`()
         `Given view already load data`()
+    }
+
+    private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
+        every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
+        }
     }
 
     private fun `Given className from view`() {
@@ -143,10 +67,18 @@ internal class SearchProductLoadMoreTrackLastProductTest: ProductListPresenterTe
         productListPresenter.loadData(searchParameter)
     }
 
-    private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
-        every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
-        }
+    private fun getProductItemFromVisitableList(position: Int): ProductItemDataView {
+        val visitableList = visitableListSlot.captured
+
+        return visitableList[position] as ProductItemDataView
+    }
+
+    private fun `Given a product is clicked`(productItem : ProductItemDataView, position: Int) {
+        productListPresenter.onProductClick(productItem, position)
+    }
+
+    private fun `Given Search Product Load More API will be successful`() {
+        every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) } just runs
     }
 
     private fun createLoadMoreSearchParameter() : Map<String, Any> = mutableMapOf<String, Any>().also {
@@ -156,50 +88,42 @@ internal class SearchProductLoadMoreTrackLastProductTest: ProductListPresenterTe
         it[SearchApiConst.USER_ID] = productListPresenter.userId
     }
 
-    private fun `When Product List Presenter Load More Data`(searchParameter: Map<String, Any>) {
+    private fun `When Load More Data`(searchParameter: Map<String, Any>) {
         productListPresenter.loadMoreData(searchParameter)
     }
 
-    private fun `Then verify load more use case request params with last clicked correct id`(clickedProduct: ProductItemDataView) {
+    private fun `Then verify load more use case request params with last clicked correct id`(
+        expectedProductId: String,
+    ) {
         val requestParams = requestParamsSlot.captured
 
         val params = requestParams.getSearchProductParams()
 
-        verifyRequestContainsLastClickedProductId(params, clickedProduct.productID)
+        params[SearchApiConst.LAST_CLICK] shouldBe expectedProductId
     }
 
-    private fun `Then verify load more use case request params with last clicked`() {
-        val requestParams = requestParamsSlot.captured
+    @Test
+    fun `load more params will have last clicked product id from seamless carousel`() {
+        val seamlessInspirationCarouselJSON =
+            "searchproduct/seamlessinspiration/seamless-inspiration-product.json"
+        `Given View already load data`(seamlessInspirationCarouselJSON)
 
-        val params = requestParams.getSearchProductParams()
+        val visitableList = visitableListSlot.captured
+        val targetProduct = visitableList
+            .find { it is InspirationProductItemDataView } as InspirationProductItemDataView
 
-        verifyRequestContainsLastClickedProduct(params)
+        `Given seamless inspiration carousel product is clicked`(targetProduct)
+        `Given Search Product Load More API will be successful`()
+
+        val loadMoreSearchParameter = createLoadMoreSearchParameter()
+        `When Load More Data`(loadMoreSearchParameter)
+
+        `Then verify load more use case request params with last clicked correct id`(
+            targetProduct.id
+        )
     }
 
-    private fun `Then verify load more use case request params without last clicked params`() {
-        val requestParams = requestParamsSlot.captured
-
-        val params = requestParams.getSearchProductParams()
-
-        verifyRequestNotContainsLastClickedProduct(params)
+    private fun `Given seamless inspiration carousel product is clicked`(targetProduct: InspirationProductItemDataView) {
+        productListPresenter.onInspirationProductItemClick(targetProduct)
     }
-
-    private fun `Given Search Product Load More API will return SearchProductModel`(searchProductModel: SearchProductModel) {
-        every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
-        }
-    }
-
-    private fun verifyRequestContainsLastClickedProductId(params: Map<String, Any>, clickProductId: String) {
-        params[REQUEST_PARAMS_LAST_CLICK] shouldBe clickProductId
-    }
-
-    private fun verifyRequestNotContainsLastClickedProduct(params: Map<String, Any>) {
-        params.containsKey(REQUEST_PARAMS_LAST_CLICK) shouldBe false
-    }
-
-    private fun verifyRequestContainsLastClickedProduct(params: Map<String, Any>) {
-        params.containsKey(REQUEST_PARAMS_LAST_CLICK) shouldBe true
-    }
-
 }
