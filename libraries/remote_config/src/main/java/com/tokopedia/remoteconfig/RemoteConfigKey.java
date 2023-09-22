@@ -263,4 +263,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_BANNER_ENVIRONMENT = "android_enable_banner_environment";
 
     public static final String FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_fintech_enable_additional_device_info";
+
+    public static final String ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA = "android_enable_new_fingerprint_header_data";
+
+    public static final String PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_payment_enable_additional_device_info";
 }
