@@ -45,9 +45,6 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
-private val horizontalPaddingPx by lazy { 4.toPx() }
-private val verticalPaddingPx by lazy { 3.toPx() }
-
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
 
