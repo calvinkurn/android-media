@@ -305,7 +305,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
                 medalItem.progression.toString()
             )
         }
-        requireContext().launchLink(
+        context?.launchLink(
             appLink = medalItem.cta?.appLink,
             webLink = medalItem.cta?.deepLink
         )

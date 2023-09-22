@@ -766,7 +766,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
-                    requireContext().launchLink(appLink, url)
+                    context?.launchLink(appLink, url)
                     activity?.finish()
                 }
             })
