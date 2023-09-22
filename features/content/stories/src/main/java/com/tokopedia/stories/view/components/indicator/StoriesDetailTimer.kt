@@ -71,14 +71,14 @@ private fun StoriesDetailTimerContent(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 16.dp)
                 .background(Color.Transparent)
-                .height(4.dp),
+                .height(2.dp),
         ) {
             for (index in 0 until count) {
                 Row(
                     modifier = Modifier
-                        .height(4.dp)
+                        .height(2.dp)
                         .clip(RoundedCornerShape(60))
                         .weight(1f)
                         .background(NestTheme.colors.NN._100.copy(alpha = 0.4f))
@@ -95,7 +95,7 @@ private fun StoriesDetailTimerContent(
                             },
                     )
                 }
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(2.dp))
             }
         }
     }
