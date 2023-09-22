@@ -105,7 +105,7 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
             currentUserId == it
         }
 
-        return appVersionWhitelisted && userIdWhitelisted
+        return appVersionWhitelisted || userIdWhitelisted
     }
 
     override fun initialize() {
