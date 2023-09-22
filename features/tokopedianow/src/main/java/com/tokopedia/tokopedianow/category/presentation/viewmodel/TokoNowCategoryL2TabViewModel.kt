@@ -526,15 +526,17 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     }
 
     private fun getCategoryMenuDataAsync(): Deferred<Unit?> {
+        val warehouseId = addressData.getWarehouseId().toString()
+
         return asyncCatchError(block = {
             val warehouses = AddressMapper.mapToWarehousesData(addressData.getAddressData())
             val response = getCategoryListUseCase.execute(warehouses,
                 CATEGORY_LEVEL_DEPTH
             )
-            visitableList.mapCategoryMenuData(response.data)
+            visitableList.mapCategoryMenuData(response.data, warehouseId)
             updateVisitableListLiveData()
         }) {
-            visitableList.mapCategoryMenuData(emptyList())
+            visitableList.mapCategoryMenuData(emptyList(), warehouseId)
             updateVisitableListLiveData()
         }
     }
