@@ -140,8 +140,6 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         )
 
         binding?.consentGotoKycNonProgressive?.load(
-            lifecycleOwner = viewLifecycleOwner,
-            viewModelStoreOwner = this,
             consentCollectionParam = consentParam
         )
 

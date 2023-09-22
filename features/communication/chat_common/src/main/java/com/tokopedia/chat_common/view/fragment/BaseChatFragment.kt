@@ -216,7 +216,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         viewState?.onShowStartTyping()
     }
 
-    override fun onReceiveMessageEvent(visitable: Visitable<*>) {}
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        // Do not remove, this code is used by chat bot
+        viewState?.removeDummyIfExist(visitable)
+        viewState?.onReceiveMessageEvent(visitable)
+    }
 
     override fun onReceiveStopTypingEvent() {
         viewState?.onShowStopTyping()

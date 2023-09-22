@@ -229,9 +229,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
                 KYCConstant.consentCollectionIdProduction
             }
         )
-        viewBinding?.layoutKycBenefit?.userConsentKyc?.load(
-            viewLifecycleOwner, this, consentParam
-        )
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.load(consentParam)
 
         viewBinding?.layoutKycBenefit?.kycBenefitBtn?.setOnClickListener {
             analytics?.eventClickOnNextOnBoarding()

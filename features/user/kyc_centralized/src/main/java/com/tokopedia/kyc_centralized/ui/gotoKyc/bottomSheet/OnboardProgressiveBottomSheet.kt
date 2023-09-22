@@ -131,8 +131,6 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         )
 
         binding?.consentGotoKycProgressive?.load(
-            lifecycleOwner = viewLifecycleOwner,
-            viewModelStoreOwner = this,
             consentCollectionParam = consentParam
         )
 

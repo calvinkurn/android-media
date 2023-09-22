@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
+import com.tokopedia.settingbank.databinding.FragmentConfirmBankAccountBinding
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.domain.model.AddBankRequest
 import com.tokopedia.settingbank.domain.model.BankAccount
@@ -31,13 +32,12 @@ import com.tokopedia.settingbank.view.viewState.DocumentUploadError
 import com.tokopedia.settingbank.view.viewState.DocumentUploadStarted
 import com.tokopedia.settingbank.view.viewState.DocumentUploaded
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_confirm_bank_account.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 const val ARG_BANK_ACCOUNT_DATA = "arg_bank_account_data"
 const val ARG_ACCOUNT_TYPE = "arg_account_type"
 const val ARG_KYC_NAME = "arg_kyc_name"
-
 
 class AccountDocumentFragment : BaseDaggerFragment() {
 
@@ -51,14 +51,15 @@ class AccountDocumentFragment : BaseDaggerFragment() {
 
     private val MAX_FILE_SIZE = 2048
 
+    private var binding by autoClearedNullable<FragmentConfirmBankAccountBinding>()
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var bankSettingAnalytics: BankSettingAnalytics
 
-
     private lateinit var uploadDocumentViewModel: UploadDocumentViewModel
-
 
     val builder: AddBankRequest.Builder = AddBankRequest.Builder()
 
@@ -75,11 +76,12 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            if (it.containsKey(ARG_BANK_ACCOUNT_DATA))
+            if (it.containsKey(ARG_BANK_ACCOUNT_DATA)) {
                 arguments?.getParcelable<BankAccount>(ARG_BANK_ACCOUNT_DATA)?.let { bankAccount ->
                     this.bankAccount = bankAccount
                 }
-            if (it.containsKey(ARG_ACCOUNT_TYPE))
+            }
+            if (it.containsKey(ARG_ACCOUNT_TYPE)) {
                 arguments?.getInt(ARG_ACCOUNT_TYPE)?.let { accountTypeInt ->
                     when (accountTypeInt) {
                         AccountConfirmationType.COMPANY.accountType -> accountConfirmationType = AccountConfirmationType.COMPANY
@@ -87,22 +89,24 @@ class AccountDocumentFragment : BaseDaggerFragment() {
                         AccountConfirmationType.OTHER.accountType -> accountConfirmationType = AccountConfirmationType.OTHER
                     }
                 }
-            if (it.containsKey(ARG_KYC_NAME))
+            }
+            if (it.containsKey(ARG_KYC_NAME)) {
                 arguments?.getString(ARG_KYC_NAME)?.let { name ->
                     this.kYCName = name
                 }
-
+            }
         }
         initViewModels()
     }
 
     private fun initViewModels() {
         uploadDocumentViewModel = ViewModelProvider(this, viewModelFactory)
-                .get(UploadDocumentViewModel::class.java)
+            .get(UploadDocumentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_confirm_bank_account, container, false)
+        binding = FragmentConfirmBankAccountBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -113,40 +117,44 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         startObservingViewModels()
         setBankAccountData()
         setDocKycUI()
-        progressBar.setOnClickListener {
-            //no implementation required
+        binding?.progressBar?.setOnClickListener {
+            // no implementation required
         }
     }
 
     private fun setBankAccountData() {
-        tvBankName.text = bankAccount.bankName
-        tvAccountNumber.text = bankAccount.accNumber
-        tvAccountHolderName.text = bankAccount.accName
+        binding?.run {
+            tvBankName.text = bankAccount.bankName
+            tvAccountNumber.text = bankAccount.accNumber
+            tvAccountHolderName.text = bankAccount.accName
+        }
     }
 
     private fun setDocKycUI() {
-        if (accountConfirmationType == AccountConfirmationType.OTHER) {
-            tvDocKTPNameTitle.text = getString(R.string.sbank_name_listed_on_ktp)
-            tvDocumentTypeTag.text = getString(R.string.sbank_full_name)
-            tvDocPathOrKTPName.text = kYCName
-            tvImageConditionAndType.text = getString(R.string.sbank_name_matched_with_other)
-            btn_uploadOrConfirmDocument.text = getString(R.string.sbank_yes_name_matched)
-            btn_uploadOrConfirmDocument.isEnabled = true
-            ivSelectFile.gone()
-            btn_uploadOrConfirmDocument.setOnClickListener { uploadDocument() }
-        } else {
-            tvDocKTPNameTitle.text = getString(R.string.sbank_complete_document)
-            if (accountConfirmationType == AccountConfirmationType.FAMILY)
-                tvDocumentTypeTag.text = getString(R.string.sbank_pic_of_family_card)
-            else
-                tvDocumentTypeTag.text = getString(R.string.sbank_attach_image_company)
-            tvDocPathOrKTPName.text = getString(R.string.sbank_select_file)
-            tvImageConditionAndType.text = getString(R.string.sbank_attach_image_constraints)
-            btn_uploadOrConfirmDocument.text = getString(R.string.button_next)
-            btn_uploadOrConfirmDocument.isEnabled = false
-            ivSelectFile.visible()
-            ivSelectFile.setOnClickListener { openFilePicker() }
-
+        binding?.run {
+            if (accountConfirmationType == AccountConfirmationType.OTHER) {
+                tvDocKTPNameTitle.text = getString(R.string.sbank_name_listed_on_ktp)
+                tvDocumentTypeTag.text = getString(R.string.sbank_full_name)
+                tvDocPathOrKTPName.text = kYCName
+                tvImageConditionAndType.text = getString(R.string.sbank_name_matched_with_other)
+                btnUploadOrConfirmDocument.text = getString(R.string.sbank_yes_name_matched)
+                btnUploadOrConfirmDocument.isEnabled = true
+                ivSelectFile.gone()
+                btnUploadOrConfirmDocument.setOnClickListener { uploadDocument() }
+            } else {
+                tvDocKTPNameTitle.text = getString(R.string.sbank_complete_document)
+                if (accountConfirmationType == AccountConfirmationType.FAMILY) {
+                    tvDocumentTypeTag.text = getString(R.string.sbank_pic_of_family_card)
+                } else {
+                    tvDocumentTypeTag.text = getString(R.string.sbank_attach_image_company)
+                }
+                tvDocPathOrKTPName.text = getString(R.string.sbank_select_file)
+                tvImageConditionAndType.text = getString(R.string.sbank_attach_image_constraints)
+                btnUploadOrConfirmDocument.text = getString(R.string.button_next)
+                btnUploadOrConfirmDocument.isEnabled = false
+                ivSelectFile.visible()
+                ivSelectFile.setOnClickListener { openFilePicker() }
+            }
         }
     }
 
@@ -156,7 +164,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
             AccountConfirmationType.FAMILY -> bankSettingAnalytics.eventFamilyDocumentSubmitClick()
             AccountConfirmationType.COMPANY -> bankSettingAnalytics.eventCompanyDocumentSubmitClick()
         }
-        context?.let {context->
+        context?.let { context ->
             val uploadDocumentPojo = getUploadDocumentPojo(context)
             uploadDocumentPojo?.let {
                 uploadDocumentViewModel.uploadDocument(it)
@@ -165,23 +173,27 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     }
 
     private fun enableUploadDocument() {
-        btn_uploadOrConfirmDocument.isEnabled = true
-        btn_uploadOrConfirmDocument.setOnClickListener {
-            uploadDocument()
+        binding?.run {
+            btnUploadOrConfirmDocument.isEnabled = true
+            btnUploadOrConfirmDocument.setOnClickListener {
+                uploadDocument()
+            }
         }
     }
 
     private fun openFilePicker() {
-        val pickerTitle = if (accountConfirmationType == AccountConfirmationType.FAMILY)
+        val pickerTitle = if (accountConfirmationType == AccountConfirmationType.FAMILY) {
             getString(R.string.sbank_pic_of_family_card)
-        else getString(R.string.sbank_attach_image_company)
+        } else {
+            getString(R.string.sbank_attach_image_company)
+        }
         context?.let {
             val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
-                    .withSimpleEditor()
-                    .withSimpleMultipleSelection(maxPick = 1)
-                    .apply {
-                        maxFileSizeInKB = MAX_FILE_SIZE
-                    }
+                .withSimpleEditor()
+                .withSimpleMultipleSelection(maxPick = 1)
+                .apply {
+                    maxFileSizeInKB = MAX_FILE_SIZE
+                }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
             intent.putParamPageSource(ImagePickerPageSource.ACCOUNT_DOCUMENT_SETTING_BANK)
@@ -204,25 +216,28 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     private fun setSelectedFile(filePath: String?) {
         filePath?.let {
             selectedFilePath = it
-            tvDocPathOrKTPName.text = ImageUtils.getFileName(it)
+            binding?.tvDocPathOrKTPName?.text = ImageUtils.getFileName(it)
             enableUploadDocument()
         }
     }
 
     private fun startObservingViewModels() {
-        uploadDocumentViewModel.uploadDocumentStatus.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DocumentUploadStarted -> progressBar.visible()
-                is DocumentUploadEnd -> progressBar.gone()
-                is DocumentUploaded -> {
-                    setResultMessage(it.message)
-                    activity?.finish()
-                }
-                is DocumentUploadError -> {
-                    showErrorOnUI(it.throwable, null)
+        uploadDocumentViewModel.uploadDocumentStatus.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is DocumentUploadStarted -> binding?.progressBar?.visible()
+                    is DocumentUploadEnd -> binding?.progressBar?.gone()
+                    is DocumentUploaded -> {
+                        setResultMessage(it.message)
+                        activity?.finish()
+                    }
+                    is DocumentUploadError -> {
+                        showErrorOnUI(it.throwable, null)
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun setResultMessage(message: String?) {
@@ -247,14 +262,22 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         context?.let { context ->
             view?.let { view ->
                 retry?.let {
-                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
-                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
+                    Toaster.make(
+                        view,
+                        SettingBankErrorHandler.getErrorMessage(context, throwable),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.sbank_promo_coba_lagi),
+                        View.OnClickListener { retry.invoke() }
+                    )
                 } ?: run {
-                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
-                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                    Toaster.make(
+                        view,
+                        SettingBankErrorHandler.getErrorMessage(context, throwable),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    )
                 }
-
             }
         }
     }
@@ -270,15 +293,15 @@ class AccountDocumentFragment : BaseDaggerFragment() {
             return null
         }
         return UploadDocumentPojo(
-                acc_id = bankAccount.accID,
-                acc_name = bankAccount.accName,
-                acc_number = bankAccount.accNumber,
-                bank_id = bankAccount.bankID,
-                doc_type = docType,
-                document_name = ImageUtils.getFileName(selectedFilePath),
-                document_base64 = ImageUtils.encodeToBase64(selectedFilePath),
-                document_ext = ImageUtils.getFileExt(selectedFilePath),
-                document_mime = ImageUtils.getMimeType(context, selectedFilePath))
+            acc_id = bankAccount.accID,
+            acc_name = bankAccount.accName,
+            acc_number = bankAccount.accNumber,
+            bank_id = bankAccount.bankID,
+            doc_type = docType,
+            document_name = ImageUtils.getFileName(selectedFilePath),
+            document_base64 = ImageUtils.encodeToBase64(selectedFilePath),
+            document_ext = ImageUtils.getFileExt(selectedFilePath),
+            document_mime = ImageUtils.getMimeType(context, selectedFilePath)
+        )
     }
-
 }

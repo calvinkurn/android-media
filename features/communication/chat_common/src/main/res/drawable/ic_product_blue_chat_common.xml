@@ -1,8 +1,0 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="40dp" android:height="40dp" android:viewportWidth="40" android:viewportHeight="40">
-    <path android:pathData="M0 20a20 20 0 1 1 40 0 20 20 0 1 1-40 0" android:fillColor="@color/chatcommon_dms_bg_blue_icon" android:fillType="evenOdd"/>
-    <group>
-        <clip-path android:pathData="M0 20a20 20 0 1 1 40 0 20 20 0 1 1-40 0M0 0"/>
-        <path android:pathData="M14.167 0.5a20 20 0 1 1 40 0 20 20 0 1 1-40 0" android:fillColor="@color/chatcommon_dms_blue_icon" android:fillType="evenOdd"/>
-    </group>
-    <path android:pathData="M28.09 10h-6.67c-0.53 0-1 0.21-1.35 0.56l-0.66 0.66-1.72 1.73-1.41 1.4-0.02 0.02-4.41 4.41-1.14 1.14c-0.94 0.94-0.94 2.47 0 3.41l5.96 5.96c0.94 0.94 2.47 0.94 3.41 0l4.42-4.42 1.79-1.79 0.78-0.78 2.39-2.39C29.79 19.58 30 19.1 30 18.58v-6.67c0-1.06-0.85-1.91-1.91-1.91zm-1.21 4.38a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z" android:fillColor="@color/Unify_Static_White"/>
-</vector>
