@@ -88,7 +88,7 @@ import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageViewHolder
-import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMDataModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
@@ -270,7 +270,7 @@ class DynamicProductDetailAdapterFactoryImpl(
         return APlusImageViewHolder.LAYOUT
     }
 
-    override fun type(data: BMGMDataModel): Int {
+    override fun type(data: BMGMUiModel): Int {
         return BMGMViewHolder.LAYOUT
     }
 

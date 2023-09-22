@@ -498,7 +498,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
     @Test
-    fun `given bmgmResponse, when getProducts then should return list of products when UI state is Showing`() =
+    fun `given bmgmResponse and bundlingResponse, when getProducts then should return list of products when UI state is Showing`() =
         runCollectingUiState { buyerDetailUiState ->
 
             val bmgmDetailsResponse =
@@ -533,31 +533,170 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     )
                 )
 
+            val bundlingDetailsResponse =
+                ProductListUiModel.ProductBundlingUiModel(
+                    bundleName = "bundling - Beli2DiskonDiskon30%",
+                    bundleId = "1:5:0",
+                    totalPriceText = "Rp600.000",
+                    totalPrice = 200.000,
+                    bundleIconUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
+                    bundleItemList = listOf(
+                        ProductListUiModel.ProductUiModel(
+                            button = ActionButtonsUiModel.ActionButton(
+                                key = "test_buy_again_button_key",
+                                label = "Beli Lagi",
+                                popUp = ActionButtonsUiModel.ActionButton.PopUp(
+                                    actionButton = emptyList(),
+                                    body = "",
+                                    title = ""
+                                ),
+                                variant = "ghost",
+                                type = "main",
+                                url = ""
+                            ),
+                            category = "Pakaian Atas",
+                            categoryId = "13",
+                            orderDetailId = "20531238",
+                            orderStatusId = "220",
+                            orderId = "166835036",
+                            price = 500000.0,
+                            priceText = "Rp500.000",
+                            productId = "2147819914",
+                            productName = "Hengpong jadul",
+                            productNote = "Test product note",
+                            productThumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
+                            quantity = 1,
+                            totalPrice = "500000",
+                            totalPriceText = "Rp500.000",
+                            isProcessing = false,
+                            productUrl = ""
+                        ),
+                        ProductListUiModel.ProductUiModel(
+                            button = ActionButtonsUiModel.ActionButton(
+                                key = "test_buy_again_button_key",
+                                label = "Beli Lagi",
+                                popUp = ActionButtonsUiModel.ActionButton.PopUp(
+                                    actionButton = emptyList(),
+                                    body = "",
+                                    title = ""
+                                ),
+                                variant = "ghost",
+                                type = "main",
+                                url = ""
+                            ),
+                            category = "Pakaian Bawah",
+                            categoryId = "14",
+                            orderDetailId = "20531239",
+                            orderStatusId = "221",
+                            orderId = "166835038",
+                            price = 550000.0,
+                            priceText = "Rp540.000",
+                            productId = "2147819915",
+                            productName = "Hengpongs jadul",
+                            productNote = "Test product note 1",
+                            productThumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
+                            quantity = 5,
+                            totalPrice = "550000",
+                            totalPriceText = "Rp550.000",
+                            isProcessing = false,
+                            productUrl = ""
+                        )
+                    )
+                )
+
             val productListShowingState =
                 mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
                     every { data.productBmgmList } returns listOf(bmgmDetailsResponse)
+                    every { data.productBundlingList } returns listOf(bundlingDetailsResponse)
                 }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
 
-                val actualBmgmUiModel = buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
-                    .last().productListUiState.data.productBmgmList.first()
+                val actualBundlingUiModel =
+                    buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().productListUiState.data.productBundlingList.first()
+                assert(bundlingDetailsResponse.totalPrice == actualBundlingUiModel.totalPrice)
+                assertEquals(bundlingDetailsResponse.bundleId, actualBundlingUiModel.bundleId)
+                assertEquals(bundlingDetailsResponse.bundleName, actualBundlingUiModel.bundleName)
+                assertEquals(bundlingDetailsResponse.bundleIconUrl, actualBundlingUiModel.bundleIconUrl)
+                assert(
+                    bundlingDetailsResponse.totalPrice == actualBundlingUiModel.totalPrice
+                )
+                bundlingDetailsResponse.bundleItemList.forEachIndexed { index, productUiModel ->
+                    assertEquals(
+                        productUiModel.orderId,
+                        actualBundlingUiModel.bundleItemList[index].orderId
+                    )
+                    assertEquals(
+                        productUiModel.orderDetailId,
+                        actualBundlingUiModel.bundleItemList[index].orderDetailId
+                    )
+                    assertEquals(
+                        productUiModel.productName,
+                        actualBundlingUiModel.bundleItemList[index].productName
+                    )
+                    assertEquals(
+                        productUiModel.productUrl,
+                        actualBundlingUiModel.bundleItemList[index].productUrl
+                    )
+                    assertTrue(productUiModel.price == actualBundlingUiModel.bundleItemList[index].price)
+                    assertEquals(
+                        productUiModel.priceText,
+                        actualBundlingUiModel.bundleItemList[index].priceText
+                    )
+                    assertEquals(
+                        productUiModel.quantity,
+                        actualBundlingUiModel.bundleItemList[index].quantity
+                    )
+                    assertEquals(
+                        productUiModel.productNote,
+                        actualBundlingUiModel.bundleItemList[index].productNote
+                    )
+                }
+
+                val actualBmgmUiModel =
+                    buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().productListUiState.data.productBmgmList.first()
                 assertTrue(bmgmDetailsResponse.totalPrice == actualBmgmUiModel.totalPrice)
                 assertEquals(bmgmDetailsResponse.bmgmId, actualBmgmUiModel.bmgmId)
                 assertEquals(bmgmDetailsResponse.bmgmName, actualBmgmUiModel.bmgmName)
                 assertEquals(bmgmDetailsResponse.bmgmIconUrl, actualBmgmUiModel.bmgmIconUrl)
-                assertEquals(bmgmDetailsResponse.totalPriceReductionInfoText, actualBmgmUiModel.totalPriceReductionInfoText)
+                assertEquals(
+                    bmgmDetailsResponse.totalPriceReductionInfoText,
+                    actualBmgmUiModel.totalPriceReductionInfoText
+                )
                 bmgmDetailsResponse.bmgmItemList.forEachIndexed { index, productUiModel ->
-                    assertEquals(productUiModel.orderId, actualBmgmUiModel.bmgmItemList[index].orderId)
-                    assertEquals(productUiModel.orderDetailId, actualBmgmUiModel.bmgmItemList[index].orderDetailId)
-                    assertEquals(productUiModel.productName, actualBmgmUiModel.bmgmItemList[index].productName)
-                    assertEquals(productUiModel.thumbnailUrl, actualBmgmUiModel.bmgmItemList[index].thumbnailUrl)
+                    assertEquals(
+                        productUiModel.orderId,
+                        actualBmgmUiModel.bmgmItemList[index].orderId
+                    )
+                    assertEquals(
+                        productUiModel.orderDetailId,
+                        actualBmgmUiModel.bmgmItemList[index].orderDetailId
+                    )
+                    assertEquals(
+                        productUiModel.productName,
+                        actualBmgmUiModel.bmgmItemList[index].productName
+                    )
+                    assertEquals(
+                        productUiModel.thumbnailUrl,
+                        actualBmgmUiModel.bmgmItemList[index].thumbnailUrl
+                    )
                     assertTrue(productUiModel.price == actualBmgmUiModel.bmgmItemList[index].price)
-                    assertEquals(productUiModel.productPriceText, actualBmgmUiModel.bmgmItemList[index].productPriceText)
-                    assertEquals(productUiModel.quantity, actualBmgmUiModel.bmgmItemList[index].quantity)
-                    assertEquals(productUiModel.productNote, actualBmgmUiModel.bmgmItemList[index].productNote)
+                    assertEquals(
+                        productUiModel.productPriceText,
+                        actualBmgmUiModel.bmgmItemList[index].productPriceText
+                    )
+                    assertEquals(
+                        productUiModel.quantity,
+                        actualBmgmUiModel.bmgmItemList[index].quantity
+                    )
+                    assertEquals(
+                        productUiModel.productNote,
+                        actualBmgmUiModel.bmgmItemList[index].productNote
+                    )
                 }
             }
         }
@@ -575,8 +714,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
 
-                val actualBmgmUiModel = buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
-                    .last().productListUiState.data.productBmgmList
+                val actualBmgmUiModel =
+                    buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().productListUiState.data.productBmgmList
                 assertEquals(emptyList<ProductBmgmSectionUiModel>(), actualBmgmUiModel)
             }
         }

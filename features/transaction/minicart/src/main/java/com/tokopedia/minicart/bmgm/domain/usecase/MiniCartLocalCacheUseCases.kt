@@ -5,10 +5,8 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by @ilhamsuaib on 14/08/23.
@@ -16,34 +14,36 @@ import kotlin.coroutines.CoroutineContext
 
 class MiniCartLocalCacheUseCases @Inject constructor(
     private val dispatchers: CoroutineDispatchers
-) : CoroutineScope {
+) {
 
-    override val coroutineContext: CoroutineContext
-        get() = dispatchers.io
-
-    fun saveToLocalCache(
+    suspend fun saveToLocalCache(
         model: BmgmMiniCartDataUiModel,
         shopId: Long,
         warehouseId: Long,
         offerEndDate: String
     ) {
-        launch {
-            val data = mapToCommonData(model, shopId, warehouseId, offerEndDate)
-            PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, data)
+        withContext(dispatchers.io) {
+            runCatching {
+                val data = mapToCommonData(model, shopId, warehouseId, offerEndDate)
+                PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, data)
+            }
         }
     }
 
-    fun clearLocalCache() {
-        launch {
-            PersistentCacheManager.instance.delete(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA)
+    suspend fun clearLocalCache() {
+        withContext(dispatchers.io) {
+            runCatching {
+                PersistentCacheManager.instance.delete(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA)
+            }
         }
     }
 
-    fun getCartData(): BmgmCommonDataModel {
-        val commonData = PersistentCacheManager.instance.get<BmgmCommonDataModel>(
-            BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, BmgmCommonDataModel::class.java, null
-        )
-        return commonData ?: throw RuntimeException("No cart data stored in local cache")
+    suspend fun getCartData(): BmgmCommonDataModel {
+        return withContext(dispatchers.io) {
+            PersistentCacheManager.instance.get<BmgmCommonDataModel>(
+                BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, BmgmCommonDataModel::class.java, null
+            ) ?: throw RuntimeException("No cart data stored in local cache")
+        }
     }
 
     private fun mapToCommonData(

@@ -5,6 +5,8 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.product.detail.databinding.ItemGlobalRecommendationBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcCallback
 import com.tokopedia.product.detail.postatc.base.PostAtcViewHolder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMiniCart
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
@@ -44,8 +46,15 @@ class GlobalRecommendationViewHolder(
                 anchorProductId = element.productId,
                 isUserLoggedIn = callback.userSession.isLoggedIn,
                 userId = callback.userSession.userId,
-                warehouseId = element.warehouseId
-            )
+                warehouseId = element.warehouseId,
+                offerId = element.offerId
+            ),
+            listener = object: RecommendationWidgetListener {
+                override fun onProductClick(item: RecommendationItem): Boolean {
+                    callback.dismiss()
+                    return false
+                }
+            },
         )
 
     private fun recommendationWidgetCallback(element: RecommendationUiModel) =

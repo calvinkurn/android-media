@@ -157,7 +157,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     private fun observeCartData(lifecycleOwner: LifecycleOwner) {
-        lifecycleOwner.lifecycleScope.launchWhenStarted {
+        lifecycleOwner.lifecycleScope.launchWhenCreated{
             viewModel.cartData.collect {
                 when (it) {
                     is BmgmState.Loading -> showMiniCartLoadingState()
@@ -175,7 +175,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     private fun observeSetCarChecklistStatus(lifecycleOwner: LifecycleOwner) {
-        lifecycleOwner.lifecycleScope.launchWhenStarted {
+        lifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.setCheckListState.collectLatest {
                 when (it) {
                     is BmgmState.Loading -> showLoadingButton()

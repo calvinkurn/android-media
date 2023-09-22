@@ -112,6 +112,7 @@ data class BroadMatchItemDataView(
             dimension90 = dimension90,
             componentId = otherRelatedProduct.componentId,
             externalReference = externalReference,
+            warehouseID = otherRelatedProduct.warehouseIdDefault,
         )
 
         fun create(

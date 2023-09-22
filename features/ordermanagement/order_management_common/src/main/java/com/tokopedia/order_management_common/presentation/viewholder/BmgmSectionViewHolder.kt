@@ -83,6 +83,18 @@ class BmgmSectionViewHolder(
         }
     }
 
+    override fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        listener.onBmgmItemAddToCart(uiModel)
+    }
+
+    override fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        listener.onBmgmItemSeeSimilarProducts(uiModel)
+    }
+
+    override fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        listener.onBmgmItemWarrantyClaim(uiModel)
+    }
+
     private fun showToaster(message: String) {
         itemView.parent?.parent?.parent?.let {
             if (it is View) {
@@ -93,6 +105,7 @@ class BmgmSectionViewHolder(
 
     private fun setupBundleAdapter() {
         binding.rvOrderBmgm.run {
+            isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = bmgmItemAdapter
             setupRecyclerViewItemDecoration()
@@ -115,13 +128,12 @@ class BmgmSectionViewHolder(
                         dividerDrawable,
                         ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
                         ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
-                        ITEM_DECORATION_HORIZONTAL_MARGIN.toPx(),
+                        ITEM_DECORATION_HORIZONTAL_MARGIN.toPx()
                     )
                 )
             }
         }
     }
-
 
     private fun setupBmgmHeader(bmgmName: String, bmgmIconUrl: String) {
         binding.tvOrderBmgmName.text = bmgmName
@@ -143,5 +155,8 @@ class BmgmSectionViewHolder(
     interface Listener {
         fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+        fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+        fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+        fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
     }
 }
