@@ -76,22 +76,22 @@ internal const val ITEM_3 = 3
 internal const val ITEM_4 = 4
 
 open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
-    protected var topAdsBannerClickListener: TopAdsBannerClickListener? = null
+    protected var topAdsBannerViewClickListener: TopAdsBannerClickListener? = null
     protected var impressionListener: TopAdsItemImpressionListener? = null
     private var topAdsShopFollowBtnClickListener: TopAdsShopFollowBtnClickListener? = null
     private var topAdsAddToCartClickListener: TopAdsAddToCartClickListener? = null
     private var shopWidgetAddToCartClickListener: ShopWidgetAddToCartClickListener? = null
     protected var bannerAdsAdapter: BannerAdsAdapter? = null
-    private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
+    protected open val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
     private var showProductShimmer: Boolean = false
-    protected var hasAddToCartButton: Boolean = false
+    protected var hasAddProductToCartButton: Boolean = false
     private var isFlashSaleTokoLabel: Boolean = false
     private var isShowCta: Boolean = true
     var impressionCount: Int = 0
     private var flashSaleTimerData: Date? = null
     private var topAdsFlashSaleTimer:TimerUnifySingle? = null
-    protected var linearLayoutMerchantVoucher:LinearLayout? = null
-    protected val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+    protected open var linearLayoutMerchantVoucher:LinearLayout? = null
+    protected open val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context.applicationContext)
     }
 
@@ -120,7 +120,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     @Throws(Exception::class)
-    open fun renderViewCpmShop(context: Context, cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
+    protected open fun renderViewCpmShop(context: Context, cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
         if (activityIsFinishing(context))
             return
         val cpmData = cpmModel?.data?.firstOrNull()
@@ -130,7 +130,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
             BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData?.cpm?.name ?: "")
-            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener, topAdsAddToCartClickListener))
+            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerViewClickListener, impressionListener, topAdsAddToCartClickListener))
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
@@ -213,8 +213,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     }
 
                     shopDetail.setOnClickListener {
-                        if (topAdsBannerClickListener != null) {
-                            topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
+                        if (topAdsBannerViewClickListener != null) {
+                            topAdsBannerViewClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
                             topAdsUrlHitter.hitClickUrl(className, cpmData.adClickUrl, "", "", "")
                         }
                     }
@@ -298,7 +298,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             adsBannerShopCardView?.hide()
             shopAdsWithThreeProducts.show()
             list?.hide()
-            setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerClickListener, hasAddToCartButton)
+            setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
         }
 
     }
@@ -339,7 +339,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         }
     }
 
-    open fun setWidget(
+    protected open fun setWidget(
         cpmData: CpmData,
         appLink: String,
         adsClickUrl: String,
@@ -439,7 +439,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                 override fun onItemClicked(position: Int) {
                     val cpmData = cpmModel.data.getOrNull(position)
-                    topAdsBannerClickListener?.onBannerAdsClicked(position, cpmData?.applinks, cpmData)
+                    topAdsBannerViewClickListener?.onBannerAdsClicked(position, cpmData?.applinks, cpmData)
                     topAdsUrlHitter.hitClickUrl(
                         className,
                         cpmData?.adClickUrl,
@@ -454,7 +454,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         )
     }
 
-    open fun getShopProductItem(cpmModel: CpmModel): List<ShopProductModel.ShopProductModelItem> {
+    protected open fun getShopProductItem(cpmModel: CpmModel): List<ShopProductModel.ShopProductModelItem> {
         val list = arrayListOf<ShopProductModel.ShopProductModelItem>()
         cpmModel.data?.forEachIndexed { index, it ->
             val item = ShopProductModel.ShopProductModelItem(
@@ -476,7 +476,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         return list
     }
 
-    open fun setTopAdsCarousel(cpmModel: CpmModel?, topAdsCarousel: ToadsCarousel?) {
+    protected open fun setTopAdsCarousel(cpmModel: CpmModel?, topAdsCarousel: ToadsCarousel?) {
         topAdsCarousel?.setTopAdsCarouselModel(
             TopAdsCarouselModel(
                 title = cpmModel?.data?.firstOrNull()?.cpm?.widgetTitle ?: "",
@@ -497,7 +497,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                 override fun onItemClicked(position: Int) {
                     val cpmData = cpmModel?.data?.getOrNull(position)
-                    topAdsBannerClickListener?.onBannerAdsClicked(
+                    topAdsBannerViewClickListener?.onBannerAdsClicked(
                         position,
                         cpmData?.applinks,
                         cpmData
@@ -517,7 +517,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                     if (!cpmDataProducts.isNullOrEmpty()) {
                         val product = cpmDataProducts[productIndex]
-                        topAdsBannerClickListener?.onBannerAdsClicked(
+                        topAdsBannerViewClickListener?.onBannerAdsClicked(
                             productIndex,
                             product.applinks,
                             cpmData
@@ -555,7 +555,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         return list
     }
 
-    open fun getProductCardModels(products: List<Product>): ArrayList<ProductCardModel> {
+    protected open fun getProductCardModels(products: List<Product>): ArrayList<ProductCardModel> {
         return ArrayList<ProductCardModel>().apply {
             products.map {
                 add(getProductCardViewModel(it))
@@ -576,7 +576,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 product.freeOngkir.isActive,
                 product.freeOngkir.imageUrl
             ),
-            hasAddToCartButton = this.hasAddToCartButton,
+            hasAddToCartButton = this.hasAddProductToCartButton,
             addToCartButtonType = UnifyButton.Type.MAIN,
             stockBarPercentage = product.stock_info.soldStockPercentage,
             stockBarLabel = product.stock_info.stockWording,
@@ -658,7 +658,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         }
     }
 
-    open fun renderLabelMerchantVouchers(cpmData: CpmData?) {
+    protected open fun renderLabelMerchantVouchers(cpmData: CpmData?) {
         val context = context ?: return
         linearLayoutMerchantVoucher?.hide()
         val merchantVouchers = mutableListOf<String>()
@@ -697,7 +697,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         return labelVoucher
     }
 
-    open fun setHeadlineShopDataCardWidget(cpmData: CpmData, adsBannerShopCardView: ShopCardView?, appLink: String, adsClickUrl: String) {
+    protected open fun setHeadlineShopDataCardWidget(cpmData: CpmData, adsBannerShopCardView: ShopCardView?, appLink: String, adsClickUrl: String) {
         val productList = cpmData.cpm.cpmShop.products
 
         adsBannerShopCardView?.setShopCardModel(
@@ -733,7 +733,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     }
 
                     override fun onItemClicked() {
-                        topAdsBannerClickListener?.onBannerAdsClicked(0, appLink, cpmData)
+                        topAdsBannerViewClickListener?.onBannerAdsClicked(0, appLink, cpmData)
 
                         topAdsUrlHitter.hitClickUrl(
                                 className,
@@ -751,7 +751,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     override fun onProductItemClicked(productPreviewIndex: Int) {
                         val product = productList.getOrNull(productPreviewIndex) ?: return
 
-                        topAdsBannerClickListener?.onBannerAdsClicked(productPreviewIndex, product.applinks, cpmData)
+                        topAdsBannerViewClickListener?.onBannerAdsClicked(productPreviewIndex, product.applinks, cpmData)
 
                         topAdsUrlHitter.hitClickUrl(
                                 className,
@@ -765,19 +765,19 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         )
     }
 
-    open fun isEligible(cpmData: CpmData?) =
+    protected open fun isEligible(cpmData: CpmData?) =
             cpmData != null
                     && cpmData.cpm.cpmShop != null
                     && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
 
-    open fun activityIsFinishing(context: Context): Boolean {
+    protected open fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {
             context.isFinishing
         } else false
     }
 
     @Throws(Exception::class)
-    open fun renderViewCpmDigital(context: Context, cpm: Cpm) {
+    protected open fun renderViewCpmDigital(context: Context, cpm: Cpm) {
         if (activityIsFinishing(context))
             return
         if (template == NO_TEMPLATE) {
@@ -814,7 +814,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     fun setTopAdsBannerClickListener(topAdsBannerClickListener: TopAdsBannerClickListener) {
-        this.topAdsBannerClickListener = topAdsBannerClickListener
+        this.topAdsBannerViewClickListener = topAdsBannerClickListener
     }
 
     fun setTopAdsShopFollowClickListener(topAdsShopFollowBtnClickListener: TopAdsShopFollowBtnClickListener) {
@@ -826,7 +826,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     fun setHasAddToCartButton(hasAddToCartButton: Boolean) {
-        this.hasAddToCartButton = hasAddToCartButton
+        this.hasAddProductToCartButton = hasAddToCartButton
     }
 
     fun setAddToCartClickListener(topAdsAddToCartClickListener: TopAdsAddToCartClickListener) {
@@ -864,8 +864,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     } else if (data.cpm.templateId == ITEM_4) {
                         renderViewCpmDigital(context, data.cpm)
                         setOnClickListener {
-                            if (topAdsBannerClickListener != null) {
-                                topAdsBannerClickListener!!.onBannerAdsClicked(0, data.applinks, data)
+                            if (topAdsBannerViewClickListener != null) {
+                                topAdsBannerViewClickListener!!.onBannerAdsClicked(0, data.applinks, data)
                                 topAdsUrlHitter.hitClickUrl(className, data.adClickUrl, "", "", "")
                             }
                         }

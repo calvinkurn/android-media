@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
 import java.util.*
 
 class TopAdsBannerViewReimagine : TopAdsBannerView {
-    private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerViewReimagine"
+    override val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerViewReimagine"
     private var hasMultilineProductName: Boolean = false
 
     constructor(context: Context) : super(context) {
@@ -62,7 +62,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
 
             findViewById<TextView>(R.id.topAdsShopName)?.text = escapeHTML(cpmData?.cpm?.name.orEmpty())
             bannerAdsAdapter = BannerAdsAdapter(
-                BannerAdsAdapterTypeFactoryReimagine(topAdsBannerClickListener, impressionListener, hasMultilineProductName)
+                BannerAdsAdapterTypeFactoryReimagine(topAdsBannerViewClickListener, impressionListener, hasMultilineProductName)
             )
             val list = findViewById<RecyclerView>(R.id.topAdsList)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -126,8 +126,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     description?.text = cpmData.cpm.cpmShop.slogan
 
                     shopDetail.setOnClickListener {
-                        if (topAdsBannerClickListener != null) {
-                            topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
+                        if (topAdsBannerViewClickListener != null) {
+                            topAdsBannerViewClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
                             topAdsUrlHitter.hitClickUrl(className, cpmData.adClickUrl, "", "", "")
                         }
                     }
@@ -205,7 +205,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             adsBannerShopCardView?.hide()
             shopAdsWithThreeProducts.show()
             list?.hide()
-            setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerClickListener, hasAddToCartButton)
+            setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
         }
     }
 
@@ -222,8 +222,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
         btnSeeMore.visible()
         val btnSeeMore: IconUnify = btnSeeMore.findViewById(R.id.topAdsIconCTASeeMore)
         btnSeeMore.setOnClickListener {
-            if (topAdsBannerClickListener != null) {
-                topAdsBannerClickListener?.onBannerAdsClicked(0, appLink, cpmData)
+            if (topAdsBannerViewClickListener != null) {
+                topAdsBannerViewClickListener?.onBannerAdsClicked(0, appLink, cpmData)
                 TopAdsUrlHitter(context).hitClickUrl(
                     TopAdsBannerView::class.java.simpleName,
                     adsClickUrl,
@@ -257,7 +257,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
 
                 override fun onItemClicked(position: Int) {
                     val cpmData = cpmModel.data.getOrNull(position)
-                    topAdsBannerClickListener?.onBannerAdsClicked(position, cpmData?.applinks, cpmData)
+                    topAdsBannerViewClickListener?.onBannerAdsClicked(position, cpmData?.applinks, cpmData)
                     topAdsUrlHitter.hitClickUrl(
                         className,
                         cpmData?.adClickUrl,
