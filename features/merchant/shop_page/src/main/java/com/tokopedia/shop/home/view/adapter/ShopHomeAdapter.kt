@@ -106,8 +106,9 @@ open class ShopHomeAdapter(
 
     fun setProductListEmptyState(isOwner: Boolean) {
         val newList = getNewVisitableItems()
-        if (!newList.contains(ShopHomeProductListEmptyUiModel(isOwner)))
+        if (!newList.contains(ShopHomeProductListEmptyUiModel(isOwner))) {
             newList.add(ShopHomeProductListEmptyUiModel(isOwner))
+        }
         submitList(newList)
     }
 
@@ -303,7 +304,7 @@ open class ShopHomeAdapter(
 
     fun pauseSliderBannerAutoScroll() {
         val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER
+            it.name == WidgetName.SLIDER_BANNER || it.name == WidgetName.BMGM_BANNER
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
@@ -313,7 +314,7 @@ open class ShopHomeAdapter(
 
     fun resumeSliderBannerAutoScroll() {
         val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER
+            it.name == WidgetName.SLIDER_BANNER || it.name == WidgetName.BMGM_BANNER
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()
