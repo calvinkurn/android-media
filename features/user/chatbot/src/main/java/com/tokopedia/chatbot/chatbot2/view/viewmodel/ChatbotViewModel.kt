@@ -116,6 +116,7 @@ import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
+import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -155,6 +156,7 @@ class ChatbotViewModel @Inject constructor(
     private val chatbotWebSocket: ChatbotWebSocket,
     private val chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler,
     private val chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase,
+    private val extractBranchLinkUseCase: ExtractBranchLinkUseCase,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -271,8 +273,24 @@ class ChatbotViewModel @Inject constructor(
 
     var pageSourceAccess = ""
 
+    private val _applink = MutableLiveData<String>()
+    val applink: LiveData<String>
+        get() = _applink
+
     init {
         observeMediaUrisForUpload()
+    }
+
+    fun extractBranchLink(branchLink: String) {
+        launchCatchError(
+            block = {
+                val deeplink = extractBranchLinkUseCase.invoke(branchLink).android_deeplink
+                _applink.value = deeplink
+            },
+            onError = {
+                _applink.value = ""
+            }
+        )
     }
 
     // Get Ticket List for Showing Contact Us Bottom Sheet
