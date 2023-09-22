@@ -25,7 +25,7 @@ open class ShopHomeProductViewHolder(
     itemView: View,
     private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?,
     private val isShowTripleDot: Boolean,
-    shopHomeListener: ShopHomeListener
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
     private val viewBinding: ItemShopHomeProductCardSmallGridBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
@@ -51,7 +51,8 @@ open class ShopHomeProductViewHolder(
             hasThreeDots = isShowTripleDot,
             shopHomeProductViewModel = shopHomeProductViewModel,
             isWideContent = false,
-            productRating = shopHomeProductViewModel.averageRating
+            productRating = shopHomeProductViewModel.averageRating,
+            forceLightModeColor = shopHomeListener.isOverrideTheme()
         )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)

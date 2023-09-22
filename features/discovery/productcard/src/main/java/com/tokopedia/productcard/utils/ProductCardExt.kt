@@ -2,6 +2,7 @@ package com.tokopedia.productcard.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -42,6 +43,7 @@ import com.tokopedia.video_widget.VideoPlayerView
 import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
@@ -735,3 +737,11 @@ internal fun rollenceRemoteConfig(): Lazy<RemoteConfig?> =
             null
         }
     }
+
+fun Label.forceLightRed() {
+    setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_RN500))
+    val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
+    drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_light_RN100), PorterDuff.Mode.SRC_ATOP)
+
+    setBackgroundDrawable(drawable)
+}

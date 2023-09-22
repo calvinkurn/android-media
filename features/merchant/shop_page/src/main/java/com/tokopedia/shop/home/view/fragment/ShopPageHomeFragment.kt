@@ -2901,6 +2901,7 @@ open class ShopPageHomeFragment :
         }
     }
 
+
     private fun trackImpressionProductAtc(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         position: Int,
@@ -5236,6 +5237,14 @@ open class ShopPageHomeFragment :
     // need to be improve this logic in the future by combining this 2 logic in BE
     override fun isOverrideTheme(): Boolean {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
+    }
+
+    override fun isForceLightModeColorOnShopFlashSaleWidget(): Boolean {
+        return isOverrideTheme()
+    }
+
+    override fun isForceLightModeColorOnCampaignNplWidget(): Boolean {
+        return isOverrideTheme()
     }
 
     override fun getShopPageHomeFragment(): ShopPageHomeFragment {
