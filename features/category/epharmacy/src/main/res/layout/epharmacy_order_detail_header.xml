@@ -11,8 +11,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="12dp"
         tools:text="Siap Chat Dokter"
         />
+
+    <View
+        android:id="@+id/ep_buyer_order_indicator"
+        android:layout_width="4dp"
+        android:layout_height="@dimen/layout_lvl0"
+        android:background="@drawable/ic_ep_order_status_indicator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ep_order_status_description"
+        app:layout_constraintBottom_toBottomOf="@id/ep_order_status_description"/>
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ep_order_ticker"
@@ -23,6 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
+        app:tickerShapeType="loose"
         app:closeButtonVisibility="gone"
         />
 

@@ -11,9 +11,10 @@ data class EPharmacyOrderDetailHeaderDataModel(
     val invoiceTitle: String?,
     val invoiceLink: String?,
     val chatDate: String?,
-    val validUntil: String
+    val validUntil: String?,
+    val indicatorColor: String?
 ) :
-    BaseEPharmacyDataModelImpl(name, type) {
+    BaseEPharmacySimpleDataModelImpl(name, type) {
 
     override fun type(typeFactory: EPharmacyAdapterFactory): Int {
         return typeFactory.type(this)
@@ -29,7 +30,7 @@ data class EPharmacyOrderDetailInfoDataModel(
     val fees: String?,
     val validity: String
 ) :
-    BaseEPharmacyDataModelImpl(name, type) {
+    BaseEPharmacySimpleDataModelImpl(name, type) {
 
     override fun type(typeFactory: EPharmacyAdapterFactory): Int {
         return typeFactory.type(this)
@@ -44,7 +45,7 @@ data class EPharmacyOrderDetailPaymentDataModel(
     val totalPrice: String?,
     val totalPayment: String?
 ) :
-    BaseEPharmacyDataModelImpl(name, type) {
+    BaseEPharmacySimpleDataModelImpl(name, type) {
 
     override fun type(typeFactory: EPharmacyAdapterFactory): Int {
         return typeFactory.type(this)

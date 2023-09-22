@@ -1,8 +1,13 @@
 package com.tokopedia.epharmacy.utils
 
 import android.content.Context
+import android.graphics.ColorFilter
+import android.graphics.LightingColorFilter
+import android.graphics.drawable.Drawable
 import android.text.Html
+import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
@@ -17,12 +22,15 @@ import com.tokopedia.epharmacy.network.params.CheckoutCartGeneralParams
 import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
 import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.unifyprinciples.R
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.usecase.BuildConfig
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 object EPharmacyUtils {
 
@@ -258,12 +266,12 @@ object EPharmacyUtils {
                             enablerId,
                             tConsultationId
                         ),
-                        ePharmacyCheckoutParams.shopId,
+                        enablerId,
                         ePharmacyCheckoutParams.note
                     )
                 )
             ),
-            EPHARMACY_ANDROID_SOURCE
+            ePharmacyCheckoutParams.source
         )
     }
 
@@ -303,25 +311,47 @@ object EPharmacyUtils {
             orderData?.ticker?.type,
             orderData?.ticker?.message,
             orderData?.invoiceNumber,
-            "",
-            "",
-            ""
+            orderData?.invoiceUrl,
+            orderData?.paymentDate,
+            orderData?.orderExpiredDate,
+            orderData?.orderIndicatorColor
         ))
         listOfComponents.add(EPharmacyOrderDetailInfoDataModel(
             ORDER_INFO_COMPONENT, ORDER_INFO_COMPONENT,
-            "",
+            orderData?.consultationSource?.serviceName,
             orderData?.consultationSource?.enablerName,
             orderData?.consultationSource?.operatingSchedule?.duration,
             orderData?.consultationSource?.priceStr,
-            ""
+            orderData?.consultationData?.prescription?.firstOrNull()?.expiryDate.orEmpty()
         ))
         listOfComponents.add(EPharmacyOrderDetailPaymentDataModel(
             ORDER_PAYMENT_COMPONENT, ORDER_PAYMENT_COMPONENT,
             orderData?.paymentMethod,
             orderData?.paymentAmountStr,
-            ""
+            orderData?.paymentAmountStr
         ))
         return EPharmacyDataModel(listOfComponents)
+    }
+
+    fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
+        val color = parseUnifyColorHex(context, colorHex, unifyprinciplesR.color.Unify_NN0)
+        val drawable = MethodChecker.getDrawable(context, R.drawable.ic_ep_order_status_indicator)
+        val filter: ColorFilter = LightingColorFilter(
+            ContextCompat.getColor(
+                context,
+                unifyprinciplesR.color.Unify_Static_Black
+            ), color
+        )
+        drawable.colorFilter = filter
+        return drawable
+    }
+
+    private fun parseUnifyColorHex(context: Context, colorHex: String, defaultColor: Int): Int {
+        return try {
+            stringToUnifyColor(context, colorHex).run { this.unifyColor ?: this.defaultColor }
+        } catch (t: Throwable) {
+            defaultColor
+        }
     }
 }
 

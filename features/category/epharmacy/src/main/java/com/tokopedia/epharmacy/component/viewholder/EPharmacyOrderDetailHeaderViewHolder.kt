@@ -1,10 +1,10 @@
 package com.tokopedia.epharmacy.component.viewholder
 
 import android.view.View
-import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailHeaderDataModel
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -21,20 +21,38 @@ class EPharmacyOrderDetailHeaderViewHolder(
     private val purchaseDateValue = view.findViewById<Typography>(R.id.ep_purchase_date_value)
     private val validUntil = view.findViewById<Typography>(R.id.ep_time_valid_until)
     private val validUntilValue = view.findViewById<Typography>(R.id.ep_time_valid_until_value)
+    private val buyerOrderDetailIndicator = view.findViewById<View>(R.id.ep_buyer_order_indicator)
 
     companion object {
         val LAYOUT = R.layout.epharmacy_order_detail_header
     }
 
     override fun bind(data: EPharmacyOrderDetailHeaderDataModel) {
-        title.text = data.title
-        ticker.tickerTitle = data.tickerMessage
-        ticker.tickerType = data.tickerType.orZero()
-        invoiceNumber.text = data.invoiceTitle
-        purchaseDateValue.text = data.chatDate
-        validUntilValue.displayTextOrHide(data.validUntil)
-        if(data.validUntil.isEmpty()){
-            validUntil.hide()
+        setUpTicker(data.title, data.tickerMessage, data.tickerType.orZero())
+        setUpInvoiceData(data.invoiceTitle,data.chatDate)
+        setUpValidity(data.validUntil)
+        setupIndicatorColor(data.indicatorColor.orEmpty())
+    }
+
+    private fun setUpInvoiceData(invoiceTitle: String?, chatDate: String?) {
+        invoiceNumber.text = invoiceTitle
+        purchaseDateValue.text = chatDate
+    }
+
+    private fun setUpValidity(validUntil: String?) {
+        validUntilValue.displayTextOrHide(validUntil.orEmpty())
+        if(validUntil?.isBlank() == true){
+            this.validUntil.hide()
         }
+    }
+
+    private fun setUpTicker(title: String?, tickerMessage: String?, tickerType: Int) {
+        this.title.text = title
+        ticker.tickerTitle = tickerMessage
+        ticker.tickerType = tickerType
+    }
+
+    private fun setupIndicatorColor(indicatorColor: String) {
+        buyerOrderDetailIndicator?.background = EPharmacyUtils.getColoredIndicator(itemView.context, indicatorColor)
     }
 }

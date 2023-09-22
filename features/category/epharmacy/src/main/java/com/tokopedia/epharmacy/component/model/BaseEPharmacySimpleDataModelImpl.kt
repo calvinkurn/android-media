@@ -3,7 +3,7 @@ package com.tokopedia.epharmacy.component.model
 import android.os.Bundle
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 
-abstract class BaseEPharmacyDataModelImpl(
+abstract class BaseEPharmacySimpleDataModelImpl(
     open val name: String = "",
     open val type: String = "") : BaseEPharmacyDataModel {
 

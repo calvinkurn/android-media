@@ -107,7 +107,9 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("id")
                         val id: String?,
                         @SerializedName("type")
-                        val type: String?
+                        val type: String?,
+                        @SerializedName("expiry_date")
+                        val expiryDate: String?,
                     ) : Parcelable
                 }
 

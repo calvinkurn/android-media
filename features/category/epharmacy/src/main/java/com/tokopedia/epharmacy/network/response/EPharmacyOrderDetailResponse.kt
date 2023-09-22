@@ -2,6 +2,7 @@ package com.tokopedia.epharmacy.network.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 
 data class EPharmacyOrderDetailResponse(
     @SerializedName("getConsultationOrderDetail")
@@ -19,9 +20,6 @@ data class EPharmacyOrderDetailResponse(
         @SerializedName("data")
         @Expose
         val ePharmacyOrderData: EPharmacyOrderData?,
-        @SerializedName("header")
-        @Expose
-        val header: Header?,
         @SerializedName("tri_dots")
         @Expose
         val triDots: List<Cta?>?,
@@ -52,13 +50,16 @@ data class EPharmacyOrderDetailResponse(
         data class EPharmacyOrderData(
             @SerializedName("consultation_data")
             @Expose
-            val consultationData: Any?,
+            val consultationData: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData?,
             @SerializedName("consultation_source")
             @Expose
             val consultationSource: ConsultationSource?,
             @SerializedName("invoice_number")
             @Expose
             val invoiceNumber: String?,
+            @SerializedName("invoice_url")
+            @Expose
+            val invoiceUrl: String?,
             @SerializedName("order_id")
             @Expose
             val orderId: Long?,
@@ -77,6 +78,15 @@ data class EPharmacyOrderDetailResponse(
             @SerializedName("payment_method")
             @Expose
             val paymentMethod: String?,
+            @SerializedName("order_indicator_color")
+            @Expose
+            val orderIndicatorColor: String?,
+            @SerializedName("payment_date")
+            @Expose
+            val paymentDate: String?,
+            @SerializedName("order_expired_date")
+            @Expose
+            val orderExpiredDate: String?,
             @SerializedName("ticker")
             @Expose
             val ticker: Ticker?
@@ -91,6 +101,9 @@ data class EPharmacyOrderDetailResponse(
                 @SerializedName("id")
                 @Expose
                 val id: String?,
+                @SerializedName("service_name")
+                @Expose
+                val serviceName: String?,
                 @SerializedName("note")
                 @Expose
                 val note: String?,
@@ -138,17 +151,5 @@ data class EPharmacyOrderDetailResponse(
                 val type: Int?
             )
         }
-
-        data class Header(
-            @SerializedName("error_code")
-            @Expose
-            val errorCode: Int?,
-            @SerializedName("error_message")
-            @Expose
-            val errorMessage: List<Any?>?,
-            @SerializedName("process_time")
-            @Expose
-            val processTime: Double?
-        )
     }
 }

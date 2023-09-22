@@ -7,20 +7,17 @@ import com.google.gson.annotations.Expose
 data class EPharmacyCartGeneralCheckoutResponse(
     @SerializedName("checkout_cart_general")
     @Expose
-    val checkout: Checkout?
+    val checkout: CheckoutResponse?
 ) {
-    data class Checkout(
+    data class CheckoutResponse(
         @SerializedName("data")
         @Expose
-        val `data`: Data?,
-        @SerializedName("header")
-        @Expose
-        val header: Header?
+        val checkoutData: CheckoutData?,
     ) {
-        data class Data(
+        data class CheckoutData(
             @SerializedName("data")
             @Expose
-            val `data`: Data?,
+            val cartGeneralResponse: CartGeneralResponse?,
             @SerializedName("error")
             @Expose
             val error: String?,
@@ -31,7 +28,7 @@ data class EPharmacyCartGeneralCheckoutResponse(
             @Expose
             val success: Int?
         ) {
-            data class Data(
+            data class CartGeneralResponse(
                 @SerializedName("callback_url")
                 @Expose
                 val callbackUrl: String?,
@@ -60,7 +57,7 @@ data class EPharmacyCartGeneralCheckoutResponse(
                     val customerEmail: String?,
                     @SerializedName("customer_id")
                     @Expose
-                    val customerId: Int?,
+                    val customerId: String?,
                     @SerializedName("customer_msisdn")
                     @Expose
                     val customerMsisdn: String?,
@@ -126,7 +123,7 @@ data class EPharmacyCartGeneralCheckoutResponse(
                     val name: String?,
                     @SerializedName("price")
                     @Expose
-                    val price: Int?,
+                    val price: Double?,
                     @SerializedName("quantity")
                     @Expose
                     val quantity: Int?

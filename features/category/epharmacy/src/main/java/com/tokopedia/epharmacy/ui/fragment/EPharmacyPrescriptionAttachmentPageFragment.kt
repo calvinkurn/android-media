@@ -540,7 +540,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 isOnlyConsult
             )
         )?.also {
-            startActivityForResult(it, 1111)
+            startActivityForResult(it, EPHARMACY_CHOOSER_REQUEST_CODE)
         }
     }
 

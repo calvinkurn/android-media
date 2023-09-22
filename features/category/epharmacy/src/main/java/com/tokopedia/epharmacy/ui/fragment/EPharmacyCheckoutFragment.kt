@@ -250,9 +250,9 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
-        when (result.data.checkout?.data?.success) {
-            0 -> showToast(TYPE_ERROR, result.data.checkout?.data?.message.orEmpty())
-            1 -> successCheckout(result.data.checkout?.data?.data?.redirectUrl)
+        when (result.data.checkout?.checkoutData?.success) {
+            0 -> showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
+            1 -> successCheckout(result.data.checkout?.checkoutData?.cartGeneralResponse?.redirectUrl)
         }
     }
 

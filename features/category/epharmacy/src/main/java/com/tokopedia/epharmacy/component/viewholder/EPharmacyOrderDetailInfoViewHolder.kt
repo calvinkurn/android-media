@@ -1,13 +1,11 @@
 package com.tokopedia.epharmacy.component.viewholder
 
 import android.view.View
-import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailInfoDataModel
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
 class EPharmacyOrderDetailInfoViewHolder(
@@ -30,8 +28,12 @@ class EPharmacyOrderDetailInfoViewHolder(
         providerName.text = data.enablerName
         durationValue.text = data.duration
         feesValue.text = data.fees
-        validityTimeValue.displayTextOrHide(data.validity)
-        if(data.validity.isEmpty()){
+        setUpValidity(data.validity)
+    }
+
+    private fun setUpValidity(validity: String) {
+        validityTimeValue.displayTextOrHide(validity)
+        if(validity.isEmpty()){
             validityTime.hide()
         }
     }
