@@ -63,8 +63,9 @@ internal enum class TouchEventStories {
 }
 
 internal const val KEY_CONFIG_ENABLE_STORIES_ROOM = "android_enable_content_stories_room"
-internal const val SHOP_ID = "shop_id"
-internal const val SHOP_ID_INDEX_APP_LINK = 1
+internal const val KEY_ARGS = "shop_id"
+internal const val ARGS_SOURCE = "source"
+internal const val ARGS_SOURCE_ID = "source_id"
 internal const val STORY_GROUP_ID = "stories_group_id"
 internal const val TAG_FRAGMENT_STORIES_GROUP = "fragment_stories_group"
 internal const val TAG_FRAGMENT_STORIES_DETAIL = "fragment_stories_detail"

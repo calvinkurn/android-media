@@ -15,6 +15,7 @@ import com.tokopedia.stories.util.assertEqualTo
 import com.tokopedia.stories.util.assertFalse
 import com.tokopedia.stories.util.assertNotEqualTo
 import com.tokopedia.stories.util.assertTrue
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
@@ -37,13 +38,18 @@ class StoriesUnitTest {
 
     private val testDispatcher = rule.dispatchers
 
-    private val authorId = "123"
+    private val args = StoriesArgsModel(
+        authorId = "123",
+        authorType = "shop",
+        source = "shop-entrypoint",
+        sourceId = "1234"
+    )
     private val handle: SavedStateHandle = SavedStateHandle()
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
 
     private fun getStoriesRobot() = StoriesViewModelRobot(
         dispatchers = testDispatcher,
-        authorId = authorId,
+        args = args,
         handle = handle,
         repository = mockRepository,
     )
