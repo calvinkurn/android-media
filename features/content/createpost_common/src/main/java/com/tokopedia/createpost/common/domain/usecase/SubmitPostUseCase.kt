@@ -53,65 +53,43 @@ open class SubmitPostUseCase @Inject constructor(
         authorId: String,
         caption: String,
         media: List<Pair<String, String>>,
-        relatedIdList: List<String>,
         mediaList: List<MediaModel>,
         mediaWidth: Int,
-        mediaHeight: Int
+        mediaHeight: Int,
+        onSuccessUploadPerMedia: suspend () -> Unit,
     ) {
-        uploadMultipleMediaUseCase.postUpdateProgressManager = postUpdateProgressManager
-
         val mediumList = getMediumList(media, mediaList)
 
         /** Save Media Post Cache Reference */
         val setMediaUrl = mediumList.map { it.mediaURL }.toSet()
         saveMediaPostCacheUseCase(setMediaUrl)
 
-        uploadMultipleMediaUseCase.execute(mediumList)
+        /** Upload Async */
+        val newMediumList = uploadMultipleMediaUseCase.execute(mediumList, onSuccessUploadPerMedia)
 
-        uploadMultipleMediaUseCase.state.collectLatest { state ->
-            if(state.images is UploadMediaDataModel.Media.Success && state.videos is UploadMediaDataModel.Media.Success) {
-                val newMedia = state.images.mediumList + state.videos.mediumList
+        /** Rearrange Media */
+        val arrangedMedia = rearrangeMedia(newMediumList)
 
-                /** If all media is alr processed */
-                if(mediumList.size == newMedia.size) {
-                    /** Rearrange Media */
-                    val arrangedMedia = rearrangeMedia(newMedia)
+        /** Submit Post */
+        postUpdateProgressManager?.onSubmitPost()
 
-                    /** Submit Post */
-                    postUpdateProgressManager?.onSubmitPost()
-
-                    setRequestParams(
-                        mapOf(
-                            PARAM_INPUT to mapOf(
-                                PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                                PARAM_ID to if(id.isNullOrEmpty()) null else id,
-                                PARAM_AD_ID to null,
-                                PARAM_TYPE to INPUT_TYPE_CONTENT,
-                                PARAM_TOKEN to token,
-                                PARAM_AUTHOR_ID to authorId,
-                                PARAM_AUTHOR_TYPE to type,
-                                PARAM_CAPTION to caption,
-                                PARAM_MEDIA_WIDTH to mediaWidth,
-                                PARAM_MEDIA_HEIGHT to mediaHeight,
-                                PARAM_MEDIA to arrangedMedia,
-                            )
-                        )
-                    )
-
-                    val result = super.executeOnBackground()
-
-                    deleteMediaPostCacheUseCase(Unit)
-
-                    _state.update { SubmitPostResult.Success(result) }
-                }
-            }
-            else if (state.images is UploadMediaDataModel.Media.Fail) {
-                _state.update { SubmitPostResult.Fail(state.images.throwable) }
-            }
-            else if (state.videos is UploadMediaDataModel.Media.Fail) {
-                _state.update { SubmitPostResult.Fail(state.videos.throwable) }
-            }
-        }
+        setRequestParams(
+            mapOf(
+                PARAM_INPUT to mapOf(
+                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                    PARAM_AD_ID to null,
+                    PARAM_TYPE to INPUT_TYPE_CONTENT,
+                    PARAM_TOKEN to token,
+                    PARAM_AUTHOR_ID to authorId,
+                    PARAM_AUTHOR_TYPE to type,
+                    PARAM_CAPTION to caption,
+                    PARAM_MEDIA_WIDTH to mediaWidth,
+                    PARAM_MEDIA_HEIGHT to mediaHeight,
+                    PARAM_MEDIA to arrangedMedia,
+                )
+            )
+        )
     }
 
     /**

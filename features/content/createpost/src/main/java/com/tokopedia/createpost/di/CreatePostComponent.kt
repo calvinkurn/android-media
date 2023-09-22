@@ -12,6 +12,7 @@ import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.activity.ProductTagActivity
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderModule
 import dagger.BindsInstance
 import dagger.Component
 
@@ -26,6 +27,7 @@ import dagger.Component
         ContentCreationProductTagBindModule::class,
         ContentCreationProductTagModule::class,
         ContentFragmentFactoryModule::class,
+        CreationUploaderModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )
