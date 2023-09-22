@@ -532,55 +532,64 @@ class DynamicProductDetailViewModel @Inject constructor(
                 shopDomain = productParams.shopDomain
                 forceRefresh = refreshPage
                 userLocationCache = userLocationLocal
-                var hasQuantityEditor = false
+
                 getPdpLayout(
                     productId = productParams.productId.orEmpty(),
                     shopDomain = productParams.shopDomain.orEmpty(),
                     productKey = productParams.productName.orEmpty(),
                     whId = productParams.warehouseId.orEmpty(),
                     layoutId = layoutId,
-                    extParam = extParam
-                ).also { pdpLayout ->
-                    /**
-                     * When wishlist clicked, so viewModel should hit addWishlist api and refresh page.
-                     * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
-                     * so then, for keep wishlist value didn't replace from p1, so using previous value
-                     */
-                    val p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-                    val isWishlist = p1.data.isWishlist.orFalse()
-                    getDynamicProductInfoP1 = pdpLayout.layoutData.run {
-                        listOfParentMedia = data.media.toMutableList()
-                        copy(data = data.copy(isWishlist = isWishlist))
+                    extParam = extParam,
+                    onSuccess = {
+                        processPdpLayout(pdpLayout = it, urlQuery = urlQuery)
+                    },
+                    onError = {
+                        _productLayout.postValue(it.asFail())
                     }
-
-                    variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) {
-                        null
-                    } else {
-                        pdpLayout.variantData
-                    }
-                    parentProductId = pdpLayout.layoutData.parentProductId
-
-                    // Remove all component that can be remove by using p1 data
-                    // So we don't have to inflate to UI
-                    val processedList = DynamicProductDetailMapper.removeUnusedComponent(
-                        getDynamicProductInfoP1,
-                        variantData,
-                        isShopOwner(),
-                        pdpLayout.listOfLayout
-                    )
-
-                    // Render initial data
-                    _productLayout.postValue(processedList.asSuccess())
-                    hasQuantityEditor = processedList.any {
-                        it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC)
-                    }
-                }
-                // Then update the following, it will not throw anything when error
-                getProductP2(urlQuery, hasQuantityEditor)
+                )
             }.onFailure {
                 _productLayout.postValue(it.asFail())
             }
         }
+    }
+
+    private suspend fun processPdpLayout(pdpLayout: ProductDetailDataModel, urlQuery: String) {
+        /**
+         * When wishlist clicked, so viewModel should hit addWishlist api and refresh page.
+         * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
+         * so then, for keep wishlist value didn't replace from p1, so using previous value
+         */
+        val p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+        val isWishlist = p1.data.isWishlist.orFalse()
+        getDynamicProductInfoP1 = pdpLayout.layoutData.run {
+            listOfParentMedia = data.media.toMutableList()
+            copy(data = data.copy(isWishlist = isWishlist))
+        }
+
+        variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) {
+            null
+        } else {
+            pdpLayout.variantData
+        }
+        parentProductId = pdpLayout.layoutData.parentProductId
+
+        // Remove all component that can be remove by using p1 data
+        // So we don't have to inflate to UI
+        val processedList = DynamicProductDetailMapper.removeUnusedComponent(
+            getDynamicProductInfoP1,
+            variantData,
+            isShopOwner(),
+            pdpLayout.listOfLayout
+        )
+
+        // Render initial data
+        _productLayout.postValue(processedList.asSuccess())
+        val hasQuantityEditor = processedList.any {
+            it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC)
+        }
+
+        // Then update the following, it will not throw anything when error
+        getProductP2(urlQuery, hasQuantityEditor)
     }
 
     fun addToCart(atcParams: Any) {
@@ -696,7 +705,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 productId = it.basic.productID,
                 pdpSession = it.pdpSession,
                 shopId = it.basic.shopID,
-                hasQuantityEditor = it.basic.isTokoNow || hasQuantityEditor,
+                hasQuantityEditor = it.basic.isTokoNow || hasQuantityEditor
             )
             val p2OtherDeffered: Deferred<ProductInfoP2Other> =
                 getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
@@ -1131,7 +1140,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         productId: String,
         pdpSession: String,
         shopId: String,
-        hasQuantityEditor: Boolean,
+        hasQuantityEditor: Boolean
     ): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getP2DataAndMiniCartUseCase.get().executeOnBackground(
@@ -1167,9 +1176,11 @@ class DynamicProductDetailViewModel @Inject constructor(
         productKey: String,
         whId: String,
         layoutId: String,
-        extParam: String
-    ): ProductDetailDataModel {
-        getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(
+        extParam: String,
+        onSuccess: suspend (ProductDetailDataModel) -> Unit,
+        onError: (Throwable) -> Unit
+    ) = with(getPdpLayoutUseCase.get()) {
+        this.requestParams = GetPdpLayoutUseCase.createParams(
             productId,
             shopDomain,
             productKey,
@@ -1179,7 +1190,9 @@ class DynamicProductDetailViewModel @Inject constructor(
             extParam,
             generateTokoNowRequest(userLocationCache)
         )
-        return getPdpLayoutUseCase.get().executeOnBackground()
+        this.onSuccess = onSuccess
+        this.onError = onError
+        executeOnBackground()
     }
 
     private fun logP2Login(throwable: Throwable, productId: String) {

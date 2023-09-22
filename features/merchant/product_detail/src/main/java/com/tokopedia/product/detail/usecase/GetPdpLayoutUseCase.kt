@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -21,13 +22,15 @@ import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import kotlinx.coroutines.delay
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
 open class GetPdpLayoutUseCase @Inject constructor(
     private val gqlUseCase: MultiRequestGraphqlUseCase,
     @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String
-) : UseCase<ProductDetailDataModel>() {
+) : UseCase<Unit>() {
 
     companion object {
         const val QUERY = """
@@ -453,22 +456,57 @@ open class GetPdpLayoutUseCase @Inject constructor(
             }
     }
 
+    private val cachable = true
     var requestParams = RequestParams.EMPTY
 
+    var onSuccess: (suspend (ProductDetailDataModel) -> Unit)? = null
+    var onError: ((Throwable) -> Unit)? = null
+
     @GqlQuery("PdpGetLayoutQuery", QUERY)
-    override suspend fun executeOnBackground(): ProductDetailDataModel {
+    override suspend fun executeOnBackground() {
         gqlUseCase.clearRequest()
         val layoutId = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
         if (layoutId.isEmpty() && layoutIdTest.isNotBlank()) {
             requestParams.putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
         }
-
         gqlUseCase.addRequest(GraphqlRequest(PdpGetLayoutQuery(), ProductDetailLayout::class.java, requestParams.parameters))
+
+        if (cachable) {
+            processRequestCacheable()
+        } else {
+            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+
+            val gqlResponse = gqlUseCase.executeOnBackground()
+            processResponse(gqlResponse = gqlResponse)
+        }
+    }
+
+    private suspend fun processRequestCacheable() {
+        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build())
+        var gqlResponse = gqlUseCase.executeOnBackground()
+
+        val error = gqlResponse.getError(ProductDetailLayout::class.java)
+        val data = gqlResponse.getData<ProductDetailLayout?>(ProductDetailLayout::class.java).data
+        val hasCacheAvailable = error.isNullOrEmpty() && data != null
+
+        if (hasCacheAvailable) {
+            // the first emit cache to UI
+            processResponse(gqlResponse = gqlResponse)
+            Timber.tag("cacheable").d("get data from cache the first")
+            delay(3000)
+        } else {
+            Timber.tag("cacheable").d("failed get from cache cause it is null")
+        }
+
+        Timber.tag("cacheable").d("get from cloud")
+        // hit cloud to update cache and UI
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        gqlResponse = gqlUseCase.executeOnBackground()
+        processResponse(gqlResponse = gqlResponse)
+    }
 
+    private suspend fun processResponse(gqlResponse: GraphqlResponse) {
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
-
-        val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
             ?: PdpGetLayout()
@@ -480,13 +518,17 @@ open class GetPdpLayoutUseCase @Inject constructor(
         }
         val blacklistMessage = data.basicInfo.blacklistMessage
 
-        if (error != null && error.isNotEmpty()) {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
+        if (!error.isNullOrEmpty()) {
+            val error = MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
+            onError?.invoke(error)
         } else if (data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
-            throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
+            val error = TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
+            onError?.invoke(error)
         }
-        return mapIntoModel(data)
+
+        val dataModel = mapIntoModel(data)
+        onSuccess?.invoke(dataModel)
     }
 
     private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
