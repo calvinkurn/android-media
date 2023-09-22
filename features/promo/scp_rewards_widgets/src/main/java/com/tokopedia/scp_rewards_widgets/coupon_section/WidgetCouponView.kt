@@ -1,7 +1,6 @@
 package com.tokopedia.scp_rewards_widgets.coupon_section
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -9,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.utils.loadImageOrFallback
-import com.tokopedia.scp_rewards_common.utils.parseColor
+import com.tokopedia.scp_rewards_common.utils.parseColorOrFallback
 import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetCouponViewBinding
 import com.tokopedia.scp_rewards_widgets.model.FilterModel
@@ -24,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.tokopedia.scp_rewards_widgets.R as scp_rewards_widgetsR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class WidgetCouponView @JvmOverloads constructor(
     context: Context,
@@ -45,7 +45,7 @@ class WidgetCouponView @JvmOverloads constructor(
         onErrorAction: () -> Unit = {}
     ) {
         binding.tvTitle.text = benefitSectionModel.title
-        setBackgroundColor(parseColor(benefitSectionModel.backgroundColor) ?: Color.WHITE)
+        setBackgroundColor(context.parseColorOrFallback(benefitSectionModel.backgroundColor, unifycomponentsR.color.Unify_GN50))
 
         handleCouponFilters(
             benefitSectionModel.filters,
