@@ -294,7 +294,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         )
         val defaultCtaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            com.tokopedia.unifyprinciples.R.color.Unify_NN900
         )
         val defaultInformationIconColor = MethodChecker.getColor(
             itemView.context,
