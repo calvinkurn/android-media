@@ -127,8 +127,8 @@ class ShopAdsProductAdapter(
 
         private fun getIsImageShopBadgeVisible(shopProductModelItem: ShopProductModelItem): Boolean {
             return shopProductModelItem.isOfficial
-                || shopProductModelItem.isPMPro
-                || shopProductModelItem.isGoldShop
+                    || shopProductModelItem.isPMPro
+                    || shopProductModelItem.isGoldShop
         }
     }
 

@@ -251,9 +251,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         for (i in 0 until productCardModelList.size) {
                             if (i < ITEM_3) {
                                 val model = BannerShopProductUiModel(cpmData, productCardModelList[i],
-                                    cpmData.cpm.cpmShop.products[i].applinks,
-                                    cpmData.cpm.cpmShop.products[i].image.m_url,
-                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl)
+                                        cpmData.cpm.cpmShop.products[i].applinks,
+                                        cpmData.cpm.cpmShop.products[i].image.m_url,
+                                        cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl)
                                 val product = cpmData.cpm.cpmShop.products[i]
                                 model.apply {
                                     productId = product.id
@@ -421,10 +421,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun setShopAdsProduct(cpmModel: CpmModel, shopAdsProductView: ShopAdsWithOneProductView) {
         shopAdsProductView.setShopProductModel(
-            ShopProductModel(
-                title = cpmModel.data.firstOrNull()?.cpm?.widgetTitle ?: "",
-                items = getShopProductItem(cpmModel)
-            ), object : ShopAdsProductListener{
+                ShopProductModel(
+                        title = cpmModel.data.firstOrNull()?.cpm?.widgetTitle ?: "",
+                        items = getShopProductItem(cpmModel)
+                ), object : ShopAdsProductListener{
                 override fun onItemImpressed(position: Int) {
                     val cpmData = cpmModel.data.getOrNull(position)
                     impressionCount = position + 1
@@ -541,15 +541,15 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val list = arrayListOf<TopAdsCarouselModel.TopAdsCarouselItem>()
         cpmModel?.data?.forEachIndexed { index, it ->
             val item = TopAdsCarouselModel.TopAdsCarouselItem(
-                imageUrlOne = it.cpm.cpmShop.products.getOrNull(0)?.imageProduct?.imageUrl ?: "",
-                imageUrlTwo = it.cpm.cpmShop.products.getOrNull(1)?.imageProduct?.imageUrl ?: "",
-                brandIcon = it.cpm.cpmImage.fullEcs,
-                brandName = it.cpm.cpmShop.name,
-                isOfficial = it.cpm.cpmShop.isOfficial,
-                isPMPro = it.cpm.cpmShop.isPMPro,
-                goldShop = if (it.cpm.cpmShop.isPowerMerchant) 1 else 0,
-                impressHolder = it.cpm.cpmShop.imageShop,
-                position = index
+                    imageUrlOne = it.cpm.cpmShop.products.getOrNull(0)?.imageProduct?.imageUrl ?: "",
+                    imageUrlTwo = it.cpm.cpmShop.products.getOrNull(1)?.imageProduct?.imageUrl ?: "",
+                    brandIcon = it.cpm.cpmImage.fullEcs,
+                    brandName = it.cpm.cpmShop.name,
+                    isOfficial = it.cpm.cpmShop.isOfficial,
+                    isPMPro = it.cpm.cpmShop.isPMPro,
+                    goldShop = if (it.cpm.cpmShop.isPowerMerchant) 1 else 0,
+                    impressHolder = it.cpm.cpmShop.imageShop,
+                    position = index
             )
             list.add(item)
         }
@@ -702,74 +702,74 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val productList = cpmData.cpm.cpmShop.products
 
         adsBannerShopCardView?.setShopCardModel(
-            ShopCardModel(
-                id = cpmData.cpm.cpmShop.id,
-                name = cpmData.cpm.cpmShop.name,
-                image = cpmData.cpm.cpmImage.fullEcs,
-                location = context.getString(R.string.title_promote_by),
-                goldShop = if (cpmData.cpm.cpmShop.isPowerMerchant) 1 else 0,
-                productList = productList.map {
-                    ShopCardModel.ShopItemProduct(
-                        id = it.id,
-                        name = it.name,
-                        priceFormat = it.priceFormat,
-                        imageUrl = it.imageProduct.imageUrl
-                    )
-                },
-                isOfficial = cpmData.cpm.cpmShop.isOfficial,
-                isPMPro = cpmData.cpm.cpmShop.isPMPro,
-                impressHolder = cpmData.cpm.cpmShop.imageShop
-            ),
-            object : ShopCardListener {
-                override fun onItemImpressed() {
-                    impressionListener?.onImpressionHeadlineAdsItem(0, cpmData)
+                ShopCardModel(
+                    id = cpmData.cpm.cpmShop.id,
+                    name = cpmData.cpm.cpmShop.name,
+                    image = cpmData.cpm.cpmImage.fullEcs,
+                    location = context.getString(R.string.title_promote_by),
+                    goldShop = if (cpmData.cpm.cpmShop.isPowerMerchant) 1 else 0,
+                    productList = productList.map {
+                        ShopCardModel.ShopItemProduct(
+                                id = it.id,
+                                name = it.name,
+                                priceFormat = it.priceFormat,
+                                imageUrl = it.imageProduct.imageUrl
+                        )
+                    },
+                    isOfficial = cpmData.cpm.cpmShop.isOfficial,
+                    isPMPro = cpmData.cpm.cpmShop.isPMPro,
+                    impressHolder = cpmData.cpm.cpmShop.imageShop
+                ),
+                object : ShopCardListener {
+                    override fun onItemImpressed() {
+                        impressionListener?.onImpressionHeadlineAdsItem(0, cpmData)
 
-                    topAdsUrlHitter.hitImpressionUrl(
-                        className,
-                        cpmData.cpm.cpmImage.fullUrl,
-                        cpmData.cpm.cpmShop.id,
-                        cpmData.cpm.uri,
-                        cpmData.cpm?.cpmImage?.fullEcs
-                    )
-                }
+                        topAdsUrlHitter.hitImpressionUrl(
+                                className,
+                                cpmData.cpm.cpmImage.fullUrl,
+                                cpmData.cpm.cpmShop.id,
+                                cpmData.cpm.uri,
+                                cpmData.cpm?.cpmImage?.fullEcs
+                        )
+                    }
 
-                override fun onItemClicked() {
-                    topAdsBannerClickListener?.onBannerAdsClicked(0, appLink, cpmData)
+                    override fun onItemClicked() {
+                        topAdsBannerClickListener?.onBannerAdsClicked(0, appLink, cpmData)
 
-                    topAdsUrlHitter.hitClickUrl(
-                        className,
-                        adsClickUrl,
-                        cpmData.cpm.cpmShop.id,
-                        cpmData.cpm.uri,
-                        cpmData.cpm?.cpmImage?.fullEcs
-                    )
-                }
+                        topAdsUrlHitter.hitClickUrl(
+                                className,
+                                adsClickUrl,
+                                cpmData.cpm.cpmShop.id,
+                                cpmData.cpm.uri,
+                                cpmData.cpm?.cpmImage?.fullEcs
+                        )
+                    }
 
-                override fun onProductItemImpressed(productPreviewIndex: Int) {
-                    impressionListener?.onImpressionHeadlineAdsItem(productPreviewIndex, cpmData)
-                }
+                    override fun onProductItemImpressed(productPreviewIndex: Int) {
+                        impressionListener?.onImpressionHeadlineAdsItem(productPreviewIndex, cpmData)
+                    }
 
-                override fun onProductItemClicked(productPreviewIndex: Int) {
-                    val product = productList.getOrNull(productPreviewIndex) ?: return
+                    override fun onProductItemClicked(productPreviewIndex: Int) {
+                        val product = productList.getOrNull(productPreviewIndex) ?: return
 
-                    topAdsBannerClickListener?.onBannerAdsClicked(productPreviewIndex, product.applinks, cpmData)
+                        topAdsBannerClickListener?.onBannerAdsClicked(productPreviewIndex, product.applinks, cpmData)
 
-                    topAdsUrlHitter.hitClickUrl(
-                        className,
-                        product.imageProduct.imageClickUrl,
-                        product.id,
-                        product.uri,
-                        product.imageProduct.imageUrl
-                    )
+                        topAdsUrlHitter.hitClickUrl(
+                                className,
+                                product.imageProduct.imageClickUrl,
+                                product.id,
+                                product.uri,
+                                product.imageProduct.imageUrl
+                        )
                 }
             }
         )
     }
 
     private fun isEligible(cpmData: CpmData?) =
-        cpmData != null
-            && cpmData.cpm.cpmShop != null
-            && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
+            cpmData != null
+                    && cpmData.cpm.cpmShop != null
+                    && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
 
     private fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {
@@ -791,20 +791,20 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun setHeadlineDigitalData(context: Context, cpm: Cpm) {
         try {
             Glide.with(context)
-                .asBitmap()
-                .load(cpm.cpmImage.fullEcs)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        if (image != null) {
-                            image.setImageBitmap(resource)
-                            topAdsUrlHitter.hitImpressionUrl(className, cpm.cpmImage.fullUrl, "", "", "")
+                    .asBitmap()
+                    .load(cpm.cpmImage.fullEcs)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            if (image != null) {
+                                image.setImageBitmap(resource)
+                                topAdsUrlHitter.hitImpressionUrl(className, cpm.cpmImage.fullUrl, "", "", "")
+                            }
+                    }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+
                         }
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-
-                    }
-                })
+                    })
             name.text = escapeHTML(if (cpm.name == null) "" else cpm.name)
             description.text = escapeHTML(if (cpm.decription == null) "" else cpm.decription)
             cta_btn.text = if (cpm.cta == null) "" else cpm.cta
