@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
+import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
@@ -488,7 +489,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private suspend fun processRequestCacheable() {
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build())
         var gqlResponse = gqlUseCase.executeOnBackground()
-
         val error = gqlResponse.getError(ProductDetailLayout::class.java)
         val data = gqlResponse.getData<ProductDetailLayout?>(ProductDetailLayout::class.java).data
         val hasCacheAvailable = error.isNullOrEmpty() && data != null
@@ -502,7 +502,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         }
 
         // hit cloud to update cache and UI
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh = true))
         gqlResponse = gqlUseCase.executeOnBackground()
         processResponse(gqlResponse = gqlResponse)
         Timber.tag("cacheable").d("get from cloud")
