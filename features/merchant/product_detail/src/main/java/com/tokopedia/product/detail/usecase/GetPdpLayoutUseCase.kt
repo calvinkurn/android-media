@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
@@ -34,7 +35,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
 ) : UseCase<Unit>() {
 
     companion object {
-        const val REMOTE_CONFIG_KEY = "android_pdp_p1_should_cacheable"
         const val QUERY = """
             query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation, ${'$'}extParam: String, ${'$'}tokonow: pdpTokoNow) {
               pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation, extParam:${'$'}extParam, tokonow:${'$'}tokonow) {
@@ -459,7 +459,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
     }
 
     private val shouldCacheable
-        get() = remoteConfig.getBoolean(REMOTE_CONFIG_KEY)
+        get() = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
 
     var requestParams = RequestParams.EMPTY
 
@@ -501,11 +501,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
             Timber.tag("cacheable").d("failed get from cache cause it is null")
         }
 
-        Timber.tag("cacheable").d("get from cloud")
         // hit cloud to update cache and UI
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         gqlResponse = gqlUseCase.executeOnBackground()
         processResponse(gqlResponse = gqlResponse)
+        Timber.tag("cacheable").d("get from cloud")
     }
 
     private suspend fun processResponse(gqlResponse: GraphqlResponse) {

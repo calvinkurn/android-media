@@ -237,6 +237,7 @@ import com.tokopedia.product.detail.tracking.ShipmentTracking
 import com.tokopedia.product.detail.tracking.ShopAdditionalTracking
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
+import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -326,6 +327,11 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
@@ -352,6 +358,7 @@ open class DynamicProductDetailFragment :
     companion object {
 
         private const val DEBOUNCE_CLICK = 750
+        private const val DEBOUNCE_SUBMIT_LIST = 250L
         private const val TOOLBAR_TRANSITION_START = 10
         private const val TOOLBAR_TRANSITION_RANGES = 50
         private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
@@ -601,6 +608,8 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    private val updateUI = MutableSharedFlow<List<DynamicPdpDataModel>>()
+
     private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
         ProductMediaRecomBottomSheetManager(childFragmentManager, this)
     }
@@ -682,6 +691,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun observeData() {
+        observeUpdateUi()
         observeP1()
         observeP2Data()
         observeP2Login()
@@ -710,6 +720,14 @@ open class DynamicProductDetailFragment :
         observeProductMediaRecomData()
         observeBottomSheetEdu()
         observeAffiliateEligibility()
+    }
+
+    private fun observeUpdateUi() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            updateUI.distinctUntilChanged().debounce(DEBOUNCE_SUBMIT_LIST).collectLatest {
+                submitList(it)
+            }
+        }
     }
 
     private fun observeBottomSheetEdu() {
@@ -3305,7 +3323,14 @@ open class DynamicProductDetailFragment :
 
     private fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
-        submitList(newData)
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                updateUI.emit(newData)
+            }
+        } else {
+            submitList(newData)
+        }
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
