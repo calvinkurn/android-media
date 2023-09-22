@@ -285,6 +285,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
+    var impressionHolders = mutableListOf<String>()
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -527,6 +528,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.io) {
             runCatching {
+                impressionHolders.clear()
                 aPlusContentExpanded = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
                 productRecommSubViewModel.onResetAlreadyRecomHit()
                 shopDomain = productParams.shopDomain

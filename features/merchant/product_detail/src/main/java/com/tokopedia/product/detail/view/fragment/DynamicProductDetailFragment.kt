@@ -237,7 +237,6 @@ import com.tokopedia.product.detail.tracking.ShipmentTracking
 import com.tokopedia.product.detail.tracking.ShopAdditionalTracking
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
-import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -1132,16 +1131,19 @@ open class DynamicProductDetailFragment :
 
     private fun reloadMiniCart() {
         val hasQuantityEditor =
-            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
-                || (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true ||
+                (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
-        if (viewModel.getDynamicProductInfoP1 == null
-            || context == null
-            || !hasQuantityEditor
-            || firstOpenPage == true
-            || !viewModel.isUserSessionActive) return
+        if (viewModel.getDynamicProductInfoP1 == null ||
+            context == null ||
+            !hasQuantityEditor ||
+            firstOpenPage == true ||
+            !viewModel.isUserSessionActive
+        ) {
+            return
+        }
 
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
@@ -3324,7 +3326,7 @@ open class DynamicProductDetailFragment :
     private fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)) {
+        if (isCacheable()) {
             viewLifecycleOwner.lifecycleScope.launch {
                 updateUI.emit(newData)
             }
@@ -3626,6 +3628,14 @@ open class DynamicProductDetailFragment :
 
     override fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData) {
         APlusContentTracking.trackImpressAPlusMedia(trackerData, trackingQueue)
+    }
+
+    override fun getImpressionHolders(): MutableList<String> {
+        return viewModel.impressionHolders
+    }
+
+    override fun isCacheable(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
@@ -4751,7 +4761,6 @@ open class DynamicProductDetailFragment :
             }
         }
     }
-
 
     private fun clickButtonWhenVariantTokonow() {
         if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {

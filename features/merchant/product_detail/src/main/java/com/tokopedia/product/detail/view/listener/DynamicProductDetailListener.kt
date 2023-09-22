@@ -537,4 +537,12 @@ interface DynamicProductDetailListener {
      */
     fun onToggleAPlus(expanded: Boolean, trackerData: APlusImageUiModel.TrackerData)
     fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData)
+
+    /**
+     * PDP Impression
+     */
+    fun getImpressionHolders(): MutableList<String>
+
+    // remote config for pdp cacheable
+    fun isCacheable(): Boolean
 }

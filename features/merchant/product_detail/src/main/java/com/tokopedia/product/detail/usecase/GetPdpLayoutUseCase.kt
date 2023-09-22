@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -482,7 +483,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
             gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 
             val gqlResponse = gqlUseCase.executeOnBackground()
-            processResponse(gqlResponse = gqlResponse)
+            processResponse(gqlResponse = gqlResponse, fromCache = false)
         }
     }
 
@@ -490,13 +491,16 @@ open class GetPdpLayoutUseCase @Inject constructor(
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build())
         var gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ProductDetailLayout::class.java)
-        val data = gqlResponse.getData<ProductDetailLayout?>(ProductDetailLayout::class.java).data
+        val data = runCatching {
+            gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
+        }.getOrNull()
         val hasCacheAvailable = error.isNullOrEmpty() && data != null
 
         if (hasCacheAvailable) {
             // the first emit cache to UI
-            processResponse(gqlResponse = gqlResponse)
+            processResponse(gqlResponse = gqlResponse, fromCache = true)
             Timber.tag("cacheable").d("get data from cache the first")
+            // delay(3000)
         } else {
             Timber.tag("cacheable").d("failed get from cache cause it is null")
         }
@@ -504,11 +508,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
         // hit cloud to update cache and UI
         gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh = true))
         gqlResponse = gqlUseCase.executeOnBackground()
-        processResponse(gqlResponse = gqlResponse)
+        processResponse(gqlResponse = gqlResponse, fromCache = false)
         Timber.tag("cacheable").d("get from cloud")
     }
 
-    private suspend fun processResponse(gqlResponse: GraphqlResponse) {
+    private suspend fun processResponse(gqlResponse: GraphqlResponse, fromCache: Boolean) {
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
@@ -530,14 +534,31 @@ open class GetPdpLayoutUseCase @Inject constructor(
             onError?.invoke(error)
         }
 
-        val dataModel = mapIntoModel(data)
+        val dataModel = mapIntoModel(data, fromCache)
         onSuccess?.invoke(dataModel)
     }
 
-    private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
+    private fun mapIntoModel(data: PdpGetLayout, fromCache: Boolean): ProductDetailDataModel {
         val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components)
+            .filterNot {
+                if (fromCache) {
+                    ignoreComponentInCache.contains(it.type())
+                } else {
+                    false
+                }
+            }.toMutableList()
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
         val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
+    }
+
+    private val ignoreComponentInCache by lazy {
+        listOf(
+            ProductDetailConstant.PRODUCT_LIST,
+            ProductDetailConstant.VIEW_TO_VIEW,
+            ProductDetailConstant.PRODUCT_LIST_VERTICAL,
+            ProductDetailConstant.ONGOING_CAMPAIGN,
+            ProductDetailConstant.TOP_ADS
+        )
     }
 }
