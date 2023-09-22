@@ -121,6 +121,16 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         )
 
+        addToCartViewModel.addToCartMultiCheckoutResult.observe(
+            viewLifecycleOwner
+        ) { redirectUrl ->
+            context?.let { context ->
+                RouteManager.route(context, redirectUrl)
+            }
+            onLoadingAtc(false)
+        }
+
+
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
             when {
                 it.atcErrorPage.isShowErrorPage -> redirectToCart(categoryId.toString())
@@ -234,6 +244,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                                 navigateToPayment(it.data)
                             }
                         }
+
                         is Fail -> {
                             var throwable = it.throwable
                             if (it.throwable.message.isNullOrEmpty()) {
@@ -293,11 +304,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                     }
                     pendingPromoNavigation = ""
                 }
+
                 REQUEST_CODE_CART_DIGITAL -> {
                     data?.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { throwable ->
                         showErrorMessage(throwable as Throwable)
                     }
                 }
+
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
                     data?.let {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
@@ -309,6 +322,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                         }
                     }
                 }
+
                 REQUEST_CODE_OTP -> {
                     processExpressCheckout(true)
                 }

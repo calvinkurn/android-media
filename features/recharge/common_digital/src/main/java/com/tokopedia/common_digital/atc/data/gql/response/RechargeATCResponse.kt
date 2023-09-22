@@ -91,7 +91,10 @@ class RechargeATCAttribute(
     val channelId: Long = 0,
     @SerializedName("main_info")
     @Expose
-    val mainInfo: List<RechargeATCMainInfo> = emptyList()
+    val mainInfo: List<RechargeATCMainInfo> = emptyList(),
+    @SerializedName("redirect_url")
+    @Expose
+    var redirectUrl: String? = null,
 )
 
 class RechargeATCOpenPayment(

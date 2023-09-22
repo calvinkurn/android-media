@@ -517,6 +517,13 @@ class DigitalPDPDataPlanFragment :
             }
         }
 
+        viewModel.addToCartMultiCheckoutResult.observe(viewLifecycleOwner) {
+            hideLoadingDialog()
+            context?.let { context ->
+                RouteManager.route(context, it)
+            }
+        }
+
         viewModel.errorAtc.observe(viewLifecycleOwner) {
             hideLoadingDialog()
             if (it.atcErrorPage.isShowErrorPage) {

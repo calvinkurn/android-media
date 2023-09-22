@@ -318,6 +318,16 @@ open class EmoneyPdpFragment :
             }
         )
 
+        addToCartViewModel.addToCartMultiCheckoutResult.observe(
+            viewLifecycleOwner
+        ) { redirectUrl ->
+            context?.let { context ->
+                RouteManager.route(context, redirectUrl)
+            }
+            binding.emoneyFullPageLoadingLayout.hide()
+            binding.emoneyBuyWidget.onBuyButtonLoading(false)
+        }
+
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
             renderErrorMessage(MessageErrorException(it.title))
             binding.emoneyFullPageLoadingLayout.hide()

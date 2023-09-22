@@ -31,11 +31,15 @@ class DigitalAddToCartViewModel @Inject constructor(
     private val rechargeAnalytics: RechargeAnalytics
 ) : BaseViewModel(dispatcher) {
 
-    private var atcMultiCheckoutParam : String = ""
+    private var atcMultiCheckoutParam: String = ""
 
     private val _addToCartResult = MutableLiveData<Result<String>>()
     val addToCartResult: LiveData<Result<String>>
         get() = _addToCartResult
+
+    private val _addToCartMultiCheckoutResult = MutableLiveData<String>()
+    val addToCartMultiCheckoutResult: LiveData<String>
+        get() = _addToCartMultiCheckoutResult
 
     private val _errorAtc = MutableLiveData<ErrorAtc>()
     val errorAtc: LiveData<ErrorAtc>
@@ -57,18 +61,23 @@ class DigitalAddToCartViewModel @Inject constructor(
                         atcMultiCheckoutParam
                     )
                 }
-
-                resetAtcMultiCheckoutParam()
-
                 data?.let {
                     rechargeAnalytics.eventAddToCart(it)
                     if (it.atcError != null) {
+                        resetAtcMultiCheckoutParam()
                         _errorAtc.postValue(it.atcError)
                     } else {
-                        if (it.categoryId.isNotEmpty()) {
+                        if (atcMultiCheckoutParam.isNotEmpty()) {
+                            resetAtcMultiCheckoutParam()
+                            _addToCartMultiCheckoutResult.postValue(it.redirectUrl)
+                        } else if (it.categoryId.isNotEmpty()) {
                             _addToCartResult.postValue(Success(it.categoryId))
                         } else {
-                            _addToCartResult.postValue(Success(digitalCheckoutPassData.categoryId ?: ""))
+                            _addToCartResult.postValue(
+                                Success(
+                                    digitalCheckoutPassData.categoryId ?: ""
+                                )
+                            )
                         }
                     }
                     return@launchCatchError
