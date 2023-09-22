@@ -22,7 +22,6 @@ import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -493,7 +492,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
             // the first emit cache to UI
             processResponse(gqlResponse = gqlResponse)
             Timber.tag("cacheable").d("get data from cache the first")
-            delay(3000)
         } else {
             Timber.tag("cacheable").d("failed get from cache cause it is null")
         }
