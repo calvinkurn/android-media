@@ -55,6 +55,7 @@ object WidgetName {
     const val SLIDER_BANNER_HIGHLIGHT = "slider_banner_highlight"
     const val PRODUCT_HIGHLIGHT = "product_highlight"
     const val VOUCHER = "voucher"
+    const val BMGM_BANNER = "bmgm_banner_group" // Buy More Get More Widget Banner
     const val SHOWCASE_NAVIGATION_BANNER = "showcase_navigation_banner"
     const val ADVANCED_SLIDER_BANNER = "advanced_slider_banner"
     const val BANNER_PRODUCT_GROUP = "banner_product_group"
@@ -104,6 +105,7 @@ enum class WidgetNameEnum(val value: String) {
     SLIDER_BANNER_HIGHLIGHT("slider_banner_highlight"),
     PRODUCT_HIGHLIGHT("product_highlight"),
     VOUCHER("voucher"),
+    BMGM_BANNER("bmgm_banner_group"), // Buy More Get More Widget Banner
     SHOWCASE_NAVIGATION_BANNER("showcase_navigation_banner"),
     ADVANCED_SLIDER_BANNER("advanced_slider_banner"),
     BANNER_PRODUCT_GROUP("banner_product_group"),
