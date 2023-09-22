@@ -11,6 +11,7 @@ private typealias CarouselProductCardAdapter =
 
 internal class Adapter(
     private val typeFactory: CarouselProductCardTypeFactory,
+    private val onCurrentListChanged: () -> Unit,
 ): CarouselProductCardAdapter(DiffUtilItemCallback(typeFactory)) {
 
     override fun onCreateViewHolder(
@@ -37,5 +38,14 @@ internal class Adapter(
     fun getItemAt(position: Int): Visitable<CarouselProductCardTypeFactory>? {
         if (position !in currentList.indices) return null
         return getItem(position)
+    }
+
+    override fun onCurrentListChanged(
+        previousList: MutableList<Visitable<CarouselProductCardTypeFactory>>,
+        currentList: MutableList<Visitable<CarouselProductCardTypeFactory>>
+    ) {
+        super.onCurrentListChanged(previousList, currentList)
+
+        onCurrentListChanged()
     }
 }

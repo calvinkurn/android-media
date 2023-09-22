@@ -20,7 +20,9 @@ class CarouselProductCardView: FrameLayout {
     }
 
     private val adapter: Adapter by lazyThreadSafetyNone {
-        Adapter(CarouselProductCardTypeFactoryImpl())
+        Adapter(CarouselProductCardTypeFactoryImpl()) {
+            recyclerView?.requestLayout()
+        }
     }
 
     private val layoutManager: LinearLayoutManager by lazyThreadSafetyNone {
@@ -86,6 +88,8 @@ class CarouselProductCardView: FrameLayout {
         recyclerView?.setRecycledViewPool(carouselProductCardModel.recycledViewPool)
 
         adapter.submitList(carouselProductCardModel.itemList)
+
+        recyclerView?.layoutManager?.scrollToPosition(carouselProductCardModel.scrollToPosition)
     }
 
     fun recycle() {
