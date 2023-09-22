@@ -13,6 +13,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 
 object CartDataHelper {
 
@@ -500,5 +501,48 @@ object CartDataHelper {
         }
 
         return true
+    }
+
+    fun getListOfferId(cartDataList: ArrayList<Any>): List<Long> {
+        val listOfferId = arrayListOf<Long>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartItemHolderData -> {
+                    if (!data.isError) {
+                        if (data.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+                            if (!listOfferId.contains(data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)) {
+                                listOfferId.add(data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return listOfferId
+    }
+
+    fun getCartItemHolderDataAndIndexByOfferId(cartDataList: ArrayList<Any>, offerId: Long): Pair<Int, CartItemHolderData> {
+        var indexReturned = RecyclerView.NO_POSITION
+        var itemReturned = CartItemHolderData()
+        for ((index, data) in cartDataList.withIndex()) {
+            if (data is CartItemHolderData && data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId) {
+                indexReturned = index
+                itemReturned = data
+                break
+            }
+        }
+        return Pair(indexReturned, itemReturned)
+    }
+
+    fun getListProductByOfferId(cartDataList: ArrayList<Any>, offerId: Long): ArrayList<CartItemHolderData> {
+        val listProductByOfferId = arrayListOf<CartItemHolderData>()
+        loop@ for (data in cartDataList) {
+            if (data is CartItemHolderData && data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId) {
+                listProductByOfferId.add(data)
+            }
+        }
+
+        return listProductByOfferId
     }
 }

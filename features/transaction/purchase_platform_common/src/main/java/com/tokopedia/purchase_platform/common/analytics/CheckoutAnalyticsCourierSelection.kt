@@ -1000,4 +1000,27 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
             .build()
             .send()
     }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46781
+    fun sendClickSnkBmgmEvent(
+        offerId: String,
+        sessionId: String,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PG)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_SNK_BMGM)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION)
+            .setEventLabel(offerId)
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.CLICK_SNK_BMGM)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(ConstantTransactionAnalytics.CustomDimension.DIMENSION_SESSION_IRIS, sessionId)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
 }
