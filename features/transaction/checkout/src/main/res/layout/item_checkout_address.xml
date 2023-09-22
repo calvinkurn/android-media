@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_address_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginTop="16dp"
+        android:text="Alamat pengiriman kamu"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_checkout_address"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
+        app:icon_name="LOCATION_FILLED"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_header" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_address_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="18dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toStartOf="@id/btn_checkout_change_address"
+        app:layout_constraintStart_toEndOf="@id/ic_checkout_address"
+        app:layout_constraintTop_toTopOf="@id/ic_checkout_address"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Address" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_address_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="18dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toStartOf="@id/btn_checkout_change_address"
+        app:layout_constraintStart_toStartOf="@id/ic_checkout_address"
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_name"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Jl. K.H. Mas Mansyur No.11, RT.12/RW.11, Karet Jl. K.H. Mas Mansyur No.11, RT.12/RW.11, Karet" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_checkout_change_address"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="28dp"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_night_enable="@color/Unify_NN500"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@id/tv_checkout_address_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ic_checkout_address" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_checkout_address"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_info" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

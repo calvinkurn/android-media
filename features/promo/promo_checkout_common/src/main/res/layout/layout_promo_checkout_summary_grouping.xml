@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="8dp"
+    android:paddingTop="8dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_promo_checkout_summary_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toStartOf="@id/ic_promo_checkout_summary_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Kamu udah lebih hemat" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_promo_checkout_summary_button"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@id/tv_promo_checkout_summary_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_promo_checkout_summary_button" />
+
+    <FrameLayout
+        android:id="@+id/group_promo_checkout_summary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_promo_checkout_summary_group_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Promo Dipakai"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/divider_promo_checkout_summary_group"
+                android:layout_width="2dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/Unify_NN300"
+                app:layout_constraintBottom_toBottomOf="@id/ll_promo_checkout_summary_group"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_promo_checkout_summary_group_title" />
+
+            <LinearLayout
+                android:id="@+id/ll_promo_checkout_summary_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="-16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/divider_promo_checkout_summary_group"
+                app:layout_constraintTop_toBottomOf="@id/tv_promo_checkout_summary_group_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

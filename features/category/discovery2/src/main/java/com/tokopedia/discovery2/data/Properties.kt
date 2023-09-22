@@ -34,6 +34,9 @@ data class Properties(
         @SerializedName("type")
         val type: String? = null,
 
+        @SerializedName("is_disabled_auto_slide")
+        val isDisabledAutoSlide: Boolean? = null,
+
         @SerializedName("comp_type")
         val compType: String? = null,
 
