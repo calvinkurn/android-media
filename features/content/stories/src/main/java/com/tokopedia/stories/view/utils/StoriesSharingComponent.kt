@@ -10,27 +10,33 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 /**
  * @author by astidhiyaa on 15/08/23
  */
-class StoriesSharingComponent (rootView: View) {
-    private var mListener : Listener? = null
-    private val sharingSheet = UniversalShareBottomSheet.createInstance(rootView).apply {
-        init(object : ShareBottomsheetListener {
-            override fun onShareOptionClicked(shareModel: ShareModel) {
-                mListener?.onShareChannel(shareModel)
-            }
+class StoriesSharingComponent(rootView: View) {
+    private var mListener: Listener? = null
 
-            override fun onCloseOptionClicked() {
-                mListener?.onDismissEvent(this@StoriesSharingComponent)
-            }
-        })
-        enableDefaultShareIntent()
-    }
+    private val sharingSheet =
+        UniversalShareBottomSheet.createInstance(rootView).apply {
+            init(object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    mListener?.onShareChannel(shareModel)
+                }
+
+                override fun onCloseOptionClicked() {
+                    mListener?.onDismissEvent(this@StoriesSharingComponent)
+                }
+            })
+            enableDefaultShareIntent()
+        }
 
     fun setListener(listener: Listener) {
         mListener = listener
     }
 
-    fun show (fg: FragmentManager, data: StoriesDetailItem.Sharing, userId: String, storyId: String) {
-        if (sharingSheet.isAdded) return
+    fun show(
+        fg: FragmentManager,
+        data: StoriesDetailItem.Sharing,
+        userId: String,
+        storyId: String
+    ) {
         sharingSheet.setMetaData(
             tnImage = data.metadata.ogImageUrl,
             tnTitle = data.metadata.ogTitle,
@@ -43,6 +49,8 @@ class StoriesSharingComponent (rootView: View) {
             feature = "share",
         )
         sharingSheet.setOnDismissListener { mListener?.onDismissEvent(this@StoriesSharingComponent) }
+
+        if (sharingSheet.isAdded) return
         sharingSheet.show(fg, TAG)
     }
 

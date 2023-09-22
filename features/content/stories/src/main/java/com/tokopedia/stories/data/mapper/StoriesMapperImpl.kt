@@ -94,7 +94,9 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                         metadata = LinkProperties(
                             ogTitle = stories.meta.shareTitle,
                             ogImageUrl = stories.meta.shareImage,
-                            ogDescription = stories.meta.shareDescription
+                            ogDescription = stories.meta.shareDescription,
+                            deeplink = stories.appLink,
+                            desktopUrl = stories.webLink,
                         )
                     ),
                     productCount = stories.totalProductsFmt.ifEmpty { "0" },
