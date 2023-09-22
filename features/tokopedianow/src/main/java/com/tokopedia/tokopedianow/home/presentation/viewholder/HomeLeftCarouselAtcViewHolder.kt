@@ -177,7 +177,7 @@ class HomeLeftCarouselAtcViewHolder(
         if(element.realTimeRecom.productList.isNotEmpty()) {
             if(realtimeRecommendationView == null) {
                 val view = realTimeRecommendationViewStub
-                    .inflateView(R.layout.layout_tokopedianow_real_time_recommendation_carousel)
+                    .inflateView(R.layout.layout_tokopedianow_rtr_carousel_view)
                 realtimeRecommendationView = view.findViewById(R.id.real_time_recommendation_carousel)
             }
 
