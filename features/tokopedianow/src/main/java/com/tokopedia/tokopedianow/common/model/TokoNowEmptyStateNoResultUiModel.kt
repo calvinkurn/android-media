@@ -6,7 +6,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
 
-class TokoNowEmptyStateNoResultUiModel(
+data class TokoNowEmptyStateNoResultUiModel(
     val id: String = "",
     val activeFilterList: List<Option>? = null,
     val defaultTitle: String = "",
