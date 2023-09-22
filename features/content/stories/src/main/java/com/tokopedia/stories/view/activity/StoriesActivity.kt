@@ -77,7 +77,7 @@ class StoriesActivity : BaseActivity() {
         _binding = ActivityStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         openFragment()
-        binding.vStoriesOnboarding.ivOnboardClose.setOnClickListener {
+        binding.vStoriesOnboarding.root.setOnClickListener {
             binding.vStoriesOnboarding.root.gone()
         }
     }
