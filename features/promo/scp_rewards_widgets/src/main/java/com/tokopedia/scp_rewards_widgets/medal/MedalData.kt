@@ -1,7 +1,7 @@
 package com.tokopedia.scp_rewards_widgets.medal
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.scp_rewards_common.EARNED_BADGE
+import com.tokopedia.scp_rewards_common.constants.EARNED_BADGE
 
 data class MedalData(
     val id: Int? = null,

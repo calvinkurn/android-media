@@ -31,8 +31,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.constants.TrackerConstants
 import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
-import com.tokopedia.scp_rewards.common.utils.launchLink
-import com.tokopedia.scp_rewards.common.utils.launchWeblink
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.analytics.MedalDetailAnalyticsImpl
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
@@ -48,6 +46,8 @@ import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeaderData
 import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
+import com.tokopedia.scp_rewards_common.utils.launchLink
+import com.tokopedia.scp_rewards_common.utils.launchWeblink
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitSectionModel
 import com.tokopedia.scp_rewards_widgets.model.RecommendedMedalSectionModel

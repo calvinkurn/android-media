@@ -21,8 +21,8 @@ import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
-import com.tokopedia.scp_rewards_common.camelToSnakeCase
-import com.tokopedia.scp_rewards_common.parseJsonKey
+import com.tokopedia.scp_rewards_common.utils.camelToSnakeCase
+import com.tokopedia.scp_rewards_common.utils.parseJsonKey
 import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 import com.tokopedia.usecase.RequestParams
