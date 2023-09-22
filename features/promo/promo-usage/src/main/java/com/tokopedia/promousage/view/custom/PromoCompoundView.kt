@@ -55,6 +55,7 @@ class PromoCompoundView @JvmOverloads constructor(
 
     private var scaleAnimator: ValueAnimator = ValueAnimator.ofFloat()
     private var overlayAnimator: ValueAnimator = ValueAnimator.ofFloat()
+
 //    private var viewOverlay: ViewGroupOverlay? = null
 //    private var overlayDrawable: ColorDrawable? = null
     private val longPressHandler = Handler()
@@ -194,16 +195,21 @@ class PromoCompoundView @JvmOverloads constructor(
                                 promo.message
                             }
                         )
+                    ).plus(
+                        if (promo.useSecondaryPromo) {
+                            promo.secondaryPromo.promoItemInfos
+                        } else {
+                            promo.promoItemInfos
+                        }.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
                     )
                 }
 
                 else -> {
                     if (promo.useSecondaryPromo) {
                         promo.secondaryPromo.promoItemInfos
-                            .filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
                     } else {
-                        promo.promoItemInfos.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
-                    }
+                        promo.promoItemInfos
+                    }.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
                 }
             }
             llPromoInfo.removeAllViews()
@@ -230,8 +236,8 @@ class PromoCompoundView @JvmOverloads constructor(
                     promoInfo.title.toSpannableHtmlString(context)
                 llPromoInfo.addView(promoInfoChildView.root)
             }
-            if (promo.state !is PromoItemState.Loading
-                && llPromoInfo.childCount.isMoreThanZero()
+            if (promo.state !is PromoItemState.Loading &&
+                llPromoInfo.childCount.isMoreThanZero()
             ) {
                 llPromoInfo.visible()
             } else {
@@ -348,8 +354,8 @@ class PromoCompoundView @JvmOverloads constructor(
                         promo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
                     }
                     val isPromoCtaValid = if (promo.useSecondaryPromo) {
-                        promo.secondaryPromo.cta.text.isNotBlank()
-                            && promo.secondaryPromo.cta.appLink.isNotBlank()
+                        promo.secondaryPromo.cta.text.isNotBlank() &&
+                            promo.secondaryPromo.cta.appLink.isNotBlank()
                     } else {
                         promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
                     }
@@ -471,15 +477,12 @@ class PromoCompoundView @JvmOverloads constructor(
 
                         scaleAnimator.addListener(object : Animator.AnimatorListener {
                             override fun onAnimationRepeat(animator: Animator) {
-
                             }
 
                             override fun onAnimationCancel(animator: Animator) {
-
                             }
 
                             override fun onAnimationStart(animator: Animator) {
-
                             }
 
                             override fun onAnimationEnd(animator: Animator) {
@@ -489,15 +492,12 @@ class PromoCompoundView @JvmOverloads constructor(
 
                         overlayAnimator.addListener(object : Animator.AnimatorListener {
                             override fun onAnimationRepeat(animator: Animator) {
-
                             }
 
                             override fun onAnimationCancel(animator: Animator) {
-
                             }
 
                             override fun onAnimationStart(animator: Animator) {
-
                             }
 
                             override fun onAnimationEnd(animator: Animator) {
