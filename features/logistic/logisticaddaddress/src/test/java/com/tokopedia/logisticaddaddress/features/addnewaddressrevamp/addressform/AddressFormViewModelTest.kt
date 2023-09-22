@@ -22,9 +22,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.Runs
 import io.mockk.coEvery
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
@@ -313,8 +311,7 @@ class AddressFormViewModelTest {
             )
         )
 
-        // Given
-        coEvery { addressFormViewModel.saveEditAddress(any(), any()) } just Runs
+        // Givens
         coEvery { validatePinpoint(any()) } returns mockResponse
 
         // When
