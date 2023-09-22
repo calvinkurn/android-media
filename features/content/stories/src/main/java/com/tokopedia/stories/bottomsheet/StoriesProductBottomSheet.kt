@@ -9,11 +9,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -37,6 +39,7 @@ import com.tokopedia.utils.date.DateUtil
 import kotlinx.coroutines.flow.collectLatest
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 /**
  * @author by astidhiyaa on 25/07/23
@@ -50,6 +53,10 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
 
     private val productAdapter by lazyThreadSafetyNone {
         ContentTaggedProductBottomSheetAdapter(this)
+    }
+
+    private val newHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
     override fun onCreateView(
@@ -157,6 +164,7 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
 
     override fun onResume() {
         super.onResume()
+        binding.root.maxHeight = newHeight
         viewModel.submitAction(StoriesUiAction.FetchProduct)
     }
 
@@ -207,6 +215,7 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
 
     companion object {
         const val TAG = "StoriesProductBottomSheet"
+        private const val HEIGHT_PERCENT = 0.8
 
         fun get(fragmentManager: FragmentManager): StoriesProductBottomSheet? {
             return fragmentManager.findFragmentByTag(TAG) as? StoriesProductBottomSheet
