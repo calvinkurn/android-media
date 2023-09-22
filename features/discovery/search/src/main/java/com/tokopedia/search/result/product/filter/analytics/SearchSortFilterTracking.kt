@@ -17,6 +17,8 @@ object SearchSortFilterTracking {
     const val DROPDOWN_QUICK_FILTER_COMPONENT_ID = "04.07.00.00"
     private const val DROPDOWN_QUICK_FILTER_VALUE_NAME = "FilterQuickDD"
 
+    const val SORT_COMPONENT_ID = "04.10.00.00"
+
     private val filterTrackingData by lazy {
         FilterTrackingData(
             FilterEventTracking.Event.CLICK_SEARCH_RESULT,
