@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.tokopedia.discovery.common.reimagine.ReimagineRollence
-import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
@@ -125,13 +123,25 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
             sortBottomSheet = null
 
+            val sortParam = selectedSort.toMapParam()
+
+            trackEventApplySort(sortParam)
+
             val parameter = filterController.getParameter() +
-                selectedSort.toMapParam() +
+                sortParam +
                 manualFilterToggleMap() +
                 componentIdMap(SearchSortFilterTracking.SORT_COMPONENT_ID)
 
             applyParameter(parameter)
         }
+    }
+
+    private fun trackEventApplySort(sortParam: Map<String, String>) {
+        SearchSortFilterTracking.eventApplySort(
+            keyword = getSearchParameter()?.getSearchQuery().orEmpty(),
+            pageSource = pageSource,
+            selectedSort = sortParam,
+        )
     }
 
     private fun getSelectedOption(optionList: List<IOption>?): Sort? =

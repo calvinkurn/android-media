@@ -18,6 +18,7 @@ object SearchSortFilterTracking {
     private const val DROPDOWN_QUICK_FILTER_VALUE_NAME = "FilterQuickDD"
 
     const val SORT_COMPONENT_ID = "04.10.00.00"
+    private const val SORT_VALUE_NAME = "SortPage"
 
     private val filterTrackingData by lazy {
         FilterTrackingData(
@@ -57,6 +58,24 @@ object SearchSortFilterTracking {
             searchFilters = searchSorts+applyFilters+searchFilters,
         )
             .click(TrackApp.getInstance().gtm)
+    }
+
+    @JvmStatic
+    fun eventApplySort(
+        keyword: String,
+        pageSource: String,
+        selectedSort: Map<String, String>?,
+    ) {
+        val searchSorts = selectedSort.toSearchFilterString()
+
+        SearchSortFilterTrackingModel(
+            keyword = keyword,
+            valueId = "0",
+            valueName = SORT_VALUE_NAME,
+            componentId = SORT_COMPONENT_ID,
+            dimension90 = pageSource,
+            searchFilters = searchSorts,
+        ).click(TrackApp.getInstance().gtm)
     }
 
     @JvmStatic
