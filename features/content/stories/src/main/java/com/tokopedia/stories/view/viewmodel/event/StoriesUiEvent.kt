@@ -14,11 +14,10 @@ sealed interface StoriesUiEvent {
 
     data class NavigateEvent(val appLink: String) : StoriesUiEvent
     data class ShowVariantSheet(val product: ContentTaggedProductUiModel) : StoriesUiEvent
-    //TODO() : add click listener if needed
     data class ShowErrorEvent(val message: Throwable) : StoriesUiEvent
     data class ShowInfoEvent(val message: Int) : StoriesUiEvent
-    data class ErrorGroupPage(val throwable: Throwable): StoriesUiEvent
-    data class ErrorDetailPage(val throwable: Throwable): StoriesUiEvent
+    data class ErrorGroupPage(val throwable: Throwable, val onClick: () -> Unit): StoriesUiEvent
+    data class ErrorDetailPage(val throwable: Throwable, val onClick: () -> Unit): StoriesUiEvent
     data class ErrorFetchCaching(val throwable: Throwable): StoriesUiEvent
     data class ErrorSetTracking(val throwable: Throwable): StoriesUiEvent
 

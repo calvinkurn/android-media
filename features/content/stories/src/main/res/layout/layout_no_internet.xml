@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:translationZ="1dp"
     android:background="@color/Unify_Static_Black">
 
     <View
@@ -29,12 +29,6 @@
         app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_timer" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/categories_loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="loader_circle_1, loader_circle_2, loader_circle_3, loader_react_1, loader_react_2, loader_react_3" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_circle_1"

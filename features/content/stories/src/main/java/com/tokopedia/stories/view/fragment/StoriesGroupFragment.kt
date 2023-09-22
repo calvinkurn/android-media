@@ -153,12 +153,12 @@ class StoriesGroupFragment @Inject constructor(
                 when (event) {
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     is StoriesUiEvent.ErrorGroupPage -> {
-                        if (event.throwable.isNetworkError) {
-                            setNoInternet(true)
-                        } else {
-                            setFailed(true)
-                        }
                         showPageLoading(false)
+                        if (event.throwable.isNetworkError) {
+                            setNoInternet(true) { event.onClick }
+                        } else {
+                            setFailed(true)  { event.onClick }
+                        }
                     }
                     StoriesUiEvent.EmptyGroupPage -> {
                         // TODO handle empty data here
@@ -178,7 +178,7 @@ class StoriesGroupFragment @Inject constructor(
     ) {
         if (prevState == state || pagerAdapter.getCurrentData().size == state.groupItems.size) return
 
-        setNoInternet(false)
+        setNoInternet(false){}
         setFailed(false)
 
         pagerAdapter.setStoriesGroup(state)
@@ -199,17 +199,23 @@ class StoriesGroupFragment @Inject constructor(
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
-    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
+    private fun setNoInternet(isShow: Boolean, onClick : () -> Unit = {}) = with(binding.layoutStoriesNoInet) {
         root.showWithCondition(isShow)
+        icCloseLoading.setOnClickListener {
+            activity?.finish()
+        }
         btnStoriesNoInetRetry.setOnClickListener {
-            viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
+            onClick()
         }
     }
 
-    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
+    private fun setFailed(isShow: Boolean, onClick : () -> Unit = {}) = with(binding.layoutStoriesFailed) {
         root.showWithCondition(isShow)
+        icCloseLoading.setOnClickListener {
+            activity?.finish()
+        }
         btnStoriesFailedLoad.setOnClickListener {
-            viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
+            onClick()
         }
     }
 

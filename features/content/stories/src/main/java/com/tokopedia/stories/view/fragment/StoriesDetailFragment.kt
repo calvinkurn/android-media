@@ -186,8 +186,8 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (event.throwable.isNetworkError) setNoInternet(true)
-                        else setFailed(true)
+                        if (event.throwable.isNetworkError) setNoInternet(true) { event.onClick }
+                        else setFailed(true) { event.onClick }
                         showPageLoading(false)
                     }
 
@@ -215,14 +215,14 @@ class StoriesDetailFragment @Inject constructor(
                         sheet.setListener(object : StoriesSharingComponent.Listener {
                             override fun onDismissEvent(view: StoriesSharingComponent) {
                                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
-                                analytic?.onCloseShareSheet(viewModel.storyId)
+                                analytic.onCloseShareSheet(viewModel.storyId)
                             }
 
                             override fun onShareChannel(shareModel: ShareModel) {
-                                analytic?.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
+                                analytic.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
                             }
                         })
-                        analytic?.onClickShareIcon(viewModel.storyId)
+                        analytic.onClickShareIcon(viewModel.storyId)
                         sheet.show(childFragmentManager, event.metadata, viewModel.userId, viewModel.storyId)
                     }
                     is StoriesUiEvent.ShowErrorEvent -> {
@@ -266,14 +266,10 @@ class StoriesDetailFragment @Inject constructor(
         ) return
 
         setNoInternet(false)
-        setNoContent(false)
 
         val currentItem = state.detailItems[state.selectedDetailPosition]
 
-        if (state.detailItems.isEmpty()) {
-            // TODO handle error empty data state here
-            return
-        }
+        if (state.detailItems.isEmpty()) { return }
 
         storiesDetailsTimer(state)
         renderAuthor(currentItem)
@@ -290,7 +286,7 @@ class StoriesDetailFragment @Inject constructor(
                         listener = object : ImageLoaderStateListener {
                             override fun successLoad() {
                                 contentIsLoaded()
-                                analytic?.sendImpressionStoriesContent(currContent.id)
+                                analytic.sendImpressionStoriesContent(currContent.id)
                             }
 
                             override fun failedLoad() {
@@ -461,7 +457,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {
-        analytic?.sendClickStoryCircleEvent(
+        analytic.sendClickStoryCircleEvent(
             entryPoint = mParentPage.entryPoint,
             currentCircle = data.groupName,
             promotions = listOf(
@@ -476,11 +472,11 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackImpressionDetail(storiesId: String) {
-        analytic?.sendImpressionStoriesContent(storiesId)
+        analytic.sendImpressionStoriesContent(storiesId)
     }
 
     private fun trackTapPreviousDetail() {
-        analytic?.sendClickTapPreviousContentEvent(
+        analytic.sendClickTapPreviousContentEvent(
             entryPoint = mParentPage.entryPoint,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
@@ -490,7 +486,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackTapNextDetail() {
-        analytic?.sendClickTapNextContentEvent(
+        analytic.sendClickTapNextContentEvent(
             entryPoint = mParentPage.entryPoint,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
@@ -523,26 +519,16 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
+    private fun setNoInternet(isShow: Boolean, onClick: () -> Unit = {}) = with(binding.layoutStoriesNoInet) {
         root.showWithCondition(isShow)
-        btnStoriesNoInetRetry.setOnClickListener {
-            viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
-        }
+        icCloseLoading.setOnClickListener { activity?.finish() }
+        btnStoriesNoInetRetry.setOnClickListener { onClick() }
     }
 
-    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
+    private fun setFailed(isShow: Boolean, onClick: () -> Unit = {}) = with(binding.layoutStoriesFailed) {
         root.showWithCondition(isShow)
-        btnStoriesFailedLoad.setOnClickListener {
-            viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
-        }
-    }
-
-    private fun setNoContent(isShow: Boolean) = with(binding.vStoriesNoInet) {
-        apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {}
-        }
-        showWithCondition(isShow)
+        icCloseLoading.setOnClickListener { activity?.finish() }
+        btnStoriesFailedLoad.setOnClickListener { onClick() }
     }
 
     override fun onDestroyView() {

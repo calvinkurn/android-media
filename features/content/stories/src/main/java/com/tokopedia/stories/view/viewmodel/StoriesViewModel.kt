@@ -1,5 +1,6 @@
 package com.tokopedia.stories.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -211,13 +212,18 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleMainData(selectedGroup: Int) {
+        Log.d("hello in", "no error ${_groupPos.value}")
+
         mLatestTrackPosition = -1
         _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
             setInitialData()
             setCachingData()
         }) { exception ->
-            _storiesEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
+            _storiesEvent.emit(StoriesUiEvent.ErrorDetailPage(exception){
+                Log.d("hello in", "error")
+                handleMainData(_groupPos.value)
+            })
         }
     }
 
@@ -515,7 +521,7 @@ class StoriesViewModel @AssistedInject constructor(
 
             if (mGroup == StoriesGroupItem()) _storiesEvent.emit(StoriesUiEvent.EmptyGroupPage)
         }) { exception ->
-            _storiesEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
+            _storiesEvent.emit(StoriesUiEvent.ErrorGroupPage(exception){ launchRequestInitialData() })
         }
     }
 
