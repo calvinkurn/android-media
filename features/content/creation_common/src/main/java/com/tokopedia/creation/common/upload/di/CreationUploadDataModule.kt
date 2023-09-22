@@ -1,6 +1,7 @@
 package com.tokopedia.creation.common.upload.di
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
@@ -30,11 +31,13 @@ class CreationUploadDataModule {
     fun provideCreationUploadQueueRepository(
         dispatchers: CoroutineDispatchers,
         mutex: Mutex,
+        gson: Gson,
         creationUploadQueueDatabase: CreationUploadQueueDatabase,
     ): CreationUploadQueueRepository {
         return CreationUploadQueueRepositoryImpl(
             dispatchers = dispatchers,
             mutex = mutex,
+            gson = gson,
             creationUploadQueueDatabase = creationUploadQueueDatabase
         )
     }

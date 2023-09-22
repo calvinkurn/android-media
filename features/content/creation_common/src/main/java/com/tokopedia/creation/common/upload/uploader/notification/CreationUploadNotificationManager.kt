@@ -5,23 +5,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.ForegroundInfo
 import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
-import com.tokopedia.creation.common.upload.model.orEmpty
 import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 import com.tokopedia.resources.common.R as resourcescommonR
 
 /**
@@ -30,6 +24,7 @@ import com.tokopedia.resources.common.R as resourcescommonR
 abstract class CreationUploadNotificationManager(
     private val context: Context,
     private val dispatchers: CoroutineDispatchers,
+    private val gson: Gson,
 ){
 
     private val notificationManager = context.getSystemService(
@@ -71,7 +66,7 @@ abstract class CreationUploadNotificationManager(
     private fun generatePendingIntentToReceiver(action: CreationUploadReceiver.Action): PendingIntent {
         val intent = CreationUploadReceiver.getIntent(
             context,
-            uploadData.orEmpty(),
+            uploadData?.mapToJson(gson).orEmpty(),
             action
         )
 
@@ -101,7 +96,7 @@ abstract class CreationUploadNotificationManager(
             try {
                 val bitmap = Glide.with(context)
                     .asBitmap()
-                    .load(uploadData.coverUri.ifEmpty { uploadData.mediaUri })
+                    .load(uploadData.notificationCover)
                     .submit(COVER_PREVIEW_SIZE, COVER_PREVIEW_SIZE)
                     .get()
 

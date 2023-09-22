@@ -19,6 +19,9 @@ interface CreationUploadQueueDao {
     @Insert
     suspend fun insert(entity: CreationUploadQueueEntity)
 
-    @Query("DELETE FROM $CREATION_UPLOAD_QUEUE WHERE creation_id = :creationId")
-    suspend fun delete(creationId: String)
+    @Query("DELETE FROM $CREATION_UPLOAD_QUEUE WHERE queue_id IN (SELECT queue_id FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp DESC LIMIT 1)")
+    suspend fun deleteTopQueue()
+
+    @Query("DELETE FROM $CREATION_UPLOAD_QUEUE WHERE queue_id = :queueId")
+    suspend fun delete(queueId: Int)
 }
