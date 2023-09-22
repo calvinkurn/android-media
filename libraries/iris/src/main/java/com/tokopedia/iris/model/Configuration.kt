@@ -32,3 +32,8 @@ data class PerfConfiguration(
         samplingRate.roundToInt()
     }
 }
+
+data class PerfWhitelistConfiguration(
+    @SerializedName("whitelist_user_id") var whitelistUserId: List<String> = listOf(),
+    @SerializedName("whitelist_version_suffix") var whiteListVersion: List<String> = listOf()
+)
