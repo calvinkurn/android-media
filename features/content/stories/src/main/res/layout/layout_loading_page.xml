@@ -22,7 +22,7 @@
         android:id="@+id/ic_close_loading"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="23dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
