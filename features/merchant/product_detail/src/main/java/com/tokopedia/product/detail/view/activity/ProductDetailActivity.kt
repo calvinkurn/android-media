@@ -6,10 +6,12 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -60,9 +62,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
         @JvmStatic
         fun createIntent(context: Context, productUrl: String) =
-                Intent(context, ProductDetailActivity::class.java).apply {
-                    data = Uri.parse(productUrl)
-                }
+            Intent(context, ProductDetailActivity::class.java).apply {
+                data = Uri.parse(productUrl)
+            }
 
         @JvmStatic
         fun createIntent(context: Context, shopDomain: String, productKey: String) = Intent(context, ProductDetailActivity::class.java).apply {
@@ -94,15 +96,16 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var campaignId: String? = null
     private var variantId: String? = null
 
-    //Performance Monitoring
+    // Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringP1: PerformanceMonitoring? = null
     private var performanceMonitoringP2Data: PerformanceMonitoring? = null
 
-    //Temporary (disscussion/talk, review/ulasan)
+    // Temporary (disscussion/talk, review/ulasan)
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
 
+    private var blocksPerformanceTrace: BlocksPerformanceTrace? = null
     var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
 
     @Inject
@@ -152,6 +155,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
 
+    fun getBlocksPerformanceMonitoring(): BlocksPerformanceTrace? = blocksPerformanceTrace
     fun goToHomePageClicked() {
         if (isTaskRoot) {
             RouteManager.route(this, ApplinkConst.HOME)
@@ -168,8 +172,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private fun initializeComponent(): ProductDetailComponent {
         val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
         return DaggerProductDetailComponent.builder()
-                .baseAppComponent(baseComponent)
-                .build()
+            .baseAppComponent(baseComponent)
+            .build()
     }
 
     override fun getParentViewResourceID(): Int {
@@ -178,8 +182,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     fun addNewFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().add(parentViewResourceID, fragment, PRODUCT_VIDEO_DETAIL_TAG)
-                .addToBackStack(PRODUCT_VIDEO_DETAIL_TAG)
-                .commit()
+            .addToBackStack(PRODUCT_VIDEO_DETAIL_TAG)
+            .commit()
         hidePdpFragment()
     }
 
@@ -222,22 +226,22 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(
-            productId,
-            warehouseId,
-            shopDomain,
-            productKey,
-            isFromDeeplink,
-            trackerAttribution,
-            trackerListName,
-            affiliateString = affiliateString,
-            affiliateUniqueId = affiliateUniqueId,
-            deeplinkUrl,
-            layoutId,
-            extParam,
-            getSource(),
-            affiliateChannel = affiliateChannel,
-            campaignId = campaignId,
-            variantId = variantId
+        productId,
+        warehouseId,
+        shopDomain,
+        productKey,
+        isFromDeeplink,
+        trackerAttribution,
+        trackerListName,
+        affiliateString = affiliateString,
+        affiliateUniqueId = affiliateUniqueId,
+        deeplinkUrl,
+        layoutId,
+        extParam,
+        getSource(),
+        affiliateChannel = affiliateChannel,
+        campaignId = campaignId,
+        variantId = variantId
     )
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
@@ -275,7 +279,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
                     productKey = segmentUri[segmentUri.size - 1]
                 }
             } else if (uri.pathSegments.size >= 2 && // might be tokopedia.com/
-                    uri.host != AFFILIATE_HOST) {
+                uri.host != AFFILIATE_HOST
+            ) {
                 val segmentUri = uri.pathSegments
                 if (segmentUri.size > 1) {
                     shopDomain = segmentUri[segmentUri.size - 2]
@@ -332,19 +337,28 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         val uri = intent.data
         val uriString = uri?.toString() ?: ""
         ProductDetailServerLogger.logNewRelicProductCannotOpen(
-                uriString,
-                t
+            uriString,
+            t
         )
         finish()
     }
 
     private fun initPLTMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
-                ProductDetailConstant.PDP_RESULT_PLT_NETWORK_METRICS,
-                ProductDetailConstant.PDP_RESULT_PLT_RENDER_METRICS)
+            ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
+            ProductDetailConstant.PDP_RESULT_PLT_NETWORK_METRICS,
+            ProductDetailConstant.PDP_RESULT_PLT_RENDER_METRICS
+        )
         pageLoadTimePerformanceMonitoring?.startMonitoring(ProductDetailConstant.PDP_RESULT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+
+        blocksPerformanceTrace = BlocksPerformanceTrace(
+            this,
+            "perf_trace_pdp",
+            lifecycleScope,
+            null,
+            null
+        )
     }
 
     private fun initPerformanceMonitoring() {

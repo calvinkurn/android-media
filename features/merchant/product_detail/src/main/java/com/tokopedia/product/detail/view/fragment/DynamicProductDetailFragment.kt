@@ -183,6 +183,7 @@ import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
+import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadyHit
 import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadySwipe
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -1114,16 +1115,19 @@ open class DynamicProductDetailFragment :
 
     private fun reloadMiniCart() {
         val hasQuantityEditor =
-            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
-                || (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
+            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true ||
+                (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
                     ?.data
                     ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
-        if (viewModel.getDynamicProductInfoP1 == null
-            || context == null
-            || !hasQuantityEditor
-            || firstOpenPage == true
-            || !viewModel.isUserSessionActive) return
+        if (viewModel.getDynamicProductInfoP1 == null ||
+            context == null ||
+            !hasQuantityEditor ||
+            firstOpenPage == true ||
+            !viewModel.isUserSessionActive
+        ) {
+            return
+        }
 
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
@@ -3305,6 +3309,20 @@ open class DynamicProductDetailFragment :
 
     private fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
+
+        var position = 0
+        (getRecyclerView()?.layoutManager as? CenterLayoutManager)?.let { layoutManager ->
+            val firstVisibleItemPositions = IntArray(layoutManager.getSpanCount())
+            layoutManager.findFirstVisibleItemPositions(firstVisibleItemPositions)
+            val firstVisibleItemPositionSpan0 = firstVisibleItemPositions[0]
+            val firstVisibleItemPositionSpan1 = firstVisibleItemPositions[1]
+            position = firstVisibleItemPositionSpan1
+        }
+        getProductDetailActivity()?.getBlocksPerformanceMonitoring()?.setBlock(
+            newData.take(
+                position
+            )
+        )
         submitList(newData)
     }
 
@@ -4726,7 +4744,6 @@ open class DynamicProductDetailFragment :
             }
         }
     }
-
 
     private fun clickButtonWhenVariantTokonow() {
         if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
