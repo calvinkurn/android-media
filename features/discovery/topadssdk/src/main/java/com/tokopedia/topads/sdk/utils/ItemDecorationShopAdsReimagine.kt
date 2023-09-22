@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.toPx
 
-internal class ItemDecorationShopAdsReimagine: RecyclerView.ItemDecoration() {
+internal class ItemDecorationShopAdsReimagine(private val leftMarginFirstPosition: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -22,7 +22,7 @@ internal class ItemDecorationShopAdsReimagine: RecyclerView.ItemDecoration() {
         val isFirstPosition = parent.getChildAdapterPosition(view) == 0
         val isLastPosition = itemCount > 0 && itemPosition == itemCount - 1
 
-        outRect.left = if (isFirstPosition) 16.toPx() else 4.toPx()
+        outRect.left = if (isFirstPosition) leftMarginFirstPosition else 4.toPx()
         outRect.right = if (isLastPosition) 16.toPx() else 4.toPx()
     }
 }

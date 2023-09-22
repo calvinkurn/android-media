@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.utils
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.unifycomponents.toPx
 
 internal object ApplyItemDecorationReimagineHelper {
 
@@ -20,15 +21,15 @@ internal object ApplyItemDecorationReimagineHelper {
 
     private fun RecyclerView.addItemDecoratorShopAdsReimagine() {
         removeItemDecorationIfExist()
-        addItemDecoration(ItemDecorationShopAdsReimagine())
+        addItemDecoration(ItemDecorationShopAdsReimagine(16.toPx()))
     }
 
     private fun RecyclerView.addItemDecoratorShopCardAdsReimagine() {
         removeItemDecorationIfExist()
-        addItemDecoration(ItemDecorationShopCardAdsReimagine())
+        addItemDecoration(ItemDecorationShopAdsReimagine(0.toPx()))
     }
 
-    private fun RecyclerView.removeItemDecorationIfExist(){
+    private fun RecyclerView.removeItemDecorationIfExist() {
         if (itemDecorationCount > 0) removeItemDecorationAt(0)
     }
 }
