@@ -1,8 +1,18 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Transformation
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager.widget.ViewPager.SCROLL_STATE_DRAGGING
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carousel.CarouselUnify
@@ -14,7 +24,10 @@ import com.tokopedia.catalogcommon.util.DrawableExtension.createGradientDrawable
 import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -33,33 +46,11 @@ class HeroBannerViewHolder(
     private var isAutosliding = true
     private var brandImageCount = 0
     private var brandDescriptions: List<String> = emptyList()
+    private val bannerAdapter = ImageSliderAdapter(itemView.context)
 
     init {
         binding?.carouselBanner?.setupCarouselBanner()
         binding?.bannerIndicator?.setupCarouselIndicator()
-    }
-
-    private fun CarouselUnify.setupCarouselBanner() {
-        indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
-        infinite = true
-        bannerItemMargin = Int.ZERO
-        onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
-            override fun onActiveIndexChanged(prev: Int, current: Int) {
-                if (!isAutosliding) {
-                    binding?.bannerIndicator?.setBannerIndicators(brandImageCount, current)
-                    isAutosliding = true
-                    binding?.bannerIndicator?.continueAnimation()
-                    binding?.tfSubtitleBannerPremium?.text =
-                        brandDescriptions.getOrNull(current).orEmpty()
-                }
-            }
-        }
-        onDragEventListener = object : CarouselUnify.OnDragEventListener {
-            override fun onDrag(progress: Float) {
-                isAutosliding = false
-                binding?.bannerIndicator?.pauseAnimation()
-            }
-        }
     }
 
     private fun BannerIndicator.setupCarouselIndicator() {
@@ -67,7 +58,7 @@ class HeroBannerViewHolder(
             override fun onChangePosition(position: Int) {
                 if (isAutosliding) {
                     val imgPosition = position % brandImageCount
-                    binding?.carouselBanner?.activeIndex = imgPosition
+                    binding?.carouselBanner?.setCurrentItem(imgPosition.inc(), true)
                     binding?.tfSubtitleBannerPremium?.text =
                         brandDescriptions.getOrNull(imgPosition).orEmpty()
                 }
@@ -118,8 +109,79 @@ class HeroBannerViewHolder(
         } else {
             binding?.renderRegularBrandData(element)
         }
-        binding?.carouselBanner?.addImages(ArrayList(element.brandImageUrls))
+
+        bannerAdapter.setImages(element.brandImageUrls)
+        binding?.carouselBanner?.currentItem = 1
         binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
         binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
     }
+
+    private fun ViewPager.setupCarouselBanner() {
+        (layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = "1:1"
+        adapter = bannerAdapter
+        addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                if (bannerAdapter.count > Int.ONE) {
+                    if (position == bannerAdapter.count.orZero().dec()) {
+                        setCurrentItem(1, false)
+                    } else if (position == Int.ZERO) {
+                        setCurrentItem(bannerAdapter.count - 2, false)
+                    }
+                }
+                var indicatorPosition = position.dec()
+                if (indicatorPosition >= brandImageCount) indicatorPosition = 0
+                binding?.tfSubtitleBannerPremium?.text =
+                    brandDescriptions.getOrNull(indicatorPosition).orEmpty()
+                binding?.bannerIndicator?.setBannerIndicators(brandImageCount, indicatorPosition)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                if (state == SCROLL_STATE_DRAGGING) {
+                    binding?.bannerIndicator?.pauseAnimation()
+                } else {
+                    binding?.bannerIndicator?.continueAnimation()
+                }
+            }
+        })
+    }
+}
+
+class ImageSliderAdapter(private val context: Context): PagerAdapter() {
+
+    private var images: MutableList<String> = mutableListOf()
+
+    override fun getCount() = images.size
+
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val inflater = LayoutInflater.from(context)
+        val itemView = inflater.inflate(R.layout.carousel_item_sample_layout, container, false)
+        val imageView = itemView.findViewById<ImageView>(R.id.iuBanner)
+
+        imageView.loadImage(images[position])
+        container.addView(itemView)
+        return itemView
+    }
+
+    override fun isViewFromObject(view: View, obj: Any): Boolean {
+        return view == obj
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+        container.removeView(obj as View)
+    }
+
+    fun setImages(imageList: List<String>) {
+        if (imageList.size == Int.ONE) {
+            images = imageList.toMutableList()
+        } else {
+            images = mutableListOf()
+            images.add(imageList.lastOrNull().orEmpty())
+            images.addAll(imageList)
+            images.add(imageList.firstOrNull().orEmpty())
+        }
+        notifyDataSetChanged()
+    }
+
 }
