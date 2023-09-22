@@ -317,7 +317,7 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         productCardModel.layoutStrategy.renderCardHeight(this, cardViewProductCard)
 
         if (productCardModel.forceLightModeColor) {
-            forceLightModeColor(this)
+            forceLightModeColor()
         }
     }
 
@@ -421,24 +421,22 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         cardViewProductCard?.setOnLongClickListener(l)
     }
 
-    private fun forceLightModeColor(productCard: ProductCardGridView?) {
-        val context = productCard?.context ?: return
+    private fun forceLightModeColor() {
+        val context = context ?: return
 
-        if (productCard != null) {
-            cardViewProductCard?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_white))
-            productName?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
-            productPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
-            labelDiscount?.forceLightRed()
-            productSlashPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_44))
-            soldCount?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
-            rating?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
-            gimmick?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_YN400))
-            salesRatingFloatLine?.setBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_32))
-            textViewIntegrity?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
-            textViewFulfillment?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
-            textViewStockLabel?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
-            progressBarStock?.trackDrawable?.apply { setColor(ContextCompat.getColor(context, R.color.dms_static_light_NN100)) }
-            buttonAddToCart?.applyColorMode(ColorMode.LIGHT_MODE)
-        }
+        cardViewProductCard?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_white))
+        productName?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+        productPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+        labelDiscount?.forceLightRed()
+        productSlashPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_44))
+        soldCount?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        rating?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        gimmick?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_YN400))
+        salesRatingFloatLine?.setBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_32))
+        textViewIntegrity?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        textViewFulfillment?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        textViewStockLabel?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        progressBarStock?.trackDrawable?.apply { setColor(ContextCompat.getColor(context, R.color.dms_static_light_NN100)) }
+        buttonAddToCart?.applyColorMode(ColorMode.LIGHT_MODE)
     }
 }
