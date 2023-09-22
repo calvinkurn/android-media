@@ -54,7 +54,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
@@ -77,22 +76,22 @@ internal const val ITEM_3 = 3
 internal const val ITEM_4 = 4
 
 open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
-    internal var topAdsBannerClickListener: TopAdsBannerClickListener? = null
-    internal var impressionListener: TopAdsItemImpressionListener? = null
+    protected var topAdsBannerClickListener: TopAdsBannerClickListener? = null
+    protected var impressionListener: TopAdsItemImpressionListener? = null
     private var topAdsShopFollowBtnClickListener: TopAdsShopFollowBtnClickListener? = null
     private var topAdsAddToCartClickListener: TopAdsAddToCartClickListener? = null
     private var shopWidgetAddToCartClickListener: ShopWidgetAddToCartClickListener? = null
-    internal var bannerAdsAdapter: BannerAdsAdapter? = null
+    protected var bannerAdsAdapter: BannerAdsAdapter? = null
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
     private var showProductShimmer: Boolean = false
-    internal var hasAddToCartButton: Boolean = false
+    protected var hasAddToCartButton: Boolean = false
     private var isFlashSaleTokoLabel: Boolean = false
     private var isShowCta: Boolean = true
     var impressionCount: Int = 0
     private var flashSaleTimerData: Date? = null
     private var topAdsFlashSaleTimer:TimerUnifySingle? = null
-    internal var linearLayoutMerchantVoucher:LinearLayout? = null
-    internal val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+    protected var linearLayoutMerchantVoucher:LinearLayout? = null
+    protected val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context.applicationContext)
     }
 
