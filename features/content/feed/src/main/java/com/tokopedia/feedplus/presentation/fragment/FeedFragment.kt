@@ -1184,9 +1184,7 @@ class FeedFragment :
             it.rvFeedPost.removeOnScrollListener(contentScrollListener)
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
             it.rvFeedPost.itemAnimator = null
-            it.rvFeedPost.edgeEffectFactory = OverscrollEdgeEffectFactory {
-                if (isCdp && !feedPostViewModel.hasNext) activity?.finish()
-            }
+            it.rvFeedPost.edgeEffectFactory = OverscrollEdgeEffectFactory()
         }
     }
 

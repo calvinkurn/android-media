@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.presentation.util
 
 import android.graphics.Canvas
-import android.util.Log
 import android.widget.EdgeEffect
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
@@ -25,7 +24,7 @@ private const val FLING_TRANSLATION_MAGNITUDE = 0.5f
  * Replace edge effect by a bounce
  */
 class OverscrollEdgeEffectFactory(
-    private val onReleaseBeyondThreshold: () -> Unit
+    private val onReleaseBeyondThreshold: () -> Unit = {}
 ) : RecyclerView.EdgeEffectFactory() {
 
     override fun createEdgeEffect(recyclerView: RecyclerView, direction: Int): EdgeEffect {
@@ -50,7 +49,6 @@ class OverscrollEdgeEffectFactory(
                 // Translate the recyclerView with the distance
                 val sign = if (direction == DIRECTION_BOTTOM) -1 else 1
                 val translationYDelta = sign * deltaDistance * recyclerView.height * OVERSCROLL_TRANSLATION_MAGNITUDE
-                Log.d("Overscroll", "TranslationYDelta: $translationYDelta")
                 recyclerView.translationY += translationYDelta
 
                 translationAnim?.cancel()
@@ -60,7 +58,6 @@ class OverscrollEdgeEffectFactory(
                 super.onRelease()
                 // The finger is lifted. Start the animation to bring translation back to the resting state.
                 val sign = if (direction == DIRECTION_BOTTOM) -1 else 1
-                Log.d("Overscroll", "Translation Y: ${recyclerView.translationY}, Height: ${recyclerView.height}")
                 if (abs(recyclerView.translationY) >= recyclerView.height * RELEASE_TRANSLATION_OVERSCROLL_HEIGHT_THRESHOLD) {
                     onReleaseBeyondThreshold()
                 }
