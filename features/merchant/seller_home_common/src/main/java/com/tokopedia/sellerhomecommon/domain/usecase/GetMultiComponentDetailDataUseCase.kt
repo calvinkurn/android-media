@@ -2,7 +2,6 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhomecommon.common.WidgetType
-import com.tokopedia.sellerhomecommon.domain.mapper.MultiComponentMapper
 import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentData
@@ -24,8 +23,7 @@ import kotlin.coroutines.CoroutineContext
 class GetMultiComponentDetailDataUseCase @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getMultiLineGraphUseCase: Lazy<GetMultiLineGraphUseCase>,
-    private val getPieChartDataUseCase: Lazy<GetPieChartDataUseCase>,
-    private val multiComponentMapper: Lazy<MultiComponentMapper>
+    private val getPieChartDataUseCase: Lazy<GetPieChartDataUseCase>
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
@@ -92,7 +90,9 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
                     GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 getPieChartDataUseCase.get().executeOnBackground().firstOrNull()
             } catch (e: Throwable) {
-                null
+                PieChartDataUiModel::class.java.newInstance().apply {
+                    error = e.message ?: ""
+                }
             }
         }
     }
@@ -113,7 +113,9 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
                 )
                 useCase.executeOnBackground().firstOrNull()
             } catch (e: Throwable) {
-                null
+                MultiLineGraphDataUiModel::class.java.newInstance().apply {
+                    error = e.message ?: ""
+                }
             }
         }
     }

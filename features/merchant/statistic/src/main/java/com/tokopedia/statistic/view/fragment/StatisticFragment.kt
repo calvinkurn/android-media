@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.gms.common.util.DeviceProperties
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -146,6 +147,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val mViewModel: StatisticViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
+
+    private val viewPool: RecycledViewPool by lazy {
+        RecycledViewPool()
+    }
+
     private var mLayoutManager: StatisticLayoutManager? = null
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private val defaultStartDate by lazy {
@@ -528,6 +534,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (!tab.isLoaded) {
             mViewModel.getMultiComponentDetailTabWidgetData(tab)
         }
+    }
+
+    override fun getRvViewPool(): RecycledViewPool {
+        return viewPool
     }
 
     fun setSelectedWidget(widget: String) {

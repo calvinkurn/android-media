@@ -2,11 +2,13 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -75,7 +77,6 @@ class MultiComponentViewHolder(
         binding.vpShcMultiComponent.visible()
         binding.loaderShcMultiComponent.gone()
 
-
         onTabSelectedListener?.let {
             binding.tabsShcMultiComponent.tabLayout.removeOnTabSelectedListener(it)
         }
@@ -83,6 +84,11 @@ class MultiComponentViewHolder(
         onTabSelectedListener = object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.position?.let { selectedIndex ->
+                    val ticker = element.data?.tabs?.getOrNull(selectedIndex)?.ticker.orEmpty()
+                    binding.tvShcMultiComponent.shouldShowWithAction(ticker.isNotEmpty()) {
+                        binding.tvShcMultiComponent.text = ticker
+                    }
+
                     element.data?.selectedTabPosition = selectedIndex
                     binding.vpShcMultiComponent.currentItem = selectedIndex
                     element.data?.tabs?.getOrNull(selectedIndex)?.let {
@@ -139,6 +145,7 @@ class MultiComponentViewHolder(
 
     interface Listener {
         fun multiComponentTabSelected(tab: MultiComponentTab)
+        fun getRvViewPool(): RecyclerView.RecycledViewPool?
     }
 
 

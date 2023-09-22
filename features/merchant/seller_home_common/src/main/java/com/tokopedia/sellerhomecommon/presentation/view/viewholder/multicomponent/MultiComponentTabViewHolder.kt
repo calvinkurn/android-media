@@ -40,6 +40,8 @@ class MultiComponentTabViewHolder(
                     context?.let {
                         layoutManager = LinearLayoutManager(it, RecyclerView.VERTICAL, false)
                     }
+
+                    setupViewPool(true)
                     isNestedScrollingEnabled = false
                 }
 
@@ -48,6 +50,18 @@ class MultiComponentTabViewHolder(
         } else {
             viewBinding?.rvShcMultiComponentView?.gone()
             viewBinding?.loaderShcMultiComponentView?.visible()
+        }
+    }
+
+    // Hanselable purpose
+    private fun setupViewPool(activate: Boolean) {
+        if (activate) {
+            viewBinding?.rvShcMultiComponentView?.run {
+                listener.getRvViewPool()?.let {
+                    setRecycledViewPool(it)
+                }
+                (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
+            }
         }
     }
 }

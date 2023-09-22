@@ -31,6 +31,7 @@ class MultiComponentMapper @Inject constructor(
                     MultiComponentTab(
                         id = it.id,
                         title = it.title,
+                        ticker = it.ticker,
                         components = it.components.map { component ->
                             val tabConfig = getTabConfig(component.configuration)
                             MultiComponentData(

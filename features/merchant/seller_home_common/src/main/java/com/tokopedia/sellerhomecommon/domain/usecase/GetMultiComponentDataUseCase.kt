@@ -53,6 +53,7 @@ class GetMultiComponentDataUseCase(
                   tabs {
                     id
                     title
+                    ticker
                     components {
                       componentType
                       dataKey

@@ -31,6 +31,8 @@ data class GetMultiComponentTab(
     val id: String = String.EMPTY,
     @SerializedName("title")
     val title: String = String.EMPTY,
+    @SerializedName("ticker")
+    val ticker: String = String.EMPTY,
     @SerializedName("components")
     val components: List<MultiComponent> = listOf()
 )

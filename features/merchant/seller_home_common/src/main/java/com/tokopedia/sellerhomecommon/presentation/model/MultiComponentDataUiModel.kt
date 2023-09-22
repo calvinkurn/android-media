@@ -17,6 +17,7 @@ data class MultiComponentDataUiModel(
 data class MultiComponentTab(
     val id: String,
     val title: String,
+    val ticker: String,
     val components: List<MultiComponentData>,
     var isLoaded: Boolean,
     var isError: Boolean,

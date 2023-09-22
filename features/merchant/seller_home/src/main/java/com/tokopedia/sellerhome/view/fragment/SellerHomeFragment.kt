@@ -22,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -933,6 +934,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun multiComponentTabSelected(tab: MultiComponentTab) {
         // No - op
+    }
+
+    override fun getRvViewPool(): RecycledViewPool? {
+        return null
     }
 
     fun setNavigationNavigationView(navigationView: View?, otherMenuView: View?) {
