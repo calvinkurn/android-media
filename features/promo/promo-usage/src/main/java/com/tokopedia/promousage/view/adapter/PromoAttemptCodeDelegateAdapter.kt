@@ -66,7 +66,7 @@ internal class PromoAttemptCodeDelegateAdapter(
                         item.label.toSpannableHtmlString(tauVoucherCode.context)
                 }
                 if (item.attemptedPromoCode.isNotBlank()) {
-                    tauVoucherCode.editText.setText(item.attemptedPromoCode)
+                    tauVoucherCode.editText.setText(item.errorAttemptedPromoCode)
                 }
                 bottomDivider.isVisible = !item.hasAttemptedPromo
                 if (item.errorMessage.isNotBlank()) {
@@ -94,7 +94,7 @@ internal class PromoAttemptCodeDelegateAdapter(
             binding.tauVoucherCode.editText.maxLines = SINGLE_LINE
             binding.tauVoucherCode.editText.inputType = InputType.TYPE_CLASS_TEXT
             binding.tauVoucherCode.editText.filters = arrayOf(InputFilter.AllCaps())
-            binding.tauVoucherCode.editText.setOnTouchListener { _ , motionEvent ->
+            binding.tauVoucherCode.editText.setOnTouchListener { _, motionEvent ->
                 val drawables = binding.tauVoucherCode.editText.compoundDrawables
                 val rightDrawable = drawables.getOrNull(RIGHT_DRAWABLE_INDEX)
                 val hasUseVoucherCodeCta = rightDrawable != null

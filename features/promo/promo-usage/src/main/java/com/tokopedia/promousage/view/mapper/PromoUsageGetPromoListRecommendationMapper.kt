@@ -157,6 +157,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             PromoAttemptItem(
                 id = PromoPageSection.SECTION_INPUT_PROMO_CODE,
                 label = attemptedPromoSection?.title ?: "",
+                errorAttemptedPromoCode = attemptedPromoError.code,
                 errorMessage = attemptedPromoError.message,
                 hasOtherSection = hasRecommendedOrOtherSection,
                 hasAttemptedPromo = attemptedPromoSection?.coupons?.isNotEmpty() ?: false

@@ -78,6 +78,8 @@ import com.tokopedia.promousage.view.viewmodel.PromoCtaUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoPageUiState
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.promousage.view.viewmodel.UsePromoRecommendationUiAction
+import com.tokopedia.promousage.view.viewmodel.getAttemptItem
+import com.tokopedia.promousage.view.viewmodel.getAttemptedPromos
 import com.tokopedia.promousage.view.viewmodel.getRecommendationItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -1031,8 +1033,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             promoRequest = promoRequest,
             chosenAddress = chosenAddress,
             attemptedPromoCode = attemptedPromoCode,
-            onSuccess = {
-                // no-op
+            onSuccess = { items ->
+                processAndSendClickPakaiPromoPromoCodeEvent(items)
             }
         )
     }
@@ -1125,6 +1127,21 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             userId = userSession.userId,
             entryPoint = entryPoint,
             clickedPromo = clickedPromo
+        )
+    }
+
+    private fun processAndSendClickPakaiPromoPromoCodeEvent(items: List<DelegateAdapterItem>) {
+        val attemptItem = items.getAttemptItem()
+        val attemptedPromo = if (attemptItem != null) {
+            items.getAttemptedPromos().firstOrNull { it.code == attemptItem.attemptedPromoCode }
+        } else {
+            null
+        }
+        promoUsageAnalytics.sendClickPakaiPromoPromoCodeEvent(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            attemptItem = attemptItem,
+            attemptedPromo = attemptedPromo
         )
     }
 

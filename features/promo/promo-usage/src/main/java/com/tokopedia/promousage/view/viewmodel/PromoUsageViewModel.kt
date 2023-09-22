@@ -16,6 +16,7 @@ import com.tokopedia.promousage.data.response.GetPromoListRecommendationResponse
 import com.tokopedia.promousage.data.response.PromoListRecommendation
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
+import com.tokopedia.promousage.domain.entity.PromoAttemptedError
 import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
@@ -23,6 +24,7 @@ import com.tokopedia.promousage.domain.entity.PromoPageSection
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
+import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
@@ -122,7 +124,7 @@ internal class PromoUsageViewModel @Inject constructor(
         promoRequest: PromoRequest? = null,
         chosenAddress: ChosenAddress? = null,
         attemptedPromoCode: String = "",
-        onSuccess: (() -> Unit)? = null
+        onSuccess: ((List<DelegateAdapterItem>) -> Unit)? = null
     ) {
         if (attemptedPromoCode.isBlank()) {
             _promoPageUiState.postValue(PromoPageUiState.Initial)
@@ -156,11 +158,10 @@ internal class PromoUsageViewModel @Inject constructor(
                 PromoUsageIdlingResource.decrement()
                 val response = getPromoListRecommendationUseCase(param)
                 if (response.promoListRecommendation.data.resultStatus.message == PromoListRecommendation.STATUS_OK) {
-                    handleLoadPromoListSuccess(response)
-                    onSuccess?.invoke()
+                    handleLoadPromoListSuccess(attemptedPromoCode, response, onSuccess)
                 } else {
                     if (response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_COUPON_LIST_EMPTY) {
-                        handleLoadPromoListSuccess(response)
+                        handleLoadPromoListSuccess(attemptedPromoCode, response, onSuccess)
                     } else {
                         PromoUsageLogger.logOnErrorLoadPromoUsagePage(
                             PromoErrorException(message = "response status error")
@@ -177,7 +178,11 @@ internal class PromoUsageViewModel @Inject constructor(
         )
     }
 
-    private fun handleLoadPromoListSuccess(response: GetPromoListRecommendationResponse) {
+    private fun handleLoadPromoListSuccess(
+        attemptedPromoCode: String,
+        response: GetPromoListRecommendationResponse,
+        onSuccess: ((List<DelegateAdapterItem>) -> Unit)? = null
+    ) {
         val tickerInfo = getPromoListRecommendationMapper
             .mapPromoListRecommendationResponseToPageTickerInfo(response)
         var items = getPromoListRecommendationMapper
@@ -206,15 +211,16 @@ internal class PromoUsageViewModel @Inject constructor(
         }
         items = sortPromo(items, true)
         items = addTncPromo(items)
+        items = updateAttemptedPromo(items, attemptedPromoCode, attemptedPromoCodeError)
         if (initialSelectedPromoCodes == null) {
             initialSelectedPromoCodes = items.getSelectedPromoCodes()
         }
+        onSuccess?.invoke(items)
         _promoPageUiState.postValue(
             PromoPageUiState.Success(
                 tickerInfo = tickerInfo,
                 items = items,
                 savingInfo = savingInfo,
-                promoAttemptedError = attemptedPromoCodeError,
                 isReload = true
             )
         )
@@ -901,6 +907,28 @@ internal class PromoUsageViewModel @Inject constructor(
         } else {
             items.filterNot { it is PromoTncItem }
         }
+    }
+
+    private fun updateAttemptedPromo(
+        items: List<DelegateAdapterItem>,
+        attemptedPromoCode: String,
+        attemptedPromoCodeError: PromoAttemptedError
+    ): List<DelegateAdapterItem> {
+        val attemptItem = items.getAttemptItem()
+        if (attemptItem != null) {
+            return items.map { item ->
+                if (item is PromoAttemptItem) {
+                    return@map item.copy(
+                        attemptedPromoCode = attemptedPromoCode,
+                        errorAttemptedPromoCode = attemptedPromoCodeError.code,
+                        errorMessage = attemptedPromoCodeError.message
+                    )
+                } else {
+                    return@map item
+                }
+            }
+        }
+        return items
     }
 
     fun onClickAccordionHeader(clickedItem: PromoAccordionHeaderItem) {
@@ -1705,7 +1733,7 @@ internal class PromoUsageViewModel @Inject constructor(
         promoRequest: PromoRequest? = null,
         chosenAddress: ChosenAddress? = null,
         attemptedPromoCode: String,
-        onSuccess: (() -> Unit)? = null
+        onSuccess: ((List<DelegateAdapterItem>) -> Unit)? = null
     ) {
         loadPromoList(
             promoRequest = promoRequest,
@@ -1818,7 +1846,11 @@ internal fun List<DelegateAdapterItem>.getTncItem(): PromoTncItem? {
     return filterIsInstance<PromoTncItem>().firstOrNull()
 }
 
-internal fun List<DelegateAdapterItem>.getAttemptedItems(): List<PromoItem> {
+internal fun List<DelegateAdapterItem>.getAttemptItem(): PromoAttemptItem? {
+    return filterIsInstance<PromoAttemptItem>().firstOrNull()
+}
+
+internal fun List<DelegateAdapterItem>.getAttemptedPromos(): List<PromoItem> {
     return filterIsInstance<PromoItem>().filter { it.isAttempted }
 }
 

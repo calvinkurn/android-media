@@ -1,6 +1,5 @@
 package com.tokopedia.promousage.view.viewmodel
 
-import com.tokopedia.promousage.domain.entity.PromoAttemptedError
 import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
@@ -13,7 +12,6 @@ sealed class PromoPageUiState {
         val tickerInfo: PromoPageTickerInfo,
         val items: List<DelegateAdapterItem>,
         val savingInfo: PromoSavingInfo = PromoSavingInfo(),
-        val promoAttemptedError: PromoAttemptedError = PromoAttemptedError(),
         val isReload: Boolean = false
     ) : PromoPageUiState()
 
