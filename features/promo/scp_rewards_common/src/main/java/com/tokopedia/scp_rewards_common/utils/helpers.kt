@@ -24,6 +24,7 @@ import com.tokopedia.scp_rewards_common.constants.EASE_OUT
 import com.tokopedia.scp_rewards_common.constants.LINEAR
 import com.tokopedia.scp_rewards_common.constants.OVER_SHOOT
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 import org.json.JSONObject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -68,11 +69,17 @@ fun View.animateView(animations: Array<PropertyValuesHolder>, duration: Long, in
     }
 }
 
-fun propertyValueHolder(property: Property<View, Float>, from: Float, to: Float): PropertyValuesHolder = PropertyValuesHolder.ofFloat(property, from, to)
+fun propertyValueHolder(property: Property<View, Float>, from: Float, to: Float): PropertyValuesHolder =
+    PropertyValuesHolder.ofFloat(property, from, to)
 
 fun Context.parseColorOrFallback(color: String?, fallback: Int = unifyprinciplesR.color.Unify_NN200): Int {
-    return parseColor(color) ?: ContextCompat.getColor(this, fallback)
+    return color?.let {
+        stringToUnifyColor(this, it).unifyColor ?: parseColor(color) ?: ContextCompat.getColor(this, fallback)
+    } ?: run {
+        ContextCompat.getColor(this, fallback)
+    }
 }
+
 @SuppressLint("DiscouragedApi", "InternalInsetResource")
 fun Activity.getNavigationBarHeight(view: View?): Int {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {

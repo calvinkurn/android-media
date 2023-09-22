@@ -122,7 +122,7 @@ class CouponViewCard @JvmOverloads constructor(
             }
             root.post {
                 val additionalInfoColor = if (data.isActive) {
-                    context.parseColorOrFallback(data.additionalInfoColor, scp_rewards_widgetsR.color.coupon_card_background)
+                    context.parseColorOrFallback(data.additionalInfoColor, unifyPrinciplesR.color.Unify_PN100)
                 } else {
                     ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN50)
                 }
