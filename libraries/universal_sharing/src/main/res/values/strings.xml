@@ -70,4 +70,8 @@
     <!-- post purchase -->
     <string name="universal_sharing_post_purchase_bottomsheet_title">Bagikan produk yang kamu beli</string>
     <string name="universal_sharing_post_purchase_button_text">Bagikan</string>
+    <string name="universal_sharing_post_purchase_error_network">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
+    <string name="universal_sharing_post_purchase_try_again">Coba Lagi</string>
+    <string name="universal_sharing_post_purchase_product_unavailable">Yaah, barang ini sudah nggak tersedia. move on ke barang lainnya, yuk!</string>
+    <string name="universal_sharing_post_purchase_ok">Oke</string>
 </resources>

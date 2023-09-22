@@ -16,6 +16,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseBottomsheetBinding
 import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
@@ -30,9 +31,10 @@ import com.tokopedia.universal_sharing.view.bottomsheet.typefactory.UniversalSha
 import com.tokopedia.universal_sharing.view.model.UniversalSharingGlobalErrorUiModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
-class UniversalSharingPostPurchaseProduct :
+class UniversalSharingPostPurchaseBottomSheet :
     BottomSheetUnify(),
     UniversalSharingPostPurchaseProductListener {
 
@@ -156,33 +158,49 @@ class UniversalSharingPostPurchaseProduct :
     }
 
     private suspend fun observeSharingState() {
-        viewModel.observeDetailProductFlow().collectLatest {
-            when (it) {
-                is Result.Success -> {
-                    binding.universalSharingLayoutLoading.hide()
-                    listener?.onOpenShareBottomSheet(it.data)
-                    shouldClosePage = false // close bottom sheet but not the activity
-                    dismiss()
+        viewModel.sharingUiState.collectLatest {
+            if (it.isLoading) {
+                binding.universalSharingLayoutLoading.show()
+            } else {
+                binding.universalSharingLayoutLoading.hide()
+                when {
+                    (it.productData != null) -> handleOnSuccessShare(it.productData)
+                    (it.error != null) -> handleOnErrorShare(it.productId, it.error)
                 }
-                is Result.Error -> {
-                    binding.universalSharingLayoutLoading.hide()
-                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                    view?.let { view ->
-                        Toaster.build(
-                            view,
-                            errorMessage,
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_ERROR
-                        ).show()
-                    }
-                }
-                Result.Loading -> {
-                    binding.universalSharingLayoutLoading.show()
-                }
-                else -> Unit // no-op
             }
-            println(it)
         }
+    }
+
+    private fun handleOnSuccessShare(productData: UniversalSharingPostPurchaseProductResponse) {
+        if (productData.status == "ACTIVE" || productData.stock > 0) {
+            listener?.onOpenShareBottomSheet(productData)
+            shouldClosePage = false // close bottom sheet but not the activity
+            dismiss()
+        } else {
+            showToaster(
+                text = getString(R.string.universal_sharing_post_purchase_product_unavailable),
+                ctaText = getString(R.string.universal_sharing_post_purchase_ok),
+                type = Toaster.TYPE_NORMAL,
+                onClick = {}
+            )
+        }
+    }
+
+    private fun handleOnErrorShare(
+        productId: String,
+        error: Throwable
+    ) {
+        val errorMessage = if (error is UnknownHostException) {
+            getString(R.string.universal_sharing_post_purchase_error_network)
+        } else {
+            ErrorHandler.getErrorMessage(context, error)
+        }
+        showToaster(
+            text = errorMessage,
+            ctaText = getString(R.string.universal_sharing_post_purchase_try_again),
+            type = Toaster.TYPE_ERROR,
+            onClick = { onClickShare(productId) }
+        )
     }
 
     private fun setupInitialData() {
@@ -204,13 +222,26 @@ class UniversalSharingPostPurchaseProduct :
         this.listener = listener
     }
 
+    private fun showToaster(text: String, ctaText: String, type: Int, onClick: () -> Unit) {
+        dialog?.window?.decorView?.let {
+            Toaster.build(
+                view = it,
+                text = text,
+                duration = Toaster.LENGTH_LONG,
+                type = type,
+                actionText = ctaText,
+                clickListener = { onClick() }
+            ).show()
+        }
+    }
+
     companion object {
         private const val DATA_KEY = "data_key"
 
         fun newInstance(
             data: UniversalSharingPostPurchaseModel
-        ): UniversalSharingPostPurchaseProduct {
-            val bottomSheet = UniversalSharingPostPurchaseProduct()
+        ): UniversalSharingPostPurchaseBottomSheet {
+            val bottomSheet = UniversalSharingPostPurchaseBottomSheet()
             val bundle = Bundle()
             bundle.putParcelable(DATA_KEY, data)
             bottomSheet.arguments = bundle

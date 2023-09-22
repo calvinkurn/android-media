@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurchaseProduct
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurchaseBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.UniversalSharingPostPurchaseBottomSheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
@@ -19,7 +19,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
     BaseActivity(),
     UniversalSharingPostPurchaseBottomSheetListener {
 
-    private var bottomSheet: UniversalSharingPostPurchaseProduct? = null
+    private var bottomSheet: UniversalSharingPostPurchaseBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,26 +39,30 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
                 ?: UniversalSharingPostPurchaseModel()
         }
 
-        bottomSheet = UniversalSharingPostPurchaseProduct.newInstance(data)
+        bottomSheet = UniversalSharingPostPurchaseBottomSheet.newInstance(data)
         bottomSheet?.setListener(this)
     }
 
     private fun showBottomSheet() {
         currentFocus?.hideKeyboard()
-        bottomSheet?.show(
-            supportFragmentManager,
-            ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
-        )
+        if (bottomSheet?.isAdded == false) { // only 1 bottom sheet allowed
+            bottomSheet?.show(
+                supportFragmentManager,
+                ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
+            )
+        }
     }
 
     override fun onOpenShareBottomSheet(product: UniversalSharingPostPurchaseProductResponse) {
         val view = this.currentFocus
-        val shareBottomSheet = UniversalShareBottomSheet.createInstance(view)
-        configShareBottomSheet(shareBottomSheet, product)
-        shareBottomSheet.show(
-            supportFragmentManager,
-            ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
-        )
+        val bottomSheetShare = UniversalShareBottomSheet.createInstance(view)
+        configShareBottomSheet(bottomSheetShare, product)
+        if (!bottomSheetShare.isAdded) { // only 1 bottomsheet allowed
+            bottomSheetShare.show(
+                supportFragmentManager,
+                ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
+            )
+        }
     }
 
     private fun configShareBottomSheet(

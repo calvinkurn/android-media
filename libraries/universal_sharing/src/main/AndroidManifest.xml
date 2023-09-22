@@ -31,6 +31,7 @@
             android:name=".view.activity.UniversalSharingUniversalSharingPostPurchaseSharingActivity"
             android:screenOrientation="portrait"
             android:exported="false"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.GlobalSharing">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

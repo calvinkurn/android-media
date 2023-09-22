@@ -11,13 +11,15 @@ import com.tokopedia.universal_sharing.domain.usecase.UniversalSharingPostPurcha
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.util.Result
 import com.tokopedia.universal_sharing.view.bottomsheet.typefactory.UniversalSharingTypeFactory
+import com.tokopedia.universal_sharing.view.uistate.UniversalInboxPostPurchaseSharingUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,8 +37,12 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
         Result<List<Visitable<in UniversalSharingTypeFactory>>>>(Result.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _sharingUiState = MutableStateFlow(UniversalInboxPostPurchaseSharingUiState())
+    val sharingUiState = _sharingUiState.asStateFlow()
+
     fun setupViewModelObserver() {
         _actionFlow.process()
+        observeDetailProductFlow()
     }
 
     private fun Flow<UniversalSharingPostPurchaseAction>.process() {
@@ -50,11 +56,67 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                 }
             }
         }
-            .launchIn(viewModelScope)
+        .launchIn(viewModelScope)
     }
 
-    fun observeDetailProductFlow(): StateFlow<Result<UniversalSharingPostPurchaseProductResponse>?> =
-        getDetailProductUseCase.observe()
+    private fun observeDetailProductFlow() {
+        viewModelScope.launch {
+            try {
+                getDetailProductUseCase.observe()
+                    .collectLatest {
+                        handleProductResult(it)
+                    }
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                // If flow error, reset everything
+                _sharingUiState.update {
+                    it.copy(
+                        productId = "",
+                        productData = null,
+                        isLoading = false,
+                        error = it.error
+                    )
+                }
+            }
+        }
+    }
+
+    private fun handleProductResult(
+        result: Result<UniversalSharingPostPurchaseProductResponse>?
+    ) {
+        when (result) {
+            is Result.Success -> {
+                _sharingUiState.update {
+                    it.copy(
+                        productId = it.productId,
+                        productData = result.data,
+                        error = null,
+                        isLoading = false
+                    )
+                }
+            }
+            is Result.Error -> {
+                _sharingUiState.update {
+                    it.copy(
+                        productId = it.productId,
+                        productData = null,
+                        error = result.throwable,
+                        isLoading = false
+                    )
+                }
+            }
+            Result.Loading -> {
+                _sharingUiState.update {
+                    it.copy(
+                        productData = null,
+                        error = null,
+                        isLoading = true
+                    )
+                }
+            }
+            null -> Unit // no-op
+        }
+    }
 
     fun processAction(action: UniversalSharingPostPurchaseAction) {
         viewModelScope.launch {
@@ -81,9 +143,22 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
     private fun getDetailData(productId: String) {
         viewModelScope.launch {
             try {
+                // Set product id
+                _sharingUiState.update {
+                    it.copy(productId = productId)
+                }
+                // Get data from remote
                 getDetailProductUseCase.getDetailProduct(productId)
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
+                // Update to error state
+                _sharingUiState.update {
+                    it.copy(
+                        productData = null,
+                        isLoading = false,
+                        error = it.error
+                    )
+                }
             }
         }
     }
