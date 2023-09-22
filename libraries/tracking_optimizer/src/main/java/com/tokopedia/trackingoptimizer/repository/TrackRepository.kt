@@ -41,7 +41,9 @@ class TrackRepository private constructor(
         }
     }
 
-    val trackingEEDataSource = TrackingEEDataSource.getInstance(context)
+    val trackingEEDataSource by lazy {
+        TrackingEEDataSource.getInstance(context)
+    }
 
     override fun putRegular(event: EventModel, customDimension: HashMap<String, Any>?) {
         TrackApp.getInstance().gtm.sendEvent(event.event, customDimension)

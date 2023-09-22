@@ -12,7 +12,9 @@ import kotlin.coroutines.CoroutineContext
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class SendTrackQueueJobService : JobService(), CoroutineScope {
 
-    private val trackRepository = TrackRepository.getInstance(this)
+    private val trackRepository by lazy {
+        TrackRepository.getInstance(this)
+    }
 
     val handler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, ex ->
