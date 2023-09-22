@@ -183,6 +183,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
+            is StoriesUiAction.Navigate -> handleNav(action.appLink)
             else -> {}
         }
     }
@@ -537,6 +538,12 @@ class StoriesViewModel @AssistedInject constructor(
             action = StoriesTrackActivityActionType.LAST_SEEN.value,
         )
         return repository.setStoriesTrackActivity(request)
+    }
+
+    private fun handleNav(appLink: String) {
+        viewModelScope.launch {
+            _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink))
+        }
     }
 
     companion object {
