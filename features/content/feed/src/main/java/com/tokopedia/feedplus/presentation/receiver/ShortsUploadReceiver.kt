@@ -21,7 +21,7 @@ class ShortsUploadReceiver @Inject constructor(
                     is CreationUploadResult.Progress -> {
                         UploadInfo(
                             UploadType.Shorts,
-                            UploadStatus.Progress(it.progress, it.uploadImageUrl),
+                            UploadStatus.Progress(it.progress, it.data.notificationCover),
                         )
                     }
                     is CreationUploadResult.Success -> {
@@ -37,7 +37,7 @@ class ShortsUploadReceiver @Inject constructor(
                     is CreationUploadResult.Failed -> {
                         UploadInfo(
                             UploadType.Shorts,
-                            UploadStatus.Failed(it.uploadImageUrl) {
+                            UploadStatus.Failed(it.data.notificationCover) {
                                 creationUploader.retry()
                             },
                         )
@@ -50,22 +50,5 @@ class ShortsUploadReceiver @Inject constructor(
                     }
                 }
             }
-    }
-
-    private val CreationUploadResult.uploadImageUrl: String
-        get() {
-            return if (this is CreationUploadResult.Success) {
-                data.coverUri.ifEmpty { data.mediaUri }
-            } else if (this is CreationUploadResult.Failed) {
-                data.coverUri.ifEmpty { data.mediaUri }
-            } else if (this is CreationUploadResult.Progress) {
-                data.coverUri.ifEmpty { data.mediaUri }
-            } else {
-                ""
-            }
-        }
-
-    companion object {
-        private const val FULL_PROGRESS = 100
     }
 }

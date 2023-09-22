@@ -569,7 +569,6 @@ class FeedPlusContainerFragment :
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             creationUploader.observe().collect { uploadResult ->
-
                 when (uploadResult) {
                     is CreationUploadResult.Success -> {
                         postProgressUpdateView?.hide()
@@ -603,7 +602,7 @@ class FeedPlusContainerFragment :
                     }
                     is CreationUploadResult.Progress -> {
                         postProgressUpdateView?.show()
-                        postProgressUpdateView?.setIcon(uploadResult.data.coverUri.ifEmpty { uploadResult.data.mediaUri })
+                        postProgressUpdateView?.setIcon(uploadResult.data.notificationCover)
                         postProgressUpdateView?.setProgress(uploadResult.progress)
                     }
                     else -> {}
