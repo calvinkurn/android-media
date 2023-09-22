@@ -73,6 +73,10 @@ class CreationUploaderImpl @Inject constructor(
         startWorkManager()
     }
 
+    override suspend fun deleteTopQueue() {
+        creationUploadQueueRepository.deleteTopQueue()
+    }
+
     override suspend fun deleteFromQueue(queueId: Int) {
         creationUploadQueueRepository.delete(queueId)
     }
