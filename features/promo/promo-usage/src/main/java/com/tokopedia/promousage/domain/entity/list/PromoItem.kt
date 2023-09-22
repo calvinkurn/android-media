@@ -10,7 +10,6 @@ import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
 import com.tokopedia.promousage.util.analytics.model.ImpressHolder
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
-import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 data class PromoItem(
     override val id: String = "",
@@ -69,7 +68,7 @@ data class PromoItem(
         }
 
     val hasSecondaryPromo: Boolean
-        get() = secondaryPromo.code.isNotBlank() && secondaryPromo.id.isNotBlankOrZero()
+        get() = secondaryPromo.code.isNotBlank() && secondaryPromo.id.isNotBlank()
 
     val useSecondaryPromo: Boolean
         get() = currentClashingPromoCodes.isNotEmpty() && hasSecondaryPromo &&
