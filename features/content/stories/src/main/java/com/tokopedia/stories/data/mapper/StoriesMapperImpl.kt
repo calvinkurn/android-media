@@ -116,14 +116,6 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
     ) =
         buildList {
             when {
-                !isOwner(author) && template.reportable -> add(
-                    ContentMenuItem(
-                        iconUnify = IconUnify.WARNING,
-                        name = contentcommonR.string.content_common_menu_report,
-                        type = ContentMenuIdentifier.Report
-                    )
-                )
-
                 isOwner(author) && template.deletable -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.DELETE,
