@@ -888,6 +888,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         validateUse = uiAction.validateUse,
                         lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest
                     )
+                    processAndSendClickExitPromoBottomsheetEvent(uiAction.appliedPromos)
                     dismiss()
                 }
 
@@ -899,17 +900,20 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest,
                         isFlowMvcLockToCourier = uiAction.isFlowMvcLockToCourier
                     )
+                    processAndSendClickExitPromoBottomsheetEvent()
                     dismiss()
                 }
 
                 is ClosePromoPageUiAction.SuccessNoAction -> {
                     renderLoadingDialog(false)
                     listener?.onClosePageWithNoAction()
+                    processAndSendClickExitPromoBottomsheetEvent()
                     dismiss()
                 }
 
                 is ClosePromoPageUiAction.Failed -> {
                     renderLoadingDialog(false)
+                    processAndSendClickExitPromoBottomsheetEvent()
                     dismiss()
                 }
             }
@@ -1106,6 +1110,16 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             userId = userSession.userId,
             entryPoint = entryPoint,
             promo = promo
+        )
+    }
+
+    private fun processAndSendClickExitPromoBottomsheetEvent(
+        appliedPromos: List<PromoItem> = emptyList()
+    ) {
+        promoUsageAnalytics.sendClickExitPromoBottomsheetEvent(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            appliedPromos = appliedPromos
         )
     }
     // endregion

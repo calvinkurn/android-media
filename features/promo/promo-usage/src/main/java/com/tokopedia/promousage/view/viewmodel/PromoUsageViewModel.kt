@@ -1714,7 +1714,8 @@ internal class PromoUsageViewModel @Inject constructor(
     ) {
         _promoPageUiState.ifSuccess { pageState ->
             if (isChangedFromInitialState()) {
-                val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
+                val appliedPromos = pageState.items.getSelectedPromo()
+                val hasSelectedPromo = appliedPromos.isNotEmpty()
                 if (hasSelectedPromo) {
                     onApplyPromo(
                         entryPoint = entryPoint,
@@ -1725,7 +1726,8 @@ internal class PromoUsageViewModel @Inject constructor(
                                 ClosePromoPageUiAction.SuccessWithApplyPromo(
                                     entryPoint = entryPoint,
                                     validateUse = validateUse,
-                                    lastValidateUsePromoRequest = lastValidateUseRequest
+                                    lastValidateUsePromoRequest = lastValidateUseRequest,
+                                    appliedPromos = appliedPromos
                                 )
                             )
                         },
