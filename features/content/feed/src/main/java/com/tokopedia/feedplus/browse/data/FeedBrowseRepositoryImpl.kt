@@ -6,8 +6,10 @@ import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import kotlinx.coroutines.withContext
@@ -68,6 +70,53 @@ class FeedBrowseRepositoryImpl @Inject constructor(
                 mapper.mapWidget(response)
             } catch (err: Throwable) {
                 ChannelUiState.Error(err, extraParam = extraParam)
+            }
+        }
+    }
+
+    override suspend fun getCategoryInspiration(): List<FeedCategoryInspirationModel> {
+        val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
+//        return withContext(dispatchers.io) {
+//            try {
+//                val response = playWidgetSlotUseCase.executeOnBackground(
+//                    group = extraParam.group,
+//                    cursor = "",
+//                    sourceId = extraParam.sourceId,
+//                    sourceType = extraParam.sourceType,
+//                    isWifi = isWifi
+//                )
+//                mapper.mapWidget(response)
+//            } catch (err: Throwable) {
+//                ChannelUiState.Error(err, extraParam = extraParam)
+//            }
+//        }
+        return withContext(dispatchers.io) {
+            buildList {
+                add(
+                    FeedCategoryInspirationModel.Chips(
+                        id = "chips_mock",
+                        chipList = List (6) {
+                            FeedBrowseChipUiModel(
+                                id = it.toString(),
+                                label = "Chips $it",
+                                isSelected = false,
+                            )
+                        }
+                    )
+                )
+
+                addAll(
+                    List(7) {
+                        FeedCategoryInspirationModel.Card(
+                            id = it.toString(),
+                            imageUrl = "",
+                            partnerName = "Partner $it",
+                            avatarUrl = "",
+                            badgeUrl = "",
+                            title = "Card $it",
+                        )
+                    }
+                )
             }
         }
     }

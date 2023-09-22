@@ -159,7 +159,8 @@ class FeedBrowseFragment @Inject constructor(
             viewHolder: FeedBrowseBannerViewHolder,
             item: FeedBrowseUiModel.Banner
         ) {
-            showToast(item.title)
+//            showToast(item.title)
+            startActivity(Intent(requireContext(), FeedCategoryInspirationActivity::class.java))
         }
     }
 //    private val adapter by lazy { FeedBrowseAdapter(channelListener, lifecycleScope, coroutineDispatchers) }

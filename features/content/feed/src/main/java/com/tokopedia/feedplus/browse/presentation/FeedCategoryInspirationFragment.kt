@@ -4,23 +4,33 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedCategoryInspirationAdapter
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationModel
-import com.tokopedia.feedplus.databinding.FragmentFeedBrowseInspirationBinding
+import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationIntent
+import com.tokopedia.feedplus.databinding.FragmentFeedCategoryInspirationBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 21/09/23
  */
-class FeedCategoryInspirationFragment @Inject constructor() : TkpdBaseV4Fragment() {
+class FeedCategoryInspirationFragment @Inject constructor(
+    viewModelFactory: ViewModelFactory,
+) : TkpdBaseV4Fragment() {
 
-    private var _binding: FragmentFeedBrowseInspirationBinding? = null
+    private var _binding: FragmentFeedCategoryInspirationBinding? = null
     private val binding get() = _binding!!
 
     private val adapter by lazy { FeedCategoryInspirationAdapter() }
+
+    private val viewModel by viewModels<FeedCategoryInspirationViewModel> { viewModelFactory }
 
     override fun getScreenName(): String {
         return "Feed Browse Inspiration"
@@ -31,15 +41,16 @@ class FeedCategoryInspirationFragment @Inject constructor() : TkpdBaseV4Fragment
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFeedBrowseInspirationBinding.inflate(inflater, container, false)
+        _binding = FragmentFeedCategoryInspirationBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        observe()
 
-        setupMock()
+        viewModel.onIntent(FeedCategoryInspirationIntent.InitPage)
     }
 
     override fun onDestroyView() {
@@ -48,41 +59,19 @@ class FeedCategoryInspirationFragment @Inject constructor() : TkpdBaseV4Fragment
     }
 
     private fun setupView() {
-        binding.root.layoutManager = GridLayoutManager(context, 2).apply {
+        binding.rvCategoryInspiration.layoutManager = GridLayoutManager(context, 2).apply {
             spanSizeLookup = adapter.getSpanSizeLookup()
         }
-        binding.root.adapter = adapter
+        binding.rvCategoryInspiration.adapter = adapter
     }
 
-    private fun setupMock() {
-        adapter.submitList(
-            buildList {
-                add(
-                    FeedCategoryInspirationModel.Chips(
-                        id = "chips_mock",
-                        chipList = List (6) {
-                            FeedBrowseChipUiModel(
-                                id = it.toString(),
-                                label = "Chips $it",
-                                isSelected = false,
-                            )
-                        }
-                    )
-                )
-
-                addAll(
-                    List(7) {
-                        FeedCategoryInspirationModel.Card(
-                            id = it.toString(),
-                            imageUrl = "",
-                            partnerName = "Partner $it",
-                            avatarUrl = "",
-                            badgeUrl = "",
-                            title = "Card $it",
-                        )
-                    }
-                )
+    private fun observe() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collectLatest {
+                    adapter.submitList(it.itemList)
+                }
             }
-        )
+        }
     }
 }
