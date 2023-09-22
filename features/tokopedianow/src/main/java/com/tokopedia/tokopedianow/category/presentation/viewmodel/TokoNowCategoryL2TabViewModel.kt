@@ -169,7 +169,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         product: ProductCardCompactUiModel,
         shopId: String,
         quantity: Int,
-        layoutType: String = "",
+        layoutType: String,
     ) {
         val productId = product.productId
         val isVariant = product.isVariant
