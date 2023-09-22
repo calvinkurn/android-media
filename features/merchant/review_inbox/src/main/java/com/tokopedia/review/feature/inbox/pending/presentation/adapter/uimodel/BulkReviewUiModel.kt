@@ -1,12 +1,14 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
 
 class BulkReviewUiModel(
-    var data: Data,
-    var resetStars: Boolean = false
+    var data: Data
 ) : Visitable<ReviewPendingAdapterTypeFactory> {
+
+    val impressHolder = ImpressHolder()
     override fun type(typeFactory: ReviewPendingAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

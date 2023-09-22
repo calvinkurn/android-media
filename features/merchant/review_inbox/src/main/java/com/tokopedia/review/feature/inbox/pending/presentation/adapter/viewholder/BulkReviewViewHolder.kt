@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.BulkReviewUiModel
@@ -33,8 +34,8 @@ class BulkReviewViewHolder(
 
     override fun bind(element: BulkReviewUiModel) = with(binding) {
         val data = element.data
-
-        bulkReviewTitle.text = data.title
+        val title = data.title
+        bulkReviewTitle.text = title
 
         val thumbnailContainer = bulkReviewThumbnailContainer
         thumbnailContainer.removeAllViews()
@@ -48,7 +49,7 @@ class BulkReviewViewHolder(
                 addMargin = index != 0,
                 moreInfo = moreInfo
             ).apply {
-                setOnClickListener { listener.onClickBulkReview(data.appLink) }
+                setOnClickListener { listener.onClickBulkReview(title, data.appLink) }
             }
             thumbnailContainer.addView(imageUnify)
         }
@@ -61,14 +62,17 @@ class BulkReviewViewHolder(
                     disableClick = true
                     CoroutineScope(Dispatchers.Main).launch {
                         delay(100L * position)
-                        listener.onClickBulkReview(data.appLink, position)
+                        listener.onClickStarBulkReview(title, data.appLink, position)
                         delay(200L)
                         bulkReviewStars.resetStars()
                         disableClick = false
                     }
                 }
             })
-        root.setOnClickListener { listener.onClickBulkReview(data.appLink) }
+        root.setOnClickListener { listener.onClickBulkReview(title, data.appLink) }
+        root.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressBulkReviewCard(title)
+        }
     }
 
     private fun BulkReviewUiModel.Product.toProductCard(

@@ -687,7 +687,17 @@ class ReviewPendingFragment :
         loadInitialData()
     }
 
-    override fun onClickBulkReview(appLink: String, rating: Int) {
+    override fun onClickBulkReview(title: String, appLink: String) {
+        ReviewPendingTracking.trackClickBulkReviewCard(title, viewModel.getUserId())
+        goToCreateBulkReview(appLink)
+    }
+
+    override fun onImpressBulkReviewCard(title: String) {
+        ReviewPendingTracking.trackImpressBulkReviewCard(title, viewModel.getUserId())
+    }
+
+    override fun onClickStarBulkReview(title: String, appLink: String, rating: Int) {
+        ReviewPendingTracking.trackClickStarBulkReviewCard(title, viewModel.getUserId())
         goToCreateBulkReview(appLink, rating)
     }
 
