@@ -47,6 +47,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageBottomsheetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
+import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
@@ -69,8 +70,8 @@ import com.tokopedia.promousage.view.adapter.PromoRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.ApplyPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.AttemptPromoUiAction
-import com.tokopedia.promousage.view.viewmodel.AutoScrollUiAction
 import com.tokopedia.promousage.view.viewmodel.ClearPromoUiAction
+import com.tokopedia.promousage.view.viewmodel.ClickPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.ClosePromoPageUiAction
 import com.tokopedia.promousage.view.viewmodel.GetPromoRecommendationUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoCtaUiAction
@@ -477,7 +478,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun setFocusOnPromoAttemptTextField(keyboardHeight: Int) {
         val itemCount = recyclerViewAdapter.itemCount
         Handler().postDelayed({
-            binding?.rvPromo?.smoothScrollToPosition(itemCount)
+            binding?.rvPromo?.scrollToPosition(itemCount)
         }, 300L)
 
         // Add padding to make voucher code text field displayed above keyboard
@@ -571,7 +572,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderTickerInfo(state.tickerInfo)
                     refreshBottomSheetHeight(state)
                     adjustDummyBackground(state.items)
-                    processAndSendViewAvailablePromoListNewEvent(items = state.items)
+                    if (state.isReload) {
+                        processAndSendViewAvailablePromoListNewEvent(items = state.items)
+                    }
                 }
 
                 is PromoPageUiState.Error -> {
@@ -921,24 +924,28 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun observeAutoScrollUiAction() {
-        viewModel.autoScrollUiAction.observe(viewLifecycleOwner) { uiAction ->
+        viewModel.clickPromoUiAction.observe(viewLifecycleOwner) { uiAction ->
             when (uiAction) {
-                is AutoScrollUiAction.ScrollTo -> {
-                    try {
-                        val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                        val lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
-                        val itemPosition = getItemPosition(uiAction.itemId)
+                is ClickPromoUiAction.Updated -> {
+                    // Auto scroll to selected promo if promo is selected and outside of user's view
+                    if (uiAction.clickedPromo.state is PromoItemState.Selected) {
+                        try {
+                            val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                            val lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+                            val itemPosition = getItemPosition(uiAction.clickedPromo.id)
 
-                        val isVisibleInCurrentScreen = itemPosition in (firstVisibleItemPosition + 1) until lastVisibleItemPosition
-                        val isIdle = binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
-                        if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
-                            Handler().postDelayed({
-                                binding?.rvPromo?.scrollToPosition(itemPosition)
-                            }, 300L)
+                            val isVisibleInCurrentScreen = itemPosition in (firstVisibleItemPosition + 1) until lastVisibleItemPosition
+                            val isIdle = binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
+                            if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
+                                Handler().postDelayed({
+                                    binding?.rvPromo?.scrollToPosition(itemPosition)
+                                }, 300L)
+                            }
+                        } catch (ignored: Exception) {
+                            // no-op
                         }
-                    } catch (ignored: Exception) {
-                        // no-op
                     }
+                    processAndSendClickPromoCardEvent(uiAction.clickedPromo)
                 }
             }
         }
@@ -1105,11 +1112,19 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         )
     }
 
-    private fun processAndSendImpressionOfPromoCardNewEvent(promo: PromoItem) {
+    private fun processAndSendImpressionOfPromoCardNewEvent(viewedPromo: PromoItem) {
         promoUsageAnalytics.sendImpressionOfPromoCardNewEvent(
             userId = userSession.userId,
             entryPoint = entryPoint,
-            promo = promo
+            viewedPromo = viewedPromo
+        )
+    }
+
+    private fun processAndSendClickPromoCardEvent(clickedPromo: PromoItem) {
+        promoUsageAnalytics.sendClickPromoCardEvent(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            clickedPromo = clickedPromo
         )
     }
 

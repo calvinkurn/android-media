@@ -33,6 +33,7 @@ abstract class PromoAnalytics {
         // Promo Usage Bottom Sheet
         const val VIEW_AVAILABLE_PROMO_LIST_NEW = "view available promo list - new"
         const val IMPRESSION_OF_PROMO_CARD_NEW = "impression of promo card - new"
+        const val CLICK_PROMO_CARD = "click promo card"
         const val CLICK_EXIT_PROMO_BOTTOMSHEET = "click exit promo bottomsheet"
     }
 
@@ -68,6 +69,7 @@ abstract class PromoAnalytics {
         // Promo Usage Bottom Sheet
         const val VIEW_AVAILABLE_PROMO_LIST_NEW = "47112"
         const val IMPRESSION_OF_PROMO_CARD_NEW = "47113"
+        const val CLICK_PROMO_CARD = "47119"
         const val CLICK_EXIT_PROMO_BOTTOMSHEET = "47131"
     }
 

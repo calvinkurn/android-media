@@ -8,6 +8,7 @@ import com.tokopedia.promousage.domain.entity.PromoItemClashingInfo
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
+import com.tokopedia.promousage.util.analytics.model.ImpressHolder
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
@@ -51,8 +52,10 @@ data class PromoItem(
     val isExpanded: Boolean = false,
     val isVisible: Boolean = false,
     val isCausingOtherPromoClash: Boolean = false,
-    val isCalculating: Boolean = false
-) : DelegateAdapterItem {
+    val isCalculating: Boolean = false,
+
+    override var isInvoke: Boolean = false
+) : DelegateAdapterItem, ImpressHolder() {
 
     companion object {
         const val COUPON_TYPE_GOPAY_LATER_CICIL = "gopay_later"

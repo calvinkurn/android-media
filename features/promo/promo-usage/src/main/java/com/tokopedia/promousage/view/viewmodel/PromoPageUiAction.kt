@@ -103,7 +103,7 @@ sealed class ClosePromoPageUiAction {
     ) : ClosePromoPageUiAction()
 }
 
-sealed class AutoScrollUiAction {
+sealed class ClickPromoUiAction {
 
-    data class ScrollTo(val itemId: String) : AutoScrollUiAction()
+    data class Updated(val clickedPromo: PromoItem) : ClickPromoUiAction()
 }

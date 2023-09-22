@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoBinding
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
+import com.tokopedia.promousage.util.extension.addOnImpressionListener
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class PromoAccordionItemDelegateAdapter(
     private val onClickPromo: (PromoItem) -> Unit,
@@ -47,6 +47,9 @@ class PromoAccordionItemDelegateAdapter(
         private val binding: PromoUsageItemPromoBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        init {
+        }
+
         fun bind(item: PromoItem) {
             with(binding) {
                 if (item.isRecommended) {
@@ -71,7 +74,7 @@ class PromoAccordionItemDelegateAdapter(
                         ContextCompat
                             .getColor(
                                 root.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_Background
+                                unifyprinciplesR.color.Unify_Background
                             )
                     )
                     vcvPromo.setMargin(
@@ -106,7 +109,7 @@ class PromoAccordionItemDelegateAdapter(
                 vcvPromo.bind(item)
                 vcvPromo.isVisible = item.isExpanded && item.isVisible
                 if (vcvPromo.isVisible) {
-                    vcvPromo.addOnImpressionListener(ImpressHolder()) {
+                    vcvPromo.addOnImpressionListener(item) {
                         onImpressionPromo(item)
                     }
                 }

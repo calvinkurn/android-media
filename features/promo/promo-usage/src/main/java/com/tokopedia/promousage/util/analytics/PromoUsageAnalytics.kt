@@ -17,6 +17,8 @@ class PromoUsageAnalytics @Inject constructor() : PromoAnalytics() {
         private const val STATUS_ELIGIBLE = "eligible"
         private const val STATUS_INELIGIBLE = "ineligible"
         private const val STATUS_ERROR = "error"
+        private const val SELECTED = "selected"
+        private const val DESELECTED = "deselected"
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4226
@@ -30,12 +32,12 @@ class PromoUsageAnalytics @Inject constructor() : PromoAnalytics() {
         val status = if (isError) {
             STATUS_ERROR
         } else {
-            val hasIneligiblePromo = items
-                ?.firstOrNull { it.state is PromoItemState.Ineligible } != null
-            if (hasIneligiblePromo) {
-                STATUS_INELIGIBLE
-            } else {
+            val hasEligiblePromo = items
+                ?.firstOrNull { it.state !is PromoItemState.Ineligible } != null
+            if (hasEligiblePromo) {
                 STATUS_ELIGIBLE
+            } else {
+                STATUS_INELIGIBLE
             }
         }
         val sourcePage = generateSourcePage(entryPoint)
@@ -59,14 +61,14 @@ class PromoUsageAnalytics @Inject constructor() : PromoAnalytics() {
     fun sendImpressionOfPromoCardNewEvent(
         userId: String,
         entryPoint: PromoPageEntryPoint,
-        promo: PromoItem
+        viewedPromo: PromoItem
     ) {
-        val isEligible = promo.state !is PromoItemState.Ineligible
-        val sectionName = promo.headerId
-        val errorMessage = promo.errorMessage.ifBlank { "null" }
+        val isEligible = viewedPromo.state !is PromoItemState.Ineligible
+        val sectionName = viewedPromo.headerId
+        val errorMessage = viewedPromo.errorMessage.ifBlank { "null" }
         val sourcePage = generateSourcePage(entryPoint)
         val eventLabel = "$isEligible - $sectionName - $errorMessage - $sourcePage"
-        val promotions = generatePromoPromotions(listOf(promo))
+        val promotions = generatePromoPromotions(listOf(viewedPromo))
         sendEnhancedEcommerceEvent(
             event = EventName.VIEW_ITEM,
             eventAction = EventAction.IMPRESSION_OF_PROMO_CARD_NEW,
@@ -101,7 +103,38 @@ class PromoUsageAnalytics @Inject constructor() : PromoAnalytics() {
             eventLabel = eventLabel,
             additionalData = bundleOf(
                 ExtraKey.USER_ID to userId,
-                ExtraKey.TRACKER_ID to TrackerId.VIEW_AVAILABLE_PROMO_LIST_NEW,
+                ExtraKey.TRACKER_ID to TrackerId.CLICK_EXIT_PROMO_BOTTOMSHEET,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE,
+                ExtraKey.PROMOTIONS to promotions
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4226
+    // Tracker ID: 47119
+    fun sendClickPromoCardEvent(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        clickedPromo: PromoItem
+    ) {
+        val selectedStr = if (clickedPromo.state is PromoItemState.Selected) {
+            SELECTED
+        } else {
+            DESELECTED
+        }
+        val sectionName = clickedPromo.headerId
+        val sourcePage = generateSourcePage(entryPoint)
+        val eventLabel = "$selectedStr - $sectionName - $sourcePage"
+        val promotions = generatePromoPromotions(listOf(clickedPromo))
+        sendEnhancedEcommerceEvent(
+            event = EventName.SELECT_CONTENT,
+            eventAction = EventAction.CLICK_PROMO_CARD,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = bundleOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.TRACKER_ID to TrackerId.CLICK_PROMO_CARD,
                 ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
                 ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE,
                 ExtraKey.PROMOTIONS to promotions

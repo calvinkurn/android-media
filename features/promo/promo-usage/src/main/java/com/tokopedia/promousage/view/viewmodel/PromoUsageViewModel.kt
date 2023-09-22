@@ -106,9 +106,9 @@ internal class PromoUsageViewModel @Inject constructor(
     val closePromoPageUiAction: LiveData<ClosePromoPageUiAction>
         get() = _closePromoPageUiAction
 
-    private val _autoScrollUiAction = MutableLiveData<AutoScrollUiAction>()
-    val autoScrollUiAction: LiveData<AutoScrollUiAction>
-        get() = _autoScrollUiAction
+    private val _clickPromoUiAction = MutableLiveData<ClickPromoUiAction>()
+    val clickPromoUiAction: LiveData<ClickPromoUiAction>
+        get() = _clickPromoUiAction
 
     fun setEntryPoint(entryPoint: PromoPageEntryPoint) {
         this.entryPoint = entryPoint
@@ -214,7 +214,8 @@ internal class PromoUsageViewModel @Inject constructor(
                 tickerInfo = tickerInfo,
                 items = items,
                 savingInfo = savingInfo,
-                promoAttemptedError = attemptedPromoCodeError
+                promoAttemptedError = attemptedPromoCodeError,
+                isReload = true
             )
         )
     }
@@ -440,7 +441,8 @@ internal class PromoUsageViewModel @Inject constructor(
                             }
                         _promoPageUiState.postValue(
                             pageState.copy(
-                                items = updatedItems
+                                items = updatedItems,
+                                isReload = false
                             )
                         )
 
@@ -463,9 +465,8 @@ internal class PromoUsageViewModel @Inject constructor(
                                     updatedItems
                                 )
                             updatedItems = newUpdatedItems
-                            if (updatedPromoRecommendation.selectedCodes.containsAll(
-                                    updatedPromoRecommendation.codes
-                                )
+                            if (updatedPromoRecommendation.selectedCodes
+                                .containsAll(updatedPromoRecommendation.codes)
                             ) {
                                 _usePromoRecommendationUiAction.postValue(
                                     UsePromoRecommendationUiAction.Success(
@@ -502,14 +503,13 @@ internal class PromoUsageViewModel @Inject constructor(
                         _promoPageUiState.postValue(
                             pageState.copy(
                                 items = updatedItems,
-                                savingInfo = updatedSavingInfo
+                                savingInfo = updatedSavingInfo,
+                                isReload = false
                             )
                         )
 
-                        // Autoscroll to clicked promo
-                        if (newClickedItem.state is PromoItemState.Selected) {
-                            _autoScrollUiAction.postValue(AutoScrollUiAction.ScrollTo(newClickedItem.id))
-                        }
+                        // Tell UI about clicked promo (for auto scroll, tracker, etc..)
+                        _clickPromoUiAction.postValue(ClickPromoUiAction.Updated(newClickedItem))
                     }
                 }
             },
@@ -939,7 +939,10 @@ internal class PromoUsageViewModel @Inject constructor(
                     }
                 }
             _promoPageUiState.postValue(
-                pageState.copy(items = updatedItems)
+                pageState.copy(
+                    items = updatedItems,
+                    isReload = false
+                )
             )
         }
     }
@@ -962,7 +965,10 @@ internal class PromoUsageViewModel @Inject constructor(
                     it is PromoAccordionViewAllItem && it.headerId == clickedItem.headerId
                 }
             _promoPageUiState.postValue(
-                pageState.copy(items = updatedItems)
+                pageState.copy(
+                    items = updatedItems,
+                    isReload = false
+                )
             )
         }
     }
@@ -1173,7 +1179,8 @@ internal class PromoUsageViewModel @Inject constructor(
                 _promoPageUiState.postValue(
                     pageState.copy(
                         items = updatedItems,
-                        savingInfo = updatedSavingInfo
+                        savingInfo = updatedSavingInfo,
+                        isReload = false
                     )
                 )
 
@@ -1638,7 +1645,8 @@ internal class PromoUsageViewModel @Inject constructor(
                     _promoPageUiState.postValue(
                         pageState.copy(
                             items = updatedItems,
-                            savingInfo = updatedSavingInfo
+                            savingInfo = updatedSavingInfo,
+                            isReload = false
                         )
                     )
                     val promoRecommendation = updatedItems.getRecommendationItem()

@@ -13,12 +13,11 @@ sealed class PromoPageUiState {
         val tickerInfo: PromoPageTickerInfo,
         val items: List<DelegateAdapterItem>,
         val savingInfo: PromoSavingInfo = PromoSavingInfo(),
-        val promoAttemptedError: PromoAttemptedError = PromoAttemptedError()
+        val promoAttemptedError: PromoAttemptedError = PromoAttemptedError(),
+        val isReload: Boolean = false
     ) : PromoPageUiState()
 
     data class Error(
         val exception: Throwable
     ) : PromoPageUiState()
 }
-
-
