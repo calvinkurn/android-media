@@ -70,7 +70,7 @@ import javax.inject.Inject
 
 class StoriesDetailFragment @Inject constructor(
     private val analyticFactory: StoriesAnalytics.Factory,
-    private val router: Router,
+    private val router: Router
 ) : TkpdBaseV4Fragment() {
 
     private val mParentPage: StoriesGroupFragment
@@ -103,7 +103,7 @@ class StoriesDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private var variantSheet : AtcVariantBottomSheet? = null
+    private var variantSheet: AtcVariantBottomSheet? = null
 
     private val atcVariantViewModel by lazyThreadSafetyNone {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
@@ -161,7 +161,7 @@ class StoriesDetailFragment @Inject constructor(
                 renderStoriesGroupHeader(prevState?.storiesMainData, state.storiesMainData)
                 renderStoriesDetail(
                     prevState?.storiesMainData?.groupItems?.get(prevState.storiesMainData.selectedGroupPosition.orZero())?.detail,
-                    state.storiesMainData.groupItems[state.storiesMainData.selectedGroupPosition].detail,
+                    state.storiesMainData.groupItems[state.storiesMainData.selectedGroupPosition].detail
                 )
                 observeBottomSheetStatus(prevState?.bottomSheetStatus, state.bottomSheetStatus)
             }
@@ -220,7 +220,7 @@ class StoriesDetailFragment @Inject constructor(
                     is StoriesUiEvent.ShowInfoEvent -> {
                         if (viewModel.isAnyBottomSheetShown) return@collect
                         val message = getString(event.message)
-                        requireView().showToaster(message = message,)
+                        requireView().showToaster(message = message)
                     }
                     else -> return@collect
                 }
@@ -230,11 +230,13 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderStoriesGroupHeader(
         prevState: StoriesUiModel?,
-        state: StoriesUiModel,
+        state: StoriesUiModel
     ) {
         if (prevState?.groupHeader == state.groupHeader ||
             groupId != state.selectedGroupId
-        ) return
+        ) {
+            return
+        }
 
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
@@ -274,7 +276,8 @@ class StoriesDetailFragment @Inject constructor(
                             override fun failedLoad() {
                                 // TODO add some action when fail load image?
                             }
-                        })
+                        }
+                    )
                 }
             }
 
@@ -289,7 +292,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun observeBottomSheetStatus(
         prevState: Map<BottomSheetType, Boolean>?,
-        state: Map<BottomSheetType, Boolean>,
+        state: Map<BottomSheetType, Boolean>
     ) {
         if (prevState == state) return
         if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
@@ -304,20 +307,27 @@ class StoriesDetailFragment @Inject constructor(
                     StoriesDetailTimer(
                         currentPosition = state.selectedDetailPosition,
                         itemCount = state.detailItems.size,
-                        data = state.detailItems[state.selectedDetailPosition],
+                        data = state.detailItems[state.selectedDetailPosition]
                     ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }
         }
     }
 
-    private fun renderAuthor(state: StoriesDetailItem) = with(binding.vStoriesPartner) {
-        tvPartnerName.text = state.author.name
-        ivIcon.setImageUrl(state.author.thumbnailUrl)
-        btnFollow.gone()
-        if (state.author is StoryAuthor.Shop) ivBadge.setImageUrl(state.author.badgeUrl)
-    }
+    private fun renderAuthor(state: StoriesDetailItem) {
+        with(binding.vStoriesPartner) {
+            tvPartnerName.text = state.author.name
+            ivIcon.setImageUrl(state.author.thumbnailUrl)
+            btnFollow.gone() // purposely hide the follow button in phase 1
+            if (state.author is StoryAuthor.Shop) {
+                ivBadge.setImageUrl(state.author.badgeUrl)
+            }
 
+            root.setOnClickListener {
+                goTo(state.author.appLink)
+            }
+        }
+    }
 
     private fun setupStoriesView() = with(binding) {
         showPageLoading(true)
@@ -389,7 +399,6 @@ class StoriesDetailFragment @Inject constructor(
                 }
                 else -> {}
             }
-
         }
     }
 
@@ -444,8 +453,8 @@ class StoriesDetailFragment @Inject constructor(
                     creativeSlot = position.plus(1).toString(),
                     itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.args.authorId}",
                     itemName = "/ - stories"
-                ),
-            ),
+                )
+            )
         )
     }
 
@@ -458,7 +467,7 @@ class StoriesDetailFragment @Inject constructor(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
-            currentCircle = viewModel.mGroup.groupName,
+            currentCircle = viewModel.mGroup.groupName
         )
     }
 
@@ -467,7 +476,7 @@ class StoriesDetailFragment @Inject constructor(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
-            currentCircle = viewModel.mGroup.groupName,
+            currentCircle = viewModel.mGroup.groupName
         )
     }
 
@@ -480,9 +489,9 @@ class StoriesDetailFragment @Inject constructor(
             ProductVariantBottomSheetParams(
                 pageSource = VariantPageSource.STORIES_PAGESOURCE.source,
                 productId = product.id,
-                shopId = shopId, //is shop id mandatory from applink?
+                shopId = shopId, // is shop id mandatory from applink?
                 dismissAfterTransaction = false,
-                trackerCdListName = viewModel.storyId,
+                trackerCdListName = viewModel.storyId
             )
         )
 
