@@ -2,6 +2,7 @@ package com.tokopedia.creation.common.upload.di.uploader
 
 import android.content.Context
 import androidx.work.WorkManager
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -34,10 +35,12 @@ class CreationUploaderModule {
     fun provideCreationUploader(
         workManager: WorkManager,
         creationUploadQueueRepository: CreationUploadQueueRepository,
+        gson: Gson,
     ): CreationUploader {
         return CreationUploaderImpl(
             workManager = workManager,
             creationUploadQueueRepository = creationUploadQueueRepository,
+            gson = gson,
         )
     }
 

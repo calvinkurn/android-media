@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.google.gson.Gson
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
@@ -21,7 +22,8 @@ import javax.inject.Inject
  */
 class CreationUploaderImpl @Inject constructor(
     private val workManager: WorkManager,
-    private val creationUploadQueueRepository: CreationUploadQueueRepository
+    private val creationUploadQueueRepository: CreationUploadQueueRepository,
+    private val gson: Gson,
 ) : CreationUploader {
 
     private val uploadLiveData = Transformations.map(
@@ -31,7 +33,7 @@ class CreationUploaderImpl @Inject constructor(
         it.firstOrNull()?.let { workInfo ->
             if(workInfo.state == WorkInfo.State.RUNNING) {
                 val progress = workInfo.progress.getInt(CreationUploadConst.PROGRESS, 0)
-                val uploadData = CreationUploadData.parse(workInfo.progress.getString(CreationUploadConst.UPLOAD_DATA).orEmpty())
+                val uploadData = CreationUploadData.parseFromJson(workInfo.progress.getString(CreationUploadConst.UPLOAD_DATA).orEmpty(), gson)
 
                 return@map when (progress) {
                     CreationUploadConst.PROGRESS_COMPLETED -> {
