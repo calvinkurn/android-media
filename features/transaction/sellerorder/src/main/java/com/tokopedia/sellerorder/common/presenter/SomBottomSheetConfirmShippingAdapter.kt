@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.common.presenter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
@@ -43,45 +44,51 @@ class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomShe
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val notes = list[position]
-        var spannableString = SpannableString(list[position].noteText)
 
+
+        holder.binding?.apply {
+            tvInfoNumber.text = "${position.plus(1)}"
+
+            val notes = list.getOrNull(position)
+            val spannableString = notes?.let { getNotes(holder.itemView.context, it) }
+
+            tvInfo.apply {
+                movementMethod = LinkMovementMethod.getInstance()
+                isClickable = true
+                setText(spannableString, TextView.BufferType.SPANNABLE)
+            }
+        }
+    }
+
+    private fun getNotes(context: Context, notes: ConfirmShippingNotes): SpannableString {
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                RouteManager.route(holder.itemView.context, "${ApplinkConst.WEBVIEW}?url=${notes.url}")
+                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${notes?.url}")
             }
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(
-                    holder.itemView.context,
-                    unifyprinciplesR.color.Unify_GN500
-                )
+                ds.color = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN500)
             }
         }
+        var spannableString = SpannableString(notes.noteText)
 
-        holder.binding?.apply {
-            tvInfoNumber.text = "${position.plus(1)}"
-
-            if (notes.url.isNotEmpty()) {
-                val text = "${notes.noteText} ${notes.urlText}"
-                spannableString = SpannableString(text)
-                val startSpan = notes.noteText.lastIndex + 2
-                val endSpan = text.lastIndex + 1
-                val boldSpan = StyleSpan(Typeface.BOLD)
-                spannableString.setSpan(boldSpan, startSpan, endSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                spannableString.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                tvInfo.apply {
-                    movementMethod = LinkMovementMethod.getInstance()
-                    isClickable = true
-                    setText(spannableString, TextView.BufferType.SPANNABLE)
-                }
-            } else {
-                tvInfo.text = spannableString
-            }
+        if (notes.url.isNotEmpty()) {
+            val text = "${notes.noteText} ${notes.urlText}"
+            spannableString = SpannableString(text)
+            val startSpan = notes.noteText.lastIndex + 2
+            val endSpan = text.lastIndex + 1
+            val boldSpan = StyleSpan(Typeface.BOLD)
+            spannableString.setSpan(boldSpan, startSpan, endSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         }
+
+
+        return spannableString
+
     }
+
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding by viewBinding<BottomsheetConfirmshippingItemBinding>()
