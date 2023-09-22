@@ -24,7 +24,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapterr
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
@@ -38,7 +37,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play_common.util.extension.withCache
@@ -163,8 +161,9 @@ class FeedBrowseFragment @Inject constructor(
             startActivity(Intent(requireContext(), FeedCategoryInspirationActivity::class.java))
         }
     }
+
 //    private val adapter by lazy { FeedBrowseAdapter(channelListener, lifecycleScope, coroutineDispatchers) }
-    private val adapter by lazy { FeedBrowseAdapterr(channelListener, bannerListener, lifecycleScope, coroutineDispatchers) }
+    private val adapter by lazy { FeedBrowseAdapter(channelListener, bannerListener, lifecycleScope, coroutineDispatchers) }
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 
@@ -254,7 +253,7 @@ class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseList.addItemDecoration(
             FeedBrowseItemDecoration(
                 binding.feedBrowseList.resources,
-                layoutManager.spanCount,
+                layoutManager.spanCount
             )
         )
         binding.feedBrowseList.adapter = adapter
