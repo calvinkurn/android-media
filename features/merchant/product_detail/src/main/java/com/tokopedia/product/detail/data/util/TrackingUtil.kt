@@ -96,9 +96,6 @@ object TrackingUtil {
         return mapEvent as HashMap<String, Any>?
     }
 
-    fun generateLayoutValue(productInfo: DynamicProductInfoP1?) =
-        "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
-
     fun getTradeInString(isTradein: Boolean, isDiagnosed: Boolean): String {
         return if (isTradein && isDiagnosed) {
             ProductTrackingConstant.Tracking.TRADEIN_TRUE_DIAGNOSTIC

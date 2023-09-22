@@ -52,8 +52,7 @@ data class CartGroupHolderData(
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
     var enablerLabel: String = "",
     var isFirstItem: Boolean = false,
-    var isPreviousHasSelectedAmountWidget: Boolean = false,
-    var cartGroupBmGmHolderData: CartGroupBmGmHolderData = CartGroupBmGmHolderData()
+    var isPreviousHasSelectedAmountWidget: Boolean = false
 ) : ImpressHolder() {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()

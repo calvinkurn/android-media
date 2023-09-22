@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
-import com.tokopedia.cartrevamp.view.uimodel.CartBmGmTickerData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
@@ -58,8 +57,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
                 forceExpandCollapsedUnavailableItems = false,
                 isFromGlobalCheckbox = true,
                 isFromEditBundle = false,
-                addWishList = false,
-                cartBmGmTickerData = CartBmGmTickerData()
+                addWishList = false
             ),
             cartViewModel.deleteCartEvent.value
         )
@@ -103,8 +101,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
                 forceExpandCollapsedUnavailableItems = false,
                 isFromGlobalCheckbox = false,
                 isFromEditBundle = false,
-                addWishList = false,
-                cartBmGmTickerData = CartBmGmTickerData()
+                addWishList = false
             ),
             cartViewModel.deleteCartEvent.value
         )
@@ -148,8 +145,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
                 forceExpandCollapsedUnavailableItems = false,
                 isFromGlobalCheckbox = false,
                 isFromEditBundle = false,
-                addWishList = false,
-                cartBmGmTickerData = CartBmGmTickerData()
+                addWishList = false
             ),
             cartViewModel.deleteCartEvent.value
         )

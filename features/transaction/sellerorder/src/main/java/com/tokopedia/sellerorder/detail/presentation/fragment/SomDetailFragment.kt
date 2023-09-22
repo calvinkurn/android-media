@@ -47,8 +47,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -190,7 +188,7 @@ open class SomDetailFragment :
 
     protected var orderId = ""
 
-    protected var detailResponse: SomDetailOrder.GetSomDetail? = SomDetailOrder.GetSomDetail()
+    protected var detailResponse: SomDetailOrder.Data.GetSomDetail? = SomDetailOrder.Data.GetSomDetail()
     protected val somDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
@@ -325,7 +323,7 @@ open class SomDetailFragment :
         return bottomSheetManager?.dismissBottomSheets().orFalse()
     }
 
-    override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.GetSomDetail.Button) {
+    override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button) {
         bottomSheetManager?.showSomOrderRequestCancelBottomSheet(it, detailResponse, this)
     }
 
@@ -406,21 +404,15 @@ open class SomDetailFragment :
     }
 
     private fun observingDetail() {
-        somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner) {
+        somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner, {
             somDetailLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
-                    isDetailChanged =
-                        if (detailResponse == null) false else detailResponse != it.data.getSomDetail
+                    isDetailChanged = if (detailResponse == null) false else detailResponse != it.data.getSomDetail
                     detailResponse = it.data.getSomDetail
                     dynamicPriceResponse = it.data.somDynamicPriceResponse
-                    renderDetail(
-                        it.data.getSomDetail,
-                        it.data.somDynamicPriceResponse,
-                        it.data.somResolution
-                    )
+                    renderDetail(it.data.getSomDetail, it.data.somDynamicPriceResponse, it.data.somResolution)
                 }
-
                 is Fail -> {
                     it.throwable.showGlobalError()
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
@@ -434,7 +426,7 @@ open class SomDetailFragment :
                     stopLoadTimeMonitoring()
                 }
             }
-        }
+        })
     }
 
     private fun observingAcceptOrder() {
@@ -576,7 +568,7 @@ open class SomDetailFragment :
     }
 
     protected open fun renderDetail(
-        somDetail: SomDetailOrder.GetSomDetail?,
+        somDetail: SomDetailOrder.Data.GetSomDetail?,
         somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?,
         resolutionTicketStatusResponse: GetResolutionTicketStatusResponse
         .ResolutionGetTicketStatus.ResolutionData?
@@ -754,7 +746,7 @@ open class SomDetailFragment :
         }
     }
 
-    private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.GetSomDetail.Button) {
+    private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
         var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse?.orderId.orEmpty())
         val uriBuilder = Uri.Builder()
         val decodedUrl = if (buttonResp.url.startsWith(SomConsts.PREFIX_HTTPS)) {
@@ -860,7 +852,7 @@ open class SomDetailFragment :
         createIntentConfirmShipping(true)
     }
 
-    private fun setActionUploadAwb(buttonResp: SomDetailOrder.GetSomDetail.Button) {
+    private fun setActionUploadAwb(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
         openWebview(buttonResp.url)
     }
 
@@ -881,7 +873,7 @@ open class SomDetailFragment :
     }
 
     private fun observingEditAwb() {
-        somDetailViewModel.editRefNumResult.observe(viewLifecycleOwner) {
+        somDetailViewModel.editRefNumResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     successEditAwbResponse = it.data
@@ -891,7 +883,6 @@ open class SomDetailFragment :
                         showToaster(getString(R.string.global_error), view, TYPE_ERROR)
                     }
                 }
-
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = context?.run {
@@ -911,7 +902,7 @@ open class SomDetailFragment :
                     )
                 }
             }
-        }
+        })
     }
 
     override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
@@ -1003,10 +994,6 @@ open class SomDetailFragment :
         SomAnalytics.sendClickOnResolutionWidgetEvent(userSession.userId)
     }
 
-    override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        onClickProduct(uiModel.orderDetailId.toLongOrZero())
-    }
-
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
             somDetailViewModel.rejectOrder(orderRejectRequestParam)
@@ -1044,7 +1031,7 @@ open class SomDetailFragment :
         }
     }
 
-    override fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.GetSomDetail.LogisticInfo.All>) {
+    override fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>) {
         startActivity(
             Intent(activity, SomDetailLogisticInfoActivity::class.java).apply {
                 val logisticInfo = LogisticInfoAllWrapper(ArrayList(logisticInfoList))

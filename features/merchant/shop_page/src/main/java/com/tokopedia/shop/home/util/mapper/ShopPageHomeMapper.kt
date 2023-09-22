@@ -22,7 +22,6 @@ import com.tokopedia.shop.home.WidgetName.ADVANCED_SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_HOTSPOT
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
-import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DIRECT_PURCHASED_BY_ETALASE
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
@@ -437,7 +436,7 @@ object ShopPageHomeMapper {
         return when (widgetResponse.type.toLowerCase()) {
             DISPLAY.toLowerCase() -> {
                 when (widgetResponse.name) {
-                    DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN, SLIDER_BANNER, SLIDER_SQUARE_BANNER, VIDEO, ADVANCED_SLIDER_BANNER, BMGM_BANNER -> {
+                    DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN, SLIDER_BANNER, SLIDER_SQUARE_BANNER, VIDEO, ADVANCED_SLIDER_BANNER -> {
                         mapToDisplayImageWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     }
                     BANNER_TIMER -> {

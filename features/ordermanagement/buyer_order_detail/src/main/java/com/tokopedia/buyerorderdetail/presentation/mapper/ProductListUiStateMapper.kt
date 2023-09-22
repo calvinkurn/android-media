@@ -3,13 +3,13 @@ package com.tokopedia.buyerorderdetail.presentation.mapper
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
-import com.tokopedia.buyerorderdetail.domain.models.AddonSummary
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
+import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
@@ -20,8 +20,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 
 object ProductListUiStateMapper {
 
@@ -335,24 +333,6 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean
     ): ProductListUiModel {
         /**
-         * Map product bmgm response into UI model and limit the number of mapped items based on
-         * MAX_PRODUCT_WHEN_COLLAPSED. The numOfRemovedProductBmgm is indicating the number of
-         * unmapped product bmgm which will be used on the toggle view to show remaining hidden product
-         * when the product list view is collapsed. The productBmgmList contains the UI models
-         * which limited by the MAX_PRODUCT_WHEN_COLLAPSED.
-         */
-        val (numOfRemovedProductBmgm, productBmgmList) = mapProductBmgm(
-            details?.bmgms,
-            details?.bmgmIcon.orEmpty(),
-            orderId,
-            orderStatusId,
-            details?.addonLabel.orEmpty(),
-            details?.addonIcon.orEmpty(),
-            collapseProductList,
-            MAX_PRODUCT_WHEN_COLLAPSED
-        )
-
-        /**
          * Map product bundle response into UI model and limit the number of mapped items based on
          * MAX_PRODUCT_WHEN_COLLAPSED. The numOfRemovedProductBundle is indicating the number of
          * unmapped product bundle which will be used on the toggle view to show remaining hidden product
@@ -367,7 +347,7 @@ object ProductListUiStateMapper {
             insuranceDetailData,
             singleAtcResultFlow,
             collapseProductList,
-            MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size
+            MAX_PRODUCT_WHEN_COLLAPSED
         )
 
         /**
@@ -386,7 +366,7 @@ object ProductListUiStateMapper {
                 insuranceDetailData = insuranceDetailData,
                 singleAtcResultFlow = singleAtcResultFlow,
                 collapseProductList = collapseProductList,
-                remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size - productBundlingList.size,
+                remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBundlingList.size,
                 isPof = false,
                 shop = shop
             )
@@ -403,7 +383,7 @@ object ProductListUiStateMapper {
         val (numOfRemovedAddOn, addOnList) = getAddonsSectionOrderLevel(
             addonInfo = addonInfo,
             collapseProductList = collapseProductList,
-            remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size - productBundlingList.size - nonProductBundlingList.size
+            remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBundlingList.size - nonProductBundlingList.size
         )
         val (numOfRemovedUnfulfilled, unFulfilledProductList) = details?.partialFulfillment?.unfulfilled?.details?.let {
             getUnFulfilledProducts(
@@ -420,7 +400,6 @@ object ProductListUiStateMapper {
         val tickerDetails = mapTickerDetails(details?.tickerInfo)
         return ProductListUiModel(
             productList = nonProductBundlingList,
-            productBmgmList = productBmgmList,
             productUnFulfilledList = unFulfilledProductList,
             productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),
             productBundlingList = productBundlingList,
@@ -429,7 +408,6 @@ object ProductListUiStateMapper {
             addonsListUiModel = addOnList,
             productListToggleUiModel = mapProductListToggleUiModel(
                 collapseProductList = collapseProductList,
-                numOfRemovedProductBmgm = numOfRemovedProductBmgm,
                 numOfRemovedProductBundle = numOfRemovedProductBundle,
                 numOfRemovedNonProductBundle = numOfRemovedNonProductBundle,
                 numOfRemovedAddOn = numOfRemovedAddOn,
@@ -441,7 +419,6 @@ object ProductListUiStateMapper {
 
     private fun mapProductListToggleUiModel(
         collapseProductList: Boolean,
-        numOfRemovedProductBmgm: Int,
         numOfRemovedProductBundle: Int,
         numOfRemovedNonProductBundle: Int,
         numOfRemovedAddOn: Int,
@@ -449,7 +426,7 @@ object ProductListUiStateMapper {
     ): ProductListUiModel.ProductListToggleUiModel? {
         return if (collapseProductList) {
             val numOfRemovedItems =
-                numOfRemovedProductBmgm + numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOn + numOfRemovedUnFulfilledProduct
+                numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOn + numOfRemovedUnFulfilledProduct
             if (numOfRemovedItems.isMoreThanZero()) {
                 ProductListUiModel.ProductListToggleUiModel(
                     collapsed = true,
@@ -555,52 +532,6 @@ object ProductListUiStateMapper {
             )
         }.orEmpty()
         return numOfRemovedBundleDetail to mappedProductBundle
-    }
-
-    private fun mapProductBmgm(
-        bundleDetail: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bmgm>?,
-        bmgmIcon: String,
-        orderId: String,
-        orderStatusId: String,
-        addOnLabel: String,
-        addOnIcon: String,
-        collapseProductList: Boolean,
-        remainingSlot: Int
-    ): Pair<Int, List<ProductBmgmSectionUiModel>> {
-        /**
-         * Reduce the bmgm response items to be mapped based on the remaining slot on the product
-         * list view when collapsed (Ex: if there is 5 product bmgm on the response and the product list view
-         * can only contains 1 more product bmgm, then only map 1 product bmgm response).
-         * The numOfRemovedBmgmDetail indicate the number of unmapped product bundle response.
-         * The reducedBmgmDetail contains the product bundle response which will be mapped into UI model.
-         */
-        val (numOfRemovedBmgmDetail, reducedBmgmDetail) = bundleDetail?.run {
-            if (collapseProductList) {
-                (size - remainingSlot).coerceAtLeast(Int.ZERO) to take(remainingSlot)
-            } else {
-                Int.ZERO to this
-            }
-        } ?: (Int.ZERO to null)
-        val mappedProductBmgm = reducedBmgmDetail?.map { bmgm ->
-            ProductBmgmSectionUiModel(
-                bmgmId = bmgm.id,
-                bmgmName = bmgm.bmgmTierName,
-                bmgmIconUrl = bmgmIcon,
-                totalPrice = bmgm.priceBeforeBenefit,
-                totalPriceText = bmgm.priceBeforeBenefitFormatted,
-                totalPriceReductionInfoText = bmgm.totalPriceNote,
-                bmgmItemList = bmgm.orderDetail.map { orderDetail ->
-                    mapProductBmgmItem(
-                        orderDetail,
-                        orderId,
-                        orderStatusId,
-                        addOnLabel,
-                        addOnIcon
-                    )
-                }
-            )
-        }.orEmpty()
-        return numOfRemovedBmgmDetail to mappedProductBmgm
     }
 
     private fun mapProductListHeaderUiModel(
@@ -733,7 +664,7 @@ object ProductListUiStateMapper {
     private fun mapProduct(
         details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
         product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle,
-        addonSummary: AddonSummary?,
+        addonSummary: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle.AddonSummary?,
         orderId: String,
         orderStatusId: String,
         isPof: Boolean,
@@ -805,52 +736,6 @@ object ProductListUiStateMapper {
                 }
             }
         }
-    }
-
-    private fun mapProductBmgmItem(
-        product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bmgm.OrderDetail,
-        orderId: String,
-        orderStatusId: String,
-        addOnLabel: String,
-        addOnIcon: String
-    ): ProductBmgmSectionUiModel.ProductUiModel {
-        return ProductBmgmSectionUiModel.ProductUiModel(
-            orderId = orderId,
-            orderStatusId = orderStatusId,
-            orderDetailId = product.orderDetailId,
-            productId = product.productId,
-            productName = product.productName,
-            price = product.price,
-            productPriceText = product.priceText,
-            quantity = product.quantity,
-            productNote = product.notes,
-            categoryId = product.categoryId,
-            category = product.category,
-            thumbnailUrl = product.thumbnail,
-            button = mapActionButton(product.button),
-            addOnSummaryUiModel = product.addonSummary?.let {
-                com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
-                    totalPriceText = it.totalPriceStr,
-                    addonsLogoUrl = addOnIcon,
-                    addonsTitle = addOnLabel,
-                    addonItemList = it.addons?.map { addon ->
-                        val addOnNote = addon.metadata?.addOnNote
-                        com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
-                            priceText = addon.priceStr,
-                            quantity = addon.quantity,
-                            addonsId = addon.id,
-                            addOnsName = addon.name,
-                            type = addon.type,
-                            addOnsThumbnailUrl = addon.imageUrl,
-                            toStr = addOnNote?.to.orEmpty(),
-                            fromStr = addOnNote?.from.orEmpty(),
-                            message = addOnNote?.notes.orEmpty(),
-                            noteCopyable = false
-                        )
-                    }.orEmpty()
-                )
-            }
-        )
     }
 
     private fun mapProductBundleItem(
@@ -929,14 +814,14 @@ object ProductListUiStateMapper {
 
     private fun getAddonsSectionProductLevel(
         details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
-        addonSummary: AddonSummary?
+        addonSummary: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle.AddonSummary?
     ): AddonsListUiModel {
         return AddonsListUiModel(
             addonsTitle = details.addonLabel,
             addonsLogoUrl = details.addonIcon,
             totalPriceText = addonSummary?.totalPriceStr.orEmpty(),
             addonsItemList = addonSummary?.addons?.map {
-                val addonNote = it.metadata?.addOnNote
+                val addonNote = it.metadata?.addonNote
                 AddonsListUiModel.AddonItemUiModel(
                     priceText = it.priceStr,
                     addOnsName = it.name,

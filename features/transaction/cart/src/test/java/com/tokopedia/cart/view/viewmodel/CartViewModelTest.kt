@@ -7,9 +7,7 @@ import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnData
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
-import com.tokopedia.cartrevamp.view.uimodel.CartBmGmTickerData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
-import com.tokopedia.cartrevamp.view.uimodel.CartDetailInfo
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
@@ -2250,42 +2248,6 @@ class CartViewModelTest : BaseCartViewModelTest() {
         assertEquals(3, cartViewModel.cartModel.availableCartItemImpressionList.size)
     }
     // endregion
-
-    // region updateBmGmTickerData
-    @Test
-    fun `WHEN updateBmGmTickerData THEN second product on the same offer list is updated with BMGM data with first product data`() {
-        // GIVEN
-        val cartItemHolderData = CartItemHolderData(
-            cartId = "124",
-            cartStringOrder = "222",
-            cartBmGmTickerData = CartBmGmTickerData(
-                bmGmCartInfoData = CartDetailInfo(
-                    cartDetailType = "BMGM"
-                )
-            )
-        )
-        val cartItemHolderDataTwo = CartItemHolderData(
-            cartId = "125",
-            isShopShown = true,
-            cartStringOrder = "222"
-        )
-
-        val cartGroupHolderData = CartGroupHolderData(
-            uiGroupType = 1,
-            productUiModelList = mutableListOf(
-                cartItemHolderData,
-                cartItemHolderDataTwo
-            )
-        )
-
-        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
-
-        // WHEN
-        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderData))
-
-        // THEN
-        assertTrue(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == "BMGM")
-    }
 
     override fun tearDown() {
         super.tearDown()

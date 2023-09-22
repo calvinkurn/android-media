@@ -117,7 +117,6 @@ class CheckoutCalculator @Inject constructor(
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
         var qtyAddOn = 0
-        var totalBmgmDiscount = 0.0
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         val checkoutCostModel = listData.cost()!!
@@ -143,9 +142,6 @@ class CheckoutCalculator @Inject constructor(
                             }
                         } else {
                             totalItemPrice += cartItem.quantity * cartItem.price
-                        }
-                        if (cartItem.isBMGMItem && cartItem.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
-                            totalBmgmDiscount += cartItem.bmgmTotalDiscount
                         }
                         if (cartItem.addOnGiftingProductLevelModel.status == 1) {
                             if (cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
@@ -225,12 +221,12 @@ class CheckoutCalculator @Inject constructor(
         }
         totalPrice =
             totalItemPrice + finalShippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice -
-            totalBmgmDiscount
+            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice
         shipmentCost = shipmentCost.copy(totalWeight = totalWeight)
         shipmentCost = shipmentCost.copy(additionalFee = additionalFee)
         shipmentCost = shipmentCost.copy(originalItemPrice = totalItemPrice)
-        shipmentCost = shipmentCost.copy(finalItemPrice = totalItemPrice - shipmentCost.productDiscountAmount - totalBmgmDiscount)
+        shipmentCost =
+            shipmentCost.copy(finalItemPrice = totalItemPrice - shipmentCost.productDiscountAmount)
         shipmentCost = shipmentCost.copy(totalItem = totalItem)
         shipmentCost = shipmentCost.copy(originalShippingFee = shippingFee)
         shipmentCost = shipmentCost.copy(finalShippingFee = finalShippingFee)

@@ -602,24 +602,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 status
                 chevronPos
             }
-            bmgm {
-              separator
-              data {
-                backgroundColor
-                titleColor
-                iconUrl
-                title
-                action {
-                  type
-                  link
-                }
-                contents {
-                  imageUrl
-                }
-                loadMoreText
-                productIDs
-              }
-            }
           }
         }
 """.trimIndent()

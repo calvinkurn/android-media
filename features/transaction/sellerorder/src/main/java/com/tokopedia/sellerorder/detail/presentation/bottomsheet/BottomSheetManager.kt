@@ -35,7 +35,7 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
 
     private fun reInitSomRejectReasonBottomSheet(
         data: SomReasonRejectData.Data,
-        orderDetail: SomDetailOrder.GetSomDetail?
+        orderDetail: SomDetailOrder.Data.GetSomDetail?
     ) {
         somRejectReasonBottomSheet?.run {
             init(view)
@@ -79,8 +79,8 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
 
     private fun reInitSomOrderRequestCancelBottomSheet(
         listener: SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener,
-        orderDetail: SomDetailOrder.GetSomDetail?,
-        popUp: PopUp
+        orderDetail: SomDetailOrder.Data.GetSomDetail?,
+        popUp: PopUp,
     ) {
         orderRequestCancelBottomSheet?.run {
             setListener(listener)
@@ -99,7 +99,7 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
 
     private fun reInitSomBottomSheetProductEmpty(
         rejectReason: SomReasonRejectData.Data.SomRejectReason,
-        orderDetail: SomDetailOrder.GetSomDetail?,
+        orderDetail: SomDetailOrder.Data.GetSomDetail?,
         orderId: String,
         listener: SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener
     ) {
@@ -228,7 +228,7 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
 
     fun showSomRejectReasonBottomSheet(
         data: SomReasonRejectData.Data,
-        orderDetail: SomDetailOrder.GetSomDetail?,
+        orderDetail: SomDetailOrder.Data.GetSomDetail?,
         actionListener: SomBottomSheetRejectReasonsAdapter.ActionListener
     ) {
         somRejectReasonBottomSheet = somRejectReasonBottomSheet
@@ -255,8 +255,8 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
     }
 
     fun showSomOrderRequestCancelBottomSheet(
-        button: SomDetailOrder.GetSomDetail.Button,
-        orderDetail: SomDetailOrder.GetSomDetail?,
+        button: SomDetailOrder.Data.GetSomDetail.Button,
+        orderDetail: SomDetailOrder.Data.GetSomDetail?,
         listener: SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener
     ) {
         orderRequestCancelBottomSheet = orderRequestCancelBottomSheet
@@ -267,7 +267,7 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
 
     fun showSomBottomSheetProductEmpty(
         rejectReason: SomReasonRejectData.Data.SomRejectReason,
-        orderDetail: SomDetailOrder.GetSomDetail?,
+        orderDetail: SomDetailOrder.Data.GetSomDetail?,
         orderId: String,
         listener: SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener
     ) {

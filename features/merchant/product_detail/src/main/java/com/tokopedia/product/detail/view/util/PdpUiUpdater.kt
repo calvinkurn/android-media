@@ -24,8 +24,6 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.bmgm.BMGMData
-import com.tokopedia.product.detail.data.model.bmgm.asUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
@@ -76,8 +74,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONO
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
-import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMDataModel
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
@@ -191,9 +187,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val ongoingCampaignData: OngoingCampaignDataModel?
         get() = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignDataModel
-
-    val bmgmSneakPeak: BMGMDataModel?
-        get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMDataModel
 
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
@@ -577,8 +570,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 updateReviewList(it)
             }
             updateDynamicOneLiner(it)
-
-            updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
         }
     }
 
@@ -1349,22 +1340,4 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }?.name()
 
     private fun getAPlusMediaCount() = mapOfData.values.count { it is APlusImageUiModel }
-
-    fun updateBMGMSneakPeak(productId: String, bmgm: BMGMData) {
-        val bmgmSelected = bmgm.data.firstOrNull {
-            it.productIDs.contains(productId)
-        }
-
-        updateData(ProductDetailConstant.BMGM_SNEAK_PEEK_NAME) {
-            if (bmgm.data.isEmpty()) {
-                removeComponent(ProductDetailConstant.BMGM_SNEAK_PEEK_NAME)
-            } else if (bmgmSelected == null) {
-                bmgmSneakPeak?.state = BMGMWidgetUiState.Hide
-            } else {
-                bmgmSneakPeak?.state = BMGMWidgetUiState.Show(
-                    uiModel = bmgmSelected.asUiModel(separator = bmgm.separator)
-                )
-            }
-        }
-    }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
@@ -182,11 +181,7 @@ data class ProductInfoP2Data(
 
     @SerializedName("dynamicOneLiner")
     @Expose
-    val dynamicOneLiner: List<DynamicOneLiner> = emptyList(),
-
-    @SerializedName("bmgm")
-    @Expose
-    val bmgm: BMGMData = BMGMData()
+    val dynamicOneLiner: List<DynamicOneLiner> = emptyList()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -230,6 +225,5 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     socialProof = socialProof.asUiModel(),
     shopReview = shopReview.asUiModel(),
     bottomSheetEdu = bottomSheetEdu.asUiModel(),
-    dynamicOneLiner = dynamicOneLiner,
-    bmgm = bmgm
+    dynamicOneLiner = dynamicOneLiner
 )

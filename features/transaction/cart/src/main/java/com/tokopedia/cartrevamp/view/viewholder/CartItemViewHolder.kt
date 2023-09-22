@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
-import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
@@ -104,7 +103,6 @@ class CartItemViewHolder constructor(
         renderProductInfo(data)
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
-        renderBmGmOfferTicker(data)
     }
 
     private fun initCoachMark() {
@@ -304,7 +302,7 @@ class CartItemViewHolder constructor(
         checkboxProduct.skipAnimation()
 
         var prevIsChecked: Boolean = checkboxProduct.isChecked
-        checkboxProduct.setOnCheckedChangeListener { compoundButton, isChecked ->
+        checkboxProduct.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
@@ -321,14 +319,6 @@ class CartItemViewHolder constructor(
                                 )
                             }
                         }
-                    }
-                }
-            }
-
-            if (compoundButton.isPressed) {
-                if (!data.isError) {
-                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                        actionListener?.onCartItemCheckboxClickChanged(bindingAdapterPosition, data, isChecked)
                     }
                 }
             }
@@ -586,7 +576,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun adjustProductVerticalSeparatorConstraint(data: CartItemHolderData) {
-        if (!data.isBundlingItem && !data.cartBmGmTickerData.isShowBmGmDivider) {
+        if (!data.isBundlingItem) {
             binding.vBundlingProductSeparator.gone()
             return
         }
@@ -596,33 +586,15 @@ class CartItemViewHolder constructor(
             clone(binding.containerProductInformation)
 
             // Top
-            if (data.cartBmGmTickerData.isShowBmGmDivider) {
-                connect(
-                    R.id.v_bundling_product_separator,
-                    ConstraintSet.TOP,
-                    R.id.checkbox_product,
-                    ConstraintSet.BOTTOM,
-                    IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
-                )
-            } else {
-                if (data.isMultipleBundleProduct) {
-                    if (data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
-                        connect(
-                            R.id.v_bundling_product_separator,
-                            ConstraintSet.TOP,
-                            ConstraintSet.PARENT_ID,
-                            ConstraintSet.TOP,
-                            0
-                        )
-                    } else {
-                        connect(
-                            R.id.v_bundling_product_separator,
-                            ConstraintSet.TOP,
-                            if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
-                            ConstraintSet.BOTTOM,
-                            MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
-                        )
-                    }
+            if (data.isMultipleBundleProduct) {
+                if (data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
+                    connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.TOP,
+                        ConstraintSet.PARENT_ID,
+                        ConstraintSet.TOP,
+                        0
+                    )
                 } else {
                     connect(
                         R.id.v_bundling_product_separator,
@@ -632,45 +604,43 @@ class CartItemViewHolder constructor(
                         MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
+            } else {
+                connect(
+                    R.id.v_bundling_product_separator,
+                    ConstraintSet.TOP,
+                    if (data.isError) R.id.product_bundling_info else R.id.checkbox_bundle,
+                    ConstraintSet.BOTTOM,
+                    MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                )
             }
 
             // Bottom
-            if (data.cartBmGmTickerData.isShowBmGmDivider) {
-                connect(
-                    R.id.v_bundling_product_separator,
-                    ConstraintSet.BOTTOM,
-                    ConstraintSet.PARENT_ID,
-                    ConstraintSet.BOTTOM,
-                    0
-                )
-            } else {
-                if (data.isMultipleBundleProduct) {
-                    if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
-                        connect(
-                            R.id.v_bundling_product_separator,
-                            ConstraintSet.BOTTOM,
-                            R.id.fl_image_product,
-                            ConstraintSet.BOTTOM,
-                            0
-                        )
-                    } else {
-                        connect(
-                            R.id.v_bundling_product_separator,
-                            ConstraintSet.BOTTOM,
-                            ConstraintSet.PARENT_ID,
-                            ConstraintSet.BOTTOM,
-                            0
-                        )
-                    }
-                } else {
+            if (data.isMultipleBundleProduct) {
+                if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
                     connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.BOTTOM,
                         R.id.fl_image_product,
                         ConstraintSet.BOTTOM,
-                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                        0
+                    )
+                } else {
+                    connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.BOTTOM,
+                        ConstraintSet.PARENT_ID,
+                        ConstraintSet.BOTTOM,
+                        0
                     )
                 }
+            } else {
+                connect(
+                    R.id.v_bundling_product_separator,
+                    ConstraintSet.BOTTOM,
+                    R.id.fl_image_product,
+                    ConstraintSet.BOTTOM,
+                    MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                )
             }
 
             applyTo(binding.containerProductInformation)
@@ -1402,59 +1372,6 @@ class CartItemViewHolder constructor(
         }
     }
 
-    private fun renderBmGmOfferTicker(data: CartItemHolderData) {
-        if (data.cartBmGmTickerData.isShowTickerBmGm) {
-            binding.itemCartBmgm.root.visible()
-            when (data.cartBmGmTickerData.stateTickerBmGm) {
-                0 -> {
-                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.LOADING
-                }
-                1 -> {
-                    var offerMessage = ""
-                    data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.forEachIndexed { index, s ->
-                        offerMessage += s
-                        if (index < (data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
-                            offerMessage += " • "
-                        }
-                    }
-                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
-                    binding.itemCartBmgm.bmgmWidgetView.title = offerMessage
-                    binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerIcon
-                    binding.itemCartBmgm.bmgmWidgetView.offerId = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
-                    binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
-                        actionListener?.onBmGmChevronRightClicked(data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerLandingPageLink)
-                    }
-                }
-                2 -> {
-                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.INACTIVE
-                    binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
-                        actionListener?.onBmGmTickerReloadClicked()
-                    }
-                }
-            }
-        } else {
-            binding.itemCartBmgm.root.gone()
-        }
-    }
-
-    private fun validateErrorView(typography: Typography, isError: Boolean) {
-        if (isError) {
-            typography.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN400
-                )
-            )
-        } else {
-            typography.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN600
-                )
-            )
-        }
-    }
-
     fun getItemViewBinding(): ItemCartProductRevampBinding {
         return binding
     }
@@ -1489,7 +1406,6 @@ class CartItemViewHolder constructor(
         private const val PRODUCT_ACTION_MARGIN = 16
         private const val BUNDLING_SEPARATOR_MARGIN_START = 38
         private const val BOTTOM_DIVIDER_MARGIN_START = 114
-        private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
     }

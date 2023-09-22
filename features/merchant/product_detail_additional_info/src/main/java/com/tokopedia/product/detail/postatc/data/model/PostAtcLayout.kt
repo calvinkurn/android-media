@@ -17,10 +17,6 @@ data class PostAtcLayout(
     @Expose
     val postAtcInfo: ProductPostAtcInfo = ProductPostAtcInfo(),
 
-    @SerializedName("warehouseInfo")
-    @Expose
-    val warehouseInfo: WarehouseInfo = WarehouseInfo(),
-
     @SerializedName("components")
     @Expose
     val components: List<Component> = emptyList()
@@ -92,12 +88,6 @@ data class PostAtcLayout(
             val cartId: String = ""
         )
     }
-
-    data class WarehouseInfo(
-        @SerializedName("warehouseID")
-        @Expose
-        val warehouseID: String = ""
-    )
 }
 
 data class PostAtcLayoutResponse(

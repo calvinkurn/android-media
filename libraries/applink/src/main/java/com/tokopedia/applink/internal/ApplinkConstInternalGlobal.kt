@@ -262,6 +262,4 @@ object ApplinkConstInternalGlobal {
 
     //LoginHelperSearchActivity
     const val LOGIN_HELPER_SEARCH_ACCOUNT = "$INTERNAL_GLOBAL/login-helper-search-account"
-
-    const val BMGM_MINI_CART = "$INTERNAL_GLOBAL/bmgm-mini-cart"
 }

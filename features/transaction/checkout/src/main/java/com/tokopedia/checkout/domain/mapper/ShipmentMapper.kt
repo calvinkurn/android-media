@@ -18,8 +18,6 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentSu
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.SubtotalAddOn
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
-import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmProductModel
-import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmTierProductModel
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
@@ -51,7 +49,6 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
@@ -62,7 +59,6 @@ import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
-import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmTierProduct
 import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyEnablerResponse
@@ -415,26 +411,6 @@ class ShipmentMapper @Inject constructor() {
                     } else {
                         isBundlingItem = false
                         bundleId = "0"
-                    }
-                    if (cartDetail.cartDetailInfo.cartDetailType.lowercase() == CART_DETAIL_TYPE_BMGM) {
-                        isBmgmItem = true
-                        bmgmOfferId = cartDetail.cartDetailInfo.bmgmData.offerId
-                        bmgmIconUrl = cartDetail.cartDetailInfo.bmgmData.offerIcon
-                        bmgmOfferName = cartDetail.cartDetailInfo.bmgmData.offerName
-                        bmgmOfferMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage
-                        bmgmOfferStatus = cartDetail.cartDetailInfo.bmgmData.offerStatus
-                        bmgmItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
-                            BMGM_ITEM_HEADER
-                        } else {
-                            BMGM_ITEM_DEFAULT
-                        }
-                        bmgmTotalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount
-                        bmgmTierProductList = mapBmgmTierProductToDomainModel(
-                            cartDetail.cartDetailInfo.bmgmData.tierProductList,
-                            cartDetail.products
-                        )
-                    } else {
-                        isBmgmItem = false
                     }
                     addOnGiftingProduct = mapAddOnsGiftingData(product.addOns)
                     ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
@@ -1287,45 +1263,10 @@ class ShipmentMapper @Inject constructor() {
         return listShipmentSummaryAddOn
     }
 
-    private fun mapBmgmTierProductToDomainModel(
-        tierProductList: List<BmGmTierProduct>,
-        products: List<com.tokopedia.checkout.data.model.response.shipmentaddressform.Product>
-    ): List<CheckoutBmgmTierProductModel> {
-        return tierProductList.map { bmgmTier ->
-            CheckoutBmgmTierProductModel(
-                tierId = bmgmTier.tierId,
-                tierName = bmgmTier.tierName,
-                tierMessage = bmgmTier.tierMessage,
-                tierDiscountText = bmgmTier.tierDiscountText,
-                tierDiscountAmount = bmgmTier.tierDiscountAmount,
-                priceBeforeBenefit = bmgmTier.priceBeforeBenefit,
-                priceAfterBenefit = bmgmTier.priceAfterBenefit,
-                listProduct = bmgmTier.listProduct.map { bmgmProduct ->
-                    val matchedProduct = products.firstOrNull {
-                        bmgmProduct.productId == it.productId.toString()
-                    }
-                    CheckoutBmgmProductModel(
-                        productId = bmgmProduct.productId,
-                        productName = matchedProduct?.productName.orEmpty(),
-                        imageUrl = matchedProduct?.productImageSrc200Square.orEmpty(),
-                        warehouseId = bmgmProduct.warehouseId,
-                        quantity = bmgmProduct.quantity,
-                        priceBeforeBenefit = bmgmProduct.priceBeforeBenefit,
-                        priceAfterBenefit = bmgmProduct.priceAfterBenefit,
-                        wholesalePrice = matchedProduct?.productWholesalePrice.orZero(),
-                        cartId = bmgmProduct.cartId
-                    )
-                }
-            )
-        }
-    }
-
     companion object {
         private const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
         private const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
         private const val SHOP_TYPE_REGULER = "reguler"
-
-        private const val CART_DETAIL_TYPE_BMGM = "bmgm"
 
         const val DISABLED_DROPSHIPPER = "dropshipper"
         const val DISABLED_ORDER_PRIORITY = "order_prioritas"
@@ -1337,8 +1278,5 @@ class ShipmentMapper @Inject constructor() {
         const val BUNDLING_ITEM_DEFAULT = 0
         const val BUNDLING_ITEM_HEADER = 1
         const val BUNDLING_ITEM_FOOTER = 2
-
-        const val BMGM_ITEM_DEFAULT = 0
-        const val BMGM_ITEM_HEADER = 1
     }
 }
