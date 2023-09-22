@@ -7,10 +7,6 @@ data class StoriesRequestModel(
     val sourceID: String,
 )
 
-enum class StoriesAuthorType(val value: String) {
-    SHOP("shop"),
-}
-
 enum class StoriesSource(val value: String) {
     SHOP_ENTRY_POINT("shop-entrypoint"),
     STORY_GROUP("story-group"),

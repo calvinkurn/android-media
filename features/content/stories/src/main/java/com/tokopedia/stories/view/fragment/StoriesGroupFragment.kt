@@ -1,5 +1,7 @@
 package com.tokopedia.stories.view.fragment
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +20,9 @@ import com.tokopedia.stories.analytic.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesUiModel
-import com.tokopedia.stories.view.utils.SHOP_ID
+import com.tokopedia.stories.view.utils.KEY_ARGS
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -41,20 +44,17 @@ class StoriesGroupFragment @Inject constructor(
     private val binding: FragmentStoriesGroupBinding
         get() = _binding!!
 
-    val authorId: String
-        get() = arguments?.getString(SHOP_ID).orEmpty()
+    val args: StoriesArgsModel
+        @SuppressLint("DeprecatedMethod")
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(KEY_ARGS, StoriesArgsModel::class.java) ?: StoriesArgsModel()
+        } else {
+            arguments?.getParcelable(KEY_ARGS) ?: StoriesArgsModel()
+        }
 
-    /*** TODO
-    //  we need to know everytime stories open from where
-    // add the logic later
-    // currently used for tracker
-     ***/
-    val entryPoint: String
-        get() = "Entry Point"
+    val viewModelProvider get() = viewModelFactory.create(requireActivity(), args)
 
-    val viewModelProvider get() = viewModelFactory.create(requireActivity(), authorId)
-
-    private val analytic: StoriesAnalytics get() = analyticFactory.create(authorId)
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(args)
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
@@ -177,7 +177,10 @@ class StoriesGroupFragment @Inject constructor(
         prevState: StoriesUiModel?,
         state: StoriesUiModel
     ) {
-        if (prevState == state || pagerAdapter.getCurrentData().size == state.groupItems.size) return
+        if (prevState == state ||
+            pagerAdapter.getCurrentData().size == state.groupItems.size ||
+            state.selectedGroupPosition < 0
+        ) return
 
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
@@ -199,13 +202,12 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun trackImpressionGroup() {
         analytic.sendViewStoryCircleEvent(
-            entryPoint = entryPoint,
             currentCircle = viewModel.mGroup.groupId,
             promotions = viewModel.impressedGroupHeader.mapIndexed { index, storiesGroupHeader ->
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = index.plus(1).toString(),
-                    itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.groupName} - $authorId",
+                    itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.groupName} - ${args.authorId}",
                     itemName = "/ - stories",
                 )
             },
@@ -218,12 +220,11 @@ class StoriesGroupFragment @Inject constructor(
             return
         }
 
-        analytic.sendClickMoveToOtherGroup(entryPoint = entryPoint)
+        analytic.sendClickMoveToOtherGroup()
     }
 
     private fun trackExitRoom() {
         analytic.sendClickExitStoryRoomEvent(
-            entryPoint = entryPoint,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,

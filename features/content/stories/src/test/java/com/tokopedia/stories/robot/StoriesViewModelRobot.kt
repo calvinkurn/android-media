@@ -3,6 +3,7 @@ package com.tokopedia.stories.robot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.stories.data.repository.StoriesRepository
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -20,13 +21,13 @@ import java.io.Closeable
 
 internal class StoriesViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
-    authorId: String = "",
+    args: StoriesArgsModel = StoriesArgsModel(),
     private val handle: SavedStateHandle = SavedStateHandle(),
     repository: StoriesRepository = mockk(relaxed = true),
 ) : Closeable {
 
     private val viewModel = StoriesViewModel(
-        authorId = authorId,
+        args = args,
         handle = handle,
         repository = repository,
     )

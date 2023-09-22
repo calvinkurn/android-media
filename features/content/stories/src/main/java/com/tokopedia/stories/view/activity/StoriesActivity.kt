@@ -5,13 +5,17 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
+import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.model.StoriesArgsModel
+import com.tokopedia.stories.view.utils.ARGS_SOURCE
+import com.tokopedia.stories.view.utils.ARGS_SOURCE_ID
+import com.tokopedia.stories.view.utils.KEY_ARGS
 import com.tokopedia.stories.view.utils.KEY_CONFIG_ENABLE_STORIES_ROOM
-import com.tokopedia.stories.view.utils.SHOP_ID
-import com.tokopedia.stories.view.utils.SHOP_ID_INDEX_APP_LINK
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
 import javax.inject.Inject
 import com.tokopedia.stories.R as storiesR
@@ -60,8 +64,16 @@ class StoriesActivity : BaseActivity() {
         }
 
         val path = data.pathSegments
+        val storiesArgs = StoriesArgsModel(
+            authorId = path.last().orEmpty(),
+            authorType = path.first().orEmpty(),
+            source = data.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
+                StoriesSource.SHOP_ENTRY_POINT.value
+            },
+            sourceId = data.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
+        )
         bundle = Bundle().apply {
-            putString(SHOP_ID, path[SHOP_ID_INDEX_APP_LINK])
+            putParcelable(KEY_ARGS, storiesArgs)
         }
     }
 
