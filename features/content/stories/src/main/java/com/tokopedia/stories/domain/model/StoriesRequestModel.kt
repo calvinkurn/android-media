@@ -5,6 +5,7 @@ data class StoriesRequestModel(
     val authorType: String,
     val source: String,
     val sourceID: String,
+    val entryPoint: String,
 )
 
 enum class StoriesSource(val value: String) {

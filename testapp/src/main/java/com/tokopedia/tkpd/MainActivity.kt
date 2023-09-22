@@ -153,7 +153,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia://stories/shop/3851982"
     }
 
     data class Model(
