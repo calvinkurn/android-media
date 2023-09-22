@@ -32,6 +32,7 @@ import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY_BOUNCE
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.video_widget.VideoPlayerView
@@ -177,6 +178,9 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     }
     private val textViewFulfillment: Typography? by lazy(NONE) {
         findViewById(R.id.textViewFulfillment)
+    }
+    private val buttonAddToCart: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonAddToCart)
     }
 
     constructor(context: Context) : super(context) {
@@ -434,6 +438,7 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
             textViewFulfillment?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
             textViewStockLabel?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
             progressBarStock?.trackDrawable?.apply { setColor(ContextCompat.getColor(context, R.color.dms_static_light_NN100)) }
+            buttonAddToCart?.applyColorMode(ColorMode.LIGHT_MODE)
         }
     }
 }
