@@ -6,6 +6,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -36,6 +37,9 @@ class CreationUploaderWorker(
 
     @Inject
     lateinit var queueRepository: CreationUploadQueueRepository
+
+    @Inject
+    lateinit var gson: Gson
 
     init {
         inject()
@@ -74,7 +78,7 @@ class CreationUploaderWorker(
                                 setProgress(
                                     workDataOf(
                                         CreationUploadConst.PROGRESS to progress,
-                                        CreationUploadConst.UPLOAD_DATA to uploadData.toString()
+                                        CreationUploadConst.UPLOAD_DATA to uploadData.mapToJson(gson)
                                     )
                                 )
                             }
