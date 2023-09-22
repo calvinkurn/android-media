@@ -322,7 +322,7 @@ class MiniCartViewModel @Inject constructor(
         bundlePosition: Int,
         priceCut: String,
         productDetails: List<ShopHomeBundleProductUiModel>,
-        productQuantity: Int
+        productQuantity: Int? = null
     ) {
         launchCatchError(context = executorDispatchers.io, block = {
             val productDetailsParam =

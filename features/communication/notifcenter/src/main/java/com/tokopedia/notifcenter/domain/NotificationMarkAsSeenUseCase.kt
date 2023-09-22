@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.data.entity.markasseen.MarkAsSeenResponse
+import timber.log.Timber
 import javax.inject.Inject
 
 class NotificationMarkAsSeenUseCase @Inject constructor(
@@ -34,7 +35,11 @@ class NotificationMarkAsSeenUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun execute(params: Param) {
-        repository.request<Param, MarkAsSeenResponse>(graphqlQuery(), params)
+        try {
+            repository.request<Param, MarkAsSeenResponse>(graphqlQuery(), params)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
     }
 
     data class Param(
