@@ -3,6 +3,7 @@ package com.tokopedia.createpost.common.domain.usecase
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
 import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
@@ -35,7 +36,7 @@ import kotlin.Exception
  * Revamped By : Jonathan Darwin on October 13, 2022
  */
 class UploadMultipleMediaUseCase @Inject constructor(
-    @ActivityContext private val context: Context,
+    @ApplicationContext private val context: Context,
     @SubmitPostCoroutineScope private val scope: CoroutineScope,
     private val uploaderUseCase: UploaderUseCase,
     private val uploadVideoUseCase: UploadVideoUseCase<DefaultUploadVideoResponse>, /** Will be removed after video uploader migration is done soon */
