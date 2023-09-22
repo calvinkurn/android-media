@@ -4,8 +4,10 @@ import android.content.Context
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewStub
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 
 object ViewUtil {
     fun TextView.setDimenAsTextSize(id: Int) {
@@ -31,6 +33,11 @@ object ViewUtil {
             throwable.printStackTrace()
             defaultColor
         }
+    }
+
+    fun ViewStub.inflateView(@LayoutRes layoutResource: Int): View {
+        this.layoutResource = layoutResource
+        return inflate()
     }
 }
 

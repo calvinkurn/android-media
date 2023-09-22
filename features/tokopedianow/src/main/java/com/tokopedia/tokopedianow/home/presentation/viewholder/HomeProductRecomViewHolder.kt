@@ -10,6 +10,7 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
+import com.tokopedia.tokopedianow.common.util.ViewUtil.inflateView
 import com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
@@ -70,9 +71,8 @@ class HomeProductRecomViewHolder(
         if(element.realTimeRecom.productList.isNotEmpty()) {
             binding?.apply {
                 if(realtimeRecommendationView == null) {
-                    realTimeRecommendationViewStub
-                        .layoutResource = R.layout.layout_tokopedianow_real_time_recommendation_carousel
-                    val view = realTimeRecommendationViewStub.inflate()
+                    val view = realTimeRecommendationViewStub
+                        .inflateView(R.layout.layout_tokopedianow_real_time_recommendation_carousel)
                     realtimeRecommendationView = view.findViewById(R.id.real_time_recommendation_carousel)
                 }
 
