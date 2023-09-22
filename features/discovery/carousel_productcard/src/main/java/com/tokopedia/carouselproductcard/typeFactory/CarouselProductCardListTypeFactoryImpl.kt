@@ -9,7 +9,7 @@ import com.tokopedia.carouselproductcard.CarouselSeeMoreCardGridViewHolder
 import com.tokopedia.carouselproductcard.CarouselSeeMoreCardModel
 
 internal class CarouselProductCardListTypeFactoryImpl(
-    private val internalListener: CarouselProductCardInternalListener
+    private val internalListener: CarouselProductCardInternalListener,
 ) : CarouselProductCardTypeFactory{
     override fun type(carouselProductCardModel: CarouselProductCardModel) : Int{
         return CarouselProductCardListViewHolder.LAYOUT
