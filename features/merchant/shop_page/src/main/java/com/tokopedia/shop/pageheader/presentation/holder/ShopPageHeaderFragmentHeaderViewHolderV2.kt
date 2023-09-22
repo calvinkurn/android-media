@@ -368,6 +368,16 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             ).orZero()
             textShopOnlineDescription?.setTextColor(textColor)
             shopStatusSectionDotSeparator?.setTextColor(textColor)
+        } else {
+            // Handle dark mode - last online status
+            val lastOnlineColor = ShopUtil.getColorHexString(context, R.color.clr_dms_31353B)
+            val lastOnlineUnifyColor = ShopUtil.getColorHexString(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+            val unifiedShopAdditionalInfo =
+                shopStatusText.replace(lastOnlineColor, lastOnlineUnifyColor)
+            textShopOnlineDescription?.text = MethodChecker.fromHtml(unifiedShopAdditionalInfo)
         }
     }
 
