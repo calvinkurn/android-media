@@ -24,16 +24,17 @@ import com.tokopedia.universal_sharing.util.Result
 import com.tokopedia.universal_sharing.view.UniversalSharingPostPurchaseAction
 import com.tokopedia.universal_sharing.view.UniversalSharingPostPurchaseViewModel
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.UniversalSharingPostPurchaseAdapter
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.UniversalSharingPostPurchaseBottomSheetListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.UniversalSharingPostPurchaseBottomSheetListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.UniversalSharingPostPurchaseProductListener
 import com.tokopedia.universal_sharing.view.bottomsheet.typefactory.UniversalSharingTypeFactoryImpl
 import com.tokopedia.universal_sharing.view.model.UniversalSharingGlobalErrorUiModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class UniversalSharingPostPurchaseBottomSheet :
+class UniversalSharingPostPurchaseProduct :
     BottomSheetUnify(),
-    UniversalSharingPostPurchaseBottomSheetListener {
+    UniversalSharingPostPurchaseProductListener {
 
     @Inject
     lateinit var viewModel: UniversalSharingPostPurchaseViewModel
@@ -44,9 +45,12 @@ class UniversalSharingPostPurchaseBottomSheet :
     private var _binding: UniversalSharingPostPurchaseBottomsheetBinding? = null
     private val binding: UniversalSharingPostPurchaseBottomsheetBinding get() = _binding!!
 
+    private var listener: UniversalSharingPostPurchaseBottomSheetListener? = null
+
     private val typeFactory = UniversalSharingTypeFactoryImpl(this)
     private val adapter = UniversalSharingPostPurchaseAdapter(typeFactory)
     private var data = UniversalSharingPostPurchaseModel()
+    private var shouldClosePage: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +83,12 @@ class UniversalSharingPostPurchaseBottomSheet :
         showCloseIcon = true // show close button
         clearContentPadding = true // remove default margin
         isDragable = false // should be not draggable
+        this.setCloseClickListener {
+            listener?.onClickClose()
+        }
+        this.setOnDismissListener {
+            listener?.onDismiss(shouldClosePage)
+        }
     }
 
     private fun setBottomSheetChildView() {
@@ -150,7 +160,9 @@ class UniversalSharingPostPurchaseBottomSheet :
             when (it) {
                 is Result.Success -> {
                     binding.universalSharingLayoutLoading.hide()
-                    // todo: ask rama how to use branch link
+                    listener?.onOpenShareBottomSheet(it.data)
+                    shouldClosePage = false // close bottom sheet but not the activity
+                    dismiss()
                 }
                 is Result.Error -> {
                     binding.universalSharingLayoutLoading.hide()
@@ -188,13 +200,17 @@ class UniversalSharingPostPurchaseBottomSheet :
         _binding = null
     }
 
+    fun setListener(listener: UniversalSharingPostPurchaseBottomSheetListener) {
+        this.listener = listener
+    }
+
     companion object {
         private const val DATA_KEY = "data_key"
 
         fun newInstance(
             data: UniversalSharingPostPurchaseModel
-        ): UniversalSharingPostPurchaseBottomSheet {
-            val bottomSheet = UniversalSharingPostPurchaseBottomSheet()
+        ): UniversalSharingPostPurchaseProduct {
+            val bottomSheet = UniversalSharingPostPurchaseProduct()
             val bundle = Bundle()
             bundle.putParcelable(DATA_KEY, data)
             bottomSheet.arguments = bundle

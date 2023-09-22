@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
+import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductWrapperResponse
 import com.tokopedia.universal_sharing.util.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,156 +18,32 @@ class UniversalSharingPostPurchaseGetDetailProductUseCase @Inject constructor(
     private val dispatcher: CoroutineDispatchers
 ) {
 
-    private val productDetailFlow = MutableStateFlow<Result<String>?>(null)
+    private val productDetailFlow =
+        MutableStateFlow<Result<UniversalSharingPostPurchaseProductResponse>?>(null)
 
     private fun graphqlQuery(): String = """
         query getProductV3(
           $$PRODUCT_ID: String!,
           $$OPTIONS: OptionV3!
-        ) {     
+        ) {
           getProductV3(
             productID:$$PRODUCT_ID, 
             options:$$OPTIONS, 
             extraInfo: { aggregate: true }
-          ) {         
-            productID 
-            productName 
-            status 
-            stock 
-            priceCurrency 
-            price 
-            lastUpdatePrice 
-            minOrder 
-            maxOrder 
-            description 
-            weightUnit 
-            weight 
-            condition 
-            mustInsurance 
-            sku 
-            hasDTStock 
-            category{   
-              id   
-              name   
-              title   
-              isAdult   
-              breadcrumbURL   
-              detail{     
-                id     
-                name     
-                breadcrumbURL     
-                isAdult 
-              }
-            } 
-            menus 
-            pictures{   
-              picID   
-              description   
-              filePath   
-              fileName   
-              width   
-              height   
-              urlOriginal   
-              urlThumbnail   
-              url300   
-              status 
-            } 
-            position{   
-              position   
-              isSwap 
-            } 
-            preorder{   
-              duration   
-              timeUnit   
-              isActive 
-            } 
+          ) {
+            productID
+            productName
+            price
+            stock
+            status
+            url
+            pictures {
+              urlOriginal
+            }
             shop {
-              id
               name
-              domain
-              url
-            } 
-            wholesale{   
-              minQty   
-              price 
-            } 
-            cpl{   
-              shipperServices
-            } 
-            campaign{   
-              campaignID   
-              campaignType  
-              campaignTypeName 
-              percentageAmount 
-              originalPrice 
-              discountedPrice  
-              originalStock
-              isActive 
-            } 
-            video{
-              source 
-              url 
-            } 
-            cashback {
-              percentage
-            } 
-            txStats{ 
-              itemSold
-            } 
-            variant{  
-              products{
-                productID
-                status
-                combination
-                isPrimary
-                price
-                sku
-                stock
-                weight
-                weightUnit
-                hasDTStock
-                isCampaign
-                pictures{ 
-                  picID 
-                  description 
-                  filePath 
-                  fileName 
-                  width   
-                  height  
-                  isFromIG
-                  urlOriginal 
-                  urlThumbnail  
-                  url300
-                  status
-                }   
-              }   
-              selections{
-                variantID 
-                variantName
-                unitName
-                unitID
-                unitName
-                identifier
-                options{ 
-                  unitValueID
-                  value
-                  hexCode
-                }   
-              }   
-              sizecharts{ 
-                picID    
-                description
-                filePath  
-                fileName   
-                width   
-                height    
-                urlOriginal 
-                urlThumbnail 
-                url300   
-                status   
-              } 
-            }      
-          }     
+            }
+          }
         }
     """.trimIndent()
 
@@ -176,11 +54,12 @@ class UniversalSharingPostPurchaseGetDetailProductUseCase @Inject constructor(
             productDetailFlow.emit(Result.Loading)
             try {
                 val params = generateParam(productId)
-                val response = repository.request<Map<String, Any>, String>(
-                    graphqlQuery(),
-                    params
-                )
-                productDetailFlow.emit(Result.Success(response))
+                val response = repository
+                    .request<Map<String, Any>, UniversalSharingPostPurchaseProductWrapperResponse>(
+                        graphqlQuery(),
+                        params
+                    )
+                productDetailFlow.emit(Result.Success(response.product))
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
                 productDetailFlow.emit(Result.Error(throwable))
@@ -191,10 +70,7 @@ class UniversalSharingPostPurchaseGetDetailProductUseCase @Inject constructor(
     private fun generateParam(productId: String): Map<String, Any> {
         val optionMap = mutableMapOf(
             "basic" to true,
-            "picture" to true,
-            "variant" to true,
-            "shop" to true,
-            "campaign" to true
+            "picture" to true
         )
         return mapOf(
             PRODUCT_ID to productId,

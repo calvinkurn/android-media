@@ -3,7 +3,7 @@ package com.tokopedia.universal_sharing.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurchaseBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurchaseProduct
 import dagger.Component
 
 @ActivityScope
@@ -17,5 +17,5 @@ import dagger.Component
 )
 interface UniversalShareComponent {
     fun inject(universalShareBottomSheet: UniversalShareBottomSheet)
-    fun inject(universalSharingPostPurchaseBottomSheet: UniversalSharingPostPurchaseBottomSheet)
+    fun inject(universalSharingPostPurchaseBottomSheet: UniversalSharingPostPurchaseProduct)
 }

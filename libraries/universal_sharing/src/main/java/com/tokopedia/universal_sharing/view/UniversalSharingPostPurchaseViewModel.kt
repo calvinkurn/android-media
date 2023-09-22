@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.domain.mapper.UniversalSharingPostPurchaseMapper
 import com.tokopedia.universal_sharing.domain.usecase.UniversalSharingPostPurchaseGetDetailProductUseCase
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class UniversalSharingPostPurchaseViewModel @Inject constructor(
     private val getDetailProductUseCase: UniversalSharingPostPurchaseGetDetailProductUseCase,
     private val mapper: UniversalSharingPostPurchaseMapper,
-    private val dispatchers: CoroutineDispatchers
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val _actionFlow =
@@ -52,7 +53,7 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    fun observeDetailProductFlow(): StateFlow<Result<String>?> =
+    fun observeDetailProductFlow(): StateFlow<Result<UniversalSharingPostPurchaseProductResponse>?> =
         getDetailProductUseCase.observe()
 
     fun processAction(action: UniversalSharingPostPurchaseAction) {

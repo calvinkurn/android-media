@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.UniversalSharingPostPurchaseBottomSheetListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.UniversalSharingPostPurchaseProductListener
 import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.UniversalSharingGlobalErrorViewHolder
 import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.UniversalSharingPostPurchaseProductViewHolder
 import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.UniversalSharingPostPurchaseShopTitleViewHolder
@@ -17,7 +17,7 @@ import com.tokopedia.universal_sharing.view.model.UniversalSharingPostPurchaseSh
  * Add override new type here, add it to createViewHolder too
  */
 class UniversalSharingTypeFactoryImpl(
-    private val postPurchaseBottomSheetListener: UniversalSharingPostPurchaseBottomSheetListener
+    private val postPurchaseProductListener: UniversalSharingPostPurchaseProductListener
 ) : BaseAdapterTypeFactory(), UniversalSharingTypeFactory {
 
     override fun type(uiModel: UniversalSharingPostPurchaseShopTitleUiModel): Int {
@@ -39,7 +39,8 @@ class UniversalSharingTypeFactoryImpl(
             }
             UniversalSharingPostPurchaseProductViewHolder.LAYOUT -> {
                 UniversalSharingPostPurchaseProductViewHolder(
-                    parent, postPurchaseBottomSheetListener
+                    parent,
+                    postPurchaseProductListener
                 )
             }
             UniversalSharingGlobalErrorViewHolder.LAYOUT -> {

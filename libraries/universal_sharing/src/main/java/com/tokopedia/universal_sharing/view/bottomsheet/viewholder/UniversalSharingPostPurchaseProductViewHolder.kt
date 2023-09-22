@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseProductItemBinding
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.UniversalSharingPostPurchaseBottomSheetListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.UniversalSharingPostPurchaseProductListener
 import com.tokopedia.universal_sharing.view.model.UniversalSharingPostPurchaseProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class UniversalSharingPostPurchaseProductViewHolder(
     itemView: View,
-    private val listener: UniversalSharingPostPurchaseBottomSheetListener
+    private val listener: UniversalSharingPostPurchaseProductListener
 ) : AbstractViewHolder<UniversalSharingPostPurchaseProductUiModel>(itemView) {
 
     private val binding: UniversalSharingPostPurchaseProductItemBinding? by viewBinding()
