@@ -2,6 +2,8 @@ package com.tokopedia.product.detail.usecase
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -67,8 +69,7 @@ class GetProductRecommendationUseCase @Inject constructor(
         val productIdParam = requestParams.getString(PARAM_PRODUCT_ID, "")
         val pageNameParam = requestParams.getString(PARAM_PAGE_NAME, "")
         val isTokoNowParam = requestParams.getBoolean(PARAM_TOKONOW, false)
-        val miniCartParam =
-            requestParams.getObject(PARAM_MINI_CART) as MutableMap<String, MiniCartItem.MiniCartItemProduct>?
+        val miniCartParam = requestParams.getObject(PARAM_MINI_CART) as? MutableMap<String, MiniCartItem.MiniCartItemProduct>?
         val queryParam = requestParams.getString(PARAM_QUERY_PARAM, "")
         val thematicIdParam = requestParams.getString(PARAM_THEMATIC_ID, "")
 
@@ -146,7 +147,7 @@ class GetProductRecommendationUseCase @Inject constructor(
                 pageNameParam == ProductDetailConstant.PDP_K2K
             ) {
                 getRecommendationFilterChips.setParams(
-                    userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
+                    userId = if (userSessionInterface.userId.isEmpty()) Int.ZERO else userSessionInterface.userId.toIntOrZero(),
                     pageName = pageNameParam,
                     productIDs = productIdsString,
                     xSource = ProductDetailConstant.DEFAULT_X_SOURCE,
