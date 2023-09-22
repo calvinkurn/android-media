@@ -106,6 +106,7 @@ interface ProductListSectionContract {
         fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
+        fun trackLastProductClicked(product: ProductItemDataView?)
         fun trackProductClick(item: ProductItemDataView)
         fun onProductAddToCart(item: ProductItemDataView)
         val quickFilterList: List<Filter>

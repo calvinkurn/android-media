@@ -801,6 +801,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int) {
         presenter?.onProductClick(item, adapterPosition)
+        presenter?.trackLastProductClicked(item)
     }
 
     override fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView) {

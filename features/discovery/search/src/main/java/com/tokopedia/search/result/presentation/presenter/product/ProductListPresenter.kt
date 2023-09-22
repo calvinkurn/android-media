@@ -100,7 +100,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONArray
 import rx.Observable
 import rx.Subscriber
@@ -187,6 +186,7 @@ class ProductListPresenter @Inject constructor(
         private const val RESPONSE_CODE_RELATED = "3"
         private const val RESPONSE_CODE_SUGGESTION = "6"
         private const val REQUEST_TIMEOUT_RESPONSE_CODE = "15"
+        private const val REQUEST_PARAMS_LAST_CLICK = "last_click"
     }
 
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
@@ -223,6 +223,7 @@ class ProductListPresenter @Inject constructor(
             ""
         }
     }
+    private var productLastClicked= ""
 
 
     override fun attachView(view: ProductListSectionContract.View) {
@@ -289,6 +290,7 @@ class ProductListPresenter @Inject constructor(
             searchParameter,
             chooseAddressDelegate.getChooseAddressParams(),
         )
+        requestParams.addParamsLastClickProductIfNotEmpty()
         requestParamsGenerator.enrichWithRelatedSearchParam(requestParams)
         enrichWithAdditionalParams(requestParams)
 
@@ -347,6 +349,7 @@ class ProductListPresenter @Inject constructor(
         val productDataView = createProductDataView(searchProductModel)
 
         additionalParams = productDataView.additionalParams
+        productLastClicked = ""
 
         if (productDataView.productList.isEmpty()) {
             postProcessingFilter.checkPostProcessingFilter(
@@ -1339,6 +1342,10 @@ class ProductListPresenter @Inject constructor(
         view.routeToProductDetail(item, adapterPosition)
     }
 
+    override fun trackLastProductClicked(product: ProductItemDataView?) {
+        productLastClicked = product?.productID.orEmpty()
+    }
+
     override fun trackProductClick(item: ProductItemDataView) {
         if (item.isTopAds) view.sendTopAdsGTMTrackingProductClick(item)
         else view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
@@ -1485,5 +1492,10 @@ class ProductListPresenter @Inject constructor(
     private fun unsubscribeCompositeSubscription() {
         compositeSubscription?.unsubscribe()
         compositeSubscription = null
+    }
+
+    private fun RequestParams.addParamsLastClickProductIfNotEmpty() {
+        if(productLastClicked.isNotEmpty())
+            this.putString(REQUEST_PARAMS_LAST_CLICK, productLastClicked)
     }
 }
