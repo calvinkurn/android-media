@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -12,13 +13,13 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 
 class StoriesRoomAnalyticImpl @AssistedInject constructor(
-    @Assisted private val authorId: String,
+    @Assisted private val args: StoriesArgsModel,
     private val userSession: UserSessionInterface,
 ) : StoriesRoomAnalytic {
 
     @AssistedFactory
     interface Factory : StoriesRoomAnalytic.Factory {
-        override fun create(authorId: String): StoriesRoomAnalyticImpl
+        override fun create(args: StoriesArgsModel): StoriesRoomAnalyticImpl
     }
 
     private val userId: String
@@ -36,7 +37,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
             .setCustomProperty(Key.isLoggedInStatus, isLogin.toString())
-            .setCustomProperty(Key.screenName, "/stories-room/$storiesId/$authorId")
+            .setCustomProperty(Key.screenName, "/stories-room/$storiesId/${args.authorId}")
             .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
@@ -46,7 +47,6 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46043
     override fun sendViewStoryCircleEvent(
-        entryPoint: String,
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     ) {
@@ -63,7 +63,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             putString(Key.event, Event.viewItem)
             putString(Key.eventAction, "view - story circle")
             putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
-            putString(Key.eventLabel, "$entryPoint - $authorId - $currentCircle")
+            putString(Key.eventLabel, "${args.source} - ${args.authorId} - $currentCircle")
             putString(Key.trackerId, "46043")
             putString(Key.businessUnit, BusinessUnit.content)
             putString(Key.currentSite, currentSite)
@@ -132,7 +132,6 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46049
     override fun sendClickStoryCircleEvent(
-        entryPoint: String,
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     ) {
@@ -149,7 +148,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             putString(Key.event, Event.selectContent)
             putString(Key.eventAction, "click - story circle")
             putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
-            putString(Key.eventLabel, "$entryPoint - $authorId - $currentCircle")
+            putString(Key.eventLabel, "${args.source} - ${args.authorId} - $currentCircle")
             putString(Key.trackerId, "46049")
             putString(Key.businessUnit, BusinessUnit.content)
             putString(Key.currentSite, currentSite)
@@ -271,7 +270,6 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46057
     override fun sendClickTapNextContentEvent(
-        entryPoint: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -281,7 +279,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setEvent(Event.clickContent)
             .setEventAction("click - tap next content")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("${args.source} - ${args.authorId} - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty(Key.trackerId, "46057")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
@@ -294,7 +292,6 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46058
     override fun sendClickTapPreviousContentEvent(
-        entryPoint: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -304,7 +301,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setEvent(Event.clickContent)
             .setEventAction("click - tap previous content")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("${args.source} - ${args.authorId} - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty(Key.trackerId, "46058")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
@@ -316,12 +313,12 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46059
-    override fun sendClickMoveToOtherGroup(entryPoint: String) {
+    override fun sendClickMoveToOtherGroup() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - move to other category")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("$entryPoint - $authorId")
+            .setEventLabel("${args.source} - ${args.authorId}")
             .setCustomProperty(Key.trackerId, "46060")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
@@ -334,7 +331,6 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46062
     override fun sendClickExitStoryRoomEvent(
-        entryPoint: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -344,7 +340,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setEvent(Event.clickContent)
             .setEventAction("click - exit story room")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("${args.source} - ${args.authorId} - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty(Key.trackerId, "46062")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)

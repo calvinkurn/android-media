@@ -59,7 +59,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
-    private val analytic: StoriesAnalytics get() = analyticFactory.create(mParentPage.authorId)
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(mParentPage.args)
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
@@ -101,6 +101,11 @@ class StoriesDetailFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupStoriesView()
         setupObserver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showStoriesComponent(true)
     }
 
     private fun setupObserver() {
@@ -166,7 +171,8 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state ||
             state == StoriesDetail() ||
-            state.selectedGroupId != groupId
+            state.selectedGroupId != groupId ||
+            state.selectedDetailPosition < 0
         ) return
 
         storiesDetailsTimer(state)
@@ -304,13 +310,12 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {
         analytic.sendClickStoryCircleEvent(
-            entryPoint = mParentPage.entryPoint,
             currentCircle = data.groupName,
             promotions = listOf(
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = position.plus(1).toString(),
-                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.authorId}",
+                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.args.authorId}",
                     itemName = "/ - stories"
                 ),
             ),
@@ -323,7 +328,6 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun trackTapPreviousDetail() {
         analytic.sendClickTapPreviousContentEvent(
-            entryPoint = mParentPage.entryPoint,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
@@ -333,7 +337,6 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun trackTapNextDetail() {
         analytic.sendClickTapNextContentEvent(
-            entryPoint = mParentPage.entryPoint,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
