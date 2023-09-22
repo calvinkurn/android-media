@@ -9,6 +9,7 @@ import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.robot.StoriesRobotUITest
 import com.tokopedia.stories.utils.containsEventAction
 import com.tokopedia.stories.utils.containsTrackerId
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -27,13 +28,18 @@ class StoriesUITest {
     private val analyticStoriesMainTracker = "tracker/content/stories/stories_main_tracker.json"
     private val analyticStoriesOpenScreen = "tracker/content/stories/stories_open_screen.json"
 
-    private val authorId: String = "123"
+    private val args: StoriesArgsModel = StoriesArgsModel(
+        authorId = "123",
+        authorType = "shop",
+        source = "shop-entrypoint",
+        sourceId = "123",
+    )
     private val handle: SavedStateHandle = SavedStateHandle()
     private val repository: StoriesRepository = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
     private fun getStoriesRobot() = StoriesRobotUITest(
-        authorId = authorId,
+        args = args,
         handle = handle,
         repository = repository,
         userSession = userSession,

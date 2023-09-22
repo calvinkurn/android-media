@@ -22,6 +22,7 @@ import com.tokopedia.stories.factory.StoriesFragmentFactoryUITest
 import com.tokopedia.stories.utils.delay
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
@@ -29,15 +30,15 @@ import com.tokopedia.empty_state.R as empty_stateR
 import com.tokopedia.stories.R as storiesR
 
 internal class StoriesRobotUITest(
-    private val authorId: String = "",
+    private val args: StoriesArgsModel,
     private val handle: SavedStateHandle,
     private val repository: StoriesRepository,
-    private val userSession: UserSessionInterface,
+    userSession: UserSessionInterface,
 ) {
 
     private val viewModel: StoriesViewModel by lazy {
         StoriesViewModel(
-            authorId = authorId,
+            args = args,
             handle = handle,
             repository = repository,
         )
@@ -46,14 +47,14 @@ internal class StoriesRobotUITest(
     private val viewModelFactory = object : StoriesViewModelFactory.Creator {
         override fun create(
             activity: FragmentActivity,
-            authorId: String,
+            args: StoriesArgsModel,
         ): StoriesViewModelFactory {
             return StoriesViewModelFactory(
                 activity = activity,
-                authorId = authorId,
+                args = args,
                 factory = object : StoriesViewModel.Factory {
                     override fun create(
-                        authorId: String,
+                        args: StoriesArgsModel,
                         handle: SavedStateHandle
                     ): StoriesViewModel {
                         return viewModel
@@ -62,16 +63,18 @@ internal class StoriesRobotUITest(
         }
     }
 
+    private val storiesRoomAnalytic = StoriesRoomAnalyticImpl(
+        args = args,
+        userSession = userSession,
+    )
+
     private val storiesAnalyticFactory = object : StoriesAnalytics.Factory {
-        override fun create(authorId: String): StoriesAnalytics {
+        override fun create(args: StoriesArgsModel): StoriesAnalytics {
             return StoriesAnalytics(
-                authorId = authorId,
+                args = args,
                 storiesRoomAnalytic = object : StoriesRoomAnalytic.Factory {
-                    override fun create(authorId: String): StoriesRoomAnalytic {
-                        return StoriesRoomAnalyticImpl(
-                            authorId = authorId,
-                            userSession = userSession,
-                        )
+                    override fun create(args: StoriesArgsModel): StoriesRoomAnalytic {
+                        return storiesRoomAnalytic
                     }
                 })
         }
