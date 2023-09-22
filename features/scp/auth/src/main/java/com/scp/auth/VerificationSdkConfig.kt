@@ -14,7 +14,7 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
             isLogsEnabled = false,
             locale = "EN",
             userlang = "en",
-            userType = "customer",
+            userType = "toko_user",
             uniqueId = FingerprintModelGenerator.getFCMId(context)
         )
     }

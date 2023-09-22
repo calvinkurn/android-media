@@ -109,7 +109,11 @@ class ScpAuthActivity: BaseActivity() {
                 }
             },
             clientFlowListener = object : LSdkClientFlowListener {
-                override fun onHelpCentreClicked(screenType: String) {
+                override fun onHelpCentreClicked(
+                    screenType: String,
+                    isGotoPinHelpContext: Boolean
+                ) {
+                    TODO("Not yet implemented")
                 }
 
                 override fun onAccountRecoverClicked() {
