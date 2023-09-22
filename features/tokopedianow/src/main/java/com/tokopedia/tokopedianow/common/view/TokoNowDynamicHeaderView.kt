@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
+import android.view.ViewStub
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.util.ViewUtil.inflateView
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -31,6 +32,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     private var tpTitle: Typography? = null
     private var tpSubtitle: Typography? = null
     private var tusCountDown: TimerUnifySingle? = null
+    private var tusCountDownViewStub: ViewStub? = null
     private var sivCircleSeeAll: AppCompatImageView? = null
 
     init {
@@ -53,7 +55,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         tpTitle = itemView?.findViewById(R.id.tp_title)
         tpSubtitle = itemView?.findViewById(R.id.tp_subtitle)
         tpSeeAll =  itemView?.findViewById(R.id.tp_see_all)
-        tusCountDown = itemView?.findViewById(R.id.tus_count_down)
+        tusCountDownViewStub = itemView?.findViewById(R.id.tus_count_down_view_stub)
         sivCircleSeeAll = itemView?.findViewById(R.id.siv_circle_see_all)
     }
 
@@ -124,6 +126,8 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         if (expiredTime.isNotBlank()) {
             val expiredTimeFormat = DateHelper.getExpiredTime(expiredTime)
             if (!DateHelper.isExpired(serverTimeOffset, expiredTimeFormat)) {
+                inflateTimerCountDown()
+
                 tusCountDown?.run {
                     timerVariant = if(backColor.isNotEmpty()){
                         TimerUnifySingle.VARIANT_ALTERNATE
@@ -147,7 +151,15 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
                 }
             }
         } else {
-            tusCountDown?.visibility = View.GONE
+            tusCountDownViewStub?.visibility = View.GONE
+        }
+    }
+
+    private fun inflateTimerCountDown() {
+        if(tusCountDown == null) {
+            val view = tusCountDownViewStub
+                ?.inflateView(R.layout.layout_tokopedianow_timer_unify_single)
+            tusCountDown = view?.findViewById(R.id.tus_count_down)
         }
     }
 
