@@ -10,6 +10,6 @@ data class DynamicHeaderUiModel(
     val statusCampaign: String = "",
     val endDate: String = "",
     val timerCounter: String = "",
-    val isOverrideTheme: Boolean,
-    val colorSchema: ShopPageColorSchema,
+    val isOverrideTheme: Boolean = false,
+    val colorSchema: ShopPageColorSchema = ShopPageColorSchema(),
 )
