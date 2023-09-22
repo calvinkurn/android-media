@@ -90,8 +90,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     var impressionCount: Int = 0
     private var flashSaleTimerData: Date? = null
     private var topAdsFlashSaleTimer:TimerUnifySingle? = null
-    protected open var linearLayoutMerchantVoucher:LinearLayout? = null
-    protected open val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+    protected var linearLayoutMerchantVoucher:LinearLayout? = null
+    protected val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context.applicationContext)
     }
 
