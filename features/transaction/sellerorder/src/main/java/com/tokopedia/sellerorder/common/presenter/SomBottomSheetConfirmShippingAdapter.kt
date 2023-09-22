@@ -44,8 +44,6 @@ class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomShe
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-
         holder.binding?.apply {
             tvInfoNumber.text = "${position.plus(1)}"
 
@@ -63,7 +61,7 @@ class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomShe
     private fun getNotes(context: Context, notes: ConfirmShippingNotes): SpannableString {
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${notes?.url}")
+                gotoWebView(context, notes.url)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -84,11 +82,12 @@ class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomShe
             spannableString.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         }
 
-
         return spannableString
-
     }
 
+    fun gotoWebView(context: Context, url: String) {
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$url")
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding by viewBinding<BottomsheetConfirmshippingItemBinding>()
