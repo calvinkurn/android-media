@@ -94,11 +94,11 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
     }
 
     private fun validateWhitelistUserPerf(whitelistConfiguration: PerfWhitelistConfiguration): Boolean {
-        val currentAppVersionName = GlobalConfig.VERSION_NAME
+        val currentAppVersionNameSuffix = GlobalConfig.VERSION_NAME_SUFFIX
         val currentUserId = userSession.userId
 
         val appVersionWhitelisted = whitelistConfiguration.whiteListVersion.any {
-            currentAppVersionName.endsWith(it)
+            currentAppVersionNameSuffix.equals(it)
         }
 
         val userIdWhitelisted = whitelistConfiguration.whitelistUserId.any {
