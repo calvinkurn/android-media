@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
@@ -28,10 +29,12 @@ import javax.inject.Named
 
 open class GetPdpLayoutUseCase @Inject constructor(
     private val gqlUseCase: MultiRequestGraphqlUseCase,
-    @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String
+    @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String,
+    private val remoteConfig: RemoteConfig
 ) : UseCase<Unit>() {
 
     companion object {
+        const val REMOTE_CONFIG_KEY = "android_pdp_p1_should_cacheable"
         const val QUERY = """
             query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation, ${'$'}extParam: String, ${'$'}tokonow: pdpTokoNow) {
               pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation, extParam:${'$'}extParam, tokonow:${'$'}tokonow) {
@@ -455,7 +458,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
             }
     }
 
-    private val cachable = true
+    private val shouldCacheable
+        get() = remoteConfig.getBoolean(REMOTE_CONFIG_KEY)
+
     var requestParams = RequestParams.EMPTY
 
     var onSuccess: (suspend (ProductDetailDataModel) -> Unit)? = null
@@ -470,7 +475,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         }
         gqlUseCase.addRequest(GraphqlRequest(PdpGetLayoutQuery(), ProductDetailLayout::class.java, requestParams.parameters))
 
-        if (cachable) {
+        if (shouldCacheable) {
             processRequestCacheable()
         } else {
             gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
