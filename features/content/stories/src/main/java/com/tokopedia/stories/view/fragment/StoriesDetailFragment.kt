@@ -104,7 +104,7 @@ class StoriesDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private lateinit var variantSheet : AtcVariantBottomSheet
+    private var variantSheet : AtcVariantBottomSheet? = null
 
     private val atcVariantViewModel by lazyThreadSafetyNone {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
@@ -519,11 +519,14 @@ class StoriesDetailFragment @Inject constructor(
         )
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
             variantSheet = AtcVariantBottomSheet()
-            variantSheet.setOnDismissListener { }
-            variantSheet.bottomSheetClose.setOnClickListener {
+            variantSheet?.setOnDismissListener { }
+            variantSheet ?: AtcVariantBottomSheet()
+        }
+
+        variantSheet?.setShowListener {
+            variantSheet?.bottomSheetClose?.setOnClickListener {
                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
             }
-            variantSheet
         }
     }
 

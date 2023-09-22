@@ -47,8 +47,8 @@ data class StoriesDetailItem(
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
     val meta: Meta = Meta(),
-    val author: @RawValue StoryAuthor = StoryAuthor.Unknown,
-    val menus: @RawValue List<ContentMenuItem> = emptyList(),
+    val author: StoryAuthor = StoryAuthor.Unknown,
+    val menus: List<ContentMenuItem> = emptyList(),
     val productCount: String = "",
     val share: Sharing = Sharing.Empty,
     ) : Parcelable {

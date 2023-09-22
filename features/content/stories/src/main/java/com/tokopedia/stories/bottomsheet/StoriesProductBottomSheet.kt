@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
@@ -95,10 +96,14 @@ class StoriesProductBottomSheet @Inject constructor(
                         )
                     }
 
-                    is StoriesUiEvent.ShowInfoEvent -> {
+                    is StoriesUiEvent.ProductSuccessEvent -> {
                         val message = getString(event.message)
                         requireView().rootView.showToaster(
                             message = message,
+                            actionText = getString(R.string.stories_product_see_cart),
+                            clickListener = {
+                                viewModel.submitAction(StoriesUiAction.Navigate(ApplinkConst.CART))
+                            }
                         )
                     }
 
