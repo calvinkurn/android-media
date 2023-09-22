@@ -67,32 +67,32 @@ import kotlin.collections.ArrayList
  * Created by errysuprayogi on 12/28/17.
  */
 
-private const val NO_TEMPLATE = 0
-private const val SHOP_TEMPLATE = 1
-private const val DIGITAL_TEMPLATE = 2
-private const val LAYOUT_2 = 2
-private const val LAYOUT_5 = 5
-private const val LAYOUT_6 = 6
-private const val ITEM_3 = 3
-private const val ITEM_4 = 4
+internal const val NO_TEMPLATE = 0
+internal const val SHOP_TEMPLATE = 1
+internal const val DIGITAL_TEMPLATE = 2
+internal const val LAYOUT_2 = 2
+internal const val LAYOUT_5 = 5
+internal const val LAYOUT_6 = 6
+internal const val ITEM_3 = 3
+internal const val ITEM_4 = 4
 
-class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
-    private var topAdsBannerClickListener: TopAdsBannerClickListener? = null
-    private var impressionListener: TopAdsItemImpressionListener? = null
+open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
+    internal var topAdsBannerClickListener: TopAdsBannerClickListener? = null
+    internal var impressionListener: TopAdsItemImpressionListener? = null
     private var topAdsShopFollowBtnClickListener: TopAdsShopFollowBtnClickListener? = null
     private var topAdsAddToCartClickListener: TopAdsAddToCartClickListener? = null
     private var shopWidgetAddToCartClickListener: ShopWidgetAddToCartClickListener? = null
-    private var bannerAdsAdapter: BannerAdsAdapter? = null
+    internal var bannerAdsAdapter: BannerAdsAdapter? = null
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
     private var showProductShimmer: Boolean = false
-    private var hasAddToCartButton: Boolean = false
+    internal var hasAddToCartButton: Boolean = false
     private var isFlashSaleTokoLabel: Boolean = false
     private var isShowCta: Boolean = true
     var impressionCount: Int = 0
     private var flashSaleTimerData: Date? = null
     private var topAdsFlashSaleTimer:TimerUnifySingle? = null
-    private var linearLayoutMerchantVoucher:LinearLayout? = null
-    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+    internal var linearLayoutMerchantVoucher:LinearLayout? = null
+    internal val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context.applicationContext)
     }
 
@@ -109,7 +109,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         }
     }
 
-    private var template = NO_TEMPLATE
+    internal var template = NO_TEMPLATE
 
     constructor(context: Context) : super(context) {
     }
@@ -121,7 +121,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     @Throws(Exception::class)
-    private fun renderViewCpmShop(context: Context, cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
+    open fun renderViewCpmShop(context: Context, cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
         if (activityIsFinishing(context))
             return
         val cpmData = cpmModel?.data?.firstOrNull()
@@ -340,7 +340,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         }
     }
 
-    private fun setWidget(
+    open fun setWidget(
         cpmData: CpmData,
         appLink: String,
         adsClickUrl: String,
@@ -455,7 +455,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         )
     }
 
-    private fun getShopProductItem(cpmModel: CpmModel): List<ShopProductModel.ShopProductModelItem> {
+    open fun getShopProductItem(cpmModel: CpmModel): List<ShopProductModel.ShopProductModelItem> {
         val list = arrayListOf<ShopProductModel.ShopProductModelItem>()
         cpmModel.data?.forEachIndexed { index, it ->
             val item = ShopProductModel.ShopProductModelItem(
@@ -477,7 +477,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         return list
     }
 
-    private fun setTopAdsCarousel(cpmModel: CpmModel?, topAdsCarousel: ToadsCarousel?) {
+    open fun setTopAdsCarousel(cpmModel: CpmModel?, topAdsCarousel: ToadsCarousel?) {
         topAdsCarousel?.setTopAdsCarouselModel(
             TopAdsCarouselModel(
                 title = cpmModel?.data?.firstOrNull()?.cpm?.widgetTitle ?: "",
@@ -556,7 +556,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         return list
     }
 
-    private fun getProductCardModels(products: List<Product>): ArrayList<ProductCardModel> {
+    open fun getProductCardModels(products: List<Product>): ArrayList<ProductCardModel> {
         return ArrayList<ProductCardModel>().apply {
             products.map {
                 add(getProductCardViewModel(it))
@@ -659,7 +659,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         }
     }
 
-    private fun renderLabelMerchantVouchers(cpmData: CpmData?) {
+    open fun renderLabelMerchantVouchers(cpmData: CpmData?) {
         val context = context ?: return
         linearLayoutMerchantVoucher?.hide()
         val merchantVouchers = mutableListOf<String>()
@@ -698,7 +698,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         return labelVoucher
     }
 
-    private fun setHeadlineShopDataCardWidget(cpmData: CpmData, adsBannerShopCardView: ShopCardView?, appLink: String, adsClickUrl: String) {
+    open fun setHeadlineShopDataCardWidget(cpmData: CpmData, adsBannerShopCardView: ShopCardView?, appLink: String, adsClickUrl: String) {
         val productList = cpmData.cpm.cpmShop.products
 
         adsBannerShopCardView?.setShopCardModel(
@@ -766,19 +766,19 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         )
     }
 
-    private fun isEligible(cpmData: CpmData?) =
+    open fun isEligible(cpmData: CpmData?) =
             cpmData != null
                     && cpmData.cpm.cpmShop != null
                     && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
 
-    private fun activityIsFinishing(context: Context): Boolean {
+    open fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {
             context.isFinishing
         } else false
     }
 
     @Throws(Exception::class)
-    private fun renderViewCpmDigital(context: Context, cpm: Cpm) {
+    open fun renderViewCpmDigital(context: Context, cpm: Cpm) {
         if (activityIsFinishing(context))
             return
         if (template == NO_TEMPLATE) {
