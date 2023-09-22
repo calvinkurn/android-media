@@ -137,9 +137,7 @@ class ChatListFragment :
     private var menu: Menu? = null
     private var broadCastButton: BroadcastButtonLayout? = null
 
-    private val mStoriesWidgetManager by storiesManager(StoriesEntrySource.TopChatList(userSession.shopId)) {
-        setScrollingParent(rv)
-    }
+    private var mStoriesWidgetManager: StoriesWidgetManager? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -225,6 +223,7 @@ class ChatListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Timber.d("$sightTag onViewCreated")
         super.onViewCreated(view, savedInstanceState)
+        setupStoriesWidgetManager()
         setUpRecyclerView(view)
         initView(view)
         setObserver()
@@ -232,6 +231,11 @@ class ChatListFragment :
         setupChatSellerBannedStatus()
         setupEmptyModel()
         notifyAndGetChatListMessage(view)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mStoriesWidgetManager = null
     }
 
     private fun setupChatSellerBannedStatus() {
@@ -352,6 +356,13 @@ class ChatListFragment :
         broadCastButton = view.findViewById(R.id.layout_fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
         rv = view.findViewById(R.id.recycler_view)
+    }
+
+    private fun setupStoriesWidgetManager() {
+        mStoriesWidgetManager = StoriesWidgetManager.create(
+            StoriesEntrySource.TopChatList(userSession.shopId),
+            this,
+        ) { setScrollingParent(rv) }
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -580,7 +591,7 @@ class ChatListFragment :
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         if (sightTag == PARAM_TAB_USER) {
-            mStoriesWidgetManager.updateStories(data.list.map { it.id })
+            mStoriesWidgetManager?.updateStories(data.list.map { it.id })
         }
         fpmStopTrace()
     }
@@ -910,7 +921,7 @@ class ChatListFragment :
         return childFragmentManager
     }
 
-    override fun getStoriesWidgetManager(): StoriesWidgetManager {
+    override fun getStoriesWidgetManager(): StoriesWidgetManager? {
         return mStoriesWidgetManager
     }
 

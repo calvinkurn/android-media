@@ -130,9 +130,7 @@ open class ChatListInboxFragment :
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
-    private val mStoriesWidgetManager by storiesManager(StoriesEntrySource.TopChatList(userSession.shopId)) {
-        setScrollingParent(rv)
-    }
+    private var mStoriesWidgetManager: StoriesWidgetManager? = null
 
     @RoleType
     private var role: Int = RoleType.BUYER
@@ -244,7 +242,13 @@ open class ChatListInboxFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupStoriesWidgetManager()
         setupLifecycleObserver()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mStoriesWidgetManager = null
     }
 
     override fun onScrollToTop() {}
@@ -277,6 +281,13 @@ open class ChatListInboxFragment :
                 stateReport = getOperationalInsightStateReport(visitable.isMaintain)
             )
         }
+    }
+
+    private fun setupStoriesWidgetManager() {
+        mStoriesWidgetManager = StoriesWidgetManager.create(
+            StoriesEntrySource.TopChatList(userSession.shopId),
+            this,
+        ) { setScrollingParent(rv) }
     }
 
     private fun setupLifecycleObserver() {
@@ -670,7 +681,7 @@ open class ChatListInboxFragment :
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         if (role == RoleType.BUYER) {
-            mStoriesWidgetManager.updateStories(data.list.map { it.id })
+            mStoriesWidgetManager?.updateStories(data.list.map { it.id })
         }
         fpmStopTrace()
         setIndicatorCurrentActiveChat(currentActiveMessageId)
@@ -962,7 +973,7 @@ open class ChatListInboxFragment :
         return childFragmentManager
     }
 
-    override fun getStoriesWidgetManager(): StoriesWidgetManager {
+    override fun getStoriesWidgetManager(): StoriesWidgetManager? {
         return mStoriesWidgetManager
     }
 

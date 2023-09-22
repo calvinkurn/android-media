@@ -17,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
 import com.tokopedia.stories.widget.domain.StoriesEntrySource
