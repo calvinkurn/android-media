@@ -128,7 +128,9 @@ class DiscoveryPageDataMapper(
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         component.position = position
         when (component.name) {
-            ComponentNames.Tabs.componentName, ComponentNames.TabsIcon.componentName -> listComponents.addAll(
+            ComponentNames.Tabs.componentName,
+            ComponentNames.TabsIcon.componentName,
+            ComponentNames.FlashSaleTokoTab.componentName -> listComponents.addAll(
                 parseTab(component, position)
             )
 
