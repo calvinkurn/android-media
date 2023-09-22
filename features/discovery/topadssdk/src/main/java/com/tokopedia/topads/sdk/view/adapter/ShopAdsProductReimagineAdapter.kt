@@ -25,16 +25,18 @@ import com.tokopedia.gm.common.R as gmcommonR
 class ShopAdsProductReimagineAdapter(
     private val shopAdsProductListener: ShopAdsProductListener,
     private val followButtonClickListener:FollowButtonClickListener?,
-    ) : RecyclerView.Adapter<ShopAdsProductReimagineAdapter.ShopAdsProductViewHolder>() {
+) : RecyclerView.Adapter<ShopAdsProductReimagineAdapter.ShopAdsProductViewHolder>() {
 
 
     private val shopAdsProductItemList = arrayListOf<ShopProductModelItem>()
 
     fun setList(list: List<ShopProductModelItem>) {
+        val itemCount = itemCount
         shopAdsProductItemList.clear()
-        shopAdsProductItemList.addAll(list)
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0, itemCount)
 
+        shopAdsProductItemList.addAll(list)
+        notifyItemRangeInserted(0, shopAdsProductItemList.size)
     }
 
     inner class ShopAdsProductViewHolder(itemView: View, private val shopAdsProductListener: ShopAdsProductListener) : RecyclerView.ViewHolder(itemView) {
@@ -113,8 +115,11 @@ class ShopAdsProductReimagineAdapter(
 
         private fun setTextViewReviewCount(countReview: String) {
             reviewCount.show()
-            reviewCount.text = String.format("%s%s%s", "(", countReview, ")")
+            reviewCount.text = getCountReview(countReview)
         }
+
+        private fun getCountReview(countReview: String) =
+            itemView.resources.getString(R.string.topads_shop_product_count_review, countReview)
 
         private fun loadBadge(shopProductModelItem: ShopProductModelItem) {
             val isImageShopBadgeVisible = getIsImageShopBadgeVisible(shopProductModelItem)
