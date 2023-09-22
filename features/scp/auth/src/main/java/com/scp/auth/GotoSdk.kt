@@ -2,6 +2,15 @@ package com.scp.auth
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import com.gojek.pin.AppInfo
+import com.gojek.pin.DeviceInfo
+import com.gojek.pin.PinConfig
+import com.gojek.pin.PinManager
+import com.gojek.pin.PinNetwork
+import com.gojek.pin.PinProvider
+import com.gojek.pin.validation.PinSdkValidationListener
+import com.gojek.pin.validation.PinValidationResults
 import com.scp.login.core.domain.contracts.configs.LSdkAppConfig
 import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
 import com.scp.login.core.domain.contracts.configs.LSdkConfig
@@ -18,6 +27,10 @@ import com.scp.verification.core.data.common.services.VerificationServices
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsEvent
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsService
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import kotlinx.coroutines.CoroutineScope
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 
 object GotoSdk {
     var LSDKINSTANCE: LSdkProvider? = null
@@ -27,8 +40,9 @@ object GotoSdk {
     fun init(application: Application): LSdkProvider? {
         LSDKINSTANCE = GotoLogin.getInstance(
             cvSdkProvider = getCvSdkProvider(application),
-            application = application,
+            gotoPinManager = getPinManager(application),
             configurations = SampleLoginSDKConfigs(application),
+            application = application,
             services = LSdkServices(
                 abTestServices = LocalCVABTestService(),
                 logService = LocalCVLogService(),
@@ -67,12 +81,62 @@ object GotoSdk {
             identifier = CvsdkFlowType.Main
         )
     }
+
+    private fun getPinManager(application: Application): PinManager {
+        return PinProvider.providePinManager(
+            context = application,
+            config = PinConfig(
+                network = PinNetwork(
+                    okHttpClient = OkHttpClient().newBuilder()
+                        .addInterceptor(HttpLoggingInterceptor())
+                        .addInterceptor(Interceptor { chain ->
+                            val request = chain.request().newBuilder()
+                            request.addHeader("X-User-Locale", "EN_en")
+                            request.addHeader("Accept-Language", "EN_en")
+                            chain.proceed(request.build())
+                        })
+                        .build()
+                ),
+                appInfo = AppInfo(
+                    appType = "GoJek",
+                    isDebug = true,
+                    language = "en"
+                ),
+                deviceInfo = DeviceInfo(
+                    appVersion = "",
+                    deviceName = "",
+                    osVersion = "",
+                    type = ""
+                ),
+                validationListener = object : PinSdkValidationListener {
+                    override fun handleOtpError(
+                        errorCode: Int,
+                        errorMessage: String,
+                        coroutineScope: CoroutineScope
+                    ) {
+                        Log.d("lsdk", "gotopin otp error $errorCode $errorMessage")
+                    }
+
+                    override fun provideAuthenticationResult(
+                        context: Context,
+                        callback: (PinValidationResults) -> Unit
+                    ) {
+                        Log.d("lsdk", "gotopin authentication result")
+                    }
+                },
+                analyticDelegate = {
+
+                }
+            )
+        )
+    }
+
 }
 
 class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
         return LSdkAppConfig(
-            environment = LSdkEnvironment.INTEGRATION,
+            environment = LSdkEnvironment.DEV,
             isLogsEnabled = false,
             appLocale = "ID",
             userLang = "id",
@@ -82,11 +146,9 @@ class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
     }
 
     override fun getAuthConfigs(): LSdkAuthConfig {
-        return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g")
+        return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g", gotoPinclientID = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g")
     }
 
 
-    companion object {
-    }
 }
 
