@@ -2926,22 +2926,21 @@ open class DynamicProductDetailFragment :
     }
 
     private fun handleP1Error(error: Throwable) {
-        if (isCacheable()) {
-            if (viewModel.cacheState?.isFromCache == true) {
-                val view = binding?.root ?: return
-                Toaster.build(
-                    view = view,
-                    text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
-                    actionText = "Coba lagi",
-                    duration = LENGTH_INDEFINITE,
-                    type = TYPE_ERROR
-                ) {
-                    loadData(true)
-                }.show()
-            }
-        } else {
-            handleObserverP1Error(error = error)
+        if (isCacheable() && viewModel.cacheState?.isFromCache == true) {
+            val view = binding?.root ?: return
+            Toaster.build(
+                view = view,
+                text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
+                actionText = "Coba lagi",
+                duration = LENGTH_INDEFINITE,
+                type = TYPE_ERROR
+            ) {
+                loadData(true)
+            }.show()
+            return
         }
+
+        handleObserverP1Error(error = error)
     }
 
     private fun handleObserverP1Error(error: Throwable) {
