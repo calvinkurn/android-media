@@ -499,19 +499,20 @@ open class GetPdpLayoutUseCase @Inject constructor(
         var cacheFirstThenCloud = false // initial value is false, refer to CacheState
 
         if (hasCacheAvailable) {
+            Timber.tag("cacheable").d("get data from cache the first")
             // the first emit cache to UI
             processResponse(gqlResponse = gqlResponse, isCache = true, cacheFirstThenCloud = false)
-            Timber.tag("cacheable").d("get data from cache the first")
             cacheFirstThenCloud = true
         } else {
             Timber.tag("cacheable").d("failed get p1 from cache cause it is null")
         }
 
         // hit cloud to update into cache and UI
+        Timber.tag("cacheable").d("get from cloud")
         gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh = true))
         gqlResponse = gqlUseCase.executeOnBackground()
         processResponse(gqlResponse = gqlResponse, isCache = false, cacheFirstThenCloud = cacheFirstThenCloud)
-        Timber.tag("cacheable").d("get from cloud")
+        Timber.tag("cacheable").d("------------ end ------------")
     }
 
     private suspend fun processResponse(gqlResponse: GraphqlResponse, isCache: Boolean, cacheFirstThenCloud: Boolean) {
