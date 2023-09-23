@@ -121,15 +121,19 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
             listener?.onCopyDescriptionClicked(
                 LABEL_ADD_ON_DESCRIPTION,
                 MethodChecker.fromHtmlWithoutExtraSpace(
-                    context.getString(
-                        com.tokopedia.order_management_common.R.string.om_detail_add_on_description_copyable_format,
-                        receiverName,
-                        senderName,
-                        description
-                    )
+                    getFullCopyDescription()
                 )
             )
         }
+    }
+
+    private fun getFullCopyDescription(): String {
+        return context.getString(
+            com.tokopedia.order_management_common.R.string.om_detail_add_on_description_copyable_format,
+            receiverName,
+            senderName,
+            description
+        )
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -278,8 +282,9 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
 
     fun setIsCopyable(copyable: Boolean) {
         with(binding) {
-            tvLabelCopyAddOnDescription.showWithCondition(copyable)
-            icCopyAddOnDescription.showWithCondition(copyable)
+            val isShowCopyAddon = getFullCopyDescription().isNotBlank() && copyable
+            tvLabelCopyAddOnDescription.showWithCondition(isShowCopyAddon)
+            icCopyAddOnDescription.showWithCondition(isShowCopyAddon)
         }
     }
 

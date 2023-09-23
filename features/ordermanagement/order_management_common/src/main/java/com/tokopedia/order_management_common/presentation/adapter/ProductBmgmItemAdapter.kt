@@ -89,6 +89,7 @@ class ProductBmgmItemAdapter(
         fun bind(model: ProductBmgmSectionUiModel.ProductUiModel?) {
             model?.let {
                 element = it
+                setupInsurance(it.insurance)
                 setBmgmItemThumbnail(it.thumbnailUrl)
                 setBmgmItemProductName(it.productName)
                 setBmgmItemProductPriceQuantity(it.quantity, it.productPriceText)
@@ -167,6 +168,24 @@ class ProductBmgmItemAdapter(
             binding.tvItemOrderBmgmProductNote.run {
                 showWithCondition(productNote.isNotBlank())
                 text = composeItalicNote(productNote)
+            }
+        }
+
+        private fun setupInsurance(insurance: ProductBmgmSectionUiModel.ProductUiModel.Insurance?) {
+            with(binding) {
+                if (insurance == null) {
+                    ivItemBomDetailBmgmInsuranceLogo.gone()
+                    tvItemBomDetailBmgmInsuranceLabel.gone()
+                } else {
+                    ivItemBomDetailBmgmInsuranceLogo.run {
+                        loadImage(insurance.logoUrl)
+                        show()
+                    }
+                    tvItemBomDetailBmgmInsuranceLabel.run {
+                        text = insurance.label
+                        show()
+                    }
+                }
             }
         }
 

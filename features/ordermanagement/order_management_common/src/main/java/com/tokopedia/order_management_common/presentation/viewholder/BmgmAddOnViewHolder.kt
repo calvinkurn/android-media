@@ -54,8 +54,7 @@ class BmgmAddOnViewHolder(
             setupAddOnImage(addOnUiModel.addOnsThumbnailUrl)
             setupAddOnName(
                 addOnUiModel.type,
-                addOnUiModel.addOnsName,
-                addOnUiModel.noteCopyable
+                addOnUiModel.addOnsName
             )
             setupAddOnPrice(addOnUiModel.quantity, addOnUiModel.priceText)
             setupAddOnDescriptions(
@@ -75,10 +74,9 @@ class BmgmAddOnViewHolder(
 
     private fun ItemBmgmDetailAddOnBinding.setupAddOnName(
         type: String,
-        name: String,
-        providedByBranchShop: Boolean
+        name: String
     ) {
-        tvAddOnName.text = composeAddOnName(type, name, providedByBranchShop)
+        tvAddOnName.text = composeAddOnName(type, name)
     }
 
     private fun ItemBmgmDetailAddOnBinding.setupAddOnPrice(quantity: Int, priceText: String) {
@@ -103,10 +101,9 @@ class BmgmAddOnViewHolder(
 
     private fun composeAddOnName(
         type: String,
-        name: String,
-        hasShop: Boolean
+        name: String
     ): CharSequence {
-        return if (hasShop) "$type - $name" else name
+        return "$type - $name"
     }
 
     interface Listener {
