@@ -120,6 +120,7 @@ object ProductListUiStateMapper {
                         toStr = it.toStr,
                         fromStr = it.fromStr,
                         message = it.message,
+                        providedByShopItself = it.providedByShopItself
                     )
                 }.orEmpty()
             ),
@@ -641,7 +642,7 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         remainingSlot: Int,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
-        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?
     ): Pair<Int, List<ProductBmgmSectionUiModel>> {
         /**
          * Reduce the bmgm response items to be mapped based on the remaining slot on the product
@@ -753,7 +754,8 @@ object ProductListUiStateMapper {
                         addOnsThumbnailUrl = it.imageUrl,
                         toStr = addonNote?.to.orEmpty(),
                         fromStr = addonNote?.from.orEmpty(),
-                        message = addonNote?.notes.orEmpty()
+                        message = addonNote?.notes.orEmpty(),
+                        providedByShopItself = false
                     )
                 }.orEmpty()
             )
@@ -911,7 +913,7 @@ object ProductListUiStateMapper {
         addOnLabel: String,
         addOnIcon: String,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
-        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?
     ): ProductBmgmSectionUiModel.ProductUiModel {
         return ProductBmgmSectionUiModel.ProductUiModel(
             orderId = orderId,
@@ -927,7 +929,7 @@ object ProductListUiStateMapper {
             category = product.category,
             thumbnailUrl = product.thumbnail,
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
-            insurance = mapInsuranceBmgm(product.productId, insuranceDetailData),
+            insurance = null,
             button = mapActionButton(product.button),
             addOnSummaryUiModel = product.addonSummary?.let {
                 com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
@@ -946,7 +948,8 @@ object ProductListUiStateMapper {
                             toStr = addOnNote?.to.orEmpty(),
                             fromStr = addOnNote?.from.orEmpty(),
                             message = addOnNote?.notes.orEmpty(),
-                            noteCopyable = false
+                            noteCopyable = false,
+                            providedByShopItself = true
                         )
                     }.orEmpty()
                 )
@@ -1047,7 +1050,8 @@ object ProductListUiStateMapper {
                     addOnsThumbnailUrl = it.imageUrl,
                     toStr = addonNote?.to.orEmpty(),
                     fromStr = addonNote?.from.orEmpty(),
-                    message = addonNote?.notes.orEmpty()
+                    message = addonNote?.notes.orEmpty(),
+                    providedByShopItself = true
                 )
             }.orEmpty()
         )
