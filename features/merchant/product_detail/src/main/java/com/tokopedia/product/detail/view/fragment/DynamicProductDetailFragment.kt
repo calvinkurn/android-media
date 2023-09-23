@@ -308,6 +308,8 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_INDEFINITE
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -607,7 +609,7 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private val updateUI = MutableSharedFlow<List<DynamicPdpDataModel>>()
+    private val updateUI by lazy { MutableSharedFlow<List<DynamicPdpDataModel>>() }
 
     private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
         ProductMediaRecomBottomSheetManager(childFragmentManager, this)
@@ -722,9 +724,12 @@ open class DynamicProductDetailFragment :
     }
 
     private fun observeUpdateUi() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            updateUI.distinctUntilChanged().debounce(DEBOUNCE_SUBMIT_LIST).collectLatest {
-                submitList(it)
+        if (isCacheable()) {
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                updateUI.distinctUntilChanged().debounce(DEBOUNCE_SUBMIT_LIST).collectLatest {
+                    Timber.tag("cacheable").d("update UI")
+                    submitList(it)
+                }
             }
         }
     }
@@ -2911,12 +2916,31 @@ open class DynamicProductDetailFragment :
                     ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(isSuccess = true)
                 }
             }, {
-                handleObserverP1Error(error = it)
+                handleP1Error(error = it)
             })
 
             getRecyclerView()?.addOneTimeGlobalLayoutListener {
                 stopPLTRenderPageAndMonitoringP1()
             }
+        }
+    }
+
+    private fun handleP1Error(error: Throwable) {
+        if (isCacheable()) {
+            if (viewModel.cacheState?.isFromCache == true) {
+                val view = binding?.root ?: return
+                Toaster.build(
+                    view = view,
+                    text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
+                    actionText = "Coba lagi",
+                    duration = LENGTH_INDEFINITE,
+                    type = TYPE_ERROR
+                ) {
+                    loadData(true)
+                }.show()
+            }
+        } else {
+            handleObserverP1Error(error = error)
         }
     }
 
@@ -3377,7 +3401,22 @@ open class DynamicProductDetailFragment :
 
         setupProductVideoCoordinator()
         recommendationWidgetViewModel?.refresh()
-        submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+        submitInitialList()
+    }
+
+    private fun submitInitialList() {
+        if (isCacheable()) {
+            // when cache first then cloud is true, we want to keep refresh layout to UI
+            // prevent interaction loading state for several component
+            val submitInitialList = viewModel.cacheState?.cacheFirstThenCloud == false
+            Timber.tag("cacheable").d("${viewModel.cacheState}")
+            if (submitInitialList) {
+                Timber.tag("cacheable").d("submitInitialList")
+                submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+            }
+        } else {
+            submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+        }
     }
 
     private fun setupProductVideoCoordinator() {
@@ -3634,9 +3673,7 @@ open class DynamicProductDetailFragment :
         return viewModel.impressionHolders
     }
 
-    override fun isCacheable(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
-    }
+    override fun isCacheable(): Boolean = viewModel.isCacheable()
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
         SingleClick.doSomethingBeforeTime(interval = DEBOUNCE_CLICK) {

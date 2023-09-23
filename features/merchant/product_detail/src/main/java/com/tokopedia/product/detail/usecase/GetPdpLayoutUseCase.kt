@@ -16,6 +16,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product.detail.data.model.datamodel.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -460,7 +461,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
             }
     }
 
-    private val shouldCacheable
+    val shouldCacheable
         get() = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
 
     var requestParams = RequestParams.EMPTY
@@ -483,7 +484,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
             gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 
             val gqlResponse = gqlUseCase.executeOnBackground()
-            processResponse(gqlResponse = gqlResponse, fromCache = false)
+            processResponse(gqlResponse = gqlResponse, isCache = false, cacheFirstThenCloud = false)
         }
     }
 
@@ -495,24 +496,25 @@ open class GetPdpLayoutUseCase @Inject constructor(
             gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
         }.getOrNull()
         val hasCacheAvailable = error.isNullOrEmpty() && data != null
+        var cacheFirstThenCloud = false // initial value is false, refer to CacheState
 
         if (hasCacheAvailable) {
             // the first emit cache to UI
-            processResponse(gqlResponse = gqlResponse, fromCache = true)
+            processResponse(gqlResponse = gqlResponse, isCache = true, cacheFirstThenCloud = false)
             Timber.tag("cacheable").d("get data from cache the first")
-            // delay(3000)
+            cacheFirstThenCloud = true
         } else {
-            Timber.tag("cacheable").d("failed get from cache cause it is null")
+            Timber.tag("cacheable").d("failed get p1 from cache cause it is null")
         }
 
-        // hit cloud to update cache and UI
+        // hit cloud to update into cache and UI
         gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh = true))
         gqlResponse = gqlUseCase.executeOnBackground()
-        processResponse(gqlResponse = gqlResponse, fromCache = false)
+        processResponse(gqlResponse = gqlResponse, isCache = false, cacheFirstThenCloud = cacheFirstThenCloud)
         Timber.tag("cacheable").d("get from cloud")
     }
 
-    private suspend fun processResponse(gqlResponse: GraphqlResponse, fromCache: Boolean) {
+    private suspend fun processResponse(gqlResponse: GraphqlResponse, isCache: Boolean, cacheFirstThenCloud: Boolean) {
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
@@ -534,14 +536,14 @@ open class GetPdpLayoutUseCase @Inject constructor(
             onError?.invoke(error)
         }
 
-        val dataModel = mapIntoModel(data, fromCache)
+        val dataModel = mapIntoModel(data, isCache, cacheFirstThenCloud)
         onSuccess?.invoke(dataModel)
     }
 
-    private fun mapIntoModel(data: PdpGetLayout, fromCache: Boolean): ProductDetailDataModel {
+    private fun mapIntoModel(data: PdpGetLayout, isCache: Boolean, cacheFirstThenCloud: Boolean): ProductDetailDataModel {
         val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components)
             .filterNot {
-                if (fromCache) {
+                if (isCache) {
                     ignoreComponentInCache.contains(it.type())
                 } else {
                     false
@@ -549,7 +551,13 @@ open class GetPdpLayoutUseCase @Inject constructor(
             }.toMutableList()
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
         val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
-        return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
+        val cacheState = CacheState(isFromCache = isCache, cacheFirstThenCloud = cacheFirstThenCloud)
+        return ProductDetailDataModel(
+            layoutData = getDynamicProductInfoP1,
+            listOfLayout = initialLayoutData,
+            variantData = p1VariantData,
+            cacheState = cacheState
+        )
     }
 
     private val ignoreComponentInCache by lazy {
