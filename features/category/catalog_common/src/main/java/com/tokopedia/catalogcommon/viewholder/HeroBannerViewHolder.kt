@@ -1,6 +1,8 @@
 package com.tokopedia.catalogcommon.viewholder
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +43,7 @@ class HeroBannerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.widget_item_banner_hero
         private const val CIRCULAR_CARD_RADIUS = 100F
+        private const val RECTANGULAR_CARD_RADIUS = 30F
         private const val BANNER_PREMIUM_RATIO = "1:1.5"
         private const val BANNER_REGULAR_RATIO = "1:1"
     }
@@ -87,11 +90,13 @@ class HeroBannerViewHolder(
     }
 
     private fun WidgetItemBannerHeroBinding.renderPremiumBrandData(element: HeroBannerUiModel) {
-        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         val colorBg = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
         tfTitleBannerPremium.text = element.brandTitle
-        iuBrandPremium.loadImage(element.brandIconUrl)
-        iuBrandPremiumCard.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
+        iuBrandPremium.loadImage(element.brandIconUrl) {
+            listener(onSuccess = { bitmap, _ ->
+                iuBrandPremiumCard.background = createCardBackground(bitmap ?: return@listener)
+            })
+        }
         bgGradient.background = createGradientDrawable(colorBottom = colorBg)
         brandDescriptions = element.brandDescriptions
         tfSubtitleBannerPremium.text = brandDescriptions.firstOrNull().orEmpty()
@@ -99,26 +104,13 @@ class HeroBannerViewHolder(
     }
 
     private fun WidgetItemBannerHeroBinding.renderRegularBrandData(element: HeroBannerUiModel) {
-        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         tfTitleBanner.text = element.brandTitle
-        iuBrand.loadImage(element.brandIconUrl)
-        iuBrandCard.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
-        (binding?.carouselBanner?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = BANNER_REGULAR_RATIO
-    }
-
-    override fun bind(element: HeroBannerUiModel) {
-        brandImageCount = element.brandImageUrls.size
-        binding?.configViewsVisibility(element.isPremium)
-        if (element.isPremium) {
-            binding?.renderPremiumBrandData(element)
-        } else {
-            binding?.renderRegularBrandData(element)
+        iuBrand.loadImage(element.brandIconUrl) {
+            listener(onSuccess = { bitmap, _ ->
+                iuBrandCard.background = createCardBackground(bitmap ?: return@listener)
+            })
         }
-
-        bannerAdapter.setImages(element.brandImageUrls)
-        binding?.carouselBanner?.currentItem = bannerAdapter.getFirstPosition()
-        binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
-        binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
+        (binding?.carouselBanner?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = BANNER_REGULAR_RATIO
     }
 
     private fun ViewPager.setupCarouselBanner() {
@@ -156,6 +148,31 @@ class HeroBannerViewHolder(
                 }
             }
         })
+    }
+
+    private fun createCardBackground(bitmap: Bitmap): Drawable {
+        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        val radius = if (bitmap.width/bitmap.height <= 1.1) {
+            RECTANGULAR_CARD_RADIUS
+        } else {
+            CIRCULAR_CARD_RADIUS
+        }
+        return createGradientDrawable(cardColor, cardColor, radius)
+    }
+
+    override fun bind(element: HeroBannerUiModel) {
+        brandImageCount = element.brandImageUrls.size
+        binding?.configViewsVisibility(element.isPremium)
+        if (element.isPremium) {
+            binding?.renderPremiumBrandData(element)
+        } else {
+            binding?.renderRegularBrandData(element)
+        }
+
+        bannerAdapter.setImages(element.brandImageUrls)
+        binding?.carouselBanner?.currentItem = bannerAdapter.getFirstPosition()
+        binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
+        binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
     }
 }
 
