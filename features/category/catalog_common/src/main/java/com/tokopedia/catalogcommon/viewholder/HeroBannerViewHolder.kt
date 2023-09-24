@@ -116,7 +116,7 @@ class HeroBannerViewHolder(
         }
 
         bannerAdapter.setImages(element.brandImageUrls)
-        binding?.carouselBanner?.currentItem = 1
+        binding?.carouselBanner?.currentItem = bannerAdapter.getFirstPosition()
         binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
         binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
     }
@@ -129,20 +129,22 @@ class HeroBannerViewHolder(
             override fun onPageSelected(position: Int) {
                 if (bannerAdapter.count > Int.ONE) {
                     if (position == bannerAdapter.count.orZero().dec()) {
-                        setCurrentItem(1, false)
+                        setCurrentItem(bannerAdapter.getFirstPosition(), false)
                     } else if (position == Int.ZERO) {
-                        setCurrentItem(bannerAdapter.count - 2, false)
+                        setCurrentItem(bannerAdapter.getLastPosition(), false)
                     }
 
                     var indicatorPosition = position.dec()
                     if (indicatorPosition >= brandImageCount) {
-                        indicatorPosition = 0
+                        indicatorPosition = Int.ZERO
                     } else if (indicatorPosition.isLessThanZero()) {
                         indicatorPosition = brandImageCount.dec()
                     }
                     binding?.tfSubtitleBannerPremium?.text =
                         brandDescriptions.getOrNull(indicatorPosition).orEmpty()
                     binding?.bannerIndicator?.setBannerIndicators(brandImageCount, indicatorPosition)
+                } else {
+                    binding?.bannerIndicator?.pauseAnimation()
                 }
             }
 
@@ -159,6 +161,10 @@ class HeroBannerViewHolder(
 
 class ImageSliderAdapter(private val context: Context): PagerAdapter() {
 
+    companion object {
+        private const val LAST_POSITION_OFFSET = 2
+    }
+
     private var images: MutableList<String> = mutableListOf()
 
     override fun getCount() = images.size
@@ -168,7 +174,7 @@ class ImageSliderAdapter(private val context: Context): PagerAdapter() {
         val itemView = inflater.inflate(R.layout.carousel_item_sample_layout, container, false)
         val imageView = itemView.findViewById<ImageView>(R.id.iuBanner)
 
-        imageView.loadImage(images[position])
+        imageView.loadImage(images.getOrNull(position).orEmpty())
         container.addView(itemView)
         return itemView
     }
@@ -193,4 +199,7 @@ class ImageSliderAdapter(private val context: Context): PagerAdapter() {
         notifyDataSetChanged()
     }
 
+    fun getFirstPosition() = Int.ONE
+
+    fun getLastPosition() = count - LAST_POSITION_OFFSET
 }
