@@ -26,6 +26,7 @@ import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -40,6 +41,8 @@ class HeroBannerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.widget_item_banner_hero
         private const val CIRCULAR_CARD_RADIUS = 100F
+        private const val BANNER_PREMIUM_RATIO = "1:1.5"
+        private const val BANNER_REGULAR_RATIO = "1:1"
     }
 
     private val binding by viewBinding<WidgetItemBannerHeroBinding>()
@@ -92,6 +95,7 @@ class HeroBannerViewHolder(
         bgGradient.background = createGradientDrawable(colorBottom = colorBg)
         brandDescriptions = element.brandDescriptions
         tfSubtitleBannerPremium.text = brandDescriptions.firstOrNull().orEmpty()
+        (binding?.carouselBanner?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = BANNER_PREMIUM_RATIO
     }
 
     private fun WidgetItemBannerHeroBinding.renderRegularBrandData(element: HeroBannerUiModel) {
@@ -99,6 +103,7 @@ class HeroBannerViewHolder(
         tfTitleBanner.text = element.brandTitle
         iuBrand.loadImage(element.brandIconUrl)
         iuBrandCard.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
+        (binding?.carouselBanner?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = BANNER_REGULAR_RATIO
     }
 
     override fun bind(element: HeroBannerUiModel) {
@@ -117,7 +122,6 @@ class HeroBannerViewHolder(
     }
 
     private fun ViewPager.setupCarouselBanner() {
-        (layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = "1:1"
         adapter = bannerAdapter
         addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -129,12 +133,17 @@ class HeroBannerViewHolder(
                     } else if (position == Int.ZERO) {
                         setCurrentItem(bannerAdapter.count - 2, false)
                     }
+
+                    var indicatorPosition = position.dec()
+                    if (indicatorPosition >= brandImageCount) {
+                        indicatorPosition = 0
+                    } else if (indicatorPosition.isLessThanZero()) {
+                        indicatorPosition = brandImageCount.dec()
+                    }
+                    binding?.tfSubtitleBannerPremium?.text =
+                        brandDescriptions.getOrNull(indicatorPosition).orEmpty()
+                    binding?.bannerIndicator?.setBannerIndicators(brandImageCount, indicatorPosition)
                 }
-                var indicatorPosition = position.dec()
-                if (indicatorPosition >= brandImageCount) indicatorPosition = 0
-                binding?.tfSubtitleBannerPremium?.text =
-                    brandDescriptions.getOrNull(indicatorPosition).orEmpty()
-                binding?.bannerIndicator?.setBannerIndicators(brandImageCount, indicatorPosition)
             }
 
             override fun onPageScrollStateChanged(state: Int) {
