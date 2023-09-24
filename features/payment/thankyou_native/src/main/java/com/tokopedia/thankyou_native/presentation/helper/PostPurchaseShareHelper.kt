@@ -1,15 +1,53 @@
 package com.tokopedia.thankyou_native.presentation.helper
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseProductModel
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseShopModel
 import javax.inject.Inject
+import com.tokopedia.thankyou_native.R as thankyou_nativeR
 
-class PostPurchaseShareHelper @Inject constructor() {
+class PostPurchaseShareHelper @Inject constructor(
+    private val sharedPreferences: SharedPreferences
+) {
+
+    companion object {
+        private const val POST_PURCHASE_SHARE_ONBOARDING_KEY = "show_post_purchase_onboarding"
+    }
+
+    fun showCoachMarkShare(
+        context: Context,
+        anchorView: View
+    ) {
+        if (sharedPreferences.getBoolean(POST_PURCHASE_SHARE_ONBOARDING_KEY, true)) {
+            val coachMark2 = CoachMark2(context)
+            val coachMark2Item = arrayListOf(
+                CoachMark2Item(
+                    anchorView = anchorView,
+                    title = context.getString(
+                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_title),
+                    description = context.getString(
+                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_desc)
+                )
+            )
+            coachMark2.showCoachMark(coachMark2Item)
+            saveOnBoardingCache()
+        }
+    }
+
+    private fun saveOnBoardingCache() {
+        sharedPreferences
+            .edit()
+            .putBoolean(POST_PURCHASE_SHARE_ONBOARDING_KEY, false)
+            .apply()
+    }
 
     fun goToSharePostPurchase(
         context: Context,

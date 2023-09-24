@@ -556,6 +556,16 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    // this is needed to enable coachmark on share affiliate icon
+    fun getShareAffiliateIconView(): View? {
+        val shareAffiliateIconPosition = navIconAdapter?.getShareAffiliateIconPosition()
+        shareAffiliateIconPosition?.let {
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
     fun updateIcon(oldIconId: Int, newIconId: Int) {
         navIconAdapter?.updateIcon(oldIconId, newIconId)
     }
