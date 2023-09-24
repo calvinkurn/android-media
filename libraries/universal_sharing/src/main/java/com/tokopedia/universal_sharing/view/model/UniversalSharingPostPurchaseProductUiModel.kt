@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.universal_sharing.view.bottomsheet.typefactory.UniversalSharingTypeFactory
 
 data class UniversalSharingPostPurchaseProductUiModel(
+    val orderId: String = "",
     val productId: String = "",
     val name: String = "",
     val price: String = "",

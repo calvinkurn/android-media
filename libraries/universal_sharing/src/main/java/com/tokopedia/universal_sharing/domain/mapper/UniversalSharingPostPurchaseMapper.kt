@@ -57,6 +57,7 @@ class UniversalSharingPostPurchaseMapper @Inject constructor() {
         product: UniversalSharingPostPurchaseProductModel
     ): UniversalSharingPostPurchaseProductUiModel {
         return UniversalSharingPostPurchaseProductUiModel(
+            orderId = product.orderId,
             productId = product.productId,
             name = product.productName,
             price = product.productPrice,

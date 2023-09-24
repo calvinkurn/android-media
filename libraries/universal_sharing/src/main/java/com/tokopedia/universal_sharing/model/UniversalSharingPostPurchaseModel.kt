@@ -37,6 +37,7 @@ data class UniversalSharingPostPurchaseShopModel(
 
 @Parcelize
 data class UniversalSharingPostPurchaseProductModel(
+    val orderId: String = "",
     val productId: String = "",
     val productName: String = "",
     val productPrice: String = "",

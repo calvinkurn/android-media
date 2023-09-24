@@ -1,30 +1,44 @@
 package com.tokopedia.universal_sharing.view.activity
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Build
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
+import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurchaseBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.UniversalSharingPostPurchaseBottomSheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import javax.inject.Inject
 
 class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
     BaseActivity(),
     UniversalSharingPostPurchaseBottomSheetListener {
 
+    @Inject
+    lateinit var analytics: UniversalSharebottomSheetTracker
+
     private var bottomSheet: UniversalSharingPostPurchaseBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
         setupBottomSheet()
         showBottomSheet()
+    }
+
+    private fun initInjector() {
+        UniversalSharingComponentFactory.instance.createComponent(
+            applicationContext as Application
+        ).inject(this)
     }
 
     @SuppressLint("DeprecatedMethod")
@@ -53,30 +67,55 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
         }
     }
 
-    override fun onOpenShareBottomSheet(product: UniversalSharingPostPurchaseProductResponse) {
+    override fun onOpenShareBottomSheet(
+        orderId: String,
+        product: UniversalSharingPostPurchaseProductResponse
+    ) {
         val view = this.currentFocus
         val bottomSheetShare = UniversalShareBottomSheet.createInstance(view)
-        configShareBottomSheet(bottomSheetShare, product)
+        configShareBottomSheet(
+            orderId = orderId,
+            bottomSheet = bottomSheetShare,
+            product = product
+        )
         if (!bottomSheetShare.isAdded) { // only 1 bottomsheet allowed
             bottomSheetShare.show(
                 supportFragmentManager,
                 ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
             )
+            analytics.onViewSharingChannelBottomSheetSharePostPurchase(
+                userShareType = "",
+                productId = product.productId,
+                orderId = orderId,
+                orderStatus = ""
+            )
         }
     }
 
     private fun configShareBottomSheet(
+        orderId: String,
         bottomSheet: UniversalShareBottomSheet,
         product: UniversalSharingPostPurchaseProductResponse
     ) {
         bottomSheet.apply {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
-                    // todo tracker
+                    analytics.onClickSharingChannelBottomSheetSharePostPurchase(
+                        channel = shareModel.channel ?: "",
+                        userShareType = "",
+                        productId = product.productId,
+                        orderId = orderId,
+                        orderStatus = ""
+                    )
                 }
 
                 override fun onCloseOptionClicked() {
-                    // todo tracker
+                    analytics.onClickCloseBottomSheetSharePostPurchase(
+                        userShareType = "",
+                        productId = product.productId,
+                        orderId = orderId,
+                        orderStatus = ""
+                    )
                 }
             })
             setMetaData(

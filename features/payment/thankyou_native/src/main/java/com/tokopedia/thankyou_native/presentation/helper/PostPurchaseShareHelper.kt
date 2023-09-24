@@ -32,9 +32,11 @@ class PostPurchaseShareHelper @Inject constructor(
                 CoachMark2Item(
                     anchorView = anchorView,
                     title = context.getString(
-                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_title),
+                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_title
+                    ),
                     description = context.getString(
-                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_desc)
+                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_desc
+                    )
                 )
             )
             coachMark2.showCoachMark(coachMark2Item)
@@ -72,6 +74,7 @@ class PostPurchaseShareHelper @Inject constructor(
             // Loop each product in each shop
             it.purchaseItemList.forEach { item ->
                 val productData = UniversalSharingPostPurchaseProductModel(
+                    orderId = it.orderId,
                     productId = item.productId,
                     productName = item.productName,
                     productPrice = item.priceStr,
