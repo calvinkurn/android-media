@@ -13,12 +13,14 @@ import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_01
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_ACCORDION_01
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_ACCORDION_02
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_ACCORDION_ARROW
+import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_BANNER
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_SUPPORT_FEATURE_01
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_01
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_ACCORDION_01
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_ACCORDION_02
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_ACCORDION_ARROW
+import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_BANNER
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_SUPPORT_FEATURE_01
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
@@ -46,6 +48,10 @@ import javax.inject.Inject
 class CatalogDetailUiMapper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    companion object {
+        private val LAYOUT_VERSION_4_VALUE = 4
+    }
+
     fun mapToWidgetVisitables(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): List<Visitable<*>> {
@@ -54,7 +60,7 @@ class CatalogDetailUiMapper @Inject constructor(
             !it.data?.style?.isHidden.orTrue()
         }?.map {
             when (it.type) {
-                WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner()
+                WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
                 WidgetTypes.CATALOG_CHARACTERISTIC.type -> {
@@ -63,7 +69,7 @@ class CatalogDetailUiMapper @Inject constructor(
 
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> it.mapToBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
-                WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation()
+                WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation(remoteModel)
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
                 WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
@@ -120,6 +126,7 @@ class CatalogDetailUiMapper @Inject constructor(
             }
 
             PriceCtaProperties(
+                catalogId = remoteModel.basicInfo.id,
                 price = displayedPrice,
                 productName = priceCta.name,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
@@ -157,7 +164,7 @@ class CatalogDetailUiMapper @Inject constructor(
         }
     }
 
-    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner() =
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner(darkMode: Boolean) =
         HeroBannerUiModel(
             isPremium = data?.style?.isPremium.orFalse(),
             brandTitle = data?.hero?.name.orEmpty(),
@@ -167,8 +174,10 @@ class CatalogDetailUiMapper @Inject constructor(
             brandDescriptions = data?.hero?.heroSlide?.map { heroSlide ->
                 heroSlide.subtitle
             }.orEmpty(),
-            brandIconUrl = data?.hero?.brandLogoUrl.orEmpty()
-        )
+            brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
+            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER),
+
+            )
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTopFeature(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
@@ -187,13 +196,18 @@ class CatalogDetailUiMapper @Inject constructor(
         )
     }
 
-    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToStickyNavigation(): StickyNavigationUiModel {
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToStickyNavigation(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): StickyNavigationUiModel {
         return StickyNavigationUiModel(
-            content = data?.navigation?.map {
-                StickyNavigationUiModel.StickyNavigationItemData(
-                    it.title,
-                    it.eligibleNames.firstOrNull().orEmpty()
-                )
+            content = data?.navigation?.map { nav ->
+                val eligibleName = nav.eligibleNames.filter { eligble ->
+                    val found = remoteModel.layouts?.indexOfFirst {
+                        it.name == eligble && !it.data?.style?.isHidden.orFalse()
+                    }
+                    found != -1
+                }.firstOrNull().orEmpty()
+                StickyNavigationUiModel.StickyNavigationItemData(nav.title, eligibleName)
             }.orEmpty()
         )
     }
@@ -391,6 +405,10 @@ class CatalogDetailUiMapper @Inject constructor(
             com.tokopedia.unifycomponents.R.color.Unify_Static_Black
         }
         return MethodChecker.getColor(context, textColorRes)
+    }
+
+    fun isUsingAboveV4Layout(version: Int): Boolean {
+        return version >= LAYOUT_VERSION_4_VALUE
     }
 
 }

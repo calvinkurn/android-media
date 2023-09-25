@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +47,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -63,7 +67,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-
 class CatalogProductListFragment :
     BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
     ChooseAddressWidget.ChooseAddressWidgetListener,
@@ -75,12 +78,11 @@ class CatalogProductListFragment :
     lateinit var viewModel: CatalogProductListViewModel
 
     private var binding by autoClearedNullable<FragmentCatalogProductListBinding>()
+    private var userAddressData: LocalCacheModel? = null
 
     private val sortFilterBottomSheet: SortFilterBottomSheet by lazy {
         SortFilterBottomSheet()
     }
-
-    private var userAddressData: LocalCacheModel? = null
 
     private val userSession: UserSession by lazy {
         UserSession(activity)
@@ -169,27 +171,6 @@ class CatalogProductListFragment :
         }
     }
 
-    private fun initToolbar() {
-        binding?.apply {
-            toolbar.shareButton?.hide()
-            toolbar.searchButton?.hide()
-            toolbar.title = catalogTitle
-            toolbar.cartButton?.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.CART)
-            }
-            toolbar.setNavigationOnClickListener {
-                activity?.finish()
-                CatalogReimagineDetailAnalytics.sendEvent(
-                    event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
-                    action = CatalogTrackerConstant.EVENT_ACTION_CLICK_BACK_BUTTON,
-                    category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
-                    labels = catalogId,
-                    trackerId = CatalogTrackerConstant.TRACKER_ID_BACK_BUTTON_CATALOG_PRODUCT_LIST
-                )
-            }
-        }
-    }
-
     override fun getScreenName() = CatalogProductListFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
@@ -259,7 +240,7 @@ class CatalogProductListFragment :
             when (it) {
                 is Success -> {
                     products.addAll(it.data)
-                    val hasNextPage = products.isNotEmpty()
+                    val hasNextPage = it.data.isNotEmpty()
                     renderList(products, hasNextPage)
                 }
 
@@ -651,7 +632,7 @@ class CatalogProductListFragment :
         searchProductRequestParams.apply {
             putString(CategoryNavConstants.START, (start * PAGING_ROW_COUNT).toString())
             putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE_MOBILE)
-            putString(CategoryNavConstants.USER_ID, userSession.userId)
+            putString(CategoryNavConstants.USER_ID, viewModel.getUserId())
             putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
@@ -680,10 +661,14 @@ class CatalogProductListFragment :
     override fun getSwipeRefreshLayout(view: View?) = binding?.swipeRefreshLayout
 
     private fun addToCart(atcModel: CatalogProductAtcUiModel) {
-        if (atcModel.isVariant) {
-            openVariantBottomSheet(atcModel)
+        if (viewModel.isUserLoggedIn()) {
+            if (atcModel.isVariant) {
+                openVariantBottomSheet(atcModel)
+            } else {
+                viewModel.addProductToCart(atcModel)
+            }
         } else {
-            viewModel.addProductToCart(atcModel)
+            goToLoginPage()
         }
     }
 
@@ -760,6 +745,36 @@ class CatalogProductListFragment :
 
     override fun callInitialLoadAutomatically(): Boolean {
         return false
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            viewModel.refreshNotification()
+        }
+    }
+
+    private fun initToolbar() {
+        binding?.apply {
+            toolbar.shareButton?.hide()
+            toolbar.searchButton?.hide()
+            toolbar.title = catalogTitle
+            toolbar.cartButton?.setOnClickListener {
+                if (viewModel.isUserLoggedIn()) {
+                    RouteManager.route(context, ApplinkConst.CART)
+                } else {
+                    goToLoginPage()
+                }
+            }
+            toolbar.setNavigationOnClickListener {
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun goToLoginPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, LOGIN_REQUEST_CODE)
     }
 
 }

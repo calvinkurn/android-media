@@ -10,12 +10,14 @@ import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class CatalogDetailPageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val catalogDetailUseCase: CatalogDetailUseCase,
-    private val getNotificationUseCase: GetNotificationUseCase
+    private val getNotificationUseCase: GetNotificationUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
     private val _errorsToaster = MutableLiveData<Throwable>()
@@ -30,15 +32,21 @@ class CatalogDetailPageViewModel @Inject constructor(
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
 
-    fun getProductCatalog(catalogId: String,comparedCatalogId : String,userId : String, device : String) {
+    fun isUserLoggedIn(): Boolean {
+        return getUserId().isNotBlank()
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
+    }
+
+    fun getProductCatalog(catalogId: String, comparedCatalogId : String) {
         launchCatchError(
             dispatchers.io,
             block = {
-                catalogDetailUseCase.getCatalogReimagineDetail(
+                catalogDetailUseCase.getCatalogDetailV4(
                     catalogId,
                     comparedCatalogId,
-                    userId,
-                    device,
                     _catalogDetailDataModel
                 )
             },

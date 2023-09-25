@@ -8,11 +8,12 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
-import com.tokopedia.catalog.util.RollenceUtil
+import com.tokopedia.catalog.ui.fragment.CatalogLandingPageFragment
 import com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity as OldCatalogDetailPageActivity
 import com.tokopedia.core.analytics.AppScreen
 
-class CatalogDetailPageActivity :  BaseSimpleActivity() {
+class CatalogDetailPageActivity :  BaseSimpleActivity(),
+    CatalogLandingPageFragment.CatalogLandingPageFragmentListener {
 
     private var catalogId: String = ""
 
@@ -50,27 +51,42 @@ class CatalogDetailPageActivity :  BaseSimpleActivity() {
         }
         catalogId = catalogId.split("-").lastOrNull()?.trim() ?: ""
 
-        handleRollenceRoute(savedInstanceState, catalogId)
+        handleVersionRoute(savedInstanceState)
     }
 
-    private fun handleRollenceRoute(savedInstanceState: Bundle?, catalogId: String) {
-        if (RollenceUtil.useCatalogReimagine()) {
-            prepareView(savedInstanceState == null)
-        } else {
-            val intent = OldCatalogDetailPageActivity.createIntent(this, catalogId)
-            startActivity(intent)
-            finish()
+    override fun onLayoutBelowVersion3() {
+        val intent = OldCatalogDetailPageActivity.createIntent(this, catalogId)
+        startActivity(intent)
+        finish()
+    }
+
+    override fun onLayoutAboveVersion4() {
+        loadV4Layout()
+    }
+
+    private fun handleVersionRoute(savedInstanceState: Bundle?) {
+        if(savedInstanceState == null) {
+            prepareLoader()
         }
     }
 
-    private fun prepareView(savedInstanceIsNull: Boolean) {
-        if(savedInstanceIsNull) {
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.catalog_detail_parent_view,
-                            CatalogDetailPageFragment.newInstance(catalogId),
-                            CatalogDetailPageFragment.CATALOG_DETAIL_PAGE_FRAGMENT_TAG
-                    )
-                    .commit()
-        }
+    private fun loadV4Layout() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.catalog_detail_parent_view,
+                CatalogDetailPageFragment.newInstance(catalogId),
+                CatalogDetailPageFragment.CATALOG_DETAIL_PAGE_FRAGMENT_TAG
+            )
+            .commit()
+    }
+
+    private fun prepareLoader() {
+        val fragment = CatalogLandingPageFragment.newInstance(catalogId)
+        fragment.setListener(this)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.catalog_detail_parent_view,
+                fragment,
+                CatalogLandingPageFragment.CATALOG_LOADER_PAGE_FRAGMENT_TAG
+            )
+            .commit()
     }
 }

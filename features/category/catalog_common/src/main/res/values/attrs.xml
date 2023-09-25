@@ -3,6 +3,5 @@
     <declare-styleable name="CatalogToolbar">
         <attr name="title" format="string"  />
         <attr name="sub_title" format="string"/>
-        <attr name="cart_count" format="integer"/>
     </declare-styleable>
 </resources>
