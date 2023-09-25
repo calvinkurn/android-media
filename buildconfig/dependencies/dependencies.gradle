@@ -103,7 +103,7 @@ ext {
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
-    gotoLsdkVersion = '0.1.0-841d0c47-SNAPSHOT'
+    gotoLsdkVersion = '0.1.0-d43e17a5-SNAPSHOT'
     gotoCvsdkVersion = '0.9.0-03a91d1c-SNAPSHOT'
 
     playIntegrityVersion = '1.0.1'

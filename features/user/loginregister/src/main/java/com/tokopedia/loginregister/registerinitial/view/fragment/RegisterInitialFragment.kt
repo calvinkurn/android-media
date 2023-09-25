@@ -124,7 +124,7 @@ class RegisterInitialFragment :
     private var phoneNumber: String? = ""
     private var source: String = ""
     private var email: String = ""
-    private var isAutoRegister: Boolean = false
+    private var loginCredential = ""
     private var isSmartLogin: Boolean = false
     private var isSmartRegister: Boolean = false
     private var isPending: Boolean = false
@@ -218,11 +218,11 @@ class RegisterInitialFragment :
             savedInstanceState,
             ""
         )
-        isAutoRegister = getParamBoolean(
-            ApplinkConstInternalUserPlatform.PARAM_IS_AUTO_REGISTER,
+        loginCredential = getParamString(
+            ApplinkConstInternalUserPlatform.LOGIN_SDK_CREDENTIAL,
             arguments,
             savedInstanceState,
-            false
+            ""
         )
 
         registerInitialRouter.source = source
@@ -260,7 +260,7 @@ class RegisterInitialFragment :
             isSmartLogin -> {
                 handleSmartLogin()
             }
-            isAutoRegister -> {
+            loginCredential.isNotEmpty() -> {
                 handleAutoRegister()
             }
         }
@@ -272,21 +272,10 @@ class RegisterInitialFragment :
         setupToolbar()
     }
 
-    @SuppressLint("PII Data Exposure")
     private fun handleAutoRegister() {
-        val idRegister = when {
-            phoneNumber?.isNotEmpty() == true -> {
-                phoneNumber
-            }
-            email.isNotEmpty() -> {
-                email
-            }
-            else -> ""
-        }
-
-        viewBinding?.registerInputView?.inputEmailPhoneField?.editText?.setText(idRegister)
-        if (idRegister?.isNotEmpty() == true) {
-            onActionPartialClick(idRegister)
+        if (loginCredential?.isNotEmpty() == true) {
+            viewBinding?.registerInputView?.inputEmailPhoneField?.editText?.setText(loginCredential)
+            onActionPartialClick(loginCredential)
         }
     }
 
@@ -1473,7 +1462,7 @@ class RegisterInitialFragment :
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString(ApplinkConstInternalUserPlatform.PHONE_NUMBER, phoneNumber)
-        outState.putBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_AUTO_REGISTER, isAutoRegister)
+        outState.putString(ApplinkConstInternalUserPlatform.LOGIN_SDK_CREDENTIAL, loginCredential)
         outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         super.onSaveInstanceState(outState)
     }

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.login.common.utils.LoginImageLoader
@@ -14,20 +13,25 @@ import com.scp.login.core.domain.contracts.configs.LSdkSsoUiConfigs
 import com.scp.login.core.domain.contracts.configs.LSdkUiConfig
 import com.scp.login.core.domain.contracts.listener.LSdkClientFlowListener
 import com.scp.login.core.domain.contracts.listener.LSdkLoginFlowListener
-import com.scp.login.core.domain.methods.mapper.MethodsUserNotExistFailure
 import com.scp.verification.core.domain.common.entities.Failure
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ScpAuthActivity: BaseActivity() {
+class ScpAuthActivity : BaseActivity() {
 
     @Inject
     lateinit var firebaseRemoteConfig: RemoteConfig
@@ -85,27 +89,28 @@ class ScpAuthActivity: BaseActivity() {
                 ),
                 chooseAccountConfigs = LSdkChooseAccountUiConfigs(
                     title = "Select Account to continue"
-                ),
+                )
             ),
             additionalHeaders = TkpdAdditionalHeaders(this),
             loginSuccessListener = object : LSdkLoginFlowListener {
-                override fun onUserBackPressedAndExit() {
-                    finish()
+                override fun onLoginError(failure: Failure, activity: Activity?) {
                 }
 
-                override fun onLoginSuccessful() {
+                override fun onLoginSuccessful(activity: Activity?) {
                     GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
                     viewModel.getUserInfo()
                 }
 
-                override fun onLoginError(failure: Failure) {
-                    if (failure is MethodsUserNotExistFailure) {
-                        Toast.makeText(this@ScpAuthActivity, "User not exist, cred: ${failure.credentials}", Toast.LENGTH_SHORT).show()
-                    }
+                override fun onUserBackPressedAndExit() {
+                    finish()
                 }
 
                 override fun onUserNotRegistered(credential: UserCredential, activity: Activity?) {
-
+                    val intent = RouteManager.getIntent(this@ScpAuthActivity, ApplinkConstInternalUserPlatform.INIT_REGISTER).apply {
+                        val userCredential = credential.phoneNumber.ifEmpty { credential.email }
+                        putExtra(ApplinkConstInternalUserPlatform.LOGIN_SDK_CREDENTIAL, userCredential)
+                    }
+                    startActivity(intent)
                 }
             },
             clientFlowListener = object : LSdkClientFlowListener {
@@ -113,36 +118,55 @@ class ScpAuthActivity: BaseActivity() {
                     screenType: String,
                     isGotoPinHelpContext: Boolean
                 ) {
-                    TODO("Not yet implemented")
+                    goToTokopediaCare()
                 }
 
                 override fun onAccountRecoverClicked() {
-
                 }
 
                 override fun onTermsServicesClicked() {
-                    Toast.makeText(this@ScpAuthActivity, "On Terms Services Click", Toast.LENGTH_SHORT).show()
+                    startActivity(
+                        RouteManager.getIntent(
+                            this@ScpAuthActivity,
+                            ApplinkConstInternalUserPlatform.TERM_PRIVACY,
+                            PAGE_TERM_AND_CONDITION
+                        )
+                    )
                 }
 
                 override fun onPrivacyPolicyClicked() {
-                    Toast.makeText(this@ScpAuthActivity, "On Privacy Policy Clicked", Toast.LENGTH_SHORT).show()
+                    startActivity(
+                        RouteManager.getIntent(
+                            this@ScpAuthActivity,
+                            ApplinkConstInternalUserPlatform.TERM_PRIVACY,
+                            PAGE_PRIVACY_POLICY
+                        )
+                    )
                 }
 
                 override fun onLanguageSelectorClicked(activity: Activity) {
-
                 }
-
             },
-            imageLoader = object: LoginImageLoader {
+            imageLoader = object : LoginImageLoader {
                 override fun loadBitmapFromUrl(
                     context: Context,
                     url: String,
                     onSuccess: (Bitmap) -> Unit,
                     onFailure: () -> Unit
                 ) {
-
                 }
             }
+        )
+    }
+
+    private fun goToTokopediaCare() {
+        RouteManager.route(
+            this,
+            String.format(
+                TOKOPEDIA_CARE_STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
+                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
+            )
         )
     }
 
@@ -170,5 +194,10 @@ class ScpAuthActivity: BaseActivity() {
 
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    companion object {
+        const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
     }
 }
