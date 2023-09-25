@@ -133,27 +133,6 @@ object CartCalculator {
         return Triple(totalItemQty, pricePair, subtotalCashback)
     }
 
-    fun getWholesalePriceProduct(
-        cartItemHolderData: CartItemHolderData,
-        itemQty: Int
-    ): Double {
-        var wholesalePrice = 0.0
-        val wholesalePriceDataList = cartItemHolderData.wholesalePriceData
-        for (wholesalePriceData in wholesalePriceDataList) {
-            if (itemQty >= wholesalePriceData.qtyMin) {
-                wholesalePrice = wholesalePriceData.prdPrc
-                val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    wholesalePriceData.prdPrc,
-                    false
-                ).removeDecimalSuffix()
-                cartItemHolderData.wholesalePriceFormatted = wholesalePriceFormatted
-                cartItemHolderData.wholesalePrice = wholesalePriceData.prdPrc
-                break
-            }
-        }
-        return wholesalePrice
-    }
-
     fun calculatePriceWholesaleProduct(
         cartItemHolderData: CartItemHolderData,
         itemQty: Int
