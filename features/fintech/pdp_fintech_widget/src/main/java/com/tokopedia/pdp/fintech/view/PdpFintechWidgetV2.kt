@@ -25,6 +25,7 @@ import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetailV3
+import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetailV3Item
 import com.tokopedia.pdp.fintech.helper.Utils
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
@@ -35,6 +36,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
 
 class PdpFintechWidgetV2 @JvmOverloads constructor(
@@ -45,13 +47,11 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
 
 
     private var idToPriceUrlMap = HashMap<String, FintechPriceURLDataModel>()
-    private var priceToMessages = HashMap<String, WidgetV2UIModel>()
+    private var priceToMessages = HashMap<String, WidgetDetailV3Item>()
     private var categoryId: String? = null
     private var productID: String? = ""
     private var parentId: String = ""
     private var productPrice: String? = ""
-    private val NOT_BRANDER_CHIPS = "NON BRANDED"
-    private val BRANDER_CHIPS = "BRANDED"
     private var logInStatus = false
     private lateinit var binding: PdpFintechWidgetV2LayoutBinding
 
@@ -67,16 +67,6 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
     init {
         initInjector()
         initView()
-
-//        val v1 = Typography(context).apply {
-//            text = Html.fromHtml("<span style=\"color:#212121;\">Bisa cicil mulai </span> <b>Rp474.916/bulan! <span style=\"color:#00AA5B\">Lihat Cicilan</span></b>")
-//        }
-//
-//        val v2 = Typography(context).apply {
-//            text = Html.fromHtml("<span style=\"color: #009F92\">+ Diskon 25% s.d. Rp100.000</span>")
-//        }
-////        binding.installmentIcon.setImageUrl("https://images.tokopedia.net/img/fintech/paylater/gopay-later-pdp-logo.png")
-//        binding.sliderView.setItems(arrayListOf(v1, v2))
     }
 
     fun updateBaseFragmentContext(
@@ -111,7 +101,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
     private fun setPriceToChipMap(widgetDetail: WidgetDetailV3) {
         widgetDetail.baseWidgetResponse.baseData.list.let { list ->
             list.forEach {
-                priceToMessages[it.price.toString()] = WidgetV2UIModel(it.messages, it.iconUrlLight, it.iconUrlDark)
+                priceToMessages[it.price.toString()] = it
             }
         }
     }
@@ -179,6 +169,8 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
             priceToMessages[it]?.let { model ->
                 instanceProductUpdateListner?.showWidget()
                 setMessagesWidget(model.messages)
+                setClickListener(model)
+                setIcon(model)
             } ?: run {
                 instanceProductUpdateListner?.removeWidget()
             }
@@ -190,8 +182,25 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
 //        priceToMessages["400000.0"]?.let {
 //            instanceProductUpdateListner?.showWidget()
 //            setMessagesWidget(it.messages)
-//            binding.sliderIcon.setImageUrl(it.iconUrlLight)
+//            setClickListener(it)
+//            setIcon(it)
+////            binding.sliderIcon.setImageUrl(it.iconUrlLight)
 //        }
+    }
+
+    private fun setIcon(model: WidgetDetailV3Item) {
+        binding.sliderIcon.setImageUrl(
+            if (context.isDarkMode()) model.iconUrlDark else model.iconUrlLight
+        )
+    }
+
+    private fun setClickListener(model: WidgetDetailV3Item) {
+        binding.sliderContainer.setOnClickListener {
+            instanceProductUpdateListner?.fintechChipClicked(
+                FintechRedirectionWidgetDataClass(gatewayId = "0"),
+                model.androidUrl
+            )
+        }
     }
 
     private fun setMessagesWidget(messages: List<String>) {
@@ -221,9 +230,3 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
     }
 
 }
-
-data class WidgetV2UIModel(
-    val messages: List<String>,
-    val iconUrlLight: String,
-    val iconUrlDark: String,
-)
