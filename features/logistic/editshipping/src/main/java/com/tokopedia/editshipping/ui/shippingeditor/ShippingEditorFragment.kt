@@ -428,8 +428,8 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun convertFeatureIdToString(featureId: List<Long>?): String? {
-        return featureId?.joinToString(separator = ",")
+    private fun convertFeatureIdToString(featureId: List<Long>?): String {
+        return featureId?.joinToString(separator = ",").orEmpty()
     }
 
     private fun openBottomSheetWarehouseInactive(

@@ -75,7 +75,7 @@ class ShippingEditorViewModel @Inject constructor(
         }
     }
 
-    fun saveShippingData(shopId: Long, activatedSpIds: String, featuresId: String?) {
+    fun saveShippingData(shopId: Long, activatedSpIds: String, featuresId: String) {
         _saveShippingData.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorSaveShippingEditor) {
             val saveShippingEditor =
