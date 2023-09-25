@@ -35,6 +35,7 @@ class SomBottomSheetConfirmShippingAdapter : RecyclerView.Adapter<SomBottomSheet
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateListInfo(listNotes: List<ConfirmShippingNotes>) {
+        if (listNotes.isEmpty()) return
         list.clear()
         list = listNotes.toMutableList()
         notifyDataSetChanged()
