@@ -107,7 +107,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 show()
                 if (active) {
                     val linkColor = colorSchema.getColorIntValue(
-                        ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR
+                        ShopPageColorSchema.ColorSchemaName.NAV_TEXT_ACTIVE
                     )
                     setTextColor(linkColor)
                 } else {
