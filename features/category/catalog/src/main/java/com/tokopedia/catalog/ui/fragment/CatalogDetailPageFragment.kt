@@ -189,36 +189,12 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers(view)
-        var catalogId = ""
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
-            viewModel.getProductCatalog(catalogId, "", "", "android")
+            viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
         }
-        binding?.btnSeeMore?.setOnClickListener {
-            val catalogProductList =
-                Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
-                    .buildUpon()
-                    .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
-                    .appendQueryParameter(
-                        QUERY_PRODUCT_SORTING_STATUS,
-                        productSortingStatus.toString()
-                    )
-                    .appendPath(title).toString()
 
-            RouteManager.getIntent(context, catalogProductList).apply {
-                putExtra(EXTRA_CATALOG_URL, catalogUrl)
-                startActivity(this)
-            }
-
-            CatalogReimagineDetailAnalytics.sendEvent(
-                event = EVENT_VIEW_CLICK_PG,
-                action = EVENT_ACTION_SEE_OPTIONS,
-                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-                labels = catalogId,
-                trackerId = TRACKER_ID_CLICK_BUTTON_CHOOSE
-            )
-        }
     }
 
     override fun onNavBackClicked() {
@@ -368,15 +344,29 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         tgpCatalogName.text = properties.productName
         tgpPriceRanges.text = properties.price
 
-        btnSeeMore.setOnClickListener {
+        btnProductList.setOnClickListener {
             val catalogProductList =
                 Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
                     .buildUpon()
-                    .appendQueryParameter(QUERY_CATALOG_ID, properties.catalogId)
-                    .appendQueryParameter(QUERY_PRODUCT_SORTING_STATUS, productSortingStatus.toString())
-                    .appendPath(properties.productName).toString()
+                    .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
+                    .appendQueryParameter(
+                        QUERY_PRODUCT_SORTING_STATUS,
+                        productSortingStatus.toString()
+                    )
+                    .appendPath(title).toString()
 
-            RouteManager.route(context, catalogProductList)
+            RouteManager.getIntent(context, catalogProductList).apply {
+                putExtra(EXTRA_CATALOG_URL, catalogUrl)
+                startActivity(this)
+            }
+
+            CatalogReimagineDetailAnalytics.sendEvent(
+                event = EVENT_VIEW_CLICK_PG,
+                action = EVENT_ACTION_SEE_OPTIONS,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                labels = catalogId,
+                trackerId = TRACKER_ID_CLICK_BUTTON_CHOOSE
+            )
         }
 
         CatalogReimagineDetailAnalytics.sendEvent(

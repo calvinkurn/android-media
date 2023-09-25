@@ -73,6 +73,30 @@ class CatalogProductListFragment :
     QuickFilterListener, SortFilterBottomSheet.Callback, ProductListAdapterListener,
     EmptyStateFilterListener {
 
+    companion object {
+        private const val LOGIN_REQUEST_CODE = 1003
+        private const val SHOP_TIER_VALUE = 2
+        private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
+        private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val ARG_EXTRA_PRODUCT_SORTING_STATUS = "ARG_EXTRA_PRODUCT_SORTING_STATUS"
+        private const val ARG_EXTRA_CATALOG_TITLE = "ARG_EXTRA_CATALOG_TITLE"
+        const val CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG = "CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG"
+        fun newInstance(
+            catalogId: String,
+            catalogTitle: String,
+            productSortingStatus: String,
+            catalogUrl: String
+        ): CatalogProductListFragment {
+            val fragment = CatalogProductListFragment()
+            val bundle = Bundle()
+            bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+            bundle.putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
+            bundle.putString(ARG_EXTRA_CATALOG_TITLE, catalogTitle)
+            bundle.putString(ARG_EXTRA_PRODUCT_SORTING_STATUS, productSortingStatus)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 
     @Inject
     lateinit var viewModel: CatalogProductListViewModel
@@ -123,30 +147,6 @@ class CatalogProductListFragment :
     private val PAGING_ROW_COUNT = 20
 
     private val products = ArrayList<Visitable<*>>()
-
-    companion object {
-        private const val SHOP_TIER_VALUE = 2
-        private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
-        private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        private const val ARG_EXTRA_PRODUCT_SORTING_STATUS = "ARG_EXTRA_PRODUCT_SORTING_STATUS"
-        private const val ARG_EXTRA_CATALOG_TITLE = "ARG_EXTRA_CATALOG_TITLE"
-        const val CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG = "CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG"
-        fun newInstance(
-            catalogId: String,
-            catalogTitle: String,
-            productSortingStatus: String,
-            catalogUrl: String
-        ): CatalogProductListFragment {
-            val fragment = CatalogProductListFragment()
-            val bundle = Bundle()
-            bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
-            bundle.putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
-            bundle.putString(ARG_EXTRA_CATALOG_TITLE, catalogTitle)
-            bundle.putString(ARG_EXTRA_PRODUCT_SORTING_STATUS, productSortingStatus)
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
