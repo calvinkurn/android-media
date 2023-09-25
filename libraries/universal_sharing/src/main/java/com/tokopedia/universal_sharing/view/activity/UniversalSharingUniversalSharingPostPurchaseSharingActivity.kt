@@ -8,10 +8,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurchaseBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -19,8 +21,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.Un
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import javax.inject.Inject
-import com.tokopedia.universal_sharing.R
-import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
 import kotlin.math.roundToInt
 
 class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
@@ -131,6 +131,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
             )
             enableDefaultShareIntent()
             setShareText("$desc %s")
+            setSubject(product.productName)
             setLinkProperties(
                 LinkProperties(
                     linkerType = LinkerData.PRODUCT_TYPE,
