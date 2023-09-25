@@ -2,6 +2,7 @@ package com.scp.auth
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import com.gojek.pin.AppInfo
 import com.gojek.pin.DeviceInfo
 import com.gojek.pin.PinConfig
@@ -37,7 +38,6 @@ object GotoSdk {
 
     private const val TOKOPEDIA_APP_TYPE = "Tokopedia"
 
-
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
         LSDKINSTANCE = GotoLogin.getInstance(
@@ -52,7 +52,6 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
-                        println("sdkTrack:view: $eventName, $params")
                     }
 
                     override fun trackError(
@@ -66,7 +65,6 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: MutableMap<String, Any?>
                     ) {
-                        println("sdkTrack:event: $eventName, $params")
                     }
                 }
             )
@@ -97,23 +95,28 @@ object GotoSdk {
                     language = "id"
                 ),
                 deviceInfo = DeviceInfo(
-                    appVersion = "",
-                    deviceName = "",
-                    osVersion = "",
-                    type = ""
+                    appVersion = GlobalConfig.VERSION_NAME,
+                    deviceName = getDeviceName(),
+                    osVersion = Build.VERSION.SDK_INT.toString(),
+                    type = "android"
                 ),
                 validationListener = object : PinSdkValidationListener {
                     override fun handleOtpError(errorCode: Int, errorMessage: String, coroutineScope: CoroutineScope) {
-
                     }
 
                     override fun provideAuthenticationResult(context: Context, callback: (PinValidationResults) -> Unit) {
-
                     }
                 }
             )
         )
         return GOTOPINSDKINSTANCE!!
+    }
+
+    private fun getDeviceName(): String {
+        val manufacturer = Build.MANUFACTURER
+        val model = Build.MODEL
+
+        return "$manufacturer $model"
     }
 }
 
@@ -133,8 +136,6 @@ class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
         return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g")
     }
 
-
     companion object {
     }
 }
-
