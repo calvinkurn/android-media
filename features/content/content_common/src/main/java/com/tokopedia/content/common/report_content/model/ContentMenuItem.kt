@@ -2,14 +2,17 @@ package com.tokopedia.content.common.report_content.model
 
 import androidx.annotation.StringRes
 
-data class FeedMenuItem(
+data class ContentMenuItem(
     @StringRes val name: Int,
     val iconUnify: Int,
-    val type: FeedMenuIdentifier,
+    val type: ContentMenuIdentifier,
     val appLink: String = "",
     val contentData: FeedContentData? = null
 )
 
+/**
+ * Feed only~
+ */
 data class FeedContentData(
     val caption: String,
     val postId: String,
@@ -17,7 +20,7 @@ data class FeedContentData(
     val rowNumber: Int = 0 // absolutePosition
 )
 
-enum class FeedMenuIdentifier {
+enum class ContentMenuIdentifier {
     Edit,
     Report,
     WatchMode,

@@ -7,14 +7,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
+import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.model.StoriesUiModel
-import com.tokopedia.stories.view.utils.STORY_GROUP_ID
+import com.tokopedia.stories.view.utils.SHOP_ID
 
 class StoriesGroupPagerAdapter(
     private val fragmentManager: FragmentManager,
     private val fragmentActivity: FragmentActivity,
     lifecycle: Lifecycle,
-) : FragmentStateAdapter(fragmentManager, lifecycle) {
+    private val shopId: String,
+    ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private var _groupData: StoriesUiModel = StoriesUiModel()
     private val groupData: StoriesUiModel
@@ -42,9 +44,9 @@ class StoriesGroupPagerAdapter(
             classLoader = fragmentActivity.classLoader,
         ).apply {
             arguments = Bundle().apply {
-                putString(STORY_GROUP_ID, getCurrentPageGroupId(position))
+                putString(STORIES_GROUP_ID, groupData.groupItems.getOrNull(position)?.groupId.orEmpty())
+                putString(SHOP_ID, shopId)
             }
         }
     }
-
 }

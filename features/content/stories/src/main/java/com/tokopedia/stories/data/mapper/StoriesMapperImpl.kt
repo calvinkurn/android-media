@@ -1,9 +1,15 @@
 package com.tokopedia.stories.data.mapper
 
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel.ContentStoriesDetails
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel.ContentStoriesGroups
+import com.tokopedia.stories.uimodel.AuthorType
+import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.Meta
@@ -14,9 +20,12 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.stories.R as storiesR
 
-class StoriesMapperImpl @Inject constructor() : StoriesMapper {
+class StoriesMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :
+    StoriesMapper {
 
     override fun mapStoriesInitialData(
         dataGroup: StoriesGroupsResponseModel,
@@ -77,6 +86,8 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
                     ),
                     resetValue = -1,
                     isSameContent = false,
+                    author = buildAuthor(stories.author),
+                    menus = buildMenu(stories.interaction, stories.author),
                     meta = Meta(
                         activityTracker = stories.meta.activityTracker,
                         templateTracker = stories.meta.templateTracker,
@@ -86,4 +97,49 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
         )
     }
 
+    private fun isOwner(author: ContentStoriesDetails.Stories.Author): Boolean =
+        author.id == userSession.shopId
+
+    private fun buildMenu(
+        template: ContentStoriesDetails.Stories.Interaction,
+        author: ContentStoriesDetails.Stories.Author
+    ) =
+        buildList {
+            when {
+                !isOwner(author) && template.reportable -> add(
+                    ContentMenuItem(
+                        iconUnify = IconUnify.WARNING,
+                        name = contentcommonR.string.content_common_menu_report,
+                        type = ContentMenuIdentifier.Report
+                    )
+                )
+
+                isOwner(author) && template.deletable -> add(
+                    ContentMenuItem(
+                        iconUnify = IconUnify.DELETE,
+                        name = storiesR.string.stories_delete_story_title,
+                        type = ContentMenuIdentifier.Delete,
+                    )
+                )
+            }
+        }
+
+    private fun buildAuthor(author: ContentStoriesDetails.Stories.Author): StoryAuthor {
+        val type = AuthorType.convertValue(author.type)
+
+        return if (type == AuthorType.User) {
+            StoryAuthor.Buyer(
+                userName = author.name,
+                userId = author.id,
+                avatarUrl = author.thumbnailURL,
+            )
+        } else {
+            StoryAuthor.Shop(
+                shopName = author.name,
+                shopId = author.id,
+                avatarUrl = author.thumbnailURL,
+                badgeUrl = author.badgeURL
+            )
+        }
+    }
 }

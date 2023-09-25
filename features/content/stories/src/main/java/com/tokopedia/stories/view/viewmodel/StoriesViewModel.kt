@@ -3,6 +3,7 @@ package com.tokopedia.stories.view.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesRequestModel
@@ -21,6 +22,8 @@ import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.getRandomNumber
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.stories.view.viewmodel.state.BottomSheetStatusDefault
+import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -43,6 +46,8 @@ class StoriesViewModel @AssistedInject constructor(
     interface Factory  {
         fun create(args: StoriesArgsModel, handle: SavedStateHandle) : StoriesViewModel
     }
+
+    private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
 
     private val _storiesMainData = MutableStateFlow(StoriesUiModel())
 
@@ -114,6 +119,16 @@ class StoriesViewModel @AssistedInject constructor(
             }
         }
 
+    val storyId : String
+        get() {
+            val currentItem = mGroupItem.detail.detailItems
+            return currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.id.orEmpty()
+        }
+
+    private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
+    val uiEvent: Flow<StoriesUiEvent>
+        get() = _uiEvent
+
     private val mResetValue: Int
         get() = _resetValue.value
 
@@ -122,11 +137,11 @@ class StoriesViewModel @AssistedInject constructor(
     val storiesState: Flow<StoriesUiState>
         get() = combine(
             _storiesMainData,
-            MutableStateFlow(Any())
-        ) { storiesMainData, product ->
+            bottomSheetStatus,
+        ) { storiesMainData, sheetStatus ->
             StoriesUiState(
                 storiesMainData = storiesMainData,
-                product = product,
+                bottomSheetStatus = sheetStatus,
             )
         }
 
@@ -140,8 +155,13 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
+            StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
+            is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
+            StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
+            StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
+            else -> {}
         }
     }
 
@@ -289,6 +309,51 @@ class StoriesViewModel @AssistedInject constructor(
                 }
             )
         }
+    }
+
+    private fun handleOpenKebab() {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.OpenKebab)
+            bottomSheetStatus.update {
+                bottomSheet -> bottomSheet.mapValues {
+                    if (it.key == BottomSheetType.Kebab)
+                        true
+                    else it.value
+                }
+            }
+        }
+    }
+
+    private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
+        bottomSheetStatus.update { bottomSheet -> bottomSheet.mapValues {
+            if (it.key == bottomSheetType)
+                false
+            else it.value
+        } }
+    }
+
+    private fun handleShowDialogDelete() {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.ShowDeleteDialog)
+        }
+    }
+
+    private fun handleDeleteStory() {
+        viewModelScope.launchCatchError(block = {
+            val response = repository.deleteStory(storyId)
+            if (response) {
+                //Remove story~
+                val newList = _storiesMainData.value.groupItems.map {
+                    if (it == mGroupItem) it.copy(detail = it.detail.copy(detailItems = it.detail.detailItems.filterNot { item -> item.id == storyId }))
+                    else it
+                }
+                _storiesMainData.update {
+                        group -> group.copy(groupItems = newList)
+                }
+            } else {
+                _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
+            }
+        }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
     }
 
     private fun updateDetailData(

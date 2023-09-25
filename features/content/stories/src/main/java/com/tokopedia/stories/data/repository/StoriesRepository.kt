@@ -13,4 +13,5 @@ interface StoriesRepository {
 
     suspend fun setStoriesTrackActivity(data: StoriesTrackActivityRequestModel): Boolean
 
+    suspend fun deleteStory(storyId: String) : Boolean
 }

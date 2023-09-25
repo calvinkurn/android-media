@@ -1,8 +1,8 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.content.common.report_content.model.FeedContentData
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -79,10 +79,10 @@ object MapperTopAdsXFeed {
             media = mediaList.orEmpty(),
             followers = followers,
             menuItems = listOf(
-                FeedMenuItem(
+                ContentMenuItem(
                     iconUnify = IconUnify.VISIBILITY,
                     name = R.string.feed_watch_mode,
-                    type = FeedMenuIdentifier.WatchMode,
+                    type = ContentMenuIdentifier.WatchMode,
                     contentData = FeedContentData(
                         data?.cpm?.cpmShop?.slogan.orEmpty(),
                         data?.id.orEmpty(),

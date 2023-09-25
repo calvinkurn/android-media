@@ -38,8 +38,8 @@ import com.tokopedia.content.common.navigation.people.UserProfileActivityResult
 import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.Router
@@ -506,7 +506,7 @@ class FeedFragment :
 
     override fun onMenuClicked(
         id: String,
-        menuItems: List<FeedMenuItem>,
+        menuItems: List<ContentMenuItem>,
         trackerModel: FeedTrackerDataModel
     ) {
         currentTrackerData = trackerModel
@@ -526,14 +526,13 @@ class FeedFragment :
             }
         }
     }
-
     override fun onProfileClicked(appLink: String, type: AuthorType) {
         goToProfilePage(appLink, type.isShop)
     }
 
-    override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
-        when (feedMenuItem.type) {
-            FeedMenuIdentifier.Report -> {
+    override fun onMenuItemClick(contentMenuItem: ContentMenuItem, contentId: String) {
+        when (contentMenuItem.type) {
+            ContentMenuIdentifier.Report -> {
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
                 } else {
@@ -559,7 +558,7 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.WatchMode -> {
+            ContentMenuIdentifier.WatchMode -> {
                 val position = getCurrentPosition()
                 if (position >= ZERO) {
                     adapter.showClearView(position)
@@ -570,22 +569,22 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.Edit -> {
+            ContentMenuIdentifier.Edit -> {
                 val intent = RouteManager.getIntent(context, INTERNAL_AFFILIATE_CREATE_POST_V2)
                 intent.putExtra(PARAM_AUTHOR_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
                 intent.putExtra(
                     CreatePostViewModel.TAG,
                     CreatePostViewModel().apply {
-                        caption = feedMenuItem.contentData?.caption.orEmpty()
-                        postId = feedMenuItem.contentData?.postId.orEmpty()
-                        editAuthorId = feedMenuItem.contentData?.authorId.orEmpty()
+                        caption = contentMenuItem.contentData?.caption.orEmpty()
+                        postId = contentMenuItem.contentData?.postId.orEmpty()
+                        editAuthorId = contentMenuItem.contentData?.authorId.orEmpty()
                     }
                 )
 
                 startActivity(intent)
             }
 
-            FeedMenuIdentifier.Delete -> {
+            ContentMenuIdentifier.Delete -> {
                 context?.let {
                     DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                         setTitle(getString(feedR.string.dialog_delete_post_title))
@@ -593,8 +592,8 @@ class FeedFragment :
                         setPrimaryCTAText(getString(feedR.string.feed_delete))
                         setPrimaryCTAClickListener {
                             feedPostViewModel.doDeletePost(
-                                feedMenuItem.contentData?.postId.orEmpty(),
-                                feedMenuItem.contentData?.rowNumber.orZero()
+                                contentMenuItem.contentData?.postId.orEmpty(),
+                                contentMenuItem.contentData?.rowNumber.orZero()
                             )
                             dismiss()
                         }
@@ -607,9 +606,9 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.SeePerformance,
-            FeedMenuIdentifier.LearnVideoInsight -> {
-                RouteManager.route(requireContext(), feedMenuItem.appLink)
+            ContentMenuIdentifier.SeePerformance,
+            ContentMenuIdentifier.LearnVideoInsight -> {
+                RouteManager.route(requireContext(), contentMenuItem.appLink)
             }
         }
     }

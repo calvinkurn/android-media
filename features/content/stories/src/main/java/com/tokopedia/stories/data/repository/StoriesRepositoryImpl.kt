@@ -7,6 +7,8 @@ import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
 import com.tokopedia.stories.domain.usecase.StoriesDetailsUseCase
 import com.tokopedia.stories.domain.usecase.StoriesGroupsUseCase
 import com.tokopedia.stories.domain.usecase.StoriesTrackActivityUseCase
+import com.tokopedia.stories.uimodel.StoryActionType
+import com.tokopedia.stories.usecase.UpdateStoryUseCase
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesUiModel
 import kotlinx.coroutines.async
@@ -18,6 +20,7 @@ class StoriesRepositoryImpl @Inject constructor(
     private val storiesGroupsUseCase: StoriesGroupsUseCase,
     private val storiesDetailsUseCase: StoriesDetailsUseCase,
     private val storiesTrackActivityUseCase: StoriesTrackActivityUseCase,
+    private val updateStoryUseCase: UpdateStoryUseCase,
     private val mapper: StoriesMapperImpl,
 ) : StoriesRepository {
 
@@ -41,5 +44,11 @@ class StoriesRepositoryImpl @Inject constructor(
             val trackActivityRequest = storiesTrackActivityUseCase(data)
             return@withContext trackActivityRequest.data.isSuccess
         }
+
+    override suspend fun deleteStory(storyId: String) : Boolean = withContext(dispatchers.io) {
+        val param = UpdateStoryUseCase.Param(storyId, StoryActionType.Delete)
+        val response = updateStoryUseCase(param)
+        response.storyId.storyId == storyId
+    }
 
 }

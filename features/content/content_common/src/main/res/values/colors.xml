@@ -12,4 +12,7 @@
 
     <!--User Report-->
     <color name="content_dms_user_report_sheet_divider">#E5E7E9</color>
+
+    <!--Partner Info-->
+    <color name="content_dms_partner_icon_placeholder">#AD31353B</color>
 </resources>
