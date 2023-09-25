@@ -1,6 +1,8 @@
 package com.tokopedia.stories.view.activity
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
@@ -48,7 +50,17 @@ class StoriesActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: StoriesViewModelFactory.Creator
 
-    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory.create( this, shopId) }
+    private val path get() =  intent.data?.pathSegments
+    private val storiesArgs  get() =  StoriesArgsModel(
+        authorId = path?.last().orEmpty(),
+        authorType = path?.first().orEmpty(),
+        source = intent.data?.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
+            StoriesSource.SHOP_ENTRY_POINT.value
+        },
+        sourceId = intent.data?.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
+    )
+
+    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory.create( this, storiesArgs) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -80,15 +92,6 @@ class StoriesActivity : BaseActivity() {
             return
         }
 
-        val path = data.pathSegments
-        val storiesArgs = StoriesArgsModel(
-            authorId = path.last().orEmpty(),
-            authorType = path.first().orEmpty(),
-            source = data.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
-                StoriesSource.SHOP_ENTRY_POINT.value
-            },
-            sourceId = data.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
-        )
         bundle = Bundle().apply {
             putParcelable(KEY_ARGS, storiesArgs)
         }
