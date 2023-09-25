@@ -26,17 +26,17 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * Created by irpan on 30/08/23.
  */
 class SomBottomSheetConfirmShippingAdapter : RecyclerView.Adapter<SomBottomSheetConfirmShippingAdapter.ViewHolder>() {
-    private var list: List<ConfirmShippingNotes> = listOf()
+    private var list: MutableList<ConfirmShippingNotes> = mutableListOf()
 
     companion object {
         private const val ADDITIONAL_INDEX_POSITION_CLICKABLE_START = 2
         private const val ADDITIONAL_INDEX_POSITION_CLICKABLE_END = 1
     }
 
-
     @SuppressLint("NotifyDataSetChanged")
-    fun updateListInfo(list: List<ConfirmShippingNotes>) {
-        this.list = list
+    fun updateListInfo(listNotes: List<ConfirmShippingNotes>) {
+        list.clear()
+        list = listNotes.toMutableList()
         notifyDataSetChanged()
     }
 
@@ -78,7 +78,6 @@ class SomBottomSheetConfirmShippingAdapter : RecyclerView.Adapter<SomBottomSheet
         }
         var spannableString = SpannableString(notes.noteText)
 
-
         if (notes.url.isNotEmpty()) {
             val text = "${notes.noteText} ${notes.urlText}"
             spannableString = SpannableString(text)
@@ -88,7 +87,6 @@ class SomBottomSheetConfirmShippingAdapter : RecyclerView.Adapter<SomBottomSheet
             spannableString.setSpan(boldSpan, startSpan, endSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         }
-
         return spannableString
     }
 
