@@ -16,6 +16,7 @@ object DeeplinkMapperUser {
     const val ROLLENCE_GOTO_KYC_MA = "goto_kyc_apps"
     const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
+    const val ROLLENCE_GOTO_LOGIN = "exp_scp_goto_login_sdk"
 
     fun getRegisteredNavigationUser(deeplink: String): String {
         return when {
@@ -111,6 +112,13 @@ object DeeplinkMapperUser {
         return deeplink.replace(
             DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
             ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER+"/")
+    }
+
+    fun isGotoLoginDisabled(): Boolean {
+        return RemoteConfigInstance.getInstance()
+            .abTestPlatform
+            .getString(ROLLENCE_GOTO_LOGIN)
+            .isEmpty()
     }
 
     private fun getAbTestPlatform(): AbTestPlatform =
