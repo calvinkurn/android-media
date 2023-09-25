@@ -801,7 +801,8 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private Boolean isFDLActivated(Context context) {
-        return true;
+        return ((LinkerRouter) context.getApplicationContext()).
+                getBooleanRemoteConfig(LinkerConstants.FIREBASE_KEY_FDL_ENABLE, false);
     }
 
     private String appendQueryParams(String sourceString, String additionalQueryParams){
