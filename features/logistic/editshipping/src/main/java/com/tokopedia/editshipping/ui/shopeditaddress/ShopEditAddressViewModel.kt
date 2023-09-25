@@ -66,9 +66,9 @@ class ShopEditAddressViewModel @Inject constructor(
         }
     }
 
-    fun getDistrictGeocode(latlon: String?) {
+    fun getDistrictGeocode(latlon: String) {
         viewModelScope.launch(onErrorGetDistrictGeocode) {
-            val reverseGeocode = getDistrictGeoCode(GetDistrictGeoCodeParam(latLng = latlon.orEmpty()))
+            val reverseGeocode = getDistrictGeoCode(GetDistrictGeoCodeParam(latLng = latlon))
             _districtGeocode.value = Success(reverseGeocode.keroMapsAutofill)
         }
     }
