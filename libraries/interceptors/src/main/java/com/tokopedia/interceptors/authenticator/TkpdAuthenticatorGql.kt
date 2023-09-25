@@ -4,6 +4,9 @@ import android.app.Application
 import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.scp.auth.GotoSdk
+import com.scp.auth.ScpUtils
+import com.scp.login.core.domain.contracts.listener.LSdkRefreshCompleteListener
 import com.tokopedia.interceptors.forcelogout.ForceLogoutData
 import com.tokopedia.interceptors.forcelogout.ForceLogoutUseCase
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
@@ -32,7 +35,7 @@ class TkpdAuthenticatorGql(
     val networkRouter: NetworkRouter,
     val userSession: UserSessionInterface,
     val refreshTokenUseCaseGql: RefreshTokenGql
-): Authenticator {
+) : Authenticator {
 
     private fun isNeedRefresh() = userSession.isLoggedIn
 
@@ -84,78 +87,101 @@ class TkpdAuthenticatorGql(
     }
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        if(isNeedRefresh()) {
-            val path: String = getRefreshQueryPath(response.request, response)
-            return if(responseCount(response) == 0) {
-                try {
-                    val originalRequest = response.request
-                    val tokenResponse = refreshTokenUseCaseGql.refreshToken(
-                        application.applicationContext,
-                        userSession,
-                        networkRouter
+        if (ScpUtils.isGotoLoginEnabled()) {
+            val refreshSuccess = refreshWithGotoSdk()
+            if (refreshSuccess) {
+                val originalRequest = response.request
+                val newAccessToken = GotoSdk.LSDKINSTANCE?.getAccessToken()
+                val newRefreshToken = GotoSdk.LSDKINSTANCE?.getRefreshToken()
+                if (newAccessToken?.isNotEmpty() == true && newRefreshToken?.isNotEmpty() == true) {
+                    onRefreshTokenSuccess(
+                        accessToken = newAccessToken,
+                        refreshToken = newRefreshToken,
+                        tokenType = "Bearer"
                     )
-                    if (tokenResponse != null) {
-                        if(tokenResponse.errors?.isNotEmpty() == true) {
-                            val forceLogoutInfo = checkForceLogoutInfo()
-                            if(forceLogoutInfo?.isForceLogout == true) {
-                                userSession.logoutSession()
-                                broadcastForceLogoutInfo(forceLogoutInfo)
+                    return updateRequestWithNewToken(originalRequest)
+                }
+            }
+        } else {
+            if (isNeedRefresh()) {
+                val path: String = getRefreshQueryPath(response.request, response)
+                return if (responseCount(response) == 0) {
+                    try {
+                        val originalRequest = response.request
+                        val tokenResponse = refreshTokenUseCaseGql.refreshToken(
+                            application.applicationContext,
+                            userSession,
+                            networkRouter
+                        )
+                        if (tokenResponse != null) {
+                            if (tokenResponse.errors?.isNotEmpty() == true) {
+                                val forceLogoutInfo = checkForceLogoutInfo()
+                                if (forceLogoutInfo?.isForceLogout == true) {
+                                    userSession.logoutSession()
+                                    broadcastForceLogoutInfo(forceLogoutInfo)
+                                } else {
+                                    networkRouter.showForceLogoutTokenDialog("/")
+                                }
+                                return null
+                            } else if (tokenResponse.accessToken?.isEmpty() == true) {
+                                logRefreshTokenEvent(
+                                    ERROR_GQL_ACCESS_TOKEN_EMPTY,
+                                    TYPE_REFRESH_WITH_GQL,
+                                    path,
+                                    trimToken(userSession.accessToken)
+                                )
+                                return refreshWithOldMethod(response)
                             } else {
-                                networkRouter.showForceLogoutTokenDialog("/")
+                                onRefreshTokenSuccess(
+                                    accessToken = tokenResponse.accessToken ?: "",
+                                    refreshToken = tokenResponse.refreshToken ?: "",
+                                    tokenType = tokenResponse.tokenType ?: ""
+                                )
+                                return updateRequestWithNewToken(originalRequest)
                             }
-                            return null
-                        } else if (tokenResponse.accessToken?.isEmpty() == true) {
+                        } else {
                             logRefreshTokenEvent(
-                                ERROR_GQL_ACCESS_TOKEN_EMPTY,
+                                ERROR_GQL_ACCESS_TOKEN_NULL,
                                 TYPE_REFRESH_WITH_GQL,
                                 path,
                                 trimToken(userSession.accessToken)
                             )
                             return refreshWithOldMethod(response)
-                        } else {
-                            onRefreshTokenSuccess(
-                                accessToken = tokenResponse.accessToken ?: "",
-                                refreshToken = tokenResponse.refreshToken ?: "",
-                                tokenType = tokenResponse.tokenType ?: ""
-                            )
-                            return updateRequestWithNewToken(originalRequest)
                         }
-                    } else {
+                    } catch (ex: Exception) {
                         logRefreshTokenEvent(
-                            ERROR_GQL_ACCESS_TOKEN_NULL,
-                            TYPE_REFRESH_WITH_GQL,
+                            formatThrowable(ex),
+                            TYPE_FAILED_AUTHENTICATE,
                             path,
                             trimToken(userSession.accessToken)
                         )
-                        return refreshWithOldMethod(response)
+                        null
                     }
-                } catch (ex: Exception) {
-                    logRefreshTokenEvent(
-                        formatThrowable(ex),
-                        TYPE_FAILED_AUTHENTICATE,
-                        path,
-                        trimToken(userSession.accessToken)
-                    )
-                    null
+                } else {
+                    networkRouter.showForceLogoutTokenDialog("/")
+                    logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
+                    return null
                 }
             } else {
-                networkRouter.showForceLogoutTokenDialog("/")
-                logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                return null
-            }
-        } else {
-            if(responseCount(response)!=0) {
-                logRefreshTokenEvent("", TYPE_RESPONSE_COUNT_NOT_LOGIN, "", "")
-                return null
+                if (responseCount(response) != 0) {
+                    logRefreshTokenEvent("", TYPE_RESPONSE_COUNT_NOT_LOGIN, "", "")
+                    return null
+                }
             }
         }
         return response.request
     }
 
+    private fun refreshWithGotoSdk(): Boolean {
+        return GotoSdk.LSDKINSTANCE?.refreshToken(object : LSdkRefreshCompleteListener {
+            override fun onRefreshCompleted(accessToken: String?) {}
+        }) ?: false
+    }
+
     private fun refreshWithOldMethod(response: Response): Request? {
         return try {
             val newToken = getTokenOld(response)
-            if(newToken.isNotEmpty()) {
+            if (newToken.isNotEmpty()) {
                 // to check how many users success after fallback from gql
                 logRefreshTokenEvent("", TYPE_SUCCESS_REFRESH_TOKEN_REST, "", accessToken = trimToken(newToken))
                 networkRouter.doRelogin(newToken)
@@ -163,7 +189,7 @@ class TkpdAuthenticatorGql(
             } else {
                 null
             }
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             logRefreshTokenEvent(formatThrowable(e), TYPE_RETRY_REFRESH_TOKEN_REST, "", "")
             null
         }
@@ -198,7 +224,7 @@ class TkpdAuthenticatorGql(
     }
 
     private fun trimToken(accessToken: String): String {
-        if(accessToken.isNotEmpty() && accessToken.length >= TOKEN_MIN_LENGTH) {
+        if (accessToken.isNotEmpty() && accessToken.length >= TOKEN_MIN_LENGTH) {
             return accessToken.takeLast(TOKEN_MIN_LENGTH)
         }
         return accessToken
@@ -220,7 +246,7 @@ class TkpdAuthenticatorGql(
         val isContainsBearer = request.header(AUTHORIZATION)?.contains(BEARER)
 
         newRequest.header(HEADER_ACCOUNTS_AUTHORIZATION, "$HEADER_PARAM_BEARER $freshAccessToken")
-        if(isContainsBearer == true){
+        if (isContainsBearer == true) {
             newRequest.header(HEADER_PARAM_AUTHORIZATION, "$HEADER_PARAM_BEARER $freshAccessToken")
         }
         return newRequest.build()
@@ -232,7 +258,7 @@ class TkpdAuthenticatorGql(
         messageMap["is_gql"] = "true"
         messageMap["path"] = path
 
-        if(error.isNotEmpty()) {
+        if (error.isNotEmpty()) {
             messageMap["error"] = error
         }
 

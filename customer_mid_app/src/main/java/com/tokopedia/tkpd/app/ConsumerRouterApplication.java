@@ -146,6 +146,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initIris();
         performLibraryInitialisation();
         initResourceDownloadManager();
+        initGotoSDK();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {

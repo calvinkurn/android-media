@@ -52,6 +52,7 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
+                        println("sdkTrack:view: $eventName, $params")
                     }
 
                     override fun trackError(
@@ -65,6 +66,7 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: MutableMap<String, Any?>
                     ) {
+                        println("sdkTrack:event: $eventName, $params")
                     }
                 }
             )
@@ -112,17 +114,22 @@ object GotoSdk {
 
 class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
+        val uniqueId = FingerprintModelGenerator.getFCMId(context)
+        println("sdkTrack:unique_id: $uniqueId")
         return LSdkAppConfig(
-            environment = LSdkEnvironment.INTEGRATION,
+            environment = LSdkEnvironment.DEV,
             isLogsEnabled = false,
             appLocale = "ID",
             userLang = "id",
             userType = "toko_user",
-            uniqueId = FingerprintModelGenerator.getFCMId(context)
+            uniqueId = uniqueId,
         )
     }
 
     override fun getAuthConfigs(): LSdkAuthConfig {
         return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g", gotoPinclientID = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g")
     }
+
+
 }
+

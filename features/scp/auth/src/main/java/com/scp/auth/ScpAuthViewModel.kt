@@ -52,7 +52,7 @@ class ScpAuthViewModel @Inject constructor(
                 clientId = "tokopedia:consumer:android",
                 clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g",
                 deviceId = DeviceInfoImpl(context).getDeviceID(),
-                environment = Environment.Integration
+                environment = Environment.Dev
             )
             val ssoBridge = SSOHostBridge.getSsoHostBridge()
             ssoBridge.initBridge(context, ssoHostData)

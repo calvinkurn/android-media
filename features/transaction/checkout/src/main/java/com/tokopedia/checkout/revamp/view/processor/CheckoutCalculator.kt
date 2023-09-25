@@ -237,8 +237,8 @@ class CheckoutCalculator @Inject constructor(
         shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
         shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice
         shipmentCost.tradeInPrice = tradeInPrice
-        shipmentCost.totalAddOnPrice = totalAddOnGiftingPrice
-        shipmentCost.hasAddOn = hasAddOnSelected
+        shipmentCost = shipmentCost.copy(totalAddOnPrice = totalAddOnGiftingPrice)
+        shipmentCost = shipmentCost.copy(hasAddOn = hasAddOnSelected)
         shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
         var upsellCost: CheckoutCrossSellModel? = null
         val upsellModel = listData.upsell()
