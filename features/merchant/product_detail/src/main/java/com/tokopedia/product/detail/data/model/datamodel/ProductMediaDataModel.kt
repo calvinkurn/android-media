@@ -21,7 +21,7 @@ data class ProductMediaDataModel(
     var recommendation: ProductMediaRecomData = ProductMediaRecomData()
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
-        isFinishedLoading = { listOfMedia.isNotEmpty() },
+        isFinishedLoading = { false },
         customBlocksName = "ProductMediaDataModel"
     ) {
     companion object {

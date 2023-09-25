@@ -22,7 +22,7 @@ data class ProductSingleVariantDataModel(
     var title: String = ""
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
-        isFinishedLoading = { variantLevelOne != null },
+        isFinishedLoading = { false },
         customBlocksName = "ProductSingleVariantDataModel"
     ) {
 

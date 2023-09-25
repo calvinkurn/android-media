@@ -17,7 +17,7 @@ data class ProductMiniSocialProofDataModel(
     var items: List<SocialProofUiModel> = emptyList()
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
-        isFinishedLoading = { items.isNotEmpty() },
+        isFinishedLoading = { false },
         customBlocksName = "ProductMiniSocialProofDataModel"
     ) {
 

@@ -13,7 +13,7 @@ data class ProductMerchantVoucherSummaryDataModel(
     var uiModel: UiModel = UiModel()
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
-        isFinishedLoading = { uiModel.isShown },
+        isFinishedLoading = { false },
         customBlocksName = "ProductMerchantVoucherSummaryDataModel"
     ) {
 
