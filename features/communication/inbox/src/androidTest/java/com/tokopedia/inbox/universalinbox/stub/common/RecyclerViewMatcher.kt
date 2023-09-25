@@ -33,7 +33,7 @@ fun atPositionCheckInstanceOf(
 private fun getItem(view: View, position: Int): Any {
     val recyclerView: RecyclerView = view as RecyclerView
     val adapter: UniversalInboxAdapter = recyclerView.adapter as UniversalInboxAdapter
-    return adapter.getItem(position)
+    return adapter.getInboxItem(position)
 }
 
 fun withTotalItem(expectedCount: Int): BoundedMatcher<View, RecyclerView> {
