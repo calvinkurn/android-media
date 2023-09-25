@@ -338,13 +338,13 @@
 
 
     <!-- SOM BottomSheet Drop Off-->
-    <string name="som_dropoff_template_text_1">Capai min. jumlah pesanan pickup dalam sebulan untuk bisa pakai layanan pickup di bulan berikutnya (khusus kurir tertentu). </string>
-    <string name="som_dropoff_template_text_2">Cek lokasi gerai drop off paket terdekat dari tokomu. </string>
-    <string name="som_dropoff_template_text_3">Cetak label pengiriman atau tulis kode booking pada paket dan anterin paket ke gerai. Konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan. </string>
-    <string name="som_dropoff_template_text_4">Cetak label pengiriman atau tulis kode booking pada paket. </string>
-    <string name="som_dropoff_template_text_5">Cukup anterin langsung paket ke gerai terdekat tanpa perlu bayar ongkir ke kurir. </string>
-    <string name="som_dropoff_template_text_6">Tidak perlu masukin resi manual karena akan otomatis update di sistem. </string>
-    <string name="som_dropoff_template_text_7">Konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan ke kurir. </string>
+    <string name="som_dropoff_template_text_minimal_delivery">Capai min. jumlah pesanan pickup dalam sebulan untuk bisa pakai layanan pickup di bulan berikutnya (khusus kurir tertentu). </string>
+    <string name="som_dropoff_template_text_cek_gerai">Cek lokasi gerai drop off paket terdekat dari tokomu. </string>
+    <string name="som_dropoff_template_text_print_label_and_delivery">Cetak label pengiriman atau tulis kode booking pada paket dan anterin paket ke gerai. Konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan. </string>
+    <string name="som_dropoff_template_text_print_label_only">Cetak label pengiriman atau tulis kode booking pada paket. </string>
+    <string name="som_dropoff_template_text_no_cost_delivery">Cukup anterin langsung paket ke gerai terdekat tanpa perlu bayar ongkir ke kurir. </string>
+    <string name="som_dropoff_template_text_no_manual_input_resi">Tidak perlu masukin resi manual karena akan otomatis update di sistem. </string>
+    <string name="som_dropoff_template_text_auto_confirm">Konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan ke kurir. </string>
 
 
 </resources>

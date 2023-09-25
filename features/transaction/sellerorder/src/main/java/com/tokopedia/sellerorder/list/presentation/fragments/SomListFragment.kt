@@ -662,7 +662,7 @@ open class SomListFragment :
     override fun onConfirmShippingAutoButtonClicked(popUp: PopUp?) {
         popUp?.apply {
             if (!popUp.template?.code.isNullOrBlank()) {
-                SomConfirmShippingBottomSheet.instance(context, view, popUp)
+                SomConfirmShippingBottomSheet.show(context, view, popUp)
             }
         }
     }

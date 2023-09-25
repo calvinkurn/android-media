@@ -36,7 +36,8 @@ class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomShe
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bottomsheet_confirmshipping_item, parent, false))
+        val inflater = LayoutInflater.from(parent.context)
+        return ViewHolder(BottomsheetConfirmshippingItemBinding.inflate(inflater, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -89,7 +90,7 @@ class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomShe
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$url")
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(binding: BottomsheetConfirmshippingItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val binding by viewBinding<BottomsheetConfirmshippingItemBinding>()
     }
 }
