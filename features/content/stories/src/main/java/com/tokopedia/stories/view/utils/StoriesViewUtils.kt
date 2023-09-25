@@ -10,16 +10,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.Toaster
 import kotlin.math.atan2
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 internal fun ImageView.loadImage(url: String, listener: ImageHandler.ImageLoaderStateListener? = null){
     Glide.with(context)
         .load(url)
+        .placeholder(unifycomponentsR.drawable.imagestate_placeholder)
         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
         .listener(object : RequestListener<Drawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -32,6 +36,7 @@ internal fun ImageView.loadImage(url: String, listener: ImageHandler.ImageLoader
                 return false
             }
         })
+        .apply(RequestOptions().transform(RoundedCorners(20)))
         .into(this)
 }
 
@@ -104,5 +109,10 @@ internal fun View.showToaster(
 
 
 internal const val SHOP_ID_INDEX_APP_LINK = 1
+internal const val KEY_CONFIG_ENABLE_STORIES_ROOM = "android_enable_content_stories_room"
+internal const val KEY_ARGS = "shop_id"
+internal const val ARGS_SOURCE = "source"
+internal const val ARGS_SOURCE_ID = "source_id"
+internal const val STORY_GROUP_ID = "stories_group_id"
 internal const val TAG_FRAGMENT_STORIES_GROUP = "fragment_stories_group"
 internal const val TAG_FRAGMENT_STORIES_DETAIL = "fragment_stories_detail"
