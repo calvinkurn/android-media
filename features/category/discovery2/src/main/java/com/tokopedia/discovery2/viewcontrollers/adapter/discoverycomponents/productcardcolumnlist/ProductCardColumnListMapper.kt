@@ -37,7 +37,8 @@ object ProductCardColumnListMapper {
                     freeOngkir = ProductCardModel.FreeOngkir(
                         isActive = item.freeOngkir?.isActive.orFalse(),
                         imageUrl = item.freeOngkir?.freeOngkirImageUrl.orEmpty()
-                    )
+                    ),
+                    productListType = ProductCardModel.ProductListType.BEST_SELLER
                 )
             } ?: ProductCardModel()
         }
