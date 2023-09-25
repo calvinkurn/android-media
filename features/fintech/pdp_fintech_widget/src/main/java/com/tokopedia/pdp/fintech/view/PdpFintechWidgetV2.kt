@@ -37,6 +37,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.resources.isDarkMode
+import timber.log.Timber
 import javax.inject.Inject
 
 class PdpFintechWidgetV2 @JvmOverloads constructor(
@@ -53,7 +54,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
     private var parentId: String = ""
     private var productPrice: String? = ""
     private var logInStatus = false
-    private lateinit var binding: PdpFintechWidgetV2LayoutBinding
+    private var binding: PdpFintechWidgetV2LayoutBinding? = null
 
     @Inject
     lateinit var pdpWidgetAnalytics: dagger.Lazy<PdpFintechWidgetAnalytics>
@@ -61,7 +62,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private var instanceProductUpdateListner: ProductUpdateListner? = null
-    private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
+    private var fintechWidgetViewModel: FintechWidgetViewModel? = null
 
 
     init {
@@ -81,7 +82,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
     }
 
     private fun observeWidgetInfo(parentLifeCycleOwner: LifecycleOwner) {
-        fintechWidgetViewModel.widgetDetailV3LiveData.observe(parentLifeCycleOwner) {
+        fintechWidgetViewModel?.widgetDetailV3LiveData?.observe(parentLifeCycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessData(it)
@@ -137,6 +138,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
             }
         } catch (e: Exception) {
             instanceProductUpdateListner?.removeWidget()
+            Timber.e(e)
         } finally {
             this.logInStatus = loggedIn
         }
@@ -152,7 +154,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
         this.parentId = parentId
         this.instanceProductUpdateListner = fintechWidgetViewHolder
         categoryId?.let {
-            fintechWidgetViewModel.getWidgetV3Data(
+            fintechWidgetViewModel?.getWidgetV3Data(
                 it,
                 idToPriceUrlMap,
                 shopID,
@@ -178,24 +180,24 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
             instanceProductUpdateListner?.removeWidget()
         }
 
-//        instanceProductUpdateListner?.showWidget()
-//        priceToMessages["400000.0"]?.let {
-//            instanceProductUpdateListner?.showWidget()
-//            setMessagesWidget(it.messages)
-//            setClickListener(it)
-//            setIcon(it)
-////            binding.sliderIcon.setImageUrl(it.iconUrlLight)
-//        }
+        instanceProductUpdateListner?.showWidget()
+        priceToMessages["400000.0"]?.let {
+            instanceProductUpdateListner?.showWidget()
+            setMessagesWidget(it.messages)
+            setClickListener(it)
+            setIcon(it)
+//            binding.sliderIcon.setImageUrl(it.iconUrlLight)
+        }
     }
 
     private fun setIcon(model: WidgetDetailV3Item) {
-        binding.sliderIcon.setImageUrl(
+        binding?.sliderIcon?.setImageUrl(
             if (context.isDarkMode()) model.iconUrlDark else model.iconUrlLight
         )
     }
 
     private fun setClickListener(model: WidgetDetailV3Item) {
-        binding.sliderContainer.setOnClickListener {
+        binding?.sliderContainer?.setOnClickListener {
             instanceProductUpdateListner?.fintechChipClicked(
                 FintechRedirectionWidgetDataClass(gatewayId = "0"),
                 model.androidUrl
@@ -211,7 +213,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
         val secondTextView = Typography(context).apply {
             text = Html.fromHtml(messages.getOrNull(Int.ONE))
         }
-        binding.sliderView.setItems(arrayListOf(firstTextView, secondTextView))
+        binding?.sliderView?.setItems(arrayListOf(firstTextView, secondTextView))
     }
 
     fun updateIdToPriceMap(
