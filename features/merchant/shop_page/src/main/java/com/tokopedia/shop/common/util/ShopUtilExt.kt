@@ -2,11 +2,14 @@ package com.tokopedia.shop.common.util
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.shop.R
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 
 object ShopUtilExt {
 
@@ -49,6 +52,13 @@ object ShopUtilExt {
     }
 
     fun Snackbar.setAnchorViewToShopHeaderBottomViewContainer(bottomViewContainer: View?): Snackbar {
+        //callback to hide floating button when snackbar is shown
+        this.addCallback(object : Snackbar.Callback() {
+            override fun onShown(sb: Snackbar?) {
+                (bottomViewContainer?.parent as? ViewGroup)?.findViewById<FloatingButtonUnify>(R.id.button_scroll_to_top)?.hide()
+                this@setAnchorViewToShopHeaderBottomViewContainer.removeCallback(this)
+            }
+        })
         bottomViewContainer?.let {
             anchorView = it
         }
