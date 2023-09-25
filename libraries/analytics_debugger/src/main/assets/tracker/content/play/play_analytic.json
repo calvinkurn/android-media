@@ -138,10 +138,14 @@
     },
     {
       "eventAction": "click buy in bottom sheet with varian",
-      "event": "clickGroupChat",
+      "event": "clickContent",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*"
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
+      "sessionIris": ".*",
+      "trackerId": "46422",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*"
     },
     {
       "eventAction": "click buy in bottom sheet",
@@ -177,10 +181,14 @@
     },
     {
       "eventAction": "click atc in bottom sheet with varian",
-      "event": "clickGroupChat",
+      "event": "clickContent",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*"
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
+      "sessionIris": ".*",
+      "trackerId": "46421",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*"
     },
     {
       "eventAction": "click atc in bottom sheet",
