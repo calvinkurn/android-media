@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class MultiComponentTabViewHolder(
     itemView: View,
-    private val listener: WidgetListener
+    private val listener: WidgetListener,
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var viewBinding: ShcMultiComponentViewBinding? by viewBinding()
@@ -24,15 +24,18 @@ class MultiComponentTabViewHolder(
         MultiComponentTabAdapter(WidgetAdapterFactoryImpl(listener))
     }
 
-    fun bind(tab: MultiComponentTab) {
+    fun bind(tab: MultiComponentTab, widgetType: String) {
         if (tab.isLoaded) {
             if (tab.isError) {
-                viewBinding?.txtShcMultiComponentView?.show()
+                viewBinding?.shcMultiComponentErrorState?.show()
+                viewBinding?.shcMultiComponentErrorState?.setOnReloadClicked {
+                    listener.onReloadWidgetMultiComponent(tab, widgetType)
+                }
                 viewBinding?.rvShcMultiComponentView?.gone()
                 viewBinding?.loaderShcMultiComponentView?.gone()
             } else {
                 viewBinding?.loaderShcMultiComponentView?.gone()
-                viewBinding?.txtShcMultiComponentView?.gone()
+                viewBinding?.shcMultiComponentErrorState?.gone()
                 viewBinding?.rvShcMultiComponentView?.gone()
                 viewBinding?.rvShcMultiComponentView?.run {
                     visible()

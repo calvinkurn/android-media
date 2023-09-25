@@ -15,6 +15,12 @@ class MultiComponentAdapter(
 ) : RecyclerView.Adapter<MultiComponentTabViewHolder>() {
 
     private val items: MutableList<MultiComponentTab> = mutableListOf()
+    private var widgetType: String = ""
+
+    // For notify multi component widget loading
+    fun setWidgetType(widgetType: String) {
+        this.widgetType = widgetType
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiComponentTabViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -23,7 +29,7 @@ class MultiComponentAdapter(
     }
 
     override fun onBindViewHolder(holder: MultiComponentTabViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], widgetType)
     }
 
     override fun getItemCount(): Int {

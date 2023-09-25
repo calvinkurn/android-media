@@ -8,8 +8,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/shc_large_widget_height">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPieChartTitle"

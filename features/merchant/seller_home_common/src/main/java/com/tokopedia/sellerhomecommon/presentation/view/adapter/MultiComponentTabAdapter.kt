@@ -11,7 +11,6 @@ class MultiComponentTabAdapter(
     typeFactory,
     listOf(LoadingMultiComponentUiModel)
 ) {
-
     fun setData(data: List<BaseWidgetUiModel<*>?>) {
         setVisitables(data)
     }

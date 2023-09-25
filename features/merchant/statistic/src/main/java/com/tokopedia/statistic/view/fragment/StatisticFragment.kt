@@ -350,6 +350,21 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         getWidgetsData(widgets)
     }
 
+    override fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String) {
+        //Show loading
+        adapter.data.forEach {
+            val isTheSameWidget = it.widgetType == widgetType
+            if (isTheSameWidget) {
+                it.showLoadingState = true
+                notifyWidgetChanged(it)
+            }
+        }
+
+        // Hit appropriate widget, regardless its loaded or not
+        // Because it will show error widget
+        mViewModel.getMultiComponentDetailTabWidgetData(tab)
+    }
+
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         StatisticTracker.sendClickCardEvent(model)
     }

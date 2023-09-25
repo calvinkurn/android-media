@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
@@ -26,12 +24,10 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentData
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
@@ -341,7 +337,8 @@ class StatisticViewModel @Inject constructor(
                 getMultiComponentDetailData.get().executeOnBackground(tab, dynamicParameter)
             val mapTab = tab.copy(
                 components = result.toMutableList(),
-                isError = result.any { it.data == null })
+                //Error the whole viewpager when one of the widget is error
+                isError = result.any { it.data?.data == null })
             _multiComponentTabsData.postValue(mapTab)
         }, onError = {
             val updatedTab = tab.copy(
@@ -350,19 +347,6 @@ class StatisticViewModel @Inject constructor(
             )
             _multiComponentTabsData.postValue(updatedTab)
         })
-    }
-
-    private suspend fun getComponentData(component: MultiComponentData): List<BaseDataUiModel>? {
-        return when (component.componentType) {
-            // TODO: Get line chart data according to tab values
-            WidgetType.BAR_CHART -> getBarChartData(listOf(component.dataKey))
-            WidgetType.PIE_CHART -> getPieChartData(listOf(component.dataKey))
-            WidgetType.TABLE -> {
-                val dataKeys = getPieChartDataKeys(component)
-                getTableData(dataKeys)
-            }
-            else -> null
-        }
     }
 
     private suspend fun getBarChartData(dataKeys: List<String>): List<BarChartDataUiModel> {
@@ -386,17 +370,5 @@ class StatisticViewModel @Inject constructor(
         getPieChartDataUseCase.get().params =
             GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         return getPieChartDataUseCase.get().executeOnBackground()
-    }
-
-    private fun getPieChartDataKeys(component: MultiComponentData): List<TableAndPostDataKey> {
-        // TODO: get from configuration
-        return listOf(
-            TableAndPostDataKey(
-                component.dataKey,
-                String.EMPTY,
-                0,
-                0
-            )
-        )
     }
 }

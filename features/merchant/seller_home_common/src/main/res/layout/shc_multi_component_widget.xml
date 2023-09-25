@@ -9,6 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <include
+            android:id="@+id/shimmerShcMultiComponent"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            layout="@layout/shc_multi_component_shimmer" />
+
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tabsShcMultiComponent"
             android:layout_width="match_parent"

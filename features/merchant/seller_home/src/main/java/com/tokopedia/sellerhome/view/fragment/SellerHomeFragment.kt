@@ -936,6 +936,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         // No - op
     }
 
+    override fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String) {
+        // No - op
+    }
+
     override fun getRvViewPool(): RecycledViewPool? {
         return null
     }

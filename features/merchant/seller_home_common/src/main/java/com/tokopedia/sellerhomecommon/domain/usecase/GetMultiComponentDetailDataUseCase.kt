@@ -41,14 +41,16 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
                         is PieChartWidgetUiModel -> {
                             return@async it.copy(
                                 data = it.data.copy(
-                                    data = componentData as? PieChartDataUiModel
+                                    data = componentData as? PieChartDataUiModel,
+                                    isShowEmpty = componentData?.showWidget == false
                                 )
                             )
                         }
                         is MultiLineGraphWidgetUiModel -> {
                             return@async it.copy(
                                 data = it.data.copy(
-                                    data = componentData as? MultiLineGraphDataUiModel
+                                    data = componentData as? MultiLineGraphDataUiModel,
+                                    isShowEmpty = componentData?.showWidget == false
                                 )
                             )
                         }
@@ -90,9 +92,7 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
                     GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 getPieChartDataUseCase.get().executeOnBackground().firstOrNull()
             } catch (e: Throwable) {
-                PieChartDataUiModel::class.java.newInstance().apply {
-                    error = e.message ?: ""
-                }
+                null
             }
         }
     }
@@ -113,9 +113,7 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
                 )
                 useCase.executeOnBackground().firstOrNull()
             } catch (e: Throwable) {
-                MultiLineGraphDataUiModel::class.java.newInstance().apply {
-                    error = e.message ?: ""
-                }
+                null
             }
         }
     }

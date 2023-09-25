@@ -25,7 +25,8 @@ class MultiComponentTabDiffer(
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldTab[oldItemPosition].components.hashCode() ==
                 newTab[newItemPosition].components.hashCode() &&
-                oldTab[oldItemPosition].isLoaded == newTab[newItemPosition].isLoaded
+                oldTab[oldItemPosition].isLoaded == newTab[newItemPosition].isLoaded &&
+                oldTab[oldItemPosition].isError == newTab[newItemPosition].isError
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
