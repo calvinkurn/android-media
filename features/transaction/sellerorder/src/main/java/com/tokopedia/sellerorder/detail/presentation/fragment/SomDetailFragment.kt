@@ -143,6 +143,7 @@ import java.net.SocketTimeoutException
 import java.net.URLDecoder
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**x
  * Created by fwidjaja on 2019-09-30.
@@ -1321,12 +1322,11 @@ open class SomDetailFragment :
     }
 
     private fun setupBackgroundColor() {
-        activity?.window?.decorView?.setBackgroundColor(
-            ContextCompat.getColor(
-                requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
+        context?.let { context ->
+            activity?.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Background)
             )
-        )
+        }
     }
 
     private fun setupToolbar() {
