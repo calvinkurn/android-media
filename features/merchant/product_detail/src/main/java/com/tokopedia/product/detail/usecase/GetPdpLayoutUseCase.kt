@@ -465,7 +465,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
         get() = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
 
     private val cacheAge
-        get() = remoteConfig.getLong(RemoteConfigKey.ENABLE_PDP_P1_CACHE_AGE).toInt()
+        get() = remoteConfig.getLong(
+            RemoteConfigKey.ENABLE_PDP_P1_CACHE_AGE,
+            CacheStrategyUtil.EXPIRY_TIME_MULTIPLIER.toLong()
+        ).toInt()
 
     var requestParams = RequestParams.EMPTY
 
@@ -535,10 +538,12 @@ open class GetPdpLayoutUseCase @Inject constructor(
         if (!error.isNullOrEmpty()) {
             val error = MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
             onError?.invoke(error)
+            return
         } else if (data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
             val error = TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
             onError?.invoke(error)
+            return
         }
 
         val dataModel = mapIntoModel(data, isCache, cacheFirstThenCloud)
