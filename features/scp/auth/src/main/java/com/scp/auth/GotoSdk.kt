@@ -136,7 +136,7 @@ object GotoSdk {
 class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
         return LSdkAppConfig(
-            environment = LSdkEnvironment.DEV,
+            environment = LSdkEnvironment.INTEGRATION,
             isLogsEnabled = false,
             appLocale = "ID",
             userLang = "id",

@@ -49,8 +49,8 @@ class ScpAuthViewModel @Inject constructor(
     fun updateSsoHostData(context: Context, token: String) {
         viewModelScope.launch {
             val ssoHostData = SSOHostData(
-                clientId = "tokopedia:consumer:app",
-                clientSecret = "qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu",
+                clientId = "tokopedia:consumer:android",
+                clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g",
                 deviceId = DeviceInfoImpl(context).getDeviceID(),
                 environment = Environment.Integration
             )
