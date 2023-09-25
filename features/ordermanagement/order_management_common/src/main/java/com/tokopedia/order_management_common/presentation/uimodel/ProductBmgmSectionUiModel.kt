@@ -35,6 +35,12 @@ data class ProductBmgmSectionUiModel(
         val productNote: String,
         val addOnSummaryUiModel: AddOnSummaryUiModel? = null,
         val isProcessing: Boolean? = null,
-        val button: ActionButtonsUiModel.ActionButton? = null
-    )
+        val button: ActionButtonsUiModel.ActionButton? = null,
+        val insurance: Insurance? = null
+    ) {
+        data class Insurance(
+            val logoUrl: String,
+            val label: String
+        )
+    }
 }

@@ -22,9 +22,11 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="6dp"
+        app:unify_image_corner_radius="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
-        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bmgm_ticker"
