@@ -384,7 +384,7 @@ class StoriesDetailFragment @Inject constructor(
         flStoriesProduct.onTouchEventStories { event ->
             when (event) {
                 TouchEventStories.SWIPE_UP -> {
-                    if (!isEligiblePage) return@onTouchEventStories
+                    if (!isEligiblePage || !viewModel.isProductAvailable) return@onTouchEventStories
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
                 else -> {}

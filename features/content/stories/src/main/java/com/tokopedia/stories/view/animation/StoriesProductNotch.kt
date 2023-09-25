@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
@@ -28,7 +27,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.stories.R
 
 /**
@@ -55,7 +54,7 @@ fun StoriesProductNotch(productCount: String, onClick: () -> Unit) {
             modifier = Modifier
                 .wrapContentSize()
                 .offset(y = y.dp)
-                .background(color = Color(0x80000000), shape = RoundedCornerShape(20.dp))
+                .background(color = colorResource(id = unifyprinciplesR.color.Unify_Static_Black), shape = RoundedCornerShape(20.dp))
                 .padding(4.dp)
                 .clickable { onClick() }
         ) {
@@ -64,7 +63,7 @@ fun StoriesProductNotch(productCount: String, onClick: () -> Unit) {
                 IconUnify.ARROW_UP,
                 MethodChecker.getColor(
                     ctx,
-                    unifyR.color.Unify_Static_White
+                    unifyprinciplesR.color.Unify_Static_White
                 )
             )
             if (iconDrawable != null)
@@ -76,7 +75,7 @@ fun StoriesProductNotch(productCount: String, onClick: () -> Unit) {
             NestTypography(
                 text = ctx.getString(R.string.stories_product_notch, productCount.toString()), textStyle = NestTheme.typography.display2.copy(
                     color = colorResource(
-                        id = unifyR.color.Unify_Static_White
+                        id = unifyprinciplesR.color.Unify_Static_White
                     )
                 )
             )

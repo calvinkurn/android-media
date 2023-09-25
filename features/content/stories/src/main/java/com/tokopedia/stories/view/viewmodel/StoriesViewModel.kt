@@ -381,10 +381,10 @@ class StoriesViewModel @AssistedInject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(authorId, storyId, mGroupItem.groupName)
+            val productList = repository.getStoriesProducts(args.authorId, storyId, mGroupItem.groupName)
             products.update { productList }
         }, onError = {
-            products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
+            products.update { product -> product.copy(resultState = ResultState.Fail(it)) }
         })
     }
 
@@ -394,7 +394,7 @@ class StoriesViewModel @AssistedInject constructor(
                 val response = repository.addToCart(
                     productId = product.id,
                     price = product.finalPrice,
-                    shopId = authorId,
+                    shopId = args.authorId,
                     productName = product.title
                 )
 
