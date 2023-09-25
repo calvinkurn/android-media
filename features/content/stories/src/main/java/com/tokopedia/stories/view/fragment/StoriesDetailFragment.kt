@@ -97,15 +97,6 @@ class StoriesDetailFragment @Inject constructor(
         return TAG_FRAGMENT_STORIES_DETAIL
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
-            when (fragment) {
-                is StoriesThreeDotsBottomSheet -> {}
-            }
-        }
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -205,11 +196,6 @@ class StoriesDetailFragment @Inject constructor(
         ) return
 
         val currentItem = state.detailItems[state.selectedDetailPosition]
-
-        if (state.detailItems.isEmpty()) {
-            // TODO handle error empty data state here
-            return
-        }
 
         storiesDetailsTimer(state)
         renderAuthor(currentItem)
