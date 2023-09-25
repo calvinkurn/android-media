@@ -22,6 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.LoaderUnify

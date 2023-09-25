@@ -25,35 +25,49 @@ class MultiComponentTabViewHolder(
     }
 
     fun bind(tab: MultiComponentTab, widgetType: String) {
-        if (tab.isLoaded) {
-            if (tab.isError) {
-                viewBinding?.shcMultiComponentErrorState?.show()
-                viewBinding?.shcMultiComponentErrorState?.setOnReloadClicked {
-                    listener.onReloadWidgetMultiComponent(tab, widgetType)
-                }
-                viewBinding?.rvShcMultiComponentView?.gone()
-                viewBinding?.loaderShcMultiComponentView?.gone()
-            } else {
-                viewBinding?.loaderShcMultiComponentView?.gone()
-                viewBinding?.shcMultiComponentErrorState?.gone()
-                viewBinding?.rvShcMultiComponentView?.gone()
-                viewBinding?.rvShcMultiComponentView?.run {
-                    visible()
-                    adapter = tabAdapter
-                    context?.let {
-                        layoutManager = LinearLayoutManager(it, RecyclerView.VERTICAL, false)
-                    }
-
-                    setupViewPool(true)
-                    isNestedScrollingEnabled = false
-                }
-
-                tabAdapter.setData(tab.components.map { it.data })
-            }
-        } else {
-            viewBinding?.rvShcMultiComponentView?.gone()
-            viewBinding?.loaderShcMultiComponentView?.visible()
+        if (!tab.isLoaded) {
+            loadingTab()
+            return
         }
+
+        if (tab.isError) {
+            showErrorTab(tab, widgetType)
+        } else {
+            loadSuccess(tab)
+        }
+    }
+
+    private fun loadSuccess(tab: MultiComponentTab) = viewBinding?.run {
+        loaderShcMultiComponentView.gone()
+        shcMultiComponentErrorState.gone()
+
+        rvShcMultiComponentView.run {
+            visible()
+            adapter = tabAdapter
+            context?.let {
+                layoutManager = LinearLayoutManager(it, RecyclerView.VERTICAL, false)
+            }
+
+            setupViewPool(true)
+            isNestedScrollingEnabled = false
+        }
+
+        tabAdapter.setData(tab.components.map { it.data })
+    }
+
+    private fun showErrorTab(tab: MultiComponentTab, widgetType: String) = viewBinding?.run {
+        shcMultiComponentErrorState.setOnReloadClicked {
+            listener.onReloadWidgetMultiComponent(tab, widgetType)
+        }
+        shcMultiComponentErrorState.show()
+        rvShcMultiComponentView.gone()
+        loaderShcMultiComponentView.gone()
+    }
+
+    private fun loadingTab() = viewBinding?.run {
+        rvShcMultiComponentView.gone()
+        shcMultiComponentErrorState.gone()
+        loaderShcMultiComponentView.visible()
     }
 
     // Hanselable purpose
