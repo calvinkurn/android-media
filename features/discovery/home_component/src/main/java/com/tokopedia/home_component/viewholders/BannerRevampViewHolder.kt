@@ -78,7 +78,7 @@ class BannerRevampViewHolder(
                 binding?.bannerIndicator?.setBannerIndicators(banners.size)
                 binding?.bannerIndicator?.setBannerListener(object :
                     BannerIndicatorListener {
-                    override fun onChangePosition(position: Int) {
+                    override fun onChangePosition(index: Int, position: Int) {
                         scrollTo(position)
                     }
 

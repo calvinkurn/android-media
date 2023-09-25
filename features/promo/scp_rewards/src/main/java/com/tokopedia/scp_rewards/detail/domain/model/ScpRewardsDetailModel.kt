@@ -65,15 +65,15 @@ data class Mission(
 data class Task(
     @SerializedName("isCompleted") val isCompleted: Boolean = false,
     @SerializedName("title") val title: String? = null,
-    @SerializedName("progressInfo") val progressInfo: String? = null,
+    @SerializedName("progressInfo") val progressInfo: String? = null
 )
 
 data class MdpSection(
-    @SerializedName("id") val id:  Long? = null,
+    @SerializedName("id") val id: Long? = null,
     @SerializedName("layout") val type: String? = null,
     @SerializedName("medaliSectionTitle") val medaliSectionTitle: MedaliSectionTitle? = null,
     @SerializedName("backgroundColor") val backgroundColor: String? = null,
-    @SerializedName("jsonParameter") val jsonParameter: String? = null,
+    @SerializedName("jsonParameter") val jsonParameter: String? = null
 )
 
 data class MedaliSectionTitle(

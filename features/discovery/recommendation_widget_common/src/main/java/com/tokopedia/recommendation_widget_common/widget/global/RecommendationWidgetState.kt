@@ -62,12 +62,14 @@ data class RecommendationWidgetState(
                 metadata = model.metadata,
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,
+                listener = model.listener,
             )
         } else if (widget.layoutType == TYPE_LIMIT_VERTICAL) {
             RecommendationVerticalModel.from(
                 metadata = model.metadata,
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,
+                listener = model.listener,
             )
         } else {
             RecommendationCarouselModel.from(
@@ -75,6 +77,7 @@ data class RecommendationWidgetState(
                 trackingModel = model.trackingModel,
                 widget = widget,
                 source = model.source,
+                listener = model.listener,
             )
         }
 

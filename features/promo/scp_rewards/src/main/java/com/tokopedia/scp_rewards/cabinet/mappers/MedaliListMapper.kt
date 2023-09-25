@@ -12,7 +12,6 @@ object MedaliListMapper {
 
     fun getMedalList(
         data: ScpRewardsGetUserMedalisResponse?,
-        badgeType: String,
         showConfetti: Boolean = true
     ): List<MedalItem> {
         val medalList = mutableListOf<MedalItem>()
@@ -32,7 +31,6 @@ object MedaliListMapper {
                         appLink = it.cta?.appLink,
                         deepLink = it.cta?.url
                     ),
-                    medalType = badgeType,
                     isPlaceHolder = false
                 )
             )
@@ -55,7 +53,7 @@ object MedaliListMapper {
             description = medalSection?.medaliSectionTitle?.description,
             textColor = medalSection?.medaliSectionTitle?.color,
             medalType = badgeType,
-            medalList = getMedalList(medalResponse, badgeType),
+            medalList = getMedalList(medalResponse),
             bannerData = BannerData(
                 imageUrl = medalResponse?.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.imageURL,
                 appLink = medalResponse?.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.redirectAppLink,
