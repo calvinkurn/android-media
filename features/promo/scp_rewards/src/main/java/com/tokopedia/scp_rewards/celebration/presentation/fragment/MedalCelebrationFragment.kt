@@ -55,6 +55,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @Suppress("UNCHECKED_CAST")
 class MedalCelebrationFragment : BaseDaggerFragment() {
@@ -179,7 +180,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             binding?.apply {
                 val color = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
                 context?.let {
-                    mainView.container.setBackgroundColor(parseColor(color) ?: ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                    mainView.container.setBackgroundColor(parseColor(color) ?: ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN0))
                 }
             }
         }
@@ -370,8 +371,8 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 if (medaliSourceText.isNotEmpty()) {
                     brandTag.text = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceText
                     context?.let {
-                        brandTag.setTextColor(parseColor(medaliSourceFontColor) ?: ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
-                        sponsorCard.setCardBackgroundColor(parseColor(medaliSourceBgColor) ?: ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN1000))
+                        brandTag.setTextColor(parseColor(medaliSourceFontColor) ?: ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN0))
+                        sponsorCard.setCardBackgroundColor(parseColor(medaliSourceBgColor) ?: ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN1000))
                     }
                 } else {
                     hideSponsorCard()
@@ -591,7 +592,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     private fun handleError(scpError: Error) {
         context?.let {
-            val defaultBg = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            val defaultBg = ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN0)
             binding?.mainFlipper?.setBackgroundColor(defaultBg)
         }
         binding?.mainFlipper?.displayedChild = ERROR_STATE
