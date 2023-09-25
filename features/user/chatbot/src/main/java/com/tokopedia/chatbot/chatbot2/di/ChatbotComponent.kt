@@ -5,6 +5,7 @@ import com.tokopedia.chatbot.chatbot2.view.activity.ChatbotOnboardingActivity
 import com.tokopedia.chatbot.chatbot2.view.fragment.ChatBotProvideRatingFragment
 import com.tokopedia.chatbot.chatbot2.view.fragment.ChatbotFragment2
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
+import com.tokopedia.universal_sharing.di.UniversalShareUseCaseModule
 import dagger.Component
 
 /**
@@ -15,7 +16,8 @@ import dagger.Component
     modules = arrayOf(
         ChatbotModule::class,
         ChatViewModelModule::class,
-        MediaUploaderModule::class
+        MediaUploaderModule::class,
+        UniversalShareUseCaseModule::class
     ),
     dependencies = arrayOf(BaseAppComponent::class)
 )
