@@ -49,5 +49,5 @@ sealed interface StoriesUiAction {
 
 
 enum class StoriesProductAction {
-    ATC, Buy;
+    Atc, Buy;
 }

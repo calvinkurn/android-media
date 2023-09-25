@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
@@ -176,7 +175,7 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
         product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
-        handleProductAction(StoriesProductAction.ATC, product)
+        handleProductAction(StoriesProductAction.Atc, product)
     }
 
     override fun onBuyProductButtonClicked(
