@@ -500,7 +500,6 @@ class TokoNowCategoryViewModel @Inject constructor(
             _atcDataTracker.postValue(CategoryAtcTrackerModel(
                 categoryIdL1 = categoryIdL1,
                 index = item.index,
-                warehouseId = getWarehouseId(),
                 headerName = item.headerName,
                 quantity = quantity,
                 product = product,
