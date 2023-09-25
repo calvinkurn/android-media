@@ -26,6 +26,7 @@ import com.scp.verification.core.data.common.services.contract.ScpAnalyticsServi
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 import kotlinx.coroutines.CoroutineScope
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
 object GotoSdk {
@@ -79,7 +80,14 @@ object GotoSdk {
             context = application,
             config = PinConfig(
                 network = PinNetwork(
-                    okHttpClient = OkHttpClient().newBuilder().build()
+                    okHttpClient = OkHttpClient().newBuilder().addInterceptor(
+                        Interceptor { chain ->
+                            val request = chain.request().newBuilder()
+                            request.addHeader("X-User-Locale", "id-ID")
+                            request.addHeader("Accept-Language", "id_ID")
+                            chain.proceed(request.build())
+                        }
+                    ).build()
                 ),
                 appInfo = AppInfo(
                     appType = TOKOPEDIA_APP_TYPE,
@@ -122,14 +130,11 @@ class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
             appLocale = "ID",
             userLang = "id",
             userType = "toko_user",
-            uniqueId = uniqueId,
+            uniqueId = uniqueId
         )
     }
 
     override fun getAuthConfigs(): LSdkAuthConfig {
         return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g", gotoPinclientID = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g")
     }
-
-
 }
-
