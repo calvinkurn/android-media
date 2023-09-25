@@ -186,8 +186,14 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (event.throwable.isNetworkError) setNoInternet(true) { event.onClick }
-                        else setFailed(true) { event.onClick }
+                        if (event.throwable.isNetworkError) {
+                            setNoInternet(true)
+                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
+                        }
+                        else {
+                            setFailed(true)
+                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
+                        }
                         showPageLoading(false)
                     }
 
@@ -526,16 +532,14 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setNoInternet(isShow: Boolean, onClick: () -> Unit = {}) = with(binding.layoutStoriesNoInet) {
+    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
         root.showWithCondition(isShow)
         icCloseLoading.setOnClickListener { activity?.finish() }
-        btnStoriesNoInetRetry.setOnClickListener { onClick() }
     }
 
-    private fun setFailed(isShow: Boolean, onClick: () -> Unit = {}) = with(binding.layoutStoriesFailed) {
+    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
         root.showWithCondition(isShow)
         icCloseLoading.setOnClickListener { activity?.finish() }
-        btnStoriesFailedLoad.setOnClickListener { onClick() }
     }
 
     override fun onDestroyView() {

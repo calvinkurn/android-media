@@ -155,9 +155,11 @@ class StoriesGroupFragment @Inject constructor(
                     is StoriesUiEvent.ErrorGroupPage -> {
                         showPageLoading(false)
                         if (event.throwable.isNetworkError) {
-                            setNoInternet(true) { event.onClick }
+                            setNoInternet(true)
+                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
                         } else {
-                            setFailed(true)  { event.onClick }
+                            setFailed(true)
+                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
                         }
                     }
                     StoriesUiEvent.EmptyGroupPage -> {
@@ -177,7 +179,7 @@ class StoriesGroupFragment @Inject constructor(
     ) {
         if (prevState == state || pagerAdapter.getCurrentData().size == state.groupItems.size) return
 
-        setNoInternet(false){}
+        setNoInternet(false)
         setFailed(false)
 
         pagerAdapter.setStoriesGroup(state)
@@ -198,23 +200,17 @@ class StoriesGroupFragment @Inject constructor(
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
-    private fun setNoInternet(isShow: Boolean, onClick : () -> Unit = {}) = with(binding.layoutStoriesNoInet) {
+    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
         root.showWithCondition(isShow)
         icCloseLoading.setOnClickListener {
             activity?.finish()
-        }
-        btnStoriesNoInetRetry.setOnClickListener {
-            onClick()
         }
     }
 
-    private fun setFailed(isShow: Boolean, onClick : () -> Unit = {}) = with(binding.layoutStoriesFailed) {
+    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
         root.showWithCondition(isShow)
         icCloseLoading.setOnClickListener {
             activity?.finish()
-        }
-        btnStoriesFailedLoad.setOnClickListener {
-            onClick()
         }
     }
 
