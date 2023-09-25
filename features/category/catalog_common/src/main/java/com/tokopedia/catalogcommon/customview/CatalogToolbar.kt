@@ -109,7 +109,6 @@ class CatalogToolbar : Toolbar {
         try {
             title = attributeArray.getString(R.styleable.CatalogToolbar_title) ?: ""
             subTitle = attributeArray.getString(R.styleable.CatalogToolbar_sub_title) ?: ""
-            cartCount = attributeArray.getInt(R.styleable.CatalogToolbar_cart_count, 0)
         } catch (t: Throwable) {
             Timber.d(t.localizedMessage)
         } finally {

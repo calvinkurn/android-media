@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.carousel.CarouselUnify
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/carouselBanner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="V,1:1.5"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
@@ -67,7 +68,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iuBrandPremium"
-        android:layout_width="110dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/tfTitleBannerPremium"
@@ -86,7 +87,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iuBrand"
-        android:layout_width="110dp"
+        android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -108,16 +109,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iuBrand"
         app:typographyType="heading_2" />
-
-    <include
-        android:id="@+id/navigation"
-        layout="@layout/widget_item_banner_hero_navigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

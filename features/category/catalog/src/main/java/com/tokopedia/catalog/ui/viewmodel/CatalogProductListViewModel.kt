@@ -7,18 +7,15 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.domain.GetProductListFromSearchUseCase
 import com.tokopedia.catalog.domain.model.CatalogProductItem
+import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.oldcatalog.model.raw.ProductListResponse
 import com.tokopedia.oldcatalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.oldcatalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
@@ -26,6 +23,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -35,7 +33,8 @@ class CatalogProductListViewModel @Inject constructor(
     private val dynamicFilterUseCase: CatalogDynamicFilterUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val getNotificationUseCase: GetNotificationUseCase,
-    private val getProductListUseCase: GetProductListFromSearchUseCase
+    private val getProductListUseCase: GetProductListFromSearchUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
     val quickFilterResult = MutableLiveData<Result<DynamicFilterModel>>()
@@ -77,14 +76,19 @@ class CatalogProductListViewModel @Inject constructor(
         get() = _productList
 
     private val _productList = MutableLiveData<Result<List<CatalogProductItem>>>()
+    private var comparisonCardIsAdded = false
+    private var pageCount = 0
 
-
-    var comparisonCardIsAdded = false
-
-    var pageCount = 0
+    private fun showAtcResult(atcResult: AddToCartDataModel) {
+        if (atcResult.isStatusError()) {
+            _errorsToaster.postValue(MessageErrorException(atcResult.getAtcErrorMessage()))
+        } else {
+            _textToaster.postValue(atcResult.getAtcErrorMessage())
+            refreshNotification()
+        }
+    }
 
     fun fetchQuickFilters(params: RequestParams) {
-
         quickFilterUseCase.execute(params, object : Subscriber<DynamicFilterModel>() {
             override fun onNext(t: DynamicFilterModel?) {
                 quickFilterResult.value = Success(t as DynamicFilterModel)
@@ -119,7 +123,7 @@ class CatalogProductListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val data = getProductListUseCase.execute(params).searchProduct?.data?.catalogProductItemList.orEmpty()
+                val data = getProductListUseCase.execute(params).searchProduct.data.catalogProductItemList
                 _productList.postValue(Success(data))
 
             },
@@ -148,12 +152,12 @@ class CatalogProductListViewModel @Inject constructor(
         )
     }
 
-    private fun showAtcResult(atcResult: AddToCartDataModel) {
-        if (atcResult.isStatusError()) {
-            _errorsToaster.postValue(MessageErrorException(atcResult.getAtcErrorMessage()))
-        } else {
-            _textToaster.postValue(atcResult.getAtcErrorMessage())
-        }
+    fun isUserLoggedIn(): Boolean {
+        return getUserId().isNotBlank()
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
     }
 
     fun refreshNotification() {

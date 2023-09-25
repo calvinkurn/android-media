@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
@@ -32,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -53,6 +54,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val COLOR_VALUE_MAX = 255
+        private const val LOGIN_REQUEST_CODE = 1001
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
@@ -123,21 +125,31 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
     }
 
-    override fun onNavBackClicked() {
-        activity?.finish()
-    }
-
-    override fun onNavShareClicked() {
-        // no-op
-    }
-
-    override fun onNavMoreMenuClicked() {
-        // no-op
-    }
-
     override fun onResume() {
         super.onResume()
         viewModel.refreshNotification()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            viewModel.refreshNotification()
+        }
+    }
+
+    override fun onNavigateWidget(anchorTo: String, tabPosition: Int) {
+        val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
+        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
+        val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
+        if (anchorToPosition >= Int.ZERO) {
+            widgetAdapter.changeNavigationTabActive(tabPosition)
+            smoothScroller.targetPosition = anchorToPosition - 2
+            layoutManager?.startSmoothScroll(smoothScroller)
+        }
     }
 
     private fun setupObservers(view: View) {
@@ -212,11 +224,18 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         toolbarShadow.background =
             DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
         toolbar.setColors(colorFont)
-        toolbarShadow.isVisible = !navigationProperties.isPremium
         toolbarBg.setBackgroundColor(navigationProperties.bgColor)
         toolbar.title = navigationProperties.title
         toolbar.setNavigationOnClickListener {
-            onNavBackClicked()
+            activity?.finish()
+        }
+        toolbar.shareButton?.gone()
+        toolbar.cartButton?.setOnClickListener {
+            if (viewModel.isUserLoggedIn()) {
+                RouteManager.route(context, ApplinkConst.CART)
+            } else {
+                goToLoginPage()
+            }
         }
     }
 
@@ -227,10 +246,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         if (!navigationProperties.isDarkMode) {
             val colorProgress: Int = COLOR_VALUE_MAX - (COLOR_VALUE_MAX * scrollProgress).toInt()
             setColors(Color.rgb(colorProgress, colorProgress, colorProgress))
-        }
-
-        if (navigationProperties.isPremium) {
-            alpha = scrollProgress
         }
         binding?.toolbarBg?.alpha = scrollProgress
     }
@@ -271,18 +286,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         stickySingleHeaderView.show()
     }
 
-    override fun onNavigateWidget(anchorTo: String, tabPosition: Int) {
-        val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
-        }
-        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
-        val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
-        if (anchorToPosition >= Int.ZERO) {
-            widgetAdapter.changeNavigationTabActive(tabPosition)
-            smoothScroller.targetPosition = anchorToPosition - 2
-            layoutManager?.startSmoothScroll(smoothScroller)
-        }
+    private fun goToLoginPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, LOGIN_REQUEST_CODE)
     }
 }
