@@ -765,28 +765,28 @@ class CheckoutViewModel @Inject constructor(
         checkoutItems: List<CheckoutItem>,
         oldCheckoutItems: List<CheckoutItem>
     ): List<CheckoutItem> {
-        withContext(dispatchers.main) {
-            listData.value.promo()?.let {
-                val currentListData = listData.value
-                listData.value = currentListData.map { model ->
-                    if (model is CheckoutPromoModel) {
-                        return@map it.copy(
-                            isLoading = true
-                        )
-                    } else {
-                        return@map model
+        if (isPromoRevamp == true) {
+            withContext(dispatchers.main) {
+                listData.value.promo()?.let {
+                    val currentListData = listData.value
+                    listData.value = currentListData.map { model ->
+                        if (model is CheckoutPromoModel) {
+                            return@map it.copy(
+                                isLoading = true
+                            )
+                        } else {
+                            return@map model
+                        }
                     }
                 }
             }
-        }
 
-        val checkoutModel =
-            checkoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
-        val oldCheckoutModel =
-            oldCheckoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
+            val checkoutModel =
+                checkoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
+            val oldCheckoutModel =
+                oldCheckoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
 
-        if (checkoutModel != null && oldCheckoutModel != null) {
-            if (isPromoRevamp == true) {
+            if (checkoutModel != null && oldCheckoutModel != null) {
                 val oldTotalPromoAmount =
                     oldCheckoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
                 val newTotalPromoAmount =
