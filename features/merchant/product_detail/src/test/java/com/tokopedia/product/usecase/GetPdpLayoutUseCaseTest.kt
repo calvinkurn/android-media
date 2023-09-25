@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -38,15 +39,18 @@ class GetPdpLayoutUseCaseTest {
     @RelaxedMockK
     lateinit var gqlUseCase: MultiRequestGraphqlUseCase
 
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
+
     @get:Rule
     public val thrown = ExpectedException.none()
 
     private val useCaseTest by lazy {
-        GetPdpLayoutUseCase(gqlUseCase, "")
+        GetPdpLayoutUseCase(gqlUseCase, "", remoteConfig)
     }
 
     private val useCaseTestLayoutId by lazy {
-        GetPdpLayoutUseCase(gqlUseCase, "56")
+        GetPdpLayoutUseCase(gqlUseCase, "56", remoteConfig)
     }
 
     @Before
