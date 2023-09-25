@@ -2536,6 +2536,7 @@ class CartViewModel @Inject constructor(
     fun updateAddOnByCartId(
         cartId: String,
         newAddOnWording: String,
+        newPrice: String,
         selectedAddons: List<AddOnUIModel>
     ) {
         val position: Int
@@ -2544,6 +2545,7 @@ class CartViewModel @Inject constructor(
                 if (item.cartId == cartId) {
                     position = index
                     item.addOnsProduct.widget.wording = newAddOnWording
+                    item.addOnsProduct.widget.price = newPrice
                     item.addOnsProduct.listData.clear()
                     selectedAddons.forEach {
                         item.addOnsProduct.listData.add(

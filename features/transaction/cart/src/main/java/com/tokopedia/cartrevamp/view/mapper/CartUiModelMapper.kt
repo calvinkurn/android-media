@@ -573,6 +573,8 @@ object CartUiModelMapper {
             listData = arrayListAddOnProduct
             widget = CartAddOnWidgetData(
                 wording = addOn.addOnWidget.wording,
+                // TODO: change this
+                price = addOn.addOnWidget.wording,
                 leftIconUrl = addOn.addOnWidget.leftIconUrl,
                 rightIconUrl = addOn.addOnWidget.rightIconUrl
             )

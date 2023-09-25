@@ -797,6 +797,7 @@ class CartItemViewHolder constructor(
             binding.itemAddonCart.apply {
                 root.show()
                 this.descAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.wording)
+                this.priceAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.price)
                 val addOnType = data.addOnsProduct.listData.firstOrNull()?.type ?: 0
                 root.setOnClickListener {
                     actionListener?.onProductAddOnClicked(data)
