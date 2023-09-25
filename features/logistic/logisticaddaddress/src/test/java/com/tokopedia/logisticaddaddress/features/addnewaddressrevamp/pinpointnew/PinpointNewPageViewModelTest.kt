@@ -8,21 +8,24 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Geometry
 import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Location
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictBoundariesUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictCenterUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.KeroAddressGeocode
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageViewModel
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -47,7 +50,10 @@ class PinpointNewPageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val repo: KeroRepository = mockk(relaxed = true)
+    private val getDistrict: GetDistrictUseCase = mockk(relaxed = true)
+    private val getDistrictBoundaries: GetDistrictBoundariesUseCase = mockk(relaxed = true)
+    private val getDistrictCenter: GetDistrictCenterUseCase = mockk(relaxed = true)
+    private val getDistrictGeoCode: GetDistrictGeoCodeUseCase = mockk(relaxed = true)
     private val getDistrictMapper = GetDistrictMapper()
     private val districtBoundaryMapper = DistrictBoundaryMapper()
 
@@ -73,7 +79,10 @@ class PinpointNewPageViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
         pinpointNewPageViewModel =
             PinpointNewPageViewModel(
-                repo,
+                getDistrict,
+                getDistrictBoundaries,
+                getDistrictCenter,
+                getDistrictGeoCode,
                 getDistrictMapper,
                 districtBoundaryMapper,
                 mapsGeocodeUseCase
@@ -87,56 +96,56 @@ class PinpointNewPageViewModelTest {
 
     @Test
     fun `Get District Data Success`() {
-        coEvery { repo.getDistrictGeocode(any(), any()) } returns AutoFillResponse()
+        coEvery { getDistrictGeoCode(any()) } returns AutoFillResponse()
         pinpointNewPageViewModel.getDistrictData(1134.5, -6.4214)
         verify { autofillDistrictDataObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Data Fail`() {
-        coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
+        coEvery { getDistrictGeoCode(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getLocationFromLatLong()
         verify { autofillDistrictDataObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get District Location Success`() {
-        coEvery { repo.getDistrict(any(), any()) } returns GetDistrictResponse()
+        coEvery { getDistrict(any()) } returns GetDistrictResponse()
         pinpointNewPageViewModel.getDistrictLocation("12312")
         verify { districtLocationObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Location Fail`() {
-        coEvery { repo.getDistrict(any()) } throws defaultThrowable
+        coEvery { getDistrict(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictLocation("12312")
         verify { districtLocationObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get District Boundaries Success`() {
-        coEvery { repo.getDistrictBoundaries(any()) } returns GetDistrictBoundaryResponse()
+        coEvery { getDistrictBoundaries(any()) } returns GetDistrictBoundaryResponse()
         pinpointNewPageViewModel.getDistrictBoundaries()
         verify { districtBoundaryObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Boundaries Fail`() {
-        coEvery { repo.getDistrictBoundaries(any()) } throws defaultThrowable
+        coEvery { getDistrictBoundaries(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictBoundaries()
         verify { districtBoundaryObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get District Center by District ID Success`() {
-        coEvery { repo.getDistrictCenter(any()) } returns KeroAddrGetDistrictCenterResponse.Data()
+        coEvery { getDistrictCenter(any()) } returns KeroAddrGetDistrictCenterResponse.Data()
         pinpointNewPageViewModel.getDistrictCenter()
         verify { districtCenterObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Center by District ID Fail`() {
-        coEvery { repo.getDistrictCenter(any()) } throws defaultThrowable
+        coEvery { getDistrictCenter(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictCenter()
         verify { districtCenterObserver.onChanged(match { it is Fail }) }
     }
