@@ -546,6 +546,7 @@ class FeedBaseFragment :
                             }
                         }
                         is CreationUploadResult.Failed -> {
+                            binding.uploadView.show()
                             binding.uploadView.setFailed()
                             binding.uploadView.setListener(object : UploadInfoView.Listener {
                                 override fun onRetryClicked(view: UploadInfoView) {
@@ -555,6 +556,7 @@ class FeedBaseFragment :
                                 override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                     launch {
                                         creationUploader.deleteTopQueue()
+                                        creationUploader.retry()
                                         binding.uploadView.hide()
                                     }
 
