@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_common
+package com.tokopedia.scp_rewards_common.constants
 
 // badge types
 const val EARNED_BADGE = "earned"
