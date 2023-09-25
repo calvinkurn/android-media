@@ -165,10 +165,13 @@ internal class PromoUsageViewModel @Inject constructor(
                     handleLoadPromoListSuccess(attemptedPromoCode, response, onSuccess)
                 } else {
                     if (response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_COUPON_LIST_EMPTY) {
+                        PromoUsageLogger.logOnErrorLoadPromoUsagePage(
+                            PromoErrorException("response status ok but data is empty")
+                        )
                         handleLoadPromoListSuccess(attemptedPromoCode, response, onSuccess)
                     } else {
                         PromoUsageLogger.logOnErrorLoadPromoUsagePage(
-                            PromoErrorException(message = "response status error")
+                            PromoErrorException(response.promoListRecommendation.data.resultStatus.message)
                         )
                         val exception = PromoErrorException()
                         handleLoadPromoListFailed(exception)
@@ -176,6 +179,9 @@ internal class PromoUsageViewModel @Inject constructor(
                 }
             },
             onError = { throwable ->
+                PromoUsageLogger.logOnErrorLoadPromoUsagePage(
+                    PromoErrorException(message = "response status error")
+                )
                 PromoUsageIdlingResource.decrement()
                 handleLoadPromoListFailed(throwable)
             }
