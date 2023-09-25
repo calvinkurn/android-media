@@ -71,8 +71,6 @@ open class SubmitPostUseCase @Inject constructor(
         val arrangedMedia = rearrangeMedia(newMediumList)
 
         /** Submit Post */
-        postUpdateProgressManager?.onSubmitPost()
-
         setRequestParams(
             mapOf(
                 PARAM_INPUT to mapOf(
@@ -90,6 +88,14 @@ open class SubmitPostUseCase @Inject constructor(
                 )
             )
         )
+
+        val result = super.executeOnBackground()
+
+        if (result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
+            throw Exception("Submit post is not success")
+        }
+
+        deleteMediaPostCacheUseCase(Unit)
     }
 
     /**
