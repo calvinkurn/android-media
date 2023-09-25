@@ -1,33 +1,18 @@
 package com.tokopedia.pdp.fintech.view
 
 import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
 import android.animation.Keyframe
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Rect
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.LinearInterpolator
-import android.widget.FrameLayout
 import android.widget.ScrollView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.animation.addListener
-import androidx.core.animation.doOnEnd
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.pdp_fintech.databinding.SliderViewLayoutBinding
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
-import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class SliderView: ScrollView {
 
