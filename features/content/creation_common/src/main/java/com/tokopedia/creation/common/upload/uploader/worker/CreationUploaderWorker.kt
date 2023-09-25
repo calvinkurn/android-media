@@ -18,6 +18,7 @@ import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.exception.NoUploadManagerException
 import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -75,12 +76,7 @@ class CreationUploaderWorker(
                             }
 
                             override suspend fun setProgress(uploadData: CreationUploadData, progress: Int) {
-                                setProgress(
-                                    workDataOf(
-                                        CreationUploadConst.PROGRESS to progress,
-                                        CreationUploadConst.UPLOAD_DATA to uploadData.mapToJson(gson)
-                                    )
-                                )
+                                emitProgress(progress, uploadData)
                             }
                         }
                     )
@@ -88,6 +84,7 @@ class CreationUploaderWorker(
                     if (uploadResult) {
                         queueRepository.delete(data.queueId)
                     } else {
+                        emitProgress(CreationUploadConst.PROGRESS_FAILED, data)
                         break
                     }
                 } catch (throwable: Throwable) {
@@ -98,7 +95,9 @@ class CreationUploaderWorker(
                             queueRepository.deleteTopQueue()
                             continue
                         }
-                        else -> break
+                        else -> {
+                            break
+                        }
                     }
                 }
             }
@@ -107,7 +106,19 @@ class CreationUploaderWorker(
         }
     }
 
+    private suspend fun emitProgress(progress: Int, data: CreationUploadData) {
+        setProgress(
+            workDataOf(
+                CreationUploadConst.PROGRESS to progress,
+                CreationUploadConst.UPLOAD_DATA to data.mapToJson(gson)
+            )
+        )
+        delay(DEFAULT_DELAY_AFTER_EMIT_PROGRESS)
+    }
+
     companion object {
+
+        private const val DEFAULT_DELAY_AFTER_EMIT_PROGRESS = 1000L
         fun build(): OneTimeWorkRequest {
             return OneTimeWorkRequest.Builder(CreationUploaderWorker::class.java)
                 .build()
