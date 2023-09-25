@@ -136,6 +136,10 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
         )
     }
 
+    private fun isFullCopyDescription(): Boolean {
+        return receiverName.isNotBlank() && senderName.isNotBlank() && description.isNotBlank()
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setupDescription() {
         binding.tvAddOnDescription.setOnTouchListener { v, event ->
@@ -282,7 +286,7 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
 
     fun setIsCopyable(copyable: Boolean) {
         with(binding) {
-            val isShowCopyAddon = getFullCopyDescription().isNotBlank() && copyable
+            val isShowCopyAddon = isFullCopyDescription() && copyable
             tvLabelCopyAddOnDescription.showWithCondition(isShowCopyAddon)
             icCopyAddOnDescription.showWithCondition(isShowCopyAddon)
         }
