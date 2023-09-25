@@ -19,6 +19,7 @@ import com.tokopedia.tokopedianow.searchcategory.data.createFeedbackFieldToggleR
 import com.tokopedia.tokopedianow.searchcategory.data.createGetProductAdsRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createQuickFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.getFeedbackFieldToggleData
+import com.tokopedia.tokopedianow.searchcategory.data.getProductAdsQueryParam
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getBanner
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getCategoryFilter
@@ -37,6 +38,7 @@ class GetSearchFirstPageUseCase(
     override suspend fun executeOnBackground(): SearchModel {
         val parameters = useCaseRequestParams.parameters
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
+        val adsQueryParams = getProductAdsQueryParam(useCaseRequestParams)
         val categoryFilterParams = createCategoryFilterParams(queryParams)
         val quickFilterParams = createQuickFilterParams(queryParams)
 
@@ -47,7 +49,7 @@ class GetSearchFirstPageUseCase(
                 warehouseId = parameters[SearchApiConst.USER_WAREHOUSE_ID].toString()
             )
         )
-        graphqlUseCase.addRequest(createGetProductAdsRequest(useCaseRequestParams))
+        graphqlUseCase.addRequest(createGetProductAdsRequest(adsQueryParams))
         graphqlUseCase.addRequest(createAceSearchProductRequest(queryParams))
         graphqlUseCase.addRequest(createCategoryFilterRequest(categoryFilterParams))
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))

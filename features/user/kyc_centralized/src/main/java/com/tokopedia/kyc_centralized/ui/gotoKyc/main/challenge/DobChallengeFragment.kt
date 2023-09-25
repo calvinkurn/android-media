@@ -95,12 +95,14 @@ class DobChallengeFragment : BaseDaggerFragment() {
         }
 
         binding?.btnConfirmation?.setOnClickListener {
-            GotoKycAnalytics.sendClickButtonConfirmationDobPage(args.parameter.projectId)
-            viewModel.submitChallenge(
-                challengeId = args.parameter.challengeId,
-                questionId = viewModel.questionId,
-                selectedDate = selectedDate
-            )
+            if (viewModel.submitChallenge.value !is SubmitChallengeResult.Loading) {
+                GotoKycAnalytics.sendClickButtonConfirmationDobPage(args.parameter.projectId)
+                viewModel.submitChallenge(
+                    challengeId = args.parameter.challengeId,
+                    questionId = viewModel.questionId,
+                    selectedDate = selectedDate
+                )
+            }
         }
     }
 
