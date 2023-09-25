@@ -1958,6 +1958,7 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -1965,6 +1966,7 @@ class ChatbotViewModelTest {
         every {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendBubbleAction(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -1979,6 +1981,7 @@ class ChatbotViewModelTest {
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendBubbleAction(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -1999,6 +2002,7 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -2006,6 +2010,7 @@ class ChatbotViewModelTest {
         every {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReplyEventArticle(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -2021,6 +2026,7 @@ class ChatbotViewModelTest {
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReplyEventArticle(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -2041,6 +2047,7 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -2048,6 +2055,7 @@ class ChatbotViewModelTest {
         every {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReply(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -2062,6 +2070,7 @@ class ChatbotViewModelTest {
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReply(
+                    any(),
                     any(),
                     any(),
                     any(),
