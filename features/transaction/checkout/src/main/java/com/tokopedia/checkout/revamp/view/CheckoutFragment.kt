@@ -26,8 +26,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -78,7 +78,6 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultation
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.util.FingerPrintUtil
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -193,9 +192,6 @@ class CheckoutFragment :
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
-
-    @Inject
-    lateinit var irisSession: IrisSession
 
     private val viewModel: CheckoutViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
@@ -2003,7 +1999,6 @@ class CheckoutFragment :
     override fun onClickBmgmInfoIcon(offerId: String, shopId: String) {
         checkoutAnalyticsCourierSelection.sendClickSnkBmgmEvent(
             offerId,
-            irisSession.getSessionId(),
             shopId,
             userSessionInterface.userId
         )
