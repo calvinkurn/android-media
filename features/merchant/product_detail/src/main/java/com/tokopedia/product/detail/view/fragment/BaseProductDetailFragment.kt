@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +72,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DynamicProductDetailFragmentBinding.inflate(inflater, container, false)
+        getProductDetailActivity()?.getBlocksPerformanceMonitoring()?.addViewPerformanceBlocks(binding?.pdpNavtoolbar)
         return binding?.root
     }
 
@@ -95,6 +97,20 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
+            var position = 0
+            (getRecyclerView()?.layoutManager as? CenterLayoutManager)?.let { layoutManager ->
+                val lastVisibleItemPosition = IntArray(layoutManager.getSpanCount())
+                layoutManager.findLastVisibleItemPositions(lastVisibleItemPosition)
+                val lastVisibleItemPositionSpan0 = lastVisibleItemPosition[0]
+                val lastVisibleItemPositionSpan1 = lastVisibleItemPosition[1]
+                position = lastVisibleItemPositionSpan1
+            }
+            getProductDetailActivity()?.getBlocksPerformanceMonitoring()?.setBlock(
+                visitables.take(
+                    position
+                )
+            )
+            Log.d("DevDebug", "Submitting list...")
             productAdapter?.submitList(visitables)
         }
     }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.lifecycleScope
@@ -356,9 +357,17 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             this,
             "perf_trace_pdp",
             lifecycleScope,
-            null,
-            null
-        )
+            this
+        ) { summaryModel, capturedBlocks ->
+            if (summaryModel.timeToInitialLayout?.inflateTime != 0L) {
+                blocksPerformanceTrace?.debugPerformanceTrace(
+                    this,
+                    summaryModel,
+                    "",
+                    findViewById<View>(android.R.id.content).getRootView()
+                )
+            }
+        }
     }
 
     private fun initPerformanceMonitoring() {

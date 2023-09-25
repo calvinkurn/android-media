@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.Choreographer
 import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -89,6 +90,7 @@ class BlocksPerformanceTrace(
             )
         }
         initialize(context, scope, onLaunchTimeFinished)
+        Log.d("BlocksTrace", "Start...")
     }
 
     private fun initialize(
@@ -134,7 +136,7 @@ class BlocksPerformanceTrace(
         }
     }
 
-    private fun debugPerformanceTrace(
+    fun debugPerformanceTrace(
         activity: Activity?,
         summaryModel: BlocksSummaryModel,
         type: String,
@@ -238,6 +240,7 @@ class BlocksPerformanceTrace(
         this.onLaunchTimeFinished = null
         TTILperformanceMonitoring = null
         performanceTraceJob?.cancel()
+        Log.d("BlocksTrace", "TTIL: " + summaryModel.get().ttil())
     }
 
     private fun trackIris() {
@@ -316,8 +319,8 @@ internal fun List<Any>.getFinishedLoadableComponent(): MutableList<String> {
 }
 
 internal fun List<Any>.allLoadableComponentFinished(): Boolean {
-    return this.filter { it is LoadableComponent && it.isLoading() }
-        .isEmpty()
+    val loadableComponents = this.filter { it is LoadableComponent }
+    return loadableComponents.filter { it is LoadableComponent && it.isLoading() }.isEmpty()
 }
 
 /**

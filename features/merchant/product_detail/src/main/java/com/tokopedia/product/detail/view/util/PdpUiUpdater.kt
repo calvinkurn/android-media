@@ -74,7 +74,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONO
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
-import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -313,6 +312,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 it.recommendation = DynamicProductDetailMapper.convertRecomToDataModel(
                     productMediaRecomBasicInfo
                 )
+                it.finishLoading()
             }
         }
     }
@@ -495,6 +495,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         productIdMVC = productId,
                         additionalData = it.merchantVoucherSummary.additionalData
                     )
+                    this.finishLoading()
                 }
             }
 
@@ -586,6 +587,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     }?.impressHolder ?: ImpressHolder()
                 )
             }
+            miniSocialProofMap?.finishLoading()
         }
     }
 
@@ -902,6 +904,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             val variantLvlOne = processedVariant?.firstOrNull()
             productSingleVariant?.title = title
             productSingleVariant?.variantLevelOne = doRetainImpressOfVariantOptions(variantLvlOne)
+            productSingleVariant?.finishLoading()
         }
     }
 
@@ -931,6 +934,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (singleVariant == null) {
             removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
         } else {
+            singleVariant.finishLoading()
             updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
                 mapOfData[ProductDetailConstant.MINI_VARIANT_OPTIONS] =
                     retainImpressOfSingleVariantOptions(newSingleVariant = singleVariant)

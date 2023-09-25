@@ -2,6 +2,8 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.content.Context
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -17,7 +19,11 @@ data class ProductMediaDataModel(
     var shouldAnimateLabel: Boolean = true,
     var containerType: MediaContainerType = MediaContainerType.Square,
     var recommendation: ProductMediaRecomData = ProductMediaRecomData()
-) : DynamicPdpDataModel {
+) : DynamicPdpDataModel,
+    LoadableComponent by BlocksLoadableComponent(
+        isFinishedLoading = { listOfMedia.isNotEmpty() },
+        customBlocksName = "ProductMediaDataModel"
+    ) {
     companion object {
         const val VIDEO_TYPE = "video"
         const val IMAGE_TYPE = "image"
