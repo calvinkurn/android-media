@@ -44,5 +44,6 @@ object Key {
     const val price = "price"
     const val itemShopId = "shop_id"
     const val itemShopName = "shop_name"
+    const val itemShopType = "shop_type"
     const val itemIndex = "index"
 }
