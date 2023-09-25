@@ -79,6 +79,7 @@ import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -2908,17 +2909,28 @@ open class DynamicProductDetailFragment :
     private fun handleP1Error(error: Throwable) {
         if (isCacheable() && viewModel.cacheState?.isFromCache == true) {
             val view = binding?.root ?: return
-            // TODO wording
-            Toaster.build(
-                view = view,
-                text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
-                actionText = "Coba lagi",
-                duration = LENGTH_INDEFINITE,
-                type = TYPE_ERROR
-            ) {
-                loadData(true)
-            }.show()
-            return
+            val errorModel = ProductDetailErrorHelper.getErrorType(
+                view.context,
+                error,
+                isFromDeeplink,
+                deeplinkUrl
+            )
+
+            when (errorModel.errorCode.toIntOrZero()) {
+                GlobalError.SERVER_ERROR, GlobalError.NO_CONNECTION -> {
+                    // TODO wording
+                    Toaster.build(
+                        view = view,
+                        text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
+                        actionText = "Coba lagi",
+                        duration = LENGTH_INDEFINITE,
+                        type = TYPE_ERROR
+                    ) {
+                        loadData(true)
+                    }.show()
+                    return
+                }
+            }
         }
 
         handleObserverP1Error(error = error)
