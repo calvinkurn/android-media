@@ -3,8 +3,8 @@ package com.tokopedia.sellerfeedback.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql.core.GqlClient
-import com.tokopedia.gql.engine
 import com.tokopedia.gql.ktor.KtorClient
+import com.tokopedia.gql.toKtorEngine
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.multiplatform.seller.feedback.data.repository.SubmitFeedbackRepository
@@ -19,6 +19,9 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.okhttp.OkHttpEngine
+import okhttp3.OkHttpClient
 
 @Module
 class SellerFeedbackModule {
@@ -35,9 +38,18 @@ class SellerFeedbackModule {
 
     @SellerFeedbackScope
     @Provides
-    fun provideGqlClient(): GqlClient {
-        val gqlUrl = "https://gql.tokopedia.com/"
-        val ktorClient = KtorClient(baseUrl = gqlUrl, engine = engine)
+    fun provideOkHttpClientEngine(
+        okHttpClient: OkHttpClient
+    ): KtorClient {
+        return KtorClient(
+            baseUrl = "https://gql.tokopedia.com/",
+            engine = okHttpClient.toKtorEngine()
+        )
+    }
+
+    @SellerFeedbackScope
+    @Provides
+    fun provideGqlClient(ktorClient: KtorClient): GqlClient {
         return GqlClient(ktorClient)
     }
 
