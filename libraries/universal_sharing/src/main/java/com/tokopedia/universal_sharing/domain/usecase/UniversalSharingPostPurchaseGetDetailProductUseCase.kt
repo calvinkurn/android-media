@@ -34,6 +34,7 @@ class UniversalSharingPostPurchaseGetDetailProductUseCase @Inject constructor(
             productID
             productName
             price
+            description
             stock
             status
             url
