@@ -3,46 +3,52 @@ package com.tokopedia.home.beranda.data.newatf
 import com.tokopedia.home.beranda.data.newatf.banner.BannerRepository
 import com.tokopedia.home.beranda.data.newatf.position.DynamicPositionRepository
 import com.tokopedia.home.constant.AtfKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AtfRepository @Inject constructor(
+class HomeAtfUseCase @Inject constructor(
     private val dynamicPositionRepository: DynamicPositionRepository,
     private val bannerRepository: BannerRepository,
 ) {
-    private val flow: StateFlow<AtfDataList?>
-        get() = _flow
+    private val scope = CoroutineScope(Job() + Dispatchers.IO)
+
     private var _flow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
+    val flow: StateFlow<AtfDataList?> = _flow
 
     init {
-        observeAtfFlow(bannerRepository.flow)
+        scope.launch { getDynamicPosition() }
     }
 
     suspend fun getDynamicPosition() {
-        dynamicPositionRepository.flow.collect { value ->
-            if(value == null) {
-                //only fetch dynamic position on first load
-                dynamicPositionRepository.getData()
-            } else {
-                //if dynamic position remains the same, only update the source
-                if(flow.value?.hasSamePosition(value.listAtfData) == true) {
-                    updateSourceOnly(value.isCache)
-                } else {
-                    //if returns different positions, update the whole position
-                    //and fetch data for each
-                    updateDynamicPosition(value)
-                    getDataForEach(value)
+        coroutineScope {
+            launch {
+                observeAtfFlow(bannerRepository.flow)
+            }
+            launch {
+                dynamicPositionRepository.flow.collect { value ->
+                    if(value == null) {
+                        //only fetch dynamic position on first load
+                        dynamicPositionRepository.getData()
+                    } else {
+                        //if dynamic position remains the same, only update the source
+                        if(flow.value?.hasSamePosition(value.listAtfData) == true) {
+                            updateSourceOnly(value.isCache)
+                        } else {
+                            //if returns different positions, update the whole position
+                            //and fetch data for each
+                            updateDynamicPosition(value)
+                            getDataForEach(value)
+                        }
+                    }
                 }
-//                if((flow.value == null && value.isCache) ||
-//                    (!value.isCache && flow.value != value)) {
-//                    updateDynamicPosition(value)
-//                    //eligible for getting data for each widget if:
-//                    //1. first load dynamic position from cache
-//                    //2. load dynamic position from remote with different value from existing
-//                    getDataForEach(value)
-//                }
             }
         }
     }
@@ -80,7 +86,7 @@ class AtfRepository @Inject constructor(
         }
     }
 
-    private fun observeAtfFlow(atfFlow: StateFlow<AtfData?>) {
+    private suspend fun observeAtfFlow(atfFlow: StateFlow<AtfData?>) {
         flow.combine(atfFlow) { dynamicPos, atfData ->
             // updating flow with remote atf data should be done after
             // dynamic position coming from remote to avoid multiple updating data
@@ -96,6 +102,6 @@ class AtfRepository @Inject constructor(
                     _flow.emit(newModel)
                 }
             }
-        }
+        }.launchIn(CoroutineScope(Dispatchers.IO))
     }
 }

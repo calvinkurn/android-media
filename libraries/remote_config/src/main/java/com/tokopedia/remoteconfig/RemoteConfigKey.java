@@ -262,5 +262,5 @@ public class RemoteConfigKey {
 
     public static final String FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_fintech_enable_additional_device_info";
 
-    public static final String HOME_FLOW_REFACTORING = "android_home_flow_refactoring";
+    public static final String HOME_ATF_REFACTORING = "android_home_atf_refactoring";
 }

@@ -6,13 +6,14 @@ import com.tokopedia.home.constant.AtfKey
 
 @Entity
 data class AtfCacheEntity(
-        @PrimaryKey
         val id: Int = 0,
+        @PrimaryKey
         val position: Int = 0,
         val name: String = "",
         val component: String = "",
         val param: String = "",
         val isOptional: Boolean = false,
         var content: String? = "",
-        var status: Int = AtfKey.STATUS_SUCCESS
+        var status: Int = AtfKey.STATUS_SUCCESS,
+        val lastUpdate: Long = System.currentTimeMillis(),
 )

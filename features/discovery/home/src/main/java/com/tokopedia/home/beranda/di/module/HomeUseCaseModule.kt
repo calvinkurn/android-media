@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
+import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.AtfQuery
 import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
@@ -138,7 +139,8 @@ class HomeUseCaseModule {
         homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
         userSession: UserSessionInterface,
         homeMissionWidgetRepository: HomeMissionWidgetRepository,
-        homeTodoWidgetRepository: HomeTodoWidgetRepository
+        homeTodoWidgetRepository: HomeTodoWidgetRepository,
+        homeAtfUseCase: HomeAtfUseCase,
     ) = HomeDynamicChannelUseCase(
         homeDataMapper = homeDataMapper,
         bestSellerRevampMapper = bestSellerRevampMapper,
@@ -167,7 +169,8 @@ class HomeUseCaseModule {
         homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
         userSessionInterface = userSession,
         homeMissionWidgetRepository = homeMissionWidgetRepository,
-        homeTodoWidgetRepository = homeTodoWidgetRepository
+        homeTodoWidgetRepository = homeTodoWidgetRepository,
+        homeAtfUseCase = homeAtfUseCase,
     )
 
     @Provides
@@ -369,4 +372,27 @@ class HomeUseCaseModule {
     fun provideTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
         return GetTopAdsHeadlineUseCase(graphqlRepository)
     }
+
+//    @Provides
+//    @HomeScope
+//    fun provideDynamicPositionRepository(
+//        atfDao: AtfDao,
+//        atfDataRepository: HomeAtfRepository,
+//        homeRoomDataSource: HomeRoomDataSource,
+//    ) = DynamicPositionRepository(atfDao, atfDataRepository, homeRoomDataSource)
+//
+//    @Provides
+//    @HomeScope
+//    fun provideBannerRepository(
+//        homePageBannerRepository: HomePageBannerRepository,
+//        homeChooseAddressRepository: HomeChooseAddressRepository,
+//        atfDao: AtfDao,
+//    ) = BannerRepository(homePageBannerRepository, homeChooseAddressRepository, atfDao)
+//
+//    @Provides
+//    @HomeScope
+//    fun provideAtfRepository(
+//        dynamicPositionRepository: DynamicPositionRepository,
+//        bannerRepository: BannerRepository,
+//    ) = AtfRepository(dynamicPositionRepository, bannerRepository)
 }

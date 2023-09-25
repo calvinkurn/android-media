@@ -1,9 +1,7 @@
-package com.tokopedia.home.beranda.data.newatf.banner
+package com.tokopedia.home.beranda.data.newatf
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
-import com.tokopedia.home.beranda.data.newatf.AtfData
-import com.tokopedia.home.beranda.data.newatf.NewHomeDataMapper
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.model.ChannelGrid
@@ -12,27 +10,36 @@ import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 
-object HomepageBannerMapper {
+object NewHomeDataMapper {
     private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - slider banner - banner - %s"
     private const val VALUE_BANNER_DEFAULT = ""
 
-    fun com.tokopedia.home.beranda.domain.model.banner.BannerDataModel.asVisitable(
-        index: Int,
-        isCache: Boolean
-    ): Visitable<*> {
-        return if (HomeRollenceController.isUsingAtf2Variant()) {
-            mapToAtf2Banner(index, isCache)
-        } else {
-            mapToOldBanner(index, isCache)
+    fun mapAtfToHomeDynamicChannel(
+        atfList: AtfDataList?
+    ): HomeDynamicChannelModel {
+        val visitableList = mutableListOf<Visitable<*>>()
+        atfList?.listAtfData?.forEachIndexed { idx, it ->
+            when(it.atfContent) {
+                is com.tokopedia.home.beranda.domain.model.banner.BannerDataModel ->
+                    if (HomeRollenceController.isUsingAtf2Variant()) {
+                        mapToHomepageBannerAtf2(it.atfContent, idx, it.isCache)
+                    } else {
+                        mapToHomepageBannerOld(it.atfContent, idx, it.isCache)
+                    }
+            }
         }
+        return HomeDynamicChannelModel(
+            list = visitableList
+        )
     }
 
-    private fun com.tokopedia.home.beranda.domain.model.banner.BannerDataModel.mapToOldBanner(
+    private fun mapToHomepageBannerOld(
+        bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel,
         index: Int,
-        isCache: Boolean
+        isCache: Boolean,
     ): BannerDataModel {
         val channelModel = ChannelModel(
-            channelGrids = slides?.map {
+            channelGrids = bannerDataModel.slides?.map {
                 ChannelGrid(
                     applink = it.applink,
                     campaignCode = it.campaignCode,
@@ -66,13 +73,14 @@ object HomepageBannerMapper {
         )
     }
 
-    private fun com.tokopedia.home.beranda.domain.model.banner.BannerDataModel.mapToAtf2Banner(
+    private fun mapToHomepageBannerAtf2(
+        bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel,
         index: Int,
         isCache: Boolean,
     ): BannerRevampDataModel {
         val channelModel = ChannelModel(
             verticalPosition = index,
-            channelGrids = mapIntoGrids(this, isCache),
+            channelGrids = mapBannerToGrids(bannerDataModel, isCache),
             groupId = "",
             id = "",
             trackingAttributionModel = TrackingAttributionModel(
@@ -89,7 +97,7 @@ object HomepageBannerMapper {
         )
     }
 
-    private fun mapIntoGrids(
+    private fun mapBannerToGrids(
         bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel,
         isCache: Boolean,
     ): List<ChannelGrid> {

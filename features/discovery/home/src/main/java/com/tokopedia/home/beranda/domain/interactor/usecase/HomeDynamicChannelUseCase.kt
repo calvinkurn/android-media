@@ -13,6 +13,8 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.*
+import com.tokopedia.home.beranda.data.newatf.AtfMapper.mapToVisitableList
+import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -25,6 +27,7 @@ import com.tokopedia.home.beranda.helper.LazyLoadDynamicChannelHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
@@ -41,6 +44,7 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -52,7 +56,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -88,7 +91,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
     private val userSessionInterface: UserSessionInterface,
     private val homeMissionWidgetRepository: HomeMissionWidgetRepository,
-    private val homeTodoWidgetRepository: HomeTodoWidgetRepository
+    private val homeTodoWidgetRepository: HomeTodoWidgetRepository,
+    private val homeAtfUseCase: HomeAtfUseCase,
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -111,6 +115,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
 
+    var isCache = true
+    var isCacheDc = true
+
     fun updateHeaderData(
         homeHeaderDataModel: HomeHeaderDataModel,
         homeDataModel: HomeDynamicChannelModel
@@ -126,8 +133,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
     @FlowPreview
     @ExperimentalCoroutinesApi
     fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
-        var isCache = true
-        var isCacheDc = true
+        isCache = true
+        isCacheDc = true
+
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
                 if (isCache) {
@@ -164,307 +172,350 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
 
         val homeDynamicChannelFlow = getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
-            flow<HomeDynamicChannelModel> {
-                topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
-
-                val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
-                    homeData = it,
-                    isCache = isCacheDc
-                )
-
-                /**
-                 * Get choose address data
-                 */
-                applicationContext?.let {
-                    val localCacheModel =
-                        ChooseAddressUtils.getLocalizingAddressData(applicationContext)
-                    dynamicChannelPlainResponse.setAndEvaluateHomeChooseAddressData(
-                        HomeChooseAddressData(isActive = true)
-                            .setLocalCacheModel(localCacheModel)
-                    )
-                }
-
-                if (userSessionInterface.isLoggedIn) {
-                    /**
-                     * Get header data
-                     */
-                    if (currentHeaderDataModel == null) {
-                        currentHeaderDataModel =
-                            homeBalanceWidgetUseCase.onGetBalanceWidgetData(
-                                previousHeaderDataModel
-                            )
-                        previousHeaderDataModel = currentHeaderDataModel
-                    }
-                    currentHeaderDataModel?.let {
-                        updateHeaderData(it, dynamicChannelPlainResponse)
-                        emit(dynamicChannelPlainResponse)
-                    }
-                }
-
-                if (isCacheDc) {
-                    /**
-                     * Emit cache data
-                     */
-                    emit(dynamicChannelPlainResponse)
-                } else {
-                    /**
-                     * Get Dynamic channel external data
-                     * only on non cache
-                     */
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        CarouselPlayWidgetDataModel,
-                        PlayWidgetState>(
-                        bundleParam = {
-                            Bundle().apply {
-                                putString(
-                                    HomePlayRepository.KEY_WIDGET_LAYOUT,
-                                    it.homeChannel.layout
-                                )
-                            }
-                        },
-                        deleteWidgetWhen = {
-                            it?.model?.items?.isEmpty() == true
-                        },
-                        widgetRepository = homePlayRepository
-                    ) { visitableFound, data, position ->
-                        visitableFound.copy(widgetState = data)
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        ReviewDataModel,
-                        SuggestedProductReview>(widgetRepository = homeReviewSuggestedRepository) { visitableFound, data, position ->
-                        visitableFound.copy(suggestedProductReview = data)
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        PopularKeywordListDataModel,
-                        HomeWidget.PopularKeywordQuery>(widgetRepository = homePopularKeywordRepository) { visitableFound, data, position ->
-                        val resultList = convertPopularKeywordDataList(data.data)
-
-                        visitableFound.copy(
-                            title = data.data.title,
-                            subTitle = data.data.subTitle,
-                            popularKeywordList = resultList,
-                            isErrorLoad = false
-                        )
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
-                        MissionWidgetListDataModel,
-                        HomeMissionWidgetData.HomeMissionWidget>(
-                        widgetRepository = homeMissionWidgetRepository,
-                        bundleParam = {
-                            Bundle().apply {
-                                putString(
-                                    GetMissionWidget.BANNER_LOCATION_PARAM,
-                                    homeChooseAddressRepository.getRemoteData()
-                                        ?.convertToLocationParams()
-                                )
-                            }
-                        },
-                        handleOnFailed = { visitableFound ->
-                            visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
-                        },
-                        mapToWidgetData = { visitableFound, data, _ ->
-                            val resultList =
-                                LazyLoadDynamicChannelHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
-                            visitableFound.copy(
-                                missionWidgetList = resultList,
-                                status = MissionWidgetListDataModel.STATUS_SUCCESS
-                            )
-                        }
-                    )
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
-                        TodoWidgetListDataModel,
-                        HomeTodoWidgetData.HomeTodoWidget>(
-                        widgetRepository = homeTodoWidgetRepository,
-                        bundleParam = {
-                            Bundle().apply {
-                                putString(
-                                    GetTodoWidgetUseCase.LOCATION_PARAM,
-                                    homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
-                                )
-                                putString(
-                                    GetTodoWidgetUseCase.PARAM,
-                                    it.channelModel.widgetParam
-                                )
-                            }
-                        },
-                        handleOnFailed = { visitableFound ->
-                            visitableFound.copy(status = TodoWidgetListDataModel.STATUS_ERROR)
-                        },
-                        mapToWidgetData = { visitableFound, data, _ ->
-                            val resultList =
-                                LazyLoadDynamicChannelHelper.convertTodoWidgetDataList(data.getHomeTodoWidget.todos)
-                            visitableFound.copy(
-                                todoWidgetList = resultList,
-                                status = TodoWidgetListDataModel.STATUS_SUCCESS
-                            )
-                        }
-                    )
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        FeaturedShopDataModel,
-                        List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>>(
-                        widgetRepository = homeHeadlineAdsRepository,
-                        bundleParam = {
-                            Bundle().apply {
-                                putString(
-                                    HomeHeadlineAdsRepository.WIDGET_PARAM,
-                                    it.channelModel.widgetParam
-                                )
-                            }
-                        },
-                        deleteWidgetWhen = {
-                            it?.isEmpty() == true
-                        }
-                    ) { visitableFound, data, position ->
-                        visitableFound.copy(
-                            channelModel = visitableFound.channelModel.copy(
-                                channelGrids = data.mappingTopAdsHeaderToChannelGrid()
-                            ),
-                            state = FeaturedShopDataModel.STATE_READY
-                        )
-                    }
-
-                    getOldBestSellerData(dynamicChannelPlainResponse)
-
-                    getBestSellerRevampData(dynamicChannelPlainResponse)
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        HomeTopAdsBannerDataModel,
-                        ArrayList<TopAdsImageViewModel>>(
-                        widgetRepository = homeTopadsImageRepository,
-                        iterateList = true,
-                        onWidgetExist = { size ->
-                            val currentPage = topadsTdnPage
-                            currentPage.toIntOrNull()?.let {
-                                val nextPage = ((it + 1) + size)
-                                dynamicChannelPlainResponse.topadsPage = nextPage.toString()
-                            }
-                            emit(dynamicChannelPlainResponse)
-                        },
-                        bundleParam = {
-                            val currentPage = topadsTdnPage
-                            currentPage.toIntOrNull()?.let {
-                                val nextPage = (it + 1)
-                                topadsTdnPage = nextPage.toString()
-                            }
-                            Bundle().apply {
-                                putString(
-                                    HomeTopadsImageRepository.Companion.TOP_ADS_PAGE,
-                                    topadsTdnPage
-                                )
-                            }
-                        },
-                        deleteWidgetWhen = {
-                            it?.isEmpty() == true
-                        }
-                    ) { visitableFound, data, position ->
-                        var newTopAdsModel = visitableFound.copy()
-                        if (data.isNotEmpty()) {
-                            newTopAdsModel = visitableFound.copy(topAdsImageViewModel = data[0])
-                        }
-                        newTopAdsModel
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        HomeTopAdsVerticalBannerDataModel,
-                        ArrayList<TopAdsImageViewModel>>(
-                        widgetRepository = homeTopadsImageRepository,
-                        iterateList = true,
-                        bundleParam = {
-                            Bundle().apply {
-                                putString(
-                                    HomeTopadsImageRepository.Companion.TOP_ADS_BANNER_TYPE,
-                                    HomeTopadsImageRepository.Companion.VERTICAL
-                                )
-                            }
-                        },
-                        deleteWidgetWhen = {
-                            it?.isEmpty() == true
-                        }
-                    ) { visitableFound, data, _ ->
-                        var newTopAdsModel = visitableFound.copy()
-                        if (data.isNotEmpty()) {
-                            newTopAdsModel = visitableFound.copy(topAdsImageViewModelList = data)
-                        }
-                        newTopAdsModel
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        ReminderWidgetModel,
-                        RechargeRecommendation>(
-                        widgetRepository = homeRechargeRecommendationRepository,
-                        predicate = {
-                            it?.source == ReminderEnum.RECHARGE
-                        }
-                    ) { visitableFound, data, position ->
-                        val newFindRechargeRecommendationViewModel = visitableFound.copy(
-                            data = ReminderWidgetMapper.mapperRechargetoReminder(data),
-                            source = ReminderEnum.RECHARGE
-                        )
-                        newFindRechargeRecommendationViewModel
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        ReminderWidgetModel,
-                        SalamWidget>(
-                        widgetRepository = homeSalamWidgetRepository,
-                        predicate = {
-                            it?.source == ReminderEnum.SALAM
-                        }
-                    ) { visitableFound, data, position ->
-                        val newFindRechargeRecommendationViewModel = visitableFound.copy(
-                            data = ReminderWidgetMapper.mapperSalamtoReminder(data),
-                            source = ReminderEnum.SALAM
-                        )
-                        newFindRechargeRecommendationViewModel
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        ShopFlashSaleWidgetDataModel,
-                        List<RecommendationWidget>>(
-                        widgetRepository = homeRecommendationRepository,
-                        bundleParam = {
-                            val shopId = it.tabList.firstOrNull { it.isActivated }?.channelGrid?.id.orEmpty()
-                            bundleOf(
-                                HomeRecommendationRepository.PAGE_NAME to it.channelModel.pageName,
-                                HomeRecommendationRepository.QUERY_PARAM to it.channelModel.widgetParam,
-                                HomeRecommendationRepository.SHOP_ID to shopId
-                            )
-                        },
-                    ) { visitableFound, data, position ->
-                        ShopFlashSaleMapper.mapShopFlashSaleItemList(visitableFound, data)
-                    }
-
-                    emit(
-                        dynamicChannelPlainResponse.copy(
-                            isCache = false
-                        )
-                    )
-
-                    val needToGetRecom =
-                        dynamicChannelPlainResponse.evaluateRecommendationSection(currentHomeRecom = localHomeRecommendationFeedDataModel)
-                    if (needToGetRecom && dynamicChannelPlainResponse.list.size > MINIMUM_DC_TO_SHOW_RECOM) {
-                        getFeedTabData(dynamicChannelPlainResponse)
-                    }
-                }
-
-                emit(
-                    dynamicChannelPlainResponse.copy(
-                        isCache = false,
-                        flowCompleted = true
-                    )
-                )
-                isCacheDc = false
-            }
+            getDynamicChannelFlow(it, false)
         }
 
         return merge(homeAtfCacheFlow, homeDynamicChannelFlow).onEach {
             isCache = false
+        }
+    }
+
+    @FlowPreview
+    @ExperimentalCoroutinesApi
+    fun getNewHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
+        val headerVisitables = listOf(
+            HomeHeaderDataModel(
+                headerDataModel = HeaderDataModel(
+                    isUserLogin = userSessionInterface.isLoggedIn
+                )
+            )
+        )
+
+        val atfFlow = homeAtfUseCase.flow.map {
+            HomeDynamicChannelModel(
+                list = it?.mapToVisitableList().orEmpty(),
+                isCache = it?.isCache.orTrue()
+            )
+        }
+
+        val dynamicChannelFlow = getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
+            getDynamicChannelFlow(it, isNewMechanism = true)
+        }
+
+        return combine(atfFlow, dynamicChannelFlow) { atf, dc ->
+            val atfVisitables = atf.list
+            val dcVisitables = dc.list
+            val combinedList = headerVisitables + atfVisitables + dcVisitables
+            dc.copy(list = combinedList)
+        }
+    }
+
+    private fun getDynamicChannelFlow(
+        homeData: HomeData?,
+        isNewMechanism: Boolean = false,
+    ): Flow<HomeDynamicChannelModel> {
+        return flow<HomeDynamicChannelModel> {
+            topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
+
+            val dynamicChannelPlainResponse = if(isNewMechanism)
+                homeDataMapper.mapDynamicChannel(
+                    homeData = homeData,
+                    isCache = isCacheDc
+                )
+            else
+                homeDataMapper.mapToHomeRevampViewModel(
+                    homeData = homeData,
+                    isCache = isCacheDc
+                )
+
+            /**
+             * Get choose address data
+             */
+            applicationContext?.let {
+                val localCacheModel =
+                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)
+                dynamicChannelPlainResponse.setAndEvaluateHomeChooseAddressData(
+                    HomeChooseAddressData(isActive = true)
+                        .setLocalCacheModel(localCacheModel)
+                )
+            }
+
+            if (userSessionInterface.isLoggedIn) {
+                /**
+                 * Get header data
+                 */
+                if (currentHeaderDataModel == null) {
+                    currentHeaderDataModel =
+                        homeBalanceWidgetUseCase.onGetBalanceWidgetData(
+                            previousHeaderDataModel
+                        )
+                    previousHeaderDataModel = currentHeaderDataModel
+                }
+                currentHeaderDataModel?.let {
+                    updateHeaderData(it, dynamicChannelPlainResponse)
+                    emit(dynamicChannelPlainResponse)
+                }
+            }
+
+            if (isCacheDc) {
+                /**
+                 * Emit cache data
+                 */
+                emit(dynamicChannelPlainResponse)
+            } else {
+                /**
+                 * Get Dynamic channel external data
+                 * only on non cache
+                 */
+
+                dynamicChannelPlainResponse.getWidgetDataIfExist<
+                    CarouselPlayWidgetDataModel,
+                    PlayWidgetState>(
+                    bundleParam = {
+                        Bundle().apply {
+                            putString(
+                                HomePlayRepository.KEY_WIDGET_LAYOUT,
+                                it.homeChannel.layout
+                            )
+                        }
+                    },
+                    deleteWidgetWhen = {
+                        it?.model?.items?.isEmpty() == true
+                    },
+                    widgetRepository = homePlayRepository
+                ) { visitableFound, data, position ->
+                    visitableFound.copy(widgetState = data)
+                }
+
+                dynamicChannelPlainResponse.getWidgetDataIfExist<
+                    ReviewDataModel,
+                    SuggestedProductReview>(widgetRepository = homeReviewSuggestedRepository) { visitableFound, data, position ->
+                    visitableFound.copy(suggestedProductReview = data)
+                }
+
+                dynamicChannelPlainResponse.getWidgetDataIfExist<
+                    PopularKeywordListDataModel,
+                    HomeWidget.PopularKeywordQuery>(widgetRepository = homePopularKeywordRepository) { visitableFound, data, position ->
+                    val resultList = convertPopularKeywordDataList(data.data)
+
+                    visitableFound.copy(
+                        title = data.data.title,
+                        subTitle = data.data.subTitle,
+                        popularKeywordList = resultList,
+                        isErrorLoad = false
+                    )
+                }
+
+                dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
+                    MissionWidgetListDataModel,
+                    HomeMissionWidgetData.HomeMissionWidget>(
+                    widgetRepository = homeMissionWidgetRepository,
+                    bundleParam = {
+                        Bundle().apply {
+                            putString(
+                                GetMissionWidget.BANNER_LOCATION_PARAM,
+                                homeChooseAddressRepository.getRemoteData()
+                                    ?.convertToLocationParams()
+                            )
+                        }
+                    },
+                    handleOnFailed = { visitableFound ->
+                        visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
+                    },
+                    mapToWidgetData = { visitableFound, data, _ ->
+                        val resultList =
+                            LazyLoadDynamicChannelHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
+                        visitableFound.copy(
+                            missionWidgetList = resultList,
+                            status = MissionWidgetListDataModel.STATUS_SUCCESS
+                        )
+                    }
+                )
+
+                dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
+                    TodoWidgetListDataModel,
+                    HomeTodoWidgetData.HomeTodoWidget>(
+                    widgetRepository = homeTodoWidgetRepository,
+                    bundleParam = {
+                        Bundle().apply {
+                            putString(
+                                GetTodoWidgetUseCase.LOCATION_PARAM,
+                                homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                            )
+                            putString(
+                                GetTodoWidgetUseCase.PARAM,
+                                it.channelModel.widgetParam
+                            )
+                        }
+                    },
+                    handleOnFailed = { visitableFound ->
+                        visitableFound.copy(status = TodoWidgetListDataModel.STATUS_ERROR)
+                    },
+                    mapToWidgetData = { visitableFound, data, _ ->
+                        val resultList =
+                            LazyLoadDynamicChannelHelper.convertTodoWidgetDataList(data.getHomeTodoWidget.todos)
+                        visitableFound.copy(
+                            todoWidgetList = resultList,
+                            status = TodoWidgetListDataModel.STATUS_SUCCESS
+                        )
+                    }
+                )
+
+                dynamicChannelPlainResponse.getWidgetDataIfExist<
+                    FeaturedShopDataModel,
+                    List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>>(
+                    widgetRepository = homeHeadlineAdsRepository,
+                    bundleParam = {
+                        Bundle().apply {
+                            putString(
+                                HomeHeadlineAdsRepository.WIDGET_PARAM,
+                                it.channelModel.widgetParam
+                            )
+                        }
+                    },
+                    deleteWidgetWhen = {
+                        it?.isEmpty() == true
+                    }
+                ) { visitableFound, data, position ->
+                    visitableFound.copy(
+                        channelModel = visitableFound.channelModel.copy(
+                            channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                        ),
+                        state = FeaturedShopDataModel.STATE_READY
+                    )
+                }
+
+                getOldBestSellerData(dynamicChannelPlainResponse)
+
+                getBestSellerRevampData(dynamicChannelPlainResponse)
+
+                dynamicChannelPlainResponse.getWidgetDataIfExist<
+                    HomeTopAdsBannerDataModel,
+                    ArrayList<TopAdsImageViewModel>>(
+                    widgetRepository = homeTopadsImageRepository,
+                    iterateList = true,
+                    onWidgetExist = { size ->
+                        val currentPage = topadsTdnPage
+                        currentPage.toIntOrNull()?.let {
+                            val nextPage = ((it + 1) + size)
+                            dynamicChannelPlainResponse.topadsPage = nextPage.toString()
+                        }
+                        emit(dynamicChannelPlainResponse)
+                    },
+                    bundleParam = {
+                        val currentPage = topadsTdnPage
+                        currentPage.toIntOrNull()?.let {
+                            val nextPage = (it + 1)
+                            topadsTdnPage = nextPage.toString()
+                        }
+                        Bundle().apply {
+                            putString(
+                                HomeTopadsImageRepository.Companion.TOP_ADS_PAGE,
+                                topadsTdnPage
+                            )
+                        }
+                    },
+                    deleteWidgetWhen = {
+                        it?.isEmpty() == true
+                    }
+                ) { visitableFound, data, position ->
+                    var newTopAdsModel = visitableFound.copy()
+                    if (data.isNotEmpty()) {
+                        newTopAdsModel = visitableFound.copy(topAdsImageViewModel = data[0])
+                    }
+                    newTopAdsModel
+                }
+
+                dynamicChannelPlainResponse.getWidgetDataIfExist<
+                    HomeTopAdsVerticalBannerDataModel,
+                    ArrayList<TopAdsImageViewModel>>(
+                    widgetRepository = homeTopadsImageRepository,
+                    iterateList = true,
+                    bundleParam = {
+                        Bundle().apply {
+                            putString(
+                                HomeTopadsImageRepository.Companion.TOP_ADS_BANNER_TYPE,
+                                HomeTopadsImageRepository.Companion.VERTICAL
+                            )
+                        }
+                    },
+                    deleteWidgetWhen = {
+                        it?.isEmpty() == true
+                    }
+                ) { visitableFound, data, _ ->
+                    var newTopAdsModel = visitableFound.copy()
+                    if (data.isNotEmpty()) {
+                        newTopAdsModel = visitableFound.copy(topAdsImageViewModelList = data)
+                    }
+                    newTopAdsModel
+                }
+
+                dynamicChannelPlainResponse.getWidgetDataIfExist<
+                    ReminderWidgetModel,
+                    RechargeRecommendation>(
+                    widgetRepository = homeRechargeRecommendationRepository,
+                    predicate = {
+                        it?.source == ReminderEnum.RECHARGE
+                    }
+                ) { visitableFound, data, position ->
+                    val newFindRechargeRecommendationViewModel = visitableFound.copy(
+                        data = ReminderWidgetMapper.mapperRechargetoReminder(data),
+                        source = ReminderEnum.RECHARGE
+                    )
+                    newFindRechargeRecommendationViewModel
+                }
+
+                dynamicChannelPlainResponse.getWidgetDataIfExist<
+                    ReminderWidgetModel,
+                    SalamWidget>(
+                    widgetRepository = homeSalamWidgetRepository,
+                    predicate = {
+                        it?.source == ReminderEnum.SALAM
+                    }
+                ) { visitableFound, data, position ->
+                    val newFindRechargeRecommendationViewModel = visitableFound.copy(
+                        data = ReminderWidgetMapper.mapperSalamtoReminder(data),
+                        source = ReminderEnum.SALAM
+                    )
+                    newFindRechargeRecommendationViewModel
+                }
+
+                dynamicChannelPlainResponse.getWidgetDataIfExist<
+                    ShopFlashSaleWidgetDataModel,
+                    List<RecommendationWidget>>(
+                    widgetRepository = homeRecommendationRepository,
+                    bundleParam = {
+                        val shopId = it.tabList.firstOrNull { it.isActivated }?.channelGrid?.id.orEmpty()
+                        bundleOf(
+                            HomeRecommendationRepository.PAGE_NAME to it.channelModel.pageName,
+                            HomeRecommendationRepository.QUERY_PARAM to it.channelModel.widgetParam,
+                            HomeRecommendationRepository.SHOP_ID to shopId
+                        )
+                    },
+                ) { visitableFound, data, position ->
+                    ShopFlashSaleMapper.mapShopFlashSaleItemList(visitableFound, data)
+                }
+
+                emit(
+                    dynamicChannelPlainResponse.copy(
+                        isCache = false
+                    )
+                )
+
+                val needToGetRecom =
+                    dynamicChannelPlainResponse.evaluateRecommendationSection(currentHomeRecom = localHomeRecommendationFeedDataModel)
+                if (needToGetRecom && dynamicChannelPlainResponse.list.size > MINIMUM_DC_TO_SHOW_RECOM) {
+                    getFeedTabData(dynamicChannelPlainResponse)
+                }
+            }
+
+            emit(
+                dynamicChannelPlainResponse.copy(
+                    isCache = false,
+                    flowCompleted = true
+                )
+            )
+            isCacheDc = false
         }
     }
 

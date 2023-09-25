@@ -9,34 +9,56 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.constant.AtfKey
 
 object AtfMapper {
-    fun com.tokopedia.home.beranda.data.model.AtfData.mapRemoteAtfData(): AtfData {
+    fun mapToDomainAtfData(
+        position: Int,
+        data: com.tokopedia.home.beranda.data.model.AtfData
+    ): AtfData {
         return AtfData(
             atfMetadata = AtfMetadata(
-                id = id,
-                name = name,
-                component = component,
-                param = param,
-                isOptional = isOptional,
+                id = data.id,
+                position = position,
+                name = data.name,
+                component = data.component,
+                param = data.param,
+                isOptional = data.isOptional,
             ),
             isCache = false,
         )
     }
 
-    fun AtfCacheEntity.mapCachedAtfData(): AtfData {
+    fun mapRemoteToCache(
+        position: Int,
+        data: com.tokopedia.home.beranda.data.model.AtfData
+    ): AtfCacheEntity {
+        return AtfCacheEntity(
+            id = data.id,
+            position = position,
+            name = data.name,
+            component = data.component,
+            param = data.param,
+            isOptional = data.isOptional,
+            status = AtfKey.STATUS_LOADING,
+        )
+    }
+
+    fun mapToDomainAtfData(
+        data: AtfCacheEntity,
+    ): AtfData {
         return AtfData(
              atfMetadata = AtfMetadata(
-                id = id,
-                name = name,
-                component = component,
-                param = param,
-                isOptional = isOptional,
+                 id = data.id,
+                 position = data.position,
+                 name = data.name,
+                 component = data.component,
+                 param = data.param,
+                 isOptional = data.isOptional,
             ),
-            atfContent = this.getAtfContent(),
+            atfContent = data.getAtfContent(),
             isCache = true,
         )
     }
 
-    fun AtfCacheEntity.getAtfContent(): AtfContent? {
+    private fun AtfCacheEntity.getAtfContent(): AtfContent? {
         return when(this.component) {
             AtfKey.TYPE_BANNER -> content?.getAtfContent<BannerDataModel>()
             AtfKey.TYPE_ICON -> content?.getAtfContent<DynamicHomeIcon>()
@@ -44,7 +66,7 @@ object AtfMapper {
         }
     }
 
-    inline fun <reified T> String.getAtfContent(): T? {
+    private inline fun <reified T> String.getAtfContent(): T? {
         val gson = Gson()
         return gson.fromJson(this, T::class.java)
     }
@@ -54,7 +76,7 @@ object AtfMapper {
         listAtfData.forEachIndexed { index, value ->
             value.atfContent.run {
                 when(this) {
-                    is BannerDataModel -> this.asVisitable(index, value.isCache)
+                    is BannerDataModel -> visitables.add(this.asVisitable(index, value.isCache))
                 }
             }
         }

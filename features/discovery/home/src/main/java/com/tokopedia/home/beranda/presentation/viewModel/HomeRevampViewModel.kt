@@ -45,6 +45,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -98,7 +99,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>,
     private val homeTodoWidgetUseCase: Lazy<HomeTodoWidgetUseCase>,
     private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>,
-    private val homeRateLimit: RateLimiter<String>
+    private val homeRateLimit: RateLimiter<String>,
+    private val homeRemoteConfigController: HomeRemoteConfigController,
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -162,7 +164,11 @@ open class HomeRevampViewModel @Inject constructor(
     var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
 
-    private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> { return homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io) }
+    private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
+        return if(homeRemoteConfigController.isUsingNewAtf()) {
+            homeUseCase.get().getNewHomeDataFlow().flowOn(homeDispatcher.get().io)
+        } else homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
+    }
 
     var getHomeDataJob: Job? = null
 
