@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
 import com.tokopedia.product.detail.databinding.ViewProductRecommendationVerticalBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -34,7 +34,12 @@ class ProductRecommendationVerticalViewHolder(
             setOnClickListener { onClickRecommendation(item, element.position) }
         }
 
-        itemView.addOnImpressionListener(element.impressHolder) {
+        itemView.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name(),
+            useHolders = listener.isCacheable()
+        ) {
             onImpressRecommendation(item, element.position)
         }
     }

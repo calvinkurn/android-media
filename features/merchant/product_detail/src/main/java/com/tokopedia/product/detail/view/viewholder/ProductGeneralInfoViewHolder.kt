@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import android.view.ViewGroup.LayoutParams
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
@@ -12,6 +11,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicGeneralInfoBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicInfoContentBinding
@@ -63,7 +63,12 @@ class ProductGeneralInfoViewHolder(
     }
 
     private fun ItemDynamicInfoContentBinding.impressComponent(element: ProductGeneralInfoDataModel) {
-        root.addOnImpressionListener(holder = element.impressHolder) {
+        root.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isCacheable()
+        ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }

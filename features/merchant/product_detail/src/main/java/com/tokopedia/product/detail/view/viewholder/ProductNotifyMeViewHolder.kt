@@ -3,8 +3,8 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -31,7 +31,12 @@ class ProductNotifyMeViewHolder(
             campaignRibbon?.setDynamicProductDetailListener(listener)
             campaignRibbon?.setComponentTrackDataModel(trackDataModel)
             campaignRibbon?.renderUpComingCampaignRibbon(element, element.upcomingNplData.upcomingType)
-            view.addOnImpressionListener(element.impressHolder) {
+            view.addOnImpressionListener(
+                holder = element.impressHolder,
+                holders = listener.getImpressionHolders(),
+                name = element.name,
+                useHolders = listener.isCacheable()
+            ) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
         } else {

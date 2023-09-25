@@ -4,11 +4,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -116,7 +116,12 @@ class ProductTickerInfoViewHolder(private val view: View,
                                       tickerType: String) {
         val tickerTypeInt = if (tickerType == "warning") 0 else 1
         itemView.apply {
-            addOnImpressionListener(impressHolder) {
+            addOnImpressionListener(
+                holder = impressHolder,
+                holders = listener.getImpressionHolders(),
+                name = tickerTitle + tickerDescription + tickerType,
+                useHolders = listener.isCacheable()
+            ) {
                 DynamicProductDetailTracking.Impression.eventTickerImpression(tickerTypeInt,
                         tickerTitle,
                         tickerDescription)

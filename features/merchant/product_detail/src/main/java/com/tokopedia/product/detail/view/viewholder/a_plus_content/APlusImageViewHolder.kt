@@ -5,13 +5,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
 import com.tokopedia.product.detail.databinding.ItemAPlusImageBinding
@@ -104,7 +104,12 @@ class APlusImageViewHolder(
     }
 
     private fun setupImpressionListener(element: APlusImageUiModel) {
-        binding.root.addOnImpressionListener(element.impressHolder) {
+        binding.root.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isCacheable()
+        ) {
             listener.onImpressComponent(getComponentTrackData(element))
             listener.onImpressAPlus(element.trackerData.copy(componentTrackData = getComponentTrackData(element)))
         }

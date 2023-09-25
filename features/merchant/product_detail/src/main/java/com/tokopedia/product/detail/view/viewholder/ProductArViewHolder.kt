@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -38,7 +39,12 @@ class ProductArViewHolder(
         }
 
         if (element.message.isNotEmpty()) {
-            itemView.addOnImpressionListener(element.impressHolder) {
+            itemView.addOnImpressionListener(
+                holder = element.impressHolder,
+                holders = listener.getImpressionHolders(),
+                name = element.name,
+                useHolders = listener.isCacheable()
+            ) {
                 listener.showArCoachMark(containerAr)
             }
         }

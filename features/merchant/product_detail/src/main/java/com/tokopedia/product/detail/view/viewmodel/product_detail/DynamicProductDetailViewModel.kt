@@ -288,7 +288,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
-    var impressionHolders = mutableListOf<String>()
+    val impressionHolders = mutableListOf<String>()
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null

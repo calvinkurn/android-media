@@ -3,12 +3,12 @@ package com.tokopedia.product.detail.view.viewholder.product_detail_info.nested_
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
@@ -121,7 +121,12 @@ class ItemProductDetailInfoViewHolder(
 
     private fun setImpression(data: ProductDetailInfoContent, trackData: ComponentTrackDataModel?) {
         if (data.key == Content.KEY_PANDUAN_UKURAN) {
-            binding.root.addOnImpressionListener(data.impressionHolder) {
+            binding.root.addOnImpressionListener(
+                holder = data.impressionHolder,
+                holders = listener.getImpressionHolders(),
+                name = data.hashCode().toString(),
+                useHolders = listener.isCacheable()
+            ) {
                 listener.onAnnotationGenericImpression(
                     trackData = annotationTrackData.copy(
                         parentTrackData = trackData,

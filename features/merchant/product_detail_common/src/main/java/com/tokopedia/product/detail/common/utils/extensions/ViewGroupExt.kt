@@ -34,10 +34,10 @@ fun View.addOnImpressionListener(
     holder: ImpressHolder,
     holders: MutableList<String>,
     name: String,
-    enable: Boolean,
+    useHolders: Boolean,
     onView: () -> Unit
 ) {
-    if (enable) {
+    if (useHolders) {
         addOnPdpImpressionListener(holders, name, onView)
     } else {
         addOnImpressionListener(holder, onView)

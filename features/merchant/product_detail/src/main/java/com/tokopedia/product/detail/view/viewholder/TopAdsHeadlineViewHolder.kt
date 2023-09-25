@@ -3,10 +3,10 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -106,7 +106,12 @@ class TopAdsHeadlineViewHolder(
         topadsHeadlineView.show()
         topadsHeadlineView.displayAds(cpmModel)
         topadsHeadlineUiModel?.impressHolder?.let {
-            view.addOnImpressionListener(it) {
+            view.addOnImpressionListener(
+                holder = it,
+                holders = listener.getImpressionHolders(),
+                name = cpmModel.data.hashCode().toString(),
+                useHolders = listener.isCacheable()
+            ) {
                 topadsHeadlineUiModel?.let { element ->
                     listener.onImpressComponent(getComponentTrackData(element))
                 }

@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.databinding.ItemHierarchycalSocialProofStockBinding
@@ -50,7 +51,12 @@ class ProductMiniSocialProofStockViewHolder(
                 }
                 hideLoading()
                 setAdapterData(element)
-                addOnImpressionListener(element.impressHolder) {
+                addOnImpressionListener(
+                    holder = element.impressHolder,
+                    holders = listener.getImpressionHolders(),
+                    name = element.name,
+                    useHolders = listener.isCacheable()
+                ) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
             }

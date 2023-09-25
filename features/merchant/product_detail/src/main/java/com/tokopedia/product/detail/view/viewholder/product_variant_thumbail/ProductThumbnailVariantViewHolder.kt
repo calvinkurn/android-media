@@ -86,7 +86,7 @@ class ProductThumbnailVariantViewHolder(
             holder = element.impressHolder,
             holders = pdpListener.getImpressionHolders(),
             name = element.name,
-            enable = pdpListener.isCacheable()
+            useHolders = pdpListener.isCacheable()
         ) {
             val trackData = getComponentTrackData(element)
             pdpListener.onImpressComponent(

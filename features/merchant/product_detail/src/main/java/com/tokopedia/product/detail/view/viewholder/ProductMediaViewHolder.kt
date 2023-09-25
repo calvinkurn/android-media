@@ -2,8 +2,8 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -27,7 +27,12 @@ class ProductMediaViewHolder(private val view: View,
         element.shouldAnimateLabel = false
         element.shouldUpdateImage = false
 
-        view.addOnImpressionListener(element.impressHolder) {
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isCacheable()
+        ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }

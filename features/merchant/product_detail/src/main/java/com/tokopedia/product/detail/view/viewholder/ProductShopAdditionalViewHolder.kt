@@ -1,13 +1,13 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicShopAdditionalBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicShopAdditionalContentBinding
@@ -65,7 +65,12 @@ class ProductShopAdditionalViewHolder(
 
     private fun impressComponent(element: ProductShopAdditionalDataModel) {
         val componentTrack = getComponentTrackData(element)
-        itemView.addOnImpressionListener(element.impressHolder) {
+        itemView.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isCacheable()
+        ) {
             listener.onImpressComponent(componentTrackDataModel = componentTrack)
         }
     }
