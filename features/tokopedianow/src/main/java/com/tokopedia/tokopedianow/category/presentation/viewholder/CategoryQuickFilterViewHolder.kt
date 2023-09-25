@@ -9,6 +9,7 @@ import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategorySortFilterItemUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryQuickFilterBinding
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
@@ -41,18 +42,12 @@ class CategoryQuickFilterViewHolder(
                     sortFilterItem.listener = {
                         listener?.applyFilter(filter, option)
                     }
-                    val isActive = it.chipType == ChipsUnify.TYPE_SELECTED
-                    trackQuickFilterChipImpression(option, isActive)
                 } else {
                     val listener = {
                         openL3FilterPage(filter)
                     }
                     sortFilterItem.chevronListener = listener
                     sortFilterItem.listener = listener
-                    options.forEach { option ->
-                        val isActive = option.name == filter.title
-                        trackQuickFilterChipImpression(option, isActive)
-                    }
                 }
                 sortFilterItem
             }
@@ -78,13 +73,29 @@ class CategoryQuickFilterViewHolder(
                 if(chipItemList.isNotEmpty()) {
                     chipItemList.forEachIndexed { index, filterItem ->
                         val item = quickFilter.itemList[index]
-                        filterItem.title = item.filter.title
+                        val filter = item.filter
+                        filterItem.title = filter.title
                         filterItem.refChipUnify.chipType = item.chipType
+                        trackActiveFilterImpression(item)
                     }
                     indicatorCounter = getSortFilterCount(quickFilter.mapParameter)
                 } else {
                     bind(quickFilter)
                 }
+            }
+        }
+    }
+
+    private fun trackActiveFilterImpression(item: CategorySortFilterItemUiModel) {
+        val filter = item.filter
+        val options = filter.options
+        val isActive = item.chipType == ChipsUnify.TYPE_SELECTED
+        if (options.count() == ONE_OPTION_COUNT && isActive) {
+            val option = options.first()
+            trackQuickFilterChipImpression(option, true)
+        } else {
+            options.filter { it.name == filter.title }.forEach { option ->
+                trackQuickFilterChipImpression(option, true)
             }
         }
     }
