@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editor.R
+import com.tokopedia.editor.analytics.image.placement.ImagePlacementAnalytics
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
@@ -29,6 +30,9 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var analytics: ImagePlacementAnalytics
 
     private val viewModel: PlacementImageViewModel by viewModels { viewModelFactory }
 
@@ -64,6 +68,7 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     override fun onContinueClicked() {
+        analytics.editSaveClick()
         getFragment().let {
             viewModel.updateLoadingState(true)
             it.captureImage()

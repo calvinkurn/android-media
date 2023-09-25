@@ -1,12 +1,15 @@
 package com.tokopedia.editor.ui.main
 
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.data.repository.VideoFlattenRepository
 import com.tokopedia.editor.R
+import com.tokopedia.editor.analytics.main.editor.MainEditorAnalytics
 import com.tokopedia.editor.data.repository.ImageFlattenRepository
 import com.tokopedia.editor.data.repository.FlattenParam
 import com.tokopedia.editor.ui.model.ImagePlacementModel
@@ -35,7 +38,8 @@ class MainEditorViewModel @Inject constructor(
     private val imageFlattenRepository: ImageFlattenRepository,
     private val resourceProvider: ResourceProvider,
     private val dispatchers: CoroutineDispatchers,
-    private val paramFetcher: EditorParamFetcher
+    private val paramFetcher: EditorParamFetcher,
+    private val analytics: MainEditorAnalytics
 ) : ViewModel() {
 
     private var _uiEffect = MutableSharedFlow<MainEditorEffect>(replay = 50)
@@ -72,6 +76,8 @@ class MainEditorViewModel @Inject constructor(
                 updateTextAddedState(event.isAdded)
             }
             is MainEditorEvent.AddInputTextPage -> {
+                analytics.toolTextClick()
+
                 setAction(MainEditorEffect.OpenInputText(InputTextModel.default()))
                 setAction(MainEditorEffect.ParentToolbarVisibility(false))
             }
@@ -81,10 +87,20 @@ class MainEditorViewModel @Inject constructor(
                 updateViewIdOnUiParam(event.viewId)
             }
             is MainEditorEvent.ExportMedia -> {
+                mainEditorState.value.let {
+                    analytics.finishPageClick(
+                        hasText = it.hasTextAdded,
+                        isMute = it.isRemoveAudio,
+                        isCropped = it.imagePlacementModel != null
+                    )
+                }
+
                 setAction(MainEditorEffect.ShowLoading)
                 exportFinalMedia(filePath, event.canvasTextBitmap, event.imageBitmap)
             }
             is MainEditorEvent.PlacementImagePage -> {
+                analytics.toolAdjustCropClick()
+
                 navigateToPlacementPage()
             }
             is MainEditorEvent.PlacementImageResult -> {
@@ -101,6 +117,8 @@ class MainEditorViewModel @Inject constructor(
                 _inputTextState.value = InputTextParam.reset()
             }
             is MainEditorEvent.ClickHeaderCloseButton -> {
+                analytics.backPageClick()
+
                 val currentState = mainEditorState.value
 
                 val isPlacementEdited = currentState.hasPlacementEdited()

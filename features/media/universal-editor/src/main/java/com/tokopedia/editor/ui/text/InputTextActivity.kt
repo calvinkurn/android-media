@@ -8,12 +8,12 @@ import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.editor.analytics.input.text.InputTextAnalytics
 import com.tokopedia.editor.R as editorR
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -26,6 +26,9 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var analytics: InputTextAnalytics
 
     private val viewModel: InputTextViewModel by viewModels { viewModelFactory }
 
@@ -60,6 +63,9 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     override fun onContinueClicked() {
+        analytics.editSaveClick(
+            textDetail = viewModel.getTextDetail()
+        )
         finishActivity()
     }
 
