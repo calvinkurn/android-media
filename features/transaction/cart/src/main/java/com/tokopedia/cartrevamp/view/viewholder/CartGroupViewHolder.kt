@@ -122,20 +122,21 @@ class CartGroupViewHolder(
 
         binding.tvGroupName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
-            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
-            val shopName =
-                cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
+            val shop = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData
             binding.tvGroupName.setOnClickListener {
                 actionListener.onCartShopNameClicked(
-                    shopId,
-                    shopName,
+                    shop?.shopId,
+                    shop?.shopName,
                     cartGroupHolderData.isTokoNow
                 )
             }
         } else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
             binding.tvGroupName.setOnClickListener {
                 actionListener.onCartGroupNameClicked(
-                    cartGroupHolderData.groupAppLink
+                    cartGroupHolderData.groupAppLink,
+                    cartGroupHolderData.shop.shopId,
+                    cartGroupHolderData.shop.shopName,
+                    cartGroupHolderData.isTypeOWOC()
                 )
             }
         } else {
