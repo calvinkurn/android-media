@@ -32,6 +32,9 @@ import org.hamcrest.core.AllOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.tokopedia.banner.R as bannerR
+import com.tokopedia.home_component.R as home_componentR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 @LargeTest
@@ -89,7 +92,7 @@ class RechargeHomepageInstrumentTest {
         onView(withId(R.id.digital_homepage_search_view)).check(matches(isDisplayed()))
             .perform(click())
         Thread.sleep(1000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("pulsa"))
+        onView(withId(unifycomponentsR.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("pulsa"))
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))
         viewInteraction.perform(
@@ -166,8 +169,8 @@ class RechargeHomepageInstrumentTest {
             RecyclerViewActions.scrollToPosition<ReminderWidgetViewHolder>(9)
         )
         Thread.sleep(1000)
-        onView(withId(com.tokopedia.home_component.R.id.reminder_recommendation_widget_container)).check(matches(isDisplayed()))
-        onView(withId(com.tokopedia.home_component.R.id.btn_reminder_recommendation)).perform(click())
+        onView(withId(home_componentR.id.reminder_recommendation_widget_container)).check(matches(isDisplayed()))
+        onView(withId(home_componentR.id.btn_reminder_recommendation)).perform(click())
         Thread.sleep(1000)
     }
 
@@ -239,8 +242,8 @@ class RechargeHomepageInstrumentTest {
             RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(14)
         )
         Thread.sleep(2000)
-        onView(withId(com.tokopedia.banner.R.id.banner_recyclerview)).check(matches(isDisplayed()))
-        onView(withId(com.tokopedia.banner.R.id.banner_recyclerview)).perform(
+        onView(withId(bannerR.id.banner_recyclerview)).check(matches(isDisplayed()))
+        onView(withId(bannerR.id.banner_recyclerview)).perform(
             RecyclerViewActions
                 .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click())
         )
