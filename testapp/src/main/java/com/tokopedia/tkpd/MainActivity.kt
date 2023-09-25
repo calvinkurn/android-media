@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://catalog/2670"
+        return ""
     }
 
     data class Model(
