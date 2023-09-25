@@ -2,9 +2,9 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.domain.usecase.GetAutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -26,7 +26,7 @@ class SearchPageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val repo: KeroRepository = mockk(relaxed = true)
+    private val repo: GetAutoCompleteUseCase = mockk(relaxed = true)
     private val autoCompleterMapper = AutoCompleteMapper()
 
     private lateinit var searchPageViewModel: SearchPageViewModel
@@ -45,7 +45,7 @@ class SearchPageViewModelTest {
     @Test
     fun `verify when get auto complete list success`() {
         // Given
-        coEvery { repo.getAutoComplete(any(), any(), any()) } returns AutoCompleteResponse()
+        coEvery { repo(any()) } returns AutoCompleteResponse()
 
         // When
         searchPageViewModel.getAutoCompleteList("Jakarta", "")
@@ -57,7 +57,7 @@ class SearchPageViewModelTest {
     @Test
     fun `verify when get auto complete list failed`() {
         // Given
-        coEvery { repo.getAutoComplete(any(), any(), any()) } throws defaultThrowable
+        coEvery { repo(any()) } throws defaultThrowable
 
         // When
         searchPageViewModel.getAutoCompleteList("Jakarta", "")

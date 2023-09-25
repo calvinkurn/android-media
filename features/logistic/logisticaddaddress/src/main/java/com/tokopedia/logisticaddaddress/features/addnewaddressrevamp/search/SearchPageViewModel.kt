@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.domain.param.GetAutoCompleteParam
+import com.tokopedia.logisticCommon.domain.usecase.GetAutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchPageViewModel @Inject constructor(
-    private val repo: KeroRepository,
+    private val getAutoComplete: GetAutoCompleteUseCase,
     private val autoCompleteMapper: AutoCompleteMapper
 ) : ViewModel() {
 
@@ -25,10 +26,12 @@ class SearchPageViewModel @Inject constructor(
 
     fun getAutoCompleteList(keyword: String, latlng: String) {
         viewModelScope.launch(onErrorAutoComplete) {
-            val autoComplete = repo.getAutoComplete(
-                keyword = keyword,
-                latlng = latlng,
-                isManageAddressFlow = true
+            val autoComplete = getAutoComplete(
+                GetAutoCompleteParam(
+                    keyword = keyword,
+                    latLng = latlng,
+                    isManageAddressFlow = true
+                )
             )
             _autoCompleteList.value = Success(autoCompleteMapper.mapAutoComplete(autoComplete))
         }
