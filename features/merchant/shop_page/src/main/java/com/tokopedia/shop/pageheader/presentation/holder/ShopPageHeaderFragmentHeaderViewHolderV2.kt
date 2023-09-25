@@ -402,28 +402,51 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val initialUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         val isShowRating = ratingText.isNotEmpty()
         val isShowDynamicUsp = initialUspValue.isNotEmpty()
+        val ratingTextPairHtmlColor : Pair<String, String>
         sectionShopPerformance?.shouldShowWithAction(isShowRating || isShowDynamicUsp) {}
         performanceSectionDotSeparator?.shouldShowWithAction(isShowRating && isShowDynamicUsp) {}
+        configDynamicUsp(listWidgetShopData)
+        if (isOverrideTheme) {
+            val textColorHighEmphasis = shopHeaderConfig?.colorSchema?.getColorIntValue(
+                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+            ).orZero()
+            val textColorHighEmphasisHex = shopHeaderConfig?.colorSchema?.getColorSchema(
+                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+            )?.value.orEmpty()
+            val textColorLowEmphasisHex = shopHeaderConfig?.colorSchema?.getColorSchema(
+                ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS
+            )?.value.orEmpty()
+            textDynamicUspPerformance?.setTextColor(textColorHighEmphasis)
+            performanceSectionDotSeparator?.setTextColor(textColorHighEmphasis)
+            ratingTextPairHtmlColor = Pair(textColorHighEmphasisHex, textColorLowEmphasisHex)
+        } else {
+            val textColorHighEmphasisHex = ShopUtil.getColorHexString(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+            val textColorLowEmphasisHex = ShopUtil.getColorHexString(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            )
+            ratingTextPairHtmlColor = Pair(textColorHighEmphasisHex, textColorLowEmphasisHex)
+        }
         imageRatingIcon?.shouldShowWithAction(isShowRating) {
             textRatingDescription?.apply {
-                text = MethodChecker.fromHtml(ratingText)
+                val adjustedRatingText = ratingText.replace(
+                    "\$highEmphasis",
+                    ratingTextPairHtmlColor.first
+                ).replace(
+                    "\$lowEmphasis",
+                    ratingTextPairHtmlColor.second
+                )
+                text = MethodChecker.fromHtml(adjustedRatingText)
                 setOnClickListener {
                     listenerHeader?.onShopReviewClicked(appLink)
                 }
             }
-        }
-
-        imageRatingIcon?.setOnClickListener {
-            listenerHeader?.onShopReviewClicked(appLink)
-        }
-        configDynamicUsp(listWidgetShopData)
-        if(isOverrideTheme) {
-            val textColor = shopHeaderConfig?.colorSchema?.getColorIntValue(
-                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
-            ).orZero()
-            textRatingDescription?.setTextColor(textColor)
-            textDynamicUspPerformance?.setTextColor(textColor)
-            performanceSectionDotSeparator?.setTextColor(textColor)
+            imageRatingIcon?.setOnClickListener {
+                listenerHeader?.onShopReviewClicked(appLink)
+            }
         }
     }
 

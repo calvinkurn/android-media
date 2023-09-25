@@ -20,6 +20,7 @@ data class ShopPageColorSchema(
         ICON_CTA_LINK_COLOR("iconCtaLinkColor"),
         BG_PRIMARY_COLOR("bgPrimaryColor"),
         DIVIDER("divider"),
+        NAV_TEXT_ACTIVE("navTextActive"),
     }
     @Parcelize
     data class ColorSchema(
