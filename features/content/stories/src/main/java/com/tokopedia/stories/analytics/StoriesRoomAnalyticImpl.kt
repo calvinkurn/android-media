@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
@@ -184,8 +185,23 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46051
     override fun sendViewProductCardEvent(
         eventLabel: String,
-        items: List<String>,
+        items : Map<ContentTaggedProductUiModel, Int>
     ) {
+        if (items.isEmpty()) return
+        val listOfProducts = items.map {
+            Bundle().apply {
+                putInt(Key.itemIndex, it.value)
+                putString(Key.itemId, it.key.id)
+                putString(Key.itemName, it.key.title)
+                putFloat(Key.price, when (val price = it.key.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopName, args.authorType)
+            }
+        }
         Tracker.Builder()
             .setEvent("view_item_list")
             .setEventAction("view - product card")
@@ -195,7 +211,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
             .setCustomProperty("item_list", "/stories-room - product card")
-            .setCustomProperty(Key.items, items)
+            .setCustomProperty(Key.items, listOfProducts)
             .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
@@ -207,8 +223,23 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickProductCardEvent(
         eventLabel: String,
         itemList: String,
-        items: List<String>,
+        items: List<ContentTaggedProductUiModel>,
+        position: Int,
     ) {
+        val listOfProducts = items.map {
+            Bundle().apply {
+                putInt(Key.itemIndex, position)
+                putString(Key.itemId, it.id)
+                putString(Key.itemName, it.title)
+                putFloat(Key.price, when (val price = it.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopName, args.authorType)
+            }
+        }
         Tracker.Builder()
             .setEvent(Event.selectContent)
             .setEventAction("click - product card")
@@ -218,7 +249,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
             .setCustomProperty("item_list", itemList)
-            .setCustomProperty(Key.items, items)
+            .setCustomProperty(Key.items, listOfProducts)
             .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
@@ -229,8 +260,22 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46054
     override fun sendClickBuyButtonEvent(
         eventLabel: String,
-        items: List<String>,
+        items: List<ContentTaggedProductUiModel>,
     ) {
+        val itemList = items.map {
+            Bundle().apply {
+                putString(Key.itemId, it.id)
+                putString(Key.itemName, it.title)
+                putFloat(Key.price, when (val price = it.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopName, args.authorType)
+            }
+        }
+
         Tracker.Builder()
             .setEvent(Event.add_to_cart)
             .setEventAction("click - buy button")
@@ -239,7 +284,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setCustomProperty(Key.trackerId, "46054")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty(Key.items, items)
+            .setCustomProperty(Key.items, itemList)
             .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
@@ -250,8 +295,22 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46056
     override fun sendClickAtcButtonEvent(
         eventLabel: String,
-        items: List<String>,
+        items: List<ContentTaggedProductUiModel>,
     ) {
+        val itemList = items.map {
+            Bundle().apply {
+                putString(Key.itemId, it.id)
+                putString(Key.itemName, it.title)
+                putFloat(Key.price, when (val price = it.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopName, args.authorType)
+            }
+        }
+
         Tracker.Builder()
             .setEvent(Event.add_to_cart)
             .setEventAction("click - atc button")
@@ -260,7 +319,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setCustomProperty(Key.trackerId, "46056")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
-            .setCustomProperty(Key.items, items)
+            .setCustomProperty(Key.items, itemList)
             .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
