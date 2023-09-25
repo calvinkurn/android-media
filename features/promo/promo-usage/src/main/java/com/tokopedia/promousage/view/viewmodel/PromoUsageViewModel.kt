@@ -46,6 +46,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -1024,9 +1025,48 @@ internal class PromoUsageViewModel @Inject constructor(
             if (isChangedFromInitialState()) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
                 if (hasSelectedPromo) {
-                    onApplyPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
+                    onApplyPromo(
+                        entryPoint = entryPoint,
+                        validateUsePromoRequest = validateUsePromoRequest,
+                        boPromoCodes = boPromoCodes,
+                        onSuccess = { entryPoint, validateUse, lastValidateUseRequest, appliedPromos ->
+                            _applyPromoUiAction.postValue(
+                                ApplyPromoUiAction.SuccessWithApplyPromo(
+                                    entryPoint = entryPoint,
+                                    validateUse = validateUse,
+                                    lastValidateUsePromoRequest = lastValidateUseRequest,
+                                    appliedPromos = appliedPromos
+                                )
+                            )
+                        },
+                        onFailed = { throwable ->
+                            _applyPromoUiAction.postValue(
+                                ApplyPromoUiAction.Failed(
+                                    throwable,
+                                    false
+                                )
+                            )
+                        }
+                    )
                 } else {
-                    onClearPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
+                    onClearPromo(
+                        entryPoint = entryPoint,
+                        validateUsePromoRequest = validateUsePromoRequest,
+                        boPromoCodes = boPromoCodes,
+                        onSuccess = { entryPoint, clearPromo, lastValidateUseRequest, clearedPromos ->
+                            _clearPromoUiAction.postValue(
+                                ClearPromoUiAction.Success(
+                                    entryPoint = entryPoint,
+                                    clearPromo = clearPromo,
+                                    lastValidateUseRequest = lastValidateUseRequest,
+                                    clearedPromos = clearedPromos
+                                )
+                            )
+                        },
+                        onFailed = { throwable ->
+                            _clearPromoUiAction.postValue(ClearPromoUiAction.Failed(throwable))
+                        }
+                    )
                 }
             } else {
                 _applyPromoUiAction.postValue(ApplyPromoUiAction.SuccessNoAction)
@@ -1038,20 +1078,20 @@ internal class PromoUsageViewModel @Inject constructor(
         entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>,
-        onSuccess: ((entryPoint: PromoPageEntryPoint, validateUse: ValidateUsePromoRevampUiModel, lastValidateUseRequest: ValidateUsePromoRequest) -> Unit)? = null,
+        onSuccess: ((entryPoint: PromoPageEntryPoint, validateUse: ValidateUsePromoRevampUiModel, lastValidateUseRequest: ValidateUsePromoRequest, appliedPromos: List<PromoItem>) -> Unit)? = null,
         onFailed: ((throwable: Throwable) -> Unit)? = null
     ) {
         _promoPageUiState.ifSuccess { pageState ->
             val currentItems = pageState.items.filterIsInstance<PromoItem>()
 
-            val selectedPromos = currentItems.getSelectedPromos()
+            val appliedPromos = currentItems.getSelectedPromos()
             var newValidateUseRequest = updateCurrentPromoCodeToValidateUsePromoRequest(
                 items = currentItems,
                 validateUsePromoRequest = validateUsePromoRequest
             )
             newValidateUseRequest = removeInvalidPromoCodeFromValidateUsePromoRequest(
                 validateUsePromoRequest = newValidateUseRequest,
-                selectedPromoCodes = selectedPromos.getSelectedPromoCodes(),
+                selectedPromoCodes = appliedPromos.getSelectedPromoCodes(),
                 boPromoCodes = boPromoCodes
             )
             newValidateUseRequest = newValidateUseRequest.copy(
@@ -1077,7 +1117,7 @@ internal class PromoUsageViewModel @Inject constructor(
                         entryPoint = entryPoint,
                         validateUse = validateUse,
                         lastValidateUsePromoRequest = newValidateUseRequest,
-                        selectedPromos = selectedPromos,
+                        appliedPromos = appliedPromos,
                         onSuccess = onSuccess,
                         onFailed = onFailed
                     )
@@ -1097,8 +1137,8 @@ internal class PromoUsageViewModel @Inject constructor(
         entryPoint: PromoPageEntryPoint,
         validateUse: ValidateUsePromoRevampUiModel,
         lastValidateUsePromoRequest: ValidateUsePromoRequest,
-        selectedPromos: List<PromoItem>,
-        onSuccess: ((entryPoint: PromoPageEntryPoint, validateUse: ValidateUsePromoRevampUiModel, lastValidateUseRequest: ValidateUsePromoRequest) -> Unit)? = null,
+        appliedPromos: List<PromoItem>,
+        onSuccess: ((entryPoint: PromoPageEntryPoint, validateUse: ValidateUsePromoRevampUiModel, lastValidateUseRequest: ValidateUsePromoRequest, appliedPromos: List<PromoItem>) -> Unit)? = null,
         onFailed: ((throwable: Throwable) -> Unit)? = null
     ) {
         if (validateUse.status == VALIDATE_USE_STATUS_SUCCESS && validateUse.errorCode == VALIDATE_USE_CODE_SUCCESS) {
@@ -1114,7 +1154,7 @@ internal class PromoUsageViewModel @Inject constructor(
                         entryPoint = entryPoint,
                         validateUse = validateUse,
                         lastValidateUsePromoRequest = lastValidateUsePromoRequest,
-                        selectedPromos = selectedPromos,
+                        appliedPromos = appliedPromos,
                         onSuccess = onSuccess
                     )
                 } else {
@@ -1128,9 +1168,7 @@ internal class PromoUsageViewModel @Inject constructor(
             // Response is not OK, need to show error message
             val exception = PromoErrorException(validateUse.message.joinToString(". "))
             PromoUsageLogger.logOnErrorApplyPromo(exception)
-            onFailed?.invoke(exception) ?: run {
-                _applyPromoUiAction.postValue(ApplyPromoUiAction.Failed(exception, false))
-            }
+            onFailed?.invoke(exception)
         }
     }
 
@@ -1150,21 +1188,12 @@ internal class PromoUsageViewModel @Inject constructor(
         entryPoint: PromoPageEntryPoint,
         validateUse: ValidateUsePromoRevampUiModel,
         lastValidateUsePromoRequest: ValidateUsePromoRequest,
-        selectedPromos: List<PromoItem>,
-        onSuccess: ((entryPoint: PromoPageEntryPoint, validateUse: ValidateUsePromoRevampUiModel, lastValidateUseRequest: ValidateUsePromoRequest) -> Unit)? = null
+        appliedPromos: List<PromoItem>,
+        onSuccess: ((entryPoint: PromoPageEntryPoint, validateUse: ValidateUsePromoRevampUiModel, lastValidateUseRequest: ValidateUsePromoRequest, appliedPromos: List<PromoItem>) -> Unit)? = null
     ) {
         val isGlobalSuccess = validateUse.promoUiModel.messageUiModel.state != PROMO_STATE_RED
         if (isGlobalSuccess) {
-            onSuccess?.invoke(entryPoint, validateUse, lastValidateUsePromoRequest) ?: run {
-                _applyPromoUiAction.postValue(
-                    ApplyPromoUiAction.SuccessWithApplyPromo(
-                        entryPoint = entryPoint,
-                        validateUse = validateUse,
-                        lastValidateUsePromoRequest = lastValidateUsePromoRequest,
-                        appliedPromos = selectedPromos
-                    )
-                )
-            }
+            onSuccess?.invoke(entryPoint, validateUse, lastValidateUsePromoRequest, appliedPromos)
         }
     }
 
@@ -1429,7 +1458,9 @@ internal class PromoUsageViewModel @Inject constructor(
         entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>,
-        clearPromoRequest: ClearPromoRequest = ClearPromoRequest()
+        clearPromoRequest: ClearPromoRequest = ClearPromoRequest(),
+        onSuccess: ((entryPoint: PromoPageEntryPoint, clearPromo: ClearPromoUiModel, lastValidateUseRequest: ValidateUsePromoRequest, clearedPromos: List<PromoItem>) -> Unit)? = null,
+        onFailed: ((throwable: Throwable) -> Unit)?
     ) {
         _promoPageUiState.ifSuccess { pageState ->
             val tempToBeClearedPromoCodes = arrayListOf<String>()
@@ -1617,20 +1648,18 @@ internal class PromoUsageViewModel @Inject constructor(
                             tempToBeClearedPromoCodes.contains(it.code) ||
                                 tempToBeClearedPromoCodes.contains(it.secondaryPromo.code)
                         }
-                    _clearPromoUiAction.postValue(
-                        ClearPromoUiAction.Success(
-                            entryPoint = entryPoint,
-                            clearPromo = clearPromo,
-                            lastValidateUseRequest = updatedLastValidateUseRequest,
-                            clearedPromos = clearedPromos
-                        )
+                    onSuccess?.invoke(
+                        entryPoint,
+                        clearPromo,
+                        updatedLastValidateUseRequest,
+                        clearedPromos
                     )
                 },
                 onError = { e ->
                     Timber.e(e)
                     PromoUsageIdlingResource.decrement()
                     val throwable = PromoErrorException()
-                    _clearPromoUiAction.postValue(ClearPromoUiAction.Failed(throwable))
+                    onFailed?.invoke(throwable)
                 }
             )
         }
@@ -1721,9 +1750,48 @@ internal class PromoUsageViewModel @Inject constructor(
             if (isChangedFromInitialState()) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
                 if (hasSelectedPromo) {
-                    onApplyPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
+                    onApplyPromo(
+                        entryPoint = entryPoint,
+                        validateUsePromoRequest = validateUsePromoRequest,
+                        boPromoCodes = boPromoCodes,
+                        onSuccess = { entryPoint, validateUse, lastValidateUseRequest, appliedPromos ->
+                            _applyPromoUiAction.postValue(
+                                ApplyPromoUiAction.SuccessWithApplyPromo(
+                                    entryPoint = entryPoint,
+                                    validateUse = validateUse,
+                                    lastValidateUsePromoRequest = lastValidateUseRequest,
+                                    appliedPromos = appliedPromos
+                                )
+                            )
+                        },
+                        onFailed = { throwable ->
+                            _applyPromoUiAction.postValue(
+                                ApplyPromoUiAction.Failed(
+                                    throwable,
+                                    false
+                                )
+                            )
+                        }
+                    )
                 } else {
-                    onClearPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
+                    onClearPromo(
+                        entryPoint = entryPoint,
+                        validateUsePromoRequest = validateUsePromoRequest,
+                        boPromoCodes = boPromoCodes,
+                        onSuccess = { entryPoint, clearPromo, lastValidateUseRequest, clearedPromos ->
+                            _clearPromoUiAction.postValue(
+                                ClearPromoUiAction.Success(
+                                    entryPoint = entryPoint,
+                                    clearPromo = clearPromo,
+                                    lastValidateUseRequest = lastValidateUseRequest,
+                                    clearedPromos = clearedPromos
+                                )
+                            )
+                        },
+                        onFailed = { throwable ->
+                            _clearPromoUiAction.postValue(ClearPromoUiAction.Failed(throwable))
+                        }
+                    )
                 }
             } else {
                 _applyPromoUiAction.postValue(ApplyPromoUiAction.SuccessNoAction)
@@ -1778,7 +1846,7 @@ internal class PromoUsageViewModel @Inject constructor(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
                         boPromoCodes = boPromoCodes,
-                        onSuccess = { _, validateUse, lastValidateUseRequest ->
+                        onSuccess = { entryPoint, validateUse, lastValidateUseRequest, appliedPromos ->
                             _closePromoPageUiAction.postValue(
                                 ClosePromoPageUiAction.SuccessWithApplyPromo(
                                     entryPoint = entryPoint,
@@ -1790,9 +1858,7 @@ internal class PromoUsageViewModel @Inject constructor(
                         },
                         onFailed = { throwable ->
                             _closePromoPageUiAction.postValue(
-                                ClosePromoPageUiAction.Failed(
-                                    throwable
-                                )
+                                ClosePromoPageUiAction.Failed(throwable)
                             )
                         }
                     )
@@ -1800,7 +1866,22 @@ internal class PromoUsageViewModel @Inject constructor(
                     onClearPromo(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
-                        boPromoCodes = boPromoCodes
+                        boPromoCodes = boPromoCodes,
+                        onSuccess = { entryPoint, clearPromo, lastValidateUseRequest, clearedPromos ->
+                            _closePromoPageUiAction.postValue(
+                                ClosePromoPageUiAction.SuccessWithClearPromo(
+                                    entryPoint = entryPoint,
+                                    clearPromo = clearPromo,
+                                    lastValidateUsePromoRequest = lastValidateUseRequest,
+                                    clearedPromos = clearedPromos
+                                )
+                            )
+                        },
+                        onFailed = { throwable ->
+                            _closePromoPageUiAction.postValue(
+                                ClosePromoPageUiAction.Failed(throwable)
+                            )
+                        }
                     )
                 }
             } else {

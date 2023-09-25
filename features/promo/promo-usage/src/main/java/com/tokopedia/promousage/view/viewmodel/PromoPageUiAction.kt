@@ -98,7 +98,7 @@ sealed class ClosePromoPageUiAction {
         val entryPoint: PromoPageEntryPoint,
         val clearPromo: ClearPromoUiModel,
         val lastValidateUsePromoRequest: ValidateUsePromoRequest,
-        val isFlowMvcLockToCourier: Boolean
+        val clearedPromos: List<PromoItem>
     ) : ClosePromoPageUiAction()
 
     object SuccessNoAction : ClosePromoPageUiAction()

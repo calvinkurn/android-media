@@ -918,7 +918,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         entryPoint = uiAction.entryPoint,
                         clearPromo = uiAction.clearPromo,
                         lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest,
-                        isFlowMvcLockToCourier = uiAction.isFlowMvcLockToCourier
+                        isFlowMvcLockToCourier = isFlowMvcLockToCourier,
+                        clearedPromos = uiAction.clearedPromos
                     )
                     processAndSendClickExitPromoBottomsheetEvent()
                     dismiss()
@@ -1115,7 +1116,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             entryPoint: PromoPageEntryPoint,
             clearPromo: ClearPromoUiModel,
             lastValidateUsePromoRequest: ValidateUsePromoRequest,
-            isFlowMvcLockToCourier: Boolean
+            isFlowMvcLockToCourier: Boolean,
+            clearedPromos: List<PromoItem>
         )
 
         fun onClosePageWithNoAction()
