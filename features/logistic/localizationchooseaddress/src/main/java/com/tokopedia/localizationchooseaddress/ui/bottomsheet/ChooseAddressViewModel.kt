@@ -9,9 +9,11 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.GetChosenAddressListParam
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
 import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressListUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,7 +25,8 @@ import javax.inject.Inject
 class ChooseAddressViewModel @Inject constructor(
     private val chooseAddressRepo: ChooseAddressRepository,
     private val chooseAddressMapper: ChooseAddressMapper,
-    private val refreshTokonowDataUsecase: RefreshTokonowDataUsecase
+    private val refreshTokonowDataUsecase: RefreshTokonowDataUsecase,
+    private val getChosenAddressListUseCase: GetChosenAddressListUseCase
 ) : ViewModel() {
 
     private val _chosenAddressList = MutableLiveData<Result<List<ChosenAddressList>>>()
@@ -42,7 +45,8 @@ class ChooseAddressViewModel @Inject constructor(
     val getDefaultAddress: LiveData<Result<DefaultChosenAddressModel>>
         get() = _getDefaultAddress
 
-    private val _tokonowData = MutableLiveData<Result<RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess>>()
+    private val _tokonowData =
+        MutableLiveData<Result<RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess>>()
     val tokonowData: LiveData<Result<RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess>>
         get() = _tokonowData
 
@@ -50,29 +54,35 @@ class ChooseAddressViewModel @Inject constructor(
 
     fun getChosenAddressList(source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetChosenAddressList) {
-            val getChosenAddressList = chooseAddressRepo.getChosenAddressList(source, isTokonow)
-            _chosenAddressList.value = Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))
+            val getChosenAddressList =
+                getChosenAddressListUseCase(GetChosenAddressListParam(source, isTokonow))
+            _chosenAddressList.value =
+                Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))
         }
     }
 
     fun setStateChosenAddress(model: StateChooseAddressParam) {
         viewModelScope.launch(onErrorSetStateChosenAddress) {
             val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress(model)
-            _setChosenAddress.value = Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
+            _setChosenAddress.value =
+                Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
         }
     }
 
     fun getStateChosenAddress(source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetStateChosenAddress) {
             val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source, isTokonow)
-            _getChosenAddress.value = Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
+            _getChosenAddress.value =
+                Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
     }
 
     fun getDefaultChosenAddress(latLong: String?, source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetDefaultChosenAddress) {
-            val getDefaultChosenAddress = chooseAddressRepo.getDefaultChosenAddress(latLong, source, isTokonow)
-            _getDefaultAddress.value = Success(chooseAddressMapper.mapDefaultChosenAddress(getDefaultChosenAddress.response))
+            val getDefaultChosenAddress =
+                chooseAddressRepo.getDefaultChosenAddress(latLong, source, isTokonow)
+            _getDefaultAddress.value =
+                Success(chooseAddressMapper.mapDefaultChosenAddress(getDefaultChosenAddress.response))
         }
     }
 

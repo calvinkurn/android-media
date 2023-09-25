@@ -2,41 +2,6 @@ package com.tokopedia.localizationchooseaddress.data.query
 
 object ChooseAddressQuery {
 
-    val getChosenAddressList = """
-        query keroAddrGetChosenAddressList(${'$'}source: String!, ${'$'}is_tokonow_request: Boolean!) {
-          keroAddrGetChosenAddressList(source: ${'$'}source, is_tokonow_request: ${'$'}is_tokonow_request) {
-            data {
-              addr_id
-              receiver_name
-              addr_name
-              address_1
-              address_2
-              postal_code
-              province
-              city
-              district
-              phone
-              province_name
-              city_name
-              district_name
-              status
-              country
-              latitude
-              longitude
-              is_state_chosen_address
-              tokonow {
-                warehouse_id
-                coverage_label
-              }
-            }
-            status
-            server_process_time
-            config
-          }
-        }
-
-    """.trimIndent()
-
     val setStateChosenAddress = """
         mutation setStateChosenAddress(${'$'}input : KeroAddrSetStateChosenAddressInput!) {
           keroAddrSetStateChosenAddress(input: ${'$'}input) {

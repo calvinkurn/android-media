@@ -14,6 +14,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenA
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressListUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,6 +40,7 @@ class ChooseAddressViewModelTest {
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper = ChooseAddressMapper()
     private val refreshTokonowDataUseCase: RefreshTokonowDataUsecase = mockk(relaxed = true)
+    private val getChosenAddressListUseCase: GetChosenAddressListUseCase = mockk(relaxed = true)
 
     private lateinit var chooseAddressViewModel: ChooseAddressViewModel
 
@@ -53,7 +55,7 @@ class ChooseAddressViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, refreshTokonowDataUseCase)
+        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, refreshTokonowDataUseCase, getChosenAddressListUseCase)
         chooseAddressViewModel.chosenAddressList.observeForever(chosenAddressListObserver)
         chooseAddressViewModel.setChosenAddress.observeForever(setChosenAddressObserver)
         chooseAddressViewModel.getChosenAddress.observeForever(getChosenAddressObserver)
@@ -63,14 +65,14 @@ class ChooseAddressViewModelTest {
 
     @Test
     fun `Get Chosen Address List Success`() {
-        coEvery { chooseAddressRepo.getChosenAddressList(any(), any()) } returns GetChosenAddressListQglResponse()
+        coEvery { getChosenAddressListUseCase(any()) } returns GetChosenAddressListQglResponse()
         chooseAddressViewModel.getChosenAddressList("address", true)
         verify { chosenAddressListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Chosen Address List Fail`() {
-        coEvery { chooseAddressRepo.getChosenAddressList(any(), any()) } throws defaultThrowable
+        coEvery { getChosenAddressListUseCase(any()) } throws defaultThrowable
         chooseAddressViewModel.getChosenAddressList("address", true)
         verify { chosenAddressListObserver.onChanged(match { it is Fail }) }
     }
