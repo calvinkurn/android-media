@@ -42,7 +42,7 @@ class ScpVerificationManager(private val pinManager: PinManager) {
                     onFailed.invoke(error)
                 }
 
-                override fun verificationSuccessful(activity: Activity, token: String, transactionId: String) {
+                override fun verificationSuccessful(activity: Activity, token: String, transactionId: String, isFromGoToPin: Boolean) {
                     onSuccess.invoke(token)
                 }
             },
@@ -92,6 +92,7 @@ class ScpVerificationManager(private val pinManager: PinManager) {
                 }
             },
             additionalHeaders = TkpdAdditionalHeaders(activity)
+
         )
     }
 }
