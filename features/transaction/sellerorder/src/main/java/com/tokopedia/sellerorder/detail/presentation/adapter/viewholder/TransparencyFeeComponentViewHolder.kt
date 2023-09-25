@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 import android.view.View
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -21,6 +22,8 @@ class TransparencyFeeComponentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_component_income_detail
+
+        const val ROUNDED_RADIUS = 4f
     }
 
     private val binding = ItemComponentIncomeDetailBinding.bind(itemView)
@@ -30,9 +33,36 @@ class TransparencyFeeComponentViewHolder(
     private val attributesAdapter = BaseAdapter(typeFactory)
 
     override fun bind(element: TransparencyFeeComponentUiModel) {
+        setupDividerVerticalRadius(element.isFirstIndex, element.isLastIndex)
         setupLabel(element.label)
         setupValue(element.value)
         setAttributes(element.attributes)
+    }
+
+    private fun setupDividerVerticalRadius(isFirstIndex: Boolean, isLastIndex: Boolean) {
+        val shapeDivider = binding.dividerVerticalIncomeDetail
+        shapeDivider.shapeAppearanceModel = shapeDivider.shapeAppearanceModel.toBuilder().apply {
+            if (isFirstIndex) {
+                setTopLeftCorner(
+                    CornerFamily.ROUNDED,
+                    ROUNDED_RADIUS
+                )
+                setTopRightCorner(
+                    CornerFamily.ROUNDED,
+                    ROUNDED_RADIUS
+                )
+            }
+            if (isLastIndex) {
+                setBottomLeftCorner(
+                    CornerFamily.ROUNDED,
+                    ROUNDED_RADIUS
+                )
+                setBottomRightCorner(
+                    CornerFamily.ROUNDED,
+                    ROUNDED_RADIUS
+                )
+            }
+        }.build()
     }
 
     private fun setupLabel(label: String) {

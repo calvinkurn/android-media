@@ -8,7 +8,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.databinding.BottomsheetTransparencyFeeBinding
+import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailTransparencyFeeAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeErrorStateUiModel
@@ -43,6 +45,11 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
 
     private var binding by autoClearedNullable<BottomsheetTransparencyFeeBinding>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -73,6 +80,15 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
     fun show(fm: FragmentManager) {
         if (!isVisible) {
             show(fm, TAG)
+        }
+    }
+
+    private fun initInjector() {
+        activity?.let {
+            val appComponent = it.application
+            DaggerSomDetailComponent.builder()
+                .somComponent(SomComponentInstance.getSomComponent(appComponent))
+                .build()
         }
     }
 

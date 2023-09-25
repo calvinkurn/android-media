@@ -5,20 +5,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/divider_vertical_income_detail"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_component_income_detail_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_NN600"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/rv_component_income_detail_attributes"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/divider_vertical_income_detail"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
-        tools:text="Rincian Produk Tidak Tersedia" />
+        tools:text="Rincian Produk Tidak Tersedia Rincian Produk Tidak Tersedia Rincian Produk Tidak Tersedia" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_component_income_detail_attributes"

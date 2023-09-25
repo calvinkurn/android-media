@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 import android.view.View
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -30,8 +31,35 @@ class TransparencyFeeSubComponentViewHolder(
     private val attributesAdapter = BaseAdapter(typeFactory)
 
     override fun bind(element: TransparencyFeeSubComponentUiModel) {
+        setupDividerVerticalRadius(element.isFirstIndex, element.isLastIndex)
         setupLabel(element.label)
         setAttributes(element.attributes)
+    }
+
+    private fun setupDividerVerticalRadius(isFirstIndex: Boolean, isLastIndex: Boolean) {
+        val shapeDivider = binding.dividerVerticalSubComponentIncomeDetail
+        shapeDivider.shapeAppearanceModel = shapeDivider.shapeAppearanceModel.toBuilder().apply {
+            if (isFirstIndex) {
+                setTopLeftCorner(
+                    CornerFamily.ROUNDED,
+                    TransparencyFeeComponentViewHolder.ROUNDED_RADIUS
+                )
+                setTopRightCorner(
+                    CornerFamily.ROUNDED,
+                    TransparencyFeeComponentViewHolder.ROUNDED_RADIUS
+                )
+            }
+            if (isLastIndex) {
+                setBottomLeftCorner(
+                    CornerFamily.ROUNDED,
+                    TransparencyFeeComponentViewHolder.ROUNDED_RADIUS
+                )
+                setBottomRightCorner(
+                    CornerFamily.ROUNDED,
+                    TransparencyFeeComponentViewHolder.ROUNDED_RADIUS
+                )
+            }
+        }.build()
     }
 
     private fun setupLabel(label: String) {
