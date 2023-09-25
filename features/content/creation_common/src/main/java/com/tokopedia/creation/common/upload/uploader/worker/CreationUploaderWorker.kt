@@ -102,6 +102,7 @@ class CreationUploaderWorker(
                 }
             }
 
+            delay(DEFAULT_DELAY_AFTER_EMIT_RESULT)
             Result.success()
         }
     }
@@ -113,12 +114,11 @@ class CreationUploaderWorker(
                 CreationUploadConst.UPLOAD_DATA to data.mapToJson(gson)
             )
         )
-        delay(DEFAULT_DELAY_AFTER_EMIT_PROGRESS)
     }
 
     companion object {
 
-        private const val DEFAULT_DELAY_AFTER_EMIT_PROGRESS = 1000L
+        private const val DEFAULT_DELAY_AFTER_EMIT_RESULT = 1000L
         fun build(): OneTimeWorkRequest {
             return OneTimeWorkRequest.Builder(CreationUploaderWorker::class.java)
                 .build()
