@@ -287,7 +287,7 @@ object CartUiModelMapper {
 
         val totalUnavailableProduct = cartData.unavailableSections.sumOf { unavailableSection -> unavailableSection.productsCount }
 
-        if (totalUnavailableProduct > 1) {
+        if (totalUnavailableProduct > 3) {
             showAccordion = true
         }
 
@@ -348,7 +348,7 @@ object CartUiModelMapper {
                     isAllSelected = false
                     isPartialSelected = false
                     isCollapsible = cartData.availableSection.availableGroupGroups.size > 1 &&
-                        productUiModelList.size > 1
+                        productUiModelList.size > 3
                     isCollapsed = isCollapsible
                     isError = true
                     warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()
