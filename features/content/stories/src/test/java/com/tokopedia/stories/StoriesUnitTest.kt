@@ -1,20 +1,21 @@
-package com.tokopedia.stories.viewmodel
+package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.stories.data.repository.StoriesRepository
-import com.tokopedia.stories.model.mockDetailResetValue
-import com.tokopedia.stories.model.mockGroupResetValue
-import com.tokopedia.stories.model.mockInitialDataModel
-import com.tokopedia.stories.model.mockInitialDataModelFetchNext
-import com.tokopedia.stories.model.mockInitialDataModelFetchPrev
-import com.tokopedia.stories.model.mockInitialDataModelFetchPrevAndNext
-import com.tokopedia.stories.model.mockMainDataResetValue
+import com.tokopedia.stories.data.utils.mockDetailResetValue
+import com.tokopedia.stories.data.utils.mockGroupResetValue
+import com.tokopedia.stories.data.utils.mockInitialDataModel
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchNext
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrev
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrevAndNext
+import com.tokopedia.stories.data.utils.mockMainDataResetValue
 import com.tokopedia.stories.robot.StoriesViewModelRobot
 import com.tokopedia.stories.util.assertEqualTo
 import com.tokopedia.stories.util.assertFalse
 import com.tokopedia.stories.util.assertNotEqualTo
 import com.tokopedia.stories.util.assertTrue
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
@@ -27,7 +28,7 @@ import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 
-class StoriesViewModelTest {
+class StoriesUnitTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -37,13 +38,18 @@ class StoriesViewModelTest {
 
     private val testDispatcher = rule.dispatchers
 
-    private val authorId = "123"
+    private val args = StoriesArgsModel(
+        authorId = "123",
+        authorType = "shop",
+        source = "shop-entrypoint",
+        sourceId = "1234"
+    )
     private val handle: SavedStateHandle = SavedStateHandle()
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
 
     private fun getStoriesRobot() = StoriesViewModelRobot(
         dispatchers = testDispatcher,
-        authorId = authorId,
+        args = args,
         handle = handle,
         repository = mockRepository,
     )
