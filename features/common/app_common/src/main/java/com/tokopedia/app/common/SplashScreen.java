@@ -200,10 +200,6 @@ public class SplashScreen extends AppCompatActivity {
         getBranchDefferedDeeplink();
     }
 
-    private void handleShareNotFound() {
-
-    }
-
     private Boolean isUnderMinVersion(String version) {
         try {
             String minVersionString = version.replaceAll("[^0-9]", "");
