@@ -10,6 +10,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.GetChosenAddressParam
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetStateChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -59,7 +61,8 @@ class ManageAddressViewModel @Inject constructor(
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
     private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val getUserConsentCollection: GetConsentCollectionUseCase,
-    private val setStateChosenAddressFromAddressUseCase: SetStateChosenAddressFromAddressUseCase
+    private val setStateChosenAddressFromAddressUseCase: SetStateChosenAddressFromAddressUseCase,
+    private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase
 ) : ViewModel() {
 
     companion object {
@@ -297,7 +300,7 @@ class ManageAddressViewModel @Inject constructor(
 
     fun getStateChosenAddress(source: String) {
         viewModelScope.launch(onErrorGetStateChosenAddress) {
-            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source, true)
+            val getStateChosenAddress = getStateChosenAddressUseCase(GetChosenAddressParam(source, true))
             _getChosenAddress.value =
                 Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }

@@ -15,6 +15,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressListUseCase
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetStateChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
@@ -43,6 +44,7 @@ class ChooseAddressViewModelTest {
     private val refreshTokonowDataUseCase: RefreshTokonowDataUsecase = mockk(relaxed = true)
     private val getChosenAddressListUseCase: GetChosenAddressListUseCase = mockk(relaxed = true)
     private val setStateChosenAddressUseCase: SetStateChosenAddressUseCase = mockk(relaxed = true)
+    private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase = mockk(relaxed = true)
 
     private lateinit var chooseAddressViewModel: ChooseAddressViewModel
 
@@ -57,7 +59,7 @@ class ChooseAddressViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, refreshTokonowDataUseCase, getChosenAddressListUseCase, setStateChosenAddressUseCase)
+        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, refreshTokonowDataUseCase, getChosenAddressListUseCase, setStateChosenAddressUseCase, getStateChosenAddressUseCase)
         chooseAddressViewModel.chosenAddressList.observeForever(chosenAddressListObserver)
         chooseAddressViewModel.setChosenAddress.observeForever(setChosenAddressObserver)
         chooseAddressViewModel.getChosenAddress.observeForever(getChosenAddressObserver)
@@ -105,14 +107,14 @@ class ChooseAddressViewModelTest {
 
     @Test
     fun `Get Chosen Address Success`() {
-        coEvery { chooseAddressRepo.getStateChosenAddress(any(), any()) } returns GetStateChosenAddressQglResponse()
+        coEvery { getStateChosenAddressUseCase(any()) } returns GetStateChosenAddressQglResponse()
         chooseAddressViewModel.getStateChosenAddress("address", false)
         verify { getChosenAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Chosen Address Fail`() {
-        coEvery { chooseAddressRepo.getStateChosenAddress(any(), any()) } throws defaultThrowable
+        coEvery { getStateChosenAddressUseCase(any()) } throws defaultThrowable
         chooseAddressViewModel.getStateChosenAddress("address", false)
         verify { getChosenAddressObserver.onChanged(match { it is Fail }) }
     }

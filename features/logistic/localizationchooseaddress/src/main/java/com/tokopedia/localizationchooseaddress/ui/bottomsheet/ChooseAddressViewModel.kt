@@ -9,11 +9,12 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddressModel
-import com.tokopedia.localizationchooseaddress.domain.model.GetChosenAddressListParam
+import com.tokopedia.localizationchooseaddress.domain.model.GetChosenAddressParam
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
 import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressListUseCase
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetStateChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -28,7 +29,8 @@ class ChooseAddressViewModel @Inject constructor(
     private val chooseAddressMapper: ChooseAddressMapper,
     private val refreshTokonowDataUsecase: RefreshTokonowDataUsecase,
     private val getChosenAddressListUseCase: GetChosenAddressListUseCase,
-    private val setStateChosenAddressUseCase: SetStateChosenAddressUseCase
+    private val setStateChosenAddressUseCase: SetStateChosenAddressUseCase,
+    private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase
 ) : ViewModel() {
 
     private val _chosenAddressList = MutableLiveData<Result<List<ChosenAddressList>>>()
@@ -57,7 +59,7 @@ class ChooseAddressViewModel @Inject constructor(
     fun getChosenAddressList(source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetChosenAddressList) {
             val getChosenAddressList =
-                getChosenAddressListUseCase(GetChosenAddressListParam(source, isTokonow))
+                getChosenAddressListUseCase(GetChosenAddressParam(source, isTokonow))
             _chosenAddressList.value =
                 Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))
         }
@@ -73,7 +75,7 @@ class ChooseAddressViewModel @Inject constructor(
 
     fun getStateChosenAddress(source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetStateChosenAddress) {
-            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source, isTokonow)
+            val getStateChosenAddress = getStateChosenAddressUseCase(GetChosenAddressParam(source, isTokonow))
             _getChosenAddress.value =
                 Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
