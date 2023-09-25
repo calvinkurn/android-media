@@ -160,7 +160,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
                 val indexVisible = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
                 binding?.rvContent?.post {
-                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_SETTLING) {
                         widgetAdapter.autoSelectNavigation(indexVisible)
                     }
                 }

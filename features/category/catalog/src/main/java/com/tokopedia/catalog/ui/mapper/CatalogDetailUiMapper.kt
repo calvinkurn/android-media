@@ -14,6 +14,7 @@ import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_ACCORDION_01
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_ACCORDION_02
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_ACCORDION_ARROW
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_BANNER
+import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_IMAGE_TEXT
 import com.tokopedia.catalog.util.ColorConstant.DARK_COLOR_SUPPORT_FEATURE_01
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_01
@@ -21,6 +22,7 @@ import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_ACCORDION_01
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_ACCORDION_02
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_ACCORDION_ARROW
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_BANNER
+import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_IMAGE_TEXT
 import com.tokopedia.catalog.util.ColorConstant.LIGHT_COLOR_SUPPORT_FEATURE_01
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
@@ -249,7 +251,6 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToSliderImageText(
         isDarkMode: Boolean
     ): SliderImageTextUiModel {
-        val textColor = colorMapping(isDarkMode, DARK_COLOR_01, LIGHT_COLOR_01)
         return SliderImageTextUiModel(
             items = data?.imageSlider.orEmpty().map {
                 SliderImageTextUiModel.ItemSliderImageText(
@@ -257,9 +258,9 @@ class CatalogDetailUiMapper @Inject constructor(
                     textHighlight = it.subtitle,
                     textTitle = it.title,
                     textDescription = it.desc,
-                    textHighlightColor = textColor,
-                    textTitleColor = textColor,
-                    textDescriptionColor = textColor
+                    textHighlightColor = colorMapping(isDarkMode, DARK_COLOR_01, LIGHT_COLOR_01),
+                    textTitleColor = colorMapping(isDarkMode, DARK_COLOR_IMAGE_TEXT, LIGHT_COLOR_IMAGE_TEXT),
+                    textDescriptionColor = colorMapping(isDarkMode, DARK_COLOR_01, LIGHT_COLOR_01)
                 )
             }
         )
