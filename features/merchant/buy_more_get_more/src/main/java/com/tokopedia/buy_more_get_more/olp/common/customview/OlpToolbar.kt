@@ -11,8 +11,10 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.toPx
@@ -53,6 +55,7 @@ class OlpToolbar : Toolbar {
             if (value) {
                 tpgTitle?.setTextColor(resources.getColor(Unify_NN950))
                 tpgSubTitle?.setTextColor(resources.getColor(Unify_NN950))
+                tpgSubTitle?.gone()
                 cartButton?.setBlackIconValue()
                 shareButton?.setBlackIconValue()
                 moreMenuButton?.setBlackIconValue()
@@ -60,6 +63,7 @@ class OlpToolbar : Toolbar {
             } else {
                 tpgTitle?.setTextColor(resources.getColor(Unify_Static_White))
                 tpgSubTitle?.setTextColor(resources.getColor(Unify_Static_White))
+                tpgSubTitle?.visible()
                 cartButton?.setWhiteIconValue()
                 shareButton?.setWhiteIconValue()
                 moreMenuButton?.setWhiteIconValue()
