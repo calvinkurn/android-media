@@ -87,6 +87,10 @@ sealed interface CreationUploadData {
                 uploadType = uploadType.type,
                 queueStatus = queueStatus.value,
                 timestamp = timestamp,
+                coverUri = coverUri,
+                sourceId = sourceId,
+                authorId = authorId,
+                authorType = authorType,
                 data = gson.toJson(
                     CreationUploadQueueEntity.Post(
                         draftId = draftId
