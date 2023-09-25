@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.model.ConfirmShippingNotes
 import com.tokopedia.sellerorder.databinding.BottomsheetConfirmshippingItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -26,8 +25,14 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * Created by irpan on 30/08/23.
  */
-class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomSheetConfirmShippingAdapter.ViewHolder>() {
+class SomBottomSheetConfirmShippingAdapter : RecyclerView.Adapter<SomBottomSheetConfirmShippingAdapter.ViewHolder>() {
     private var list: List<ConfirmShippingNotes> = listOf()
+
+    companion object {
+        private const val ADDITIONAL_INDEX_POSITION_CLICKABLE_START = 2
+        private const val ADDITIONAL_INDEX_POSITION_CLICKABLE_END = 1
+    }
+
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateListInfo(list: List<ConfirmShippingNotes>) {
@@ -73,11 +78,12 @@ class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomShe
         }
         var spannableString = SpannableString(notes.noteText)
 
+
         if (notes.url.isNotEmpty()) {
             val text = "${notes.noteText} ${notes.urlText}"
             spannableString = SpannableString(text)
-            val startSpan = notes.noteText.lastIndex + 2
-            val endSpan = text.lastIndex + 1
+            val startSpan = notes.noteText.lastIndex + ADDITIONAL_INDEX_POSITION_CLICKABLE_START
+            val endSpan = text.lastIndex + ADDITIONAL_INDEX_POSITION_CLICKABLE_END
             val boldSpan = StyleSpan(Typeface.BOLD)
             spannableString.setSpan(boldSpan, startSpan, endSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)

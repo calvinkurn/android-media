@@ -25,7 +25,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
@@ -65,7 +64,6 @@ import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShipping
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
-import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -310,38 +308,6 @@ open class SomDetailFragment :
         observeRejectCancelOrder()
         observeValidateOrder()
         observeOrderExtensionRequestInfo()
-
-        val dummy = """
-            {
-                    "title": "",
-                    "body": "",
-                    "action_button": [],
-                    "template": {
-                        "code": "LG_FMD_1",
-                        "params": {
-                            "lg_fmd_txt_learn_more": {
-                                "type": "text",
-                                "data": "Pelajari"
-                            },
-                            "lg_fmd_txt_open_dropoff_maps": {
-                                "type": "text",
-                                "data": "Cek Gerai Terdekat"
-                            },
-                            "lg_fmd_url_learn_more": {
-                                "type": "url",
-                                "data": "https://tokopedia.com/link_to_seller_article_about_FMD"
-                            },
-                            "lg_fmd_url_open_dropoff_maps": {
-                                "type": "url",
-                                "data": "https://tokopedia.com/link_drop_off_might_be_different_per_order"
-                            }
-                        }
-                    }
-                
-                }
-        """.trimIndent()
-
-        SomConfirmShippingBottomSheet.show(context, view, Gson().fromJson(dummy, PopUp::class.java))
     }
 
     override fun onResume() {
