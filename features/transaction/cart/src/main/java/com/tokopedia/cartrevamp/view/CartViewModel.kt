@@ -47,7 +47,6 @@ import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
-import com.tokopedia.cartrevamp.view.uimodel.CartBmGmTickerData
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
@@ -169,8 +168,7 @@ class CartViewModel @Inject constructor(
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
     private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
     private val schedulers: ExecutorSchedulers,
-    private val dispatchers: CoroutineDispatchers,
-    private val cartCalculator: CartCalculator
+    private val dispatchers: CoroutineDispatchers
 ) : ViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -645,7 +643,7 @@ class CartViewModel @Inject constructor(
         // Collect all Cart Item & also calculate total weight on each shop
         val cartItemDataList = getAvailableCartItemDataList(dataList)
         // Calculate total total item, price and cashback for marketplace product
-        val returnValueMarketplaceProduct = cartCalculator.calculatePriceMarketplaceProduct(
+        val returnValueMarketplaceProduct = CartCalculator.calculatePriceMarketplaceProduct(
             allCartItemDataList = cartItemDataList,
             cartModel = cartModel,
             updateCartModel = { newCartModel ->
@@ -2158,19 +2156,18 @@ class CartViewModel @Inject constructor(
     }
 
     fun updateBmGmTickerData(toBeDeletedProducts: List<CartItemHolderData>) {
-        toBeDeletedProducts.forEach { cartItemToBeDeleted ->
-            val productListByOfferId = CartDataHelper.getListProductByOfferId(cartDataList.value, cartItemToBeDeleted.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
-            productListByOfferId.forEachIndexed { index, cartItemHolderData ->
-                if (index == 0 &&
-                    cartItemToBeDeleted.cartBmGmTickerData.isShowTickerBmGm &&
-                    cartItemToBeDeleted.productId == cartItemHolderData.productId &&
-                    productListByOfferId.size > 1
-                ) {
-                    productListByOfferId[index + 1].cartBmGmTickerData = cartItemToBeDeleted.cartBmGmTickerData
-                    var isShowBmGmDivider = false
-                    if (productListByOfferId.size > 2) isShowBmGmDivider = true
-                    productListByOfferId[index + 1].cartBmGmTickerData.isShowBmGmDivider = isShowBmGmDivider
-                    return@forEach
+        toBeDeletedProducts.forEach { productWillDelete ->
+            val offerId = productWillDelete.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+            val productListByOfferId = CartDataHelper.getListProductByOfferId(cartDataList.value, offerId)
+            if (productListByOfferId.size > 1) {
+                productListByOfferId.forEachIndexed { index, product ->
+                    if (productWillDelete.cartBmGmTickerData.isShowTickerBmGm &&
+                        productWillDelete.productId == product.productId &&
+                        index < productListByOfferId.size - 1
+                    ) {
+                        productListByOfferId[index + 1].cartBmGmTickerData = productWillDelete.cartBmGmTickerData
+                        productListByOfferId[index + 1].cartBmGmTickerData.isShowBmGmDivider = (index + 1 < productListByOfferId.size - 1)
+                    }
                 }
             }
         }
@@ -2213,7 +2210,7 @@ class CartViewModel @Inject constructor(
                     return@launch
                 }
                 val calculatePriceMarketplaceProduct =
-                    cartCalculator.calculatePriceMarketplaceProduct(
+                    CartCalculator.calculatePriceMarketplaceProduct(
                         allCartItemDataList = shopProductList,
                         cartModel = cartModel,
                         updateCartModel = { newCartModel ->
@@ -2385,7 +2382,7 @@ class CartViewModel @Inject constructor(
         forceExpandCollapsedUnavailableItems: Boolean = false,
         isFromGlobalCheckbox: Boolean = false,
         isFromEditBundle: Boolean = false,
-        cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData()
+        listOfferId: ArrayList<Long> = arrayListOf()
     ) {
         _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
         val allCartItemData = CartDataHelper.getAllCartItemData(
@@ -2409,7 +2406,7 @@ class CartViewModel @Inject constructor(
                     addWishList,
                     isFromGlobalCheckbox,
                     isFromEditBundle,
-                    cartBmGmTickerData
+                    listOfferId
                 )
             },
             onError = { throwable ->

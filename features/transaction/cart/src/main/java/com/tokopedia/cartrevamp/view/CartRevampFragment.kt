@@ -623,8 +623,8 @@ class CartRevampFragment :
     }
 
     private fun checkBmGmOffers(cartGroupHolderData: CartGroupHolderData) {
-        val listOfferId = arrayListOf<Long>()
         if (cartGroupHolderData.cartGroupBmGmHolderData.hasBmGmOffer) {
+            val listOfferId = arrayListOf<Long>()
             cartGroupHolderData.productUiModelList.forEach {
                 if (it.cartBmGmTickerData.isShowTickerBmGm) {
                     listOfferId.add(it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
@@ -1063,11 +1063,13 @@ class CartRevampFragment :
         cartPageAnalytics.eventClickGlobalDelete()
         val deletedCartItems = CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
         val dialog = getMultipleItemsDialogDeleteConfirmation(deletedCartItems.size)
+        val listOfferIdNeedUpdated = CartDataHelper.checkSelectedCartItemDataWithOfferBmGm(viewModel.cartDataList.value)
         dialog?.setPrimaryCTAClickListener {
             viewModel.processDeleteCartItem(
                 removedCartItems = deletedCartItems,
                 addWishList = false,
-                isFromGlobalCheckbox = true
+                isFromGlobalCheckbox = true,
+                listOfferId = listOfferIdNeedUpdated
             )
             dialog.dismiss()
         }
@@ -1132,13 +1134,16 @@ class CartRevampFragment :
                 forceExpand = true
             }
 
+            val listOfferIdNeedUpdated = arrayListOf<Long>()
+            listOfferIdNeedUpdated.add(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
+
             viewModel.processDeleteCartItem(
                 toBeDeletedProducts,
                 false,
                 forceExpand,
                 isFromGlobalCheckbox = false,
                 isFromEditBundle = false,
-                cartBmGmTickerData = cartItemHolderData.cartBmGmTickerData
+                listOfferId = listOfferIdNeedUpdated
             )
             if (isFromDeleteButton) {
                 cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
@@ -2488,7 +2493,7 @@ class CartRevampFragment :
                             addWishList,
                             isFromGlobalCheckbox,
                             isFromEditBundle,
-                            cartBmGmTickerData
+                            listOfferId
                         )
 
                         val params = generateParamGetLastApplyPromo()
@@ -2931,7 +2936,7 @@ class CartRevampFragment :
         isMoveToWishlist: Boolean,
         isFromGlobalCheckbox: Boolean,
         isFromEditBundle: Boolean,
-        cartBmGmTickerData: CartBmGmTickerData
+        listOfferId: ArrayList<Long>
     ) {
         var message =
             String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
@@ -2978,8 +2983,10 @@ class CartRevampFragment :
             }
         }
 
-        if (cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
-            getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId))
+        if (listOfferId.isNotEmpty()) {
+            listOfferId.forEach {
+                getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, it))
+            }
         }
     }
 
@@ -4934,15 +4941,8 @@ class CartRevampFragment :
         viewModel.getBmGmGroupProductTicker(
             cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
             BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
-                CartDataHelper.getListProductByOfferId(
-                    viewModel.cartDataList.value,
-                    cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
-                ),
-                cartItemHolderData.bundleId.toLongOrZero(),
-                cartItemHolderData.bundleGroupId,
-                cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
-                cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerJsonData,
-                cartItemHolderData.cartStringOrder
+                viewModel.cartDataList.value,
+                cartItemHolderData
             )
         )
     }

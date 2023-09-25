@@ -414,6 +414,29 @@ object CartDataHelper {
         return cartItemDataList
     }
 
+    fun checkSelectedCartItemDataWithOfferBmGm(cartDataList: ArrayList<Any>): ArrayList<Long> {
+        val listOfferIdNeedUpdate = ArrayList<Long>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    if ((data.isPartialSelected || data.isAllSelected)) {
+                        for (cartItemHolderData in data.productUiModelList) {
+                            if (cartItemHolderData.isSelected && !cartItemHolderData.isError && cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm) {
+                                val offerId = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+                                val listProductByOfferId = getListProductByOfferId(cartDataList, offerId)
+                                if (listProductByOfferId.size > 1) listOfferIdNeedUpdate.add(offerId)
+                            }
+                        }
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+
+        return listOfferIdNeedUpdate
+    }
+
     fun getCartItemByBundleGroupId(
         cartDataList: ArrayList<Any>,
         bundleId: String,
