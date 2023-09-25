@@ -5,4 +5,6 @@ object Constant {
     const val EXT_PARAM_WAREHOUSE_ID = "offer_whid"
     const val DEFAULT_SORT_ID = "0"
     const val DEFAULT_SORT_NAME = "Urutkan"
+    const val SHARING_PAGE_NAME = "BMGM"
+    const val SHARING_FEATURE = "share"
 }
