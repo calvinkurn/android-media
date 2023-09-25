@@ -181,11 +181,11 @@ class MPSViewModel @Inject constructor(
         } else {
             addToChart(mpsShopWidget, mpsShopWidgetProduct)
         }
-
     }
 
-    private fun addToChart( mpsShopWidget: MPSShopWidgetDataView,
-                            mpsShopWidgetProduct: MPSShopWidgetProductDataView,
+    private fun addToChart(
+        mpsShopWidget: MPSShopWidgetDataView,
+        mpsShopWidgetProduct: MPSShopWidgetProductDataView,
     ){
         addToCartUseCase.run {
             setParams(AddToCartUseCase.getMinimumParams(

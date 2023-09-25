@@ -192,7 +192,7 @@ class SearchBarViewModel @Inject constructor(
         }
     }
 
-    fun onKeywordAdd(selectedSuggestion: BaseSuggestionDataView) {
+    fun onKeywordAdded(selectedSuggestion: BaseSuggestionDataView) {
         updateSearchQuery(selectedSuggestion.title)
     }
 

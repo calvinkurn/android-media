@@ -35,7 +35,7 @@ data class MPSState(
     val paginationState: PaginationState = PaginationState(),
     val addToCartState: AddToCartState = AddToCartState(),
     val bottomSheetFilterState: BottomSheetFilterState = BottomSheetFilterState(),
-    val bottomSheetVariantState: BottomSheetVariantState = BottomSheetVariantState()
+    val bottomSheetVariantState: BottomSheetVariantState = BottomSheetVariantState(),
 ) : SearchUiState {
 
     private val shopIdSet: Set<String>
@@ -66,17 +66,17 @@ data class MPSState(
     private fun updatePageStates(mpsModel: MPSModel): MPSState = copy(
         filterState = filterState.from(
             parameter = parameter,
-            filterList = mpsModel.quickFilterList + bottomSheetFilterList
+            filterList = mpsModel.quickFilterList + bottomSheetFilterList,
         ),
-        paginationState = PaginationState(totalData = mpsModel.totalData).incrementStart()
+        paginationState = PaginationState(totalData = mpsModel.totalData).incrementStart(),
     )
 
     private fun updateResult(mpsModel: MPSModel) = copy(
-        result = State.Success(data = createResponseData(mpsModel)),
-        quickFilterState = quickFilterState.success(mpsModel, filterState)
+        result = State.Success(data = responseData(mpsModel)),
+        quickFilterState = quickFilterState.success(mpsModel, filterState),
     )
 
-    private fun createResponseData(mpsModel: MPSModel): List<Visitable<*>> =
+    private fun responseData(mpsModel: MPSModel): List<Visitable<*>> =
         if (mpsModel.responseCode.isViolationResponseCode()) {
             restrictedStateVisitableList(mpsModel)
         } else {
@@ -101,7 +101,7 @@ data class MPSState(
         }
 
     private fun mpsShopWidgetListLoadMore(
-        mpsModel: MPSModel
+        mpsModel: MPSModel,
     ): List<Visitable<*>> {
         return mpsModel.shopList
             .filterNot { shop -> shop.id in shopIdSet }
@@ -128,7 +128,7 @@ data class MPSState(
         result = State.Error(
             message = "",
             data = null,
-            throwable = throwable
+            throwable = throwable,
         )
     )
 
@@ -141,7 +141,7 @@ data class MPSState(
         chooseAddressModel = chooseAddressModel,
         bottomSheetFilterState = BottomSheetFilterState(
             dynamicFilterModel = bottomSheetFilterModel
-        )
+        ),
     )
 
     fun applyQuickFilter(quickFilterDataView: QuickFilterDataView): MPSState {
@@ -152,7 +152,7 @@ data class MPSState(
 
         return copy(
             parameter = filterStateUpdated.parameter,
-            filterState = filterStateUpdated
+            filterState = filterStateUpdated,
         )
     }
 
@@ -165,7 +165,7 @@ data class MPSState(
     private fun incrementStart() = copy(paginationState = paginationState.incrementStart())
 
     private fun updateResultLoadMore(mpsModel: MPSModel) = copy(
-        result = State.Success(data = successLoadMoreData(mpsModel))
+        result = State.Success(data = successLoadMoreData(mpsModel)),
     )
 
     private fun successLoadMoreData(mpsModel: MPSModel): List<Visitable<*>> =
@@ -203,11 +203,10 @@ data class MPSState(
     fun resetFilter() = copy(parameter = filterState.resetFilters().parameter)
 
     fun openBottomSheetVariant(
-        mpsShopWidget: MPSShopWidgetDataView,
-        mpsShopWidgetProduct: MPSShopWidgetProductDataView
+        mpsShopWidget: MPSShopWidgetDataView, mpsShopWidgetProduct: MPSShopWidgetProductDataView
     ) = copy(
-
-        bottomSheetVariantState = bottomSheetVariantState.openBottomSheetVariant(mpsShopWidget, mpsShopWidgetProduct )
+        bottomSheetVariantState = bottomSheetVariantState
+                                  .openBottomSheetVariant(mpsShopWidget, mpsShopWidgetProduct )
     )
 
     fun dismissBottomSheetVariant() = copy(

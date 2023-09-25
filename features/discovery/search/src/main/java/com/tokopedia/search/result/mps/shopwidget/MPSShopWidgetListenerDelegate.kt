@@ -3,11 +3,7 @@ package com.tokopedia.search.result.mps.shopwidget
 import android.content.Context
 import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
 import com.tokopedia.iris.Iris
-import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.mps.MPSViewModel
-import com.tokopedia.search.result.product.addtocart.AddToCartConstant
-import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheetLauncher
-import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider

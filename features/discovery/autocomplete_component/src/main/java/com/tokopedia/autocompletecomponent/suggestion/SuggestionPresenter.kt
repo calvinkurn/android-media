@@ -381,16 +381,22 @@ class SuggestionPresenter @Inject constructor(
     }
 
     override fun onSuggestionItemClicked(item: BaseSuggestionDataView) {
-        if (!activeKeyword.isSelected) {
-            trackSuggestionItemWithUrl(item.urlTracker)
-            trackSuggestionItemClick(item)
-            trackSuggestionShopAds(item)
+        when {
+            isMPS() -> {
+                view?.addToMPSKeyword(item)
+            }
+            !activeKeyword.isSelected -> {
+                trackSuggestionItemWithUrl(item.urlTracker)
+                trackSuggestionItemClick(item)
+                trackSuggestionShopAds(item)
 
-            view?.dropKeyBoard()
-            view?.route(item.applink, searchParameter, activeKeyword)
-            view?.finish()
-        } else {
-            view?.applySuggestionToSelectedKeyword(item.title, activeKeyword)
+                view?.dropKeyBoard()
+                view?.route(item.applink, searchParameter, activeKeyword)
+                view?.finish()
+            }
+            else -> {
+                view?.applySuggestionToSelectedKeyword(item.title, activeKeyword)
+            }
         }
     }
 

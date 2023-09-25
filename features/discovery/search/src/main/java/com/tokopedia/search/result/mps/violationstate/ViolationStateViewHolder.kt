@@ -16,25 +16,15 @@ class ViolationStateViewHolder(
     private var binding: SearchMpsViolationStateBinding? by viewBinding()
 
     override fun bind(element: ViolationStateDataView) {
+        renderImageViolation()
+        renderButtonMpsViolation()
         if(element.violationType == ViolationType.BLACKLISTED) {
-            renderViolationBlacklisted()
+            renderTitleViolation(getString(R.string.search_mps_blacklist_response_state_title))
+            renderDescViolation(getString(R.string.search_mps_blacklist_response_state_description))
         } else {
-            renderViolationBanned()
+            renderTitleViolation(getString(R.string.search_mps_banned_tobacco_state_title))
+            renderDescViolation(getString(R.string.search_mps_banned_tobacco_state_description))
         }
-    }
-
-    private fun renderViolationBlacklisted(){
-        renderImageViolation()
-        renderTitleViolation(getString(R.string.search_mps_blacklist_response_state_title))
-        renderDescViolation(getString(R.string.search_mps_blacklist_response_state_description))
-        renderButtonMpsViolation()
-    }
-
-    private fun renderViolationBanned(){
-        renderImageViolation()
-        renderTitleViolation(getString(R.string.search_mps_banned_tobacco_state_title))
-        renderDescViolation(getString(R.string.search_mps_banned_tobacco_state_description))
-        renderButtonMpsViolation()
     }
 
     private fun renderImageViolation(){

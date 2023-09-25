@@ -113,6 +113,8 @@ interface SuggestionContract {
         val chooseAddressData: LocalCacheModel?
 
         val className: String
+
+        fun addToMPSKeyword(item: BaseSuggestionDataView)
     }
 
     interface Presenter : CustomerPresenter<View> {

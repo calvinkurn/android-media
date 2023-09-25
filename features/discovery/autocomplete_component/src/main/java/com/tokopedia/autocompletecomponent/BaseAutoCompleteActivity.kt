@@ -71,7 +71,6 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
 import com.tokopedia.iris.IrisAnalytics
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -728,7 +727,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     override fun clickSuggestionMPS(item: BaseSuggestionDataView) {
-        viewModel?.onKeywordAdd(item)
+        viewModel?.onKeywordAdded(item)
     }
 
     companion object {

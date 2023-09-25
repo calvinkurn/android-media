@@ -1,22 +1,15 @@
 package com.tokopedia.search.result.mps.variantstate
 
 import android.content.Context
-import androidx.fragment.app.FragmentManager
-import com.tokopedia.search.analytics.SearchTracking
-import com.tokopedia.search.result.mps.MPSViewModel
-import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterState
-import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
-import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetProductDataView
 import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheetLauncher
-import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.search.utils.mvvm.RefreshableView
 
 class BottomSheetVariantView(
-    private val mpsViewModel: MPSViewModel?,
+    private val mpsViewModel: BottomSheetVariantViewModel?,
     context: Context?,
-    private val atcVariantBottomSheetLauncher: AddToCartVariantBottomSheetLauncher
+    private val atcVariantBottomSheetLauncher: AddToCartVariantBottomSheetLauncher,
 ) : RefreshableView<BottomSheetVariantState>,
     ContextProvider by WeakReferenceContextProvider(context) {
     override fun refresh(state: BottomSheetVariantState) {
@@ -37,7 +30,5 @@ class BottomSheetVariantView(
                 mpsViewModel?.onBottomSheetVariantDismissed()
             }
         )
-
-        SearchIdlingResource.decrement()
     }
 }

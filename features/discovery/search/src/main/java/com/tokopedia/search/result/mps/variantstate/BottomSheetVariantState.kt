@@ -8,8 +8,9 @@ data class BottomSheetVariantState(
     val isOpen: Boolean = false,
     val variantModel: BottomSheetVariantModel? = null,
 ) {
-    fun openBottomSheetVariant(mpsShopWidget: MPSShopWidgetDataView,
-                               mpsShopWidgetProduct: MPSShopWidgetProductDataView
+    fun openBottomSheetVariant(
+        mpsShopWidget: MPSShopWidgetDataView,
+        mpsShopWidgetProduct: MPSShopWidgetProductDataView
     ) = copy(
         isOpen = true,
         variantModel = BottomSheetVariantModel(

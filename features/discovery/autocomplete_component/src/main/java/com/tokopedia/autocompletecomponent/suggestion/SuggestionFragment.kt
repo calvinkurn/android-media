@@ -58,7 +58,7 @@ class SuggestionFragment :
         @JvmStatic
         fun create(
             component: SuggestionComponent,
-            mpsListener: SuggestionMPSListener
+            mpsListener: SuggestionMPSListener,
         ) = SuggestionFragment().apply {
             component.inject(this)
             mpsSuggestionListener = mpsListener
@@ -216,11 +216,11 @@ class SuggestionFragment :
     }
 
     override fun onItemClicked(item: BaseSuggestionDataView) {
-        if(presenter?.isMPS().orFalse()) {
-            mpsSuggestionListener?.clickSuggestionMPS(item)
-        } else {
-            presenter?.onSuggestionItemClicked(item)
-        }
+        presenter?.onSuggestionItemClicked(item)
+    }
+
+    override fun addToMPSKeyword(item: BaseSuggestionDataView) {
+        mpsSuggestionListener?.clickSuggestionMPS(item)
     }
 
     override fun onChipImpressed(item: BaseSuggestionDataView.ChildItem) {
