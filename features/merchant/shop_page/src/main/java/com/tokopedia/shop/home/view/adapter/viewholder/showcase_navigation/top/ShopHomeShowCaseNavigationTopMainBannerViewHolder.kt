@@ -33,7 +33,6 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_top_main_banner
         private const val SECOND_SHOWCASE_INDEX = 1
         private const val TWELVE_SHOWCASE_INDEX = 12
-        private const val MINIMAL_SHOWCASE_COUNT_TO_RENDER_WIDGET = 5
     }
 
     private val viewBinding: ItemShopHomeShowcaseNavigationTopMainBannerBinding? by viewBinding()
@@ -42,27 +41,23 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     override fun bind(model: ShowcaseNavigationUiModel) {
         if (model.appearance is TopMainBannerAppearance) {
             val showcases = model.appearance.showcases
-            val shouldRenderWidget = showcases.size >= MINIMAL_SHOWCASE_COUNT_TO_RENDER_WIDGET
-
-            if (shouldRenderWidget) {
-                setupTitle(model)
-                setupMainBanner(showcases, model)
-                setupShowCaseRecyclerView(
-                    model.header.isOverrideTheme,
-                    model.header.colorSchema,
-                    model.appearance,
-                    model,
-                    showcases
-                )
-                setupColors(model.header.isOverrideTheme, model.header.colorSchema)
-                listener.onNavigationBannerImpression(
-                    uiModel = model,
-                    tabCount = Int.ZERO,
-                    tabName = "",
-                    showcaseId = ""
-                )
-                setupViewAllIcon(model.appearance)
-            }
+            setupTitle(model)
+            setupMainBanner(showcases, model)
+            setupShowCaseRecyclerView(
+                model.header.isOverrideTheme,
+                model.header.colorSchema,
+                model.appearance,
+                model,
+                showcases
+            )
+            setupColors(model.header.isOverrideTheme, model.header.colorSchema)
+            listener.onNavigationBannerImpression(
+                uiModel = model,
+                tabCount = Int.ZERO,
+                tabName = "",
+                showcaseId = ""
+            )
+            setupViewAllIcon(model.appearance)
         }
     }
 
