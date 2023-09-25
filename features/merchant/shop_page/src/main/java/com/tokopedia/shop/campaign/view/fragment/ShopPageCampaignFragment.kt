@@ -311,30 +311,20 @@ class ShopPageCampaignFragment :
         shopPageHomeLayoutUiModel.let {
             if (it != null) {
                 setShopLayoutData(it)
-                setWidgetLayoutPlaceholder()
             } else {
                 getLatestShopCampaignWidgetLayoutData()
             }
         }
     }
 
-    override fun setWidgetLayoutPlaceholder() {
+    override fun setShopLayoutData(dataWidgetLayoutUiModel: ShopPageLayoutUiModel) {
+        listWidgetLayout = dataWidgetLayoutUiModel.listWidgetLayout.toMutableList()
         val shopHomeWidgetContentData =
             ShopPageCampaignMapper.mapShopCampaignWidgetLayoutToListShopCampaignWidget(
                 listWidgetLayout,
                 shopId
             )
         shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
-    }
-
-    override fun setShopLayoutData(dataWidgetLayoutUiModel: ShopPageLayoutUiModel) {
-        listWidgetLayout = dataWidgetLayoutUiModel.listWidgetLayout.toMutableList()
-        val shopCampaignWidgetContentData =
-            ShopPageCampaignMapper.mapShopCampaignWidgetLayoutToListShopCampaignWidget(
-                dataWidgetLayoutUiModel.listWidgetLayout,
-                shopId
-            )
-        shopCampaignTabAdapter.setCampaignLayoutData(shopCampaignWidgetContentData)
     }
 
     override fun initView() {

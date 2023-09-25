@@ -1105,28 +1105,9 @@ open class ShopPageHomeFragment :
                 )
                 shopHomeAdapter?.hideLoading()
                 setShopLayoutData(it)
-                setWidgetLayoutPlaceholder()
             } else {
                 getLatestShopHomeWidgetLayoutData()
             }
-        }
-    }
-
-    open fun setWidgetLayoutPlaceholder() {
-        val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
-            listWidgetLayout,
-            isOwner,
-            isLogin,
-            isThematicWidgetShown,
-            isEnableDirectPurchase,
-            shopId,
-            isOverrideTheme(),
-            getShopPageColorSchema()
-        )
-        if (shopHomeWidgetContentData.isNotEmpty()) {
-            shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
-        } else {
-            shopHomeAdapter?.addProductGridListPlaceHolder()
         }
     }
 
@@ -1788,7 +1769,7 @@ open class ShopPageHomeFragment :
         )
         listWidgetLayout = data.listWidgetLayout.toMutableList()
         val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
-            data.listWidgetLayout,
+            listWidgetLayout,
             isOwner,
             isLogin,
             isThematicWidgetShown,
