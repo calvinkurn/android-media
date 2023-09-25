@@ -1953,6 +1953,14 @@ class ChatbotFragment2 :
                 SendableUiModel.generateStartTime(),
                 opponentId
             )
+            handleIsTypingBlocked(model)
+        }
+    }
+
+    private fun handleIsTypingBlocked(model: ChatActionSelectionBubbleUiModel) {
+        if (model.isTypingBlocked) {
+            hideReplyBox()
+        } else {
             enableTyping()
         }
     }

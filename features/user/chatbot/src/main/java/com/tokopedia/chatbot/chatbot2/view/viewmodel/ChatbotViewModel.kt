@@ -235,9 +235,9 @@ class ChatbotViewModel @Inject constructor(
     private val _dynamicAttachmentRejectReasonState = MutableLiveData<ChatbotRejectReasonsState>()
     val dynamicAttachmentRejectReasonState: LiveData<ChatbotRejectReasonsState>
         get() = _dynamicAttachmentRejectReasonState
-//    private val _typingBlockedState = MutableLiveData<Boolean>()
-//    val typingBlockedState: LiveData<Boolean>
-//        get() = _typingBlockedState
+    private val _typingBlockedState = MutableLiveData<Boolean>()
+    val typingBlockedState: LiveData<Boolean>
+        get() = _typingBlockedState
 
     // Video Upload Related
     @VisibleForTesting
@@ -594,8 +594,8 @@ class ChatbotViewModel @Inject constructor(
                                 reply.attachment.attributes,
                                 ChatActionBalloonSelectionAttachmentAttributes::class.java
                             )
-                            typingBlockedState = pojoAttribute.isTypingBlockedOnButtonSelect
-//                            handleTypingBlockState(pojoAttribute.isTypingBlockedOnButtonSelect)
+//                            typingBlockedState = pojoAttribute.isTypingBlockedOnButtonSelect
+                            handleTypingBlockState(pojoAttribute.isTypingBlockedOnButtonSelect)
                         }
 //                        TYPE_QUICK_REPLY_SEND -> {
 //                            val pojoAttribute = GsonBuilder().create().fromJson(
@@ -1089,8 +1089,8 @@ class ChatbotViewModel @Inject constructor(
                         chatResponse.attachment?.attributes,
                         ChatActionBalloonSelectionAttachmentAttributes::class.java
                     )
-                    typingBlockedState = pojoAttribute.isTypingBlockedOnButtonSelect
-//                    handleTypingBlockState(pojoAttribute.isTypingBlockedOnButtonSelect)
+//                    typingBlockedState = pojoAttribute.isTypingBlockedOnButtonSelect
+                    handleTypingBlockState(pojoAttribute.isTypingBlockedOnButtonSelect)
                 }
 //                TYPE_QUICK_REPLY_SEND -> {
 //                    val pojoAttribute = GsonBuilder().create().fromJson(
@@ -1290,9 +1290,9 @@ class ChatbotViewModel @Inject constructor(
         }
     }
 
-//    private fun handleTypingBlockState(isTypingBlocked: Boolean) {
-//        _typingBlockedState.postValue(isTypingBlocked)
-//    }
+    private fun handleTypingBlockState(isTypingBlocked: Boolean) {
+        _typingBlockedState.postValue(isTypingBlocked)
+    }
 
     fun validateHistoryForAttachment34(dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?): Boolean {
         if (dynamicAttachmentBodyAttributes == null) {
@@ -1352,7 +1352,7 @@ class ChatbotViewModel @Inject constructor(
                 selected,
                 startTime,
                 opponentId,
-                typingBlockedState
+                typingBlockedState.value ?: false
             ),
             listInterceptor
         )
@@ -1411,7 +1411,7 @@ class ChatbotViewModel @Inject constructor(
                 quickReply,
                 startTime,
                 opponentId,
-                typingBlockedState
+                typingBlockedState.value ?: false
             ),
             listInterceptor
         )
@@ -1432,7 +1432,7 @@ class ChatbotViewModel @Inject constructor(
                 startTime,
                 event,
                 usedBy,
-                typingBlockedState
+                typingBlockedState.value ?: false
             ),
             listInterceptor
         )

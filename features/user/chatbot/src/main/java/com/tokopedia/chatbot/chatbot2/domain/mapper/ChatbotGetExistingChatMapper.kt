@@ -10,7 +10,6 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_
 import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
-import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
@@ -297,7 +296,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             pojo.replyTime,
             pojo.msg,
             convertToChatActionBubbleViewModelList(pojoAttribute),
-            status = pojo.status
+            status = pojo.status,
+            isTypingBlocked = pojoAttribute.isTypingBlockedOnButtonSelect
         )
     }
 
