@@ -2161,12 +2161,20 @@ class CartViewModel @Inject constructor(
             val productListByOfferId = CartDataHelper.getListProductByOfferId(cartDataList.value, offerId)
             if (productListByOfferId.size > 1) {
                 productListByOfferId.forEachIndexed { index, product ->
+                    // move ticker to next index if product has ticker will be deleted
                     if (productWillDelete.cartBmGmTickerData.isShowTickerBmGm &&
                         productWillDelete.productId == product.productId &&
                         index < productListByOfferId.size - 1
                     ) {
                         productListByOfferId[index + 1].cartBmGmTickerData = productWillDelete.cartBmGmTickerData
                         productListByOfferId[index + 1].cartBmGmTickerData.isShowBmGmDivider = (index + 1 < productListByOfferId.size - 1)
+
+                        // move divider to previous product if any
+                    } else if (index == productListByOfferId.size - 1 &&
+                        productWillDelete.productId == product.productId &&
+                        index > 0
+                    ) {
+                        productListByOfferId[index - 1].cartBmGmTickerData.isShowBmGmDivider = false
                     }
                 }
             }

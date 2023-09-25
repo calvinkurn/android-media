@@ -421,7 +421,7 @@ object CartDataHelper {
                 is CartGroupHolderData -> {
                     if ((data.isPartialSelected || data.isAllSelected)) {
                         for (cartItemHolderData in data.productUiModelList) {
-                            if (cartItemHolderData.isSelected && !cartItemHolderData.isError && cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm) {
+                            if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
                                 val offerId = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
                                 val listProductByOfferId = getListProductByOfferId(cartDataList, offerId)
                                 if (listProductByOfferId.size > 1) listOfferIdNeedUpdate.add(offerId)
