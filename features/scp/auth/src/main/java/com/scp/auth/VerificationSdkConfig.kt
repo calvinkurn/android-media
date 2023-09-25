@@ -10,7 +10,7 @@ import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
     override fun getAppConfigs(): VerificationAppConfig {
         return VerificationAppConfig(
-            environment = VerificationEnvironment.DEV,
+            environment = VerificationEnvironment.INTEGRATION,
             isLogsEnabled = false,
             locale = "EN",
             userlang = "en",
