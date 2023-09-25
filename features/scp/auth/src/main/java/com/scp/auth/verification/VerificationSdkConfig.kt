@@ -1,4 +1,4 @@
-package com.scp.auth
+package com.scp.auth.verification
 
 import android.content.Context
 import com.scp.verification.core.domain.common.entities.config.VerificationAppConfig
