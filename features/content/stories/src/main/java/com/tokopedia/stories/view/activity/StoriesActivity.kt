@@ -11,17 +11,28 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.R
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
+import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.model.StoriesArgsModel
+import com.tokopedia.stories.view.utils.ARGS_SOURCE
+import com.tokopedia.stories.view.utils.ARGS_SOURCE_ID
+import com.tokopedia.stories.view.utils.KEY_ARGS
+import com.tokopedia.stories.view.utils.KEY_CONFIG_ENABLE_STORIES_ROOM
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.stories.R as storiesR
 
 class StoriesActivity : BaseActivity() {
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -41,20 +52,24 @@ class StoriesActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        getData()
+        initFragmentFactory()
         super.onCreate(savedInstanceState)
+        getData()
         setupViews()
         observeEvent()
     }
 
     override fun getTheme(): Resources.Theme {
         val theme = super.getTheme()
-        theme.applyStyle(R.style.Stories_Theme, true)
+        theme.applyStyle(storiesR.style.Stories_Theme, true)
         return theme
     }
 
     private fun inject() {
         StoriesInjector.get(this).inject(this)
+    }
+
+    private fun initFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
@@ -65,21 +80,32 @@ class StoriesActivity : BaseActivity() {
             return
         }
 
-        val id = data.lastPathSegment.ifNullOrBlank {
-            "" //TODO() get from query param
-        }
+        val path = data.pathSegments
+        val storiesArgs = StoriesArgsModel(
+            authorId = path.last().orEmpty(),
+            authorType = path.first().orEmpty(),
+            source = data.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
+                StoriesSource.SHOP_ENTRY_POINT.value
+            },
+            sourceId = data.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
+        )
         bundle = Bundle().apply {
-            putString(SHOP_ID, id)
+            putParcelable(KEY_ARGS, storiesArgs)
         }
     }
 
     private fun setupViews() {
         _binding = ActivityStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        openFragment()
+        if (isEnableStoriesRoom()) { openFragment() }
+        else finish()
         binding.vStoriesOnboarding.root.setOnClickListener {
             binding.vStoriesOnboarding.root.gone()
         }
+    }
+
+    private fun isEnableStoriesRoom(): Boolean {
+        return remoteConfig.getBoolean(KEY_CONFIG_ENABLE_STORIES_ROOM, true)
     }
 
     private fun openFragment() {

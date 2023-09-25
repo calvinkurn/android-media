@@ -2,6 +2,7 @@ package com.tokopedia.stories.view.viewmodel.event
 
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 
 sealed interface StoriesUiEvent {
     data class SelectGroup(val position: Int, val showAnimation: Boolean) : StoriesUiEvent
@@ -27,4 +28,5 @@ sealed interface StoriesUiEvent {
     object EmptyGroupPage: StoriesUiEvent
     object EmptyDetailPage: StoriesUiEvent
     object FinishedAllStories : StoriesUiEvent
+    data class ProductSuccessEvent(val action: StoriesProductAction, val message: Int) : StoriesUiEvent
 }
