@@ -6,43 +6,44 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_header_income_detail_label"
+        android:id="@+id/tv_component_income_detail_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_NN600"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintEnd_toStartOf="@id/rv_component_income_detail_attributes"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/rv_header_income_detail_attributes"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
-        android:textColor="@color/Unify_NN950"
-        tools:text="Total Harga (4 Barang) (4 Barang)" />
+        tools:text="Rincian Produk Tidak Tersedia" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_header_income_detail_attributes"
+        android:id="@+id/rv_component_income_detail_attributes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:clipToPadding="false"
+        app:layout_constrainedWidth="true"
         app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-        app:layout_constraintStart_toEndOf="@id/tv_header_income_detail_label"
-        app:layout_constraintTop_toTopOf="@id/tv_header_income_detail_label"
-        app:layout_constraintEnd_toStartOf="@id/tv_header_income_detail_value"
+        app:layout_constraintStart_toEndOf="@id/tv_component_income_detail_label"
+        app:layout_constraintTop_toTopOf="@id/tv_component_income_detail_label"
+        app:layout_constraintEnd_toStartOf="@id/tv_component_income_detail_value"
+        tools:itemCount="2"
         tools:listitem="@layout/item_detail_income_label"
-        tools:itemCount="4"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_header_income_detail_value"
+        android:id="@+id/tv_component_income_detail_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN950"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_header_income_detail_label"
+        app:layout_constraintTop_toTopOf="@id/tv_component_income_detail_label"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
         tools:text="Rp10.326.000" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
