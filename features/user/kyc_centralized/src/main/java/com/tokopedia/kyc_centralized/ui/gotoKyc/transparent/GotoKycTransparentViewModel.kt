@@ -26,6 +26,9 @@ class GotoKycTransparentViewModel @Inject constructor(
     var source = ""
         private set
 
+    var callback = ""
+        private set
+
     var isAccountLinked = false
         private set
 
@@ -44,6 +47,10 @@ class GotoKycTransparentViewModel @Inject constructor(
 
     fun setSource(source: String) {
         this.source = source
+    }
+
+    fun setCallback(callback: String) {
+        this.callback = callback
     }
 
     fun getProjectInfo(projectId: Int) {
