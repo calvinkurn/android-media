@@ -246,6 +246,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         frameDialogView.layoutParams.height = maxPeekHeight
         val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
         bottomSheetBehavior.peekHeight = maxPeekHeight
+        bottomSheetBehavior.isDraggable = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
