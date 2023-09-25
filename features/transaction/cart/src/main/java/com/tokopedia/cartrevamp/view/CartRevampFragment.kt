@@ -1292,10 +1292,13 @@ class CartRevampFragment :
         val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             viewModel.doUpdateCartAndGetLastApply(params)
-        } else if (cartItemHolderData.isTokoNow) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                viewModel.emitTokonowUpdated(true)
+        } else {
+            if (cartItemHolderData.isTokoNow) {
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                    viewModel.emitTokonowUpdated(true)
+                }
             }
+            viewModel.getEntryPointInfoDefault()
         }
     }
 
