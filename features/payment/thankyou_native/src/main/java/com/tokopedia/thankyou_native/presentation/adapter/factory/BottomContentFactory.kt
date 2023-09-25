@@ -4,6 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetViewHolder
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent.*
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
@@ -13,10 +17,11 @@ import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceReco
 class BottomContentFactory(
     private val registerMemberShipListener: RegisterMemberShipListener,
     private val marketplaceRecommendationListener: MarketplaceRecommendationListener,
-    private val bannerListener: BannerListener
-): BaseAdapterTypeFactory() {
+    private val bannerListener: BannerListener,
+    private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
+): BaseAdapterTypeFactory(), HomeComponentTypeFactory {
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
             TopAdsItemViewHolder.LAYOUT_ID -> return TopAdsItemViewHolder(parent)
             GyroRecommendationItemViewHolder.LAYOUT_ID -> return GyroRecommendationItemViewHolder(parent, registerMemberShipListener)
@@ -24,6 +29,7 @@ class BottomContentFactory(
             DigitalRecommendationItemViewHolder.LAYOUT_ID -> return DigitalRecommendationItemViewHolder(parent)
             HeadlineAdsItemViewHolder.LAYOUT_ID -> return HeadlineAdsItemViewHolder(parent)
             BannerItemViewHolder.LAYOUT_ID -> return BannerItemViewHolder(parent, bannerListener)
+            ShopFlashSaleWidgetViewHolder.LAYOUT -> return ShopFlashSaleWidgetViewHolder(parent, shopFlashSaleWidgetListener)
         }
         return super.createViewHolder(parent, type)
     }
@@ -50,5 +56,9 @@ class BottomContentFactory(
 
     fun type(bannerWidgetModel: BannerWidgetModel): Int {
         return BannerItemViewHolder.LAYOUT_ID
+    }
+
+    override fun type(flashSaleWidgetModel: ShopFlashSaleWidgetDataModel): Int {
+        return ShopFlashSaleWidgetViewHolder.LAYOUT
     }
 }

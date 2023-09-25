@@ -30,6 +30,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.home_component.model.ChannelBanner
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleTimerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
@@ -97,7 +106,8 @@ abstract class ThankYouBaseFragment :
     OnDialogRedirectListener,
     RegisterMemberShipListener,
     MarketplaceRecommendationListener,
-    BannerListener {
+    BannerListener,
+    ShopFlashSaleWidgetListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -152,7 +162,7 @@ abstract class ThankYouBaseFragment :
     private val bottomContentAdapter: BottomContentAdapter by lazy(LazyThreadSafetyMode.NONE) {
         BottomContentAdapter(
             ArrayList(),
-            BottomContentFactory(this, this, this)
+            BottomContentFactory(this, this, this, this)
         )
     }
 
@@ -194,6 +204,109 @@ abstract class ThankYouBaseFragment :
                 ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
                 this::showTopAdsHeadlineView,
                 this::hideTopAdsHeadlineView
+            )
+
+            thanksPageDataViewModel.addBottomContentWidget(
+                ShopFlashSaleWidgetDataModel(
+                    id = "287028",
+                    channelModel = ChannelModel(
+                        id = "287028",
+                        name = "Kejar Diskon Mulai dari 20rb 22 Sep 2023 14:00-18:00",
+                        groupId = "188",
+                        layout = "left_carousel",
+                        verticalPosition = 2,
+                        widgetParam = "",
+                        pageName = "",
+//                        channelViewAllCard = channel.viewAllCard.mapToViewAllCard(),
+                        channelHeader = ChannelHeader(
+                            "306599",
+                            "Kejar Diskon Spesial",
+                            "Berakhir dalam",
+                            "2023-09-22T17:59:00+07:00",
+                            1695376340L,
+                            "tokopedia://discovery/kejar-diskon?rpc_sortfilter_cid=1_2643395&source=homepage.left_carousel.0.287028",
+                            "https://www.tokopedia.com/discovery/kejar-diskon?rpc_sortfilter_cid=1_2643395&source=homepage.left_carousel.0.287028",
+                            "",
+                            "",
+                            "#212121",
+                            ChannelHeader.HeaderType.CONTROL,
+                        ),
+                        channelBanner = ChannelBanner(
+                            id = "68881",
+                            url = "https://www.tokopedia.com/discovery/kejar-diskon?rpc_sortfilter_cid=1_2643395&source=homepage.left_carousel.0.287028",
+                            title = "",
+                            applink = "tokopedia://discovery/kejar-diskon?rpc_sortfilter_cid=1_2643395&source=homepage.left_carousel.0.287028",
+                            imageUrl = "https://images.tokopedia.net/img/cache/200/zssuBf/2023/9/20/c73ef336-1b02-4acd-ac0f-e15a5832aa6b.png",
+                            textColor = "#ffffff",
+                            backColor = "",
+                            description = ""
+                        ),
+//                        channelConfig = channel.mapToChannelConfig(),
+//                        trackingAttributionModel = channel.mapToTrackingAttributionModel(verticalPosition),
+                        channelGrids = listOf(
+                            ChannelGrid(
+                                id = "4276645410",
+                                categoryBreadcrumbs = "",
+                                name = "",
+                                price = "Rp 54.000",
+                                label = "Segera Habis",
+                                param = "",
+                                rating = 0,
+                                applink = "tokopedia://product/4276645410?extParam=src%3Dmultiloc%26whid%3D10538060&source=homepage.left_carousel.0.287028",
+                                discount = "58%",
+                                imageUrl = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/24/ecc4e5de-30c8-42b4-aa82-e26d462db757.png",
+                                minOrder = 1,
+                                backColor = "",
+                                textColor = "",
+                                countReview = 0,
+                                expiredTime = "",
+                                slashedPrice = "Rp 129.000",
+                                isOutOfStock = false,
+                                soldPercentage = 80,
+                                productViewCountFormatted = ""
+                            )
+                        ),
+                    ),
+                    channelHeader = com.tokopedia.home_component_header.model.ChannelHeader(
+                        "306599",
+                        "Kejar Diskon Spesial",
+                        "Berakhir dalam",
+                        "2023-09-22T17:59:00+07:00",
+                        1695376340L,
+                        "tokopedia://discovery/kejar-diskon?rpc_sortfilter_cid=1_2643395&source=homepage.left_carousel.0.287028",
+                        "https://www.tokopedia.com/discovery/kejar-diskon?rpc_sortfilter_cid=1_2643395&source=homepage.left_carousel.0.287028",
+                        "",
+                        "",
+                        "#212121",
+                    ),
+                    tabList = listOf(
+                        ShopFlashSaleTabDataModel(
+                            channelGrid = ChannelGrid(
+                                id = "4276645410",
+                                categoryBreadcrumbs = "",
+                                name = "",
+                                price = "Rp 54.000",
+                                label = "Segera Habis",
+                                param = "",
+                                rating = 0,
+                                applink = "tokopedia://product/4276645410?extParam=src%3Dmultiloc%26whid%3D10538060&source=homepage.left_carousel.0.287028",
+                                discount = "58%",
+                                imageUrl = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/24/ecc4e5de-30c8-42b4-aa82-e26d462db757.png",
+                                minOrder = 1,
+                                backColor = "",
+                                textColor = "",
+                                countReview = 0,
+                                expiredTime = "",
+                                slashedPrice = "Rp 129.000",
+                                isOutOfStock = false,
+                                soldPercentage = 80,
+                                productViewCountFormatted = ""
+                            )
+                        )
+                    ),
+                    timer = ShopFlashSaleTimerDataModel(isLoading = true),
+                    itemList = ShopFlashSaleProductGridShimmerDataModel.getAsList(),
+                )
             )
         }
     }
