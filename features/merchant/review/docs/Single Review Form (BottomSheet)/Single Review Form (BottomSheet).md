@@ -33,14 +33,14 @@ The single review form is a page built using a BottomSheet and placed in a trans
 
 
 
-| ![](res/review%20good%20rating.png)<br/> | ![](res/bad%20rating.png)<br/> | ![](res/review%20good%20rating%20with%20attachment.png)<br/> |
+| ![](res/review good rating.png)<br/> | ![](res/bad rating.png)<br/> | ![](res/review good rating with attachment.png)<br/> |
 | --- | --- | --- |
 
 # Flowchart
 
-![](res/Single%20review%20form.drawio%20%281%29.png)
+![](res/Single review form.drawio (1).png)
 
-![](res/Submit%20review%20flow.drawio.png)
+![](res/Submit review flow.drawio.png)
 
 # Navigation
 
