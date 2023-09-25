@@ -10,7 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
+import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
+import com.tokopedia.carouselproductcard.reimagine.viewallcard.CarouselProductCardViewAllCardModel
+import com.tokopedia.discovery.common.reimagine.Search2Component
+import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardGridView
@@ -19,7 +26,9 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
+import com.tokopedia.search.utils.SEARCH_PAGE_RESULT_MAX_LINE
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
+import com.tokopedia.search.utils.convertToChannelHeader
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
 import com.tokopedia.utils.view.binding.viewBinding
@@ -28,11 +37,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
+import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
+import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class InspirationCarouselViewHolder(
     itemView: View,
     private val inspirationCarouselListener: InspirationCarouselListener,
     private val recycledViewPool: RecyclerView.RecycledViewPool,
+    private val reimagineSearch2Component: Search2Component,
 ) : AbstractViewHolder<InspirationCarouselDataView>(itemView), CoroutineScope {
 
     companion object {
@@ -48,6 +63,8 @@ class InspirationCarouselViewHolder(
 
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
+    private val isReimagine: Boolean
+        get() = reimagineSearch2Component.isReimagineCarousel()
 
     override fun onViewRecycled() {
         cancelJobs()
@@ -61,16 +78,83 @@ class InspirationCarouselViewHolder(
     }
 
     override fun bind(element: InspirationCarouselDataView) {
-        bindTitle(element)
-
-        if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS)
+        bindHeader(element)
+        if (isChipsLayout(element))
             bindChipsCarousel(element)
         else
             bindContent(element)
     }
 
+    private fun bindHeader(element: InspirationCarouselDataView) {
+        if (isReimagine) {
+            setHeaderRevamp(element)
+        } else {
+            setOldHeader(element)
+        }
+    }
+
+    private fun setHeaderRevamp(element: InspirationCarouselDataView) {
+        showRevampHeader()
+        hideOldHeader()
+        hideSeparator()
+        bindHeaderRevamp(element)
+    }
+
+    private fun setOldHeader(element: InspirationCarouselDataView) {
+        showOldHeader()
+        hideRevampHeader()
+        showSeparator()
+        bindTitle(element)
+    }
+
+    private fun isChipsLayout(element: InspirationCarouselDataView): Boolean {
+        return element.layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+    }
+
     private fun bindTitle(element: InspirationCarouselDataView) {
         binding?.inspirationCarouselTitle?.text = element.title
+    }
+
+    private fun showRevampHeader() {
+        binding?.inspirationCarouselHeaderView?.visible()
+    }
+
+    private fun hideRevampHeader() {
+        binding?.inspirationCarouselHeaderView?.gone()
+    }
+
+    private fun showSeparator(){
+        binding?.viewSeparatorTop?.visible()
+        binding?.viewSeparatorBottom?.visible()
+    }
+
+    private fun hideSeparator(){
+        binding?.viewSeparatorTop?.hide()
+        binding?.viewSeparatorBottom?.hide()
+    }
+
+    private fun showOldHeader() {
+        binding?.inspirationCarouselTitle?.visible()
+        binding?.inspirationCarouselSeeAllButton?.visible()
+    }
+
+    private fun hideOldHeader() {
+        binding?.inspirationCarouselTitle?.gone()
+        binding?.inspirationCarouselSeeAllButton?.gone()
+    }
+
+    private fun bindHeaderRevamp(element: InspirationCarouselDataView) {
+        val headerView = binding?.inspirationCarouselHeaderView ?: return
+        val option = element.options.getOrNull(0) ?: return
+        headerView.bind(
+            channelHeader = element.convertToChannelHeader(),
+            listener = object : HomeChannelHeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
+                }
+            },
+            maxLines = SEARCH_PAGE_RESULT_MAX_LINE
+        )
     }
 
     private fun bindChipsCarousel(element: InspirationCarouselDataView) {
@@ -95,20 +179,32 @@ class InspirationCarouselViewHolder(
 
         binding?.inspirationCarouselChipsList?.let {
             it.visible()
-
+            setMarginChipsList(it)
             it.layoutManager = createLayoutManager()
             it.adapter = InspirationCarouselChipsAdapter(
                 adapterPosition, element, inspirationCarouselListener
             )
             it.addItemDecorationIfNotExists(
                 InspirationCarouselChipsListItemDecoration(
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
+                    getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
                 )
             )
 
             val scrollPosition = element.options.indexOfFirst { option -> option.isChipsActive }
             it.scrollToPosition(scrollPosition)
+        }
+    }
+
+    private fun setMarginChipsList(inspirationCarouselChipsList: RecyclerView) {
+        if (isReimagine) {
+            val resource = inspirationCarouselChipsList.context.resources
+            val topMargin = resource.getDimensionPixelSize(R.dimen.search_inspiration_chips_margin_top_revamp)
+            inspirationCarouselChipsList.setMargin(0, topMargin, 0, 0)
+        } else {
+            val resource = inspirationCarouselChipsList.context.resources
+            val topMargin = resource.getDimensionPixelSize(R.dimen.search_inspiration_chips_margin_top_control)
+            inspirationCarouselChipsList.setMargin(0, topMargin, 0, 0)
         }
     }
 
@@ -122,30 +218,118 @@ class InspirationCarouselViewHolder(
     }
 
     private fun bindInspirationCarouselChipProducts(
-            activeOption: InspirationCarouselDataView.Option
+        activeOption: InspirationCarouselDataView.Option
     ) {
+        binding?.inspirationCarouselChipsShimmeringView?.root?.gone()
+
+        if (isReimagine)
+            bindInspirationCarouselChipsReimagine(activeOption)
+        else
+            bindInspirationCarouselChipsControl(activeOption)
+    }
+
+    private fun bindInspirationCarouselChipsReimagine(
+        activeOption: InspirationCarouselDataView.Option
+    ) {
+        binding?.run {
+            inspirationCarouselChipsContent.gone()
+            inspirationCarouselChipsContentReimagine.visible()
+
+            val carouselProductCardList = productCardReimagineList(activeOption)
+            val viewAllCardModel = viewAllCardReimagine(activeOption)
+
+            inspirationCarouselChipsContentReimagine.bind(CarouselProductCardModel(
+                itemList = carouselProductCardList + listOfNotNull(viewAllCardModel),
+                recycledViewPool = recycledViewPool,
+            ))
+        }
+    }
+
+    private fun productCardReimagineList(activeOption: InspirationCarouselDataView.Option) =
+        activeOption.product.map { product ->
+            val shopBadge = product.badgeItemDataViewList.firstOrNull()
+            CarouselProductCardGridModel(
+                productCardModel = ProductCardModelReimagine(
+                    imageUrl = product.imgUrl,
+                    isAds = product.isOrganicAds,
+                    name = product.name,
+                    price = product.priceStr,
+                    rating = product.ratingAverage,
+                    slashedPrice = product.originalPrice,
+                    discountPercentage = product.discountPercentage,
+                    labelGroupList = product.labelGroupDataList.map { labelGroup ->
+                        LabelGroupReimagine(
+                            title = labelGroup.title,
+                            position = labelGroup.position,
+                            type = labelGroup.type,
+                            imageUrl = labelGroup.imageUrl,
+                        )
+                    },
+                    shopBadge = ProductCardModelReimagine.ShopBadge(
+                        title = shopBadge?.title ?: "",
+                        imageUrl = shopBadge?.imageUrl ?: "",
+                    ),
+                    hasMultilineName = reimagineSearch2Component.hasMultilineProductName(),
+                ),
+                impressHolder = { product },
+                onImpressed = {
+                    inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(product)
+                },
+                onClick = {
+                    inspirationCarouselListener.onInspirationCarouselChipsProductClicked(product)
+                }
+            )
+        }
+
+    private fun viewAllCardReimagine(activeOption: InspirationCarouselDataView.Option) =
+        if (activeOption.applink.isNotEmpty())
+            CarouselProductCardViewAllCardModel(
+                ctaText = getString(carouselproductcardR.string.see_more_card_see_all),
+                onClick = {
+                    inspirationCarouselListener.onInspirationCarouselChipsSeeAllClicked(
+                        activeOption)
+                },
+            )
+        else
+            null
+
+    private fun bindInspirationCarouselChipsControl(activeOption: InspirationCarouselDataView.Option) {
         binding?.let {
-            it.inspirationCarouselChipsShimmeringView.root.gone()
+            it.inspirationCarouselChipsContentReimagine.gone()
             it.inspirationCarouselChipsContent.visible()
 
             val activeOptionsProducts = activeOption.product
-            val chipsProductCardModels = activeOptionsProducts.map { it.toProductCardModel() }
+            val chipsProductCardModels = activeOptionsProducts.map { product ->
+                product.toProductCardModel()
+            }
 
             it.inspirationCarouselChipsContent.bindCarouselProductCardViewGrid(
                 productCardModelList = chipsProductCardModels,
                 recyclerViewPool = recycledViewPool,
                 showSeeMoreCard = activeOption.applink.isNotEmpty(),
-                carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val product = activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
+                carouselProductCardOnItemClickListener = object :
+                    CarouselProductCardListener.OnItemClickListener {
+                    override fun onItemClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int
+                    ) {
+                        val product =
+                            activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
                         inspirationCarouselListener.onInspirationCarouselChipsProductClicked(product)
                     }
                 },
-                carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val product = activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
+                carouselProductCardOnItemImpressedListener = object :
+                    CarouselProductCardListener.OnItemImpressedListener {
+                    override fun onItemImpressed(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int
+                    ) {
+                        val product =
+                            activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
 
-                        inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(product)
+                        inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(
+                            product
+                        )
                     }
 
                     override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
@@ -154,9 +338,12 @@ class InspirationCarouselViewHolder(
                         else null
                     }
                 },
-                carouselSeeMoreClickListener = object : CarouselProductCardListener.OnSeeMoreClickListener {
+                carouselSeeMoreClickListener = object :
+                    CarouselProductCardListener.OnSeeMoreClickListener {
                     override fun onSeeMoreClick() {
-                        inspirationCarouselListener.onInspirationCarouselChipsSeeAllClicked(activeOption)
+                        inspirationCarouselListener.onInspirationCarouselChipsSeeAllClicked(
+                            activeOption
+                        )
                     }
                 }
             )
@@ -167,6 +354,7 @@ class InspirationCarouselViewHolder(
         binding?.let {
             it.inspirationCarouselChipsShimmeringView.root.visible()
             it.inspirationCarouselChipsContent.gone()
+            it.inspirationCarouselChipsContentReimagine.gone()
         }
     }
 
@@ -196,6 +384,7 @@ class InspirationCarouselViewHolder(
             it.inspirationCarouselChipsShimmeringView.root.gone()
             it.inspirationCarouselChipsList.gone()
             it.inspirationCarouselChipsContent.gone()
+            it.inspirationCarouselChipsContentReimagine.gone()
         }
     }
 
@@ -233,9 +422,12 @@ class InspirationCarouselViewHolder(
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            list: List<ProductCardModel>
+        list: List<ProductCardModel>
     ) {
-        val productCardHeight = getProductCardMaxHeight(list)
+        val productCardHeight =
+            if (isReimagine) RecyclerView.LayoutParams.WRAP_CONTENT
+            else getProductCardMaxHeight(list)
+
         val carouselLayoutParams = layoutParams
         carouselLayoutParams?.height = productCardHeight
         layoutParams = carouselLayoutParams
@@ -270,7 +462,7 @@ class InspirationCarouselViewHolder(
     }
 
     private suspend fun getProductCardMaxHeight(list: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)
         return list.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
@@ -300,9 +492,12 @@ class InspirationCarouselViewHolder(
     }
 
     private fun createAdapter(
-            list: List<Visitable<InspirationCarouselOptionTypeFactory>>
+        list: List<Visitable<InspirationCarouselOptionTypeFactory>>
     ): RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>> {
-        val typeFactory = InspirationCarouselOptionAdapterTypeFactory(inspirationCarouselListener)
+        val typeFactory = InspirationCarouselOptionAdapterTypeFactory(
+            inspirationCarouselListener,
+            reimagineSearch2Component,
+        )
         val inspirationCarouselProductAdapter = InspirationCarouselOptionAdapter(typeFactory)
         inspirationCarouselProductAdapter.clearData()
         inspirationCarouselProductAdapter.addAll(list)
@@ -312,8 +507,8 @@ class InspirationCarouselViewHolder(
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return InspirationCarouselItemDecoration(
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+            getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
+            getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
         )
     }
 

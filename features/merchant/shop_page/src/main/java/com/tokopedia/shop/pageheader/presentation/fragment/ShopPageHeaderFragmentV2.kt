@@ -48,6 +48,9 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.applyIconUnifyColor
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -510,6 +513,7 @@ class ShopPageHeaderFragmentV2 :
         getScrollToTopButtonInitialMargin()
         if (shopHeaderViewModel?.isUserSessionActive == false) initStickyLogin()
         scrollToTopButton?.apply {
+            circleMainMenu.backgroundTintList = ContextCompat.getColorStateList(context, R.color.dms_clr_2E2F36_70)
             circleMainMenu.setOnClickListener {
                 if (!isMyShop) {
                     shopPageTracking?.clickScrollToTop(shopId, userId)
