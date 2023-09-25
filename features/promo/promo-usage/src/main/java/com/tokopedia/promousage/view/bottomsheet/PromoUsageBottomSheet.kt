@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Outline
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
+import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -481,8 +483,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun setFocusOnPromoAttemptTextField(keyboardHeight: Int) {
         val itemCount = recyclerViewAdapter.itemCount
-        Handler().postDelayed({
-            binding?.rvPromo?.scrollToPosition(itemCount)
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding?.rvPromo?.smoothSnapToPosition(itemCount)
         }, 300L)
 
         // Add padding to make voucher code text field displayed above keyboard
@@ -955,8 +957,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                             val isIdle =
                                 binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
                             if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
-                                Handler().postDelayed({
-                                    binding?.rvPromo?.scrollToPosition(itemPosition)
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    binding?.rvPromo?.smoothSnapToPosition(itemPosition)
                                 }, 300L)
                             }
                         } catch (ignored: Exception) {
