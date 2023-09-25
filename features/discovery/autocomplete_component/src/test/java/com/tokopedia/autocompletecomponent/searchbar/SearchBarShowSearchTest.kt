@@ -77,6 +77,7 @@ internal class SearchBarShowSearchTest: SearchBarViewModelTestFixtures()  {
 
     @Test
     fun `mps search test`() {
+        `Given should not show icon plus coach mark`()
         val keyword1 = SearchBarKeyword(
             keyword = "samsung",
         )
@@ -109,6 +110,7 @@ internal class SearchBarShowSearchTest: SearchBarViewModelTestFixtures()  {
 
     @Test
     fun `mps search with skipped q1 params test`() {
+        `Given should not show icon plus coach mark`()
         val keyword1 = SearchBarKeyword(
             keyword = "samsung",
         )
@@ -135,6 +137,7 @@ internal class SearchBarShowSearchTest: SearchBarViewModelTestFixtures()  {
 
     @Test
     fun `mps search with skipped q2 params test`() {
+        `Given should not show icon plus coach mark`()
         val keyword1 = SearchBarKeyword(
             keyword = "samsung",
         )

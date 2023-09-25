@@ -179,11 +179,11 @@ class MPSViewModel @Inject constructor(
         if (isProductHasVariant(mpsShopWidgetProduct)){
             updateState { it.openBottomSheetVariant(mpsShopWidget, mpsShopWidgetProduct) }
         } else {
-            addToChart(mpsShopWidget, mpsShopWidgetProduct)
+            addToCart(mpsShopWidget, mpsShopWidgetProduct)
         }
     }
 
-    private fun addToChart(
+    private fun addToCart(
         mpsShopWidget: MPSShopWidgetDataView,
         mpsShopWidgetProduct: MPSShopWidgetProductDataView,
     ){

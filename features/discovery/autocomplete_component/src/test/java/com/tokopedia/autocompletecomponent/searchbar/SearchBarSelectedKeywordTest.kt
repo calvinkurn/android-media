@@ -54,7 +54,7 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
                 isAddButtonEnabled = true,
                 isKeyboardDismissEnabled = false,
                 shouldDisplayMpsPlaceHolder = true,
-                isMpsAnimationEnabled = true,
+                isMpsAnimationEnabled = false,
             )
         )
     }
@@ -137,7 +137,7 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
         `Then verify SearchBarKeyword list`(expectedKeywords)
         `Then verify mps state`(
             SearchBarState(
-                isMpsAnimationEnabled = true,
+                isMpsAnimationEnabled = false,
                 isAddButtonEnabled = true,
                 isKeyboardDismissEnabled = false,
                 shouldDisplayMpsPlaceHolder = true,
