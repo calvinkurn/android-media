@@ -545,6 +545,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                     whId = productParams.warehouseId.orEmpty(),
                     layoutId = layoutId,
                     extParam = extParam,
+                    refreshPage = refreshPage,
                     onSuccess = {
                         processPdpLayout(pdpLayout = it, urlQuery = urlQuery)
                     },
@@ -1183,6 +1184,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         whId: String,
         layoutId: String,
         extParam: String,
+        refreshPage: Boolean,
         onSuccess: suspend (ProductDetailDataModel) -> Unit,
         onError: (Throwable) -> Unit
     ) = with(getPdpLayoutUseCase.get()) {
@@ -1194,7 +1196,8 @@ class DynamicProductDetailViewModel @Inject constructor(
             layoutId,
             generateUserLocationRequest(userLocationCache),
             extParam,
-            generateTokoNowRequest(userLocationCache)
+            generateTokoNowRequest(userLocationCache),
+            refreshPage
         )
         this.onSuccess = onSuccess
         this.onError = onError

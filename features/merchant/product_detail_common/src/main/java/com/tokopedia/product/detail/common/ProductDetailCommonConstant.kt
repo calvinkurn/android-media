@@ -15,12 +15,11 @@ object ProductDetailCommonConstant {
     const val PARAM_IS_SHOP_OWNER = "isShopOwner"
     const val PARAM_USER_LOCATION = "userLocation"
     const val PARAM_TOKONOW = "tokonow"
+    const val PARAM_REFRESH_PAGE = "refreshPage"
 
     const val PARAM_SHOP_IDS = "shopIds"
 
-
     const val PARAM_PAGE = "page"
-
 
     const val FIELDS_PARAM = "fields"
 

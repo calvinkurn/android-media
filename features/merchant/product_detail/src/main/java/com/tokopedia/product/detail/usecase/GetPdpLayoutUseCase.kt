@@ -447,7 +447,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
             layoutId: String,
             userLocationRequest: UserLocationRequest,
             extParam: String,
-            tokonow: TokoNowParam
+            tokonow: TokoNowParam,
+            refreshPage: Boolean
         ): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
@@ -458,6 +459,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 putString(ProductDetailCommonConstant.PARAM_EXT_PARAM, extParam.encodeToUtf8())
                 putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
                 putObject(ProductDetailCommonConstant.PARAM_TOKONOW, tokonow)
+                putObject(ProductDetailCommonConstant.PARAM_REFRESH_PAGE, refreshPage)
             }
     }
 
@@ -479,12 +481,13 @@ open class GetPdpLayoutUseCase @Inject constructor(
     override suspend fun executeOnBackground() {
         gqlUseCase.clearRequest()
         val layoutId = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
+        val refreshPage = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_REFRESH_PAGE, false)
         if (layoutId.isEmpty() && layoutIdTest.isNotBlank()) {
             requestParams.putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
         }
         gqlUseCase.addRequest(GraphqlRequest(PdpGetLayoutQuery(), ProductDetailLayout::class.java, requestParams.parameters))
 
-        if (shouldCacheable) {
+        if (shouldCacheable && !refreshPage) {
             processRequestCacheable()
         } else {
             gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
