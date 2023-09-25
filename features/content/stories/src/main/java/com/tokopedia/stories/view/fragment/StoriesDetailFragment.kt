@@ -116,7 +116,7 @@ class StoriesDetailFragment @Inject constructor(
     private val shopId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
-    private val analytic: StoriesAnalytics get() = analyticFactory.create(shopId)
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(mParentPage.args)
 
     private val activityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -133,15 +133,6 @@ class StoriesDetailFragment @Inject constructor(
         return TAG_FRAGMENT_STORIES_DETAIL
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
-            when (fragment) {
-                is StoriesThreeDotsBottomSheet -> {}
-            }
-        }
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -155,6 +146,11 @@ class StoriesDetailFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupStoriesView()
         setupObserver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showStoriesComponent(true)
     }
 
     private fun setupObserver() {
@@ -269,15 +265,11 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state ||
             state == StoriesDetail() ||
-            state.selectedGroupId != groupId
+            state.selectedGroupId != groupId ||
+            state.selectedDetailPosition < 0
         ) return
 
         val currentItem = state.detailItems[state.selectedDetailPosition]
-
-        if (state.detailItems.isEmpty()) {
-            // TODO handle error empty data state here
-            return
-        }
 
         storiesDetailsTimer(state)
         renderAuthor(currentItem)
@@ -413,7 +405,7 @@ class StoriesDetailFragment @Inject constructor(
         flStoriesProduct.onTouchEventStories { event ->
             when (event) {
                 TouchEventStories.SWIPE_UP -> {
-                    if (!isEligiblePage) return@onTouchEventStories
+                    if (!isEligiblePage || !viewModel.isProductAvailable) return@onTouchEventStories
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
                 else -> {}
@@ -465,14 +457,13 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {
-        analytic?.sendClickStoryCircleEvent(
-            entryPoint = mParentPage.entryPoint,
+        analytic.sendClickStoryCircleEvent(
             currentCircle = data.groupName,
             promotions = listOf(
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = position.plus(1).toString(),
-                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.authorId}",
+                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.args.authorId}",
                     itemName = "/ - stories"
                 ),
             ),
@@ -484,8 +475,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackTapPreviousDetail() {
-        analytic?.sendClickTapPreviousContentEvent(
-            entryPoint = mParentPage.entryPoint,
+        analytic.sendClickTapPreviousContentEvent(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
@@ -494,8 +484,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackTapNextDetail() {
-        analytic?.sendClickTapNextContentEvent(
-            entryPoint = mParentPage.entryPoint,
+        analytic.sendClickTapNextContentEvent(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,

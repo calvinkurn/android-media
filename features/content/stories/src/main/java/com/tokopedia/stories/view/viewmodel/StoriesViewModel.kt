@@ -10,11 +10,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.R
 import com.tokopedia.stories.data.repository.StoriesRepository
-import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
@@ -45,7 +45,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class StoriesViewModel @AssistedInject constructor(
-    @Assisted private val authorId: String,
+    @Assisted private val args: StoriesArgsModel,
     @Assisted private val handle: SavedStateHandle,
     private val repository: StoriesRepository,
     private val userSession: UserSessionInterface,
@@ -53,7 +53,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory  {
-        fun create(authorId: String, handle: SavedStateHandle) : StoriesViewModel
+        fun create(args: StoriesArgsModel, handle: SavedStateHandle) : StoriesViewModel
     }
 
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
@@ -301,10 +301,8 @@ class StoriesViewModel @AssistedInject constructor(
 
         val prevGroupId = prevGroupItem.groupId
 
-        try {
-            val prevGroupData = requestStoriesDetailData(prevGroupId)
-            updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
-        } catch (throwable: Throwable) { throw throwable }
+        val prevGroupData = requestStoriesDetailData(prevGroupId)
+        updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
     }
 
     private suspend fun fetchAndCacheNextGroupDetail() {
@@ -315,10 +313,8 @@ class StoriesViewModel @AssistedInject constructor(
 
         val nextGroupId = nextGroupItem.groupId
 
-        try {
-            val nextGroupData = requestStoriesDetailData(nextGroupId)
-            updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
-        } catch (throwable: Throwable) { throw throwable }
+        val nextGroupData = requestStoriesDetailData(nextGroupId)
+        updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
     }
 
     private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
@@ -389,10 +385,10 @@ class StoriesViewModel @AssistedInject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(authorId, storyId, mGroupItem.groupName)
+            val productList = repository.getStoriesProducts(args.authorId, storyId, mGroupItem.groupName)
             products.update { productList }
         }, onError = {
-            products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
+            products.update { product -> product.copy(resultState = ResultState.Fail(it)) }
         })
     }
 
@@ -402,7 +398,7 @@ class StoriesViewModel @AssistedInject constructor(
                 val response = repository.addToCart(
                     productId = product.id,
                     price = product.finalPrice,
-                    shopId = authorId,
+                    shopId = args.authorId,
                     productName = product.title
                 )
 
@@ -530,18 +526,18 @@ class StoriesViewModel @AssistedInject constructor(
 
     private suspend fun requestStoriesInitialData(): StoriesUiModel {
         val request = StoriesRequestModel(
-            authorID = authorId,
-            authorType = StoriesAuthorType.SHOP.value,
-            source = StoriesSource.SHOP_ENTRY_POINT.value,
-            sourceID = "",
+            authorID = args.authorId,
+            authorType = args.authorType,
+            source = args.source,
+            sourceID = args.sourceId,
         )
         return repository.getStoriesInitialData(request)
     }
 
     private suspend fun requestStoriesDetailData(sourceId: String): StoriesDetail {
         val request = StoriesRequestModel(
-            authorID = authorId,
-            authorType = StoriesAuthorType.SHOP.value,
+            authorID = args.authorId,
+            authorType = args.authorType,
             source = StoriesSource.STORY_GROUP.value,
             sourceID = sourceId,
         )

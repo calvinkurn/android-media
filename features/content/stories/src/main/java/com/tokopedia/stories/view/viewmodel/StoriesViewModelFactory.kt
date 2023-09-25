@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -13,7 +14,7 @@ import dagger.assisted.AssistedInject
  */
 class StoriesViewModelFactory @AssistedInject constructor(
     @Assisted activity: FragmentActivity,
-    @Assisted private val authorId: String,
+    @Assisted private val args: StoriesArgsModel,
     private val factory: StoriesViewModel.Factory,
 ) : AbstractSavedStateViewModelFactory(activity, null) {
 
@@ -21,7 +22,7 @@ class StoriesViewModelFactory @AssistedInject constructor(
     interface Creator {
         fun create(
             @Assisted activity: FragmentActivity,
-            @Assisted authorId: String,
+            @Assisted args: StoriesArgsModel,
         ): StoriesViewModelFactory
     }
 
@@ -31,6 +32,6 @@ class StoriesViewModelFactory @AssistedInject constructor(
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        return factory.create(authorId, handle) as T
+        return factory.create(args, handle) as T
     }
 }
