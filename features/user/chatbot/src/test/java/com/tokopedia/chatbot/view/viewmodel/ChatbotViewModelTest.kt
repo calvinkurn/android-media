@@ -87,6 +87,7 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -144,6 +145,7 @@ class ChatbotViewModelTest {
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
     private lateinit var uploaderUseCase: UploaderUseCase
     private lateinit var chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase
+    private lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
     private lateinit var chatbotWebSocket: ChatbotWebSocket
     private lateinit var chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler
     private lateinit var dispatcher: CoroutineDispatchers
@@ -181,6 +183,7 @@ class ChatbotViewModelTest {
         chatbotWebSocketStateHandler = mockk(relaxed = true)
         dispatcher = testRule.dispatchers
         uploaderUseCase = mockk(relaxed = true)
+        extractBranchLinkUseCase = mockk(relaxed = true)
         chatResponse = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
 
@@ -206,6 +209,7 @@ class ChatbotViewModelTest {
                 chatbotWebSocket,
                 chatbotWebSocketStateHandler,
                 chatBotSecureImageUploadUseCase,
+                extractBranchLinkUseCase,
                 testRule.dispatchers
             )
     }
@@ -3152,6 +3156,26 @@ class ChatbotViewModelTest {
         method.invoke(viewModel)
 
         verify { ticketListContactUsUsecase.cancelJobs() }
+    }
+
+    @Test
+    fun extractBranchLinkTest() {
+        coEvery { extractBranchLinkUseCase.invoke(any()).android_deeplink } returns "tokopedia://home"
+        viewModel.extractBranchLink("")
+        assertNotNull(viewModel.applink.value)
+    }
+
+    @Test
+    fun extractBranchLinkExceptionTest() {
+        val exception = java.lang.Exception("Validate Data Exception")
+
+        coEvery { extractBranchLinkUseCase.invoke(any()).android_deeplink } throws exception
+        viewModel.extractBranchLink("")
+
+        assertNotNull(viewModel.applink.value)
+        viewModel.applink.value?.let {
+            assertTrue(it.isEmpty())
+        }
     }
 
     private fun generateChatUiModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
