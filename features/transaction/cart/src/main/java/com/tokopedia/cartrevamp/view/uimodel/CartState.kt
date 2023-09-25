@@ -26,12 +26,6 @@ sealed class CartGlobalEvent {
     object SuccessClearRedPromosThenGoToPromo : CartGlobalEvent()
     object SuccessClearRedPromosThenGoToCheckout : CartGlobalEvent()
     data class UpdateAndReloadCartFailed(val throwable: Throwable) : CartGlobalEvent()
-    data class SubTotalUpdated(
-        val subtotalCashback: Double,
-        val qty: String,
-        val subtotalPrice: Double,
-        val noAvailableItems: Boolean
-    ) : CartGlobalEvent()
 
     data class AdapterItemChanged(
         val position: Int
@@ -184,6 +178,13 @@ sealed interface UpdateCartPromoState {
 
     data class Failed(val throwable: Throwable) : UpdateCartPromoState
 }
+
+data class SubTotalState(
+    val subtotalCashback: Double,
+    val qty: String,
+    val subtotalPrice: Double,
+    val noAvailableItems: Boolean
+)
 
 @Suppress("UNCHECKED_CAST")
 class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
