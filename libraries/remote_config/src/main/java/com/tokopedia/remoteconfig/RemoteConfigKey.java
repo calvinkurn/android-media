@@ -269,4 +269,6 @@ public class RemoteConfigKey {
     public static final String PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_payment_enable_additional_device_info";
 
     public static final String ENABLE_PDP_P1_CACHEABLE = "android_pdp_p1_should_cacheable";
+
+    public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
 }

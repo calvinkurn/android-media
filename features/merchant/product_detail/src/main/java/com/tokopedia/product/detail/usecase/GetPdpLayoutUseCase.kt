@@ -464,6 +464,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
     val shouldCacheable
         get() = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
 
+    private val cacheAge
+        get() = remoteConfig.getLong(RemoteConfigKey.ENABLE_PDP_P1_CACHE_AGE).toInt()
+
     var requestParams = RequestParams.EMPTY
 
     var onSuccess: (suspend (ProductDetailDataModel) -> Unit)? = null
@@ -509,7 +512,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
 
         // hit cloud to update into cache and UI
         Timber.tag("cacheable").d("get from cloud")
-        gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh = true))
+        val cacheStrategy = CacheStrategyUtil.getCacheStrategy(forceRefresh = true, cacheAge = cacheAge)
+        gqlUseCase.setCacheStrategy(cacheStrategy)
         gqlResponse = gqlUseCase.executeOnBackground()
         processResponse(gqlResponse = gqlResponse, isCache = false, cacheFirstThenCloud = cacheFirstThenCloud)
         Timber.tag("cacheable").d("------------ end ------------")

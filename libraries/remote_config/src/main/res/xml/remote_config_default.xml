@@ -642,4 +642,8 @@
         <key>android_pdp_p1_should_cacheable</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_pdp_p1_cache_age</key>
+        <value>5</value>
+    </entry>
 </defaultsMap>

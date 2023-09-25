@@ -8,9 +8,9 @@ object CacheStrategyUtil {
 
     private const val EXPIRY_TIME_MULTIPLIER = 5
 
-    fun getCacheStrategy(forceRefresh: Boolean): GraphqlCacheStrategy {
+    fun getCacheStrategy(forceRefresh: Boolean, cacheAge: Int = EXPIRY_TIME_MULTIPLIER): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
-                .setExpiryTime(EXPIRY_TIME_MULTIPLIER * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
+                .setExpiryTime(cacheAge * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
                 .setSessionIncluded(true)
                 .build()
     }
