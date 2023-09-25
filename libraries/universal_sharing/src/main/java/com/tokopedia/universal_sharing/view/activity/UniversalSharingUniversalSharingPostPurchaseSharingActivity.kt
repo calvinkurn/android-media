@@ -7,6 +7,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
@@ -18,6 +19,9 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.Un
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import javax.inject.Inject
+import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
+import kotlin.math.roundToInt
 
 class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
     BaseActivity(),
@@ -84,10 +88,9 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
                 ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
             )
             analytics.onViewSharingChannelBottomSheetSharePostPurchase(
-                userShareType = "",
+                userShareType = TYPE_GENERAL,
                 productId = product.productId,
-                orderId = orderId,
-                orderStatus = ""
+                orderId = orderId
             )
         }
     }
@@ -97,24 +100,26 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
         bottomSheet: UniversalShareBottomSheet,
         product: UniversalSharingPostPurchaseProductResponse
     ) {
+        val desc = getString(
+            R.string.universal_sharing_post_purchase_og_desc,
+            product.productPrice.roundToInt()
+        )
         bottomSheet.apply {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     analytics.onClickSharingChannelBottomSheetSharePostPurchase(
                         channel = shareModel.channel ?: "",
-                        userShareType = "",
+                        userShareType = TYPE_GENERAL,
                         productId = product.productId,
-                        orderId = orderId,
-                        orderStatus = ""
+                        orderId = orderId
                     )
                 }
 
                 override fun onCloseOptionClicked() {
                     analytics.onClickCloseBottomSheetSharePostPurchase(
-                        userShareType = "",
+                        userShareType = TYPE_GENERAL,
                         productId = product.productId,
-                        orderId = orderId,
-                        orderStatus = ""
+                        orderId = orderId
                     )
                 }
             })
@@ -125,14 +130,15 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
                 imageList = product.getImageList()
             )
             enableDefaultShareIntent()
+            setShareText("$desc %s")
             setLinkProperties(
                 LinkProperties(
-                    linkerType = "", // ask rama
-                    id = "", // ask rama
-                    ogTitle = "${product.productName} - ${product.shop.name}", // ask astrid
-                    ogDescription = "Hai ${product.productName} - ${product.shop.name}", // ask astrid
-                    ogImageUrl = "${product.images.firstOrNull()?.imageUrl}", // ask astrid
-                    deeplink = "tokopedia://product/{${product.productId}}",
+                    linkerType = LinkerData.PRODUCT_TYPE,
+                    id = product.productId,
+                    ogTitle = "${product.productName} - ${product.productPrice.roundToInt()}",
+                    ogDescription = "${product.shop.name} - ${product.desc}",
+                    ogImageUrl = "${product.images.firstOrNull()?.imageUrl}",
+                    deeplink = generateApplinkPDP(product.productId),
                     desktopUrl = product.url
                 )
             )
@@ -153,5 +159,9 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
 
     override fun onClickClose() {
         finish()
+    }
+
+    private fun generateApplinkPDP(productId: String): String {
+        return "tokopedia://product/$productId"
     }
 }

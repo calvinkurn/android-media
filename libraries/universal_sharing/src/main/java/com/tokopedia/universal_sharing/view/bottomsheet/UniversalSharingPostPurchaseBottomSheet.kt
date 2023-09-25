@@ -21,6 +21,7 @@ import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseB
 import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
 import com.tokopedia.universal_sharing.util.NetworkUtil
 import com.tokopedia.universal_sharing.util.Result
 import com.tokopedia.universal_sharing.view.UniversalSharingPostPurchaseAction
@@ -236,10 +237,9 @@ class UniversalSharingPostPurchaseBottomSheet :
                 )
             )
             analytics.onClickShareProductPostPurchase(
-                userShareType = "",
+                userShareType = TYPE_GENERAL,
                 productId = productId,
-                orderId = orderId,
-                orderStatus = ""
+                orderId = orderId
             )
         }
     }
@@ -274,18 +274,16 @@ class UniversalSharingPostPurchaseBottomSheet :
             }
         }
         analytics.onViewProductListPostPurchase(
-            userShareType = "",
+            userShareType = TYPE_GENERAL,
             productIdList = productIdList.joinToString(","),
-            orderIdList = orderIdList.joinToString(","),
-            orderStatus = ""
+            orderIdList = orderIdList.joinToString(",")
         )
     }
 
     private fun trackClose() {
         analytics.onClickCloseProductListPostPurchase(
-            userShareType = "",
+            userShareType = TYPE_GENERAL,
             orderIdList = orderIdList.joinToString(","),
-            orderStatus = ""
         )
     }
 

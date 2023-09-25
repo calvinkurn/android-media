@@ -21,6 +21,9 @@ data class UniversalSharingPostPurchaseProductResponse(
     @SerializedName("stock")
     val stock: Int = 0,
 
+    @SerializedName("description")
+    val desc: String = "",
+
     @SerializedName("status")
     val status: String = "",
 
