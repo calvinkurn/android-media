@@ -22,6 +22,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_item_bom_detail_bmgm_insurance_logo"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:padding="4dp"
+            app:layout_constraintBottom_toTopOf="@id/tv_item_order_bmgm_product_name"
+            app:layout_constraintStart_toStartOf="@id/tv_item_order_bmgm_product_name"
+            app:layout_constraintTop_toTopOf="@id/iv_item_order_bmgm_thumbnail"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:unify_image_corner_radius="0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_item_bom_detail_bmgm_insurance_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="@id/iv_item_bom_detail_bmgm_insurance_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/iv_item_bom_detail_bmgm_insurance_logo"
+            app:layout_constraintTop_toTopOf="@id/iv_item_bom_detail_bmgm_insurance_logo"
+            app:typographyType="small"
+            tools:text="Dilindungi Proteksi" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_item_order_bmgm_product_name"
             android:layout_width="0dp"
@@ -33,7 +57,7 @@
             app:layout_constraintBottom_toTopOf="@id/tv_item_order_bmgm_product_price_quantity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_item_order_bmgm_thumbnail"
-            app:layout_constraintTop_toTopOf="@id/iv_item_order_bmgm_thumbnail"
+            app:layout_constraintTop_toBottomOf="@id/tv_item_bom_detail_bmgm_insurance_label"
             app:typographyType="heading_6"
             tools:text="iPhone XR Garansi Resmi Apple indonesia IBOX - 256 GB, Black" />
 
@@ -67,14 +91,32 @@
         app:typographyType="body_3"
         tools:text="43 Size. Packing rapi plis." />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_item_bom_detail_bmgm_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/om_buy_again_button"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/barrierTopAddOnDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_order_bmgm_product_note"
+        app:unifyButtonSize="micro"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        tools:visibility="visible" />
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierTopAddOnDivider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="container_product_info, tv_item_order_bmgm_product_note"
+        app:constraint_referenced_ids="container_product_info, tv_item_order_bmgm_product_note, btn_item_bom_detail_bmgm_action"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_item_order_bmgm_product_note"
+        app:layout_constraintTop_toBottomOf="@id/btn_item_bom_detail_bmgm_action"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <View

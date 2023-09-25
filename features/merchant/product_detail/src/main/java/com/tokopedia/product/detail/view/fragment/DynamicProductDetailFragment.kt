@@ -1117,8 +1117,8 @@ open class DynamicProductDetailFragment :
         val hasQuantityEditor =
             viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true ||
                 (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
         if (viewModel.getDynamicProductInfoP1 == null ||
             context == null ||
@@ -4735,7 +4735,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-
     private fun clickButtonWhenVariantTokonow() {
         if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
             DynamicProductDetailTracking.Click.eventClickOosButton(
@@ -6058,11 +6057,12 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    override fun onBMGMClicked(title: String, component: ComponentTrackDataModel) {
+    override fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel) {
         val commonTracker = generateCommonTracker() ?: return
 
         BMGMTracking.onClicked(
             title = title,
+            offerId = offerId,
             commonTracker = commonTracker,
             component = component,
             trackingQueue = trackingQueue

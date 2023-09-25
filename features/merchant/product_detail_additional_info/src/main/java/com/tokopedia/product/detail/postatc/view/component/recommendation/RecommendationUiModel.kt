@@ -11,7 +11,8 @@ data class RecommendationUiModel(
     val productId: String,
     var widget: RecommendationWidget? = null,
     val queryParam: String = "",
-    val warehouseId: String
+    val warehouseId: String = "",
+    val offerId: String = ""
 ) : PostAtcUiModel {
     override val id = hashCode()
     override fun equalsWith(newItem: PostAtcUiModel): Boolean {

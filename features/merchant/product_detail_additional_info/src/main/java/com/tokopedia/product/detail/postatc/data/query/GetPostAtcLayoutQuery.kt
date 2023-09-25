@@ -72,6 +72,7 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
                         }
                         ... on pdpProductPostATCBMGM {
                             queryParam
+                            offerID
                         }
                     }
                 }

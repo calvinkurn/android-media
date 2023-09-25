@@ -29,8 +29,6 @@ class BMGMProductItemAdapter : ListAdapter<BMGMWidgetUiModel.Product, BMGMProduc
         }
     }
 
-    private var onClick: () -> Unit = {}
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BMGMProductItemViewHolder {
         return BMGMProductItemViewHolder.create(parent)
     }
@@ -39,14 +37,5 @@ class BMGMProductItemAdapter : ListAdapter<BMGMWidgetUiModel.Product, BMGMProduc
         val product = getItem(position) ?: return
 
         holder.bind(product = product)
-
-        holder.itemView.setOnClickListener {
-            onClick.invoke()
-        }
-    }
-
-    fun submit(products: List<BMGMWidgetUiModel.Product>, onClick: () -> Unit) {
-        this.onClick = onClick
-        submitList(products)
     }
 }

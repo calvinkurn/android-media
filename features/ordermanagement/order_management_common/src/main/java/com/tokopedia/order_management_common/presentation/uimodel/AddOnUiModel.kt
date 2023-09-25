@@ -22,7 +22,8 @@ data class AddOnSummaryUiModel(
         val fromStr: String,
         val message: String,
         var descriptionExpanded: Boolean = false,
-        val noteCopyable: Boolean
+        val noteCopyable: Boolean,
+        val providedByShopItself: Boolean
     ) : Visitable<AddOnAdapterFactory> {
 
         override fun type(typeFactory: AddOnAdapterFactory): Int {

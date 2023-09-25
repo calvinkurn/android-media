@@ -15,6 +15,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -42,6 +43,7 @@ object ProductListUiStateMapper {
             is GetBuyerOrderDetailRequestState.Requesting -> {
                 mapOnGetBuyerOrderDetailRequesting(currentState)
             }
+
             is GetBuyerOrderDetailRequestState.Complete.Error -> {
                 mapOnGetBuyerOrderDetailError(
                     getBuyerOrderDetailRequestState.throwable,
@@ -49,6 +51,7 @@ object ProductListUiStateMapper {
                     currentState
                 )
             }
+
             is GetBuyerOrderDetailRequestState.Complete.Success -> {
                 mapOnGetBuyerOrderDetailSuccess(
                     getBuyerOrderDetailRequestState.result,
@@ -59,6 +62,72 @@ object ProductListUiStateMapper {
                 )
             }
         }
+    }
+
+    fun mapToProductListProductUiModel(uiModel: ProductBmgmSectionUiModel.ProductUiModel): ProductListUiModel.ProductUiModel {
+        val addOnSummaryUiModel = uiModel.addOnSummaryUiModel
+
+        val buttonUiModel = uiModel.button
+        val actionButton = ActionButtonsUiModel.ActionButton(
+            key = buttonUiModel?.key.orEmpty(),
+            label = buttonUiModel?.label.orEmpty(),
+            popUp = ActionButtonsUiModel.ActionButton.PopUp(
+                body = buttonUiModel?.popUp?.body.orEmpty(),
+                title = buttonUiModel?.popUp?.title.orEmpty(),
+                actionButton = buttonUiModel?.popUp?.actionButton?.map {
+                    ActionButtonsUiModel.ActionButton.PopUp.PopUpButton(
+                        key = it.key,
+                        displayName = it.displayName,
+                        color = it.color,
+                        type = it.type,
+                        uriType = it.uriType,
+                        uri = it.uri
+                    )
+                }.orEmpty()
+            ),
+            type = buttonUiModel?.type.orEmpty(),
+            variant = buttonUiModel?.variant.orEmpty(),
+            url = buttonUiModel?.url.orEmpty()
+        )
+
+        return ProductListUiModel.ProductUiModel(
+            orderId = uiModel.orderId,
+            orderStatusId = uiModel.orderStatusId,
+            categoryId = uiModel.categoryId,
+            category = uiModel.category,
+            orderDetailId = uiModel.orderDetailId,
+            productId = uiModel.productId,
+            productName = uiModel.productName,
+            productThumbnailUrl = uiModel.thumbnailUrl,
+            priceText = uiModel.productPriceText,
+            price = uiModel.price,
+            totalPrice = uiModel.totalPrice.toString(),
+            totalPriceText = uiModel.totalPriceText,
+            quantity = uiModel.quantity,
+            productNote = uiModel.productNote,
+            addonsListUiModel = AddonsListUiModel(
+                totalPriceText = addOnSummaryUiModel?.totalPriceText.orEmpty(),
+                addonsLogoUrl = addOnSummaryUiModel?.addonsLogoUrl.orEmpty(),
+                addonsTitle = addOnSummaryUiModel?.addonsTitle.orEmpty(),
+                addonsItemList = addOnSummaryUiModel?.addonItemList?.map {
+                    AddonsListUiModel.AddonItemUiModel(
+                        priceText = it.priceText,
+                        quantity = it.quantity,
+                        addonsId = it.addonsId,
+                        addOnsName = it.addOnsName,
+                        type = it.type,
+                        addOnsThumbnailUrl = it.addOnsThumbnailUrl,
+                        toStr = it.toStr,
+                        fromStr = it.fromStr,
+                        message = it.message,
+                        providedByShopItself = it.providedByShopItself
+                    )
+                }.orEmpty()
+            ),
+            isProcessing = uiModel.isProcessing.orFalse(),
+            button = actionButton,
+            productUrl = uiModel.thumbnailUrl
+        )
     }
 
     private fun mapOnGetBuyerOrderDetailRequesting(
@@ -80,6 +149,7 @@ object ProductListUiStateMapper {
             is GetInsuranceDetailRequestState.Requesting -> {
                 mapOnGetInsuranceDetailRequesting(currentState)
             }
+
             is GetInsuranceDetailRequestState.Complete -> {
                 mapOnGetInsuranceDetailComplete(throwable)
             }
@@ -106,6 +176,7 @@ object ProductListUiStateMapper {
                     collapseProductList
                 )
             }
+
             is GetInsuranceDetailRequestState.Complete -> {
                 mapOnGetInsuranceDetailComplete(
                     buyerOrderDetailData,
@@ -193,9 +264,11 @@ object ProductListUiStateMapper {
             is GetInsuranceDetailRequestState.Requesting -> {
                 mapCurrentStateToProtectionProduct(currentState)
             }
+
             is GetInsuranceDetailRequestState.Complete.Error -> {
                 null
             }
+
             is GetInsuranceDetailRequestState.Complete.Success -> {
                 insuranceDetailRequestState.result?.protectionProduct
             }
@@ -349,7 +422,9 @@ object ProductListUiStateMapper {
             details?.addonLabel.orEmpty(),
             details?.addonIcon.orEmpty(),
             collapseProductList,
-            MAX_PRODUCT_WHEN_COLLAPSED
+            MAX_PRODUCT_WHEN_COLLAPSED,
+            singleAtcResultFlow,
+            insuranceDetailData
         )
 
         /**
@@ -565,7 +640,9 @@ object ProductListUiStateMapper {
         addOnLabel: String,
         addOnIcon: String,
         collapseProductList: Boolean,
-        remainingSlot: Int
+        remainingSlot: Int,
+        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?
     ): Pair<Int, List<ProductBmgmSectionUiModel>> {
         /**
          * Reduce the bmgm response items to be mapped based on the remaining slot on the product
@@ -595,7 +672,9 @@ object ProductListUiStateMapper {
                         orderId,
                         orderStatusId,
                         addOnLabel,
-                        addOnIcon
+                        addOnIcon,
+                        singleAtcResultFlow,
+                        insuranceDetailData
                     )
                 }
             )
@@ -675,7 +754,8 @@ object ProductListUiStateMapper {
                         addOnsThumbnailUrl = it.imageUrl,
                         toStr = addonNote?.to.orEmpty(),
                         fromStr = addonNote?.from.orEmpty(),
-                        message = addonNote?.notes.orEmpty()
+                        message = addonNote?.notes.orEmpty(),
+                        providedByShopItself = false
                     )
                 }.orEmpty()
             )
@@ -768,6 +848,25 @@ object ProductListUiStateMapper {
         )
     }
 
+    private fun mapInsuranceBmgm(
+        productId: String,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?
+    ): ProductBmgmSectionUiModel.ProductUiModel.Insurance? {
+        return insuranceDetailData?.protections?.let { protectionProducts ->
+            protectionProducts.find {
+                it?.productID == productId && it.isBundle != true
+            }?.let { protectionProduct ->
+                val iconUrl = protectionProduct.protectionConfig?.icon?.label
+                val label = protectionProduct.protectionConfig?.wording?.id?.label
+                if (iconUrl.isNullOrBlank() || label.isNullOrBlank()) {
+                    null
+                } else {
+                    ProductBmgmSectionUiModel.ProductUiModel.Insurance(iconUrl, label)
+                }
+            }
+        }
+    }
+
     private fun mapInsurance(
         productId: String,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?
@@ -812,7 +911,9 @@ object ProductListUiStateMapper {
         orderId: String,
         orderStatusId: String,
         addOnLabel: String,
-        addOnIcon: String
+        addOnIcon: String,
+        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?
     ): ProductBmgmSectionUiModel.ProductUiModel {
         return ProductBmgmSectionUiModel.ProductUiModel(
             orderId = orderId,
@@ -827,6 +928,8 @@ object ProductListUiStateMapper {
             categoryId = product.categoryId,
             category = product.category,
             thumbnailUrl = product.thumbnail,
+            isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
+            insurance = null,
             button = mapActionButton(product.button),
             addOnSummaryUiModel = product.addonSummary?.let {
                 com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
@@ -845,7 +948,8 @@ object ProductListUiStateMapper {
                             toStr = addOnNote?.to.orEmpty(),
                             fromStr = addOnNote?.from.orEmpty(),
                             message = addOnNote?.notes.orEmpty(),
-                            noteCopyable = false
+                            noteCopyable = false,
+                            providedByShopItself = true
                         )
                     }.orEmpty()
                 )
@@ -946,7 +1050,8 @@ object ProductListUiStateMapper {
                     addOnsThumbnailUrl = it.imageUrl,
                     toStr = addonNote?.to.orEmpty(),
                     fromStr = addonNote?.from.orEmpty(),
-                    message = addonNote?.notes.orEmpty()
+                    message = addonNote?.notes.orEmpty(),
+                    providedByShopItself = true
                 )
             }.orEmpty()
         )

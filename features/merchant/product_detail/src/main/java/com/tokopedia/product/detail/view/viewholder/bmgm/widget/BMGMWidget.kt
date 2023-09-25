@@ -1,9 +1,11 @@
 package com.tokopedia.product.detail.view.viewholder.bmgm.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isInvisible
@@ -66,11 +68,16 @@ class BMGMWidget @JvmOverloads constructor(
         }
     }
 
-    private var previousUiModel: BMGMWidgetUiModel? = null
+    private var previousState: BMGMWidgetUiState? = null
     // endregion
 
     // region expose function
     fun setData(uiState: BMGMWidgetUiState, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
+        if (previousState?.hasSame(newUiModel = uiState) == true) {
+            return
+        }
+        previousState = uiState
+
         when (uiState) {
             is BMGMWidgetUiState.Loading -> {
                 // no - ops
@@ -81,17 +88,12 @@ class BMGMWidget @JvmOverloads constructor(
             }
 
             is BMGMWidgetUiState.Show -> {
-                if (previousUiModel?.hasSame(newUiModel = uiState.uiModel) == true) {
-                    return
-                }
-
-                previousUiModel = uiState.uiModel
                 showContent(uiModel = uiState.uiModel, router = router, tracker = tracker)
             }
         }
     }
 
-    private fun BMGMWidgetUiModel?.hasSame(newUiModel: BMGMWidgetUiModel): Boolean {
+    private fun BMGMWidgetUiState?.hasSame(newUiModel: BMGMWidgetUiState): Boolean {
         return this?.hashCode() == newUiModel.hashCode()
     }
     // endregion
@@ -113,10 +115,10 @@ class BMGMWidget @JvmOverloads constructor(
 
         binding.bmgmImageLeft.loadImage(url = uiModel.iconUrl)
         setTitle(title = uiModel.title, color = uiModel.titleColor)
-        setEvent(uiModel = uiModel, router = router, tracker = tracker)
         setBackgroundGradient(colors = uiModel.backgroundColor)
         setProductList(uiModel = uiModel, router = router)
         setSeparator(uiModel = uiModel)
+        setEvent(uiModel = uiModel, router = router, tracker = tracker)
     }
     // endregion
 
@@ -135,9 +137,7 @@ class BMGMWidget @JvmOverloads constructor(
         if (uiModel.products.isNotEmpty()) {
             productListBinding.root.show()
 
-            productAdapter.submit(uiModel.products) {
-                setRouting(action = uiModel.action, router = router)
-            }
+            productAdapter.submitList(uiModel.products)
         } else if (binding.bmgmProductList.isInflated()) { // stub has already inflated
             productListBinding.root.gone()
         }
@@ -168,10 +168,22 @@ class BMGMWidget @JvmOverloads constructor(
     // endregion
 
     // region event
+    @SuppressLint("ClickableViewAccessibility")
     private fun setEvent(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
-        binding.bmgmComponent.setOnClickListener {
+        fun onClick() {
             setRouting(action = uiModel.action, router = router)
             tracker.onClick(data = uiModel)
+        }
+
+        binding.root.setOnClickListener { onClick() }
+
+        if (binding.bmgmProductList.isInflated()) {
+            productListBinding.bmgmProductList.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    onClick()
+                }
+                false
+            }
         }
     }
 
