@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.generateHapticFeedback
@@ -24,6 +23,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.sellerorder.R as sellerorderR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by fwidjaja on 2019-10-04.
@@ -48,7 +49,7 @@ class SomDetailShippingViewHolder(
                         setTextColor(
                             ContextCompat.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+                                unifyprinciplesR.color.Unify_NN950_68
                             )
                         )
                     }
@@ -65,7 +66,7 @@ class SomDetailShippingViewHolder(
                                 setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                        unifyprinciplesR.color.Unify_GN500
                                     )
                                 )
                                 setOnClickListener {
@@ -76,7 +77,7 @@ class SomDetailShippingViewHolder(
                             tvChevron.setTextColor(
                                 ContextCompat.getColor(
                                     root.context,
-                                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                    unifyprinciplesR.color.Unify_GN500
                                 )
                             )
 
@@ -92,7 +93,7 @@ class SomDetailShippingViewHolder(
                             tvShippingName.setTextColor(
                                 ContextCompat.getColor(
                                     root.context,
-                                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                                    unifyprinciplesR.color.Unify_NN950
                                 )
                             )
                         }
@@ -171,7 +172,7 @@ class SomDetailShippingViewHolder(
                             }
 
                             actionListener?.onCopiedAddress(
-                                root.context.getString(R.string.alamat_pengiriman),
+                                root.context.getString(sellerorderR.string.alamat_pengiriman),
                                 (
                                     receiverName +
                                         numberPhoneText +
@@ -200,9 +201,9 @@ class SomDetailShippingViewHolder(
                     maskTriggerAwbCopyArea.setOnClickListener {
                         it.generateHapticFeedback()
                         actionListener?.onTextCopied(
-                            root.context.getString(R.string.awb_label),
+                            root.context.getString(sellerorderR.string.awb_label),
                             item.dataObject.awb,
-                            root.context.getString(R.string.readable_awb_label)
+                            root.context.getString(sellerorderR.string.readable_awb_label)
                         )
                     }
                 } else {
@@ -220,7 +221,7 @@ class SomDetailShippingViewHolder(
                     if (item.dataObject.driverPhoto.isNotEmpty()) {
                         ivDriver.loadImageCircle(item.dataObject.driverPhoto)
                     } else {
-                        ivDriver.setImageResource(R.drawable.ic_driver_default)
+                        ivDriver.setImageResource(sellerorderR.drawable.ic_driver_default)
                     }
 
                     if (item.dataObject.driverPhone.isNotEmpty()) {
@@ -265,9 +266,9 @@ class SomDetailShippingViewHolder(
                             maskTriggerBookingCodeCopyArea.setOnClickListener {
                                 it.generateHapticFeedback()
                                 actionListener?.onTextCopied(
-                                    root.context.getString(R.string.booking_code_label),
+                                    root.context.getString(sellerorderR.string.booking_code_label),
                                     item.dataObject.onlineBookingCode,
-                                    root.context.getString(R.string.readable_booking_code_label)
+                                    root.context.getString(sellerorderR.string.readable_booking_code_label)
                                 )
                             }
                             bookingCodeValue.apply {
@@ -344,7 +345,7 @@ class SomDetailShippingViewHolder(
 
     private fun TickerInfo.formattedText(): String {
         return String.format(
-            binding?.root?.context?.getString(R.string.som_detail_ticker_description).orEmpty(),
+            binding?.root?.context?.getString(sellerorderR.string.som_detail_ticker_description).orEmpty(),
             this.text,
             this.actionText
         )
@@ -355,6 +356,6 @@ class SomDetailShippingViewHolder(
         const val NUMBER_PHONE_ZERO = "0"
         const val CONTAINS_COMMA = ","
 
-        val LAYOUT = R.layout.detail_shipping_item
+        val LAYOUT = sellerorderR.layout.detail_shipping_item
     }
 }
