@@ -6,13 +6,10 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import javax.inject.Inject
 
-class CartCalculator @Inject constructor() {
+object CartCalculator {
 
-    companion object {
-        private const val PERCENTAGE = 100.0f
-    }
+    private const val PERCENTAGE = 100.0f
 
     fun calculatePriceMarketplaceProduct(
         allCartItemDataList: ArrayList<CartItemHolderData>,
@@ -136,7 +133,28 @@ class CartCalculator @Inject constructor() {
         return Triple(totalItemQty, pricePair, subtotalCashback)
     }
 
-    private fun calculatePriceWholesaleProduct(
+    fun getWholesalePriceProduct(
+        cartItemHolderData: CartItemHolderData,
+        itemQty: Int
+    ): Double {
+        var wholesalePrice = 0.0
+        val wholesalePriceDataList = cartItemHolderData.wholesalePriceData
+        for (wholesalePriceData in wholesalePriceDataList) {
+            if (itemQty >= wholesalePriceData.qtyMin) {
+                wholesalePrice = wholesalePriceData.prdPrc
+                val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    wholesalePriceData.prdPrc,
+                    false
+                ).removeDecimalSuffix()
+                cartItemHolderData.wholesalePriceFormatted = wholesalePriceFormatted
+                cartItemHolderData.wholesalePrice = wholesalePriceData.prdPrc
+                break
+            }
+        }
+        return wholesalePrice
+    }
+
+    fun calculatePriceWholesaleProduct(
         cartItemHolderData: CartItemHolderData,
         itemQty: Int
     ): Triple<Double, Double, Double> {

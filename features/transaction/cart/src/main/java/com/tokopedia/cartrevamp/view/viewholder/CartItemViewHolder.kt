@@ -1410,15 +1410,8 @@ class CartItemViewHolder constructor(
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.LOADING
                 }
                 1 -> {
-                    var offerMessage = ""
-                    data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.forEachIndexed { index, s ->
-                        offerMessage += s
-                        if (index < (data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
-                            offerMessage += " • "
-                        }
-                    }
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
-                    binding.itemCartBmgm.bmgmWidgetView.title = offerMessage
+                    binding.itemCartBmgm.bmgmWidgetView.title = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(" • ")
                     binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerIcon
                     binding.itemCartBmgm.bmgmWidgetView.offerId = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
