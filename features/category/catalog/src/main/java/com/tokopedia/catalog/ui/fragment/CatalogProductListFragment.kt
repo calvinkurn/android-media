@@ -239,9 +239,13 @@ class CatalogProductListFragment :
         viewModel.productList.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    products.addAll(it.data)
                     val hasNextPage = it.data.isNotEmpty()
-                    renderList(products, hasNextPage)
+                    if (hasNextPage){
+                        products.addAll(it.data)
+                        renderList(products, true)
+                    }else{
+                        renderList(emptyList(), false)
+                    }
                 }
 
                 is Fail -> {
