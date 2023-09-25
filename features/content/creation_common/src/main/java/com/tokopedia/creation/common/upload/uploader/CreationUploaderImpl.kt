@@ -32,19 +32,23 @@ class CreationUploaderImpl @Inject constructor(
     ) {
         it.firstOrNull()?.let { workInfo ->
             if(workInfo.state == WorkInfo.State.RUNNING) {
-                val progress = workInfo.progress.getInt(CreationUploadConst.PROGRESS, 0)
-                val uploadData = CreationUploadData.parseFromJson(workInfo.progress.getString(CreationUploadConst.UPLOAD_DATA).orEmpty(), gson)
+                try {
+                    val progress = workInfo.progress.getInt(CreationUploadConst.PROGRESS, 0)
+                    val uploadData = CreationUploadData.parseFromJson(workInfo.progress.getString(CreationUploadConst.UPLOAD_DATA).orEmpty(), gson)
 
-                return@map when (progress) {
-                    CreationUploadConst.PROGRESS_COMPLETED -> {
-                        CreationUploadResult.Success(uploadData)
+                    return@map when (progress) {
+                        CreationUploadConst.PROGRESS_COMPLETED -> {
+                            CreationUploadResult.Success(uploadData)
+                        }
+                        CreationUploadConst.PROGRESS_FAILED -> {
+                            CreationUploadResult.Failed(uploadData)
+                        }
+                        else -> {
+                            CreationUploadResult.Progress(uploadData, progress)
+                        }
                     }
-                    CreationUploadConst.PROGRESS_FAILED -> {
-                        CreationUploadResult.Failed(uploadData)
-                    }
-                    else -> {
-                        CreationUploadResult.Progress(uploadData, progress)
-                    }
+                } catch (throwable: Throwable) {
+
                 }
             }
         }
