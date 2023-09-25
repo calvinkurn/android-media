@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_gray_corner">
+
+    <com.tokopedia.play.widget.ui.widget.PlayWidgetCardView
+        android:id="@+id/pw_browse_creator"
+        android:layout_width="120dp"
+        android:layout_height="213dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rcl_bottomLeftRadius="0dp"
+        app:rcl_bottomRightRadius="0dp" />
+
+    <com.tokopedia.play_common.view.RoundedFrameLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/Unify_NN0"
+        android:translationY="-28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pw_browse_creator"
+        app:rfl_cornerRadius="28dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_browse_creator_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            app:unify_image_type="circle"
+            tools:src="@tools:sample/avatars" />
+
+    </com.tokopedia.play_common.view.RoundedFrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_browse_creator_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Tasya Farasya Official Indonesia" />
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

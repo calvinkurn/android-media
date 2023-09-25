@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.presentation.model
 
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -38,5 +39,13 @@ sealed interface FeedBrowseUiModel {
         val appLink: String,
     ) : FeedBrowseUiModel {
         override val id = "${slotId}_banner_${title}"
+    }
+
+    data class Creator(
+        val slotId: String,
+        val playCard: PlayWidgetChannelUiModel
+    ) : FeedBrowseUiModel {
+
+        override val id = "${slotId}_creator"
     }
 }
