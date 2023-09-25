@@ -37,27 +37,13 @@ The write review page (single & bulk) has multiple entry points. To unify the en
 
 
 
-[Screen Recording 2023-06-06 at 14.26.22.mov](/wiki/download/attachments/2266531458/Screen%20Recording%202023-06-06%20at%2014.26.22.mov?version=1&modificationDate=1686036409766&cacheVersion=1&api=v2)
+[Screen Recording 2023-06-06 at 14.26.22.mov](https://api.media.atlassian.com/file/7fe57a59-74c6-4b22-b4f6-ee513206c030/artifact/video_1280.mp4/binary?client=f5ed584c-324c-4e33-90a6-b46b8255cc79&collection=contentId-2266531458&max-age=2592000&token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmNWVkNTg0Yy0zMjRjLTRlMzMtOTBhNi1iNDZiODI1NWNjNzkiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpjb2xsZWN0aW9uOmNvbnRlbnRJZC0yMjY2NTMxNDU4IjpbInJlYWQiXX0sImV4cCI6MTY5NTYyNDcwMCwibmJmIjoxNjk1NjIxODIwfQ.WDlH4nf7YcmKEtN9Z5hBnytyMOjXbJHc3BTybqw7PVA)
 
 
 
 
 
-[Screen Recording 2023-06-06 at 14.27.31.mov](/wiki/download/attachments/2266531458/Screen%20Recording%202023-06-06%20at%2014.27.31.mov?version=1&modificationDate=1686036475457&cacheVersion=1&api=v2)
-
-
-
-
-
-
-
-[Screen Recording 2023-06-06 at 14.28.47.mov](/wiki/download/attachments/2266531458/Screen%20Recording%202023-06-06%20at%2014.28.47.mov?version=1&modificationDate=1686036580837&cacheVersion=1&api=v2)
-
-
-
-
-
-[Screen Recording 2023-06-06 at 14.30.00.mov](/wiki/download/attachments/2266531458/Screen%20Recording%202023-06-06%20at%2014.30.00.mov?version=1&modificationDate=1686036642887&cacheVersion=1&api=v2)
+[Screen Recording 2023-06-06 at 14.27.31.mov](https://api.media.atlassian.com/file/964f3267-e843-444c-b1dd-56f2a1826790/artifact/video_1280.mp4/binary?client=f5ed584c-324c-4e33-90a6-b46b8255cc79&collection=contentId-2266531458&max-age=2592000&token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmNWVkNTg0Yy0zMjRjLTRlMzMtOTBhNi1iNDZiODI1NWNjNzkiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpjb2xsZWN0aW9uOmNvbnRlbnRJZC0yMjY2NTMxNDU4IjpbInJlYWQiXX0sImV4cCI6MTY5NTYyNDcwMCwibmJmIjoxNjk1NjIxODIwfQ.WDlH4nf7YcmKEtN9Z5hBnytyMOjXbJHc3BTybqw7PVA)
 
 
 
@@ -65,13 +51,27 @@ The write review page (single & bulk) has multiple entry points. To unify the en
 
 
 
-[Screen Recording 2023-06-06 at 14.33.10.mov](/wiki/download/attachments/2266531458/Screen%20Recording%202023-06-06%20at%2014.33.10.mov?version=1&modificationDate=1686036815287&cacheVersion=1&api=v2)
+[Screen Recording 2023-06-06 at 14.28.47.mov](https://api.media.atlassian.com/file/20ddbd81-ae04-4abd-900e-7114e53e6060/artifact/video_1280.mp4/binary?client=f5ed584c-324c-4e33-90a6-b46b8255cc79&collection=contentId-2266531458&max-age=2592000&token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmNWVkNTg0Yy0zMjRjLTRlMzMtOTBhNi1iNDZiODI1NWNjNzkiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpjb2xsZWN0aW9uOmNvbnRlbnRJZC0yMjY2NTMxNDU4IjpbInJlYWQiXX0sImV4cCI6MTY5NTYyNDcwMCwibmJmIjoxNjk1NjIxODIwfQ.WDlH4nf7YcmKEtN9Z5hBnytyMOjXbJHc3BTybqw7PVA)
 
 
 
 
 
-[Screen Recording 2023-06-06 at 14.33.48.mov](/wiki/download/attachments/2266531458/Screen%20Recording%202023-06-06%20at%2014.33.48.mov?version=1&modificationDate=1686036863898&cacheVersion=1&api=v2)
+[Screen Recording 2023-06-06 at 14.30.00.mov](https://api.media.atlassian.com/file/4d8da337-3ab2-4529-b03c-52fe04060204/artifact/video_1280.mp4/binary?client=f5ed584c-324c-4e33-90a6-b46b8255cc79&collection=contentId-2266531458&max-age=2592000&token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmNWVkNTg0Yy0zMjRjLTRlMzMtOTBhNi1iNDZiODI1NWNjNzkiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpjb2xsZWN0aW9uOmNvbnRlbnRJZC0yMjY2NTMxNDU4IjpbInJlYWQiXX0sImV4cCI6MTY5NTYyNDcwMCwibmJmIjoxNjk1NjIxODIwfQ.WDlH4nf7YcmKEtN9Z5hBnytyMOjXbJHc3BTybqw7PVA)
+
+
+
+
+
+
+
+[Screen Recording 2023-06-06 at 14.33.10.mov](https://api.media.atlassian.com/file/a5172581-fbde-4bd1-b326-ac63e30d4b80/artifact/video_1280.mp4/binary?client=f5ed584c-324c-4e33-90a6-b46b8255cc79&collection=contentId-2266531458&max-age=2592000&token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmNWVkNTg0Yy0zMjRjLTRlMzMtOTBhNi1iNDZiODI1NWNjNzkiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpjb2xsZWN0aW9uOmNvbnRlbnRJZC0yMjY2NTMxNDU4IjpbInJlYWQiXX0sImV4cCI6MTY5NTYyNDcwMCwibmJmIjoxNjk1NjIxODIwfQ.WDlH4nf7YcmKEtN9Z5hBnytyMOjXbJHc3BTybqw7PVA)
+
+
+
+
+
+[Screen Recording 2023-06-06 at 14.33.48.mov](https://api.media.atlassian.com/file/90c76d9e-7974-4d07-af2c-bfc23692041a/artifact/video_1280.mp4/binary?client=f5ed584c-324c-4e33-90a6-b46b8255cc79&collection=contentId-2266531458&max-age=2592000&token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmNWVkNTg0Yy0zMjRjLTRlMzMtOTBhNi1iNDZiODI1NWNjNzkiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpjb2xsZWN0aW9uOmNvbnRlbnRJZC0yMjY2NTMxNDU4IjpbInJlYWQiXX0sImV4cCI6MTY5NTYyNDcwMCwibmJmIjoxNjk1NjIxODIwfQ.WDlH4nf7YcmKEtN9Z5hBnytyMOjXbJHc3BTybqw7PVA)
 
 
 
