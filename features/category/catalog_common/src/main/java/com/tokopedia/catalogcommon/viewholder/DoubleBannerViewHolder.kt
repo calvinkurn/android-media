@@ -10,12 +10,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemDoubleBannerImageBinding
 import com.tokopedia.catalogcommon.databinding.WidgetItemDoubleBannerImageContentBinding
+import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
-class DoubleBannerViewHolder(itemView: View) : AbstractViewHolder<DoubleBannerCatalogUiModel>(itemView) {
+class DoubleBannerViewHolder(
+    itemView: View,
+    val doubleBannerListener: DoubleBannerListener? = null
+) : AbstractViewHolder<DoubleBannerCatalogUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -29,11 +33,12 @@ class DoubleBannerViewHolder(itemView: View) : AbstractViewHolder<DoubleBannerCa
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = DoubleImageAdapter(element.imageUrls.zipWithNext())
         }
+        doubleBannerListener?.onDoubleBannerImpression()
     }
 
     class DoubleImageAdapter(
         private var items: List<Pair<String, String>> = listOf()
-    ): RecyclerView.Adapter<DoubleImageViewHolder>() {
+    ) : RecyclerView.Adapter<DoubleImageViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DoubleImageViewHolder {
             val rootView = DoubleImageViewHolder.createRootView(parent)
             return DoubleImageViewHolder(rootView)

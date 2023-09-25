@@ -3,6 +3,7 @@ package com.tokopedia.catalog.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
@@ -13,10 +14,12 @@ class CatalogProductListActivity : BaseSimpleActivity() {
     private var catalogId: String = ""
     private var catalogTitle: String = ""
     private var productSortingStatus: String = ""
+    private var catalogUrl: String = ""
 
     companion object {
         private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
+        const val EXTRA_CATALOG_URL = "EXTRA_CATALOG_URL"
         private const val QUERY_CATALOG_ID = "catalog_id"
         private const val QUERY_PRODUCT_SORTING_STATUS = "sorting_status"
 
@@ -49,6 +52,8 @@ class CatalogProductListActivity : BaseSimpleActivity() {
             intent.data?.getQueryParameter(QUERY_CATALOG_ID).orEmpty()
         }
 
+        catalogUrl = intent.getStringExtra(EXTRA_CATALOG_URL) ?: ""
+
         catalogTitle = intent?.data?.lastPathSegment.toString()
         productSortingStatus =
             intent?.data?.getQueryParameter(QUERY_PRODUCT_SORTING_STATUS).toString()
@@ -64,7 +69,8 @@ class CatalogProductListActivity : BaseSimpleActivity() {
                     CatalogProductListFragment.newInstance(
                         catalogId,
                         catalogTitle,
-                        productSortingStatus
+                        productSortingStatus,
+                        catalogUrl
                     ),
                     CatalogProductListFragment.CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG
                 )

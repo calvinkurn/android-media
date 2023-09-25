@@ -3,17 +3,22 @@ package com.tokopedia.catalogcommon.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.adapter.ItemTrustMakerAdapter
 import com.tokopedia.catalogcommon.databinding.WidgetTrustmakerBinding
+import com.tokopedia.catalogcommon.listener.TrustMakerListener
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.util.decoration.DividerItemDecoration
-import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.utils.view.binding.viewBinding
 
-class TrustmakerViewHolder(itemView: View) :
+class TrustmakerViewHolder(
+    itemView: View,
+    val listener: TrustMakerListener? = null
+) :
     AbstractViewHolder<TrustMakerUiModel>(itemView) {
 
     companion object {
@@ -38,5 +43,17 @@ class TrustmakerViewHolder(itemView: View) :
                 )
             )
         }
+
+        binding?.rvItems?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                val lastPositionVisibleComplete =
+                    layoutManager?.findLastVisibleItemPosition().orZero()
+                val currentVisibleTrustMaker =
+                    element.items.subList(0, lastPositionVisibleComplete + 1)
+                listener?.onTrustMakerImpression(currentVisibleTrustMaker)
+            }
+        })
     }
 }

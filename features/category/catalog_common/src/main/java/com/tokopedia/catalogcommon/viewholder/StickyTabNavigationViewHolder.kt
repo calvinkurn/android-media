@@ -13,7 +13,10 @@ import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.utils.view.binding.viewBinding
 
-class StickyTabNavigationViewHolder(itemView: View, val listener: StickyNavigationListener?) :
+class StickyTabNavigationViewHolder(
+    itemView: View,
+    val listener: StickyNavigationListener? = null
+) :
     AbstractViewHolder<StickyNavigationUiModel>(itemView) {
 
     companion object {
@@ -54,8 +57,13 @@ class StickyTabNavigationViewHolder(itemView: View, val listener: StickyNavigati
             catalogTabsUnify.tabLayout.setTabTextColors(Color.BLUE, Color.BLACK)
             catalogTabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    element?.currentSelectTab = tab?.position.orZero()
-                    listener?.onNavigateWidget(element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(), element?.currentSelectTab.orZero())
+                    if (tab?.position.orZero() != element?.currentSelectTab){
+                        element?.currentSelectTab = tab?.position.orZero()
+                        listener?.onNavigateWidget(
+                            element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(),
+                            element?.currentSelectTab.orZero()
+                        )
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -63,11 +71,12 @@ class StickyTabNavigationViewHolder(itemView: View, val listener: StickyNavigati
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                     element?.currentSelectTab = tab?.position.orZero()
-                    listener?.onNavigateWidget(element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(), element?.currentSelectTab.orZero())
+
                 }
 
             })
 
+            listener?.onStickyNavigationImpression()
         }
     }
 
@@ -76,4 +85,7 @@ class StickyTabNavigationViewHolder(itemView: View, val listener: StickyNavigati
 interface StickyNavigationListener {
 
     fun onNavigateWidget(anchorTo: String, tabPosition: Int)
+
+    fun onStickyNavigationImpression()
+
 }

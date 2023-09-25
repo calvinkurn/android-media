@@ -53,6 +53,7 @@ class HeroBannerViewHolder(
     private var brandImageCount = 0
     private var brandDescriptions: List<String> = emptyList()
     private val bannerAdapter = ImageSliderAdapter(itemView.context)
+    private var brandImageUrl: List<String> = emptyList()
 
     init {
         binding?.carouselBanner?.setupCarouselBanner()
@@ -69,6 +70,7 @@ class HeroBannerViewHolder(
                         brandDescriptions.getOrNull(imgPosition).orEmpty()
                 }
             }
+
             override fun getCurrentPosition(position: Int) {
                 // no-op
             }
@@ -162,6 +164,7 @@ class HeroBannerViewHolder(
 
     override fun bind(element: HeroBannerUiModel) {
         brandImageCount = element.brandImageUrls.size
+        brandImageUrl = element.brandImageUrls
         binding?.configViewsVisibility(element.isPremium)
         if (element.isPremium) {
             binding?.renderPremiumBrandData(element)
@@ -173,6 +176,11 @@ class HeroBannerViewHolder(
         binding?.carouselBanner?.currentItem = bannerAdapter.getFirstPosition()
         binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
         binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
+        heroBannerListener?.onHeroBannerImpression(
+            Int.ZERO,
+            brandDescriptions,
+            brandImageUrl
+        )
     }
 }
 

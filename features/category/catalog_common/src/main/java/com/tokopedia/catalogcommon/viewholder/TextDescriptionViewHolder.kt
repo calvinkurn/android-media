@@ -6,10 +6,14 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.ItemTextDescriptionBinding
+import com.tokopedia.catalogcommon.listener.TextDescriptionListener
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class TextDescriptionViewHolder(itemView: View):
+class TextDescriptionViewHolder(
+    itemView: View,
+    private val listener: TextDescriptionListener? = null
+) :
     AbstractViewHolder<TextDescriptionUiModel>(itemView) {
 
     companion object {
@@ -28,6 +32,7 @@ class TextDescriptionViewHolder(itemView: View):
             it.tgpTextWidgetDescription.text = element.item.description
         }
         overrideWidgetTheme(element)
+        listener?.onTextDescriptionImpression()
     }
 
     private fun overrideWidgetTheme(element: TextDescriptionUiModel) {

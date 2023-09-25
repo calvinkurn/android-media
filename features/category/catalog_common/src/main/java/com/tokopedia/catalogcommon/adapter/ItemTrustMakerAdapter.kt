@@ -8,6 +8,7 @@ import com.tokopedia.catalogcommon.databinding.ItemTrustmakerBinding
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class ItemTrustMakerAdapter(private val itemList: List<TrustMakerUiModel.ItemTrustMakerUiModel>) :
     RecyclerView.Adapter<ItemTrustMakerAdapter.ViewHolder>() {
@@ -49,7 +50,10 @@ class ItemTrustMakerAdapter(private val itemList: List<TrustMakerUiModel.ItemTru
         }
 
         fun bindToView(itemUiModel: TrustMakerUiModel.ItemTrustMakerUiModel) {
-            ivImage.loadImage(itemUiModel.icon)
+            if (itemUiModel.icon.isNotEmpty()){
+                ivImage.loadImage(itemUiModel.icon)
+            }
+            ivImage.showWithCondition(itemUiModel.icon.isNotEmpty())
             tvTitle.text = itemUiModel.title
             tvSubTitle.text = itemUiModel.subTitle
             tvTitle.setTextColor(itemUiModel.textColorTitle)

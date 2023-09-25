@@ -101,7 +101,8 @@ class CatalogDetailUiMapper @Inject constructor(
             widgets = widgets,
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
             priceCtaProperties = mapToPriceCtaProperties(remoteModel),
-            remoteModel.basicInfo.productSortingStatus.orZero()
+            remoteModel.basicInfo.productSortingStatus.orZero(),
+            catalogUrl = remoteModel.basicInfo.url.orEmpty()
         )
     }
 

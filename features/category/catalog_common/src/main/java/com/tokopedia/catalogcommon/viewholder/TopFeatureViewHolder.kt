@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemTopFeatureBinding
+import com.tokopedia.catalogcommon.listener.TopFeatureListener
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
@@ -20,7 +21,10 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 
-class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiModel>(itemView) {
+class TopFeatureViewHolder(
+    itemView: View,
+    val listener: TopFeatureListener? = null
+) : AbstractViewHolder<TopFeaturesUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -34,7 +38,7 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
     private var onceCreateView = false
 
     override fun bind(element: TopFeaturesUiModel) {
-        if (!onceCreateView){
+        if (!onceCreateView) {
             element.items.forEachIndexed { index, item ->
                 createItem(item)
                 if (index < element.items.size - 1) {
@@ -42,7 +46,7 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
                 }
             }
         }
-
+        listener?.onTopFeatureImpression(element.items)
         onceCreateView = true
     }
 
@@ -50,7 +54,7 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
         val linearLayout = createLinearLayout(
             backgroundColor = item.backgroundColor
         )
-        if (item.icon.isNotEmpty()){
+        if (item.icon.isNotEmpty()) {
             val icon = createIcon(item.icon)
             linearLayout.addView(icon)
         }
@@ -99,6 +103,7 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
         layoutParam.gravity = Gravity.CENTER
         title.layoutParams = layoutParam
         title.text = text
+        title.setType(Typography.SMALL)
         title.setTextColor(textColor.orDefaultColor(itemView.context))
         title.textSize = 12f
         title.gravity = Gravity.CENTER

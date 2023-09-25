@@ -3,7 +3,14 @@ package com.tokopedia.catalogcommon.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.catalogcommon.listener.AccordionListener
+import com.tokopedia.catalogcommon.listener.BannerListener
+import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
+import com.tokopedia.catalogcommon.listener.TextDescriptionListener
+import com.tokopedia.catalogcommon.listener.TopFeatureListener
+import com.tokopedia.catalogcommon.listener.TrustMakerListener
+import com.tokopedia.catalogcommon.listener.VideoExpertListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
@@ -40,25 +47,32 @@ import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 
 class CatalogAdapterFactoryImpl(
     private val heroBannerListener: HeroBannerListener? = null,
-    private val navListener: StickyNavigationListener? = null
-    ): BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
+    private val navListener: StickyNavigationListener? = null,
+    private val accordionListener: AccordionListener? = null,
+    private val bannerListener: BannerListener? = null,
+    private val textDescriptionListener: TextDescriptionListener? = null,
+    private val trustMakerListener: TrustMakerListener? = null,
+    private val videoExpertListener: VideoExpertListener? = null,
+    private val topFeatureListener: TopFeatureListener? = null,
+    private val doubleBannerListener: DoubleBannerListener? = null
+) : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            TopFeatureViewHolder.LAYOUT -> TopFeatureViewHolder(view)
+            TopFeatureViewHolder.LAYOUT -> TopFeatureViewHolder(view,topFeatureListener)
             CharacteristicViewHolder.LAYOUT -> CharacteristicViewHolder(view)
             HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view, heroBannerListener)
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
-            StickyTabNavigationViewHolder.LAYOUT -> StickyTabNavigationViewHolder(view,navListener)
+            StickyTabNavigationViewHolder.LAYOUT -> StickyTabNavigationViewHolder(view, navListener)
             SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
-            TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view)
+            TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view,trustMakerListener)
             BannerRevampViewHolder.LAYOUT -> BannerRevampViewHolder(view, null)
-            AccordionInformationViewHolder.LAYOUT -> AccordionInformationViewHolder(view)
-            TextDescriptionViewHolder.LAYOUT -> TextDescriptionViewHolder(view)
-            BannerViewHolder.LAYOUT -> BannerViewHolder(view)
-            DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view)
-            ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view)
+            AccordionInformationViewHolder.LAYOUT -> AccordionInformationViewHolder(view, accordionListener)
+            TextDescriptionViewHolder.LAYOUT -> TextDescriptionViewHolder(view, textDescriptionListener)
+            BannerViewHolder.LAYOUT -> BannerViewHolder(view,bannerListener)
+            DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view,doubleBannerListener)
+            ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view, videoExpertListener)
             SupportFeatureViewHolder.LAYOUT -> SupportFeatureViewHolder(view)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)

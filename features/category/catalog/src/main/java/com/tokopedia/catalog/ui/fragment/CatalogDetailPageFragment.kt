@@ -18,15 +18,67 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_FAQ
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_HERO_IMAGE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_BANNER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_DOUBLE_BANNER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_EXPERT_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_FAQ
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_PRICE_BOTTOM_SHEET
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TEXT_DESCRIPTION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_SEE_OPTIONS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TOP_FEATURE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TRUSTMAKER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_REVIEW_BANNER_IMPRESSION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_TOP_FEATURE_IMPRESSION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_TRUSTMAKER_IMPRESSION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_CLICK_PG
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_ITEM
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_PG_IRIS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_VIDEO_EXPERT
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_THREE_BY_FOUR
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_DOUBLE_BANNER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_EXPERT_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_FAQ
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_HERO_BANNER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_PRICE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TEXT_DESCRIPTION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TOP_FEATURE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TRUSTMAKER
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.EXTRA_CATALOG_URL
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
+import com.tokopedia.catalogcommon.listener.AccordionListener
+import com.tokopedia.catalogcommon.listener.BannerListener
+import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
+import com.tokopedia.catalogcommon.listener.TextDescriptionListener
+import com.tokopedia.catalogcommon.listener.TopFeatureListener
+import com.tokopedia.catalogcommon.listener.TrustMakerListener
+import com.tokopedia.catalogcommon.listener.VideoExpertListener
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
+import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
+import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.globalerror.GlobalError
@@ -40,13 +92,15 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
-    StickyNavigationListener {
+    StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
+    TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -68,18 +122,36 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
     @Inject
     lateinit var viewModel: CatalogDetailPageViewModel
-    var title = ""
-    var productSortingStatus = 0
 
     private var binding by autoClearedNullable<FragmentCatalogReimagineDetailPageBinding>()
     private val widgetAdapter by lazy {
         WidgetCatalogAdapter(
             CatalogAdapterFactoryImpl(
                 heroBannerListener = this,
-                navListener = this
+                navListener = this,
+                accordionListener = this,
+                bannerListener = this,
+                trustMakerListener = this,
+                textDescriptionListener = this,
+                videoExpertListener = this,
+                topFeatureListener = this,
+                doubleBannerListener = this
             )
         )
     }
+
+    var title = ""
+
+    var productSortingStatus = 0
+
+    var catalogId = ""
+
+    var catalogUrl = ""
+
+    private val userSession: UserSession by lazy {
+        UserSession(activity)
+    }
+
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -117,12 +189,24 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers(view)
-        var catalogId = ""
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
             viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
         }
+
+    }
+
+    override fun onNavBackClicked() {
+        activity?.finish()
+    }
+
+    override fun onNavShareClicked() {
+        // no-op
+    }
+
+    override fun onNavMoreMenuClicked() {
+        // no-op
     }
 
     override fun onResume() {
@@ -155,7 +239,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     private fun setupObservers(view: View) {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
-                productSortingStatus = productSortingStatus
+                productSortingStatus = it.data.productSortingStatus
+                catalogUrl = it.data.catalogUrl
                 widgetAdapter.addWidget(it.data.widgets)
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
@@ -263,14 +348,35 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             val catalogProductList =
                 Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
                     .buildUpon()
-                    .appendQueryParameter(QUERY_CATALOG_ID, properties.catalogId)
-                    .appendQueryParameter(QUERY_PRODUCT_SORTING_STATUS, productSortingStatus.toString())
-                    .appendPath(properties.productName).toString()
+                    .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
+                    .appendQueryParameter(
+                        QUERY_PRODUCT_SORTING_STATUS,
+                        productSortingStatus.toString()
+                    )
+                    .appendPath(title).toString()
 
-            RouteManager.route(context, catalogProductList)
+            RouteManager.getIntent(context, catalogProductList).apply {
+                putExtra(EXTRA_CATALOG_URL, catalogUrl)
+                startActivity(this)
+            }
+
+            CatalogReimagineDetailAnalytics.sendEvent(
+                event = EVENT_VIEW_CLICK_PG,
+                action = EVENT_ACTION_SEE_OPTIONS,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                labels = catalogId,
+                trackerId = TRACKER_ID_CLICK_BUTTON_CHOOSE
+            )
         }
-    }
 
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_PRICE_BOTTOM_SHEET,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_PRICE
+        )
+    }
     private fun FragmentCatalogReimagineDetailPageBinding.showPageError(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         when (throwable) {
@@ -289,5 +395,198 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     private fun goToLoginPage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         startActivityForResult(intent, LOGIN_REQUEST_CODE)
+    }
+
+    override fun onHeroBannerImpression(
+        currentPositionVisibility: Int,
+        imageDescription: List<String>,
+        brandImageUrl: List<String>
+    ) {
+        val impressionImageDescription = imageDescription.subList(Int.ZERO, currentPositionVisibility+1)
+        val impressionBrandImageUrl = brandImageUrl.subList(Int.ZERO, currentPositionVisibility+1)
+        val list = arrayListOf<HashMap<String,String>>()
+        for (index in impressionBrandImageUrl.indices){
+            val promotions = hashMapOf<String,String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = impressionImageDescription[index]
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] =
+                CatalogTrackerConstant.EVENT_IMAGE_BANNER_IMPRESSION
+            list.add(promotions)
+        }
+
+        CatalogReimagineDetailAnalytics.sendEventImpressionList(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_HERO_IMAGE,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_HERO_BANNER,
+            userId = userSession.userId,
+            promotion = list
+        )
+    }
+
+    override fun onStickyNavigationImpression() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_IMPRESSION_NAVIGATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_NAVIGATION
+        )
+    }
+
+    override fun onBannerThreeByFourImpression(ratio: String) {
+        when (ratio) {
+            BannerCatalogUiModel.Ratio.THREE_BY_FOUR.ratioName -> {
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = EVENT_VIEW_PG_IRIS,
+                    action = "$EVENT_ACTION_IMPRESSION_BANNER $ratio",
+                    category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                    labels = catalogId,
+                    trackerId = TRACKER_ID_IMPRESSION_BANNER_THREE_BY_FOUR
+                )
+            }
+
+            BannerCatalogUiModel.Ratio.TWO_BY_ONE.ratioName -> {
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = EVENT_VIEW_PG_IRIS,
+                    action = "$EVENT_ACTION_IMPRESSION_BANNER $ratio",
+                    category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                    labels = catalogId,
+                    trackerId = TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
+                )
+            }
+
+            BannerCatalogUiModel.Ratio.ONE_BY_ONE.ratioName -> {
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = EVENT_VIEW_PG_IRIS,
+                    action = "$EVENT_ACTION_IMPRESSION_BANNER $ratio",
+                    category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                    labels = catalogId,
+                    trackerId = TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
+                )
+            }
+        }
+    }
+
+    override fun onTextDescriptionImpression() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_TEXT_DESCRIPTION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_TEXT_DESCRIPTION
+        )
+    }
+
+    override fun onClickVideoExpert() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_CLICK_VIDEO_EXPERT
+        )
+    }
+
+    override fun onVideoExpertImpression(itemHasSaw: List<ExpertReviewUiModel.ItemExpertReviewUiModel>) {
+        val list = arrayListOf<HashMap<String,String>>()
+        for (index in itemHasSaw.indices){
+            val promotions = hashMapOf<String,String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = itemHasSaw[index].title
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_REVIEW_BANNER_IMPRESSION
+            list.add(promotions)
+        }
+
+        CatalogReimagineDetailAnalytics.sendEventImpressionList(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_EXPERT_REVIEW,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_EXPERT_REVIEW,
+            userId = userSession.userId,
+            promotion = list
+        )
+    }
+
+    override fun onImpressionAccordionInformation() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_FAQ,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_FAQ
+        )
+    }
+
+    override fun onClickItemAccordionInformation(
+        position: Int,
+        item: AccordionInformationUiModel.ItemAccordionInformationUiModel
+    ) {
+        val label = "$catalogId - position: $position - question:${item.title}"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_CLICK_FAQ,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = TRACKER_ID_CLICK_FAQ
+        )
+    }
+
+    override fun onTrustMakerImpression(currentVisibleTrustMaker: List<TrustMakerUiModel.ItemTrustMakerUiModel>) {
+        val list = arrayListOf<HashMap<String,String>>()
+        for (index in currentVisibleTrustMaker.indices){
+            val promotions = hashMapOf<String,String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = currentVisibleTrustMaker[index].title
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_TRUSTMAKER_IMPRESSION
+            list.add(promotions)
+        }
+
+        CatalogReimagineDetailAnalytics.sendEventImpressionList(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_TRUSTMAKER,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_TRUSTMAKER,
+            userId = userSession.userId,
+            promotion = list
+        )
+    }
+
+    override fun onTopFeatureImpression(items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>) {
+        val list = arrayListOf<HashMap<String,String>>()
+        for (index in items.indices){
+            val promotions = hashMapOf<String,String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = items[index].name
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_TOP_FEATURE_IMPRESSION
+            list.add(promotions)
+        }
+
+        CatalogReimagineDetailAnalytics.sendEventImpressionList(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_TOP_FEATURE,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_TOP_FEATURE,
+            userId = userSession.userId,
+            promotion = list
+        )
+    }
+
+    override fun onDoubleBannerImpression() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_DOUBLE_BANNER,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_DOUBLE_BANNER
+        )
     }
 }
