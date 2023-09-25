@@ -358,9 +358,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 builderFlags = IconBuilderFlag(
                     pageSource = NavSource.SHOP
                 ))
-            iconBuilder.addIcon(iconShareId) { clickShopShare() }
-            iconBuilder.addIcon(IconList.ID_SEARCH) { clickSearch() }
-            iconBuilder.addIcon(IconList.ID_SETTING) { clickSettingButton() }
+            iconBuilder.addIcon(iconShareId, disableRouteManager = true) { clickShopShare() }
+            iconBuilder.addIcon(IconList.ID_SEARCH, disableRouteManager = true) { clickSearch() }
+            iconBuilder.addIcon(IconList.ID_SETTING, disableRouteManager = true) { clickSettingButton() }
             setIcon(iconBuilder)
             show()
         }
@@ -371,7 +371,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
             val iconBuilder =
                 IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SHOP))
-            iconBuilder.addIcon(iconShareId) { clickShopShare() }
+            iconBuilder.addIcon(iconShareId, disableRouteManager = true) { clickShopShare() }
             if (isCartShownInNewNavToolbar()) {
                 iconBuilder.addIcon(IconList.ID_CART) {}
             }

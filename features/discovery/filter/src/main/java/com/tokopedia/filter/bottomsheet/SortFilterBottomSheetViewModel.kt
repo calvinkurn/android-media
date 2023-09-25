@@ -81,9 +81,15 @@ internal class SortFilterBottomSheetViewModel {
     private val originalFilterViewState = mutableSetOf<String>()
     private var originalSortValue = ""
     private var originalKeyword = ""
+    private var isReimagine = false
 
-    fun init(mapParameter: Map<String, String>, dynamicFilterModel: DynamicFilterModel?) {
+    fun init(
+        mapParameter: Map<String, String>,
+        dynamicFilterModel: DynamicFilterModel?,
+        isReimagine: Boolean = false,
+    ) {
         this.mutableMapParameter = mapParameter.toMutableMap()
+        this.isReimagine = isReimagine
 
         initializeDynamicFilterModel(dynamicFilterModel)
     }
@@ -151,12 +157,12 @@ internal class SortFilterBottomSheetViewModel {
     private fun isButtonResetVisible() = filterController.isFilterActive() || isSortNotDefault()
 
     private fun isSortNotDefault(): Boolean {
-        return getSelectedSortValue() != dynamicFilterModel?.defaultSortValue ?: ""
+        return getSelectedSortValue() != (dynamicFilterModel?.defaultSortValue ?: "")
     }
 
     private fun processSortData(dynamicFilterModelData: DataValue) {
         val sortList = dynamicFilterModelData.sort
-        if (sortList.isEmpty()) return
+        if (isReimagine || sortList.isEmpty()) return
 
         val sortItemViewModelList = mutableListOf<SortItemViewModel>()
 

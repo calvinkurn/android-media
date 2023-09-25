@@ -53,9 +53,11 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
 
     fun initInjector() {
         val component = DaggerFlightHomepageComponent.builder()
-                .flightComponent(FlightComponentInstance
-                        .getFlightComponent(activity?.application as Application))
-                .build()
+            .flightComponent(
+                FlightComponentInstance
+                    .getFlightComponent(activity?.application as Application)
+            )
+            .build()
         component.inject(this)
     }
 
@@ -63,7 +65,6 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
         super.onViewCreated(view, savedInstanceState)
 
         if (::departureCode.isInitialized && ::arrivalCode.isInitialized && classFlight > 0) {
-
             val mapFareParam = hashMapOf<String, Any>()
             mapFareParam[PARAM_DEPARTURE_CODE] = departureCode
             mapFareParam[PARAM_ARRIVAL_CODE] = arrivalCode
@@ -71,16 +72,23 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
             mapFareParam[PARAM_CLASS] = classFlight.toString()
 
             activity?.run {
-                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minCalendarDate, maxCalendarDate,
-                        true, (minDate ?: DateUtil.getCurrentCalendar().time).toString(TRAVEL_CAL_YYYY_MM_DD))
+                fareCalendarViewModel.getFareFlightCalendar(
+                    mapFareParam,
+                    minCalendarDate,
+                    maxCalendarDate,
+                    true,
+                    (minDate ?: DateUtil.getCurrentCalendar().time).toString(TRAVEL_CAL_YYYY_MM_DD)
+                )
             }
 
-            fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                it?.let {
-                    calendar?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
+            fareCalendarViewModel.fareFlightCalendarData.observe(
+                viewLifecycleOwner,
+                androidx.lifecycle.Observer {
+                    it?.let {
+                        binding?.calendarUnify?.calendarPickerView?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
+                    }
                 }
-            })
-
+            )
         }
     }
 
@@ -89,15 +97,20 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
         listFareAttribute.map {
             val dateFare = it.dateFare.toDate(DateUtil.YYYY_MM_DD)
             minDate?.let { date ->
-                subTitleList.add(SubTitle(dateFare,
-                        if (!dateFare.before(date)) it.displayedFare else " ", if (it.isLowestFare) getString(R.string.flight_dms_calendar_lowest_fare_price_color) else ""))
+                subTitleList.add(
+                    SubTitle(
+                        dateFare,
+                        if (!dateFare.before(date)) it.displayedFare else " ",
+                        if (it.isLowestFare) getString(R.string.flight_dms_calendar_lowest_fare_price_color) else ""
+                    )
+                )
             }
         }
         return subTitleList
     }
 
     override fun onDateInClicked(dateIn: Date) {
-        calendar.showSubTitle(false)
+        binding?.calendarUnify?.calendarPickerView?.showSubTitle(false)
         fareCalendarViewModel.calculateRoundTripFareCalendar(dateIn.toString(TRAVEL_CAL_YYYY_MM_DD))
     }
 
@@ -113,27 +126,35 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
         private const val PARAM_MONTH = "month"
         private const val PARAM_CLASS = "class"
 
-        fun getInstance(minDate: String?, maxDate: String?, rangeYear: Int,
-                        rangeDateSelected: Long, minDateLabel: String,
-                        maxDateLabel: String, minSelectableDateFromToday: Int = 0,
-                        canSelectSameDay: Boolean = false,
-                        departureCode: String, arrivalCode: String, classFlight: Int,
-                        maxSelectableDate: String): FlightCalendarRoundTripWidget =
-                FlightCalendarRoundTripWidget().also {
-                    it.arguments = Bundle().apply {
-                        putString(ARG_MIN_DATE, minDate)
-                        putString(ARG_MAX_DATE, maxDate)
-                        putInt(ARG_RANGE_YEAR, rangeYear)
-                        putLong(ARG_RANGE_DATE_SELECTED, rangeDateSelected)
-                        putString(ARG_MIN_DATE_LABEL, minDateLabel)
-                        putString(ARG_MAX_DATE_LABEL, maxDateLabel)
-                        putInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY, minSelectableDateFromToday)
-                        putBoolean(ARG_CAN_SELECT_SAME_DAY, canSelectSameDay)
-                        putString(ARG_DEPARTURE_CODE, departureCode)
-                        putString(ARG_ARRIVAL_CODE, arrivalCode)
-                        putInt(ARG_CLASS, classFlight)
-                        putString(ARG_MAX_SELECTABLE_DATE, maxSelectableDate)
-                    }
+        fun getInstance(
+            minDate: String?,
+            maxDate: String?,
+            rangeYear: Int,
+            rangeDateSelected: Long,
+            minDateLabel: String,
+            maxDateLabel: String,
+            minSelectableDateFromToday: Int = 0,
+            canSelectSameDay: Boolean = false,
+            departureCode: String,
+            arrivalCode: String,
+            classFlight: Int,
+            maxSelectableDate: String
+        ): FlightCalendarRoundTripWidget =
+            FlightCalendarRoundTripWidget().also {
+                it.arguments = Bundle().apply {
+                    putString(ARG_MIN_DATE, minDate)
+                    putString(ARG_MAX_DATE, maxDate)
+                    putInt(ARG_RANGE_YEAR, rangeYear)
+                    putLong(ARG_RANGE_DATE_SELECTED, rangeDateSelected)
+                    putString(ARG_MIN_DATE_LABEL, minDateLabel)
+                    putString(ARG_MAX_DATE_LABEL, maxDateLabel)
+                    putInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY, minSelectableDateFromToday)
+                    putBoolean(ARG_CAN_SELECT_SAME_DAY, canSelectSameDay)
+                    putString(ARG_DEPARTURE_CODE, departureCode)
+                    putString(ARG_ARRIVAL_CODE, arrivalCode)
+                    putInt(ARG_CLASS, classFlight)
+                    putString(ARG_MAX_SELECTABLE_DATE, maxSelectableDate)
                 }
+            }
     }
 }

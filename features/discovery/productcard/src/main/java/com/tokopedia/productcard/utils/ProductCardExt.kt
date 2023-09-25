@@ -256,7 +256,7 @@ private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
     }
 }
 
-private fun String?.toUnifyTextColor(context: Context): Int {
+internal fun String?.toUnifyTextColor(context: Context): Int {
     return try {
         when (this) {
             TEXT_DARK_ORANGE -> ContextCompat.getColor(
@@ -498,7 +498,7 @@ fun <T : View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
     return findViewById<T>(viewId.id)
 }
 
-fun <T : View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
+internal fun <T : View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
     if (isShow) {
         findViewById<T>(viewStubId, viewId)?.show()
     } else {
