@@ -6,6 +6,7 @@ data class PromoAccordionViewAllItem(
     override val id: String = "promo_accordion_view_all",
     val headerId: String = "",
     val hiddenPromoCount: Int = 0,
+    val totalPromoCount: Int = 0,
     val isExpanded: Boolean = false,
     val isVisible: Boolean = false
 ) : DelegateAdapterItem

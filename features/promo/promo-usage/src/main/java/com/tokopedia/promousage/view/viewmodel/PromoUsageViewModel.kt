@@ -112,6 +112,10 @@ internal class PromoUsageViewModel @Inject constructor(
     val clickPromoUiAction: LiveData<ClickPromoUiAction>
         get() = _clickPromoUiAction
 
+    private val _clickTncUiAction = MutableLiveData<ClickTncUiAction>()
+    val clickTncUiAction: LiveData<ClickTncUiAction>
+        get() = _clickTncUiAction
+
     fun setEntryPoint(entryPoint: PromoPageEntryPoint) {
         this.entryPoint = entryPoint
     }
@@ -476,7 +480,8 @@ internal class PromoUsageViewModel @Inject constructor(
                             ) {
                                 _usePromoRecommendationUiAction.postValue(
                                     UsePromoRecommendationUiAction.Success(
-                                        updatedPromoRecommendation
+                                        updatedPromoRecommendation,
+                                        updatedItems
                                     )
                                 )
                             }
@@ -632,7 +637,10 @@ internal class PromoUsageViewModel @Inject constructor(
                     if (selectedItem.clashingInfos.isNotEmpty()) {
                         processedItems = processedItems.map { item ->
                             if (item is PromoItem) {
-                                val (resultItem, _) = checkAndSetClashOnSelectionEvent(item, adjustedItem)
+                                val (resultItem, _) = checkAndSetClashOnSelectionEvent(
+                                    item,
+                                    adjustedItem
+                                )
                                 return@map resultItem
                             } else {
                                 return@map item
@@ -880,7 +888,7 @@ internal class PromoUsageViewModel @Inject constructor(
     private fun addTncPromo(
         items: List<DelegateAdapterItem>
     ): List<DelegateAdapterItem> {
-        val selectedPromos = items.getSelectedPromo()
+        val selectedPromos = items.getSelectedPromos()
         return if (selectedPromos.isNotEmpty()) {
             val tncItem = items.getTncItem() ?: PromoTncItem()
             val selectedPromoCodes = selectedPromos.map {
@@ -1030,14 +1038,14 @@ internal class PromoUsageViewModel @Inject constructor(
         _promoPageUiState.ifSuccess { pageState ->
             val currentItems = pageState.items.filterIsInstance<PromoItem>()
 
-            val selectedPromoCodes = currentItems.getSelectedPromoCodes()
+            val selectedPromos = currentItems.getSelectedPromos()
             var newValidateUseRequest = updateCurrentPromoCodeToValidateUsePromoRequest(
                 items = currentItems,
                 validateUsePromoRequest = validateUsePromoRequest
             )
             newValidateUseRequest = removeInvalidPromoCodeFromValidateUsePromoRequest(
                 validateUsePromoRequest = newValidateUseRequest,
-                selectedPromoCodes = selectedPromoCodes,
+                selectedPromoCodes = selectedPromos.getSelectedPromoCodes(),
                 boPromoCodes = boPromoCodes
             )
             newValidateUseRequest = newValidateUseRequest.copy(
@@ -1063,7 +1071,7 @@ internal class PromoUsageViewModel @Inject constructor(
                         entryPoint = entryPoint,
                         validateUse = validateUse,
                         lastValidateUsePromoRequest = newValidateUseRequest,
-                        selectedPromoCodes = selectedPromoCodes,
+                        selectedPromos = selectedPromos,
                         onSuccess = onSuccess,
                         onFailed = onFailed
                     )
@@ -1072,7 +1080,6 @@ internal class PromoUsageViewModel @Inject constructor(
                     PromoUsageIdlingResource.decrement()
                     handleValidateUseFailed(
                         throwable = throwable,
-                        selectedPromoCodes = selectedPromoCodes,
                         onFailed = onFailed
                     )
                 }
@@ -1084,7 +1091,7 @@ internal class PromoUsageViewModel @Inject constructor(
         entryPoint: PromoPageEntryPoint,
         validateUse: ValidateUsePromoRevampUiModel,
         lastValidateUsePromoRequest: ValidateUsePromoRequest,
-        selectedPromoCodes: List<String>,
+        selectedPromos: List<PromoItem>,
         onSuccess: ((entryPoint: PromoPageEntryPoint, validateUse: ValidateUsePromoRevampUiModel, lastValidateUseRequest: ValidateUsePromoRequest) -> Unit)? = null,
         onFailed: ((throwable: Throwable) -> Unit)? = null
     ) {
@@ -1099,14 +1106,13 @@ internal class PromoUsageViewModel @Inject constructor(
                 if (validateUse.promoUiModel.globalSuccess) {
                     handleApplyPromoSuccess(
                         entryPoint = entryPoint,
-                        selectedPromoCodes = selectedPromoCodes,
                         validateUse = validateUse,
                         lastValidateUsePromoRequest = lastValidateUsePromoRequest,
+                        selectedPromos = selectedPromos,
                         onSuccess = onSuccess
                     )
                 } else {
                     handleApplyPromoFailed(
-                        selectedPromoCodes = selectedPromoCodes,
                         validateUse = validateUse,
                         onFailed = onFailed
                     )
@@ -1124,7 +1130,6 @@ internal class PromoUsageViewModel @Inject constructor(
 
     private fun handleValidateUseFailed(
         throwable: Throwable,
-        selectedPromoCodes: List<String>,
         onFailed: ((throwable: Throwable) -> Unit)? = null
     ) {
         onFailed?.invoke(throwable) ?: run {
@@ -1137,9 +1142,9 @@ internal class PromoUsageViewModel @Inject constructor(
 
     private fun handleApplyPromoSuccess(
         entryPoint: PromoPageEntryPoint,
-        selectedPromoCodes: List<String>,
         validateUse: ValidateUsePromoRevampUiModel,
         lastValidateUsePromoRequest: ValidateUsePromoRequest,
+        selectedPromos: List<PromoItem>,
         onSuccess: ((entryPoint: PromoPageEntryPoint, validateUse: ValidateUsePromoRevampUiModel, lastValidateUseRequest: ValidateUsePromoRequest) -> Unit)? = null
     ) {
         val isGlobalSuccess = validateUse.promoUiModel.messageUiModel.state != PROMO_STATE_RED
@@ -1149,7 +1154,8 @@ internal class PromoUsageViewModel @Inject constructor(
                     ApplyPromoUiAction.SuccessWithApplyPromo(
                         entryPoint = entryPoint,
                         validateUse = validateUse,
-                        lastValidateUsePromoRequest = lastValidateUsePromoRequest
+                        lastValidateUsePromoRequest = lastValidateUsePromoRequest,
+                        appliedPromos = selectedPromos
                     )
                 )
             }
@@ -1157,7 +1163,6 @@ internal class PromoUsageViewModel @Inject constructor(
     }
 
     private fun handleApplyPromoFailed(
-        selectedPromoCodes: List<String>,
         validateUse: ValidateUsePromoRevampUiModel,
         onFailed: ((throwable: Throwable) -> Unit)? = null
     ) {
@@ -1601,11 +1606,17 @@ internal class PromoUsageViewModel @Inject constructor(
                         }
                     }
 
+                    val clearedPromos = currentItems.filterIsInstance<PromoItem>()
+                        .filter {
+                            tempToBeClearedPromoCodes.contains(it.code) ||
+                                tempToBeClearedPromoCodes.contains(it.secondaryPromo.code)
+                        }
                     _clearPromoUiAction.postValue(
                         ClearPromoUiAction.Success(
                             entryPoint = entryPoint,
                             clearPromo = clearPromo,
-                            lastValidateUseRequest = updatedLastValidateUseRequest
+                            lastValidateUseRequest = updatedLastValidateUseRequest,
+                            clearedPromos = clearedPromos
                         )
                     )
                 },
@@ -1680,7 +1691,11 @@ internal class PromoUsageViewModel @Inject constructor(
                     val promoRecommendation = updatedItems.getRecommendationItem()
                     if (promoRecommendation != null) {
                         _usePromoRecommendationUiAction.postValue(
-                            UsePromoRecommendationUiAction.Success(promoRecommendation)
+                            UsePromoRecommendationUiAction.Success(
+                                promoRecommendation,
+                                updatedItems,
+                                true
+                            )
                         )
                     }
                 }
@@ -1750,7 +1765,7 @@ internal class PromoUsageViewModel @Inject constructor(
     ) {
         _promoPageUiState.ifSuccess { pageState ->
             if (isChangedFromInitialState()) {
-                val appliedPromos = pageState.items.getSelectedPromo()
+                val appliedPromos = pageState.items.getSelectedPromos()
                 val hasSelectedPromo = appliedPromos.isNotEmpty()
                 if (hasSelectedPromo) {
                     onApplyPromo(
@@ -1768,7 +1783,11 @@ internal class PromoUsageViewModel @Inject constructor(
                             )
                         },
                         onFailed = { throwable ->
-                            _closePromoPageUiAction.postValue(ClosePromoPageUiAction.Failed(throwable))
+                            _closePromoPageUiAction.postValue(
+                                ClosePromoPageUiAction.Failed(
+                                    throwable
+                                )
+                            )
                         }
                     )
                 } else {
@@ -1781,6 +1800,16 @@ internal class PromoUsageViewModel @Inject constructor(
             } else {
                 _closePromoPageUiAction.postValue(ClosePromoPageUiAction.SuccessNoAction)
             }
+        }
+    }
+
+    fun onClickTnc() {
+        _promoPageUiState.ifSuccess { pageState ->
+            _clickTncUiAction.postValue(
+                ClickTncUiAction.Success(
+                    selectedPromos = pageState.items.getSelectedPromos()
+                )
+            )
         }
     }
 
@@ -1854,7 +1883,7 @@ internal fun List<DelegateAdapterItem>.getAttemptedPromos(): List<PromoItem> {
     return filterIsInstance<PromoItem>().filter { it.isAttempted }
 }
 
-internal fun List<DelegateAdapterItem>.getSelectedPromo(): List<PromoItem> {
+internal fun List<DelegateAdapterItem>.getSelectedPromos(): List<PromoItem> {
     return filterIsInstance<PromoItem>()
         .filter { it.state is PromoItemState.Selected }
 }

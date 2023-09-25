@@ -4,6 +4,7 @@ import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
+import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -20,7 +21,9 @@ sealed class GetPromoRecommendationUiAction {
 sealed class UsePromoRecommendationUiAction {
 
     data class Success(
-        val promoRecommendation: PromoRecommendationItem
+        val promoRecommendation: PromoRecommendationItem,
+        val items: List<DelegateAdapterItem>,
+        val isClickUseRecommendation: Boolean = false
     ) : UsePromoRecommendationUiAction()
 
     object Failed : UsePromoRecommendationUiAction()
@@ -31,7 +34,8 @@ sealed class ClearPromoUiAction {
     data class Success(
         val entryPoint: PromoPageEntryPoint,
         val clearPromo: ClearPromoUiModel,
-        val lastValidateUseRequest: ValidateUsePromoRequest
+        val lastValidateUseRequest: ValidateUsePromoRequest,
+        val clearedPromos: List<PromoItem>
     ) : ClearPromoUiAction()
 
     data class Failed(
@@ -64,7 +68,8 @@ sealed class ApplyPromoUiAction {
     data class SuccessWithApplyPromo(
         val entryPoint: PromoPageEntryPoint,
         val validateUse: ValidateUsePromoRevampUiModel,
-        val lastValidateUsePromoRequest: ValidateUsePromoRequest
+        val lastValidateUsePromoRequest: ValidateUsePromoRequest,
+        val appliedPromos: List<PromoItem>
     ) : ApplyPromoUiAction()
 
     object SuccessNoAction : ApplyPromoUiAction()
@@ -106,4 +111,9 @@ sealed class ClosePromoPageUiAction {
 sealed class ClickPromoUiAction {
 
     data class Updated(val clickedPromo: PromoItem) : ClickPromoUiAction()
+}
+
+sealed class ClickTncUiAction {
+
+    data class Success(val selectedPromos: List<PromoItem>) : ClickTncUiAction()
 }

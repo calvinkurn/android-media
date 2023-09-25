@@ -106,15 +106,16 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 else -> {
                     if (couponSection.id != PromoPageSection.SECTION_INPUT_PROMO_CODE) {
                         if (couponSection.coupons.isNotEmpty()) {
+                            val coupons = couponSection.coupons.filter { it.isGroupHeader }
                             hasRecommendedOrOtherSection = true
                             items.add(
                                 PromoAccordionHeaderItem(
                                     id = couponSection.id,
                                     title = couponSection.title,
-                                    isExpanded = !couponSection.isCollapsed
+                                    isExpanded = !couponSection.isCollapsed,
+                                    totalPromoCount = coupons.size
                                 )
                             )
-                            val coupons = couponSection.coupons.filter { it.isGroupHeader }
                             coupons.forEachIndexed { index, coupon ->
                                 items.add(
                                     mapCouponToPromo(
@@ -139,6 +140,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                         PromoAccordionViewAllItem(
                                             headerId = couponSection.id,
                                             hiddenPromoCount = hiddenPromoCount,
+                                            totalPromoCount = coupons.size,
                                             isExpanded = true,
                                             isVisible = true
                                         )

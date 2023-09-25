@@ -72,6 +72,7 @@ import com.tokopedia.promousage.view.viewmodel.ApplyPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.AttemptPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.ClearPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.ClickPromoUiAction
+import com.tokopedia.promousage.view.viewmodel.ClickTncUiAction
 import com.tokopedia.promousage.view.viewmodel.ClosePromoPageUiAction
 import com.tokopedia.promousage.view.viewmodel.GetPromoRecommendationUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoCtaUiAction
@@ -501,6 +502,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         observeApplyPromoUiAction()
         observeClosePromoPageUiAction()
         observeAutoScrollUiAction()
+        observeClickTncUiAction()
     }
 
     private fun observePromoRecommendationUiAction() {
@@ -525,6 +527,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (uiAction) {
                 is UsePromoRecommendationUiAction.Success -> {
                     showPromoRecommendationAnimation(uiAction.promoRecommendation)
+                    if (uiAction.isClickUseRecommendation) {
+                        processAndSendClickPakaiPromoNewEvent(
+                            uiAction.promoRecommendation,
+                            uiAction.items
+                        )
+                    }
                 }
 
                 is UsePromoRecommendationUiAction.Failed -> {
@@ -841,6 +849,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         lastValidateUsePromoRequest = uiAction.lastValidateUseRequest,
                         isFlowMvcLockToCourier = isFlowMvcLockToCourier
                     )
+                    processAndSendClickCheckoutPromoEvent(true, uiAction.clearedPromos)
                     dismiss()
                 }
 
@@ -848,6 +857,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderLoadingDialog(false)
                     showToastError(uiAction.throwable)
                     listener?.onClearPromoFailed(uiAction.throwable)
+                    processAndSendClickCheckoutPromoEvent(false, emptyList())
                     dismiss()
                 }
             }
@@ -864,6 +874,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         validateUse = uiAction.validateUse,
                         lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest
                     )
+                    processAndSendClickCheckoutPromoEvent(true, uiAction.appliedPromos)
                     dismiss()
                 }
 
@@ -877,6 +888,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderLoadingDialog(false)
                     showToastError(uiAction.throwable)
                     listener?.onApplyPromoFailed(uiAction.throwable)
+                    processAndSendClickCheckoutPromoEvent(false, emptyList())
                     dismiss()
                 }
             }
@@ -912,7 +924,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 is ClosePromoPageUiAction.SuccessNoAction -> {
                     renderLoadingDialog(false)
                     listener?.onClosePageWithNoAction()
-                    processAndSendClickExitPromoBottomsheetEvent()
                     dismiss()
                 }
 
@@ -932,12 +943,16 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     // Auto scroll to selected promo if promo is selected and outside of user's view
                     if (uiAction.clickedPromo.state is PromoItemState.Selected) {
                         try {
-                            val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                            val lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+                            val firstVisibleItemPosition =
+                                layoutManager.findFirstCompletelyVisibleItemPosition()
+                            val lastVisibleItemPosition =
+                                layoutManager.findLastCompletelyVisibleItemPosition()
                             val itemPosition = getItemPosition(uiAction.clickedPromo.id)
 
-                            val isVisibleInCurrentScreen = itemPosition in (firstVisibleItemPosition + 1) until lastVisibleItemPosition
-                            val isIdle = binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
+                            val isVisibleInCurrentScreen =
+                                itemPosition in (firstVisibleItemPosition + 1) until lastVisibleItemPosition
+                            val isIdle =
+                                binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
                             if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
                                 Handler().postDelayed({
                                     binding?.rvPromo?.scrollToPosition(itemPosition)
@@ -948,6 +963,16 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         }
                     }
                     processAndSendClickPromoCardEvent(uiAction.clickedPromo)
+                }
+            }
+        }
+    }
+
+    private fun observeClickTncUiAction() {
+        viewModel.clickTncUiAction.observe(viewLifecycleOwner) { uiAction ->
+            when (uiAction) {
+                is ClickTncUiAction.Success -> {
+                    processAndSendClickDetailTermAndConditionsEvent(uiAction.selectedPromos)
                 }
             }
         }
@@ -981,11 +1006,21 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private val onClickPromoAccordionHeader: (PromoAccordionHeaderItem) -> Unit =
         { headerItem: PromoAccordionHeaderItem ->
             viewModel.onClickAccordionHeader(headerItem)
+            promoUsageAnalytics.sendClickExpandPromoSectionEvent(
+                userId = userSession.userId,
+                entryPoint = entryPoint,
+                promoHeader = headerItem
+            )
         }
 
     private val onClickPromoAccordionViewAll: (PromoAccordionViewAllItem) -> Unit =
         { viewAllItem: PromoAccordionViewAllItem ->
             viewModel.onClickViewAllAccordion(viewAllItem)
+            promoUsageAnalytics.sendClickExpandPromoSectionDetailEvent(
+                userId = userSession.userId,
+                entryPoint = entryPoint,
+                promoViewAll = viewAllItem
+            )
         }
 
     private fun goToRegisterGoPayLaterCicilRegistration(appLink: String) {
@@ -998,28 +1033,30 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             .addListener { result ->
                 binding?.lottieAnimationView?.visible()
                 binding?.lottieAnimationView?.setComposition(result)
-                binding?.lottieAnimationView?.addAnimatorListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animator: Animator) {
-                        // no-op
-                    }
+                binding?.lottieAnimationView?.addAnimatorListener(object :
+                        Animator.AnimatorListener {
+                        override fun onAnimationStart(animator: Animator) {
+                            // no-op
+                        }
 
-                    override fun onAnimationEnd(animator: Animator) {
-                        binding?.lottieAnimationView?.gone()
-                    }
+                        override fun onAnimationEnd(animator: Animator) {
+                            binding?.lottieAnimationView?.gone()
+                        }
 
-                    override fun onAnimationCancel(animator: Animator) {
-                        // no-op
-                    }
+                        override fun onAnimationCancel(animator: Animator) {
+                            // no-op
+                        }
 
-                    override fun onAnimationRepeat(animator: Animator) {
-                        // no-op
-                    }
-                })
+                        override fun onAnimationRepeat(animator: Animator) {
+                            // no-op
+                        }
+                    })
                 binding?.lottieAnimationView?.playAnimation()
             }
     }
 
     private val onClickPromoTnc: (PromoTncItem) -> Unit = { item ->
+        viewModel.onClickTnc()
         showPromoTncBottomSheet(item)
     }
 
@@ -1142,6 +1179,39 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             entryPoint = entryPoint,
             attemptItem = attemptItem,
             attemptedPromo = attemptedPromo
+        )
+    }
+
+    private fun processAndSendClickPakaiPromoNewEvent(
+        promoRecommendation: PromoRecommendationItem,
+        items: List<DelegateAdapterItem>
+    ) {
+        val recommendedPromos = items.filterIsInstance<PromoItem>().filter { it.isRecommended }
+        promoUsageAnalytics.sendClickPakaiPromoNewEvent(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            promoRecommendation = promoRecommendation,
+            recommendedPromos = recommendedPromos
+        )
+    }
+
+    private fun processAndSendClickDetailTermAndConditionsEvent(selectedPromos: List<PromoItem>) {
+        promoUsageAnalytics.sendClickDetailTermAndConditionsEvent(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            selectedPromos = selectedPromos
+        )
+    }
+
+    private fun processAndSendClickCheckoutPromoEvent(
+        isSuccess: Boolean,
+        appliedPromos: List<PromoItem> = emptyList()
+    ) {
+        promoUsageAnalytics.sendClickCheckoutPromoEvent(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            appliedPromos = appliedPromos,
+            isSuccess = isSuccess
         )
     }
 

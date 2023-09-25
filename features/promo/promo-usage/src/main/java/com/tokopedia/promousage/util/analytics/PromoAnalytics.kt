@@ -8,6 +8,7 @@ import com.tokopedia.track.TrackAppUtils
 abstract class PromoAnalytics {
 
     object EventName {
+        const val CLICK_PG = "clickPG"
         const val SELECT_CONTENT = "select_content"
         const val VIEW_ITEM = "view_item"
         const val VIEW_PG_IRIS = "viewPGIris"
@@ -35,6 +36,11 @@ abstract class PromoAnalytics {
         const val IMPRESSION_OF_PROMO_CARD_NEW = "impression of promo card - new"
         const val CLICK_PROMO_CARD = "click promo card"
         const val CLICK_PAKAI_PROMO_PROMO_CODE = "click pakai promo promocode"
+        const val CLICK_PAKAI_PROMO_NEW = "click pakai promo - new"
+        const val CLICK_DETAIL_TERM_AND_CONDITIONS = "click detail term and conditions"
+        const val CLICK_EXPAND_PROMO_SECTION = "click expand promo section"
+        const val CLICK_EXPAND_PROMO_SECTION_DETAIL = "click expand promo section detail"
+        const val CLICK_CHECKOUT_PROMO = "click checkout - promo"
         const val CLICK_EXIT_PROMO_BOTTOMSHEET = "click exit promo bottomsheet"
     }
 
@@ -72,6 +78,11 @@ abstract class PromoAnalytics {
         const val IMPRESSION_OF_PROMO_CARD_NEW = "47113"
         const val CLICK_PROMO_CARD = "47119"
         const val CLICK_PAKAI_PROMO_PROMO_CODE = "47121"
+        const val CLICK_PAKAI_PROMO_NEW = "47123"
+        const val CLICK_DETAIL_TERM_AND_CONDITIONS = "47124"
+        const val CLICK_EXPAND_PROMO_SECTION = "47127"
+        const val CLICK_EXPAND_PROMO_SECTION_DETAIL = "47129"
+        const val CLICK_CHECKOUT_PROMO = "47130"
         const val CLICK_EXIT_PROMO_BOTTOMSHEET = "47131"
     }
 

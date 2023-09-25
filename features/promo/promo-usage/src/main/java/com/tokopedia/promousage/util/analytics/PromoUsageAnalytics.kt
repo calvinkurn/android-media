@@ -5,8 +5,11 @@ import androidx.core.os.bundleOf
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
+import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
+import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
+import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.view.viewmodel.getSelectedPromoCodes
 import javax.inject.Inject
 
@@ -143,6 +146,131 @@ class PromoUsageAnalytics @Inject constructor() : PromoAnalytics() {
             additionalData = bundleOf(
                 ExtraKey.USER_ID to userId,
                 ExtraKey.TRACKER_ID to TrackerId.CLICK_PAKAI_PROMO_PROMO_CODE,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE,
+                ExtraKey.PROMOTIONS to promotions
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4226
+    // Tracker ID: 47123
+    fun sendClickPakaiPromoNewEvent(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        promoRecommendation: PromoRecommendationItem,
+        recommendedPromos: List<PromoItem>
+    ) {
+        val benefitAmountStr = recommendedPromos.sumOf { it.benefitAmount }
+        val sourcePage = generateSourcePage(entryPoint)
+        val eventLabel = "$benefitAmountStr - ${promoRecommendation.messageSelected} - $sourcePage"
+        val promotions = generatePromoPromotions(recommendedPromos)
+        sendEnhancedEcommerceEvent(
+            event = EventName.SELECT_CONTENT,
+            eventAction = EventAction.CLICK_PAKAI_PROMO_NEW,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = bundleOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.TRACKER_ID to TrackerId.CLICK_PAKAI_PROMO_NEW,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE,
+                ExtraKey.PROMOTIONS to promotions
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4226
+    // Tracker ID: 47124
+    fun sendClickDetailTermAndConditionsEvent(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        selectedPromos: List<PromoItem>
+    ) {
+        val eventLabel = generateSourcePage(entryPoint)
+        val promotions = generatePromoPromotions(selectedPromos)
+        sendEnhancedEcommerceEvent(
+            event = EventName.SELECT_CONTENT,
+            eventAction = EventAction.CLICK_DETAIL_TERM_AND_CONDITIONS,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = bundleOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.TRACKER_ID to TrackerId.CLICK_DETAIL_TERM_AND_CONDITIONS,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE,
+                ExtraKey.PROMOTIONS to promotions
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4226
+    // Tracker ID: 47127
+    fun sendClickExpandPromoSectionEvent(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        promoHeader: PromoAccordionHeaderItem
+    ) {
+        val sourcePage = generateSourcePage(entryPoint)
+        val eventLabel = "${promoHeader.id} - ${promoHeader.totalPromoCount} - $sourcePage"
+        sendGeneralEvent(
+            event = EventName.CLICK_PG,
+            eventAction = EventAction.CLICK_EXPAND_PROMO_SECTION,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = mapOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.TRACKER_ID to TrackerId.CLICK_EXPAND_PROMO_SECTION,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4226
+    // Tracker ID: 47129
+    fun sendClickExpandPromoSectionDetailEvent(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        promoViewAll: PromoAccordionViewAllItem
+    ) {
+        val sourcePage = generateSourcePage(entryPoint)
+        val eventLabel = "${promoViewAll.id} - ${promoViewAll.totalPromoCount} - $sourcePage"
+        sendGeneralEvent(
+            event = EventName.CLICK_PG,
+            eventAction = EventAction.CLICK_EXPAND_PROMO_SECTION_DETAIL,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = mapOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.TRACKER_ID to TrackerId.CLICK_EXPAND_PROMO_SECTION_DETAIL,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4226
+    // Tracker ID: 47130
+    fun sendClickCheckoutPromoEvent(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        appliedPromos: List<PromoItem>,
+        isSuccess: Boolean
+    ) {
+        val totalPromo = appliedPromos.size
+        val totalPromoBenefitAmount = appliedPromos.sumOf { it.benefitAmount }
+        val sourcePage = generateSourcePage(entryPoint)
+        val eventLabel = "$isSuccess - $totalPromo - $totalPromoBenefitAmount - $sourcePage"
+        val promotions = generatePromoPromotions(appliedPromos)
+        sendEnhancedEcommerceEvent(
+            event = EventName.SELECT_CONTENT,
+            eventAction = EventAction.CLICK_CHECKOUT_PROMO,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = bundleOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.TRACKER_ID to TrackerId.CLICK_CHECKOUT_PROMO,
                 ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
                 ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE,
                 ExtraKey.PROMOTIONS to promotions
