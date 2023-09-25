@@ -13,15 +13,6 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import javax.inject.Inject
 
 class ChooseAddressRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
-    suspend fun setStateChosenAddress(model: StateChooseAddressParam): SetStateChosenAddressQqlResponse {
-        val gqlParam = mapOf("input" to model.toMap())
-        val request = GraphqlRequest(
-            ChooseAddressQuery.setStateChosenAddress,
-            SetStateChosenAddressQqlResponse::class.java,
-            gqlParam
-        )
-        return gql.getResponse(request)
-    }
 
     suspend fun setStateChosenAddressFromAddress(model: RecipientAddressModel): SetStateChosenAddressQqlResponse {
         val param = StateChooseAddressParam(

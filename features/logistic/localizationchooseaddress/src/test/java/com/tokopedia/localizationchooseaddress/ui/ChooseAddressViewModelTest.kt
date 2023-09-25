@@ -16,6 +16,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDat
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressListUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
+import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -41,6 +42,7 @@ class ChooseAddressViewModelTest {
     private val chooseAddressMapper = ChooseAddressMapper()
     private val refreshTokonowDataUseCase: RefreshTokonowDataUsecase = mockk(relaxed = true)
     private val getChosenAddressListUseCase: GetChosenAddressListUseCase = mockk(relaxed = true)
+    private val setStateChosenAddressUseCase: SetStateChosenAddressUseCase = mockk(relaxed = true)
 
     private lateinit var chooseAddressViewModel: ChooseAddressViewModel
 
@@ -55,7 +57,7 @@ class ChooseAddressViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, refreshTokonowDataUseCase, getChosenAddressListUseCase)
+        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, refreshTokonowDataUseCase, getChosenAddressListUseCase, setStateChosenAddressUseCase)
         chooseAddressViewModel.chosenAddressList.observeForever(chosenAddressListObserver)
         chooseAddressViewModel.setChosenAddress.observeForever(setChosenAddressObserver)
         chooseAddressViewModel.getChosenAddress.observeForever(getChosenAddressObserver)
@@ -84,7 +86,7 @@ class ChooseAddressViewModelTest {
             "-6.22119739999998", "106.81941940000002", 2270,
             "12950", false
         )
-        coEvery { chooseAddressRepo.setStateChosenAddress(any()) } returns SetStateChosenAddressQqlResponse()
+        coEvery { setStateChosenAddressUseCase(any()) } returns SetStateChosenAddressQqlResponse()
         chooseAddressViewModel.setStateChosenAddress(model)
         verify { setChosenAddressObserver.onChanged(match { it is Success }) }
     }
@@ -96,7 +98,7 @@ class ChooseAddressViewModelTest {
             "-6.22119739999998", "106.81941940000002", 2270,
             "12950", false
         )
-        coEvery { chooseAddressRepo.setStateChosenAddress(any()) } throws defaultThrowable
+        coEvery { setStateChosenAddressUseCase(any()) } throws defaultThrowable
         chooseAddressViewModel.setStateChosenAddress(model)
         verify { setChosenAddressObserver.onChanged(match { it is Fail }) }
     }
