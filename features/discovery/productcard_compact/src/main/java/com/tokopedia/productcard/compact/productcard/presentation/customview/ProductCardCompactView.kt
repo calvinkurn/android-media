@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -34,8 +35,11 @@ import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TRANSP
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getHexColorFromIdColor
+import com.tokopedia.productcard.compact.common.util.ViewUtil.inflateView
 import com.tokopedia.productcard.compact.common.util.ViewUtil.safeParseColor
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactViewBinding
+import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView.WishlistButtonListener
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductCardCompactView @JvmOverloads constructor(
     context: Context,
@@ -56,6 +60,19 @@ class ProductCardCompactView @JvmOverloads constructor(
 
     private var productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null
     private var productCardCompactListener: ProductCardCompactListener? = null
+    private var quantityChangedListener: ((counter: Int) -> Unit)? = null
+    private var blockAddToCartListener: (() -> Unit)? = null
+    private var clickAddVariantListener: ((counter: Int) -> Unit)? = null
+    private var wishlistButtonListener: WishlistButtonListener? = null
+
+    private var quantityEditor: ProductCardCompactQuantityEditorView? = null
+    private var wishlistButton: ProductCardCompactWishlistButtonView? = null
+    private var progressBar: ProgressBarUnify? = null
+    private var progressTypography: Typography? = null
+    private var promoLayout: LinearLayout? = null
+    private var promoLabel: Label? = null
+    private var slashPriceTypography: Typography? = null
+
     private var binding: LayoutProductCardCompactViewBinding = LayoutProductCardCompactViewBinding.inflate(
         LayoutInflater.from(context),
         this,
@@ -143,14 +160,21 @@ class ProductCardCompactView @JvmOverloads constructor(
         needToShowQuantityEditor: Boolean,
         hasBlockedAddToCart: Boolean
     ) {
-        quantityEditor.showIfWithBlock(!isOos && needToShowQuantityEditor) {
-            quantityEditor.hasBlockedAddToCart = hasBlockedAddToCart
-            quantityEditor.isVariant = isVariant
-            quantityEditor.minQuantity = minOrder
-            quantityEditor.maxQuantity = maxOrder
-            quantityEditor.setQuantity(
-                quantity = orderQuantity
-            )
+        if(!isOos && needToShowQuantityEditor) {
+            inflateQuantityEditor()
+            quantityEditor?.apply {
+                this.isVariant = isVariant
+                this.minQuantity = minOrder
+                this.maxQuantity = maxOrder
+                this.hasBlockedAddToCart = hasBlockedAddToCart
+                this.onQuantityChangedListener = quantityChangedListener
+                this.onBlockAddToCartListener = blockAddToCartListener
+                this.onClickAddVariantListener = clickAddVariantListener
+                setQuantity(orderQuantity)
+            }
+        } else {
+            quantityEditorViewStub.hide()
+            quantityEditor?.hide()
         }
     }
 
@@ -182,30 +206,46 @@ class ProductCardCompactView @JvmOverloads constructor(
         discountInt: Int,
         labelGroup: LabelGroup?
     ) {
-        val isDiscountNotBlankOrZero = (discount.isNotBlank() && discount != NO_DISCOUNT_STRING) || !discountInt.isZero()
-        promoLayout.showIfWithBlock(isDiscountNotBlankOrZero || labelGroup != null) {
-            if (isDiscountNotBlankOrZero) {
-                promoLabel.text = if (discountInt.isZero()) {
-                    if (discount.last() != PERCENTAGE_CHAR) "$discount${PERCENTAGE_CHAR}" else discount
+
+        val isDiscountNotBlankOrZero = isDiscountNotBlankOrZero(discount, discountInt)
+
+        if(isDiscountNotBlankOrZero || labelGroup != null) {
+            inflatePromoLayout()
+
+            promoLabel?.apply {
+                if (isDiscountNotBlankOrZero) {
+                    text = if (discountInt.isZero()) {
+                        if (discount.last() != PERCENTAGE_CHAR) "$discount${PERCENTAGE_CHAR}" else discount
+                    } else {
+                        context.getString(R.string.product_card_compact_product_card_percentage_format, discountInt)
+                    }
+                    adjustLabelType(LIGHT_RED)
                 } else {
-                    context.getString(R.string.product_card_compact_product_card_percentage_format, discountInt)
-                }
-                promoLabel.adjustLabelType(LIGHT_RED)
-            } else {
-                labelGroup?.let { labelGroup ->
-                    promoLabel.text = labelGroup.title
-                    promoLabel.adjustLabelType(labelGroup.type)
+                    labelGroup?.let { labelGroup ->
+                        text = labelGroup.title
+                        adjustLabelType(labelGroup.type)
+                    }
                 }
             }
+        } else {
+            promoLayoutViewStub.hide()
+            slashPriceTypography?.hide()
+            promoLabel?.hide()
         }
     }
 
     private fun LayoutProductCardCompactViewBinding.initSlashPriceTypography(
         slashPrice: String
     ) {
-        slashPriceTypography.showIfWithBlock(slashPrice.isNotBlank()) {
-            text = slashPrice
-            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
+        if(slashPrice.isNotBlank()) {
+            inflatePromoLayout()
+            slashPriceTypography?.apply {
+                text = slashPrice
+                paintFlags = Paint.STRIKE_THRU_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
+            }
+            slashPriceTypography?.show()
+        } else {
+            slashPriceTypography?.hide()
         }
     }
 
@@ -215,7 +255,7 @@ class ProductCardCompactView @JvmOverloads constructor(
     ) {
         productNameTypography.showIfWithBlock(name.isNotBlank()) {
             text = name
-            maxLines = if (needToChangeMaxLinesName && promoLayout.isVisible) {
+            maxLines = if (needToChangeMaxLinesName && promoLayout?.isVisible == true) {
                 MAX_LINES_NEEDED_TO_CHANGE
             } else {
                 DEFAULT_MAX_LINES
@@ -248,7 +288,7 @@ class ProductCardCompactView @JvmOverloads constructor(
                     iconId = IconUnify.CHEVRON_DOWN,
                     assetColor = ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 )
             )
@@ -289,11 +329,17 @@ class ProductCardCompactView @JvmOverloads constructor(
         hasBeenWishlist: Boolean,
         productId: String
     ) {
-        wishlistButton.showIfWithBlock(isShown && isOos) {
-            wishlistButton.bind(
+        if(isShown && isOos) {
+            inflateWishlistButton()
+            wishlistButton?.bind(
                 isSelected = hasBeenWishlist,
                 productId = productId
             )
+            wishlistButton?.setListener(wishlistButtonListener)
+            wishlistButton?.show()
+        } else {
+            wishlistButtonViewStub.hide()
+            wishlistButton?.hide()
         }
     }
 
@@ -302,35 +348,44 @@ class ProductCardCompactView @JvmOverloads constructor(
         progressBarLabel: String,
         progressBarPercentage: Int
     ) {
-        progressBar.showIfWithBlock(isFlashSale) {
-            setValue(progressBarPercentage, false)
-            progressBarHeight = ProgressBarUnify.SIZE_SMALL
-            progressBarColor = intArrayOf(
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN600
-                ),
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                )
-            )
-            adjustFireIcon(progressBarLabel)
-        }
+        if(isFlashSale) {
+            inflateProgressBar()
 
-        progressTypography.showIfWithBlock(isFlashSale) {
-            text = progressBarLabel
-            val colorRes = if (progressBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
-                com.tokopedia.unifyprinciples.R.color.Unify_RN500
-            } else {
-                R.color.product_card_compact_dms_progress_bar_label_text_color
-            }
-            setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    colorRes
+            progressBar?.apply {
+                setValue(progressBarPercentage, false)
+                progressBarHeight = ProgressBarUnify.SIZE_SMALL
+                progressBarColor = intArrayOf(
+                    ContextCompat.getColor(
+                        context,
+                        unifyprinciplesR.color.Unify_RN600
+                    ),
+                    ContextCompat.getColor(
+                        context,
+                        unifyprinciplesR.color.Unify_RN500
+                    )
                 )
-            )
+                adjustFireIcon(progressBarLabel)
+            }
+
+            progressTypography?.apply {
+                text = progressBarLabel
+                val colorRes = if (progressBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+                    unifyprinciplesR.color.Unify_RN500
+                } else {
+                    R.color.product_card_compact_dms_progress_bar_label_text_color
+                }
+                setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        colorRes
+                    )
+                )
+            }
+        } else {
+            progressTypographyViewStub.hide()
+            progressBarViewStub.hide()
+            progressTypography?.hide()
+            progressBar?.hide()
         }
     }
 
@@ -442,7 +497,7 @@ class ProductCardCompactView @JvmOverloads constructor(
                 color = labelGroup.type,
                 defaultColor = ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 )
             )
         )
@@ -453,7 +508,7 @@ class ProductCardCompactView @JvmOverloads constructor(
     ) {
         when (colorType) {
             TEXT_DARK_ORANGE -> {
-                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_YN500)
+                setTextColorCompat(unifyprinciplesR.color.Unify_YN500)
             }
         }
     }
@@ -482,6 +537,60 @@ class ProductCardCompactView @JvmOverloads constructor(
         }
     }
 
+    private fun LayoutProductCardCompactViewBinding.inflateWishlistButton() {
+        if(wishlistButtonViewStub.parent != null) {
+            val view = wishlistButtonViewStub
+                .inflateView(R.layout.layout_product_card_compact_wishlist_button)
+            wishlistButton = view.findViewById(R.id.wishlist_button)
+            wishlistButtonViewStub.show()
+            wishlistButton?.show()
+        }
+    }
+
+    private fun LayoutProductCardCompactViewBinding.inflateQuantityEditor() {
+        if(quantityEditorViewStub.parent != null) {
+            val view = quantityEditorViewStub
+                .inflateView(R.layout.layout_product_card_compact_quantity_editor)
+            quantityEditor = view.findViewById(R.id.quantity_editor)
+            quantityEditorViewStub.show()
+            quantityEditor?.show()
+        }
+    }
+
+    private fun LayoutProductCardCompactViewBinding.inflateProgressBar() {
+        if(progressBarViewStub.parent != null) {
+            val progressBarView = progressBarViewStub
+                .inflateView(R.layout.layout_product_card_compact_progress_bar)
+            progressBar = progressBarView.findViewById(R.id.progress_bar)
+            progressBarViewStub.show()
+            progressBar?.show()
+        }
+
+        if(progressTypographyViewStub.parent != null) {
+            val progressBarTypographyView = progressTypographyViewStub
+                .inflateView(R.layout.layout_product_card_compact_progress_typography)
+            progressTypography = progressBarTypographyView.findViewById(R.id.progress_typography)
+            progressTypographyViewStub.show()
+            progressTypography?.show()
+        }
+    }
+
+    private fun LayoutProductCardCompactViewBinding.inflatePromoLayout() {
+        if(promoLayoutViewStub.parent != null) {
+            val view = promoLayoutViewStub
+                .inflateView(R.layout.layout_product_card_promo)
+            promoLayout = view.findViewById(R.id.promo_layout)
+            promoLabel = view.findViewById(R.id.promo_label)
+            slashPriceTypography = view.findViewById(R.id.slash_price_typography)
+            promoLayoutViewStub.show()
+            promoLayout?.show()
+            promoLabel?.show()
+        }
+    }
+
+    private fun isDiscountNotBlankOrZero(discount: String, discountInt: Int) =
+        (discount.isNotBlank() && discount != NO_DISCOUNT_STRING) || !discountInt.isZero()
+
     fun setData(model: ProductCardCompactUiModel) {
         if (model.usePreDraw) {
             binding.root.doOnPreDraw {
@@ -495,13 +604,13 @@ class ProductCardCompactView @JvmOverloads constructor(
     fun setOnClickQuantityEditorListener(
         onClickListener: (Int) -> Unit
     ) {
-        binding.quantityEditor.onQuantityChangedListener = onClickListener
+        quantityChangedListener = onClickListener
     }
 
     fun setOnClickQuantityEditorVariantListener(
         onClickVariantListener: (Int) -> Unit
     ) {
-        binding.quantityEditor.onClickAddVariantListener = onClickVariantListener
+        clickAddVariantListener = onClickVariantListener
     }
 
     fun setSimilarProductTrackerListener(
@@ -511,15 +620,15 @@ class ProductCardCompactView @JvmOverloads constructor(
     }
 
     fun setWishlistButtonListener(
-        wishlistButtonListener: ProductCardCompactWishlistButtonView.WishlistButtonListener
+        wishlistButtonListener: WishlistButtonListener
     ) {
-        binding.wishlistButton.setListener(wishlistButtonListener)
+        this.wishlistButtonListener = wishlistButtonListener
     }
 
     fun setOnBlockAddToCartListener(
         onBlockAddToCartListener: () -> Unit
     ) {
-        binding.quantityEditor.onBlockAddToCartListener = onBlockAddToCartListener
+        blockAddToCartListener = onBlockAddToCartListener
     }
 
     fun setListener(productCardCompactListener: ProductCardCompactListener?) {
