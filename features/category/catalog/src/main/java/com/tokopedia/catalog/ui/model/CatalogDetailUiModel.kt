@@ -6,17 +6,18 @@ data class CatalogDetailUiModel(
     val widgets: List<Visitable<*>> = emptyList(),
     val navigationProperties: NavigationProperties,
     val priceCtaProperties: PriceCtaProperties,
-    val productSortingStatus: Int
+    val productSortingStatus: Int,
+    val catalogUrl: String
 )
 
-data class PriceCtaProperties (
+data class PriceCtaProperties(
     val price: String = "",
     val productName: String = "",
     val bgColor: Int = 0,
     val textColor: Int = 0
 )
 
-data class NavigationProperties (
+data class NavigationProperties(
     val isDarkMode: Boolean = false,
     val isPremium: Boolean = false,
     val bgColor: Int = 0,

@@ -6,12 +6,16 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemBannerImageBinding
+import com.tokopedia.catalogcommon.listener.BannerListener
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
 
-class BannerViewHolder(itemView: View) : AbstractViewHolder<BannerCatalogUiModel>(itemView) {
+class BannerViewHolder(
+    itemView: View,
+    private val bannerListener: BannerListener? = null
+) : AbstractViewHolder<BannerCatalogUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -26,5 +30,6 @@ class BannerViewHolder(itemView: View) : AbstractViewHolder<BannerCatalogUiModel
             setBackgroundColor(element.widgetBackgroundColor ?: return)
             (layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = element.ratio.ratioName
         }
+        bannerListener?.onBannerThreeByFourImpression(element.ratio.ratioName)
     }
 }

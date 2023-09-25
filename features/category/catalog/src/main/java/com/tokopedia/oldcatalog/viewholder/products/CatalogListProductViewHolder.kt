@@ -25,9 +25,9 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
         itemView.findViewById<ProductCardListView>(R.id.product_card).apply {
             setProductModel(
                     CatalogProductCard.toCatalogProductModel(catalogProductItem))
-//            setThreeDotsOnClickListener {
-//                catalogProductCardListener.onThreeDotsClicked(catalogProductItem, adapterPosition)
-//            }
+            setThreeDotsOnClickListener {
+                catalogProductCardListener.onThreeDotsClicked(catalogProductItem, adapterPosition)
+            }
             setAddToCartOnClickListener {
 
             }

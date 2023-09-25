@@ -12,6 +12,7 @@ import com.tokopedia.catalogcommon.databinding.WidgetItemBannerHeroNavigationBin
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension.createGradientDrawable
+import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -21,7 +22,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HeroBannerViewHolder(
     itemView: View,
     private val heroBannerListener: HeroBannerListener? = null
-): AbstractViewHolder<HeroBannerUiModel>(itemView) {
+) : AbstractViewHolder<HeroBannerUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -33,6 +34,7 @@ class HeroBannerViewHolder(
     private var isAutosliding = true
     private var brandImageCount = 0
     private var brandDescriptions: List<String> = emptyList()
+    private var brandImageUrl: List<String> = emptyList()
 
     init {
         binding?.carouselBanner?.setupCarouselBanner()
@@ -51,7 +53,13 @@ class HeroBannerViewHolder(
                     binding?.bannerIndicator?.continueAnimation()
                     binding?.tfSubtitleBannerPremium?.text =
                         brandDescriptions.getOrNull(current).orEmpty()
+
                 }
+                heroBannerListener?.onHeroBannerImpression(
+                    current,
+                    brandDescriptions,
+                    brandImageUrl
+                )
             }
         }
         onDragEventListener = object : CarouselUnify.OnDragEventListener {
@@ -72,6 +80,7 @@ class HeroBannerViewHolder(
                         brandDescriptions.getOrNull(imgPosition).orEmpty()
                 }
             }
+
             override fun getCurrentPosition(position: Int) {
                 // no-op
             }
@@ -94,24 +103,37 @@ class HeroBannerViewHolder(
     }
 
     private fun WidgetItemBannerHeroBinding.renderPremiumBrandData(element: HeroBannerUiModel) {
-        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-        val colorBg = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+        val cardColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        )
+        val colorBg = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+        )
         tfTitleBannerPremium.text = element.brandTitle
         iuBrandPremium.loadImage(element.brandIconUrl)
-        iuBrandPremiumCard.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
+        iuBrandPremiumCard.background =
+            createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
         bgGradient.background = createGradientDrawable(colorBottom = colorBg)
         brandDescriptions = element.brandDescriptions
     }
 
     private fun WidgetItemBannerHeroBinding.renderRegularBrandData(element: HeroBannerUiModel) {
-        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        val cardColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        )
         tfTitleBanner.text = element.brandTitle
         iuBrand.loadImage(element.brandIconUrl)
         iuBrandCard.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
     }
 
     private fun WidgetItemBannerHeroNavigationBinding.setupNavigation(element: HeroBannerUiModel) {
-        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_68)
+        val cardColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White_68
+        )
         iconBack.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
         bgRightMenu.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
         iconBack.setOnClickListener { heroBannerListener?.onNavBackClicked() }
@@ -121,6 +143,7 @@ class HeroBannerViewHolder(
 
     override fun bind(element: HeroBannerUiModel) {
         brandImageCount = element.brandImageUrls.size
+        brandImageUrl = element.brandImageUrls
         binding?.configViewsVisibility(element.isPremium)
         if (element.isPremium) {
             binding?.renderPremiumBrandData(element)
@@ -130,5 +153,17 @@ class HeroBannerViewHolder(
         binding?.carouselBanner?.addImages(ArrayList(element.brandImageUrls))
         binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
         binding?.navigation?.setupNavigation(element)
+        binding?.tfSubtitleBannerPremium?.setTextColor(
+            element.widgetTextColor.orDefaultColor(
+                itemView.context
+            )
+        )
+        binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
+
+        heroBannerListener?.onHeroBannerImpression(
+            Int.ZERO,
+            brandDescriptions,
+            brandImageUrl
+        )
     }
 }

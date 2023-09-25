@@ -141,6 +141,47 @@ object CatalogDetailAnalytics {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    fun trackProductCardClick(catalogName : String, catalogId : String,  catalogUrl : String, userId : String ,
+                              item : com.tokopedia.catalog.domain.model.CatalogProductItem, position : String ,
+                              searchFilterMap : HashMap<String,String>?) {
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        productMap[KEYS.BRAND] = KEYS.NONE_OTHER
+        productMap[KEYS.CATEGORY] = item.categoryId.toString()
+        productMap[KEYS.ID] = item.id
+        productMap[KEYS.LIST] = getCatalogTrackingUrl(catalogUrl)
+        productMap[KEYS.NAME] = item.name
+        productMap[KEYS.DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
+        productMap[KEYS.POSITION] = position
+        productMap[KEYS.PRICE] = CurrencyFormatHelper.convertRupiahToInt(CurrencyFormatHelper.convertRupiahToInt(item.priceString).toString()).toString()
+        productMap[KEYS.VARIANT] = KEYS.NONE_OTHER
+        list.add(productMap)
+
+
+        val eCommerce = mapOf(
+            KEYS.CLICK to mapOf(
+                KEYS.ACTION_FIELD to mapOf(
+                    KEYS.LIST to getCatalogTrackingUrl(catalogUrl)
+                ),
+                KEYS.PRODUCTS to list
+            )
+        )
+        val map = HashMap<String,Any>()
+        map[EventKeys.KEY_EVENT] = EventKeys.EVENT_NAME_PRODUCT_CLICK
+        map[EventKeys.KEY_EVENT_CATEGORY] = CategoryKeys.PAGE_EVENT_CATEGORY
+        map[EventKeys.KEY_EVENT_ACTION] = ActionKeys.CLICK_PRODUCT
+        map[EventKeys.KEY_EVENT_LABEL] = "$catalogName - $catalogId"
+        map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
+        map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
+        map[EventKeys.KEY_ECOMMERCE] = eCommerce
+        map[EventKeys.KEY_PRODUCT_ID] = item.id
+        map[EventKeys.KEY_USER_ID] = userId
+        map[EventKeys.KEY_CATALOG_ID] = catalogId
+        map[KEYS.CAMPAIGN_CODE] = ""
+
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
     fun sendPromotionEvent (
         event: String,
         action: String,
@@ -364,7 +405,7 @@ object CatalogDetailAnalytics {
         }
     }
 
-    private fun getCatalogTrackingUrl(catalogUrl : String?) : String {
+    fun getCatalogTrackingUrl(catalogUrl : String?) : String {
         if (!catalogUrl.isNullOrEmpty()){
             catalogUrl.split(CATALOG_URL_KEY).last().let {
                 return "${CATALOG_URL_KEY}$it"

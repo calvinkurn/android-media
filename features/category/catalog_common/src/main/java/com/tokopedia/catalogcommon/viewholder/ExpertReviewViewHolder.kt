@@ -2,6 +2,7 @@ package com.tokopedia.catalogcommon.viewholder
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -11,15 +12,23 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.ItemExpertReviewBinding
 import com.tokopedia.catalogcommon.databinding.WidgetExpertsReviewBinding
+import com.tokopedia.catalogcommon.listener.VideoExpertListener
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase.Companion.KEY_YOUTUBE_VIDEO_ID
 
-class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUiModel>(itemView) {
+class ExpertReviewViewHolder(
+    itemView: View,
+    private val listener: VideoExpertListener? = null
+) :
+    AbstractViewHolder<ExpertReviewUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -33,6 +42,17 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
         binding?.carousel?.apply {
             autoplay = true
             infinite = true
+            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener{
+                override fun onActiveIndexChanged(prev: Int, current: Int) {
+                    val videoExpertHasSaw = if (prev == element.content.size-1){
+                        element.content.subList(Int.ZERO,element.content.size)
+
+                    }else{
+                        element.content.subList(Int.ZERO,current+1)
+                    }
+                    listener?.onVideoExpertImpression(videoExpertHasSaw)
+                }
+            }
             if (!onceCreateCarousel) {
                 element.content.forEach { itemExpert ->
                     val view = ItemExpertReviewBinding.inflate(
@@ -53,12 +73,15 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
                     view.ivProfile.loadImageRounded(itemExpert.imageReviewer, 4f)
                     view.ivPlay.setOnClickListener {
                         playVideoYoutube(itemExpert.videoLink)
+                        listener?.onClickVideoExpert()
                     }
                     addItem(view.clLayout)
                 }
+
             }
+            activeIndex = Int.ZERO
 
-
+            listener?.onVideoExpertImpression(element.content.subList(Int.ZERO,Int.ONE))
             onceCreateCarousel = true
         }
     }
@@ -81,14 +104,29 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
         }
     }
 
-    private fun setupColorIconPlayAndBackgroundColorCard(element: ExpertReviewUiModel.ItemExpertReviewUiModel, view: ItemExpertReviewBinding) {
+    private fun setupColorIconPlayAndBackgroundColorCard(
+        element: ExpertReviewUiModel.ItemExpertReviewUiModel,
+        view: ItemExpertReviewBinding
+    ) {
 
         view.lnPlay.setBackgroundResource(element.styleIconPlay.background)
         view.ivPlay.setImage(
-            newDarkDisable = ContextCompat.getColor(itemView.context, element.styleIconPlay.iconColor),
-            newDarkEnable = ContextCompat.getColor(itemView.context, element.styleIconPlay.iconColor),
-            newLightDisable = ContextCompat.getColor(itemView.context,element.styleIconPlay.iconColor),
-            newLightEnable = ContextCompat.getColor(itemView.context, element.styleIconPlay.iconColor)
+            newDarkDisable = ContextCompat.getColor(
+                itemView.context,
+                element.styleIconPlay.iconColor
+            ),
+            newDarkEnable = ContextCompat.getColor(
+                itemView.context,
+                element.styleIconPlay.iconColor
+            ),
+            newLightDisable = ContextCompat.getColor(
+                itemView.context,
+                element.styleIconPlay.iconColor
+            ),
+            newLightEnable = ContextCompat.getColor(
+                itemView.context,
+                element.styleIconPlay.iconColor
+            )
         )
         view.clLayout.setBackgroundResource(element.backgroundColor)
     }

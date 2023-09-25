@@ -10,13 +10,17 @@ import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.ViewAccordionExpandBinding
 import com.tokopedia.catalogcommon.databinding.WidgetAccordionInformationBinding
+import com.tokopedia.catalogcommon.listener.AccordionListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
-class AccordionInformationViewHolder(itemView: View) :
+class AccordionInformationViewHolder(
+    itemView: View,
+    private val listener: AccordionListener? = null
+) :
     AbstractViewHolder<AccordionInformationUiModel>(itemView) {
 
     companion object {
@@ -57,7 +61,8 @@ class AccordionInformationViewHolder(itemView: View) :
                 element.widgetTextColor.orDefaultColor(itemView.context),
                 PorterDuff.Mode.SRC_IN
             )
-            binding?.accordion?.get(index)?.findViewById<Typography>(com.tokopedia.accordion.R.id.accordion_title)
+            binding?.accordion?.get(index)
+                ?.findViewById<Typography>(com.tokopedia.accordion.R.id.accordion_title)
                 ?.setTextColor(item.textTitleColor.orDefaultColor(itemView.context))
         }
 
@@ -66,8 +71,12 @@ class AccordionInformationViewHolder(itemView: View) :
                 binding?.accordion?.collapseGroup(lastPositionExpand)
             }
             lastPositionExpand = position
+            listener?.onClickItemAccordionInformation(position,
+                element.contents[position]
+            )
         }
 
+        listener?.onImpressionAccordionInformation()
     }
 
 }

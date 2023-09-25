@@ -1,31 +1,31 @@
 package com.tokopedia.catalog.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.catalog.R
+import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.databinding.FragmentCatalogProductListBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.domain.model.CatalogProductItem
+import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapter
 import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapterFactoryImpl
+import com.tokopedia.catalog.ui.adapter.EmptyStateFilterListener
 import com.tokopedia.catalog.ui.adapter.ProductListAdapterListener
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
-import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapter
-import com.tokopedia.catalog.ui.adapter.EmptyStateFilterListener
 import com.tokopedia.catalog.ui.model.CatalogProductListEmptyModel
 import com.tokopedia.catalog.ui.viewmodel.CatalogProductListViewModel
 import com.tokopedia.common_category.constants.CategoryNavConstants
@@ -33,7 +33,6 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -43,17 +42,15 @@ import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.imageassets.TokopediaImageUrl.ILLUSTRATION_EMPTY_CATALOG_PRODUCT_LIST
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.oldcatalog.model.util.CatalogConstant
 import com.tokopedia.oldcatalog.model.util.CatalogSearchApiConst
-import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.sortfilter.SortFilterItem
@@ -70,10 +67,9 @@ import javax.inject.Inject
 class CatalogProductListFragment :
     BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
     ChooseAddressWidget.ChooseAddressWidgetListener,
-    QuickFilterListener, SortFilterBottomSheet.Callback, ProductListAdapterListener, 
+    QuickFilterListener, SortFilterBottomSheet.Callback, ProductListAdapterListener,
     EmptyStateFilterListener {
 
-    private val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
 
     @Inject
     lateinit var viewModel: CatalogProductListViewModel
@@ -88,6 +84,10 @@ class CatalogProductListFragment :
 
     private val userSession: UserSession by lazy {
         UserSession(activity)
+    }
+
+    private val catalogUrl: String by lazy {
+        arguments?.getString(ARG_EXTRA_CATALOG_URL).orEmpty()
     }
 
     private val catalogTitle: String by lazy {
@@ -110,7 +110,7 @@ class CatalogProductListFragment :
         }
     }
 
-    private val emptyModelInitial: CatalogProductListEmptyModel by lazy{
+    private val emptyModelInitial: CatalogProductListEmptyModel by lazy {
         CatalogProductListEmptyModel(isFromFilter = false).apply {
             description = getString(R.string.catalog_no_products_body)
             title = getString(R.string.catalog_no_products_title)
@@ -124,6 +124,7 @@ class CatalogProductListFragment :
 
     companion object {
         private const val SHOP_TIER_VALUE = 2
+        private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val ARG_EXTRA_PRODUCT_SORTING_STATUS = "ARG_EXTRA_PRODUCT_SORTING_STATUS"
         private const val ARG_EXTRA_CATALOG_TITLE = "ARG_EXTRA_CATALOG_TITLE"
@@ -131,11 +132,13 @@ class CatalogProductListFragment :
         fun newInstance(
             catalogId: String,
             catalogTitle: String,
-            productSortingStatus: String
+            productSortingStatus: String,
+            catalogUrl: String
         ): CatalogProductListFragment {
             val fragment = CatalogProductListFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+            bundle.putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
             bundle.putString(ARG_EXTRA_CATALOG_TITLE, catalogTitle)
             bundle.putString(ARG_EXTRA_PRODUCT_SORTING_STATUS, productSortingStatus)
             fragment.arguments = bundle
@@ -176,6 +179,13 @@ class CatalogProductListFragment :
             }
             toolbar.setNavigationOnClickListener {
                 activity?.finish()
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+                    action = CatalogTrackerConstant.EVENT_ACTION_CLICK_BACK_BUTTON,
+                    category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+                    labels = catalogId,
+                    trackerId = CatalogTrackerConstant.TRACKER_ID_BACK_BUTTON_CATALOG_PRODUCT_LIST
+                )
             }
         }
     }
@@ -196,10 +206,10 @@ class CatalogProductListFragment :
         viewModel.fetchQuickFilters(getQuickFilterParams())
         viewModel.fetchDynamicAttribute(getDynamicFilterParams())
     }
-    
+
     override fun loadData(page: Int) {
-        val nextPage = page-1
-        if (page == defaultInitialPage){
+        val nextPage = page - 1
+        if (page == defaultInitialPage) {
             products.clear()
             viewModel.quickFilterClicked.value = true
             setSortFilterIndicatorCounter()
@@ -291,6 +301,7 @@ class CatalogProductListFragment :
                 is Success -> {
                     viewModel.dynamicFilterModel.value = it.data
                 }
+
                 is Fail -> {
                 }
             }
@@ -437,15 +448,67 @@ class CatalogProductListFragment :
             refreshSearchParameters(queryParams)
             refreshFilterControllers(HashMap(queryParams))
         }
+
+        val labelTracker = "$catalogId - sort & filter: ${option.name}"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_ACTION_CLICK_QUICK_FILTER,
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+            labels = labelTracker,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_QUICK_FILTER_CATALOG_PRODUCT_LIST
+        )
         loadData(defaultInitialPage)
     }
 
-    override fun onAtcButtonClicked(atcModel: CatalogProductAtcUiModel) {
+    override fun onAtcButtonClicked(
+        atcModel: CatalogProductAtcUiModel,
+        item: CatalogProductItem,
+        adapterPosition: Int
+    ) {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_NAME_PRODUCT_CLICK,
+            eventAction = CatalogTrackerConstant.EVENT_ACTION_CLICK_ADD_TO_CART,
+            eventCategory = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+            catalogId = catalogId,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_CLICK_ADD_TO_CART_CATALOG_PRODUCT_LIST,
+            item = item,
+            searchFilterMap = viewModel.searchParametersMap.value,
+            position = adapterPosition+1,
+            userSession.userId,
+            catalogUrl
+        )
         addToCart(atcModel)
     }
 
     override fun onClickProductCard(item: CatalogProductItem, adapterPosition: Int) {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_NAME_PRODUCT_CLICK,
+            eventAction = CatalogTrackerConstant.EVENT_ACTION_CLICK_PRODUCT,
+            eventCategory = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+            catalogId = catalogId,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_CLICK_CATALOG_PRODUCT_LIST,
+            item = item,
+            searchFilterMap = viewModel.searchParametersMap.value,
+            position = adapterPosition+1,
+            userId = userSession.userId,
+            catalogUrl = catalogUrl
+        )
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
+    }
+
+    override fun onProductImpression(item: CatalogProductItem, position: Int) {
+        CatalogReimagineDetailAnalytics.sendEventImpression(
+            event = CatalogTrackerConstant.EVENT_NAME_PRODUCT_VIEW,
+            eventAction = CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_PRODUCT,
+            eventCategory = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+            catalogId = catalogId,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_IMPRESSION_PRODUCT,
+            item = item,
+            searchFilterMap = viewModel.searchParametersMap.value,
+            position = position+1,
+            userId = userSession.userId,
+            catalogUrl = catalogUrl
+        )
     }
 
     private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {
@@ -514,6 +577,15 @@ class CatalogProductListFragment :
         viewModel.searchParameter.getSearchParameterHashMap()
             .putAll(applySortFilterModel.mapParameter)
         viewModel.searchParametersMap.value = viewModel.searchParameter.getSearchParameterHashMap()
+
+        val labelTracker = "$catalogId - sort & filter: ${applySortFilterModel.selectedSortName}"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_ACTION_CLICK_FILTER,
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+            labels = labelTracker,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_FILTER_CATALOG_PRODUCT_LIST
+        )
         loadData(defaultInitialPage)
     }
 
@@ -671,16 +743,16 @@ class CatalogProductListFragment :
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
-        return if (viewModel.selectedSortIndicatorCount.value.orZero() > 0){
+        return if (viewModel.selectedSortIndicatorCount.value.orZero() > 0) {
             emptyModelFilter
-        }else{
+        } else {
             emptyModelInitial
         }
     }
 
     override fun resetFilter() {
         initSearchQuickSortFilter()
-        viewModel.selectedSortIndicatorCount.value  = 0
+        viewModel.selectedSortIndicatorCount.value = 0
         viewModel.searchParameter.getSearchParameterHashMap().clear()
         viewModel.filterController?.resetAllFilters()
         loadData(defaultInitialPage)

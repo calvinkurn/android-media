@@ -86,7 +86,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/globalerrors_action"
+            android:id="@+id/btn_see_more"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
