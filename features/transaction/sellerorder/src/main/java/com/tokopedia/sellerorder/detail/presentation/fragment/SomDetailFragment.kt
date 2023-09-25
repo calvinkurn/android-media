@@ -1007,6 +1007,18 @@ open class SomDetailFragment :
         onClickProduct(uiModel.orderDetailId.toLongOrZero())
     }
 
+    override fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        //no op
+    }
+
+    override fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        //no op
+    }
+
+    override fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        //no op
+    }
+
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
             somDetailViewModel.rejectOrder(orderRejectRequestParam)

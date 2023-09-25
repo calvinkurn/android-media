@@ -21,4 +21,6 @@
 
     <string name="om_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
 
+    <string name="om_buy_again_button">Beli Lagi</string>
+
 </resources>

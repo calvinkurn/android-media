@@ -39,8 +39,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal fun View.renderProductCardContent(
     productCardModel: ProductCardModel,
-    isMergePriceSection: Boolean = false,
-    isMergeShippingSection: Boolean = false,
+    isWideContent: Boolean = false,
 ) {
     renderTextGimmick(productCardModel)
     renderPdpCountView(productCardModel)
@@ -63,7 +62,7 @@ internal fun View.renderProductCardContent(
     renderTextETA(productCardModel)
     productCardModel.layoutStrategy.configContentPosition(this)
 
-    configureConstraint(productCardModel, isMergePriceSection, isMergeShippingSection)
+    configureConstraint(productCardModel, isWideContent)
 }
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
@@ -402,15 +401,14 @@ private fun View.renderTextETA(productCardModel: ProductCardModel) {
 
 private fun View.configureConstraint(
     productCardModel: ProductCardModel,
-    isMergePriceSection: Boolean,
-    isMergeShippingSection: Boolean,
+    isWideContent: Boolean,
 ) {
     val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
 
     view?.applyConstraintSet {
-        configurePriceSectionConstraint(it, isMergePriceSection, productCardModel)
+        configurePriceSectionConstraint(it, isWideContent, productCardModel)
 
-        if (isMergeShippingSection) mergeShippingSection(it, productCardModel)
+        if (isWideContent) mergeShippingSection(it, productCardModel)
         else splitShippingSection(it)
     }
 }
@@ -456,19 +454,19 @@ private fun View.configureConstraint(
 
 private fun configurePriceSectionConstraint(
     constraintSet: ConstraintSet,
-    isMergePriceSection: Boolean,
+    isWideContent: Boolean,
     productCardModel: ProductCardModel,
 ) {
-    configureLabelPriceStart(constraintSet, isMergePriceSection, productCardModel)
-    configureLabelPriceTop(constraintSet, isMergePriceSection, productCardModel)
+    configureLabelPriceStart(constraintSet, isWideContent, productCardModel)
+    configureLabelPriceTop(constraintSet, isWideContent, productCardModel)
 
-    configureLabelDiscountStart(constraintSet, isMergePriceSection, productCardModel)
-    configureLabelDiscountTop(constraintSet, isMergePriceSection)
-    configureLabelDiscountBottom(constraintSet, isMergePriceSection)
+    configureLabelDiscountStart(constraintSet, isWideContent, productCardModel)
+    configureLabelDiscountTop(constraintSet, isWideContent)
+    configureLabelDiscountBottom(constraintSet, isWideContent)
 
-    configureTextSlashedPriceGoneMarginStart(constraintSet, isMergePriceSection)
+    configureTextSlashedPriceGoneMarginStart(constraintSet, isWideContent)
 
-    configureTextSlashPriceDiscount(productCardModel, constraintSet, isMergePriceSection)
+    configureTextSlashPriceDiscount(productCardModel, constraintSet, isWideContent)
 }
 
 private fun configureLabelPriceStart(

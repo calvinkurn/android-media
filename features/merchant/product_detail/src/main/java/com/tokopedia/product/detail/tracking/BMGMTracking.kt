@@ -13,6 +13,7 @@ object BMGMTracking {
 
     fun onClicked(
         title: String,
+        offerId: String,
         commonTracker: CommonTracker,
         component: ComponentTrackDataModel?,
         trackingQueue: TrackingQueue
@@ -23,7 +24,7 @@ object BMGMTracking {
             "event" to event,
             "eventCategory" to "product detail page",
             "eventAction" to action,
-            "eventLabel" to "",
+            "eventLabel" to offerId,
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
             "trackerId" to "45682",

@@ -539,5 +539,5 @@ interface DynamicProductDetailListener {
     fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData)
 
     // region BMGM
-    fun onBMGMClicked(title: String, component: ComponentTrackDataModel)
+    fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel)
 }
