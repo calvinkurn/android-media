@@ -86,6 +86,7 @@ import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.util.OverscrollEdgeEffectFactory
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
@@ -1183,6 +1184,7 @@ class FeedFragment :
             it.rvFeedPost.removeOnScrollListener(contentScrollListener)
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
             it.rvFeedPost.itemAnimator = null
+            it.rvFeedPost.edgeEffectFactory = OverscrollEdgeEffectFactory()
         }
     }
 
@@ -1200,13 +1202,14 @@ class FeedFragment :
                                 )
                             )
                         }
+                        updateBottomActionView(RecyclerView.NO_POSITION)
                     } else {
                         adapter.setList(it.data.items) {
                             if (_binding == null) return@setList
                             updateBottomActionView(getCurrentPosition())
                         }
                         context?.let { ctx ->
-                            if (feedPostViewModel.shouldShowNoMoreContent) {
+                            if (feedPostViewModel.shouldShowNoMoreContent && !isCdp) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
                             }
                         }

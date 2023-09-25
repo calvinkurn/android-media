@@ -5,9 +5,11 @@ import android.graphics.drawable.ColorDrawable
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.test.espresso.matcher.BoundedMatcher
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import java.util.*
 
 fun matchesBackgroundColor(expectedResourceId: Int?): Matcher<View?> {
@@ -60,4 +62,16 @@ fun matchesBackgroundColor(expectedResourceId: Int?): Matcher<View?> {
  */
 fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
     return RecyclerViewMatcher(recyclerViewId)
+}
+
+fun hasGlobalIcon(): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description?) {
+            description?.appendText("Icon is not Global Icon")
+        }
+
+        override fun matchesSafely(item: View?): Boolean {
+            return (item as? NavToolbar)?.getGlobalNavIconView() != null
+        }
+    }
 }

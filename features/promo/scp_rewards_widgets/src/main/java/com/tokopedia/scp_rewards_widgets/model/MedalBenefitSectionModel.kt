@@ -9,4 +9,5 @@ class MedalBenefitSectionModel(
     val benefitList: List<MedalBenefitModel>? = null,
     val jsonParameter: String? = null,
     val cta: Cta? = null,
+    val filters: List<FilterModel>? = null,
 )
