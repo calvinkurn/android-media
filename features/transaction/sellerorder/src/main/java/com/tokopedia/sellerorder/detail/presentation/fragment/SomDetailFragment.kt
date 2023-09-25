@@ -120,6 +120,7 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetR
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetSetDelivered
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomConfirmShippingBottomSheet
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomDetailTransparencyFeeBottomSheet
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.mapper.SomDetailMapper
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
@@ -995,7 +996,8 @@ open class SomDetailFragment :
     }
 
     override fun onDetailIncomeClicked() {
-
+        val somDetailTransparencyFeeBottomSheet = SomDetailTransparencyFeeBottomSheet.newInstance(orderId)
+        somDetailTransparencyFeeBottomSheet.show(childFragmentManager)
     }
 
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {

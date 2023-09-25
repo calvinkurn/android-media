@@ -2,7 +2,7 @@ package com.tokopedia.sellerorder.detail.di
 
 import com.tokopedia.sellerorder.common.di.SomComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomDetailIncomeBottomSheet
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomDetailTransparencyFeeBottomSheet
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
 import com.tokopedia.sellerorder.orderextension.di.SomOrderExtensionViewModelModule
 import dagger.Component
@@ -22,5 +22,5 @@ import dagger.Component
 interface SomDetailComponent {
     fun inject(somDetailActivity: SomDetailActivity)
     fun inject(somDetailFragment: SomDetailFragment)
-    fun inject(incomeDetailIncomeBottomSheet: SomDetailIncomeBottomSheet)
+    fun inject(incomeDetailIncomeBottomSheet: SomDetailTransparencyFeeBottomSheet)
 }

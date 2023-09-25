@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="@id/tv_component_income_detail_label"
         app:layout_constraintEnd_toStartOf="@id/tv_component_income_detail_value"
         tools:itemCount="2"
-        tools:listitem="@layout/item_detail_income_label"
+        tools:listitem="@layout/item_detail_transparency_fee_label"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography

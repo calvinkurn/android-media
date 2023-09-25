@@ -30,7 +30,7 @@
         app:layout_constraintStart_toEndOf="@id/tv_summary_income_detail_label"
         app:layout_constraintTop_toTopOf="@id/tv_summary_income_detail_label"
         app:layout_constraintEnd_toStartOf="@id/tv_summary_income_detail_value"
-        tools:listitem="@layout/item_detail_income_label"
+        tools:listitem="@layout/item_detail_transparency_fee_label"
         tools:itemCount="6"
         tools:visibility="visible" />
 

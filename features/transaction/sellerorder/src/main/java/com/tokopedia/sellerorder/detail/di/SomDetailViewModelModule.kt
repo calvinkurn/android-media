@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailIncomeViewModel
+import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailTransparencyFeeViewModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import dagger.Binds
 import dagger.Module
@@ -27,6 +27,6 @@ abstract class SomDetailViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(SomDetailIncomeViewModel::class)
-    internal abstract fun somDetailIncomeViewModel(viewModel: SomDetailIncomeViewModel): ViewModel
+    @ViewModelKey(SomDetailTransparencyFeeViewModel::class)
+    internal abstract fun somDetailIncomeViewModel(viewModel: SomDetailTransparencyFeeViewModel): ViewModel
 }
