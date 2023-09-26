@@ -28,7 +28,6 @@ import com.tokopedia.home.beranda.helper.LazyLoadDynamicChannelHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
@@ -119,6 +118,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     var isCache = true
     var isCacheDc = true
+    private var isNewAtfMechanism = false
 
     fun updateHeaderData(
         homeHeaderDataModel: HomeHeaderDataModel,
@@ -193,6 +193,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
 
         val atfFlow = homeAtfUseCase.flow.map {
+            Log.d("atfflow", "getNewHomeDataFlow: atfFlow collected")
             HomeDynamicChannelModel(
                 list = it?.mapToVisitableList().orEmpty(),
                 isCache = it?.isCache.orTrue()
@@ -204,6 +205,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
 
         return combine(headerFlow, atfFlow, dynamicChannelFlow) { header, atf, dc ->
+            Log.d("atfflow", "getNewHomeDataFlow: combine" +
+                "\nheader $header" +
+                "\natf $atf" +
+                "\ndc $dc")
             val combinedList = header.list + atf.list + dc.list
             val isCache = atf.isCache || dc.isCache
             HomeDynamicChannelModel(list = combinedList, isCache = isCache)
@@ -261,6 +266,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 /**
                  * Emit cache data
                  */
+                Log.d("atfflow", "getDynamicChannelFlow: $dynamicChannelPlainResponse")
                 emit(dynamicChannelPlainResponse)
             } else {
                 /**
@@ -928,8 +934,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
      * Home repository flow:
      *
      * 1. Provide initial HomeData
+     * 1b Hit home user status query
      * 2. Get above the fold skeleton
-     *    2.1 Hit home user status query
      * 3. Get above the fold content
      * 4. Get dynamic channel data
      *    4.1. If remote config pagination enabled, proceed with pagination
@@ -952,7 +958,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
      *              Then emit error pagination
      *              Because there is no content that we can show, we showing error page
      */
-    fun updateHomeData(): Flow<Result<Any>> = flow {
+    fun updateHomeData(isNewAtfMechanism: Boolean = false): Flow<Result<Any>> = flow {
+        Log.d("atfflow", "updateHomeData: ")
         coroutineScope {
             /**
              * Remote config to disable pagination by request with param 0
@@ -966,6 +973,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             var currentToken = ""
             var isAtfSuccess = true
             currentHeaderDataModel = null
+            this@HomeDynamicChannelUseCase.isNewAtfMechanism = isNewAtfMechanism
 
             /**
              * 1. Provide initial HomeData
@@ -978,117 +986,161 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 })
 
             /**
-             * 2. Get above the fold skeleton
-             */
-            try {
-                val homeAtfResponse = atfDataRepository.getRemoteData()
-                if (homeAtfResponse.dataList.isEmpty()) {
-                    isAtfSuccess = false
-                    homeData.atfData = null
-                } else {
-                    homeData.atfData = homeAtfResponse
-                }
-            } catch (e: Exception) {
-                homeData.atfData = cachedHomeData?.atfData
-                isAtfSuccess = false
-                emit(Result.errorAtf(error = e, data = null))
-            }
-
-            /**
-             * 2.1 Hit home user status (fire and forget)
+             * 1b Hit home user status (fire and forget)
              */
             launch { homeUserStatusRepository.hitHomeStatusThenIgnoreResponse() }
 
-            /**
-             * 3. Get above the fold content
-             */
-            if (homeData.atfData?.dataList?.isNotEmpty() == true) {
-                var nonTickerResponseFinished = false
+            if(isNewAtfMechanism) {
+                homeAtfUseCase.getDynamicPosition()
+            } else {
+                /**
+                 * 2. Get above the fold skeleton
+                 */
+                try {
+                    val homeAtfResponse = atfDataRepository.getRemoteData()
+                    if (homeAtfResponse.dataList.isEmpty()) {
+                        isAtfSuccess = false
+                        homeData.atfData = null
+                    } else {
+                        homeData.atfData = homeAtfResponse
+                    }
+                } catch (e: Exception) {
+                    homeData.atfData = cachedHomeData?.atfData
+                    isAtfSuccess = false
+                    emit(Result.errorAtf(error = e, data = null))
+                }
 
-                homeData.atfData?.dataList?.map { atfData ->
-                    when (atfData.component) {
-                        AtfKey.TYPE_TICKER -> {
-                            val job = async {
-                                try {
-                                    val ticker = homeTickerRepository.getRemoteData(
-                                        Bundle().apply {
+                /**
+                 * 3. Get above the fold content
+                 */
+                if (homeData.atfData?.dataList?.isNotEmpty() == true) {
+                    var nonTickerResponseFinished = false
+
+                    homeData.atfData?.dataList?.map { atfData ->
+                        when (atfData.component) {
+                            AtfKey.TYPE_TICKER -> {
+                                val job = async {
+                                    try {
+                                        val ticker = homeTickerRepository.getRemoteData(
+                                            Bundle().apply {
+                                                putString(
+                                                    HomeTickerRepository.Companion.PARAM_LOCATION,
+                                                    applicationContext?.let {
+                                                        ChooseAddressUtils.getLocalizingAddressData(
+                                                            applicationContext
+                                                        )?.convertToLocationParams()
+                                                    } ?: ""
+                                                )
+                                            }
+                                        )
+                                        ticker.let {
+                                            atfData.content = gson.toJson(ticker.ticker)
+                                            atfData.status = AtfKey.STATUS_SUCCESS
+                                        }
+                                    } catch (e: Exception) {
+                                        atfData.status = AtfKey.STATUS_ERROR
+                                        atfData.errorString = ErrorHandler.getErrorMessage(
+                                            applicationContext,
+                                            MessageErrorException(e.localizedMessage)
+                                        )
+                                    }
+                                    if (nonTickerResponseFinished) {
+                                        cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                            saveToDatabase(homeData)
+                                        })
+                                    }
+                                    atfData
+                                }
+                                jobList.add(job)
+                            }
+                            AtfKey.TYPE_BANNER -> {
+                                val job = async {
+                                    try {
+                                        val bannerParam = Bundle().apply {
                                             putString(
-                                                HomeTickerRepository.Companion.PARAM_LOCATION,
-                                                applicationContext?.let {
-                                                    ChooseAddressUtils.getLocalizingAddressData(
-                                                        applicationContext
-                                                    )?.convertToLocationParams()
-                                                } ?: ""
+                                                HomeDynamicChannelsRepository.PARAMS,
+                                                atfData.param
+                                            )
+                                            this.putString(
+                                                HomePageBannerRepository.PARAM_LOCATION,
+                                                homeChooseAddressRepository.getRemoteData()
+                                                    ?.convertToLocationParams()
                                             )
                                         }
-                                    )
-                                    ticker.let {
-                                        atfData.content = gson.toJson(ticker.ticker)
-                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                        val dynamicChannel =
+                                            homePageBannerRepository.getRemoteData(bannerParam)
+                                        dynamicChannel.let {
+                                            if (it.banner.slides?.size ?: 0 >= MINIMUM_BANNER_TO_SHOW) {
+                                                val channelFromResponse = it.banner
+                                                atfData.content = gson.toJson(channelFromResponse)
+                                                atfData.status = AtfKey.STATUS_SUCCESS
+                                            } else {
+                                                atfData.status = AtfKey.STATUS_EMPTY
+                                            }
+                                        }
+                                        homeData.atfData?.isProcessingAtf = false
+                                    } catch (e: Exception) {
+                                        atfData.status = AtfKey.STATUS_ERROR
+                                        atfData.content = null
+                                        atfData.errorString = ErrorHandler.getErrorMessage(
+                                            applicationContext,
+                                            MessageErrorException(e.localizedMessage)
+                                        )
                                     }
-                                } catch (e: Exception) {
-                                    atfData.status = AtfKey.STATUS_ERROR
-                                    atfData.errorString = ErrorHandler.getErrorMessage(
-                                        applicationContext,
-                                        MessageErrorException(e.localizedMessage)
-                                    )
-                                }
-                                if (nonTickerResponseFinished) {
                                     cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
                                         saveToDatabase(homeData)
                                     })
+                                    nonTickerResponseFinished = true
+                                    atfData
                                 }
-                                atfData
+                                jobList.add(job)
                             }
-                            jobList.add(job)
-                        }
-                        AtfKey.TYPE_BANNER -> {
-                            val job = async {
-                                try {
-                                    val bannerParam = Bundle().apply {
-                                        putString(
-                                            HomeDynamicChannelsRepository.PARAMS,
-                                            atfData.param
-                                        )
-                                        this.putString(
-                                            HomePageBannerRepository.PARAM_LOCATION,
-                                            homeChooseAddressRepository.getRemoteData()
-                                                ?.convertToLocationParams()
-                                        )
-                                    }
-                                    val dynamicChannel =
-                                        homePageBannerRepository.getRemoteData(bannerParam)
-                                    dynamicChannel.let {
-                                        if (it.banner.slides?.size ?: 0 >= MINIMUM_BANNER_TO_SHOW) {
-                                            val channelFromResponse = it.banner
+                            AtfKey.TYPE_CHANNEL -> {
+                                val job = async {
+                                    try {
+                                        val dynamicChannel =
+                                            homeDynamicChannelsRepository.getRemoteData(
+                                                Bundle().apply {
+                                                    putString(
+                                                        HomeDynamicChannelsRepository.PARAMS,
+                                                        atfData.param
+                                                    )
+                                                    putString(
+                                                        HomeDynamicChannelsRepository.LOCATION,
+                                                        applicationContext?.let {
+                                                            ChooseAddressUtils.getLocalizingAddressData(
+                                                                applicationContext
+                                                            )?.convertToLocationParams()
+                                                        } ?: ""
+                                                    )
+                                                }
+                                            )
+                                        dynamicChannel.let {
+                                            val channelFromResponse = it.dynamicHomeChannel
                                             atfData.content = gson.toJson(channelFromResponse)
                                             atfData.status = AtfKey.STATUS_SUCCESS
-                                        } else {
-                                            atfData.status = AtfKey.STATUS_EMPTY
                                         }
+                                        homeData.atfData?.isProcessingAtf = false
+                                    } catch (e: Exception) {
+                                        atfData.status = AtfKey.STATUS_ERROR
+                                        atfData.content = null
+                                        atfData.errorString = ErrorHandler.getErrorMessage(
+                                            applicationContext,
+                                            MessageErrorException(e.localizedMessage)
+                                        )
                                     }
-                                    homeData.atfData?.isProcessingAtf = false
-                                } catch (e: Exception) {
-                                    atfData.status = AtfKey.STATUS_ERROR
-                                    atfData.content = null
-                                    atfData.errorString = ErrorHandler.getErrorMessage(
-                                        applicationContext,
-                                        MessageErrorException(e.localizedMessage)
-                                    )
+                                    cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                        saveToDatabase(homeData)
+                                    })
+                                    nonTickerResponseFinished = true
+                                    atfData
                                 }
-                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
-                                    saveToDatabase(homeData)
-                                })
-                                nonTickerResponseFinished = true
-                                atfData
+                                jobList.add(job)
                             }
-                            jobList.add(job)
-                        }
-                        AtfKey.TYPE_CHANNEL -> {
-                            val job = async {
-                                try {
-                                    val dynamicChannel =
-                                        homeDynamicChannelsRepository.getRemoteData(
+                            AtfKey.TYPE_ICON -> {
+                                val job = async {
+                                    try {
+                                        val dynamicIcon = homeIconRepository.getRemoteData(
                                             Bundle().apply {
                                                 putString(
                                                     HomeDynamicChannelsRepository.PARAMS,
@@ -1104,72 +1156,32 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                                 )
                                             }
                                         )
-                                    dynamicChannel.let {
-                                        val channelFromResponse = it.dynamicHomeChannel
-                                        atfData.content = gson.toJson(channelFromResponse)
-                                        atfData.status = AtfKey.STATUS_SUCCESS
-                                    }
-                                    homeData.atfData?.isProcessingAtf = false
-                                } catch (e: Exception) {
-                                    atfData.status = AtfKey.STATUS_ERROR
-                                    atfData.content = null
-                                    atfData.errorString = ErrorHandler.getErrorMessage(
-                                        applicationContext,
-                                        MessageErrorException(e.localizedMessage)
-                                    )
-                                }
-                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
-                                    saveToDatabase(homeData)
-                                })
-                                nonTickerResponseFinished = true
-                                atfData
-                            }
-                            jobList.add(job)
-                        }
-                        AtfKey.TYPE_ICON -> {
-                            val job = async {
-                                try {
-                                    val dynamicIcon = homeIconRepository.getRemoteData(
-                                        Bundle().apply {
-                                            putString(
-                                                HomeDynamicChannelsRepository.PARAMS,
-                                                atfData.param
+                                        dynamicIcon.let {
+                                            atfData.content = gson.toJson(
+                                                dynamicIcon.dynamicHomeIcon.copy(
+                                                    type = if (atfData.param.contains(TYPE_ATF_1)) 1 else 2
+                                                )
                                             )
-                                            putString(
-                                                HomeDynamicChannelsRepository.LOCATION,
-                                                applicationContext?.let {
-                                                    ChooseAddressUtils.getLocalizingAddressData(
-                                                        applicationContext
-                                                    )?.convertToLocationParams()
-                                                } ?: ""
-                                            )
+                                            atfData.status = AtfKey.STATUS_SUCCESS
                                         }
-                                    )
-                                    dynamicIcon.let {
-                                        atfData.content = gson.toJson(
-                                            dynamicIcon.dynamicHomeIcon.copy(
-                                                type = if (atfData.param.contains(TYPE_ATF_1)) 1 else 2
-                                            )
+                                        homeData.atfData?.isProcessingAtf = false
+                                    } catch (e: Exception) {
+                                        atfData.status = AtfKey.STATUS_ERROR
+                                        atfData.errorString = ErrorHandler.getErrorMessage(
+                                            applicationContext,
+                                            MessageErrorException(e.localizedMessage)
                                         )
-                                        atfData.status = AtfKey.STATUS_SUCCESS
                                     }
-                                    homeData.atfData?.isProcessingAtf = false
-                                } catch (e: Exception) {
-                                    atfData.status = AtfKey.STATUS_ERROR
-                                    atfData.errorString = ErrorHandler.getErrorMessage(
-                                        applicationContext,
-                                        MessageErrorException(e.localizedMessage)
-                                    )
+                                    cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                        saveToDatabase(homeData)
+                                    })
+                                    nonTickerResponseFinished = true
+                                    atfData
                                 }
-                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
-                                    saveToDatabase(homeData)
-                                })
-                                nonTickerResponseFinished = true
-                                atfData
+                                jobList.add(job)
                             }
-                            jobList.add(job)
-                        }
-                        else -> {
+                            else -> {
+                            }
                         }
                     }
                 }
@@ -1375,7 +1387,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private suspend fun saveToDatabase(homeData: HomeData?, saveAtf: Boolean = false) {
         getHomeRoomDataSource.saveToDatabase(homeData)
-        if (saveAtf) {
+        if (saveAtf && !isNewAtfMechanism) {
             homeData?.atfData?.let {
                 getHomeRoomDataSource.saveCachedAtf(
                     it.dataList.mapIndexed { idx, atfData ->

@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -293,6 +294,7 @@ open class HomeRevampViewModel @Inject constructor(
         homeFlowStarted = true
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
+                Log.d("atfflow", "initFlow: ")
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     currentTopAdsBannerPage = homeNewDataModel.topadsPage
@@ -338,7 +340,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
 
         getHomeDataJob = launchCatchError(coroutineContext, block = {
-            homeUseCase.get().updateHomeData().collect {
+            homeUseCase.get().updateHomeData(homeRemoteConfigController.isUsingNewAtf()).collect {
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
                     removeDynamicChannelLoadingModel()

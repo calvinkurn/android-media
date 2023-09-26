@@ -24,16 +24,11 @@ class HomeAtfUseCase @Inject constructor(
     private val tickerRepository: TickerRepository,
     private val atfChannelRepository: AtfChannelRepository,
 ) {
-    private val scope = CoroutineScope(Job() + Dispatchers.IO)
-
     private var _flow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
     val flow: StateFlow<AtfDataList?> = _flow
 
-    init {
-        scope.launch { getDynamicPosition() }
-    }
-
     suspend fun getDynamicPosition() {
+        Log.d("atfflow", "getDynamicPosition: ")
         coroutineScope {
             launch { observeAtfFlow(homepageBannerRepository.flow) }
             launch { observeAtfFlow(dynamicIconRepository.flow) }
