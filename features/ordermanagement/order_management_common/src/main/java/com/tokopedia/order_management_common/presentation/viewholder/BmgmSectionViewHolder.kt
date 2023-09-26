@@ -3,6 +3,7 @@ package com.tokopedia.order_management_common.presentation.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -15,6 +16,7 @@ import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSec
 import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.order_management_common.R as order_management_commonR
 
 class BmgmSectionViewHolder(
     view: View?,
@@ -79,7 +81,7 @@ class BmgmSectionViewHolder(
         if (item.orderId != OrderManagementConstants.WAITING_INVOICE_ORDER_ID) {
             listener.onBmgmItemClicked(item)
         } else {
-            showToaster(getString(com.tokopedia.order_management_common.R.string.om_error_message_cant_open_snapshot_when_waiting_invoice))
+            showToaster(getString(order_management_commonR.string.om_error_message_cant_open_snapshot_when_waiting_invoice))
         }
     }
 
@@ -121,6 +123,7 @@ class BmgmSectionViewHolder(
                         R.drawable.om_detail_add_on_solid_divider
                     )
                 } catch (t: Throwable) {
+                    FirebaseCrashlytics.getInstance().recordException(t)
                     null
                 }
                 addItemDecoration(
