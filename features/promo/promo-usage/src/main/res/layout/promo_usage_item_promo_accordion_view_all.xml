@@ -28,8 +28,8 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:layout_toRightOf="@id/tpgViewAll"
-        app:icon_color_light_enable="@color/Unify_G500"
-        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
         app:icon_name="CHEVRON_DOWN" />
 
 </RelativeLayout>
