@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.newatf
 
+import android.util.Log
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerRepository
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelRepository
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconRepository
@@ -43,16 +44,16 @@ class HomeAtfUseCase @Inject constructor(
                 dynamicPositionRepository.flow.collect { value ->
                     if(value == null) {
                         //only fetch dynamic position on first load
-                        dynamicPositionRepository.getData()
+                        launch { dynamicPositionRepository.getData() }
                     } else {
                         //if dynamic position remains the same, only update the source
                         if(flow.value?.hasSamePosition(value.listAtfData) == true) {
-                            updateSourceOnly(value.isCache)
+                            launch { updateSourceOnly(value.isCache) }
                         } else {
                             //if returns different positions, update the whole position
                             //and fetch data for each
-                            updateDynamicPosition(value)
-                            getDataForEach(value)
+                            launch { updateDynamicPosition(value) }
+                            launch { getDataForEach(value) }
                         }
                     }
                 }
@@ -67,18 +68,20 @@ class HomeAtfUseCase @Inject constructor(
 
     private suspend fun updateDynamicPosition(dynamicPosition: AtfDataList) {
         if(flow.value == null) {
+            Log.d("atfflow", "updateDynamicPosition initial: $dynamicPosition")
             _flow.emit(dynamicPosition)
         } else {
             //if from remote, update metadata and source but keep the cached content
             if(!dynamicPosition.isCache) {
                 flow.value?.listAtfData?.let {
-                    _flow.emit(
-                        dynamicPosition.copyAtfContents(
-                            dynamicPosition.listAtfData.map { it.atfContent }
-                        )
+                    val copiedContent = dynamicPosition.copyAtfContents(
+                        it.map { it.atfContent }
                     )
+                    Log.d("atfflow", "updateDynamicPosition from remote: $copiedContent")
+                    _flow.emit(copiedContent)
                 }
             } else {
+                Log.d("atfflow", "updateDynamicPosition from cache: $dynamicPosition")
                 _flow.emit(dynamicPosition)
             }
         }

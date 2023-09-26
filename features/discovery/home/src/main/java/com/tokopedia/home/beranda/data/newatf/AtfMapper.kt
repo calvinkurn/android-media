@@ -13,7 +13,7 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.constant.AtfKey
 
 object AtfMapper {
-    fun mapToDomainAtfData(
+    fun mapRemoteToDomainAtfData(
         position: Int,
         data: com.tokopedia.home.beranda.data.model.AtfData
     ): AtfData {
@@ -60,7 +60,7 @@ object AtfMapper {
         )
     }
 
-    fun mapToDomainAtfData(
+    fun mapRemoteToDomainAtfData(
         data: AtfCacheEntity,
     ): AtfData {
         return AtfData(

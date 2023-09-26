@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.newatf.ticker
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.data.newatf.AtfMetadata
@@ -28,6 +29,7 @@ class TickerRepository @Inject constructor(
         }
         val data = homeTickerRepository.getRemoteData(tickerParam)
         val atfData = AtfData(atfMetadata, data.ticker, isCache = false)
+        Log.d("atfflow", "Ticker getData: $atfData")
         emitAndSaveData(atfData)
     }
 }

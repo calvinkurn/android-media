@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.newatf.position
 
+import android.util.Log
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.data.newatf.AtfDataList
@@ -30,19 +31,21 @@ class DynamicPositionRepository @Inject constructor(
 
     private suspend fun getCachedData() {
         val cachedData = AtfDataList(
-            listAtfData = atfDao.getAtfDynamicPosition().map(AtfMapper::mapToDomainAtfData),
+            listAtfData = atfDao.getAtfDynamicPosition().map(AtfMapper::mapRemoteToDomainAtfData),
             isCache = true,
         )
+        Log.d("atfflow", "DynamicPositionRepository getCachedData: $cachedData")
         _flow.emit(cachedData)
     }
 
     suspend fun getRemoteData() {
         val listAtf = atfDataRepository.getRemoteData().dataList
         val remoteData = AtfDataList(
-            listAtfData = listAtf.mapIndexed(AtfMapper::mapToDomainAtfData),
+            listAtfData = listAtf.mapIndexed(AtfMapper::mapRemoteToDomainAtfData),
             isCache = false,
         )
         homeRoomDataSource.saveCachedAtf(listAtf.mapIndexed(AtfMapper::mapRemoteToCache))
+        Log.d("atfflow", "DynamicPositionRepository getRemoteData: $remoteData")
         _flow.emit(remoteData)
     }
 }

@@ -69,7 +69,19 @@ object HomepageBannerMapper {
     ): BannerRevampDataModel {
         val channelModel = ChannelModel(
             verticalPosition = index,
-            channelGrids = mapIntoGrids(this, isCache),
+            channelGrids = slides?.map {
+                ChannelGrid(
+                    applink = it.applink,
+                    campaignCode = it.campaignCode,
+                    id = it.id.toString(),
+                    imageUrl = it.imageUrl,
+                    attribution = it.creativeName,
+                    persona = it.persona,
+                    categoryPersona = it.categoryPersona,
+                    brandId = it.brandId,
+                    categoryId = it.categoryId
+                )
+            }.orEmpty(),
             groupId = "",
             id = "",
             trackingAttributionModel = TrackingAttributionModel(
@@ -84,24 +96,5 @@ object HomepageBannerMapper {
             channelModel = channelModel,
             isCache = isCache
         )
-    }
-
-    private fun mapIntoGrids(
-        bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel,
-        isCache: Boolean,
-    ): List<ChannelGrid> {
-        return bannerDataModel.slides.takeIf { !isCache }?.map {
-            ChannelGrid(
-                applink = it.applink,
-                campaignCode = it.campaignCode,
-                id = it.id.toString(),
-                imageUrl = it.imageUrl,
-                attribution = it.creativeName,
-                persona = it.persona,
-                categoryPersona = it.categoryPersona,
-                brandId = it.brandId,
-                categoryId = it.categoryId
-            )
-        }.orEmpty()
     }
 }

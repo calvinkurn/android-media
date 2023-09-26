@@ -33,9 +33,9 @@ class HomeHeaderUseCase @Inject constructor(
                     previousHeaderDataModel
                 )
             previousHeaderDataModel = currentHeaderDataModel
-            currentHeaderDataModel?.let {
-                _flow.emit(it)
-            }
+        }
+        currentHeaderDataModel?.let {
+            _flow.emit(it)
         }
     }
 }

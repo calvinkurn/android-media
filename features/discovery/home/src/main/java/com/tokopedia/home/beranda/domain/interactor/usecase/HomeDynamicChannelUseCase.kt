@@ -204,10 +204,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
 
         return combine(headerFlow, atfFlow, dynamicChannelFlow) { header, atf, dc ->
-            val atfVisitables = atf.list
-            val dcVisitables = dc.list
-            val combinedList = header.list + atfVisitables + dcVisitables
-            dc.copy(list = combinedList)
+            val combinedList = header.list + atf.list + dc.list
+            val isCache = atf.isCache || dc.isCache
+            HomeDynamicChannelModel(list = combinedList, isCache = isCache)
         }
     }
 

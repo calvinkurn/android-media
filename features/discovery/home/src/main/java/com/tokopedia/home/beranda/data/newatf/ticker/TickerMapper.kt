@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.newatf.ticker
 
+import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
@@ -25,11 +26,22 @@ object TickerMapper {
             if (!HomeRevampFragment.HIDE_TICKER) {
                 tickers.filter { it.layout != LAYOUT_FLOATING }.let {
                     if (it.isNotEmpty()) {
-                        TickerDataModel(tickers = mappingTickerFromServer(it))
-                    } else null
+                        val a = TickerDataModel(tickers = mappingTickerFromServer(it))
+                        Log.d("atfflow", "Ticker asVisitable: 1a $a")
+                        a
+                    } else {
+                        Log.d("atfflow", "Ticker asVisitable: 1b ")
+                        null
+                    }
                 }
-            } else null
-        } else null
+            } else {
+                Log.d("atfflow", "Ticker asVisitable: 2")
+                null
+            }
+        } else {
+            Log.d("atfflow", "Ticker asVisitable: 3")
+            null
+        }
     }
 
     private fun mappingTickerFromServer(it: List<Tickers>): List<Tickers> {
