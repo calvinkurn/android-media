@@ -1,6 +1,9 @@
 package com.scp.auth.verification
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import com.gojek.pin.Cancelled
@@ -14,9 +17,14 @@ import com.scp.auth.TkpdAdditionalHeaders
 import com.scp.verification.core.data.network.entities.CVError
 import com.scp.verification.core.domain.common.entities.VerificationData
 import com.scp.verification.core.domain.common.entities.config.VerificationUiConfig
+import com.scp.verification.core.domain.common.listener.ForgetContext
+import com.scp.verification.core.domain.common.listener.ForgetListener
 import com.scp.verification.core.domain.common.listener.OnSuccessValidation
 import com.scp.verification.core.domain.common.listener.PinListener
 import com.scp.verification.core.domain.common.listener.VerificationListener
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.keys.R as keysR
 
 class ScpVerificationManager(private val pinManager: PinManager) {
@@ -91,8 +99,41 @@ class ScpVerificationManager(private val pinManager: PinManager) {
                     )
                 }
             },
-            additionalHeaders = TkpdAdditionalHeaders(activity)
+            additionalHeaders = TkpdAdditionalHeaders(activity),
+            forgetListener = object : ForgetListener {
+                override fun openForgetFlow(type: ForgetContext, activity: FragmentActivity?) {
+                    when (type) {
+                        ForgetContext.PASSWORD -> {
+                            if (activity != null) {
+                                goToForgotPassword(activity)
+                            }
+                        }
+
+                        ForgetContext.TOKO_PIN -> {
+                            if (activity != null) {
+                                goToChangePIN(activity)
+                            }
+                        }
+                    }
+                }
+            }
 
         )
+    }
+
+    private fun goToForgotPassword(context: Context) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        context.startActivity(intent)
+    }
+
+    private fun goToChangePIN(context: Context, userId: String) {
+        val bundle = Bundle()
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CHANGE_PIN).apply {
+            bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
+            putExtras(bundle)
+        }
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        context.startActivity(intent)
     }
 }
