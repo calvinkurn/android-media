@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -402,12 +403,18 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         imageDescription: List<String>,
         brandImageUrl: List<String>
     ) {
-        val impressionImageDescription = imageDescription.subList(Int.ZERO, currentPositionVisibility+1)
-        val impressionBrandImageUrl = brandImageUrl.subList(Int.ZERO, currentPositionVisibility+1)
+
+
+        val impressionImageDescription = if (imageDescription.isNotEmpty()){
+            imageDescription.subList(Int.ZERO, currentPositionVisibility+1)
+        }else{
+            emptyList()
+        }
+        val impressionbrandImageUrl = brandImageUrl.subList(Int.ZERO, currentPositionVisibility+1)
         val list = arrayListOf<HashMap<String,String>>()
-        for (index in impressionBrandImageUrl.indices){
+        for (index in impressionbrandImageUrl.indices){
             val promotions = hashMapOf<String,String>()
-            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = impressionImageDescription[index]
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = impressionImageDescription.getOrNull(index).orEmpty()
             promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
             promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
             promotions[CatalogTrackerConstant.KEY_ITEM_NAME] =
