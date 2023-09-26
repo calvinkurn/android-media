@@ -202,7 +202,6 @@ class UniversalInboxFragment @Inject constructor(
                     this@UniversalInboxFragment
                 )
             }
-            binding?.inboxLayoutSwipeRefresh?.isRefreshing = true // prevent direct load more
         }
         endlessRecyclerViewScrollListener?.let {
             binding?.inboxRv?.addOnScrollListener(it)
@@ -272,10 +271,6 @@ class UniversalInboxFragment @Inject constructor(
 
     private fun toggleLoading(isLoading: Boolean) {
         binding?.inboxLayoutSwipeRefresh?.isRefreshing = isLoading
-        // If not loading but refresh layout is not update (swipe refresh stuck)
-        val shouldNotEnabled = !isLoading &&
-            binding?.inboxLayoutSwipeRefresh?.isRefreshing == true
-        binding?.inboxLayoutSwipeRefresh?.isEnabled = !shouldNotEnabled
     }
 
     private fun updateWidgetMeta(widget: UniversalInboxWidgetMetaUiModel) {
@@ -362,6 +357,10 @@ class UniversalInboxFragment @Inject constructor(
         viewModel.errorUiState.collectLatest {
             // Log Error and Show Toaster
             logErrorAndShowToaster(it.error)
+            // Enable refresh
+            // Sometimes swipe refresh is not updating the UI
+            // this is to re-trigger that in case loading got stuck
+            binding?.inboxLayoutSwipeRefresh?.isRefreshing = false
         }
     }
 
@@ -521,6 +520,10 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun onRefreshWidgetMeta() {
+        if (adapter.isWidgetMetaAdded()) {
+            (adapter.getInboxItem(0) as UniversalInboxWidgetMetaUiModel)
+                .widgetError.isLocalLoadLoading = true // flag local loading has started loading
+        }
         loadWidgetMetaAndCounter()
     }
 

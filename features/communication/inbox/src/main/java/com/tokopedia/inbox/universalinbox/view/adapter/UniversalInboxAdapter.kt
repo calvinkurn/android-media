@@ -3,7 +3,6 @@ package com.tokopedia.inbox.universalinbox.view.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.VisibleForTesting
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -283,7 +282,6 @@ class UniversalInboxAdapter(
         }
     }
 
-    @VisibleForTesting
     fun getInboxItem(position: Int): Visitable<in UniversalInboxTypeFactory> {
         return visitables[position]
     }
