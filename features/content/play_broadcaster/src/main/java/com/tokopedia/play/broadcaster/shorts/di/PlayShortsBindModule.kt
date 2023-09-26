@@ -79,8 +79,8 @@ import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play_common.util.device.PlayDeviceSpec

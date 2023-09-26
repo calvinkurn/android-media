@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.bottomsheet
+package com.tokopedia.content.common.util.bottomsheet
 
 import android.app.Dialog
 

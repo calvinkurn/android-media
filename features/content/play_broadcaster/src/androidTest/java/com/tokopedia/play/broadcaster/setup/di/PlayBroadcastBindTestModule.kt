@@ -35,8 +35,8 @@ import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
-import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUp
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUpImpl
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger

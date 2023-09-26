@@ -23,7 +23,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.BaseProduct
 import com.tokopedia.content.product.picker.sgc.model.PriceUnknown
 import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest

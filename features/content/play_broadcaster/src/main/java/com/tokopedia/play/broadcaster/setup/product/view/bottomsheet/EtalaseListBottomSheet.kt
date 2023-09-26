@@ -17,7 +17,7 @@ import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiMo
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent

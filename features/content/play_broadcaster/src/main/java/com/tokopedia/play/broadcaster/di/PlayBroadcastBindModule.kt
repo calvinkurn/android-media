@@ -38,8 +38,8 @@ import com.tokopedia.byteplus.effect.util.asset.checker.AssetCheckerImpl
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
-import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUp
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUpImpl
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger

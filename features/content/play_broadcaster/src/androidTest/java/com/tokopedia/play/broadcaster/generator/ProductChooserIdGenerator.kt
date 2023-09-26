@@ -35,7 +35,7 @@ import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition

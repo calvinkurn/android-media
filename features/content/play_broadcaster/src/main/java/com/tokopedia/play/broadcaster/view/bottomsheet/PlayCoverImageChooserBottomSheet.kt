@@ -19,7 +19,7 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.CarouselCoverItemDecorat
 import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverCameraViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment

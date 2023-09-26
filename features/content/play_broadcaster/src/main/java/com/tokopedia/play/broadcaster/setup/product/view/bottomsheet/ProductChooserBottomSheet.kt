@@ -35,7 +35,7 @@ import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.result.ContentProductPickerNetworkResult
 import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle

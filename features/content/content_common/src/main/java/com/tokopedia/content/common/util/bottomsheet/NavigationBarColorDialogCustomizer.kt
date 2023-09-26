@@ -1,9 +1,10 @@
-package com.tokopedia.play.broadcaster.util.bottomsheet
+package com.tokopedia.content.common.util.bottomsheet
 
 import android.app.Dialog
 import android.os.Build
-import com.tokopedia.play_common.util.extension.updateNavigationBarColors
+import com.tokopedia.content.common.util.dialog.updateNavigationBarColors
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by jegul on 16/07/20
@@ -13,13 +14,13 @@ class NavigationBarColorDialogCustomizer @Inject constructor() : PlayBroadcastDi
     override fun customize(dialog: Dialog) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             dialog.updateNavigationBarColors(
-                    intArrayOf(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                    intArrayOf(unifyprinciplesR.color.Unify_NN0)
             )
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             dialog.updateNavigationBarColors(
                     intArrayOf(
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
+                            unifyprinciplesR.color.Unify_NN0,
+                            unifyprinciplesR.color.Unify_NN950_20
                     )
             )
     }
