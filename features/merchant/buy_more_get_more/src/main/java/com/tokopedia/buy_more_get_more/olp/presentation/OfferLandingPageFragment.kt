@@ -798,7 +798,7 @@ class OfferLandingPageFragment :
             )
             setLinkProperties(
                 LinkProperties(
-                    linkerType = sharingData.offerData.pageType,
+                    linkerType = Constant.SHARING_PAGE_NAME,
                     id = currentState.offerIds.toSafeString(),
                     ogTitle = sharingData.offerData.title,
                     ogDescription = sharingData.offerData.description,
