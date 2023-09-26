@@ -261,6 +261,7 @@
                 android:layout_marginEnd="16dp"
                 android:text="@string/promo_usage_total_price"
                 android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toTopOf="@+id/tpgTotalAmount"
                 app:layout_constraintEnd_toStartOf="@+id/buttonBuy"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/buttonBuy"
@@ -275,14 +276,15 @@
                 app:layout_constraintBottom_toBottomOf="@+id/buttonBuy"
                 app:layout_constraintEnd_toStartOf="@+id/buttonBuy"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tpgTotalAmountLabel"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="Rp78.000" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/buttonBuy"
-                android:layout_width="143dp"
-                android:layout_height="wrap_content"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="12dp"
@@ -290,12 +292,13 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonLoadingText=""
                 app:unifyButtonSize="medium" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/buttonBackToShipment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
@@ -304,6 +307,7 @@
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:unifyButtonSize="medium" />
 

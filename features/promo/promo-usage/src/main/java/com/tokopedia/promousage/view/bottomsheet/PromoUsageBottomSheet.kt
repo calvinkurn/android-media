@@ -317,12 +317,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding?.tpgTotalAmount?.visible()
                 binding?.cvTotalAmount?.visible()
                 binding?.buttonBuy?.setOnClickListener {
-                    renderLoadingDialog(true)
-                    viewModel.onClickBuy(
-                        entryPoint = entryPoint,
-                        validateUsePromoRequest = validateUsePromoRequest,
-                        boPromoCodes = boPromoCodes
-                    )
+                    if (binding?.buttonBuy?.isLoading == false) {
+                        renderLoadingDialog(true)
+                        viewModel.onClickBuy(
+                            entryPoint = entryPoint,
+                            validateUsePromoRequest = validateUsePromoRequest,
+                            boPromoCodes = boPromoCodes
+                        )
+                    }
                 }
                 binding?.buttonBuy?.visible()
                 binding?.buttonBackToShipment?.gone()
@@ -332,14 +334,15 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding?.tpgTotalAmountLabel?.gone()
                 binding?.tpgTotalAmount?.gone()
                 binding?.buttonBuy?.gone()
-                binding?.buttonBackToShipment?.text =
-                    context?.getString(R.string.promo_usage_label_back)
                 binding?.buttonBackToShipment?.setOnClickListener {
-                    viewModel.onClickBackToCheckout(
-                        entryPoint = entryPoint,
-                        validateUsePromoRequest = validateUsePromoRequest,
-                        boPromoCodes = boPromoCodes
-                    )
+                    if (binding?.buttonBackToShipment?.isLoading == false) {
+                        renderLoadingDialog(true)
+                        viewModel.onClickBackToCheckout(
+                            entryPoint = entryPoint,
+                            validateUsePromoRequest = validateUsePromoRequest,
+                            boPromoCodes = boPromoCodes
+                        )
+                    }
                 }
                 binding?.buttonBackToShipment?.visible()
             }
@@ -571,6 +574,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     hidePromoRecommendationBackground()
                     hideSavingInfo()
                     renderError(false)
+                    renderActionButton(state)
                     refreshBottomSheetHeight(state)
                 }
 
@@ -584,6 +588,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderError(false)
                     renderTickerInfo(state.tickerInfo)
                     refreshBottomSheetHeight(state)
+                    renderActionButton(state)
                     adjustDummyBackground(state.items)
                     if (state.isReload) {
                         processAndSendViewAvailablePromoListNewEvent(items = state.items)
@@ -663,6 +668,26 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding?.clBottomSheetContent?.layoutParams = layoutParams
             }
             binding?.clTickerInfo?.gone()
+        }
+    }
+
+    private fun renderActionButton(state: PromoPageUiState) {
+        when (state) {
+            is PromoPageUiState.Success -> {
+                when (entryPoint) {
+                    PromoPageEntryPoint.CART_PAGE -> {
+                        binding?.buttonBuy?.isClickable = !state.isCalculating
+                    }
+
+                    PromoPageEntryPoint.CHECKOUT_PAGE, PromoPageEntryPoint.OCC_PAGE -> {
+                        binding?.buttonBackToShipment?.isClickable = !state.isCalculating
+                    }
+                }
+            }
+
+            else -> {
+                // no-op
+            }
         }
     }
 

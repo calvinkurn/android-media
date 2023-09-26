@@ -459,7 +459,8 @@ internal class PromoUsageViewModel @Inject constructor(
                         _promoPageUiState.postValue(
                             pageState.copy(
                                 items = updatedItems,
-                                isReload = false
+                                isCalculating = true,
+                                isReload = false,
                             )
                         )
 
@@ -522,6 +523,7 @@ internal class PromoUsageViewModel @Inject constructor(
                             pageState.copy(
                                 items = updatedItems,
                                 savingInfo = updatedSavingInfo,
+                                isCalculating = false,
                                 isReload = false
                             )
                         )

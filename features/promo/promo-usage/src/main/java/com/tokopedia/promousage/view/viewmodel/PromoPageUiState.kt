@@ -12,6 +12,7 @@ sealed class PromoPageUiState {
         val tickerInfo: PromoPageTickerInfo,
         val items: List<DelegateAdapterItem>,
         val savingInfo: PromoSavingInfo = PromoSavingInfo(),
+        val isCalculating: Boolean = false,
         val isReload: Boolean = false
     ) : PromoPageUiState()
 
