@@ -398,11 +398,13 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getChooseAddress(source: String) {
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
-            _chooseAddress.postValue(Success(it))
-        }, {
-            _chooseAddress.postValue(Fail(it))
-        }, source)
+        launch {
+            try {
+                _chooseAddress.postValue(Success(getChooseAddressWarehouseLocUseCase(source)))
+            } catch (e: Exception) {
+                _chooseAddress.postValue(Fail(e))
+            }
+        }
     }
 
     fun getCategoryMenu(addressData: LocalCacheModel) {
