@@ -76,6 +76,7 @@ internal class PromoUsageViewModel @Inject constructor(
     private var entryPoint: PromoPageEntryPoint = PromoPageEntryPoint.CART_PAGE
     private var defaultErrorMessage: String = ""
     private var initialSelectedPromoCodes: List<String>? = null
+    private var clickedGoPayLaterCicilPromoCode: String? = null
 
     private val _promoPageUiState = MutableLiveData<PromoPageUiState>(PromoPageUiState.Initial)
     val promoPageUiState: LiveData<PromoPageUiState>
@@ -393,11 +394,21 @@ internal class PromoUsageViewModel @Inject constructor(
             attemptedPromoCode = attemptedPromoCode
         ) {
             _promoPageUiState.ifSuccess { pageState ->
-                val gopayLaterPromo = pageState.items
-                    .firstOrNull { item ->
-                        item is PromoItem &&
-                            item.couponType.firstOrNull { type -> type == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL } != null
-                    } as? PromoItem
+                val gopayLaterPromo = if (!clickedGoPayLaterCicilPromoCode.isNullOrBlank()) {
+                    pageState.items
+                        .firstOrNull { item ->
+                            item is PromoItem &&
+                                item.code == clickedGoPayLaterCicilPromoCode
+                        }
+                } else {
+                    pageState.items
+                        .firstOrNull { item ->
+                            item is PromoItem &&
+                                item.couponType.firstOrNull { type ->
+                                    type == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
+                                } != null
+                        } as? PromoItem
+                } as? PromoItem
                 if (gopayLaterPromo != null) {
                     onClickPromo(gopayLaterPromo)
                 }
@@ -414,6 +425,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 val isRegisterGoPayLaterCicilPromo =
                     clickedItem.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
                 if (isGoPayLaterCicilPromo && isRegisterGoPayLaterCicilPromo) {
+                    clickedGoPayLaterCicilPromoCode = clickedItem.code
                     _promoCtaUiAction.postValue(PromoCtaUiAction.RegisterGoPayLaterCicil(clickedItem.cta))
                 } else {
                     _promoPageUiState.ifSuccessSuspend { pageState ->
@@ -460,7 +472,7 @@ internal class PromoUsageViewModel @Inject constructor(
                             pageState.copy(
                                 items = updatedItems,
                                 isCalculating = true,
-                                isReload = false,
+                                isReload = false
                             )
                         )
 

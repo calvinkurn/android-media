@@ -1,7 +1,6 @@
 package com.tokopedia.promousage.view.bottomsheet
 
 import android.animation.Animator
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Outline
@@ -185,16 +184,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private val layoutManager = LinearLayoutManager(context)
     private val registerGopayLaterCicilLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val promoRequest =
-                    arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST) ?: PromoRequest()
-                val chosenAddress =
-                    arguments?.getParcelable<ChosenAddress>(BUNDLE_KEY_CHOSEN_ADDRESS)
-                viewModel.loadPromoListWithPreSelectedGopayLaterPromo(
-                    promoRequest = promoRequest,
-                    chosenAddress = chosenAddress
-                )
-            }
+            val promoRequest =
+                arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST) ?: PromoRequest()
+            val chosenAddress =
+                arguments?.getParcelable<ChosenAddress>(BUNDLE_KEY_CHOSEN_ADDRESS)
+            viewModel.loadPromoListWithPreSelectedGopayLaterPromo(
+                promoRequest = promoRequest,
+                chosenAddress = chosenAddress
+            )
         }
     private var loaderDialog: LoaderDialog? = null
 
