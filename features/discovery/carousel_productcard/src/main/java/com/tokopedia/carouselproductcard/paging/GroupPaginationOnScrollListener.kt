@@ -65,7 +65,7 @@ internal class GroupPaginationOnScrollListener(
     private fun changePaginationInfo(recyclerView: RecyclerView) {
         val layoutManager = recyclerView.layoutManager as? GridLayoutManager ?: return
         val adapter = recyclerView.adapter as? Adapter ?: return
-        val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
         if (firstVisibleItemPosition == RecyclerView.NO_POSITION) return
 
