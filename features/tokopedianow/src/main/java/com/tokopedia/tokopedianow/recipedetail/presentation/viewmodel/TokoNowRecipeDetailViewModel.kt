@@ -15,8 +15,8 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
-import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
@@ -32,6 +32,7 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeDetail
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TokoNowRecipeDetailViewModel @Inject constructor(
@@ -232,13 +233,15 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     }
 
     private fun getAddress() {
-        getAddressUseCase.getStateChosenAddress({
-            addressData.updateAddressData(it)
-            checkAddressData()
-        }, {
-            hideLoading()
-            showError()
-        }, GET_ADDRESS_SOURCE)
+        launch {
+            try {
+                addressData.updateAddressData(getAddressUseCase(GET_ADDRESS_SOURCE))
+                checkAddressData()
+            } catch (e: Exception) {
+                hideLoading()
+                showError()
+            }
+        }
     }
 
     private fun updateProductQuantity(miniCartData: MiniCartSimplifiedData) {
