@@ -219,7 +219,9 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             val addToCartDataModel = AddToCartMapper.mapAddToCartResponse(addToCartGqlResponse)
             onAddToCart_thenReturns(addToCartDataModel)
 
-            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
+            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(
+                response = getProductAdsResponse
+            )
             val adsProductItem = productAdsCarousel.items.first()
 
             viewModel.mockSuperClassField(
@@ -278,7 +280,9 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             val addToCartDataModel = AddToCartMapper.mapAddToCartResponse(addToCartGqlResponse)
             onAddToCart_thenReturns(addToCartDataModel)
 
-            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
+            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(
+                response = getProductAdsResponse
+            )
             val adsProductItem = productAdsCarousel.items.first()
 
             viewModel.mockSuperClassField(
@@ -308,7 +312,9 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             val addToCartDataModel = AddToCartMapper.mapAddToCartResponse(addToCartGqlResponse)
             onAddToCart_thenReturns(addToCartDataModel)
 
-            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
+            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(
+                response = getProductAdsResponse
+            )
             val adsProductItem = productAdsCarousel.items.first()
 
             viewModel.mockSuperClassField(
