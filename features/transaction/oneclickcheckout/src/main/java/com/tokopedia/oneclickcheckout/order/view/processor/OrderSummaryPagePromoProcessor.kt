@@ -219,6 +219,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(
         val ordersItem = Order()
         ordersItem.shopId = orderCart.shop.shopId.toLongOrZero()
         ordersItem.uniqueId = orderCart.cartString
+        ordersItem.cartStringGroup = orderCart.cartString
         ordersItem.boType = orderCart.shop.boMetadata.boType
         val productDetails: ArrayList<ProductDetail> = ArrayList()
         orderCart.products.forEach {
@@ -295,6 +296,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(
         val ordersItem = OrdersItem()
         ordersItem.shopId = orderCart.shop.shopId.toLongOrZero()
         ordersItem.uniqueId = orderCart.cartString
+        ordersItem.cartStringGroup = orderCart.cartString
         ordersItem.boType = orderCart.shop.boMetadata.boType
         ordersItem.warehouseId = orderCart.shop.warehouseId.toLongOrZero()
         ordersItem.isPo = orderCart.products[0].isPreOrder == 1
