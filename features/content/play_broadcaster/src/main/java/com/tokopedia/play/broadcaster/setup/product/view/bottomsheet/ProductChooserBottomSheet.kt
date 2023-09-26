@@ -11,8 +11,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
@@ -32,8 +30,8 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SaveButto
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SearchBarViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortChipsViewComponent
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
+import com.tokopedia.content.product.picker.sgc.model.result.ContentProductPickerNetworkResult
+import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
@@ -44,7 +42,6 @@ import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -507,7 +504,7 @@ class ProductChooserBottomSheet @Inject constructor(
      * Util
      */
     private fun isEtalaseEmpty(campaignAndEtalase: CampaignAndEtalaseUiModel): Boolean {
-        return campaignAndEtalase.state == NetworkState.Success &&
+        return campaignAndEtalase.state == ContentProductPickerNetworkResult.Success &&
                 campaignAndEtalase.campaignList.isEmpty() &&
                 campaignAndEtalase.etalaseList.isEmpty()
     }

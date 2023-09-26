@@ -2,10 +2,9 @@ package com.tokopedia.play.broadcaster.setup.product.model
 
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
-import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.content.product.picker.sgc.model.result.ContentProductPickerNetworkResult
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -35,14 +34,14 @@ data class ProductChooserUiState(
 data class CampaignAndEtalaseUiModel(
     val campaignList: List<CampaignUiModel>,
     val etalaseList: List<EtalaseUiModel>,
-    val state: NetworkState,
+    val state: ContentProductPickerNetworkResult,
 ) {
     companion object {
         val Empty: CampaignAndEtalaseUiModel
             get() = CampaignAndEtalaseUiModel(
                 campaignList = emptyList(),
                 etalaseList = emptyList(),
-                state = NetworkState.Loading,
+                state = ContentProductPickerNetworkResult.Loading,
             )
     }
 }

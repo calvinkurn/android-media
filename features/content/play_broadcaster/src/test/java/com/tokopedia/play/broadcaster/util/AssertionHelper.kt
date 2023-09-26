@@ -1,8 +1,6 @@
 package com.tokopedia.play.broadcaster.util
 
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
-import com.tokopedia.play.broadcaster.ui.model.result.PageResult
-import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play_common.model.result.NetworkResult
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.ListAssert
@@ -130,8 +128,6 @@ inline fun <T> NetworkResult<T>.assertWhenSuccess(
     onSuccess((this as NetworkResult.Success<T>).data)
 }
 
-fun NetworkResult<*>.assertSuccess() = assertWhenSuccess {  }
-
 inline fun NetworkResult<*>.assertWhenFailed(
         onFailed: (Throwable) -> Unit
 ) {
@@ -143,51 +139,6 @@ inline fun NetworkResult<*>.assertWhenFailed(
 }
 
 fun NetworkResult<*>.assertFailed() = assertWhenFailed {  }
-
-fun NetworkResult<*>.assertLoading() {
-    Assertions
-            .assertThat(this)
-            .isInstanceOf(NetworkResult.Loading::class.java)
-}
-
-/**
- * Page Result
- */
-fun <T> PageResult<T>.assertWhenLoading(
-        onLoading: (data: T) -> Unit
-) {
-    Assertions
-            .assertThat(state)
-            .isInstanceOf(PageResultState.Success::class.java)
-
-    onLoading(currentValue)
-}
-
-fun <T> PageResult<T>.assertLoading() = assertWhenLoading {  }
-
-fun <T> PageResult<T>.assertWhenSuccess(
-        onSuccess: (state: PageResultState.Success, data: T) -> Unit
-) {
-    Assertions
-            .assertThat(state)
-            .isInstanceOf(PageResultState.Success::class.java)
-
-    onSuccess(state as PageResultState.Success, currentValue)
-}
-
-fun <T> PageResult<T>.assertSuccess() = assertWhenSuccess { _, _ ->  }
-
-fun <T> PageResult<T>.assertWhenFailed(
-        onFailed: (state: PageResultState.Fail, data: T) -> Unit
-) {
-    Assertions
-            .assertThat(state)
-            .isInstanceOf(PageResultState.Fail::class.java)
-
-    onFailed(state as PageResultState.Fail, currentValue)
-}
-
-fun <T> PageResult<T>.assertFailed() = assertWhenFailed { _, _ ->  }
 
 fun PlayBroadcastEvent.assertEvent(event: PlayBroadcastEvent) {
     Assertions

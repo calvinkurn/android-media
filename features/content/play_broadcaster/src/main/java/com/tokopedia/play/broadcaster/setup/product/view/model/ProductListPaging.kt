@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.setup.product.view.model
 
-import com.tokopedia.play.broadcaster.ui.model.PagingType
+import com.tokopedia.content.product.picker.sgc.model.PagingType
 import com.tokopedia.content.product.picker.sgc.model.etalase.SelectedEtalaseModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
+import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 
 /**

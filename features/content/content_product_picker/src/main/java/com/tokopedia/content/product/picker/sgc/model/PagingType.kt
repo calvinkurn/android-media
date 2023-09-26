@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model
+package com.tokopedia.content.product.picker.sgc.model
 
 /**
  * Created By : Jonathan Darwin on October 04, 2022

@@ -16,14 +16,14 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.ui.model.PagingType
+import com.tokopedia.content.product.picker.sgc.model.PagingType
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.sgc.model.etalase.SelectedEtalaseModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
+import com.tokopedia.content.product.picker.sgc.model.result.ContentProductPickerNetworkResult
+import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.play_common.util.extension.switch
@@ -202,7 +202,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     private fun getCampaignAndEtalaseList() {
         _campaignAndEtalase.update {
-            it.copy(state = NetworkState.Loading)
+            it.copy(state = ContentProductPickerNetworkResult.Loading)
         }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val campaignListDeferred = asyncCatchError(block = {
@@ -216,12 +216,12 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 it.copy(
                     campaignList = campaignListDeferred.await().orEmpty(),
                     etalaseList = etalaseListDeferred.await().orEmpty(),
-                    state = NetworkState.Success
+                    state = ContentProductPickerNetworkResult.Success
                 )
             }
         }) {
             _campaignAndEtalase.update {
-                it.copy(state = NetworkState.Failed)
+                it.copy(state = ContentProductPickerNetworkResult.Failed)
             }
         }
     }
