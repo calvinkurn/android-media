@@ -1,5 +1,6 @@
 package com.tokopedia.stories.analytics
 
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesArgsModel
 
 interface StoriesRoomAnalytic {
@@ -21,10 +22,10 @@ interface StoriesRoomAnalytic {
         promotions: List<StoriesEEModel>,
     )
     fun sendClickRemoveStoryEvent(eventLabel: String)
-    fun sendViewProductCardEvent(eventLabel: String, items: List<String>)
-    fun sendClickProductCardEvent(eventLabel: String, itemList: String, items: List<String>)
-    fun sendClickBuyButtonEvent(eventLabel: String, items: List<String>)
-    fun sendClickAtcButtonEvent(eventLabel: String, items: List<String>)
+    fun sendViewProductCardEvent(eventLabel: String, items: Map<ContentTaggedProductUiModel, Int>)
+    fun sendClickProductCardEvent(eventLabel: String, itemList: String, items: List<ContentTaggedProductUiModel>, position: Int)
+    fun sendClickBuyButtonEvent(eventLabel: String, items: List<ContentTaggedProductUiModel>)
+    fun sendClickAtcButtonEvent(eventLabel: String, items: List<ContentTaggedProductUiModel>)
     fun sendClickTapNextContentEvent(
         storiesId: String,
         creatorType: String,

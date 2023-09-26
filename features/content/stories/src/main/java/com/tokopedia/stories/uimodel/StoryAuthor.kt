@@ -12,8 +12,16 @@ sealed class StoryAuthor : Parcelable {
     abstract val type: AuthorType //TODO() check if its available in common
     abstract val thumbnailUrl: String
     abstract val name: String
+    abstract val appLink: String
 
-    data class Shop(val shopName: String, val shopId: String, val avatarUrl: String, val badgeUrl: String) :
+
+    data class Shop(
+        val shopName: String,
+        val shopId: String,
+        val avatarUrl: String,
+        val badgeUrl: String,
+        override val appLink: String
+    ) :
         StoryAuthor() {
         override val id: String
             get() = shopId
@@ -25,7 +33,13 @@ sealed class StoryAuthor : Parcelable {
             get() = shopName
     }
 
-    data class Buyer(val userName: String, val userId: String, val avatarUrl: String) : StoryAuthor() {
+    data class Buyer(
+        val userName: String,
+        val userId: String,
+        val avatarUrl: String,
+        override val appLink: String
+    ) :
+        StoryAuthor() {
         override val id: String
             get() = userId
         override val type: AuthorType
@@ -44,6 +58,8 @@ sealed class StoryAuthor : Parcelable {
         override val thumbnailUrl: String
             get() = ""
         override val name: String
+            get() = ""
+        override val appLink: String
             get() = ""
     }
 }

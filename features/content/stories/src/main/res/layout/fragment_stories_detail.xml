@@ -39,7 +39,7 @@
         android:id="@+id/stories_component"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="cv_stories_detail_timer, ic_close, rv_stories_category" />
+        app:constraint_referenced_ids="cv_stories_detail_timer, ic_close, rv_stories_category, v_stories_partner" />
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/cv_stories_detail_timer"

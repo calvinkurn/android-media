@@ -31,6 +31,8 @@ import com.tokopedia.stories.R as storiesR
  */
 class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
 
+    private var mListener : Listener? = null
+
     private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +67,8 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
                 }
                 val selectedGroup = state.storiesMainData.groupItems.getOrNull(state.storiesMainData.selectedGroupPosition) ?: return@setContent
                 val currentItem = selectedGroup.detail.detailItems.getOrNull(selectedGroup.detail.selectedDetailPosition)?.menus ?: return@setContent
-                ThreeDotsPage(menuList = currentItem, onDeleteStoryClicked = { item ->
+                ThreeDotsPage(menuList = currentItem, onDeleteStoryClicked = { _ ->
+                    mListener?.onRemoveStory(this@StoriesThreeDotsBottomSheet)
                     viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
                 })
             }
@@ -88,6 +91,14 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
     override fun onCancel(dialog: DialogInterface) {
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Kebab))
         super.onCancel(dialog)
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
+    interface Listener {
+        fun onRemoveStory(view: StoriesThreeDotsBottomSheet)
     }
 
     companion object {

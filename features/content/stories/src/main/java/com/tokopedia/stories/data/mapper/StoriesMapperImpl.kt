@@ -136,13 +136,15 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                 userName = author.name,
                 userId = author.id,
                 avatarUrl = author.thumbnailURL,
+                appLink = author.appLink
             )
         } else {
             StoryAuthor.Shop(
                 shopName = author.name,
                 shopId = author.id,
                 avatarUrl = author.thumbnailURL,
-                badgeUrl = author.badgeURL
+                badgeUrl = author.badgeURL,
+                appLink = author.appLink
             )
         }
     }
