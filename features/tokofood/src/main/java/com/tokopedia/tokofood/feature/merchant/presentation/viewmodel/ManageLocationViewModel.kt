@@ -51,8 +51,9 @@ class ManageLocationViewModel @Inject constructor(
     fun getChooseAddress(source: String) {
         launch {
             try {
-                _chooseAddress.postValue(Success(getChooseAddressWarehouseLocUseCase(source)))
-            } catch (e: Exception) {
+                val data = getChooseAddressWarehouseLocUseCase(source)
+                _chooseAddress.postValue(Success(data))
+            } catch (e: Throwable) {
                 _chooseAddress.postValue(Fail(e))
             }
         }

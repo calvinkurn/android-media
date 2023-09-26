@@ -231,8 +231,9 @@ class TokoFoodHomeViewModel @Inject constructor(
         isAddressManuallyUpdated = true
         launch {
             try {
-                setFlowChooseAddress(getChooseAddressWarehouseLocUseCase(source))
-            } catch (e: Exception) {
+                val data = getChooseAddressWarehouseLocUseCase(source)
+                setFlowChooseAddress(data)
+            } catch (e: Throwable) {
                 setFlowChooseAddress(e)
             }
         }

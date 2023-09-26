@@ -17,6 +17,7 @@ import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeTickerUseC
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeUSPUseCase
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUseCase
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodHomeTypeFactory
+import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment.Companion.SOURCE
 import com.tokopedia.tokofood.feature.home.presentation.sharedpref.TokofoodHomeSharedPref
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
@@ -98,7 +99,7 @@ abstract class TokoFoodHomeViewModelTestFixture {
 
     protected fun onGetChooseAddress_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            getChooseAddressWarehouseLocUseCase(any())
+            getChooseAddressWarehouseLocUseCase(SOURCE)
         } throws errorThrowable
     }
 

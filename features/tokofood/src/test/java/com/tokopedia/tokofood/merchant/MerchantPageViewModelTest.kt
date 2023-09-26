@@ -149,10 +149,11 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
 
     @Test
     fun `when GetChosenAddressWarehouseLocUseCase is failed expect fail response`() {
+        val param = "source"
         coEvery {
-            getChooseAddressWarehouseLocUseCase(any())
+            getChooseAddressWarehouseLocUseCase(param)
         } throws Throwable()
-        viewModel.getChooseAddress("source")
+        viewModel.getChooseAddress(param)
         val actualResponse = viewModel.chooseAddress.value
         assert(actualResponse is Fail)
     }

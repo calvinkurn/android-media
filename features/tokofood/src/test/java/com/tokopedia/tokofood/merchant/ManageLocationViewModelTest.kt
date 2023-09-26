@@ -69,10 +69,10 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
 
     @Test
     fun `when getChooseAddress is success expect fail response`() {
-        coEvery {
-            getChooseAddressWarehouseLocUseCase(any())
-        } throws Throwable()
-        viewModel.getChooseAddress("tokofood")
+        val param = "tokofood"
+        val error = Exception("test exception")
+        coEvery { getChooseAddressWarehouseLocUseCase.invoke(param) } throws error
+        viewModel.getChooseAddress(param)
         val actualResult = viewModel.chooseAddress.value
         Assert.assertTrue(actualResult is Fail)
     }
