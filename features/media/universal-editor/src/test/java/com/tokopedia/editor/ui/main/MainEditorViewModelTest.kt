@@ -2,6 +2,7 @@ package com.tokopedia.editor.ui.main
 
 import android.graphics.BitmapFactory
 import com.tokopedia.editor.data.model.NavigationTool
+import com.tokopedia.editor.data.repository.ImageFlattenRepository
 import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.faker.FakeVideoFlattenRepository
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
@@ -38,6 +39,7 @@ class MainEditorViewModelTest {
     private val fakeVideoFlattenRepository = FakeVideoFlattenRepository()
     private val resourceProvider = mockk<ResourceProvider>()
     private val paramFetcher = mockk<EditorParamFetcher>()
+    private val imageFlatten = mockk<ImageFlattenRepository>()
 
     private val dispatchers = CoroutineTestDispatchers
 
@@ -48,6 +50,7 @@ class MainEditorViewModelTest {
         viewModel = MainEditorViewModel(
             navigationToolRepository,
             fakeVideoFlattenRepository,
+            imageFlatten,
             resourceProvider,
             dispatchers,
             paramFetcher
