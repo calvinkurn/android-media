@@ -7,6 +7,7 @@ import com.tokopedia.gql.ktor.KtorClient
 import com.tokopedia.gql.toKtorEngine
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.multiplatform.seller.feedback.data.repository.SubmitFeedbackRepository
 import com.tokopedia.multiplatform.seller.feedback.data.repository.SubmitFeedbackRepositoryImpl
 import com.tokopedia.multiplatform.seller.feedback.domain.SubmitFeedbackUseCase
@@ -19,8 +20,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.okhttp.OkHttpEngine
 import okhttp3.OkHttpClient
 
 @Module
@@ -39,11 +38,11 @@ class SellerFeedbackModule {
     @SellerFeedbackScope
     @Provides
     fun provideOkHttpClientEngine(
-        okHttpClient: OkHttpClient
+        @UploaderQualifier okHttpClient: OkHttpClient.Builder
     ): KtorClient {
         return KtorClient(
             baseUrl = "https://gql.tokopedia.com/",
-            engine = okHttpClient.toKtorEngine()
+            engine = okHttpClient.build().toKtorEngine()
         )
     }
 
