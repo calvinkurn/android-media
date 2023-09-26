@@ -7,6 +7,7 @@ import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.ItemOlpSortingBinding
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -25,8 +26,10 @@ class OfferingProductSortingViewHolder(
 
     override fun bind(data: OfferProductSortingUiModel) {
         binding?.apply {
-            tpgProductCount?.text =
-                getString(R.string.bmgm_product_count_placeholder, data.productCount.toString())
+            tpgProductCount.apply {
+                text = getString(R.string.bmgm_product_count_placeholder, data.productCount.toString())
+                gone() // hide the product count, because currently there's limitation from recomm to show the correct data
+            }
             chipsSorting.apply {
                 val filter = SortFilterItem(data.selectedSortName)
                 addItem(arrayListOf(filter))
