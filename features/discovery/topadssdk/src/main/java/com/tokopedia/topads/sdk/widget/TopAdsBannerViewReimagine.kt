@@ -97,7 +97,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     topAdsCarousel.hide()
                     shopAdsProductView.hide()
                     adsBannerShopCardView?.visible()
-                    adsBannerShopCardView?.setReimagineStyle(true)
+                    adsBannerShopCardView?.setReimagineStyle()
                     shopAdsWithThreeProducts.hide()
                     container?.setBackgroundResource(0)
                     (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)

@@ -402,8 +402,8 @@ class ShopCardView : BaseCustomView {
 
     fun getRadius() = shopWidgetCardViewShopCard?.radius ?: 0f
 
-    fun setReimagineStyle(isReimagine: Boolean = false) {
-        this.isReimagine = isReimagine
+    fun setReimagineStyle() {
+        this.isReimagine = true
     }
 
     private fun renderShopCardReimagine() {
