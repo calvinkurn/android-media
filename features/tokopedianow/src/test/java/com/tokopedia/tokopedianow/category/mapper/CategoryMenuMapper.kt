@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.category.presentation.util
+package com.tokopedia.tokopedianow.category.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -69,7 +69,7 @@ object CategoryMenuMapper {
             if (item is TokoNowCategoryMenuUiModel) {
                 val newItem = if (!response.isNullOrEmpty()) {
                     val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
-                    val categoryList = CategoryMenuMapper.mapToCategoryList(
+                    val categoryList = mapToCategoryList(
                         response = response,
                         headerName = item.title,
                         seeAllAppLink = seeAllAppLink

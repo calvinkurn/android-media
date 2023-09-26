@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.category.presentation.util
+package com.tokopedia.tokopedianow.category.mapper
 
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel

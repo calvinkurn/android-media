@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.category.presentation.util
+package com.tokopedia.tokopedianow.category.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -16,8 +16,8 @@ import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticL
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryProductMapper.mapResponseToProductItem
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryProductMapper.updateProductCardItems
+import com.tokopedia.tokopedianow.category.mapper.CategoryProductMapper.mapResponseToProductItem
+import com.tokopedia.tokopedianow.category.mapper.CategoryProductMapper.updateProductCardItems
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel

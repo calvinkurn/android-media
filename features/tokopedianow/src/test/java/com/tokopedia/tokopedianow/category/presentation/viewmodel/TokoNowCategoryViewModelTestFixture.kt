@@ -25,7 +25,7 @@ import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailRespons
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
-import com.tokopedia.tokopedianow.category.presentation.util.MiniCartMapper
+import com.tokopedia.tokopedianow.category.mapper.MiniCartMapper
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.BATCH_SHOWCASE_TOTAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper

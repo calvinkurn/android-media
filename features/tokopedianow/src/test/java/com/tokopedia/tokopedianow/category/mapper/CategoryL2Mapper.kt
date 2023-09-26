@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.category.presentation.util
+package com.tokopedia.tokopedianow.category.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterTabComponents

@@ -8,8 +8,8 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreen
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2HeaderUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2ShimmerUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryL2Mapper
-import com.tokopedia.tokopedianow.category.presentation.util.TickerMapper
+import com.tokopedia.tokopedianow.category.mapper.CategoryL2Mapper
+import com.tokopedia.tokopedianow.category.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking

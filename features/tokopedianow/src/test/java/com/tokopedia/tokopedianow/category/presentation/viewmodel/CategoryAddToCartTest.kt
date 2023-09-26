@@ -4,7 +4,7 @@ import com.tokopedia.productcard.compact.productcard.presentation.uimodel.Produc
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
-import com.tokopedia.tokopedianow.category.presentation.util.AddToCartMapper.mapAddToCartResponse
+import com.tokopedia.tokopedianow.category.mapper.AddToCartMapper.mapAddToCartResponse
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.getOrAwaitValue

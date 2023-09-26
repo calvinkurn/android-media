@@ -7,10 +7,10 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryL2QuickFilterMapper
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryL2TabMapper.addProductCardItems
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryMenuMapper
-import com.tokopedia.tokopedianow.category.presentation.util.TickerMapper
+import com.tokopedia.tokopedianow.category.mapper.CategoryL2QuickFilterMapper
+import com.tokopedia.tokopedianow.category.mapper.CategoryL2TabMapper.addProductCardItems
+import com.tokopedia.tokopedianow.category.mapper.CategoryMenuMapper
+import com.tokopedia.tokopedianow.category.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
