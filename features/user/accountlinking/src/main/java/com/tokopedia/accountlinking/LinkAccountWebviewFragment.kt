@@ -7,18 +7,14 @@ import android.os.Bundle
 import android.webkit.WebView
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.accountlinking.R
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.BaseSessionWebViewFragment
-import javax.inject.Inject
 
 /**
  * Created by Yoris on 27/08/21.
  */
 @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountWebviewFragment : BaseSessionWebViewFragment() {
-
-    @Inject lateinit var analytics: LinkAccountTracker
 
     override fun initInjector() {}
 
@@ -86,7 +82,7 @@ class LinkAccountWebviewFragment : BaseSessionWebViewFragment() {
         when {
             mUrl.contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP, ignoreCase = true) -> {
                 // Check gojek accounts page, show toolbar
-                analytics.trackViewGojekOTP()
+                LinkAccountTracker.trackViewGojekOTP()
                 getLinkAccountActivity()?.run {
                     hideSkipBtnToolbar()
                     showToolbar()
@@ -94,7 +90,7 @@ class LinkAccountWebviewFragment : BaseSessionWebViewFragment() {
                 }
             }
             mUrl.contains(TokopediaUrl.Companion.getInstance().GOPAY_PIN, ignoreCase = true) -> {
-                analytics.trackViewGopayPin()
+                LinkAccountTracker.trackViewGopayPin()
                 // Check gopay input pin page, and hide back btn
                 getLinkAccountActivity()?.run {
                     showToolbar()
@@ -117,14 +113,14 @@ class LinkAccountWebviewFragment : BaseSessionWebViewFragment() {
 
     fun showSkipDialog() {
         if (activity != null) {
-            analytics.trackClickLewatinToolbar()
+            LinkAccountTracker.trackClickLewatinToolbar()
             DialogUnify(requireActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.account_linking_title_skip_gopay_dialog))
                 setDescription(getString(R.string.account_linking_desc_skip_gopay_dialog))
                 setPrimaryCTAText(getString(R.string.account_linking_label_primary_btn_gopay_dialog))
                 setSecondaryCTAText(getString(R.string.account_linking_label_secondary_btn_gopay_dialog))
                 setPrimaryCTAClickListener {
-                    analytics.trackSkipPopupYes()
+                    LinkAccountTracker.trackSkipPopupYes()
                     val baseUrl = LinkAccountWebViewActivity.getLinkAccountUrl("")
                     if (baseUrl != null) {
                         webView?.loadUrl(
@@ -134,7 +130,7 @@ class LinkAccountWebviewFragment : BaseSessionWebViewFragment() {
                     dismiss()
                 }
                 setSecondaryCTAClickListener {
-                    analytics.trackSkipPopupNo()
+                    LinkAccountTracker.trackSkipPopupNo()
                     dismiss()
                 }
             }.show()
@@ -143,7 +139,7 @@ class LinkAccountWebviewFragment : BaseSessionWebViewFragment() {
 
     fun trackClickBackBtn() {
         if (getWebView().url?.contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP) == true) {
-            analytics.trackClickBtnBack()
+            LinkAccountTracker.trackClickBtnBack()
         }
     }
 
