@@ -70,8 +70,6 @@ class CarouselProductCardView: FrameLayout {
 
             itemAnimator = null
 
-            setHasFixedSize(true)
-
             snapHelper.attachToRecyclerView(this)
 
             addItemDecorator()
