@@ -23,9 +23,9 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoCompoundViewBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemSubPromoInfoBinding
-import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
+import com.tokopedia.promousage.domain.entity.PromoItemCta
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoItem
@@ -349,9 +349,9 @@ class PromoCompoundView @JvmOverloads constructor(
                         } != null
                     }
                     val isPromoCtaRegisterGopayLater = if (promo.useSecondaryPromo) {
-                        promo.secondaryPromo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+                        promo.secondaryPromo.cta.type == PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
                     } else {
-                        promo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+                        promo.cta.type == PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
                     }
                     val isPromoCtaValid = if (promo.useSecondaryPromo) {
                         promo.secondaryPromo.cta.text.isNotBlank() &&

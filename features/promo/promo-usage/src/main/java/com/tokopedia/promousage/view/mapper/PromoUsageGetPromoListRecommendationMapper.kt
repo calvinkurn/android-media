@@ -11,11 +11,11 @@ import com.tokopedia.promousage.data.response.PromoRecommendation
 import com.tokopedia.promousage.data.response.SecondaryCoupon
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
 import com.tokopedia.promousage.domain.entity.PromoAttemptedError
-import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
 import com.tokopedia.promousage.domain.entity.PromoItemClashingInfo
+import com.tokopedia.promousage.domain.entity.PromoItemCta
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageSection
@@ -312,7 +312,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             },
             expiryInfo = coupon.expiryInfo,
             expiryTimestamp = coupon.expiryCountdown,
-            cta = PromoCta(
+            cta = PromoItemCta(
                 type = coupon.cta.type,
                 text = coupon.cta.text,
                 appLink = coupon.cta.applink
@@ -384,7 +384,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             },
             expiryInfo = secondaryCoupon.expiryInfo,
             expiryTimestamp = secondaryCoupon.expiryCountdown,
-            cta = PromoCta(
+            cta = PromoItemCta(
                 type = secondaryCoupon.cta.type,
                 text = secondaryCoupon.cta.text,
                 appLink = secondaryCoupon.cta.applink

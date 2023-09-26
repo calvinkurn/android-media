@@ -17,7 +17,7 @@ import com.tokopedia.promousage.data.response.PromoListRecommendation
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
 import com.tokopedia.promousage.domain.entity.PromoAttemptedError
-import com.tokopedia.promousage.domain.entity.PromoCta
+import com.tokopedia.promousage.domain.entity.PromoItemCta
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.PromoPageSection
@@ -31,7 +31,6 @@ import com.tokopedia.promousage.domain.entity.list.PromoTncItem
 import com.tokopedia.promousage.domain.usecase.PromoUsageClearCacheAutoApplyStackUseCase
 import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationUseCase
 import com.tokopedia.promousage.domain.usecase.PromoUsageValidateUseUseCase
-import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.util.logger.PromoErrorException
 import com.tokopedia.promousage.util.logger.PromoUsageLogger
@@ -54,7 +53,7 @@ import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
-internal class PromoUsageViewModel @Inject constructor(
+class PromoUsageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getPromoListRecommendationUseCase: PromoUsageGetPromoListRecommendationUseCase,
     private val validateUseUseCase: PromoUsageValidateUseUseCase,
@@ -62,8 +61,7 @@ internal class PromoUsageViewModel @Inject constructor(
     private val getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
     private val validateUseMapper: PromoUsageValidateUseMapper,
     private val clearCacheAutoApplyStackMapper: PromoUsageClearCacheAutoApplyStackMapper,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
-    private val promoUsageAnalytics: PromoUsageAnalytics
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -405,8 +403,8 @@ internal class PromoUsageViewModel @Inject constructor(
                         .firstOrNull { item ->
                             item is PromoItem &&
                                 item.couponType.firstOrNull { type ->
-                                    type == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
-                                } != null
+                                type == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
+                            } != null
                         } as? PromoItem
                 } as? PromoItem
                 if (gopayLaterPromo != null) {
@@ -423,7 +421,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 val isGoPayLaterCicilPromo =
                     clickedItem.couponType.contains(PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL)
                 val isRegisterGoPayLaterCicilPromo =
-                    clickedItem.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+                    clickedItem.cta.type == PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
                 if (isGoPayLaterCicilPromo && isRegisterGoPayLaterCicilPromo) {
                     clickedGoPayLaterCicilPromoCode = clickedItem.code
                     _promoCtaUiAction.postValue(PromoCtaUiAction.RegisterGoPayLaterCicil(clickedItem.cta))

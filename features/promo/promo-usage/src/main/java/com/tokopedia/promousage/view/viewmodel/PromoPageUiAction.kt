@@ -1,6 +1,6 @@
 package com.tokopedia.promousage.view.viewmodel
 
-import com.tokopedia.promousage.domain.entity.PromoCta
+import com.tokopedia.promousage.domain.entity.PromoItemCta
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
@@ -82,7 +82,7 @@ sealed class ApplyPromoUiAction {
 
 sealed class PromoCtaUiAction {
 
-    data class RegisterGoPayLaterCicil(val cta: PromoCta) : PromoCtaUiAction()
+    data class RegisterGoPayLaterCicil(val cta: PromoItemCta) : PromoCtaUiAction()
 }
 
 sealed class ClosePromoPageUiAction {

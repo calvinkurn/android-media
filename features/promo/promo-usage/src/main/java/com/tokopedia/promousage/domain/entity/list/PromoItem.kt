@@ -1,10 +1,10 @@
 package com.tokopedia.promousage.domain.entity.list
 
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
-import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
 import com.tokopedia.promousage.domain.entity.PromoItemClashingInfo
+import com.tokopedia.promousage.domain.entity.PromoItemCta
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
@@ -32,7 +32,7 @@ data class PromoItem(
     val boAdditionalData: List<BoAdditionalData> = emptyList(),
     val expiryInfo: String = "",
     val expiryTimestamp: Long = 0,
-    val cta: PromoCta = PromoCta(),
+    val cta: PromoItemCta = PromoItemCta(),
     val couponUrl: String = "",
     val couponType: List<String> = emptyList(),
     val secondaryPromo: SecondaryPromoItem = SecondaryPromoItem(),

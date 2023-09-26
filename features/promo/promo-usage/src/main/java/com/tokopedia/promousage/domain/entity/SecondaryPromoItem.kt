@@ -21,7 +21,7 @@ data class SecondaryPromoItem(
     val boAdditionalData: List<BoAdditionalData> = emptyList(),
     val expiryInfo: String = "",
     val expiryTimestamp: Long = 0,
-    val cta: PromoCta = PromoCta(),
+    val cta: PromoItemCta = PromoItemCta(),
     val couponUrl: String = "",
     val couponType: List<String> = emptyList()
 ) : DelegateAdapterItem

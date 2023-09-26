@@ -1,6 +1,6 @@
 package com.tokopedia.promousage.domain.entity
 
-data class PromoCta(
+data class PromoItemCta(
     val type: String = "",
     val text: String = "",
     val appLink: String = ""
