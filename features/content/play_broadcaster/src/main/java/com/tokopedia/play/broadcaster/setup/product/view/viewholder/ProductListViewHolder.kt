@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.content.product.picker.databinding.ItemLoadingBinding
 import com.tokopedia.content.product.picker.databinding.ItemProductListBinding
 import com.tokopedia.content.product.picker.R as contentproductpickerR
-import com.tokopedia.play.broadcaster.databinding.ItemLoadingBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductListAdapter
 import com.tokopedia.content.product.picker.sgc.model.DiscountedPrice
 import com.tokopedia.content.product.picker.sgc.model.OriginalPrice

@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.product.picker.databinding.ItemEtalaseListBodyBinding
+import com.tokopedia.content.product.picker.databinding.ItemEtalaseListHeaderBinding
 import com.tokopedia.content.product.picker.R as contentproductpickerR
-import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListBodyBinding
-import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListHeaderBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdapter
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel

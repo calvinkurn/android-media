@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.bottomsheet
+package com.tokopedia.play.broadcaster.setup.product.view.bottomsheet
 
 import android.app.Dialog
 import android.os.Bundle
@@ -16,14 +16,13 @@ import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiMod
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayUgcProductPickerBinding
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.BaseProductSetupBottomSheet
 import com.tokopedia.content.product.picker.sgc.model.PriceUnknown
 import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.product.picker.databinding.BottomSheetPlayUgcProductPickerBinding
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest

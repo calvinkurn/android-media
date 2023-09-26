@@ -31,7 +31,6 @@ import com.tokopedia.content.common.producttag.view.viewmodel.factory.ProductTag
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.test.espresso.clickOnViewChild
 import com.tokopedia.content.test.espresso.delay
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
@@ -39,7 +38,7 @@ import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetu
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productUGCViewModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
-import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import io.mockk.every
