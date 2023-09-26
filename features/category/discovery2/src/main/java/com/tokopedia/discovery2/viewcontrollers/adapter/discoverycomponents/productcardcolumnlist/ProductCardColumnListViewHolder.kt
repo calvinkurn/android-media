@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
 
 class ProductCardColumnListViewHolder(
     itemView: View,
@@ -45,6 +46,7 @@ class ProductCardColumnListViewHolder(
     }
 
     private fun initCarouselPaging(carouselPagingGroupProductModel: CarouselPagingGroupProductModel) {
+        carouselPagingProductCard.setItemPerPage(viewModel?.getPropertyRows().orZero())
         carouselPagingProductCard.setPagingModel(
             model = CarouselPagingModel(
                 productCardGroupList = listOf(carouselPagingGroupProductModel)

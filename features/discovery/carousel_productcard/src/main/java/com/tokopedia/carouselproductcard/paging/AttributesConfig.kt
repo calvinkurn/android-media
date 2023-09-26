@@ -9,7 +9,6 @@ import kotlin.properties.Delegates.vetoable
 internal class AttributesConfig {
 
     var itemPerPage: Int by vetoable(DEFAULT_ITEM_PER_PAGE) { _, _, newValue -> newValue > 0 }
-        private set
 
     var showPagingIndicator: Boolean = false
         private set

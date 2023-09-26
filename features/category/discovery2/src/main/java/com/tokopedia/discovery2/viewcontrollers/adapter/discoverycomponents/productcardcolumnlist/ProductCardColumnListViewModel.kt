@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListMapper.mapToCarouselPagingGroupProductModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -69,7 +70,7 @@ class ProductCardColumnListViewModel(
         return getProductList().getOrNull(position)?.data?.firstOrNull()
     }
 
-    fun getPropertyRows(): String {
-        return components.properties?.rows.orEmpty()
+    fun getPropertyRows(): Int {
+        return components.properties?.rows.toIntSafely()
     }
 }

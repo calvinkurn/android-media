@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingProductCardLayoutBinding
 import com.tokopedia.carouselproductcard.helper.StartPagerSnapHelper
 import com.tokopedia.carouselproductcard.paging.GroupPaginationOnScrollListener.PaginationListener
-import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlin.math.max
 
@@ -20,21 +19,22 @@ import kotlin.math.max
 class CarouselPagingProductCardView: ConstraintLayout {
 
     private var binding: CarouselPagingProductCardLayoutBinding? = null
+    private var snapHelper: StartPagerSnapHelper? = null
+    private var groupPaginationOnScrollListener: GroupPaginationOnScrollListener? = null
+
     private val config = AttributesConfig()
+
     private val adapter: Adapter by lazy {
         Adapter(TypeFactoryImpl(config.pagingPaddingHorizontal))
     }
-    private val layoutManager: GridLayoutManager by lazy {
-        GridLayoutManager(context, config.itemPerPage, HORIZONTAL, false).apply {
-            spanSizeLookup = spanSizeLookup()
-        }
-    }
-    private val snapHelper: StartPagerSnapHelper by lazy {
-        StartPagerSnapHelper(config.pagingPaddingHorizontal, config.itemPerPage)
-    }
-    private var groupPaginationOnScrollListener: GroupPaginationOnScrollListener? = null
+
     private val showPagingIndicator
         get() = config.showPagingIndicator
+
+    private val layoutManager: GridLayoutManager
+        get() = GridLayoutManager(context, config.itemPerPage, HORIZONTAL, false).apply {
+            spanSizeLookup = spanSizeLookup()
+        }
 
     private fun spanSizeLookup() = object : GridLayoutManager.SpanSizeLookup() {
         override fun getSpanSize(position: Int): Int {
@@ -60,6 +60,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
     }
 
     private fun init(attrs: AttributeSet? = null) {
+        initSnapHelper()
         initAttributes(attrs)
         initBinding()
         initRecyclerView()
@@ -83,9 +84,6 @@ class CarouselPagingProductCardView: ConstraintLayout {
             layoutManager = this@CarouselPagingProductCardView.layoutManager
             itemAnimator = null
 
-            addDivider()
-            addPaginationSnap()
-
             setHasFixedSize(true)
         }
     }
@@ -103,7 +101,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
     }
 
     private fun RecyclerView.addPaginationSnap() {
-        snapHelper.attachToRecyclerView(this)
+        snapHelper?.attachToRecyclerView(this)
     }
 
     private fun initPageControl() {
@@ -116,6 +114,8 @@ class CarouselPagingProductCardView: ConstraintLayout {
         recycledViewPool: RecycledViewPool? = RecycledViewPool(),
     ) {
         binding?.carouselPagingProductCardRecyclerView?.run {
+            addDivider()
+            addPaginationSnap()
             setRecycledViewPool(recycledViewPool)
             setupOnScrollListener(model, listener)
         }
@@ -126,6 +126,16 @@ class CarouselPagingProductCardView: ConstraintLayout {
         configurePageControl(model)
 
         scrollToCurrentPage(visitableList, model)
+    }
+
+    fun setItemPerPage(itemPerPage: Int) {
+        config.itemPerPage = itemPerPage
+        binding?.carouselPagingProductCardRecyclerView?.layoutManager = layoutManager
+        initSnapHelper()
+    }
+
+    private fun initSnapHelper() {
+        snapHelper = StartPagerSnapHelper(config.pagingPaddingHorizontal, config.itemPerPage)
     }
 
     private fun RecyclerView.setupOnScrollListener(
@@ -183,8 +193,10 @@ class CarouselPagingProductCardView: ConstraintLayout {
         post {
             val layoutManager = this@CarouselPagingProductCardView.layoutManager
             val view = layoutManager.findViewByPosition(position) ?: return@post
-            val distance = snapHelper.calculateDistanceToFinalSnap(layoutManager, view)
-            scrollBy(distance[0], distance[1])
+            snapHelper?.let { snapHelper ->
+                val distance = snapHelper.calculateDistanceToFinalSnap(layoutManager, view)
+                scrollBy(distance[0], distance[1])
+            }
         }
     }
 
