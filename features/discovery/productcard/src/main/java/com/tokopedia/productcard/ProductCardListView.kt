@@ -256,15 +256,11 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
 
         imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
-        val isMergePriceSection = productCardModel.layoutStrategy !is LayoutStrategyBestSeller
-            && productCardModel.layoutStrategy !is LayoutStrategyListView
-
         setMediaAnchorToInfoSpaceSize(productCardModel)
 
         renderProductCardContent(
             productCardModel = productCardModel,
-            isMergePriceSection = isMergePriceSection,
-            isMergeShippingSection = true,
+            isWideContent = true,
         )
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)

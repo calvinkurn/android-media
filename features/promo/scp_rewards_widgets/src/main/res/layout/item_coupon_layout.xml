@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    app:cardBackgroundColor="@color/coupon_card_background"
+    app:cardBackgroundColor="@color/Unify_PN100"
     tools:parentTag="com.google.android.material.card.MaterialCardView">
 
     <androidx.constraintlayout.widget.ConstraintLayout

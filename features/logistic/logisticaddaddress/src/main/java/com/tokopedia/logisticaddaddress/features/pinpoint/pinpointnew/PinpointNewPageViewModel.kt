@@ -8,8 +8,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
+import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictBoundariesUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictCenterUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeParam
@@ -26,7 +31,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PinpointNewPageViewModel @Inject constructor(
-    private val repo: KeroRepository,
+    private val getDistrict: GetDistrictUseCase,
+    private val getDistrictBoundaries: GetDistrictBoundariesUseCase,
+    private val getDistrictCenter: GetDistrictCenterUseCase,
+    private val getDistrictGeoCode: GetDistrictGeoCodeUseCase,
     private val getDistrictMapper: GetDistrictMapper,
     private val districtBoundaryMapper: DistrictBoundaryMapper,
     private val mapsGeocodeUseCase: MapsGeocodeUseCase
@@ -68,9 +76,11 @@ class PinpointNewPageViewModel @Inject constructor(
         val param = "$lat,$long"
         viewModelScope.launch {
             try {
-                val districtData = repo.getDistrictGeocode(
-                    latlong = param,
-                    isManageAddressFlow = true
+                val districtData = getDistrictGeoCode(
+                    GetDistrictGeoCodeParam(
+                        latLng = param,
+                        isManageAddressFlow = true
+                    )
                 )
                 _autofillDistrictData.value = Success(districtData.keroMapsAutofill)
             } catch (e: Throwable) {
@@ -82,7 +92,7 @@ class PinpointNewPageViewModel @Inject constructor(
     fun getDistrictLocation(placeId: String) {
         viewModelScope.launch {
             try {
-                val districtLoc = repo.getDistrict(placeId = placeId, isManageAddressFlow = true)
+                val districtLoc = getDistrict(GetDistrictParam(placeId = placeId, isManageAddressFlow = true))
                 _districtLocation.value = Success(getDistrictMapper.map(districtLoc))
             } catch (e: Throwable) {
                 _districtLocation.value = Fail(e)
@@ -93,7 +103,7 @@ class PinpointNewPageViewModel @Inject constructor(
     fun getDistrictBoundaries() {
         viewModelScope.launch {
             try {
-                val districtBoundary = repo.getDistrictBoundaries(saveAddressDataModel.districtId)
+                val districtBoundary = getDistrictBoundaries(saveAddressDataModel.districtId)
                 _districtBoundary.value =
                     Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
             } catch (e: Throwable) {
@@ -105,7 +115,7 @@ class PinpointNewPageViewModel @Inject constructor(
     fun getDistrictCenter() {
         viewModelScope.launch {
             try {
-                val data = repo.getDistrictCenter(saveAddressDataModel.districtId)
+                val data = getDistrictCenter(saveAddressDataModel.districtId)
                 _districtCenter.value = Success(mapDistrictCenterResponseToUiModel(data))
             } catch (e: Throwable) {
                 _districtCenter.value = Fail(e)
