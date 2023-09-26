@@ -2083,7 +2083,7 @@ class CartViewModel @Inject constructor(
             if (data.productUiModelList.isEmpty()) {
                 toBeRemovedItems.add(cartShopBottomHolderData)
             } else if (data.isTokoNow) {
-                val needToExpand = data.isCollapsed && data.productUiModelList.size <= 3
+                val needToExpand = data.isCollapsed && data.productUiModelList.size <= 1
                 if (needToExpand) {
                     newCartDataList.addAll(index + 1, data.productUiModelList)
                     val newCartGroupHolderData = data.copy(
