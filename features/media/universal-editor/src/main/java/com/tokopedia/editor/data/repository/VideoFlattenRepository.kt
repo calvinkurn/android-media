@@ -18,18 +18,24 @@ interface VideoFlattenRepository {
     fun flatten(param: FlattenParam): Flow<String>
 }
 
-class VideoFlattenRepositoryImpl @Inject constructor() : VideoFlattenRepository {
+class VideoFlattenRepositoryImpl @Inject constructor(
+    private val imageSaveRepository: ImageSaveRepository
+) : VideoFlattenRepository {
 
     override fun flatten(param: FlattenParam): Flow<String> {
         return callbackFlow {
-            val textCanvasPath = convertCanvasTextBitmapToFilePath(param.canvasText)
+            // this resized ratio will be used both canvas image and video output
+            val canvasSize = newRes(param.canvasSize.width, param.canvasSize.height)
+
+            // convert the bitmap from canvas layout into file
+            val textCanvasPath = imageSaveRepository.saveBitmap(param.canvasText, canvasSize)
             if (textCanvasPath.isEmpty()) trySend("")
 
             val command = createFfmpegParam(
                 textCanvasPath,
                 param.videoPath,
                 param.isRemoveAudio,
-                param.canvasSize
+                canvasSize
             )
 
             FFmpeg.executeAsync(command) { _, returnCode ->
@@ -42,12 +48,6 @@ class VideoFlattenRepositoryImpl @Inject constructor() : VideoFlattenRepository 
 
             awaitClose { channel.close() }
         }
-    }
-
-    private fun convertCanvasTextBitmapToFilePath(canvasText: Bitmap): String {
-        return ImageProcessingUtil
-            .writeImageToTkpdPath(canvasText, Bitmap.CompressFormat.PNG)
-            ?.path ?: ""
     }
 
     private fun createFfmpegParam(
@@ -68,6 +68,13 @@ class VideoFlattenRepositoryImpl @Inject constructor() : VideoFlattenRepository 
         return "-i \"$videoPath\" -i \"$textPath\" -filter_complex \"$filter\" -c:a copy -f mp4 $removeAudioCommand -y ${flattenResultFilePath()}"
     }
 
+    private fun newRes(width: Int, height: Int): CanvasSize {
+        val scaledWidth = if (width > MAX_WIDTH) MAX_WIDTH else if (width < MIN_WIDTH) MIN_WIDTH else width
+        val scaledHeight = (scaledWidth * height.toFloat() / width.toFloat()).toInt()
+
+        return CanvasSize(scaledWidth, scaledHeight)
+    }
+
     private fun cacheDir() = FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path
 
     private fun flattenResultFilePath() = cacheDir() + "final_result.mp4"
@@ -81,5 +88,8 @@ class VideoFlattenRepositoryImpl @Inject constructor() : VideoFlattenRepository 
 
     companion object {
         private const val CACHE_FOLDER = "Tokopedia"
+
+        private const val MAX_WIDTH = 720
+        private const val MIN_WIDTH = 480
     }
 }
