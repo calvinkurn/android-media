@@ -11,8 +11,8 @@ import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelRespon
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.play.broadcaster.type.PriceUnknown
-import com.tokopedia.play.broadcaster.type.ProductPrice
+import com.tokopedia.content.product.picker.model.PriceUnknown
+import com.tokopedia.content.product.picker.model.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
@@ -68,12 +68,12 @@ class UiModelBuilder {
      * Pojo
      */
     fun buildProductData(
-            id: String = "1",
-            name: String = "Product 1",
-            imageUrl: String = "https://www.tokopedia.com",
-            originalImageUrl: String = "https://www.tokopedia.com",
-            stock: ProductStock = StockAvailable(1),
-            price: ProductPrice = PriceUnknown,
+        id: String = "1",
+        name: String = "Product 1",
+        imageUrl: String = "https://www.tokopedia.com",
+        originalImageUrl: String = "https://www.tokopedia.com",
+        stock: ProductStock = StockAvailable(1),
+        price: ProductPrice = PriceUnknown,
     ) = ProductData(id, name, imageUrl, originalImageUrl, stock, price)
 
     private fun loadJsonToString(path: String): String {

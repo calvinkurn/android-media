@@ -78,6 +78,7 @@ import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetCheckerImpl
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
+import com.tokopedia.content.product.picker.domain.ContentProductPickerSGCRepository
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -156,7 +157,7 @@ abstract class PlayShortsBindModule {
     @PlayShortsScope
     abstract fun bindProductRepository(
         repo: PlayBroProductRepositoryImpl
-    ): PlayBroProductRepository
+    ): ContentProductPickerSGCRepository
 
     @Binds
     @PlayShortsScope

@@ -6,8 +6,8 @@ import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductListAdap
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.SortListAdapter
 import com.tokopedia.play.broadcaster.setup.product.view.itemdecoration.ProductListItemDecoration
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.di
 
+import com.tokopedia.content.product.picker.domain.ContentProductPickerSGCRepository
 import com.tokopedia.play.broadcaster.data.repository.*
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.domain.repository.*
@@ -35,7 +36,7 @@ abstract class PlayBroadcastRepositoryModule {
     @ActivityRetainedScope
     abstract fun bindProductRepository(
         repo: PlayBroProductRepositoryImpl
-    ): PlayBroProductRepository
+    ): ContentProductPickerSGCRepository
 
     @Binds
     @ActivityRetainedScope

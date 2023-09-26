@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.model
 
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.model.sort.SortUiModel
 
 /**
  * Created by kenny.hadisaputra on 02/02/22

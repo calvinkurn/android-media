@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.product.picker.domain.ContentProductPickerSGCRepository
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
@@ -17,15 +17,15 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.ui.model.PagingType
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
+import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.model.sort.SortUiModel
 import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.play_common.util.extension.switch
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,7 +60,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted private val source: PlayBroPageSource,
     @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
     @Assisted("fetchCommissionProduct") private val fetchCommissionProduct: Boolean,
-    private val repo: PlayBroadcastRepository,
+    private val repo: ContentProductPickerSGCRepository,
     userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {

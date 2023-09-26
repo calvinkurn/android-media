@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

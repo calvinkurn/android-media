@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model.etalase
+package com.tokopedia.content.product.picker.model.etalase
 
 /**
  * Created by kenny.hadisaputra on 27/01/22

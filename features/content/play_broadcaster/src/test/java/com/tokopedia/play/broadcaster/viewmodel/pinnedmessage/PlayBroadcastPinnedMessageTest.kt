@@ -7,7 +7,7 @@ import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBui
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertEvent
@@ -251,7 +251,8 @@ class PlayBroadcastPinnedMessageTest {
                 isPinned = !pinnedProduct.pinStatus.isPinned,
                 canPin = pinnedProduct.pinStatus.canPin,
                 isLoading = pinnedProduct.pinStatus.isLoading,
-            )))
+            )
+            ))
         }
     }
 

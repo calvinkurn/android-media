@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProduct
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSortBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortListViewComponent
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.viewcomponent.viewComponent

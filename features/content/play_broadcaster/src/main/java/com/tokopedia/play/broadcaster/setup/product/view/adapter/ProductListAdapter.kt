@@ -1,18 +1,9 @@
 package com.tokopedia.play.broadcaster.setup.product.view.adapter
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.ItemProductListBinding
-import com.tokopedia.play.broadcaster.type.DiscountedPrice
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play_common.view.loadImage
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
 
 /**
  * Created by kenny.hadisaputra on 28/01/22

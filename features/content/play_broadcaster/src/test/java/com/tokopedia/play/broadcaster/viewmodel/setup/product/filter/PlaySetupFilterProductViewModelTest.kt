@@ -4,8 +4,8 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
-import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.model.etalase.SelectedEtalaseModel
+import com.tokopedia.content.product.picker.model.sort.SortUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

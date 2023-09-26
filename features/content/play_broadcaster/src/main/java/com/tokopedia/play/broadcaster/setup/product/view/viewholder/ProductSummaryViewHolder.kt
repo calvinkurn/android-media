@@ -16,14 +16,13 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryBodyListBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryHeaderListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
-import com.tokopedia.play.broadcaster.type.DiscountedPrice
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.model.DiscountedPrice
+import com.tokopedia.content.product.picker.model.OriginalPrice
+import com.tokopedia.content.product.picker.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022
@@ -111,18 +110,18 @@ internal class ProductSummaryViewHolder private constructor() {
                 }
             )
 
-            when(item.product.price) {
+            when(val productPrice = item.product.price) {
                 is OriginalPrice -> {
-                    binding.tvProductSummaryPrice.text = item.product.price.price
+                    binding.tvProductSummaryPrice.text = productPrice.price
                     binding.labelProductSummaryDiscount.visibility = View.GONE
                     binding.tvProductSummaryOriginalPrice.visibility = View.GONE
                 }
                 is DiscountedPrice -> {
-                    binding.tvProductSummaryPrice.text = item.product.price.discountedPrice
-                    binding.tvProductSummaryOriginalPrice.text = item.product.price.originalPrice
+                    binding.tvProductSummaryPrice.text = productPrice.discountedPrice
+                    binding.tvProductSummaryOriginalPrice.text = productPrice.originalPrice
                     binding.labelProductSummaryDiscount.text = itemView.context.getString(
                         R.string.play_bro_product_discount_template,
-                        item.product.price.discountPercent
+                        productPrice.discountPercent
                     )
                     binding.labelProductSummaryDiscount.visibility = View.VISIBLE
                     binding.tvProductSummaryOriginalPrice.visibility = View.VISIBLE

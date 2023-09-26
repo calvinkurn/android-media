@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model.paged
+package com.tokopedia.content.product.picker.model.paged
 
 /**
  * Created by kenny.hadisaputra on 07/02/22

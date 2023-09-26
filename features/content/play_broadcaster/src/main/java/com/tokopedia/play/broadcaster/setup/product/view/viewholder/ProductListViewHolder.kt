@@ -6,14 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemLoadingBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductListAdapter
-import com.tokopedia.play.broadcaster.type.DiscountedPrice
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.model.DiscountedPrice
+import com.tokopedia.content.product.picker.model.OriginalPrice
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
 
 /**
@@ -40,18 +39,18 @@ internal class ProductListViewHolder private constructor() {
 
             binding.checkboxProduct.isChecked = item.isSelected
 
-            when(item.product.price) {
+            when(val productPrice = item.product.price) {
                 is OriginalPrice -> {
-                    binding.tvPrice.text = item.product.price.price
+                    binding.tvPrice.text = productPrice.price
                     binding.llDiscount.visibility = View.GONE
                 }
                 is DiscountedPrice -> {
-                    binding.tvPrice.text = item.product.price.discountedPrice
+                    binding.tvPrice.text = productPrice.discountedPrice
                     binding.labelDiscountPercentage.text = itemView.context.getString(
                         R.string.play_bro_product_discount_template,
-                        item.product.price.discountPercent
+                        productPrice.discountPercent
                     )
-                    binding.tvPriceBeforeDiscount.text = item.product.price.originalPrice
+                    binding.tvPriceBeforeDiscount.text = productPrice.originalPrice
                     binding.llDiscount.visibility = View.VISIBLE
                 }
                 else -> {

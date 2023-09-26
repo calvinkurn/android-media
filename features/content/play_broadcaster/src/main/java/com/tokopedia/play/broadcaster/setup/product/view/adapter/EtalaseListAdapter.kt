@@ -2,8 +2,8 @@ package com.tokopedia.play.broadcaster.setup.product.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.model.etalase.EtalaseUiModel
 
 /**
  * Created by kenny.hadisaputra on 27/01/22

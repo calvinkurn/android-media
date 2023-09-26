@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model.campaign
+package com.tokopedia.content.product.picker.model.campaign
 
 /**
  * Created by kenny.hadisaputra on 28/01/22

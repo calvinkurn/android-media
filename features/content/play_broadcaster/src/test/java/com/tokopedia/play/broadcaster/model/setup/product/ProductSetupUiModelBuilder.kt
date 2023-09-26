@@ -1,14 +1,14 @@
 package com.tokopedia.play.broadcaster.model.setup.product
 
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.type.ProductPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.model.OriginalPrice
+import com.tokopedia.content.product.picker.model.ProductPrice
+import com.tokopedia.content.product.picker.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.model.campaign.CampaignStatusUiModel
+import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
 
 /**
  * Created By : Jonathan Darwin on February 18, 2022

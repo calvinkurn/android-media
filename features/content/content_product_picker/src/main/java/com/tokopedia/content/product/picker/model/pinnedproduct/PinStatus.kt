@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model.pinnedproduct
+package com.tokopedia.content.product.picker.model.pinnedproduct
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

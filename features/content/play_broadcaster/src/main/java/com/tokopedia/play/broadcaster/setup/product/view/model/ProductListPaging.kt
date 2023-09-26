@@ -1,10 +1,10 @@
 package com.tokopedia.play.broadcaster.setup.product.view.model
 
 import com.tokopedia.play.broadcaster.ui.model.PagingType
-import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.model.etalase.SelectedEtalaseModel
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.model.sort.SortUiModel
 
 /**
  * Created by kenny.hadisaputra on 04/02/22

@@ -1,16 +1,16 @@
-package com.tokopedia.play.broadcaster.domain.repository
+package com.tokopedia.content.product.picker.domain
 
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.model.sort.SortUiModel
 
 /**
- * Created by kenny.hadisaputra on 26/01/22
+ * Created By : Jonathan Darwin on September 26, 2023
  */
-interface PlayBroProductRepository {
+interface ContentProductPickerSGCRepository {
 
     suspend fun getCampaignList(): List<CampaignUiModel>
 
@@ -36,4 +36,5 @@ interface PlayBroProductRepository {
     ): List<ProductTagSectionUiModel>
 
     suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean
+
 }

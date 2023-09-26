@@ -1,7 +1,7 @@
-package com.tokopedia.play.broadcaster.ui.model.campaign
+package com.tokopedia.content.product.picker.model.campaign
 
 import android.os.Parcelable
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
 import kotlinx.android.parcel.Parcelize
 
 /**

@@ -12,9 +12,9 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPinnedProductCarouselBinding
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPlaceholderCarouselBinding
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroProductCarouselBinding
-import com.tokopedia.play.broadcaster.type.DiscountedPrice
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.model.DiscountedPrice
+import com.tokopedia.content.product.picker.model.OriginalPrice
+import com.tokopedia.content.product.picker.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
 
 /**
@@ -41,21 +41,21 @@ class ProductCarouselViewHolder private constructor() {
             binding.tvProductTagEmptyStock.showWithCondition(item.stock.isLessThanEqualZero())
             binding.ivProductTagCover.showWithCondition(item.stock.isLessThanEqualZero())
 
-            when (item.price) {
+            when (val price = item.price) {
                 is DiscountedPrice -> {
                     binding.tvProductTagNormalPrice.show()
                     binding.tvProductTagDiscount.show()
                     binding.tvProductTagDiscount.text = context.getString(
                         R.string.play_bro_product_discount_template,
-                        item.price.discountPercent
+                        price.discountPercent
                     )
-                    binding.tvProductTagPrice.text = item.price.discountedPrice
-                    binding.tvProductTagNormalPrice.text = item.price.originalPrice
+                    binding.tvProductTagPrice.text = price.discountedPrice
+                    binding.tvProductTagNormalPrice.text = price.originalPrice
                 }
                 is OriginalPrice -> {
                     binding.tvProductTagNormalPrice.invisible()
                     binding.tvProductTagDiscount.hide()
-                    binding.tvProductTagPrice.text = item.price.price
+                    binding.tvProductTagPrice.text = price.price
                 }
                 else -> {
                     binding.tvProductTagNormalPrice.invisible()
@@ -113,19 +113,18 @@ class ProductCarouselViewHolder private constructor() {
             binding.ivPinnedProductCarouselOos.showWithCondition(item.stock.isLessThanEqualZero())
             binding.tvProductSummaryEmptyStock.showWithCondition(item.stock.isLessThanEqualZero())
 
-            when (item.price) {
+            when (val price = item.price) {
                 is OriginalPrice -> {
-                    binding.tvPinnedProductCarouselPrice.text = item.price.price
+                    binding.tvPinnedProductCarouselPrice.text = price.price
                     binding.labelPinnedProductCarouselDiscount.visibility = View.GONE
                     binding.tvPinnedProductCarouselOriginalPrice.visibility = View.GONE
                 }
                 is DiscountedPrice -> {
-                    binding.tvPinnedProductCarouselPrice.text = item.price.discountedPrice
-                    binding.tvPinnedProductCarouselOriginalPrice.text =
-                        item.price.originalPrice
+                    binding.tvPinnedProductCarouselPrice.text = price.discountedPrice
+                    binding.tvPinnedProductCarouselOriginalPrice.text = price.originalPrice
                     binding.labelPinnedProductCarouselDiscount.text = itemView.context.getString(
                         R.string.play_bro_product_discount_template,
-                        item.price.discountPercent
+                        price.discountPercent
                     )
                     binding.labelPinnedProductCarouselDiscount.visible()
                     binding.tvPinnedProductCarouselOriginalPrice.visible()
