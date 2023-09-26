@@ -69,6 +69,8 @@ class PromoUsageViewModel @Inject constructor(
 
         private const val VALIDATE_USE_STATUS_SUCCESS = "OK"
         private const val VALIDATE_USE_CODE_SUCCESS = "200"
+
+        private const val CLASH_ARTIFICIAL_DELAY = 1_000L
     }
 
     private var entryPoint: PromoPageEntryPoint = PromoPageEntryPoint.CART_PAGE
@@ -475,7 +477,7 @@ class PromoUsageViewModel @Inject constructor(
                         )
 
                         if (hasLoadingPromo) {
-                            delay(1_000L)
+                            delay(CLASH_ARTIFICIAL_DELAY)
                         }
 
                         // Calculate clash

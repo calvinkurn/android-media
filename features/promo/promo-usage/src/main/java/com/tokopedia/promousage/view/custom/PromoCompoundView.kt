@@ -477,12 +477,15 @@ class PromoCompoundView @JvmOverloads constructor(
 
                         scaleAnimator.addListener(object : Animator.AnimatorListener {
                             override fun onAnimationRepeat(animator: Animator) {
+                                // no-op
                             }
 
                             override fun onAnimationCancel(animator: Animator) {
+                                // no-op
                             }
 
                             override fun onAnimationStart(animator: Animator) {
+                                // no-op
                             }
 
                             override fun onAnimationEnd(animator: Animator) {
@@ -492,12 +495,15 @@ class PromoCompoundView @JvmOverloads constructor(
 
                         overlayAnimator.addListener(object : Animator.AnimatorListener {
                             override fun onAnimationRepeat(animator: Animator) {
+                                // no-op
                             }
 
                             override fun onAnimationCancel(animator: Animator) {
+                                // no-op
                             }
 
                             override fun onAnimationStart(animator: Animator) {
+                                // no-op
                             }
 
                             override fun onAnimationEnd(animator: Animator) {

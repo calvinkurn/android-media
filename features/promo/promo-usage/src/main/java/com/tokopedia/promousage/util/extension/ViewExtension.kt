@@ -69,10 +69,10 @@ private fun viewIsVisible(view: View?): Boolean {
     val offset = 100
     val location = IntArray(2)
     view.getLocationOnScreen(location)
-    val X = location[0] + offset
-    val Y = location[1] + offset
-    return if (screen.top <= Y && screen.bottom >= Y &&
-        screen.left <= X && screen.right >= X
+    val x = location[0] + offset
+    val y = location[1] + offset
+    return if (screen.top <= y && screen.bottom >= y &&
+        screen.left <= x && screen.right >= x
     ) {
         true
     } else {

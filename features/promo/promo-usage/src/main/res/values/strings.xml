@@ -2,7 +2,6 @@
 <resources>
     <string name="promo_voucher_cd_voucher_icon">Voucher Icon</string>
     <string name="promo_voucher_cd_voucher_supergraphic">Voucher Background</string>
-    <string name="promo_voucher_cd_recommended_voucher_background">Rekomendasi voucher background</string>
     <string name="promo_voucher_cd_recommended_voucher_used">Icon voucher rekomendasi berhasil digunakan</string>
 
     <string name="promo_usage_label_promo">Promo</string>

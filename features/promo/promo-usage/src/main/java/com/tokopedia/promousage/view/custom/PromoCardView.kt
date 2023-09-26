@@ -24,6 +24,7 @@ class PromoCardView @JvmOverloads constructor(
         private const val EXPIRED_DATE_BACKGROUND_HEIGHT = 42f
         private const val CIRCLE_CUT_OUT_MARGIN_BOTTOM = 30f
         private const val CIRCLE_RADIUS = 20F
+        private const val STROKE_WIDTH = 4f
     }
 
     init {
@@ -37,7 +38,7 @@ class PromoCardView @JvmOverloads constructor(
     private val circleCutStrokeColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200)
         style = Paint.Style.STROKE
-        strokeWidth = 4f
+        strokeWidth = STROKE_WIDTH
     }
 
     private val voucherBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -52,7 +53,7 @@ class PromoCardView @JvmOverloads constructor(
 
     private val cardViewBorder = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200)
-        strokeWidth = 4f
+        strokeWidth = STROKE_WIDTH
         style = Paint.Style.STROKE
     }
 
@@ -145,7 +146,7 @@ class PromoCardView @JvmOverloads constructor(
 
     private fun drawExpiredDateBackground(canvas: Canvas?) {
         val top =
-            (height - voucherExpiryDateHeightPx) + (voucherCircleMarginBottomPX / 2) - 4f.toPx()
+            (height - voucherExpiryDateHeightPx) + (voucherCircleMarginBottomPX / 2) - STROKE_WIDTH.toPx()
         val right = width.toFloat()
         val bottom = height.toFloat()
         canvas?.drawRoundRect(0f, top, right, bottom, 16f, 0f, voucherExpiredDateBackground)
