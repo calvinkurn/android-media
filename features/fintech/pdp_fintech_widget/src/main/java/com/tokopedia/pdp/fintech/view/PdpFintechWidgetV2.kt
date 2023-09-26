@@ -166,15 +166,6 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
         } ?: run {
             instanceProductUpdateListner?.removeWidget()
         }
-
-        instanceProductUpdateListner?.showWidget()
-        priceToMessages["400000.0"]?.let {
-            instanceProductUpdateListner?.showWidget()
-            setMessagesWidget(it.messages)
-            setClickListener(it)
-            setIcon(it)
-//            binding.sliderIcon.setImageUrl(it.iconUrlLight)
-        }
     }
 
     private fun setIcon(model: WidgetDetailV3Item) {

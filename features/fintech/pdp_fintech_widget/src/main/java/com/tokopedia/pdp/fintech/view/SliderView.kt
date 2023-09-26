@@ -18,6 +18,13 @@ class SliderView: ScrollView {
 
     companion object {
         private const val VERTICAL_PADDING = 4
+        private const val TOTAL_DURATION = 6900L
+        private const val TIMING_0 = 0f
+        private const val TIMING_3000 = 3000f
+        private const val TIMING_3300 = 3300f
+        private const val TIMING_3450 = 3450f
+        private const val TIMING_6450 = 6450f
+        private const val TIMING_6750 = 6750f
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -45,15 +52,15 @@ class SliderView: ScrollView {
         views.last().post {
             layoutParams.height = views.last().height - VERTICAL_PADDING.toPx()
             requestLayout()
-            val totalDuration = 6900L
+            val totalDuration = TOTAL_DURATION
 
-            val kf0 = Keyframe.ofInt(0f, VERTICAL_PADDING.toPx())
-            val kf1 = Keyframe.ofInt(3000f / totalDuration, VERTICAL_PADDING.toPx())
-            val kf2 = Keyframe.ofInt(3300f / totalDuration, views.last().top + VERTICAL_PADDING.toPx())
-            val kf3 = Keyframe.ofInt(3450f / totalDuration, views.last().top)
-            val kf4 = Keyframe.ofInt(6450f / totalDuration, views.last().top)
-            val kf5 = Keyframe.ofInt(6750f / totalDuration, 0)
-            val kf6 = Keyframe.ofInt(6900f / totalDuration, VERTICAL_PADDING.toPx())
+            val kf0 = Keyframe.ofInt(TIMING_0, VERTICAL_PADDING.toPx())
+            val kf1 = Keyframe.ofInt(TIMING_3000 / totalDuration, VERTICAL_PADDING.toPx())
+            val kf2 = Keyframe.ofInt(TIMING_3300/ totalDuration, views.last().top + VERTICAL_PADDING.toPx())
+            val kf3 = Keyframe.ofInt(TIMING_3450 / totalDuration, views.last().top)
+            val kf4 = Keyframe.ofInt(TIMING_6450 / totalDuration, views.last().top)
+            val kf5 = Keyframe.ofInt(TIMING_6750 / totalDuration, 0)
+            val kf6 = Keyframe.ofInt(TOTAL_DURATION.toFloat() / totalDuration, VERTICAL_PADDING.toPx())
             val pvhScrollY = PropertyValuesHolder.ofKeyframe("scrollY", kf0, kf1, kf2, kf3, kf4, kf5, kf6)
             val scrollAnim = ObjectAnimator.ofPropertyValuesHolder(this, pvhScrollY)
 
