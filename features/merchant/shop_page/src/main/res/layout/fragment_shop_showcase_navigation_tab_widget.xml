@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toStartOf="@+id/imgFirstShowcase"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_corner_radius="8"
+        app:unify_image_corner_radius="12"
         tools:visibility="visible" />
 
     <ImageView
@@ -64,7 +64,7 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/imgSecondShowcase"
         app:layout_constraintTop_toTopOf="@+id/imgMainShowcase"
-        app:unify_image_corner_radius="8"
+        app:unify_image_corner_radius="12"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -91,7 +91,7 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imgMainShowcase"
-        app:unify_image_corner_radius="8"
+        app:unify_image_corner_radius="12"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -120,7 +120,7 @@
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/imgFirstShowcase"
         app:layout_constraintTop_toBottomOf="@+id/tpgFirstShowcaseTitle"
-        app:unify_image_corner_radius="8"
+        app:unify_image_corner_radius="12"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -148,7 +148,7 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imgThirdShowcase"
-        app:unify_image_corner_radius="8"
+        app:unify_image_corner_radius="12"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
