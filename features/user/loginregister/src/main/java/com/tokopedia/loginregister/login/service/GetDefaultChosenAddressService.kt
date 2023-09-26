@@ -20,6 +20,10 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
     @Inject
     lateinit var getDefaultChosenAddressUseCase: GetDefaultChosenAddressUseCase
 
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
+
     override fun onCreate() {
         super.onCreate()
         initInjector()
@@ -34,21 +38,29 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
     override fun onHandleWork(intent: Intent) {
         launch {
             try {
-                val address = getDefaultChosenAddressUseCase(GetDefaultChosenAddressParam(latLong = null, source = "login", isTokonow = true)).response
+                val chosenAddress = getDefaultChosenAddressUseCase(
+                    GetDefaultChosenAddressParam(
+                        latLong = null,
+                        source = SOURCE_LOGIN,
+                        isTokonow = true
+                    )
+                ).response
+                val address = chosenAddress.data
+                val tokonow = chosenAddress.tokonow
                 ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     applicationContext,
-                    addressId = address.data.addressId.toString(),
-                    cityId = address.data.cityId.toString(),
-                    districtId = address.data.districtId.toString(),
-                    lat = address.data.latitude,
-                    long = address.data.longitude,
-                    label = "${address.data.addressName} ${address.data.receiverName}",
-                    postalCode = address.data.postalCode,
-                    shopId = address.tokonow.shopId.toString(),
-                    warehouseId = address.tokonow.warehouseId.toString(),
-                    warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(address.tokonow.warehouses),
-                    serviceType = address.tokonow.serviceType,
-                    lastUpdate = address.tokonow.tokonowLastUpdate
+                    addressId = address.addressId.toString(),
+                    cityId = address.cityId.toString(),
+                    districtId = address.districtId.toString(),
+                    lat = address.latitude,
+                    long = address.longitude,
+                    label = "${address.addressName} ${address.receiverName}",
+                    postalCode = address.postalCode,
+                    shopId = tokonow.shopId.toString(),
+                    warehouseId = tokonow.warehouseId.toString(),
+                    warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(tokonow.warehouses),
+                    serviceType = tokonow.serviceType,
+                    lastUpdate = tokonow.tokonowLastUpdate
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -58,6 +70,7 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
 
     companion object {
         private const val JOB_ID = 998877
+        private const val SOURCE_LOGIN = "login"
 
         fun startService(context: Context) {
             try {
@@ -68,8 +81,4 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
             }
         }
     }
-
-    private val job = SupervisorJob()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job
 }
