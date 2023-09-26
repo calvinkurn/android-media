@@ -138,15 +138,19 @@ class HeroBannerViewHolder(
                     binding?.tfSubtitleBannerPremium?.text =
                         brandDescriptions.getOrNull(indicatorPosition).orEmpty()
                     binding?.bannerIndicator?.setBannerIndicators(brandImageCount, indicatorPosition)
+                    heroBannerListener?.onHeroBannerImpression(
+                        indicatorPosition,
+                        brandDescriptions,
+                        brandImageUrl
+                    )
                 } else {
                     binding?.bannerIndicator?.pauseAnimation()
+                    heroBannerListener?.onHeroBannerImpression(
+                        Int.ZERO,
+                        brandDescriptions,
+                        brandImageUrl
+                    )
                 }
-
-                heroBannerListener?.onHeroBannerImpression(
-                    position,
-                    brandDescriptions,
-                    brandImageUrl
-                )
             }
 
             override fun onPageScrollStateChanged(state: Int) {
