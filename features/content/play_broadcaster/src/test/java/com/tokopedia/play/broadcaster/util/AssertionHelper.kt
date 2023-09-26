@@ -128,6 +128,8 @@ inline fun <T> NetworkResult<T>.assertWhenSuccess(
     onSuccess((this as NetworkResult.Success<T>).data)
 }
 
+fun NetworkResult<*>.assertSuccess() = assertWhenSuccess {  }
+
 inline fun NetworkResult<*>.assertWhenFailed(
         onFailed: (Throwable) -> Unit
 ) {
@@ -145,3 +147,4 @@ fun PlayBroadcastEvent.assertEvent(event: PlayBroadcastEvent) {
         .assertThat(this)
         .isInstanceOf(event::class.java)
 }
+
