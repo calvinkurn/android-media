@@ -44,7 +44,7 @@ class ProductCardColumnListViewModel(
         fetchProductCarouselData()
     }
 
-    private fun fetchProductCarouselData() {
+    fun fetchProductCarouselData() {
         launchCatchError(block = {
             productCardsUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint, NO_PRODUCT_PER_PAGE)
             setProductList()

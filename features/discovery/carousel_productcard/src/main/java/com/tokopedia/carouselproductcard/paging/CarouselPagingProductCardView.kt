@@ -19,7 +19,6 @@ import kotlin.math.max
 class CarouselPagingProductCardView: ConstraintLayout {
 
     private var binding: CarouselPagingProductCardLayoutBinding? = null
-    private var snapHelper: StartPagerSnapHelper? = null
     private var groupPaginationOnScrollListener: GroupPaginationOnScrollListener? = null
 
     private val config = AttributesConfig()
@@ -30,6 +29,9 @@ class CarouselPagingProductCardView: ConstraintLayout {
 
     private val showPagingIndicator
         get() = config.showPagingIndicator
+
+    private val snapHelper: StartPagerSnapHelper
+        get() = StartPagerSnapHelper(config.pagingPaddingHorizontal, config.itemPerPage)
 
     private val layoutManager: GridLayoutManager
         get() = GridLayoutManager(context, config.itemPerPage, HORIZONTAL, false).apply {
@@ -60,7 +62,6 @@ class CarouselPagingProductCardView: ConstraintLayout {
     }
 
     private fun init(attrs: AttributeSet? = null) {
-        initSnapHelper()
         initAttributes(attrs)
         initBinding()
         initRecyclerView()
@@ -84,6 +85,8 @@ class CarouselPagingProductCardView: ConstraintLayout {
             layoutManager = this@CarouselPagingProductCardView.layoutManager
             itemAnimator = null
 
+            addPaginationSnap()
+
             setHasFixedSize(true)
         }
     }
@@ -101,7 +104,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
     }
 
     private fun RecyclerView.addPaginationSnap() {
-        snapHelper?.attachToRecyclerView(this)
+        snapHelper.attachToRecyclerView(this)
     }
 
     private fun initPageControl() {
@@ -115,7 +118,6 @@ class CarouselPagingProductCardView: ConstraintLayout {
     ) {
         binding?.carouselPagingProductCardRecyclerView?.run {
             addDivider()
-            addPaginationSnap()
             setRecycledViewPool(recycledViewPool)
             setupOnScrollListener(model, listener)
         }
@@ -131,11 +133,6 @@ class CarouselPagingProductCardView: ConstraintLayout {
     fun setItemPerPage(itemPerPage: Int) {
         config.itemPerPage = itemPerPage
         binding?.carouselPagingProductCardRecyclerView?.layoutManager = layoutManager
-        initSnapHelper()
-    }
-
-    private fun initSnapHelper() {
-        snapHelper = StartPagerSnapHelper(config.pagingPaddingHorizontal, config.itemPerPage)
     }
 
     private fun RecyclerView.setupOnScrollListener(
@@ -193,10 +190,8 @@ class CarouselPagingProductCardView: ConstraintLayout {
         post {
             val layoutManager = this@CarouselPagingProductCardView.layoutManager
             val view = layoutManager.findViewByPosition(position) ?: return@post
-            snapHelper?.let { snapHelper ->
-                val distance = snapHelper.calculateDistanceToFinalSnap(layoutManager, view)
-                scrollBy(distance[0], distance[1])
-            }
+            val distance = snapHelper.calculateDistanceToFinalSnap(layoutManager, view)
+            scrollBy(distance[0], distance[1])
         }
     }
 

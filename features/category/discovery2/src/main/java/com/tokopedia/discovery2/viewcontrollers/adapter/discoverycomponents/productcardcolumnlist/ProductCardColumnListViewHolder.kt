@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 class ProductCardColumnListViewHolder(
     itemView: View,
     val fragment: Fragment
-): AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+): AbstractViewHolder(itemView, fragment.viewLifecycleOwner), CarouselPagingProductCardView.CarouselPagingListener {
 
     private var carouselPagingProductCard: CarouselPagingProductCardView = itemView.findViewById(R.id.carousel_paging_product_card)
 
@@ -27,6 +27,14 @@ class ProductCardColumnListViewHolder(
     override fun bindView(
         discoveryBaseViewModel: DiscoveryBaseViewModel
     ) {
+        /**
+         * Set paging model with empty object is used to show carousel paging shimmering
+         */
+        carouselPagingProductCard.setPagingModel(
+            model = CarouselPagingModel(),
+            listener = this
+        )
+
         if (viewModel == null) {
             viewModel = (discoveryBaseViewModel as ProductCardColumnListViewModel).apply {
                 getSubComponent().inject(this)
@@ -45,28 +53,30 @@ class ProductCardColumnListViewHolder(
         }
     }
 
+    override fun onGroupChanged(
+        selectedGroupModel: CarouselPagingSelectedGroupModel
+    ) {
+        /* nothing to do */
+    }
+
+    override fun onItemImpress(
+        groupModel: CarouselPagingGroupModel,
+        itemPosition: Int
+    ) {
+        /* waiting */
+    }
+
+    override fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
+        RouteManager.route(itemView.context, getProductAppLink(itemPosition))
+    }
+
     private fun initCarouselPaging(carouselPagingGroupProductModel: CarouselPagingGroupProductModel) {
         carouselPagingProductCard.setItemPerPage(viewModel?.getPropertyRows().orZero())
         carouselPagingProductCard.setPagingModel(
             model = CarouselPagingModel(
                 productCardGroupList = listOf(carouselPagingGroupProductModel)
             ),
-            listener = object: CarouselPagingProductCardView.CarouselPagingListener {
-                override fun onGroupChanged(selectedGroupModel: CarouselPagingSelectedGroupModel) {
-
-                }
-
-                override fun onItemImpress(
-                    groupModel: CarouselPagingGroupModel,
-                    itemPosition: Int
-                ) {
-
-                }
-
-                override fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
-                    RouteManager.route(itemView.context, getProductAppLink(itemPosition))
-                }
-            }
+            listener = this
         )
     }
 
