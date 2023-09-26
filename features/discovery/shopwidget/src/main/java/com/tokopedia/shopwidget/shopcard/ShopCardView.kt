@@ -97,8 +97,6 @@ class ShopCardView : BaseCustomView {
         findViewById(R.id.shopWidgetImageViewAdsText)
     }
 
-    private var isReimagine: Boolean = false
-
     constructor(context: Context) : super(context) {
         init()
     }
@@ -117,7 +115,7 @@ class ShopCardView : BaseCustomView {
 
     fun setShopCardModel(shopCardModel: ShopCardModel?, shopCardListener: ShopCardListener) {
         shopCardModel ?: return
-
+        val isReimagine = shopCardModel.isReimagine
         initCardStyle(isReimagine)
         initCardViewShopCard(shopCardListener)
         initImageShopAvatar(shopCardModel, shopCardListener)
@@ -401,10 +399,6 @@ class ShopCardView : BaseCustomView {
     fun getMaxCardElevation() = shopWidgetCardViewShopCard?.maxCardElevation ?: 0f
 
     fun getRadius() = shopWidgetCardViewShopCard?.radius ?: 0f
-
-    fun setReimagineStyle() {
-        this.isReimagine = true
-    }
 
     private fun renderShopCardReimagine() {
         shopWidgetCardViewShopCard?.apply {
