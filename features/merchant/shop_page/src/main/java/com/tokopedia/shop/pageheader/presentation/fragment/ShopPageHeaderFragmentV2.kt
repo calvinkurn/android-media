@@ -1409,6 +1409,10 @@ class ShopPageHeaderFragmentV2 :
                     it,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 ),
+                ShopPageColorSchema.ColorSchemaName.NAV_TEXT_ACTIVE to ShopUtil.getColorHexString(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                ),
             )
         }.orEmpty()
     }
