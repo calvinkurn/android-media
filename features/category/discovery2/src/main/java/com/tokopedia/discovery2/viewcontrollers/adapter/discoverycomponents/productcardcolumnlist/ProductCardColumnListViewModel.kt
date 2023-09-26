@@ -37,28 +37,28 @@ class ProductCardColumnListViewModel(
     var productCardsUseCase: ProductCardsUseCase? = null
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
+        get() = Dispatchers.IO + SupervisorJob()
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         fetchProductCarouselData()
     }
 
-    fun fetchProductCarouselData() {
+    private fun fetchProductCarouselData() {
         launchCatchError(block = {
             productCardsUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint, NO_PRODUCT_PER_PAGE)
             setProductList()
         }, onError = {
-            _errorState.value = Unit
+            _errorState.postValue(Unit)
         })
     }
 
     private fun setProductList() {
         val productList = getProductList()
         if (productList.isNotEmpty()) {
-            _carouselPagingGroupProductModel.value = productList.mapToCarouselPagingGroupProductModel()
+            _carouselPagingGroupProductModel.postValue(productList.mapToCarouselPagingGroupProductModel())
         } else {
-            _errorState.value = Unit
+            _errorState.postValue(Unit)
         }
     }
 
