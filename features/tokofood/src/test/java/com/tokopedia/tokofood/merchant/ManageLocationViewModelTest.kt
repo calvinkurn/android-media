@@ -1,7 +1,8 @@
 package com.tokopedia.tokofood.merchant
 
-import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
-import com.tokopedia.tokofood.data.*
+import com.tokopedia.tokofood.data.generateTestDeliveryCoverageResult
+import com.tokopedia.tokofood.data.generateTestGetStateChosenAddressQglResponse
+import com.tokopedia.tokofood.data.generateTestKeroEditAddressResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -58,11 +59,8 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
     @Test
     fun `when getChooseAddress is success expect chosen address data`() {
         coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            val testData = generateTestGetStateChosenAddressQglResponse()
-            firstArg<(GetStateChosenAddressResponse) -> Unit>().invoke(testData.response)
-        }
+            getChooseAddressWarehouseLocUseCase(any())
+        } returns generateTestGetStateChosenAddressQglResponse().response
         val expectedResult = generateTestGetStateChosenAddressQglResponse()
         viewModel.getChooseAddress("tokofood")
         val actualResult = viewModel.chooseAddress.value
@@ -72,10 +70,8 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
     @Test
     fun `when getChooseAddress is success expect fail response`() {
         coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
+            getChooseAddressWarehouseLocUseCase(any())
+        } throws Throwable()
         viewModel.getChooseAddress("tokofood")
         val actualResult = viewModel.chooseAddress.value
         Assert.assertTrue(actualResult is Fail)
