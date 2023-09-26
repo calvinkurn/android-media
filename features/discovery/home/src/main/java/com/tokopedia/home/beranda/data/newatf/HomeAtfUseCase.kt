@@ -1,7 +1,9 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import com.tokopedia.home.beranda.data.newatf.banner.BannerRepository
+import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerRepository
+import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconRepository
 import com.tokopedia.home.beranda.data.newatf.position.DynamicPositionRepository
+import com.tokopedia.home.beranda.data.newatf.ticker.TickerRepository
 import com.tokopedia.home.constant.AtfKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +18,9 @@ import javax.inject.Inject
 
 class HomeAtfUseCase @Inject constructor(
     private val dynamicPositionRepository: DynamicPositionRepository,
-    private val bannerRepository: BannerRepository,
+    private val homepageBannerRepository: HomepageBannerRepository,
+    private val dynamicIconRepository: DynamicIconRepository,
+    private val tickerRepository: TickerRepository,
 ) {
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
@@ -29,9 +33,9 @@ class HomeAtfUseCase @Inject constructor(
 
     suspend fun getDynamicPosition() {
         coroutineScope {
-            launch {
-                observeAtfFlow(bannerRepository.flow)
-            }
+            launch { observeAtfFlow(homepageBannerRepository.flow) }
+            launch { observeAtfFlow(dynamicIconRepository.flow) }
+            launch { observeAtfFlow(tickerRepository.flow) }
             launch {
                 dynamicPositionRepository.flow.collect { value ->
                     if(value == null) {
@@ -81,7 +85,8 @@ class HomeAtfUseCase @Inject constructor(
         value.listAtfData.forEach { data ->
             val metadata = data.atfMetadata
             when(metadata.component) {
-                AtfKey.TYPE_BANNER -> bannerRepository.getData(metadata)
+                AtfKey.TYPE_BANNER -> homepageBannerRepository.getData(metadata)
+                AtfKey.TYPE_ICON -> dynamicIconRepository.getData(metadata)
             }
         }
     }

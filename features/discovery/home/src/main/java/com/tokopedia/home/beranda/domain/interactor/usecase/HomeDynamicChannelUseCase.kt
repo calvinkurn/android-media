@@ -199,7 +199,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
 
         val dynamicChannelFlow = getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
-            getDynamicChannelFlow(it, isNewMechanism = true)
+            getDynamicChannelFlow(it, true)
         }
 
         return combine(atfFlow, dynamicChannelFlow) { atf, dc ->
@@ -212,7 +212,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private fun getDynamicChannelFlow(
         homeData: HomeData?,
-        isNewMechanism: Boolean = false,
+        isNewMechanism: Boolean,
     ): Flow<HomeDynamicChannelModel> {
         return flow<HomeDynamicChannelModel> {
             topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
@@ -1051,7 +1051,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                             atfData.param
                                         )
                                         this.putString(
-                                            HomePageBannerRepository.BANNER_LOCATION_PARAM,
+                                            HomePageBannerRepository.PARAM_LOCATION,
                                             homeChooseAddressRepository.getRemoteData()
                                                 ?.convertToLocationParams()
                                         )

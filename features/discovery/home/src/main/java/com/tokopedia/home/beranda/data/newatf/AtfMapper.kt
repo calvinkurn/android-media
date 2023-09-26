@@ -4,7 +4,10 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper.asVisitable
+import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper.asVisitable
+import com.tokopedia.home.beranda.data.newatf.ticker.TickerMapper.asVisitable
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
+import com.tokopedia.home.beranda.domain.model.Ticker
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.constant.AtfKey
 
@@ -41,6 +44,21 @@ object AtfMapper {
         )
     }
 
+    fun mapRemoteToCache(
+        atfData: AtfData
+    ): AtfCacheEntity {
+        return AtfCacheEntity(
+            id = atfData.atfMetadata.id,
+            position = atfData.atfMetadata.position,
+            name = atfData.atfMetadata.name,
+            component = atfData.atfMetadata.component,
+            param = atfData.atfMetadata.param,
+            isOptional = atfData.atfMetadata.isOptional,
+            content = atfData.getAtfContentAsJson(),
+            status = atfData.atfStatus,
+        )
+    }
+
     fun mapToDomainAtfData(
         data: AtfCacheEntity,
     ): AtfData {
@@ -62,6 +80,7 @@ object AtfMapper {
         return when(this.component) {
             AtfKey.TYPE_BANNER -> content?.getAtfContent<BannerDataModel>()
             AtfKey.TYPE_ICON -> content?.getAtfContent<DynamicHomeIcon>()
+            AtfKey.TYPE_TICKER -> content?.getAtfContent<Ticker>()
             else -> null
         }
     }
@@ -77,6 +96,8 @@ object AtfMapper {
             value.atfContent.run {
                 when(this) {
                     is BannerDataModel -> visitables.add(this.asVisitable(index, value.isCache))
+                    is DynamicHomeIcon -> visitables.add(this.asVisitable(value.atfMetadata.id, index, value.isCache))
+                    is Ticker -> this.asVisitable(index, value.isCache)?.let { visitables.add(it) }
                 }
             }
         }

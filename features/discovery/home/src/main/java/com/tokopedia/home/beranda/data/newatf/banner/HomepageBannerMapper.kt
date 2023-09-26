@@ -1,9 +1,6 @@
 package com.tokopedia.home.beranda.data.newatf.banner
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
-import com.tokopedia.home.beranda.data.newatf.AtfData
-import com.tokopedia.home.beranda.data.newatf.NewHomeDataMapper
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.model.ChannelGrid

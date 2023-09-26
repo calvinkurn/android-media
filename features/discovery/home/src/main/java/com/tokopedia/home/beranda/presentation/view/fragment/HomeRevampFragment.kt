@@ -96,6 +96,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
 import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
@@ -344,6 +345,8 @@ open class HomeRevampFragment :
     lateinit var viewModel: Lazy<HomeRevampViewModel>
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var homeRemoteConfigController: HomeRemoteConfigController
 
     @Inject
     lateinit var homePrefController: HomePrefController
@@ -562,6 +565,9 @@ open class HomeRevampFragment :
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
+        if(::homeRemoteConfigController.isInitialized) {
+            homeRemoteConfigController.fetchHomeRemoteConfig()
+        }
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         context?.let {
             HomeRollenceController.fetchAtfRollenceValue(it)
