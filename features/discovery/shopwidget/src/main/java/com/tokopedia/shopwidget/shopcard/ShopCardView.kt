@@ -97,6 +97,8 @@ class ShopCardView : BaseCustomView {
         findViewById(R.id.shopWidgetImageViewAdsText)
     }
 
+    private var isReimagine: Boolean = false
+
     constructor(context: Context) : super(context) {
         init()
     }
@@ -113,9 +115,10 @@ class ShopCardView : BaseCustomView {
         View.inflate(context, R.layout.shopwidget_shop_card_layout, this)
     }
 
-    fun setShopCardModel(shopCardModel: ShopCardModel?, shopCardListener: ShopCardListener, isReimagine: Boolean= false) {
+    fun setShopCardModel(shopCardModel: ShopCardModel?, shopCardListener: ShopCardListener) {
         shopCardModel ?: return
 
+        initCardStyle(isReimagine)
         initCardViewShopCard(shopCardListener)
         initImageShopAvatar(shopCardModel, shopCardListener)
         initImageShopBadge(shopCardModel, isReimagine)
@@ -129,6 +132,13 @@ class ShopCardView : BaseCustomView {
         initShopAdsText(isReimagine)
     }
 
+    private fun initCardStyle(isReimagine: Boolean) {
+        if (isReimagine) {
+            renderShopCardReimagine()
+        } else {
+            renderShopCardControl()
+        }
+    }
     private fun initCardViewShopCard(shopCardListener: ShopCardListener) {
         shopWidgetCardViewShopCard?.setOnClickListener {
             shopCardListener.onItemClicked()
@@ -392,12 +402,8 @@ class ShopCardView : BaseCustomView {
 
     fun getRadius() = shopWidgetCardViewShopCard?.radius ?: 0f
 
-    fun setCardUnifyStyle(isReimagine: Boolean = false) {
-        if (isReimagine) {
-            renderShopCardReimagine()
-        } else {
-            renderShopCardControl()
-        }
+    fun setReimagineStyle(isReimagine: Boolean = false) {
+        this.isReimagine = isReimagine
     }
 
     private fun renderShopCardReimagine() {
