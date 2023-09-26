@@ -229,11 +229,13 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     fun getChooseAddress(source: String) {
         isAddressManuallyUpdated = true
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
-            setFlowChooseAddress(it)
-        }, {
-            setFlowChooseAddress(it)
-        }, source)
+        launch {
+            try {
+                setFlowChooseAddress(getChooseAddressWarehouseLocUseCase(source))
+            } catch (e: Exception) {
+                setFlowChooseAddress(e)
+            }
+        }
     }
 
     private fun getLoadingState(): Result<TokoFoodListUiModel> {
