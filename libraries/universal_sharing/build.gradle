@@ -103,6 +103,15 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.testCoreKtx
+    testImplementation rootProject.ext.testDependencies.turbine
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
     // Android Test
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -126,4 +135,5 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'
 apply plugin: 'org.jetbrains.kotlin.android'

@@ -149,14 +149,16 @@ class UniversalSharingPostPurchaseBottomSheet :
                     adapter.updateData(it.data)
                 }
                 is Result.Error -> {
-                    setErrorView()
+                    setErrorView(it.throwable)
                 }
                 Result.Loading -> Unit // no-op
             }
         }
     }
 
-    private fun setErrorView() {
+    private fun setErrorView(
+        throwable: Throwable
+    ) {
         val errorType = if (networkUtil.isNetworkAvailable(requireContext())) {
             UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_NETWORK
         } else {
@@ -164,6 +166,9 @@ class UniversalSharingPostPurchaseBottomSheet :
         }
         val errorUi = UniversalSharingGlobalErrorUiModel(errorType)
         adapter.updateData(listOf(errorUi))
+
+        // Log
+        ErrorHandler.getErrorMessage(context, throwable)
     }
 
     private suspend fun observeSharingState() {

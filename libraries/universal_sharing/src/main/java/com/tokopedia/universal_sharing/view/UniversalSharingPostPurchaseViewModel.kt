@@ -80,7 +80,7 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                         productId = "",
                         productData = null,
                         isLoading = false,
-                        error = it.error
+                        error = throwable
                     )
                 }
             }
@@ -177,7 +177,7 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                         productId = productId,
                         productData = null,
                         isLoading = false,
-                        error = it.error
+                        error = throwable
                     )
                 }
             }
