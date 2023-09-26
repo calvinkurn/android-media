@@ -31,11 +31,7 @@ data class UniversalSharingPostPurchaseProductResponse(
     val url: String = "",
 
     @SerializedName("pictures")
-    val images: List<UniversalSharingPostPurchaseProductImageResponse> = listOf(),
-
-    @SerializedName("shop")
-    val shop: UniversalSharingPostPurchaseProductShopResponse =
-        UniversalSharingPostPurchaseProductShopResponse()
+    val images: List<UniversalSharingPostPurchaseProductImageResponse> = listOf()
 ) {
     fun getImageList(): ArrayList<String> {
         val list = images.map {
@@ -48,9 +44,4 @@ data class UniversalSharingPostPurchaseProductResponse(
 data class UniversalSharingPostPurchaseProductImageResponse(
     @SerializedName("urlOriginal")
     val imageUrl: String = ""
-)
-
-data class UniversalSharingPostPurchaseProductShopResponse(
-    @SerializedName("name")
-    val name: String = ""
 )

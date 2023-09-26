@@ -5,6 +5,7 @@ import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchasePr
 data class UniversalInboxPostPurchaseSharingUiState(
     val productId: String = "",
     val orderId: String = "",
+    val shopName: String = "",
     val productData: UniversalSharingPostPurchaseProductResponse? = null,
     val isLoading: Boolean = false,
     val error: Throwable? = null
