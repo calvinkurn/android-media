@@ -391,16 +391,22 @@ class StoriesDetailFragment @Inject constructor(
         flStoriesPrev.onTouchEventStories { event ->
             when (event) {
                 TouchEventStories.PAUSE -> {
+                    showStoriesComponent(false)
                     flStoriesNext.hide()
                     flStoriesProduct.hide()
-                    showStoriesComponent(false)
+                    vStoriesShareIcon.hide()
+                    vStoriesKebabIcon.hide()
+                    vStoriesProductIcon.root.hide()
                     pauseStories()
                 }
 
                 TouchEventStories.RESUME -> {
+                    showStoriesComponent(true)
                     flStoriesNext.show()
                     flStoriesProduct.show()
-                    showStoriesComponent(true)
+                    vStoriesShareIcon.show() //TODO() show with condition
+                    vStoriesKebabIcon.show() //TODO() show with condition
+                    vStoriesProductIcon.root.show() //TODO() show with condition
                     resumeStories()
                 }
                 TouchEventStories.NEXT_PREV -> {
@@ -414,16 +420,22 @@ class StoriesDetailFragment @Inject constructor(
         flStoriesNext.onTouchEventStories { event ->
             when (event) {
                 TouchEventStories.PAUSE -> {
+                    showStoriesComponent(false)
                     flStoriesPrev.hide()
                     flStoriesProduct.hide()
-                    showStoriesComponent(false)
+                    vStoriesShareIcon.hide()
+                    vStoriesKebabIcon.hide()
+                    vStoriesProductIcon.root.hide()
                     pauseStories()
                 }
 
                 TouchEventStories.RESUME -> {
+                    showStoriesComponent(true)
                     flStoriesPrev.show()
                     flStoriesProduct.show()
-                    showStoriesComponent(true)
+                    vStoriesShareIcon.show() //TODO() show with condition
+                    vStoriesKebabIcon.show() //TODO() show with condition
+                    vStoriesProductIcon.root.show() //TODO() show with condition
                     resumeStories()
                 }
                 TouchEventStories.NEXT_PREV -> {
