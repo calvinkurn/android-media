@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_bmgm_mini_cart_section">
 
-    <TextSwitcher
+    <com.tokopedia.minicart.bmgm.presentation.customview.SlidingTextSwitcher
         android:id="@+id/tvBmgmCartDiscount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3"
         tools:text="Yay, kamu dapat potongan 550 rb!"
         tools:visibility="visible" />
 
