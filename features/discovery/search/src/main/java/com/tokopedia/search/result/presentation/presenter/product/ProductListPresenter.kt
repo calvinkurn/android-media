@@ -162,8 +162,7 @@ class ProductListPresenter @Inject constructor(
     private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
     private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
-    private val reimagineRollence: ReimagineRollence
-) : BaseDaggerPresenter<ProductListSectionContract.View>(),
+    private val reimagineRollence: ReimagineRollence,
     private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
