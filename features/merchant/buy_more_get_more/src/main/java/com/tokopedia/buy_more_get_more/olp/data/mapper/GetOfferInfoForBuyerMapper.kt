@@ -1,9 +1,11 @@
 package com.tokopedia.buy_more_get_more.olp.data.mapper
 
 import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse
-import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse.*
+import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse.ResponseHeader
+import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse.Offering
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
-import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.*
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier.Rule
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import javax.inject.Inject

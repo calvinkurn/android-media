@@ -2,7 +2,7 @@ package com.tokopedia.buy_more_get_more.olp.domain.entity
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
-import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel.*
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel.Product
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactory
 import com.tokopedia.buy_more_get_more.olp.utils.constant.Constant

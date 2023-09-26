@@ -16,7 +16,7 @@ import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.listener.Tnc
 import com.tokopedia.buy_more_get_more.olp.utils.constant.BundleConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
+import java.util.Locale
 import kotlin.collections.ArrayList
 
 class TncBottomSheet : BottomSheetUnify(), TncListener {

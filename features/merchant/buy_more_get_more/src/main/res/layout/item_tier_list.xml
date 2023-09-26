@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
+    android:layout_gravity="center_horizontal"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -16,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="paragraph_2"
+        app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Beli 2 diskon 15%" />
 
