@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.home.beranda.data.balance.HomeHeaderUseCase
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
@@ -141,6 +142,7 @@ class HomeUseCaseModule {
         homeMissionWidgetRepository: HomeMissionWidgetRepository,
         homeTodoWidgetRepository: HomeTodoWidgetRepository,
         homeAtfUseCase: HomeAtfUseCase,
+        homeHeaderUseCase: HomeHeaderUseCase,
     ) = HomeDynamicChannelUseCase(
         homeDataMapper = homeDataMapper,
         bestSellerRevampMapper = bestSellerRevampMapper,
@@ -171,6 +173,7 @@ class HomeUseCaseModule {
         homeMissionWidgetRepository = homeMissionWidgetRepository,
         homeTodoWidgetRepository = homeTodoWidgetRepository,
         homeAtfUseCase = homeAtfUseCase,
+        homeHeaderUseCase = homeHeaderUseCase,
     )
 
     @Provides

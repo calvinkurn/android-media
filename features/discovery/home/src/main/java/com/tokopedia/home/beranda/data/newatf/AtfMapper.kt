@@ -6,6 +6,7 @@ import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper.asVisitable
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper.asVisitable
 import com.tokopedia.home.beranda.data.newatf.ticker.TickerMapper.asVisitable
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
 import com.tokopedia.home.beranda.domain.model.Ticker
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
@@ -81,6 +82,7 @@ object AtfMapper {
             AtfKey.TYPE_BANNER -> content?.getAtfContent<BannerDataModel>()
             AtfKey.TYPE_ICON -> content?.getAtfContent<DynamicHomeIcon>()
             AtfKey.TYPE_TICKER -> content?.getAtfContent<Ticker>()
+            AtfKey.TYPE_CHANNEL -> content?.getAtfContent<DynamicHomeChannel>()
             else -> null
         }
     }
@@ -98,6 +100,7 @@ object AtfMapper {
                     is BannerDataModel -> visitables.add(this.asVisitable(index, value.isCache))
                     is DynamicHomeIcon -> visitables.add(this.asVisitable(value.atfMetadata.id, index, value.isCache))
                     is Ticker -> this.asVisitable(index, value.isCache)?.let { visitables.add(it) }
+//                    is DynamicHomeChannel -> this.asVisitableList()
                 }
             }
         }

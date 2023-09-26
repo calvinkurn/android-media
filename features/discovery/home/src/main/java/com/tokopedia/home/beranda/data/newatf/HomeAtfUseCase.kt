@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.data.newatf
 
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerRepository
+import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelRepository
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconRepository
 import com.tokopedia.home.beranda.data.newatf.position.DynamicPositionRepository
 import com.tokopedia.home.beranda.data.newatf.ticker.TickerRepository
@@ -21,6 +22,7 @@ class HomeAtfUseCase @Inject constructor(
     private val homepageBannerRepository: HomepageBannerRepository,
     private val dynamicIconRepository: DynamicIconRepository,
     private val tickerRepository: TickerRepository,
+    private val atfChannelRepository: AtfChannelRepository,
 ) {
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
@@ -36,6 +38,7 @@ class HomeAtfUseCase @Inject constructor(
             launch { observeAtfFlow(homepageBannerRepository.flow) }
             launch { observeAtfFlow(dynamicIconRepository.flow) }
             launch { observeAtfFlow(tickerRepository.flow) }
+            launch { observeAtfFlow(atfChannelRepository.flow) }
             launch {
                 dynamicPositionRepository.flow.collect { value ->
                     if(value == null) {
@@ -87,6 +90,8 @@ class HomeAtfUseCase @Inject constructor(
             when(metadata.component) {
                 AtfKey.TYPE_BANNER -> homepageBannerRepository.getData(metadata)
                 AtfKey.TYPE_ICON -> dynamicIconRepository.getData(metadata)
+                AtfKey.TYPE_TICKER -> tickerRepository.getData(metadata)
+                AtfKey.TYPE_CHANNEL -> atfChannelRepository.getData(metadata)
             }
         }
     }

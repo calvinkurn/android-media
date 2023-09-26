@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.home.beranda.data.newatf.AtfContent
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlin.collections.ArrayList
 
@@ -11,7 +12,7 @@ data class DynamicHomeChannel(
     @Expose
     @SerializedName("channels")
     var channels: List<Channels> = listOf()
-) {
+): AtfContent {
 
     data class Channels(
         @Expose

@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.core.os.bundleOf
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.beranda.data.balance.HomeHeaderUseCase
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
@@ -93,6 +94,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeMissionWidgetRepository: HomeMissionWidgetRepository,
     private val homeTodoWidgetRepository: HomeTodoWidgetRepository,
     private val homeAtfUseCase: HomeAtfUseCase,
+    private val homeHeaderUseCase: HomeHeaderUseCase,
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -183,13 +185,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
     @FlowPreview
     @ExperimentalCoroutinesApi
     fun getNewHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
-        val headerVisitables = listOf(
-            HomeHeaderDataModel(
-                headerDataModel = HeaderDataModel(
-                    isUserLogin = userSessionInterface.isLoggedIn
-                )
+        val headerFlow = homeHeaderUseCase.flow.map {
+            homeHeaderUseCase.updateBalanceWidget()
+            HomeDynamicChannelModel(
+                list = listOf(it)
             )
-        )
+        }
 
         val atfFlow = homeAtfUseCase.flow.map {
             HomeDynamicChannelModel(
@@ -202,10 +203,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
             getDynamicChannelFlow(it, true)
         }
 
-        return combine(atfFlow, dynamicChannelFlow) { atf, dc ->
+        return combine(headerFlow, atfFlow, dynamicChannelFlow) { header, atf, dc ->
             val atfVisitables = atf.list
             val dcVisitables = dc.list
-            val combinedList = headerVisitables + atfVisitables + dcVisitables
+            val combinedList = header.list + atfVisitables + dcVisitables
             dc.copy(list = combinedList)
         }
     }
