@@ -615,6 +615,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private fun disableMpsIconAnimation() {
         searchBarView.stopMpsAnimation()
         searchBarView.setMPSAnimationEnabled(false)
+        searchBarView.enableAddButton()
     }
 
     override fun showSuggestionView() {
