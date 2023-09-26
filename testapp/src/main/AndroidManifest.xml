@@ -58,6 +58,9 @@
                 android:resource="@xml/filepaths"
                 tools:replace="android:resource" />
         </provider>
-    </application>
 
+        <profileable
+            android:shell="true"
+            tools:targetApi="q" />
+    </application>
 </manifest>
