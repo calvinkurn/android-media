@@ -19,7 +19,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSumm
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSummaryViewHolder
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
-import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
+import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
 import io.mockk.mockk
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher

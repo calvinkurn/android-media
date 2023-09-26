@@ -21,7 +21,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSu
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.sgc.util.productTagSummaryEmpty
-import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
+import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache

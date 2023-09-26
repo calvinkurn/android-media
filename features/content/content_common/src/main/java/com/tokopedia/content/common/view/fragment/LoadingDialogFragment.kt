@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.fragment.loading
+package com.tokopedia.content.common.view.fragment
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.common.R
 import com.tokopedia.unifycomponents.LoaderUnify
 
 /**
