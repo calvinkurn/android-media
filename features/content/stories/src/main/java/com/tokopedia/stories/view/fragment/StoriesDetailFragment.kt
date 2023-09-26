@@ -445,6 +445,7 @@ class StoriesDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesProductNotch(state.productCount) {
+                        analytic.sendClickShoppingBagEvent(buildEventLabel())
                         viewModelAction(StoriesUiAction.OpenProduct)
                     }
                 }
