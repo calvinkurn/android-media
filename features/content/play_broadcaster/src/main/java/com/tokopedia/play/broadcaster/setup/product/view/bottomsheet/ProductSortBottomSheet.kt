@@ -6,9 +6,9 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.util.eventbus.EventBus
+import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroProductSortBinding
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSortBinding
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortListViewComponent
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
@@ -78,8 +78,8 @@ class ProductSortBottomSheet @Inject constructor(
 
     private fun setupView() {
         mSelectedSort = arguments?.getParcelable(ARGS_SELECTED_SORT)
-        setTitle(getString(R.string.play_bro_etalase_sort))
-        setAction(getString(R.string.play_label_save)) {
+        setTitle(getString(contentproductpickerR.string.play_bro_etalase_sort))
+        setAction(getString(contentproductpickerR.string.content_product_picker_save)) {
             val selectedSort = mSelectedSort
             if (selectedSort != null) mListener?.onSortChosen(this, selectedSort)
             dismiss()

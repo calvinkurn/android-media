@@ -12,10 +12,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.eventbus.EventBus
+import com.tokopedia.content.common.util.throwable.isNetworkError
+import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroProductChooserBinding
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
@@ -35,7 +36,6 @@ import com.tokopedia.content.product.picker.sgc.model.result.ContentProductPicke
 import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.extension.isNetworkError
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
@@ -89,10 +89,10 @@ class ProductChooserBottomSheet @Inject constructor(
                 DialogUnify.HORIZONTAL_ACTION,
                 DialogUnify.NO_IMAGE,
             ).apply {
-                setTitle(it.getString(R.string.play_bro_product_chooser_exit_dialog_title))
-                setDescription(it.getString(R.string.play_bro_product_chooser_exit_dialog_desc))
-                setPrimaryCTAText(it.getString(R.string.play_batal))
-                setSecondaryCTAText(it.getString(R.string.play_broadcast_exit))
+                setTitle(it.getString(contentproductpickerR.string.play_bro_product_chooser_exit_dialog_title))
+                setDescription(it.getString(contentproductpickerR.string.play_bro_product_chooser_exit_dialog_desc))
+                setPrimaryCTAText(it.getString(contentproductpickerR.string.content_product_picker_cancel))
+                setSecondaryCTAText(it.getString(contentproductpickerR.string.content_product_picker_exit))
 
                 setPrimaryCTAClickListener {
                     eventBus.emit(Event.ExitDialogCancel)
@@ -250,7 +250,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = getString(R.string.play_bro_product_chooser_error_save)
+                            customErrMessage = getString(contentproductpickerR.string.play_bro_product_chooser_error_save)
                         )
                     }
                     else -> {}
@@ -319,11 +319,11 @@ class ProductChooserBottomSheet @Inject constructor(
             SelectedEtalaseModel.None ->
                 if (campaignAndEtalase.campaignList.isNotEmpty() &&
                     campaignAndEtalase.etalaseList.isNotEmpty()) {
-                    getString(R.string.play_bro_campaign_and_etalase)
+                    getString(contentproductpickerR.string.play_bro_campaign_and_etalase)
                 } else if (campaignAndEtalase.campaignList.isNotEmpty()) {
-                    getString(R.string.play_bro_campaign)
+                    getString(contentproductpickerR.string.play_bro_campaign)
                 } else {
-                    getString(R.string.play_bro_etalase)
+                    getString(contentproductpickerR.string.play_bro_etalase)
                 }
         }
 
@@ -343,7 +343,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
         if (prevConfig?.shopName != config.shopName) {
             searchBarView.setPlaceholder(
-                getString(R.string.play_etalase_search_hint, config.shopName)
+                getString(contentproductpickerR.string.play_etalase_search_hint, config.shopName)
             )
         }
     }
@@ -359,7 +359,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
         setTitle(
             getString(
-                R.string.play_bro_selected_product_title,
+                contentproductpickerR.string.play_bro_selected_product_title,
                 selectedProducts.size,
                 config.maxProduct,
             )

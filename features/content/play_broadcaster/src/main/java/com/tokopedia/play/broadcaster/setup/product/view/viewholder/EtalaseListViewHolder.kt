@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListBodyBinding
 import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListHeaderBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdapter
@@ -46,11 +46,11 @@ internal class EtalaseListViewHolder private constructor() {
             binding.ivEtalase.loadImage(item.campaignUiModel.imageUrl)
             binding.tvEtalaseTitle.text = item.campaignUiModel.title
             binding.tvTotalProduct.text = itemView.context.getString(
-                R.string.play_bro_campaign_product_stock,
+                contentproductpickerR.string.play_bro_campaign_product_stock,
                 item.campaignUiModel.totalProduct
             )
             binding.tvDateDesc.text = itemView.context.getString(
-                R.string.play_bro_campaign_date_start_end,
+                contentproductpickerR.string.play_bro_campaign_date_start_end,
                 item.campaignUiModel.startDateFmt,
                 item.campaignUiModel.endDateFmt,
             )
@@ -58,13 +58,13 @@ internal class EtalaseListViewHolder private constructor() {
             when (item.campaignUiModel.status.status) {
                 CampaignStatus.Ongoing -> {
                     binding.labelStatus.setLabel(
-                        itemView.context.getString(R.string.play_bro_ongoing_campaign)
+                        itemView.context.getString(contentproductpickerR.string.play_bro_ongoing_campaign)
                     )
                     binding.labelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
                 }
                 CampaignStatus.Ready, CampaignStatus.ReadyLocked -> {
                     binding.labelStatus.setLabel(
-                        itemView.context.getString(R.string.play_bro_upcoming_campaign)
+                        itemView.context.getString(contentproductpickerR.string.play_bro_upcoming_campaign)
                     )
                     binding.labelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_ORANGE)
                 }
@@ -87,7 +87,7 @@ internal class EtalaseListViewHolder private constructor() {
             binding.ivEtalase.loadImage(item.etalaseUiModel.imageUrl)
             binding.tvEtalaseTitle.text = item.etalaseUiModel.title
             binding.tvTotalProduct.text = itemView.context.getString(
-                R.string.play_bro_etalase_product_stock,
+                contentproductpickerR.string.play_bro_etalase_product_stock,
                 item.etalaseUiModel.totalProduct
             )
 

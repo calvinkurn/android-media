@@ -18,7 +18,6 @@
     <dimen name="play_bro_toaster_bottom_margin">48dp</dimen>
 
     <dimen name="play_search_bar_radius">8dp</dimen>
-    <dimen name="play_product_preview_radius">8dp</dimen>
 
     <dimen name="play_change_cover_button_height">146dp</dimen>
 
@@ -66,16 +65,6 @@
     <!--Preparation -->
     <dimen name="play_bro_livestream_button_border_width">2dp</dimen>
     <dimen name="play_bro_title_form_loading_size">52dp</dimen>
-
-    <!--Etalase & Campaign-->
-    <dimen name="play_bro_etalase_list_body_image_size">64dp</dimen>
-    <dimen name="play_bro_etalase_list_divider_height">1dp</dimen>
-
-    <!--Product Chooser-->
-    <dimen name="play_bro_product_chooser_btn_container_elevation">10dp</dimen>
-
-    <!-- Product Summary -->
-    <dimen name="play_bro_product_summary_btn_container_elevation">10dp</dimen>
 
     <!--Live-->
     <dimen name="play_product_icon_dot_radius">4dp</dimen>

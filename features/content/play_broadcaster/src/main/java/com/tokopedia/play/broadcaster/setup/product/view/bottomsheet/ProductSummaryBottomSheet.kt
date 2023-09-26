@@ -9,10 +9,10 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key.ProductSummaryCommission
+import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroProductSummaryBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
 import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
@@ -20,7 +20,7 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiMod
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
+import com.tokopedia.content.product.picker.sgc.util.productTagSummaryEmpty
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
@@ -114,8 +114,8 @@ class ProductSummaryBottomSheet @Inject constructor(
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * SCREEN_HEIGHT_DIVIDER).toInt()
         }
-        setTitle(getString(R.string.play_bro_product_summary_title))
-        setAction(getString(R.string.play_bro_product_add_more)) {
+        setTitle(getString(contentproductpickerR.string.play_bro_product_summary_title))
+        setAction(getString(contentproductpickerR.string.play_bro_product_add_more)) {
             analytic.clickAddMoreProductOnProductSetup()
             handleAddMoreProduct()
         }
@@ -166,7 +166,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.GetDataError -> {
                         toaster.showError(
                             err = event.throwable,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionLabel = getString(contentproductpickerR.string.content_product_picker_retry),
                             actionListener = { event.action?.invoke() },
                         )
 
@@ -176,7 +176,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.DeleteProductSuccess -> {
                         toaster.showToaster(
                             message = getString(
-                                R.string.play_bro_product_summary_success_delete_product,
+                                contentproductpickerR.string.play_bro_product_summary_success_delete_product,
                                 event.deletedProductCount
                             ),
                         )
@@ -184,8 +184,8 @@ class ProductSummaryBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.DeleteProductError -> {
                         toaster.showError(
                             err = event.throwable,
-                            customErrMessage = getString(R.string.play_bro_product_summary_fail_to_delete_product),
-                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            customErrMessage = getString(contentproductpickerR.string.play_bro_product_summary_fail_to_delete_product),
+                            actionLabel = getString(contentproductpickerR.string.content_product_picker_retry),
                             actionListener = { event.action?.invoke() },
                         )
 
@@ -197,7 +197,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         if (event.throwable is PinnedProductException) {
                             analytic.onImpressColdDownPinProductSecondEvent(false)
                             toaster.showToaster(
-                                message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
+                                message = if (event.throwable.message.isEmpty()) getString(contentproductpickerR.string.play_bro_pin_product_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR
                             )
                         } else {
@@ -229,13 +229,13 @@ class ProductSummaryBottomSheet @Inject constructor(
         if (productCount != null) {
             setTitle(
                 getString(
-                    R.string.play_bro_product_summary_title_with_count,
+                    contentproductpickerR.string.play_bro_product_summary_title_with_count,
                     productCount,
                     viewModel.maxProduct
                 )
             )
         } else {
-            setTitle(getString(R.string.play_bro_product_summary_title))
+            setTitle(getString(contentproductpickerR.string.play_bro_product_summary_title))
         }
     }
 
@@ -256,8 +256,8 @@ class ProductSummaryBottomSheet @Inject constructor(
             val coachMark = CoachMark2(requireContext())
             val coachMarkItem = CoachMark2Item(
                 anchorView = firstTextCommission,
-                title = getString(R.string.play_shorts_affiliate_coach_mark_product_summary_commission_title),
-                description = getString(R.string.play_shorts_affiliate_coach_mark_product_summary_commission_subtitle),
+                title = getString(contentproductpickerR.string.play_shorts_affiliate_coach_mark_product_summary_commission_title),
+                description = getString(contentproductpickerR.string.play_shorts_affiliate_coach_mark_product_summary_commission_subtitle),
                 position = CoachMark2.POSITION_BOTTOM,
             )
 

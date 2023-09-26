@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.util.eventbus.EventBus
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdapter
 import com.tokopedia.play.broadcaster.setup.product.view.itemdecoration.EtalaseListItemDecoration
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
@@ -44,7 +44,7 @@ internal class EtalaseListViewComponent(
     ) {
         val combinedEtalaseList = buildList {
             if (campaignList.isNotEmpty()) {
-                add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_campaign)))
+                add(EtalaseListAdapter.Model.Header(getString(contentproductpickerR.string.play_bro_campaign)))
                 addAll(campaignList.map {
                     EtalaseListAdapter.Model.Campaign(
                         campaignUiModel = it,
@@ -55,7 +55,7 @@ internal class EtalaseListViewComponent(
             }
 
             if (etalaseList.isNotEmpty()) {
-                add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_etalase)))
+                add(EtalaseListAdapter.Model.Header(getString(contentproductpickerR.string.play_bro_etalase)))
                 addAll(
                     etalaseList.map {
                         EtalaseListAdapter.Model.Etalase(

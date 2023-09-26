@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     >
 
-    <com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
+    <com.tokopedia.content.product.picker.sgc.view.custom.PlaySearchBar
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/play_dp_12"
+        android:layout_marginTop="@dimen/content_product_picker_12_dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/play_dp_12"
+        android:layout_marginEnd="@dimen/content_product_picker_12_dp"
         app:layout_constraintBottom_toTopOf="@id/fl_next_btn_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:text="@string/play_next"
+            android:text="@string/content_product_picker_next"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
             />

@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 
 import com.tokopedia.content.common.util.eventbus.EventBus
-import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
+import com.tokopedia.content.product.picker.sgc.view.custom.PlaySearchBar
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**

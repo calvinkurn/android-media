@@ -1,15 +1,15 @@
-package com.tokopedia.play.broadcaster.view.custom
+package com.tokopedia.content.product.picker.sgc.view.custom
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.product.picker.databinding.ViewPlayBroPinProductBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPinProductBinding
-import com.tokopedia.unifyprinciples.R as unifyR
-import com.tokopedia.play.broadcaster.R as broR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.product.picker.R
 
 /**
  * @author by astidhiyaa on 26/07/22
@@ -38,19 +38,19 @@ class PlayBroPinnedView : ConstraintLayout {
                 newIconId = IconUnify.PUSH_PIN,
                 newDarkEnable = MethodChecker.getColor(
                     context,
-                    unifyR.color.Unify_RN400
+                    unifyprinciplesR.color.Unify_RN400
                 ),
                 newLightEnable = MethodChecker.getColor(
                     context,
-                    unifyR.color.Unify_RN400
+                    unifyprinciplesR.color.Unify_RN400
                 )
             )
             binding.tvPin.text =
-                context.resources.getString(broR.string.play_bro_unpin)
+                context.resources.getString(R.string.play_bro_unpin)
             binding.tvPin.setTextColor(
                 MethodChecker.getColor(
                     context,
-                    unifyR.color.Unify_RN400
+                    unifyprinciplesR.color.Unify_RN400
                 )
             )
         } else {
@@ -58,19 +58,19 @@ class PlayBroPinnedView : ConstraintLayout {
                 newIconId = IconUnify.PUSH_PIN,
                 newDarkEnable = MethodChecker.getColor(
                     context,
-                    unifyR.color.Unify_Static_White
+                    unifyprinciplesR.color.Unify_Static_White
                 ),
                 newLightEnable = MethodChecker.getColor(
                     context,
-                    unifyR.color.Unify_Static_White
+                    unifyprinciplesR.color.Unify_Static_White
                 )
             )
             binding.tvPin.text =
-                context.resources.getString(broR.string.play_bro_pin)
+                context.resources.getString(R.string.play_bro_pin)
             binding.tvPin.setTextColor(
                 MethodChecker.getColor(
                     context,
-                    unifyR.color.Unify_Static_White
+                    unifyprinciplesR.color.Unify_Static_White
                 )
             )
         }

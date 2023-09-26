@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.content.product.picker.databinding.ItemSortListBinding
 import com.tokopedia.content.common.R as contentcommonR
-import com.tokopedia.play.broadcaster.databinding.ItemSortListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
 
 /**

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="content_product_picker_10_dp">10dp</dimen>
+    <dimen name="content_product_picker_12_dp">12dp</dimen>
+
+    <dimen name="play_product_preview_radius">8dp</dimen>
+
+    <!--Etalase & Campaign-->
+    <dimen name="play_bro_etalase_list_body_image_size">64dp</dimen>
+    <dimen name="play_bro_etalase_list_divider_height">1dp</dimen>
+
+    <!--Product Chooser-->
+    <dimen name="play_bro_product_chooser_btn_container_elevation">10dp</dimen>
+
+    <!-- Product Summary -->
+    <dimen name="play_bro_product_summary_btn_container_elevation">10dp</dimen>
+</resources>

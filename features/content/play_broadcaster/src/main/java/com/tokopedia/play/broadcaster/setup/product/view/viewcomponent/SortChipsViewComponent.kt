@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 
 import com.tokopedia.content.common.util.eventbus.EventBus
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ChipsUnify
 
@@ -25,7 +25,7 @@ class SortChipsViewComponent(
 
     fun setText(text: String?) {
         if (text.isNullOrBlank()) {
-            view.chipText = getString(R.string.play_bro_etalase_sort)
+            view.chipText = getString(contentproductpickerR.string.play_bro_etalase_sort)
             view.chipType = ChipsUnify.TYPE_NORMAL
         } else {
             view.chipText = text

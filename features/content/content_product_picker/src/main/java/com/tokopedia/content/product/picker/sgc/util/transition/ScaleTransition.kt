@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.transition
+package com.tokopedia.content.product.picker.sgc.util.transition
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter

@@ -6,9 +6,9 @@ import android.graphics.Paint
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By : Jonathan Darwin on February 22, 2022
@@ -17,10 +17,10 @@ class EtalaseListItemDecoration(
     context: Context,
 ) : RecyclerView.ItemDecoration() {
 
-    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_bro_etalase_list_divider_height)
+    private val dividerHeight = context.resources.getDimensionPixelOffset(contentproductpickerR.dimen.play_bro_etalase_list_divider_height)
 
     private val mPaint = Paint().apply {
-        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        color = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN50)
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

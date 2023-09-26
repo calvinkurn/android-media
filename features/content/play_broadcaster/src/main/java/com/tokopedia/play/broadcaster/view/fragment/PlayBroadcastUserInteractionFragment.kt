@@ -19,6 +19,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
@@ -865,7 +866,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         if (event.throwable is PinnedProductException) {
                             analytic.onImpressColdDownPinProductSecondEvent(true)
                             showToaster(
-                                message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
+                                message = if (event.throwable.message.isEmpty()) getString(contentproductpickerR.string.play_bro_pin_product_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR
                             )
                         } else {

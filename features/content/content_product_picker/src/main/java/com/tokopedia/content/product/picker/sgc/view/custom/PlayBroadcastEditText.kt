@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.custom
+package com.tokopedia.content.product.picker.sgc.view.custom
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R
 
 /**
  * Created by jegul on 16/07/20

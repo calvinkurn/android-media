@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSummaryViewHolder
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
@@ -65,7 +65,7 @@ internal class ProductSummaryListViewComponent(
         view.addOneTimeGlobalLayoutListener {
             adapter.getItems().forEachIndexed { index, _ ->
                 val holder = view.findViewHolderForAdapterPosition(index)
-                val view = holder?.itemView?.findViewById<Typography>(R.id.tv_commission_fmt)
+                val view = holder?.itemView?.findViewById<Typography>(contentproductpickerR.id.tv_commission_fmt)
                 if (view?.isVisible == true) {
                     firstProductCommissionView.invoke(view)
                     return@addOneTimeGlobalLayoutListener

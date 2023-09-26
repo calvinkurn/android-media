@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.databinding.ItemProductListBinding
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.databinding.ItemLoadingBinding
-import com.tokopedia.play.broadcaster.databinding.ItemProductListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductListAdapter
 import com.tokopedia.content.product.picker.sgc.model.DiscountedPrice
 import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
@@ -34,7 +34,7 @@ internal class ProductListViewHolder private constructor() {
             binding.imgProduct.loadImage(item.product.imageUrl)
             binding.tvName.text = item.product.name
             binding.tvStock.text = itemView.context.getString(
-                R.string.play_bro_product_stock, item.product.stock
+                contentproductpickerR.string.play_bro_product_stock, item.product.stock
             )
 
             binding.checkboxProduct.isChecked = item.isSelected
@@ -47,7 +47,7 @@ internal class ProductListViewHolder private constructor() {
                 is DiscountedPrice -> {
                     binding.tvPrice.text = productPrice.discountedPrice
                     binding.labelDiscountPercentage.text = itemView.context.getString(
-                        R.string.play_bro_product_discount_template,
+                        contentproductpickerR.string.play_bro_product_discount_template,
                         productPrice.discountPercent
                     )
                     binding.tvPriceBeforeDiscount.text = productPrice.originalPrice

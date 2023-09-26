@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.custom
+package com.tokopedia.content.product.picker.sgc.view.custom
 
 import android.content.Context
 import android.os.Parcel
@@ -16,8 +16,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.transition.*
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.transition.ScaleTransition
+import com.tokopedia.content.product.picker.R
+import com.tokopedia.content.product.picker.sgc.util.transition.ScaleTransition
 
 /**
  * Created by jegul on 26/05/20

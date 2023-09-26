@@ -9,6 +9,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductTagItemDecoration
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselViewHolder
@@ -128,9 +129,9 @@ class ProductTagViewComponent(
             holder?.let {
                 val coachMarkItem = arrayListOf(
                     CoachMark2Item(
-                        it.itemView.findViewById(R.id.view_pin_product),
+                        it.itemView.findViewById(contentproductpickerR.id.view_pin_product),
                         "",
-                        getString(R.string.play_bro_pinned_coachmark_desc),
+                        getString(contentproductpickerR.string.play_bro_pinned_coachmark_desc),
                         CoachMark2.POSITION_BOTTOM
                     )
                 )

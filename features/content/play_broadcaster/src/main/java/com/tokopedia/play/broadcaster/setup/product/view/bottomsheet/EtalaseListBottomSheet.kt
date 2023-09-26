@@ -9,9 +9,9 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.content.common.util.eventbus.EventBus
+import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroEtalaseListBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.setup.product.analytic.EtalaseListAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
@@ -21,7 +21,6 @@ import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustom
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -132,11 +131,11 @@ class EtalaseListBottomSheet @Inject constructor(
         model: CampaignAndEtalaseUiModel,
     ) {
         val title = if (model.campaignList.isNotEmpty() && model.etalaseList.isNotEmpty()) {
-            getString(R.string.play_bro_campaign_and_etalase)
+            getString(contentproductpickerR.string.play_bro_campaign_and_etalase)
         } else if (model.campaignList.isNotEmpty()) {
-            getString(R.string.play_bro_campaign)
+            getString(contentproductpickerR.string.play_bro_campaign)
         } else {
-            getString(R.string.play_bro_etalase)
+            getString(contentproductpickerR.string.play_bro_etalase)
         }
         setTitle(title)
     }

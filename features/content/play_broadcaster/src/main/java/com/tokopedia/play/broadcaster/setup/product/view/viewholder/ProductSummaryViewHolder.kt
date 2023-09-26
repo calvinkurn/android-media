@@ -10,11 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.product.picker.databinding.ItemProductSummaryBodyListBinding
+import com.tokopedia.content.product.picker.databinding.ItemProductSummaryHeaderListBinding
 import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryBodyListBinding
-import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryHeaderListBinding
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
 import com.tokopedia.content.product.picker.sgc.model.DiscountedPrice
 import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
@@ -23,6 +23,7 @@ import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022
@@ -39,14 +40,14 @@ internal class ProductSummaryViewHolder private constructor() {
             when(item.status) {
                 CampaignStatus.Ongoing -> {
                     binding.tvProductSummaryLabelStatus.setLabel(
-                        itemView.context.getString(R.string.play_bro_ongoing_campaign)
+                        itemView.context.getString(contentproductpickerR.string.play_bro_ongoing_campaign)
                     )
                     binding.tvProductSummaryLabelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
                     binding.tvProductSummaryLabelStatus.visibility = View.VISIBLE
                 }
                 CampaignStatus.Ready, CampaignStatus.ReadyLocked -> {
                     binding.tvProductSummaryLabelStatus.setLabel(
-                        itemView.context.getString(R.string.play_bro_upcoming_campaign)
+                        itemView.context.getString(contentproductpickerR.string.play_bro_upcoming_campaign)
                     )
                     binding.tvProductSummaryLabelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_ORANGE)
                     binding.tvProductSummaryLabelStatus.visibility = View.VISIBLE
@@ -80,21 +81,21 @@ internal class ProductSummaryViewHolder private constructor() {
             get() = itemView.context
 
         private val fgColor: ForegroundColorSpan
-            get() = ForegroundColorSpan(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            get() = ForegroundColorSpan(MethodChecker.getColor(ctx, unifyprinciplesR.color.Unify_GN500))
 
         @SuppressLint("ResourceType")
         fun bind(item: ProductSummaryAdapter.Model.Body) {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
             binding.tvProductSummaryName.text = item.product.name
 
-            binding.tvCommissionFmt.text = ctx.getString(R.string.play_shorts_affiliate_commission_fmt, item.product.commissionFmt)
+            binding.tvCommissionFmt.text = ctx.getString(contentproductpickerR.string.play_shorts_affiliate_commission_fmt, item.product.commissionFmt)
             binding.tvCommissionFmt.showWithCondition(item.product.hasCommission)
             binding.tvCommissionExtra.showWithCondition(item.product.hasCommission && item.product.extraCommission)
 
             binding.tvPinnedProductCarouselInfo.apply {
                 text = buildSpannedString {
                     if(item.product.pinStatus.isPinned) {
-                        append(ctx.getString(R.string.play_bro_pinned_product_info), fgColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+                        append(ctx.getString(contentproductpickerR.string.play_bro_pinned_product_info), fgColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                     }
                 }
                 visibility = if(text.isNullOrEmpty()) View.GONE else View.VISIBLE
@@ -104,9 +105,9 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
             binding.tvProductSummaryEmptyStock.text = ctx.getString(
                 if (item.product.pinStatus.isPinned) {
-                    R.string.play_bro_product_tag_stock_empty_pinned
+                    contentproductpickerR.string.play_bro_product_tag_stock_empty_pinned
                 } else {
-                    R.string.play_bro_product_tag_stock_empty
+                    contentproductpickerR.string.play_bro_product_tag_stock_empty
                 }
             )
 
@@ -120,7 +121,7 @@ internal class ProductSummaryViewHolder private constructor() {
                     binding.tvProductSummaryPrice.text = productPrice.discountedPrice
                     binding.tvProductSummaryOriginalPrice.text = productPrice.originalPrice
                     binding.labelProductSummaryDiscount.text = itemView.context.getString(
-                        R.string.play_bro_product_discount_template,
+                        contentproductpickerR.string.play_bro_product_discount_template,
                         productPrice.discountPercent
                     )
                     binding.labelProductSummaryDiscount.visibility = View.VISIBLE
