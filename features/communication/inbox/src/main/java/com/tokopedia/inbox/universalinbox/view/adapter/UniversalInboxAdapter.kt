@@ -185,23 +185,6 @@ class UniversalInboxAdapter(
         return visitables.firstOrNull() is UniversalInboxWidgetMetaUiModel
     }
 
-    fun getWidgetPosition(widgetType: Int): Int {
-        var position = -1
-        try {
-            if (isWidgetMetaAdded()) {
-                val widgetMetaUiModel = visitables.firstOrNull() as? UniversalInboxWidgetMetaUiModel
-                widgetMetaUiModel?.widgetList?.forEachIndexed { index, uiModel ->
-                    if (uiModel.type == widgetType) {
-                        position = index
-                    }
-                }
-            }
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-        }
-        return position
-    }
-
     fun tryUpdateMenuItemsAtPosition(newList: List<Visitable<in UniversalInboxTypeFactory>>) {
         try {
             val editedList = visitables.toMutableList()
