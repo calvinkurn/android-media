@@ -19,7 +19,6 @@ class TextDescriptionViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_text_description
-
         private val TEXT_LOW_EMPHASIS = R.color.dms_static_Unify_NN600_light
     }
 

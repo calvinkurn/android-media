@@ -17,10 +17,10 @@
         tools:text="Highlight has a max. 1 line. A plenty of space for you."
         android:textColor="@color/Unify_NN600"
         app:typographyWeight="reguler"
+        app:typographyType="display_3"
         android:maxLines="1"
         android:ellipsize="end"
         android:maxLength="50"
-        android:textSize="12sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -29,10 +29,11 @@
         tools:text="The title has a max. of 2 lines, make sure to make it as concise as possible please!"
         android:textColor="@color/Unify_NN950"
         app:typographyWeight="bold"
+        app:typographyType="paragraph_2"
+        android:layout_marginTop="4dp"
         android:maxLines="2"
         android:ellipsize="end"
         android:maxLength="80"
-        android:textSize="14sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -41,10 +42,11 @@
         tools:text="The description has a max. of 4 lines! so please give as much context as possible but make it concise! LLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magn"
         android:textColor="@color/Unify_NN600"
         app:typographyWeight="reguler"
+        app:typographyType="paragraph_3"
+        android:layout_marginTop="4dp"
         android:maxLines="4"
         android:ellipsize="end"
         android:maxLength="215"
-        android:textSize="12sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
