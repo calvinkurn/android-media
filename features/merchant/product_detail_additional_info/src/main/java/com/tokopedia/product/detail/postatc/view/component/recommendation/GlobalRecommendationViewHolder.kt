@@ -47,14 +47,15 @@ class GlobalRecommendationViewHolder(
                 isUserLoggedIn = callback.userSession.isLoggedIn,
                 userId = callback.userSession.userId,
                 warehouseId = element.warehouseId,
-                offerId = element.offerId
+                offerId = element.offerId,
+                shopId = element.shopId
             ),
-            listener = object: RecommendationWidgetListener {
+            listener = object : RecommendationWidgetListener {
                 override fun onProductClick(item: RecommendationItem): Boolean {
                     callback.dismiss()
                     return false
                 }
-            },
+            }
         )
 
     private fun recommendationWidgetCallback(element: RecommendationUiModel) =
