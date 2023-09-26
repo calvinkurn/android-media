@@ -6,7 +6,6 @@ import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -253,7 +252,8 @@ class CheckoutPromoProcessor @Inject constructor(
         validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
         validateUsePromoRequest.skipApply = 0
         validateUsePromoRequest.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-            RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).isRevamp()
         if (isTradeIn) {
             validateUsePromoRequest.isTradeIn = 1
             validateUsePromoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
@@ -719,6 +719,27 @@ class CheckoutPromoProcessor @Inject constructor(
                     )
                 ).executeOnBackground()
                 return@withContext onSuccessClearPromo(responseData, clearPromoOrder.codes.first())
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return@withContext false
+            }
+        }
+    }
+
+    suspend fun clearPromoValidate(clearPromoOrder: ClearPromoOrder): Boolean {
+        return withContext(dispatchers.io) {
+            try {
+                val responseData = clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        false,
+                        ClearPromoOrderData(
+                            emptyList(),
+                            arrayListOf(clearPromoOrder)
+                        )
+                    )
+                ).executeOnBackground()
+                return@withContext responseData.successDataModel.success
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext false

@@ -258,13 +258,13 @@ class CheckoutViewModel @Inject constructor(
                             epharmacy = uploadPrescriptionUiModel
                         )
 
-                    isPromoRevamp = PromoUsageRollenceManager()
-                        .isRevamp(saf.cartShipmentAddressFormData.lastApplyData.userGroupMetadata)
+                        isPromoRevamp = PromoUsageRollenceManager()
+                            .isRevamp(saf.cartShipmentAddressFormData.lastApplyData.userGroupMetadata)
                         val promo = CheckoutPromoModel(
                             isEnable = !tickerError.isError,
-                        promo = saf.cartShipmentAddressFormData.lastApplyData,
-                        isPromoRevamp = isPromoRevamp ?: false,
-                        isLoading = isPromoRevamp ?: false
+                            promo = saf.cartShipmentAddressFormData.lastApplyData,
+                            isPromoRevamp = isPromoRevamp ?: false,
+                            isLoading = isPromoRevamp ?: false
                         )
                         if (promo.isEnable && saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
                             PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
@@ -1263,16 +1263,13 @@ class CheckoutViewModel @Inject constructor(
                 it.isSelected = it.productData.shipperProductId == courierItemData.shipperProductId
             }
             if (shipment.courierItemData?.selectedShipper?.logPromoCode?.isNotEmpty() == true) {
-                val newShipment = shipment.copy(
-                    isLoading = true,
-                    courierItemData = courierItemData,
-                    shippingCourierUiModels = shippingCourierUiModels,
-                    insurance = generateCheckoutOrderInsuranceFromCourier(courierItemData, checkoutOrderModel)
+                checkoutItems[cartPosition] = checkoutOrderModel.copy(
+                    shipment = shipment.copy(
+                        isLoading = true
+                    )
                 )
-                val newOrder = checkoutOrderModel.copy(shipment = newShipment)
-                checkoutItems[cartPosition] = newOrder
                 listData.value = checkoutItems
-                val shouldClearPromoBenefit = promoProcessor.clearPromo(
+                val success = promoProcessor.clearPromoValidate(
                     ClearPromoOrder(
                         checkoutOrderModel.boUniqueId,
                         checkoutOrderModel.boMetadata.boType,
@@ -1284,11 +1281,17 @@ class CheckoutViewModel @Inject constructor(
                         checkoutOrderModel.cartStringGroup
                     )
                 )
-                if (shouldClearPromoBenefit) {
-                    val list = listData.value.toMutableList()
-                    val newPromo = list.promo()!!.copy(promo = LastApplyUiModel())
-                    list[list.size - 4] = newPromo
-                    listData.value = list
+                if (!success) {
+                    val items = listData.value.toMutableList()
+                    val newShipment = shipment.copy(
+                        isLoading = false
+                    )
+                    val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+                    items[cartPosition] = newOrder
+                    listData.value = items
+                    pageState.value = CheckoutPageState.Normal
+                    toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR))
+                    return@launch
                 }
             }
             val list = listData.value.toMutableList()
