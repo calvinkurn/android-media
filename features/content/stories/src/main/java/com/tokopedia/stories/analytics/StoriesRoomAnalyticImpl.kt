@@ -4,6 +4,8 @@ import android.os.Bundle
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -12,13 +14,13 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 
 class StoriesRoomAnalyticImpl @AssistedInject constructor(
-    @Assisted private val authorId: String,
+    @Assisted private val args: StoriesArgsModel,
     private val userSession: UserSessionInterface,
 ) : StoriesRoomAnalytic {
 
     @AssistedFactory
     interface Factory : StoriesRoomAnalytic.Factory {
-        override fun create(authorId: String): StoriesRoomAnalyticImpl
+        override fun create(args: StoriesArgsModel): StoriesRoomAnalyticImpl
     }
 
     private val userId: String
@@ -36,7 +38,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
             .setCustomProperty(Key.isLoggedInStatus, isLogin.toString())
-            .setCustomProperty(Key.screenName, "/stories-room/$storiesId/$authorId")
+            .setCustomProperty(Key.screenName, "/stories-room/$storiesId/${args.authorId}")
             .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
@@ -46,7 +48,6 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46043
     override fun sendViewStoryCircleEvent(
-        entryPoint: String,
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     ) {
@@ -63,7 +64,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             putString(Key.event, Event.viewItem)
             putString(Key.eventAction, "view - story circle")
             putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
-            putString(Key.eventLabel, "$entryPoint - $authorId - $currentCircle")
+            putString(Key.eventLabel, "${args.source} - ${args.authorId} - $currentCircle")
             putString(Key.trackerId, "46043")
             putString(Key.businessUnit, BusinessUnit.content)
             putString(Key.currentSite, currentSite)
@@ -132,7 +133,6 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46049
     override fun sendClickStoryCircleEvent(
-        entryPoint: String,
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     ) {
@@ -149,7 +149,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             putString(Key.event, Event.selectContent)
             putString(Key.eventAction, "click - story circle")
             putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
-            putString(Key.eventLabel, "$entryPoint - $authorId - $currentCircle")
+            putString(Key.eventLabel, "${args.source} - ${args.authorId} - $currentCircle")
             putString(Key.trackerId, "46049")
             putString(Key.businessUnit, BusinessUnit.content)
             putString(Key.currentSite, currentSite)
@@ -185,22 +185,39 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46051
     override fun sendViewProductCardEvent(
         eventLabel: String,
-        items: List<String>,
+        items : Map<ContentTaggedProductUiModel, Int>
     ) {
-        Tracker.Builder()
-            .setEvent("view_item_list")
-            .setEventAction("view - product card")
-            .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(Key.trackerId, "46051")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite(currentSite)
-            .setCustomProperty("item_list", "/stories-room - product card")
-            .setCustomProperty(Key.items, items)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        if (items.isEmpty()) return
+        val listOfProducts = items.map {
+            Bundle().apply {
+                putInt(Key.itemIndex, it.value)
+                putString(Key.itemId, it.key.id)
+                putString(Key.itemName, it.key.title)
+                putFloat(Key.price, when (val price = it.key.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopType, args.authorType)
+            }
+        }
+        val eventDataLayer = Bundle().apply {
+            putString(Key.event, Event.viewItemList)
+            putString(Key.eventAction, "view - product card")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, eventLabel)
+            putString(Key.trackerId, "46051")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.items, ArrayList(listOfProducts))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.viewItemList,
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
@@ -208,70 +225,120 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickProductCardEvent(
         eventLabel: String,
         itemList: String,
-        items: List<String>,
+        items: List<ContentTaggedProductUiModel>,
+        position: Int,
     ) {
-        Tracker.Builder()
-            .setEvent(Event.selectContent)
-            .setEventAction("click - product card")
-            .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(Key.trackerId, "46052")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite(currentSite)
-            .setCustomProperty("item_list", itemList)
-            .setCustomProperty(Key.items, items)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        val listOfProducts = items.map {
+            Bundle().apply {
+                putInt(Key.itemIndex, position)
+                putString(Key.itemId, it.id)
+                putString(Key.itemName, it.title)
+                putFloat(Key.price, when (val price = it.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopType, args.authorType)
+            }
+        }
+        val eventDataLayer = Bundle().apply {
+            putString(Key.event, Event.selectContent)
+            putString(Key.eventAction, "click - product card")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, eventLabel)
+            putString(Key.trackerId, "46052")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.items, ArrayList(listOfProducts))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.selectContent,
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46054
     override fun sendClickBuyButtonEvent(
         eventLabel: String,
-        items: List<String>,
+        items: List<ContentTaggedProductUiModel>,
     ) {
-        Tracker.Builder()
-            .setEvent(Event.add_to_cart)
-            .setEventAction("click - buy button")
-            .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(Key.trackerId, "46054")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(Key.items, items)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        val itemList = items.map {
+            Bundle().apply {
+                putString(Key.itemId, it.id)
+                putString(Key.itemName, it.title)
+                putFloat(Key.price, when (val price = it.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopType, args.authorType)
+            }
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(Key.event, Event.add_to_cart)
+            putString(Key.eventAction, "click - buy button")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, eventLabel)
+            putString(Key.trackerId, "46054")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.items, ArrayList(itemList))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.add_to_cart,
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46056
     override fun sendClickAtcButtonEvent(
         eventLabel: String,
-        items: List<String>,
+        items: List<ContentTaggedProductUiModel>,
     ) {
-        Tracker.Builder()
-            .setEvent(Event.add_to_cart)
-            .setEventAction("click - atc button")
-            .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(Key.trackerId, "46056")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(Key.items, items)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        val itemList = items.map {
+            Bundle().apply {
+                putString(Key.itemId, it.id)
+                putString(Key.itemName, it.title)
+                putFloat(Key.price, when (val price = it.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopType, args.authorType)
+            }
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(Key.event, Event.add_to_cart)
+            putString(Key.eventAction, "click - atc button")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, eventLabel)
+            putString(Key.trackerId, "46056")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.items, ArrayList(itemList))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.add_to_cart,
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46057
     override fun sendClickTapNextContentEvent(
-        entryPoint: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -281,7 +348,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setEvent(Event.clickContent)
             .setEventAction("click - tap next content")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("${args.source} - ${args.authorId} - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty(Key.trackerId, "46057")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
@@ -294,7 +361,6 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46058
     override fun sendClickTapPreviousContentEvent(
-        entryPoint: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -304,7 +370,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setEvent(Event.clickContent)
             .setEventAction("click - tap previous content")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("${args.source} - ${args.authorId} - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty(Key.trackerId, "46058")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
@@ -316,12 +382,12 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46059
-    override fun sendClickMoveToOtherGroup(entryPoint: String) {
+    override fun sendClickMoveToOtherGroup() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - move to other group")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("$entryPoint - $authorId")
+            .setEventLabel("${args.source} - ${args.authorId}")
             .setCustomProperty(Key.trackerId, "46059")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
@@ -334,7 +400,6 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46062
     override fun sendClickExitStoryRoomEvent(
-        entryPoint: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
@@ -344,7 +409,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .setEvent(Event.clickContent)
             .setEventAction("click - exit story room")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("$entryPoint - $authorId - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("${args.source} - ${args.authorId} - $storiesId - $creatorType - $contentType - $currentCircle")
             .setCustomProperty(Key.trackerId, "46062")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)

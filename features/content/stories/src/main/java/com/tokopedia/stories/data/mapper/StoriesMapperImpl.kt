@@ -94,7 +94,9 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                         metadata = LinkProperties(
                             ogTitle = stories.meta.shareTitle,
                             ogImageUrl = stories.meta.shareImage,
-                            ogDescription = stories.meta.shareDescription
+                            ogDescription = stories.meta.shareDescription,
+                            deeplink = stories.appLink,
+                            desktopUrl = stories.webLink,
                         )
                     ),
                     productCount = stories.totalProductsFmt.ifEmpty { "0" },
@@ -117,14 +119,6 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
     ) =
         buildList {
             when {
-                !isOwner(author) && template.reportable -> add(
-                    ContentMenuItem(
-                        iconUnify = IconUnify.WARNING,
-                        name = contentcommonR.string.content_common_menu_report,
-                        type = ContentMenuIdentifier.Report
-                    )
-                )
-
                 isOwner(author) && template.deletable -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.DELETE,
@@ -143,13 +137,15 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                 userName = author.name,
                 userId = author.id,
                 avatarUrl = author.thumbnailURL,
+                appLink = author.appLink
             )
         } else {
             StoryAuthor.Shop(
                 shopName = author.name,
                 shopId = author.id,
                 avatarUrl = author.thumbnailURL,
-                badgeUrl = author.badgeURL
+                badgeUrl = author.badgeURL,
+                appLink = author.appLink
             )
         }
     }

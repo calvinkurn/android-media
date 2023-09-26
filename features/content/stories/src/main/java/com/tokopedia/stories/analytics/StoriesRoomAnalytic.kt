@@ -1,14 +1,16 @@
 package com.tokopedia.stories.analytics
 
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.stories.view.model.StoriesArgsModel
+
 interface StoriesRoomAnalytic {
 
     interface Factory {
-        fun create(authorId: String): StoriesRoomAnalytic
+        fun create(args: StoriesArgsModel): StoriesRoomAnalytic
     }
 
     fun sendImpressionStoriesContent(storiesId: String)
     fun sendViewStoryCircleEvent(
-        entryPoint: String,
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     )
@@ -16,34 +18,28 @@ interface StoriesRoomAnalytic {
     fun sendClickThreeDotsEvent(eventLabel: String)
     fun sendClickShoppingBagEvent(eventLabel: String)
     fun sendClickStoryCircleEvent(
-        entryPoint: String,
         currentCircle: String,
         promotions: List<StoriesEEModel>,
     )
     fun sendClickRemoveStoryEvent(eventLabel: String)
-    fun sendViewProductCardEvent(eventLabel: String, items: List<String>)
-    fun sendClickProductCardEvent(eventLabel: String, itemList: String, items: List<String>)
-    fun sendClickBuyButtonEvent(eventLabel: String, items: List<String>)
-    fun sendClickAtcButtonEvent(eventLabel: String, items: List<String>)
+    fun sendViewProductCardEvent(eventLabel: String, items: Map<ContentTaggedProductUiModel, Int>)
+    fun sendClickProductCardEvent(eventLabel: String, itemList: String, items: List<ContentTaggedProductUiModel>, position: Int)
+    fun sendClickBuyButtonEvent(eventLabel: String, items: List<ContentTaggedProductUiModel>)
+    fun sendClickAtcButtonEvent(eventLabel: String, items: List<ContentTaggedProductUiModel>)
     fun sendClickTapNextContentEvent(
-        entryPoint: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
         currentCircle: String,
     )
     fun sendClickTapPreviousContentEvent(
-        entryPoint: String,
         storiesId: String,
         creatorType: String,
         contentType: String,
         currentCircle: String,
     )
-    fun sendClickMoveToOtherGroup(
-        entryPoint: String,
-    )
+    fun sendClickMoveToOtherGroup()
     fun sendClickExitStoryRoomEvent(
-        entryPoint: String,
         storiesId: String,
         creatorType: String,
         contentType: String,

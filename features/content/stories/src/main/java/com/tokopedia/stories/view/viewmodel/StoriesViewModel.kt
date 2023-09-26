@@ -10,11 +10,12 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.R
 import com.tokopedia.stories.data.repository.StoriesRepository
-import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
+import com.tokopedia.stories.utils.StoriesPreference
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
@@ -45,15 +46,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class StoriesViewModel @AssistedInject constructor(
-    @Assisted private val authorId: String,
+    @Assisted private val args: StoriesArgsModel,
     @Assisted private val handle: SavedStateHandle,
     private val repository: StoriesRepository,
     private val userSession: UserSessionInterface,
+    private val sharedPref: StoriesPreference,
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory  {
-        fun create(authorId: String, handle: SavedStateHandle) : StoriesViewModel
+        fun create(args: StoriesArgsModel, handle: SavedStateHandle) : StoriesViewModel
     }
 
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
@@ -166,6 +168,15 @@ class StoriesViewModel @AssistedInject constructor(
     val userId : String
         get() = userSession.userId.ifEmpty { "0" }
 
+    private fun setupOnboard() {
+        if (!sharedPref.isVisited()) {
+            viewModelScope.launch {
+                _storiesEvent.emit(StoriesUiEvent.OnboardShown(true))
+            }
+            sharedPref.setVisit()
+        }
+    }
+
     fun submitAction(action: StoriesUiAction) {
         when (action) {
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
@@ -187,6 +198,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
+            is StoriesUiAction.Navigate -> handleNav(action.appLink)
             else -> {}
         }
     }
@@ -222,6 +234,7 @@ class StoriesViewModel @AssistedInject constructor(
                 handleMainData(_groupPos.value)
             })
         }
+        setupOnboard()
     }
 
     private fun handleSelectGroup(position: Int, showAnimation: Boolean) {
@@ -303,10 +316,8 @@ class StoriesViewModel @AssistedInject constructor(
 
         val prevGroupId = prevGroupItem.groupId
 
-        try {
-            val prevGroupData = requestStoriesDetailData(prevGroupId)
-            updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
-        } catch (throwable: Throwable) { throw throwable }
+        val prevGroupData = requestStoriesDetailData(prevGroupId)
+        updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
     }
 
     private suspend fun fetchAndCacheNextGroupDetail() {
@@ -317,10 +328,8 @@ class StoriesViewModel @AssistedInject constructor(
 
         val nextGroupId = nextGroupItem.groupId
 
-        try {
-            val nextGroupData = requestStoriesDetailData(nextGroupId)
-            updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
-        } catch (throwable: Throwable) { throw throwable }
+        val nextGroupData = requestStoriesDetailData(nextGroupId)
+        updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
     }
 
     private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
@@ -391,25 +400,27 @@ class StoriesViewModel @AssistedInject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(authorId, storyId, mGroupItem.groupName)
+            val productList = repository.getStoriesProducts(args.authorId, storyId, mGroupItem.groupName)
             products.update { productList }
         }, onError = {
-            products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
+            products.update { product -> product.copy(resultState = ResultState.Fail(it)) }
         })
     }
 
-    private fun addToCart(product: ContentTaggedProductUiModel) {
+    private fun addToCart(product: ContentTaggedProductUiModel, action: StoriesProductAction) {
         requiredLogin {
             viewModelScope.launchCatchError(block = {
                 val response = repository.addToCart(
                     productId = product.id,
                     price = product.finalPrice,
-                    shopId = authorId,
+                    shopId = args.authorId,
                     productName = product.title
                 )
 
                 if (response) {
-                    _storiesEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
+                    if (action == StoriesProductAction.ATC)
+                        _storiesEvent.emit(StoriesUiEvent.ProductSuccessEvent(action, R.string.stories_product_atc_success))
+                    else _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
                 } else throw MessageErrorException()
 
             }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
@@ -430,13 +441,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
     private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
         requiredLogin {
-            if (action == StoriesProductAction.Buy) {
-                viewModelScope.launch {
-                    _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
-                }
-            } else {
-                addToCart(product)
-            }
+            addToCart(product, action)
         }
     }
 
@@ -539,18 +544,18 @@ class StoriesViewModel @AssistedInject constructor(
 
     private suspend fun requestStoriesInitialData(): StoriesUiModel {
         val request = StoriesRequestModel(
-            authorID = authorId,
-            authorType = StoriesAuthorType.SHOP.value,
-            source = StoriesSource.SHOP_ENTRY_POINT.value,
-            sourceID = "",
+            authorID = args.authorId,
+            authorType = args.authorType,
+            source = args.source,
+            sourceID = args.sourceId,
         )
         return repository.getStoriesInitialData(request)
     }
 
     private suspend fun requestStoriesDetailData(sourceId: String): StoriesDetail {
         val request = StoriesRequestModel(
-            authorID = authorId,
-            authorType = StoriesAuthorType.SHOP.value,
+            authorID = args.authorId,
+            authorType = args.authorType,
             source = StoriesSource.STORY_GROUP.value,
             sourceID = sourceId,
         )
@@ -563,6 +568,12 @@ class StoriesViewModel @AssistedInject constructor(
             action = StoriesTrackActivityActionType.LAST_SEEN.value,
         )
         return repository.setStoriesTrackActivity(request)
+    }
+
+    private fun handleNav(appLink: String) {
+        viewModelScope.launch {
+            _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink))
+        }
     }
 
     companion object {

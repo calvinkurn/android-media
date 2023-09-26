@@ -8,11 +8,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -36,6 +40,7 @@ import com.tokopedia.utils.date.DateUtil
 import kotlinx.coroutines.flow.collectLatest
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 /**
  * @author by astidhiyaa on 25/07/23
@@ -50,6 +55,20 @@ class StoriesProductBottomSheet @Inject constructor(
 
     private val productAdapter by lazyThreadSafetyNone {
         ContentTaggedProductBottomSheetAdapter(this)
+    }
+
+    private val newHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
+    }
+
+    private var mListener : Listener? = null
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            when (newState) {
+                RecyclerView.SCROLL_STATE_IDLE -> sendImpression()
+            }
+        }
     }
 
     override fun onCreateView(
@@ -73,6 +92,7 @@ class StoriesProductBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.rvStoriesProduct.adapter = productAdapter
+        binding.rvStoriesProduct.addOnScrollListener(scrollListener)
     }
 
     private fun observeUiState() {
@@ -95,10 +115,14 @@ class StoriesProductBottomSheet @Inject constructor(
                         )
                     }
 
-                    is StoriesUiEvent.ShowInfoEvent -> {
+                    is StoriesUiEvent.ProductSuccessEvent -> {
                         val message = getString(event.message)
                         requireView().rootView.showToaster(
                             message = message,
+                            actionText = getString(R.string.stories_product_see_cart),
+                            clickListener = {
+                                viewModel.submitAction(StoriesUiAction.Navigate(ApplinkConst.CART))
+                            }
                         )
                     }
 
@@ -153,10 +177,12 @@ class StoriesProductBottomSheet @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        binding.root.maxHeight = newHeight
         viewModel.submitAction(StoriesUiAction.FetchProduct)
     }
 
     override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
+        mListener?.onClickedProduct(product, itemPosition, this)
         viewModel.submitAction(StoriesUiAction.Navigate(product.appLink))
     }
 
@@ -178,6 +204,7 @@ class StoriesProductBottomSheet @Inject constructor(
         type: StoriesProductAction,
         product: ContentTaggedProductUiModel
     ) {
+        mListener?.onProductActionClicked(type, product, this)
         if (product.showGlobalVariant) {
             viewModel.submitAction(StoriesUiAction.ShowVariantSheet(product))
         } else {
@@ -201,8 +228,37 @@ class StoriesProductBottomSheet @Inject constructor(
         super.onCancel(dialog)
     }
 
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
+    private fun getVisibleProducts(): Map<ContentTaggedProductUiModel, Int> {
+        val products = productAdapter.getItems()
+        val linearLayoutManager = binding.rvStoriesProduct.layoutManager as? LinearLayoutManager ?: return emptyMap()
+        if (products.isNotEmpty()) {
+            val startPosition = linearLayoutManager.findFirstVisibleItemPosition()
+            val endPosition = linearLayoutManager.findLastVisibleItemPosition()
+            if (startPosition > -1 && endPosition < products.size) {
+                return (startPosition..endPosition)
+                    .associateBy { products[it]  }
+            }
+        }
+        return emptyMap()
+    }
+
+    private fun sendImpression() {
+        mListener?.onImpressedProduct(getVisibleProducts(), this)
+    }
+
+    interface Listener {
+        fun onImpressedProduct(products: Map<ContentTaggedProductUiModel, Int>, view: StoriesProductBottomSheet)
+        fun onClickedProduct(product: ContentTaggedProductUiModel, position: Int, view: StoriesProductBottomSheet)
+        fun onProductActionClicked(action: StoriesProductAction, product: ContentTaggedProductUiModel, view: StoriesProductBottomSheet)
+    }
+
     companion object {
         const val TAG = "StoriesProductBottomSheet"
+        private const val HEIGHT_PERCENT = 0.8
 
         fun get(fragmentManager: FragmentManager): StoriesProductBottomSheet? {
             return fragmentManager.findFragmentByTag(TAG) as? StoriesProductBottomSheet

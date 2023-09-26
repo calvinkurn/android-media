@@ -31,6 +31,7 @@ object Event {
     const val add_to_cart = "add_to_cart"
 
     const val viewItem = "view_item"
+    const val viewItemList = "view_item_list"
 
     /**
      * Upcoming

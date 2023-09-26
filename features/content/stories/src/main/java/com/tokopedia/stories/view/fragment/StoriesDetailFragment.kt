@@ -69,11 +69,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 
 class StoriesDetailFragment @Inject constructor(
     private val analyticFactory: StoriesAnalytics.Factory,
-    private val router: Router,
-) : TkpdBaseV4Fragment() {
+    private val router: Router
+) : TkpdBaseV4Fragment(), StoriesThreeDotsBottomSheet.Listener, StoriesProductBottomSheet.Listener {
 
     private val mParentPage: StoriesGroupFragment
         get() = (requireParentFragment() as StoriesGroupFragment)
@@ -103,7 +104,7 @@ class StoriesDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private lateinit var variantSheet : AtcVariantBottomSheet
+    private var variantSheet : AtcVariantBottomSheet? = null
 
     private val atcVariantViewModel by lazyThreadSafetyNone {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
@@ -115,7 +116,7 @@ class StoriesDetailFragment @Inject constructor(
     private val shopId: String
         get() = arguments?.getString(SHOP_ID).orEmpty()
 
-    private val analytic: StoriesAnalytics get() = analyticFactory.create(shopId)
+    private val analytic: StoriesAnalytics get() = analyticFactory.create(mParentPage.args)
 
     private val activityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -135,7 +136,8 @@ class StoriesDetailFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
-                is StoriesThreeDotsBottomSheet -> {}
+                is StoriesThreeDotsBottomSheet -> fragment.setListener(this)
+                is StoriesProductBottomSheet ->  fragment.setListener(this)
             }
         }
         super.onCreate(savedInstanceState)
@@ -154,6 +156,11 @@ class StoriesDetailFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupStoriesView()
         setupObserver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showStoriesComponent(true)
     }
 
     private fun setupObserver() {
@@ -268,7 +275,8 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state ||
             state == StoriesDetail() ||
-            state.selectedGroupId != groupId
+            state.selectedGroupId != groupId ||
+            state.selectedDetailPosition < 0
         ) return
 
         setNoInternet(false)
@@ -342,11 +350,22 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun renderAuthor(state: StoriesDetailItem) = with(binding.vStoriesPartner) {
-        tvPartnerName.text = state.author.name
-        ivIcon.setImageUrl(state.author.thumbnailUrl)
-        btnFollow.gone()
-        if (state.author is StoryAuthor.Shop) ivBadge.setImageUrl(state.author.badgeUrl)
+    private fun buildEventLabel() : String = "${mParentPage.args.source} - ${viewModel.storyId} - ${mParentPage.args.authorId} -  asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+
+    private fun renderAuthor(state: StoriesDetailItem) {
+        with(binding.vStoriesPartner) {
+            tvPartnerName.text = state.author.name
+            ivIcon.setImageUrl(state.author.thumbnailUrl)
+            btnFollow.gone() // purposely hide the follow button in phase 1
+            if (state.author is StoryAuthor.Shop) {
+                ivBadge.setImageUrl(state.author.badgeUrl)
+            }
+
+            root.setOnClickListener {
+                analytic.sendClickShopNameEvent(buildEventLabel())
+                viewModelAction(StoriesUiAction.Navigate(state.author.appLink))
+            }
+        }
     }
 
 
@@ -354,6 +373,11 @@ class StoriesDetailFragment @Inject constructor(
         showPageLoading(true)
 
         icClose.setOnClickListener { activity?.finish() }
+
+        binding.icClose.hide()
+        icClose.setOnClickListener {
+            activity?.finish()
+        }
 
         rvStoriesCategory.apply {
             adapter = mAdapter
@@ -407,18 +431,20 @@ class StoriesDetailFragment @Inject constructor(
             }
         }
         vStoriesKebabIcon.setOnClickListener {
+            analytic.sendClickThreeDotsEvent(buildEventLabel())
             viewModelAction(StoriesUiAction.OpenKebabMenu)
         }
         vStoriesShareIcon.setOnClickListener {
             viewModelAction(StoriesUiAction.TapSharing)
         }
         vStoriesProductIcon.root.setOnClickListener {
+            analytic.sendClickShoppingBagEvent(buildEventLabel())
             viewModelAction(StoriesUiAction.OpenProduct)
         }
         flStoriesProduct.onTouchEventStories { event ->
             when (event) {
                 TouchEventStories.SWIPE_UP -> {
-                    if (!isEligiblePage) return@onTouchEventStories
+                    if (!isEligiblePage || !viewModel.isProductAvailable) return@onTouchEventStories
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
                 else -> {}
@@ -435,6 +461,7 @@ class StoriesDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesProductNotch(state.productCount) {
+                        analytic.sendClickShoppingBagEvent(buildEventLabel())
                         viewModelAction(StoriesUiAction.OpenProduct)
                     }
                 }
@@ -471,13 +498,12 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {
         analytic.sendClickStoryCircleEvent(
-            entryPoint = mParentPage.entryPoint,
             currentCircle = data.groupName,
             promotions = listOf(
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = position.plus(1).toString(),
-                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.authorId}",
+                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.args.authorId}",
                     itemName = "/ - stories"
                 ),
             ),
@@ -490,7 +516,6 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun trackTapPreviousDetail() {
         analytic.sendClickTapPreviousContentEvent(
-            entryPoint = mParentPage.entryPoint,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
@@ -500,7 +525,6 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun trackTapNextDetail() {
         analytic.sendClickTapNextContentEvent(
-            entryPoint = mParentPage.entryPoint,
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
@@ -524,11 +548,14 @@ class StoriesDetailFragment @Inject constructor(
         )
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
             variantSheet = AtcVariantBottomSheet()
-            variantSheet.setOnDismissListener { }
-            variantSheet.bottomSheetClose.setOnClickListener {
+            variantSheet?.setOnDismissListener { }
+            variantSheet ?: AtcVariantBottomSheet()
+        }
+
+        variantSheet?.setShowListener {
+            variantSheet?.bottomSheetClose?.setOnClickListener {
                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
             }
-            variantSheet
         }
     }
 
@@ -545,6 +572,36 @@ class StoriesDetailFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onRemoveStory(view: StoriesThreeDotsBottomSheet) {
+        analytic.sendClickRemoveStoryEvent(buildEventLabel())
+    }
+
+    override fun onProductActionClicked(
+        action: StoriesProductAction,
+        product: ContentTaggedProductUiModel,
+        view: StoriesProductBottomSheet
+    ) {
+        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        if (action == StoriesProductAction.ATC) analytic.sendClickAtcButtonEvent(eventLabel, listOf(product)) else analytic.sendClickBuyButtonEvent(eventLabel, listOf(product))
+    }
+
+    override fun onClickedProduct(
+        product: ContentTaggedProductUiModel,
+        position: Int,
+        view: StoriesProductBottomSheet
+    ) {
+        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        analytic.sendClickProductCardEvent(eventLabel, "stories-room - ${viewModel.storyId} - product card", listOf(product), position)
+    }
+
+    override fun onImpressedProduct(
+        product: Map<ContentTaggedProductUiModel, Int>,
+        view: StoriesProductBottomSheet,
+    ) {
+        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
+        analytic.sendViewProductCardEvent(eventLabel, product)
     }
 
     companion object {

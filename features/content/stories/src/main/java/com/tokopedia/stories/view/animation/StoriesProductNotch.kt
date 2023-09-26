@@ -55,7 +55,7 @@ fun StoriesProductNotch(productCount: String, onClick: () -> Unit) {
                     translationY = anim
                     transformOrigin = TransformOrigin.Center
                 }
-                .background(color = Color(0x80000000), shape = RoundedCornerShape(20.dp)) //TODO() change color to unify
+                .background(color = colorResource(id = unifyprinciplesR.color.Unify_Static_Black), shape = RoundedCornerShape(20.dp))
                 .padding(4.dp)
                 .clickable { onClick() }
         ) {
