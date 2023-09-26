@@ -1077,6 +1077,7 @@ open class ShopPageHomeFragment :
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(this)
         shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.removeObservers(this)
+        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.removeObservers(this)
         super.onDestroy()
     }
 
@@ -1767,7 +1768,6 @@ open class ShopPageHomeFragment :
             data.masterLayoutId,
             shopId
         )
-        listWidgetLayout = data.listWidgetLayout.toMutableList()
         val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
             listWidgetLayout,
             isOwner,
