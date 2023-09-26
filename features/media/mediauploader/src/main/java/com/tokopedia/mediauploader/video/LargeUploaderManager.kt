@@ -60,10 +60,16 @@ class LargeUploaderManager @Inject constructor(
     private var progressUploader: ProgressUploader? = null
     private var requestId = ""
 
-    private var partUploadProgress = 0
+    // used by recursive upload as flag, set as 1 since upload first is outside the recursive flow
+    private var partUploadProgress = 1
+    private var threadLimit: Int = 0
 
     suspend operator fun invoke(param: VideoParam): UploadResult {
+        threadLimit = 0
+        partUploadProgress = 1
+
         val base = param.base as BaseParam
+
         val policy = policyManager.get()
         val videoPolicy = policy?.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
 
@@ -155,18 +161,20 @@ class LargeUploaderManager @Inject constructor(
         sourceId: String,
         policy: SourcePolicy
     ): Boolean {
-        if (partUploaded[UPLOAD_PART_START] == true) return true
+        if (partUploaded[UPLOAD_FIRST_INDEX] == true) return true
 
-        file.slice(UPLOAD_PART_START, sizePerChunk)?.let { byteArrayToSend ->
-            return chunkUpload(
-                sourceId,
-                file,
-                byteArrayToSend,
-                policy.timeOut,
-                UPLOAD_PART_START
-            ).also {
-                updateProgressValue()
-            }
+        file.slice(UPLOAD_FIRST_INDEX, sizePerChunk, reuseSlot = null, slotSize = 0)?.let { (_, byteArrayToSend) ->
+            return byteArrayToSend?.let {
+                return chunkUpload(
+                    sourceId,
+                    file,
+                    it,
+                    policy.timeOut,
+                    UPLOAD_FIRST_INDEX
+                ).also {
+                    updateProgressValue()
+                }
+            } ?: false
         } ?: return false
     }
 
@@ -177,13 +185,20 @@ class LargeUploaderManager @Inject constructor(
         policy: SourcePolicy
     ) = withContext(dispatchers.io) {
         val maxUploadChunk = policy.videoPolicy?.largeMaxConcurrent ?: 1
-        val loopLimit = min(maxUploadChunk, chunkTotal)
+        threadLimit = min(maxUploadChunk, chunkTotal)
 
         val jobList = mutableListOf<Job>()
 
-        for (part in UPLOAD_PART_START..chunkTotal) {
-            if (partUploaded[part] == true) continue
+        for (part in UPLOAD_PART_INDEX..chunkTotal) {
+            if (partUploaded[part] == true) {
+                // update list of uploaded part so recursive will skip process the index
+                partUploadProgress = part
+                continue
+            }
             if (requestId.isNotEmpty()) error(UNKNOWN_ERROR)
+
+            // stop job creation if job number is already on thread limit
+            if (jobList.size >= threadLimit) break
 
             jobList.add(launch {
                 recursivePartUpload(
@@ -201,7 +216,8 @@ class LargeUploaderManager @Inject constructor(
         file: File,
         sizePerChunk: Int,
         sourceId: String,
-        policy: SourcePolicy
+        policy: SourcePolicy,
+        reuseSlot: Int? = null
     ) {
         partUploadProgress++
         val part = partUploadProgress
@@ -211,25 +227,27 @@ class LargeUploaderManager @Inject constructor(
             if (partUploadProgress > chunkTotal) return@withContext
             var job: Job? = null
 
-            file.slice(part, sizePerChunk)?.let {
-                val byteArrayToSend = it
+            file.slice(part, sizePerChunk, reuseSlot = reuseSlot, slotSize = threadLimit)?.let { (slotIndex, byteArrayToSend) ->
+                byteArrayToSend?.let {
+                    // trim zero byte from last for the last of part
+                    if (part == chunkTotal) {
+                        byteArrayToSend.trimLastZero()
+                    }
 
-                // trim zero byte from last for the last of part
-                if (part == chunkTotal) byteArrayToSend.trimLastZero()
+                    job = launch {
+                        chunkUpload(
+                            sourceId,
+                            file,
+                            byteArrayToSend,
+                            policy.timeOut,
+                            partNumber = part
+                        )
 
-                job = launch {
-                    chunkUpload(
-                        sourceId,
-                        file,
-                        byteArrayToSend,
-                        policy.timeOut,
-                        partNumber = part
-                    )
-
-                    updateProgressValue()
-                    recursivePartUpload(
-                        file, sizePerChunk, sourceId, policy
-                    )
+                        updateProgressValue()
+                        recursivePartUpload(
+                            file, sizePerChunk, sourceId, policy, reuseSlot = slotIndex
+                        )
+                    }
                 }
             }
 
@@ -414,7 +432,9 @@ class LargeUploaderManager @Inject constructor(
         private const val MAX_PROGRESS_LOADER = 100
 
         private const val MAX_RETRY_COUNT = 5
-        private const val UPLOAD_PART_START = 1
         private const val THRESHOLD_REQUEST_MAX_TIME = 2 // hours
+
+        private const val UPLOAD_FIRST_INDEX = 1
+        private const val UPLOAD_PART_INDEX = 2
     }
 }
