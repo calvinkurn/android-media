@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -66,9 +65,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     @Inject
     lateinit var userSession: Lazy<UserSessionInterface>
-
-    @Inject
-    lateinit var irisSession: IrisSession
 
     private var param = BmgmParamModel()
     private var shopIds = listOf<Long>()
@@ -414,7 +410,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         BmgmMiniCartTracker.sendClickCekKeranjangEvent(
             offerId = offerId,
             warehouseId = warehouseId,
-            irisSessionId = irisSession.getSessionId(),
             shopId = shopId,
             userId = userId
         )
@@ -433,7 +428,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             BmgmMiniCartTracker.sendImpressionUpsellingEvent(
                 offerId = offerId,
                 warehouseId = warehouseId,
-                irisSessionId = irisSession.getSessionId(),
                 lastOfferMessage = latestOfferMessage,
                 shopId = shopId,
                 userId = userId
@@ -450,7 +444,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         BmgmMiniCartTracker.sendClickUpSellingEvent(
             offerId = offerId,
             warehouseId = warehouseId,
-            irisSessionId = irisSession.getSessionId(),
             lastOfferMessage = latestOfferMessage,
             shopId = shopId,
             userId = userId

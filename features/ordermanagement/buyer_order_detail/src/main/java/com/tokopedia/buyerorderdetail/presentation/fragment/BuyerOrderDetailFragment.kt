@@ -60,7 +60,6 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
@@ -76,7 +75,6 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -88,7 +86,6 @@ import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
@@ -102,7 +99,6 @@ import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpR
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsCelebrationWidgetAnalytics
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -221,7 +217,7 @@ open class BuyerOrderDetailFragment :
         FirebaseRemoteConfigImpl(context)
     }
 
-    private val recyclerViewSharedPool = RecyclerView.RecycledViewPool()
+    protected val recyclerViewSharedPool = RecyclerView.RecycledViewPool()
 
     protected val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
@@ -501,9 +497,9 @@ open class BuyerOrderDetailFragment :
 
     private fun observeMedalTouchPoint() {
         scpMedalTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
-            when (it.result) {
-                is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
-                    val data = ((it.result as com.tokopedia.scp_rewards_touchpoints.common.Success<*>).data as ScpRewardsMedalTouchPointResponse)
+            when (val result = it.result) {
+                is com.tokopedia.scp_rewards_touchpoints.common.Success -> {
+                    val data = result.data
                     if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { view ->
                             if (!it.initialLoad) {
@@ -978,9 +974,9 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onClickWidgetListener(appLink: String) {
-        val data = ((scpMedalTouchPointViewModel.medalTouchPointData.value?.result as? com.tokopedia.scp_rewards_touchpoints.common.Success<*>)?.data as ScpRewardsMedalTouchPointResponse)
+        val data = (scpMedalTouchPointViewModel.medalTouchPointData.value?.result as? com.tokopedia.scp_rewards_touchpoints.common.Success)?.data
         ScpRewardsCelebrationWidgetAnalytics.clickCelebrationWidget(
-            badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
+            badgeId = data?.scpRewardsMedaliTouchpointOrder?.medaliTouchpointOrder?.medaliID?.orZero().toString(),
             orderId = viewModel.getOrderId(),
             pagePath = BUYER_ORDER_DETAIL_PAGE,
             pageType = BUYER_ORDER_DETAIL_PAGE

@@ -341,16 +341,16 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun removeAccordionDisabledItem() {
+    fun removeAccordionDisabledItem(cartDataList: ArrayList<Any>) {
         var item: DisabledAccordionHolderData? = null
-        cartDataList.value.forEach {
+        cartDataList.forEach {
             if (it is DisabledAccordionHolderData) {
                 item = it
             }
         }
 
         item?.let {
-            cartDataList.value.remove(it)
+            cartDataList.remove(it)
         }
     }
 
@@ -1970,7 +1970,8 @@ class CartViewModel @Inject constructor(
                     val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
                     var hasSelectDeletedProducts = false
                     var selectedNonDeletedProducts = 0
-                    data.productUiModelList.forEach { cartItemHolderData ->
+                    val newCartGroupHolderData = data.copy()
+                    newCartGroupHolderData.productUiModelList.forEach { cartItemHolderData ->
                         if (cartIds.contains(cartItemHolderData.cartId)) {
                             toBeDeletedProducts.add(cartItemHolderData)
                             if (cartItemHolderData.isSelected) {
@@ -1981,32 +1982,41 @@ class CartViewModel @Inject constructor(
                         }
                     }
                     if (toBeDeletedProducts.isNotEmpty()) {
-                        if (data.cartGroupBmGmHolderData.hasBmGmOffer) {
+                        if (newCartGroupHolderData.cartGroupBmGmHolderData.hasBmGmOffer) {
                             updateBmGmTickerData(toBeDeletedProducts)
                         }
-                        data.productUiModelList.removeAll(toBeDeletedProducts)
-                        if (data.productUiModelList.isEmpty()) {
+                        newCartGroupHolderData.productUiModelList.removeAll(toBeDeletedProducts)
+                        if (newCartGroupHolderData.productUiModelList.isEmpty()) {
                             val previousIndex = index - 1
-                            if (data.isError && previousIndex < newCartDataList.size) {
+                            if (newCartGroupHolderData.isError && previousIndex < newCartDataList.size) {
                                 val previousData = newCartDataList[previousIndex]
                                 if (previousData is DisabledReasonHolderData) {
                                     toBeRemovedItems.add(previousData)
                                 }
                             }
-                            toBeRemovedItems.add(data)
+                            toBeRemovedItems.add(newCartGroupHolderData)
                         } else {
                             // update selection
-                            data.productUiModelList.last().isFinalItem = true
-                            updateShopShownByCartGroup(data)
-                            data.isAllSelected =
-                                selectedNonDeletedProducts > 0 && data.productUiModelList.size == selectedNonDeletedProducts
-                            data.isPartialSelected =
-                                selectedNonDeletedProducts > 0 && data.productUiModelList.size > selectedNonDeletedProducts
+                            val lastItemIndex = newCartGroupHolderData.productUiModelList.lastIndex
+                            val lastProductItem = newCartGroupHolderData.productUiModelList[lastItemIndex]
+                            val newCartItemHolderData = lastProductItem.copy()
+                            newCartItemHolderData.isFinalItem = true
+                            newCartItemHolderData.cartBmGmTickerData.isShowBmGmDivider = false
+
+                            newCartGroupHolderData.productUiModelList[lastItemIndex] = newCartItemHolderData
+                            newCartDataList[index + newCartGroupHolderData.productUiModelList.size] = newCartItemHolderData
+
+                            updateShopShownByCartGroup(newCartGroupHolderData)
+                            newCartGroupHolderData.isAllSelected =
+                                selectedNonDeletedProducts > 0 && newCartGroupHolderData.productUiModelList.size == selectedNonDeletedProducts
+                            newCartGroupHolderData.isPartialSelected =
+                                selectedNonDeletedProducts > 0 && newCartGroupHolderData.productUiModelList.size > selectedNonDeletedProducts
                             if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts) && selectedNonDeletedProducts > 0) {
                                 _globalEvent.value = CartGlobalEvent.CheckGroupShopCartTicker(data)
                             }
                         }
                     }
+                    newCartDataList[index] = newCartGroupHolderData
                 }
 
                 data is CartItemHolderData -> {
