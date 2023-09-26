@@ -47,9 +47,6 @@ class PromoAccordionItemDelegateAdapter(
         private val binding: PromoUsageItemPromoBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-        }
-
         fun bind(item: PromoItem) {
             with(binding) {
                 if (item.isRecommended) {
