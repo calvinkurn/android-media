@@ -410,6 +410,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 switcherView?.displayedChild = 0
             } else if (animateWording) {
                 activeViewWording?.setText(HtmlLinkHelper(context, wording).spannedString)
+            } else {
+                activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             }
             errorView?.visibility = View.GONE
             loadingView?.visibility = View.GONE
@@ -460,7 +462,10 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewLeftImage?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
         activeViewWording?.visibility = View.VISIBLE
-        if (switcherView?.visibility == View.VISIBLE) {
+        if (switcherView?.visibility == View.VISIBLE || loadingView?.visibility == View.VISIBLE) {
+            switcherView?.visibility = View.VISIBLE
+            errorView?.visibility = View.GONE
+            loadingView?.visibility = View.GONE
             activeViewLeftImage?.setImageUrl(leftImageUrl)
             if (switcherView?.displayedChild != 0) {
                 // only trigger view switch animation if currently showing different view
@@ -468,9 +473,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 switcherView?.displayedChild = 0
             } else if (animateWording) {
                 activeViewWording?.setText(HtmlLinkHelper(context, wording).spannedString)
+            } else {
+                activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             }
-            errorView?.visibility = View.GONE
-            loadingView?.visibility = View.GONE
         } else {
             switcherView?.reset()
             activeViewLeftImage?.setImageUrl(leftImageUrl)
