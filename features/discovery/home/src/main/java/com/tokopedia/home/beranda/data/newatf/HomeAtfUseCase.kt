@@ -14,7 +14,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -103,18 +102,18 @@ class HomeAtfUseCase @Inject constructor(
         flow.combine(atfFlow) { dynamicPos, atfData ->
             // updating flow with remote atf data should be done after
             // dynamic position coming from remote to avoid multiple updating data
-            if(dynamicPos != null && !dynamicPos.isCache) {
+            if(dynamicPos != null && !dynamicPos.isCache && atfData != null) {
                 flow.value?.let { currentAtf ->
                     //first layer should check if dynamic position already from remote
                     val model = currentAtf.listAtfData.find { it.atfMetadata == atfData?.atfMetadata } ?: return@combine
                     val index = currentAtf.listAtfData.indexOf(model)
                     val newList = currentAtf.listAtfData.toMutableList().apply {
-                        set(index, model.copy(atfContent = atfData?.atfContent))
+                        set(index, model.copy(atfContent = atfData.atfContent))
                     }
                     val newModel = currentAtf.copy(listAtfData = newList)
                     _flow.emit(newModel)
                 }
             }
-        }.launchIn(CoroutineScope(Dispatchers.IO))
+        }
     }
 }
