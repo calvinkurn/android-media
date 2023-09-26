@@ -184,6 +184,7 @@
                                     android:id="@+id/shop_page_chevron_shop_info"
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
+                                    android:layout_marginStart="4dp"
                                     app:icon_name="CHEVRON_RIGHT"
                                     app:layout_constraintBottom_toBottomOf="@id/text_shop_name"
                                     app:layout_constraintHorizontal_chainStyle="packed"
