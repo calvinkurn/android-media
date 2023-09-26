@@ -210,7 +210,7 @@ class CartBmGmTest : BaseCartViewModelTest() {
         cartViewModel.cartDataList.value = arrayListOf(cartItemHolderData, cartItemHolderDataTwo, cartItemHolderDataThree)
 
         // WHEN
-        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderData), mapOfferIdAndTotalBmGmProduct)
+        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderData))
 
         // THEN
         Assert.assertTrue(cartItemHolderDataTwo.cartBmGmTickerData.isShowTickerBmGm)
@@ -241,7 +241,7 @@ class CartBmGmTest : BaseCartViewModelTest() {
         cartViewModel.cartDataList.value = arrayListOf(cartItemHolderData, cartItemHolderDataTwo)
 
         // WHEN
-        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderData), mapOfferIdAndTotalBmGmProduct)
+        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderData))
 
         // THEN
         Assert.assertFalse(cartItemHolderDataTwo.cartBmGmTickerData.isShowTickerBmGm)
@@ -285,7 +285,7 @@ class CartBmGmTest : BaseCartViewModelTest() {
         cartViewModel.cartDataList.value = arrayListOf(cartItemHolderData, cartItemHolderDataTwo)
 
         // WHEN
-        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderDataWillDeleted), mapOfferIdAndTotalBmGmProduct)
+        cartViewModel.updateBmGmTickerData(listOf(cartItemHolderDataWillDeleted))
 
         // THEN
         Assert.assertTrue(cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm)
