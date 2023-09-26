@@ -97,6 +97,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -194,142 +195,160 @@ class CheckoutViewModel @Inject constructor(
             stopEmbraceTrace()
             when (saf) {
                 is CheckoutPageState.Success -> {
-                    val tickerError =
-                        CheckoutTickerErrorModel(errorMessage = saf.cartShipmentAddressFormData.errorTicker)
-                    val tickerData = saf.cartShipmentAddressFormData.tickerData
-                    var ticker = CheckoutTickerModel(ticker = TickerAnnouncementHolderData())
-                    if (tickerData != null) {
-                        ticker = CheckoutTickerModel(
-                            ticker = TickerAnnouncementHolderData(
-                                tickerData.id,
-                                tickerData.title,
-                                tickerData.message
+                    try {
+                        val tickerError =
+                            CheckoutTickerErrorModel(errorMessage = saf.cartShipmentAddressFormData.errorTicker)
+                        val tickerData = saf.cartShipmentAddressFormData.tickerData
+                        var ticker = CheckoutTickerModel(ticker = TickerAnnouncementHolderData())
+                        if (tickerData != null) {
+                            ticker = CheckoutTickerModel(
+                                ticker = TickerAnnouncementHolderData(
+                                    tickerData.id,
+                                    tickerData.title,
+                                    tickerData.message
+                                )
                             )
+                            mTrackerShipment.eventViewInformationAndWarningTickerInCheckout(
+                                tickerData.id
+                            )
+                        }
+                        val address = CheckoutAddressModel(
+                            recipientAddressModel = dataConverter.getRecipientAddressModel(saf.cartShipmentAddressFormData)
                         )
-                        mTrackerShipment.eventViewInformationAndWarningTickerInCheckout(tickerData.id)
-                    }
-                    val address = CheckoutAddressModel(
-                        recipientAddressModel = dataConverter.getRecipientAddressModel(saf.cartShipmentAddressFormData)
-                    )
 
-                    val upsell =
-                        dataConverter.getUpsellModel(saf.cartShipmentAddressFormData.newUpsell)
+                        val upsell =
+                            dataConverter.getUpsellModel(saf.cartShipmentAddressFormData.newUpsell)
 
-                    isUsingDdp = saf.cartShipmentAddressFormData.isUsingDdp
-                    shipmentPlatformFeeData = saf.cartShipmentAddressFormData.shipmentPlatformFee
-                    cartDataForRates = saf.cartShipmentAddressFormData.cartData
-                    codData = saf.cartShipmentAddressFormData.cod
-                    campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
-                    logisticProcessor.isBoUnstackEnabled =
-                        saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
-                    summariesAddOnUiModel =
-                        ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(saf.cartShipmentAddressFormData.listSummaryAddons)
+                        isUsingDdp = saf.cartShipmentAddressFormData.isUsingDdp
+                        shipmentPlatformFeeData =
+                            saf.cartShipmentAddressFormData.shipmentPlatformFee
+                        cartDataForRates = saf.cartShipmentAddressFormData.cartData
+                        codData = saf.cartShipmentAddressFormData.cod
+                        campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
+                        logisticProcessor.isBoUnstackEnabled =
+                            saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
+                        summariesAddOnUiModel =
+                            ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(saf.cartShipmentAddressFormData.listSummaryAddons)
 
-                    val items = dataConverter.getCheckoutItems(
-                        saf.cartShipmentAddressFormData,
-                        address.recipientAddressModel.locationDataModel != null,
-                        userSessionInterface.name
-                    )
-
-                    var uploadPrescriptionUiModel = UploadPrescriptionUiModel()
-                    if (!tickerError.isError) {
-                        uploadPrescriptionUiModel = UploadPrescriptionUiModel(
-                            showImageUpload = saf.cartShipmentAddressFormData.epharmacyData.showImageUpload,
-                            uploadImageText = saf.cartShipmentAddressFormData.epharmacyData.uploadText,
-                            leftIconUrl = saf.cartShipmentAddressFormData.epharmacyData.leftIconUrl,
-                            checkoutId = saf.cartShipmentAddressFormData.epharmacyData.checkoutId,
-                            frontEndValidation = saf.cartShipmentAddressFormData.epharmacyData.frontEndValidation,
-                            consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
-                            rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording
+                        val items = dataConverter.getCheckoutItems(
+                            saf.cartShipmentAddressFormData,
+                            address.recipientAddressModel.locationDataModel != null,
+                            userSessionInterface.name
                         )
-                        addOnProcessor.fetchPrescriptionIds(
-                            saf.cartShipmentAddressFormData.epharmacyData,
-                            items,
-                            uploadPrescriptionUiModel
-                        )
-                    }
 
-                    val epharmacy = CheckoutEpharmacyModel(
-                        epharmacy = uploadPrescriptionUiModel
-                    )
+                        var uploadPrescriptionUiModel = UploadPrescriptionUiModel()
+                        if (!tickerError.isError) {
+                            uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+                                showImageUpload = saf.cartShipmentAddressFormData.epharmacyData.showImageUpload,
+                                uploadImageText = saf.cartShipmentAddressFormData.epharmacyData.uploadText,
+                                leftIconUrl = saf.cartShipmentAddressFormData.epharmacyData.leftIconUrl,
+                                checkoutId = saf.cartShipmentAddressFormData.epharmacyData.checkoutId,
+                                frontEndValidation = saf.cartShipmentAddressFormData.epharmacyData.frontEndValidation,
+                                consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
+                                rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording
+                            )
+                            addOnProcessor.fetchPrescriptionIds(
+                                saf.cartShipmentAddressFormData.epharmacyData,
+                                items,
+                                uploadPrescriptionUiModel
+                            )
+                        }
+
+                        val epharmacy = CheckoutEpharmacyModel(
+                            epharmacy = uploadPrescriptionUiModel
+                        )
 
                     isPromoRevamp = PromoUsageRollenceManager()
                         .isRevamp(saf.cartShipmentAddressFormData.lastApplyData.userGroupMetadata)
-                    val promo = CheckoutPromoModel(
-                        isEnable = !tickerError.isError,
+                        val promo = CheckoutPromoModel(
+                            isEnable = !tickerError.isError,
                         promo = saf.cartShipmentAddressFormData.lastApplyData,
                         isPromoRevamp = isPromoRevamp ?: false,
                         isLoading = isPromoRevamp ?: false
-                    )
-                    if (promo.isEnable && saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
-                        PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
-                    }
+                        )
+                        if (promo.isEnable && saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
+                            PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
+                        }
 
-                    val cost = CheckoutCostModel()
+                        val cost = CheckoutCostModel()
 
-                    val crossSellList = arrayListOf<CheckoutCrossSellItem>()
-                    if (!tickerError.isError) {
-                        val crossSellModel = saf.cartShipmentAddressFormData.crossSell.firstOrNull()
-                        if (crossSellModel != null && !crossSellModel.checkboxDisabled) {
-                            crossSellList.add(
-                                CheckoutCrossSellModel(
-                                    crossSellModel,
-                                    crossSellModel.isChecked,
-                                    !crossSellModel.checkboxDisabled,
-                                    0
+                        val crossSellList = arrayListOf<CheckoutCrossSellItem>()
+                        if (!tickerError.isError) {
+                            val crossSellModel =
+                                saf.cartShipmentAddressFormData.crossSell.firstOrNull()
+                            if (crossSellModel != null && !crossSellModel.checkboxDisabled) {
+                                crossSellList.add(
+                                    CheckoutCrossSellModel(
+                                        crossSellModel,
+                                        crossSellModel.isChecked,
+                                        !crossSellModel.checkboxDisabled,
+                                        0
+                                    )
                                 )
-                            )
-                            if (crossSellModel.isChecked) {
-                                val digitalCategoryName = crossSellModel.orderSummary.title
-                                val digitalProductName = crossSellModel.info.title
-                                val eventLabel = "$digitalCategoryName - ${crossSellModel.id}"
-                                mTrackerShipment.eventViewAutoCheckCrossSell(
-                                    userSessionInterface.userId,
-                                    0.toString(),
-                                    eventLabel,
-                                    digitalProductName,
-                                    ArrayList(items.mapNotNull { if (it is CheckoutProductModel) it.productCatId else null })
+                                if (crossSellModel.isChecked) {
+                                    val digitalCategoryName = crossSellModel.orderSummary.title
+                                    val digitalProductName = crossSellModel.info.title
+                                    val eventLabel = "$digitalCategoryName - ${crossSellModel.id}"
+                                    mTrackerShipment.eventViewAutoCheckCrossSell(
+                                        userSessionInterface.userId,
+                                        0.toString(),
+                                        eventLabel,
+                                        digitalProductName,
+                                        ArrayList(items.mapNotNull { if (it is CheckoutProductModel) it.productCatId else null })
+                                    )
+                                }
+                            }
+                            if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
+                                crossSellList.add(
+                                    CheckoutEgoldModel(
+                                        saf.cartShipmentAddressFormData.egoldAttributes!!,
+                                        saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked,
+                                        saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue
+                                    )
                                 )
                             }
-                        }
-                        if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
-                            crossSellList.add(
-                                CheckoutEgoldModel(
-                                    saf.cartShipmentAddressFormData.egoldAttributes!!,
-                                    saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked,
-                                    saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue
+                            if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
+                                crossSellList.add(
+                                    CheckoutDonationModel(
+                                        saf.cartShipmentAddressFormData.donation!!,
+                                        saf.cartShipmentAddressFormData.donation!!.isChecked
+                                    )
                                 )
-                            )
-                        }
-                        if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
-                            crossSellList.add(
-                                CheckoutDonationModel(
-                                    saf.cartShipmentAddressFormData.donation!!,
-                                    saf.cartShipmentAddressFormData.donation!!.isChecked
-                                )
-                            )
-                            if (saf.cartShipmentAddressFormData.donation!!.isChecked) {
-                                mTrackerShipment.eventViewAutoCheckDonation(
-                                    userSessionInterface.userId
-                                )
+                                if (saf.cartShipmentAddressFormData.donation!!.isChecked) {
+                                    mTrackerShipment.eventViewAutoCheckDonation(
+                                        userSessionInterface.userId
+                                    )
+                                }
                             }
                         }
-                    }
-                    val crossSellGroup = CheckoutCrossSellGroupModel(crossSellList = crossSellList)
+                        val crossSellGroup =
+                            CheckoutCrossSellGroupModel(crossSellList = crossSellList)
 
-                    val buttonPayment = CheckoutButtonPaymentModel("")
+                        val buttonPayment = CheckoutButtonPaymentModel("")
 
-                    withContext(dispatchers.main) {
-                        listData.value = listOf(
-                            tickerError,
-                            ticker,
-                            address,
-                            upsell
-                        ) + items + listOf(epharmacy, promo, cost, crossSellGroup, buttonPayment)
-                        pageState.value = saf
-                        calculateTotal()
+                        withContext(dispatchers.main) {
+                            listData.value = listOf(
+                                tickerError,
+                                ticker,
+                                address,
+                                upsell
+                            ) + items + listOf(
+                                epharmacy,
+                                promo,
+                                cost,
+                                crossSellGroup,
+                                buttonPayment
+                            )
+                            pageState.value = saf
+                            calculateTotal()
+                        }
+                        sendEEStep2()
+                    } catch (t: Throwable) {
+                        Timber.d(t)
+                        withContext(dispatchers.main) {
+                            pageState.value = CheckoutPageState.Error(RuntimeException())
+                        }
                     }
-                    sendEEStep2()
                 }
 
                 else -> {
@@ -885,6 +904,7 @@ class CheckoutViewModel @Inject constructor(
             }
         }
         listData.value = checkoutItems
+        calculateTotal()
     }
 
     fun updateAddOnGiftingOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
@@ -907,6 +927,7 @@ class CheckoutViewModel @Inject constructor(
             }
         }
         listData.value = checkoutItems
+        calculateTotal()
     }
 
     private fun setAddOnsGiftingData(

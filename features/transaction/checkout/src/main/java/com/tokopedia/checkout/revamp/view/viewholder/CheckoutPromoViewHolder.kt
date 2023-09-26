@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
@@ -27,9 +28,14 @@ class CheckoutPromoViewHolder(
     fun bind(promoModel: CheckoutPromoModel) {
         if (!promoModel.isEnable) {
             binding.root.gone()
+            binding.root.layoutParams = RecyclerView.LayoutParams(0, 0)
             return
         } else {
             binding.root.visible()
+            binding.root.layoutParams = RecyclerView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
 
         val promo = promoModel.promo

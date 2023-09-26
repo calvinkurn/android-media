@@ -501,8 +501,11 @@ class CartRevampFragment :
         routeToHome()
     }
 
-    override fun onCartGroupNameClicked(appLink: String) {
+    override fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean) {
         sendCartImpressionAnalytic()
+        if (!isOWOC && shopId.isNotEmpty()) {
+            cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+        }
         routeToApplink(appLink)
     }
 
@@ -3430,17 +3433,18 @@ class CartRevampFragment :
             viewModel.cartModel
         )
 
-        // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
-        if (allDisabledCartItemData.size > 3) {
-            if (forceExpandCollapsedUnavailableItems) {
-                collapseOrExpandDisabledItem()
-            }
-        } else {
-            viewModel.removeAccordionDisabledItem()
+        if (allDisabledCartItemData.size <= 3) {
+            viewModel.removeAccordionDisabledItem(updateListResult)
         }
 
         viewModel.updateCartGroupFirstItemStatus(updateListResult)
         viewModel.updateCartDataList(updateListResult)
+
+        if (allDisabledCartItemData.size > 3) {
+            if (forceExpandCollapsedUnavailableItems) {
+                collapseOrExpandDisabledItem()
+            }
+        }
 
         viewModel.reCalculateSubTotal()
         notifyBottomCartParent()

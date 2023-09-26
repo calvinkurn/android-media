@@ -26,6 +26,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -1065,7 +1066,16 @@ class CheckoutFragment :
     }
 
     override fun onClickAddonProductInfoIcon(addOn: AddOnProductDataItemModel) {
-        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addOn.infoLink}")
+        val activity: Activity? = activity
+        if (activity != null) {
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalFintech.INSURANCE_INFO)
+            intent.putExtra(
+                ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL,
+                addOn.infoLink
+            )
+            startActivity(intent)
+        }
         checkoutAnalyticsCourierSelection.sendClicksInfoButtonOfAddonsEvent(addOn.type)
     }
 

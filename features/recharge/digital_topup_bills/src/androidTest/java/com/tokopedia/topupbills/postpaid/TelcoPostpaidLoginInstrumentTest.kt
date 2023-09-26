@@ -46,6 +46,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.common.topupbills.R as commontopupbillsR
 
 class TelcoPostpaidLoginInstrumentTest {
 
@@ -216,8 +217,8 @@ class TelcoPostpaidLoginInstrumentTest {
         tabLayout_clickTabWithText("Transaksi Terakhir")
         val viewInteraction = onView(
             AllOf.allOf(
-                isDescendantOfA(withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
-                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
+                isDescendantOfA(withId(commontopupbillsR.id.layout_widget)),
+                withId(commontopupbillsR.id.recycler_view_menu_component),
                 isDisplayed()
             )
         ).check(matches(isDisplayed()))
