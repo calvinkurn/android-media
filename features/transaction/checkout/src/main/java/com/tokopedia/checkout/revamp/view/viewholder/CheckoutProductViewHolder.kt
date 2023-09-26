@@ -477,7 +477,14 @@ class CheckoutProductViewHolder(
                         val colorMatrix = ColorMatrix()
                         colorMatrix.setSaturation(0F)
                         icCheckoutAddOnsItem.colorFilter = ColorMatrixColorFilter(colorMatrix)
-                        tvCheckoutAddOnsItemName.text = addon.name
+                        tvCheckoutAddOnsItemName.text = SpannableString(addon.name).apply {
+                            setSpan(
+                                UnderlineSpan(),
+                                0,
+                                addon.name.length,
+                                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                            )
+                        }
                         tvCheckoutAddOnsItemPrice.text = " (${
                         CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)
