@@ -112,6 +112,7 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
                       type
                       id
                       attributes {
+                        redirect_url
                         channel_id
                         user_id
                         client_number
