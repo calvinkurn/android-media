@@ -11,11 +11,8 @@ import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.accountlinking.R
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl

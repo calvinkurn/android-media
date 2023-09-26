@@ -2,7 +2,6 @@ package com.tokopedia.accountlinking
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import javax.inject.Inject
 
 /**
  * Created by Yoris on 21/09/21.
