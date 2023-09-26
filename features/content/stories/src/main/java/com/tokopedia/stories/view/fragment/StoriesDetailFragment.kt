@@ -597,10 +597,11 @@ class StoriesDetailFragment @Inject constructor(
     override fun onProductActionClicked(
         action: StoriesProductAction,
         product: ContentTaggedProductUiModel,
+        position: Int,
         view: StoriesProductBottomSheet
     ) {
         val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        if (action == StoriesProductAction.ATC) analytic.sendClickAtcButtonEvent(eventLabel, listOf(product)) else analytic.sendClickBuyButtonEvent(eventLabel, listOf(product))
+        if (action == StoriesProductAction.ATC) analytic.sendClickAtcButtonEvent(eventLabel, listOf(product), position) else analytic.sendClickBuyButtonEvent(eventLabel, listOf(product), position)
     }
 
     override fun onClickedProduct(

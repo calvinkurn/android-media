@@ -265,9 +265,11 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickBuyButtonEvent(
         eventLabel: String,
         items: List<ContentTaggedProductUiModel>,
+        position: Int
     ) {
         val itemList = items.map {
             Bundle().apply {
+                putInt(Key.itemIndex, position)
                 putString(Key.itemId, it.id)
                 putString(Key.itemName, it.title)
                 putFloat(Key.price, when (val price = it.price){
@@ -303,9 +305,11 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickAtcButtonEvent(
         eventLabel: String,
         items: List<ContentTaggedProductUiModel>,
+        position: Int
     ) {
         val itemList = items.map {
             Bundle().apply {
+                putInt(Key.itemIndex, position)
                 putString(Key.itemId, it.id)
                 putString(Key.itemName, it.title)
                 putFloat(Key.price, when (val price = it.price){

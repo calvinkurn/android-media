@@ -193,21 +193,22 @@ class StoriesProductBottomSheet @Inject constructor(
         product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
-        handleProductAction(StoriesProductAction.ATC, product)
+        handleProductAction(StoriesProductAction.ATC, product, itemPosition)
     }
 
     override fun onBuyProductButtonClicked(
         product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
-        handleProductAction(StoriesProductAction.Buy, product)
+        handleProductAction(StoriesProductAction.Buy, product, itemPosition)
     }
 
     private fun handleProductAction(
         type: StoriesProductAction,
-        product: ContentTaggedProductUiModel
+        product: ContentTaggedProductUiModel,
+        position: Int
     ) {
-        mListener?.onProductActionClicked(type, product, this)
+        mListener?.onProductActionClicked(type, product, position, this)
         if (product.showGlobalVariant) {
             viewModel.submitAction(StoriesUiAction.ShowVariantSheet(product))
         } else {
@@ -256,7 +257,7 @@ class StoriesProductBottomSheet @Inject constructor(
     interface Listener {
         fun onImpressedProduct(products: Map<ContentTaggedProductUiModel, Int>, view: StoriesProductBottomSheet)
         fun onClickedProduct(product: ContentTaggedProductUiModel, position: Int, view: StoriesProductBottomSheet)
-        fun onProductActionClicked(action: StoriesProductAction, product: ContentTaggedProductUiModel, view: StoriesProductBottomSheet)
+        fun onProductActionClicked(action: StoriesProductAction, product: ContentTaggedProductUiModel, position: Int, view: StoriesProductBottomSheet)
     }
 
     companion object {
