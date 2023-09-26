@@ -120,6 +120,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
         private const val BOTTOM_SHEET_HEADER_HEIGHT_IN_DP = 56
 
+        private const val AUTO_SCROLL_DELAY = 300L
+
         @JvmStatic
         fun newInstance(
             entryPoint: PromoPageEntryPoint,
@@ -485,7 +487,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         val itemCount = recyclerViewAdapter.itemCount
         Handler(Looper.getMainLooper()).postDelayed({
             binding?.rvPromo?.smoothSnapToPosition(itemCount)
-        }, 300L)
+        }, AUTO_SCROLL_DELAY)
 
         // Add padding to make voucher code text field displayed above keyboard
         binding?.rvPromo?.setPadding(0, 0, 0, keyboardHeight.toDp())
@@ -982,7 +984,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                             if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     binding?.rvPromo?.smoothSnapToPosition(itemPosition)
-                                }, 300L)
+                                }, AUTO_SCROLL_DELAY)
                             }
                         } catch (ignored: Exception) {
                             // no-op
