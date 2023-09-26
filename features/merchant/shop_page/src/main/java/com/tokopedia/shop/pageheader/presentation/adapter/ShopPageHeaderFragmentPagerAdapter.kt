@@ -251,10 +251,17 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
     fun getRegisteredFragment(position: Int): Fragment? {
-        return if (listShopPageTabModel.isNotEmpty()) {
-            listShopPageTabModel.getOrNull(position)?.tabFragment
+        return if (ShopUtil.isEnableShopPageReImagined(ctx)) {
+            val wrapperFragment = listShopPageTabModel.getOrNull(position)?.tabFragment
+            val contentFragment =
+                (wrapperFragment as? ShopPageHeaderFragmentTabContentWrapper)?.getTabFragment()
+            contentFragment
         } else {
-            null
+            if (listShopPageTabModel.isNotEmpty()) {
+                listShopPageTabModel.getOrNull(position)?.tabFragment
+            } else {
+                null
+            }
         }
     }
 
