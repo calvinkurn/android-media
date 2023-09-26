@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 import java.util.ArrayList
 
 @Parcelize
-class Filter(@SerializedName("title")
+data class Filter(@SerializedName("title")
              @Expose
              var title: String = "",
 
