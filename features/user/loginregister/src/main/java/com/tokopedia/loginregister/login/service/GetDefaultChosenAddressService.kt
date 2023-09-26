@@ -3,12 +3,19 @@ package com.tokopedia.loginregister.login.service
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.login.di.LoginComponent
-import com.tokopedia.loginregister.login.domain.GetDefaultChosenAddressUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class GetDefaultChosenAddressService : JobIntentServiceX() {
+class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
 
     @Inject
     lateinit var getDefaultChosenAddressUseCase: GetDefaultChosenAddressUseCase
@@ -25,14 +32,27 @@ class GetDefaultChosenAddressService : JobIntentServiceX() {
     }
 
     override fun onHandleWork(intent: Intent) {
-        try {
-            getDefaultChosenAddressUseCase.getDefaultChosenAddress( {
-                //no-op
-            }, {
-                it.printStackTrace()
-            } )
-        } catch (e: Exception) {
-            e.printStackTrace()
+        launch {
+            try {
+                val address = getDefaultChosenAddressUseCase(GetDefaultChosenAddressParam(latLong = null, source = "login", isTokonow = true)).response
+                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    applicationContext,
+                    addressId = address.data.addressId.toString(),
+                    cityId = address.data.cityId.toString(),
+                    districtId = address.data.districtId.toString(),
+                    lat = address.data.latitude,
+                    long = address.data.longitude,
+                    label = "${address.data.addressName} ${address.data.receiverName}",
+                    postalCode = address.data.postalCode,
+                    shopId = address.tokonow.shopId.toString(),
+                    warehouseId = address.tokonow.warehouseId.toString(),
+                    warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(address.tokonow.warehouses),
+                    serviceType = address.tokonow.serviceType,
+                    lastUpdate = address.tokonow.tokonowLastUpdate
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -49,4 +69,7 @@ class GetDefaultChosenAddressService : JobIntentServiceX() {
         }
     }
 
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
 }

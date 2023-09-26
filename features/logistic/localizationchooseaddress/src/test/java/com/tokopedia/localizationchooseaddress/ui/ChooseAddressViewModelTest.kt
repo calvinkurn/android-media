@@ -2,7 +2,6 @@ package com.tokopedia.localizationchooseaddress.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -15,6 +14,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressListUseCase
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetStateChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressUseCase
@@ -39,27 +39,40 @@ class ChooseAddressViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper = ChooseAddressMapper()
     private val refreshTokonowDataUseCase: RefreshTokonowDataUsecase = mockk(relaxed = true)
     private val getChosenAddressListUseCase: GetChosenAddressListUseCase = mockk(relaxed = true)
     private val setStateChosenAddressUseCase: SetStateChosenAddressUseCase = mockk(relaxed = true)
     private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase = mockk(relaxed = true)
+    private val getDefaultChosenAddressUseCase: GetDefaultChosenAddressUseCase =
+        mockk(relaxed = true)
 
     private lateinit var chooseAddressViewModel: ChooseAddressViewModel
 
-    private val chosenAddressListObserver: Observer<Result<List<ChosenAddressList>>> = mockk(relaxed = true)
-    private val setChosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
-    private val getChosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
-    private val getDefaultAddressObserver: Observer<Result<DefaultChosenAddressModel>> = mockk(relaxed = true)
-    private val tokonowDataObserver: Observer<Result<RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess>> = mockk(relaxed = true)
+    private val chosenAddressListObserver: Observer<Result<List<ChosenAddressList>>> =
+        mockk(relaxed = true)
+    private val setChosenAddressObserver: Observer<Result<ChosenAddressModel>> =
+        mockk(relaxed = true)
+    private val getChosenAddressObserver: Observer<Result<ChosenAddressModel>> =
+        mockk(relaxed = true)
+    private val getDefaultAddressObserver: Observer<Result<DefaultChosenAddressModel>> =
+        mockk(relaxed = true)
+    private val tokonowDataObserver: Observer<Result<RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess>> =
+        mockk(relaxed = true)
 
     private val defaultThrowable = Throwable("test error")
 
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, refreshTokonowDataUseCase, getChosenAddressListUseCase, setStateChosenAddressUseCase, getStateChosenAddressUseCase)
+        chooseAddressViewModel = ChooseAddressViewModel(
+            chooseAddressMapper,
+            refreshTokonowDataUseCase,
+            getChosenAddressListUseCase,
+            setStateChosenAddressUseCase,
+            getStateChosenAddressUseCase,
+            getDefaultChosenAddressUseCase
+        )
         chooseAddressViewModel.chosenAddressList.observeForever(chosenAddressListObserver)
         chooseAddressViewModel.setChosenAddress.observeForever(setChosenAddressObserver)
         chooseAddressViewModel.getChosenAddress.observeForever(getChosenAddressObserver)
@@ -121,15 +134,31 @@ class ChooseAddressViewModelTest {
 
     @Test
     fun `Get Default Chosen Address Success`() {
-        coEvery { chooseAddressRepo.getDefaultChosenAddress(any(), any(), any()) } returns GetDefaultChosenAddressGqlResponse()
-        chooseAddressViewModel.getDefaultChosenAddress("-6.22119739999998,106.81941940000002", "address", false)
+        coEvery {
+            getDefaultChosenAddressUseCase(
+                any()
+            )
+        } returns GetDefaultChosenAddressGqlResponse()
+        chooseAddressViewModel.getDefaultChosenAddress(
+            "-6.22119739999998,106.81941940000002",
+            "address",
+            false
+        )
         verify { getDefaultAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Default Chosen Address Fail`() {
-        coEvery { chooseAddressRepo.getDefaultChosenAddress(any(), any(), any()) } throws defaultThrowable
-        chooseAddressViewModel.getDefaultChosenAddress("-6.22119739999998,106.81941940000002", "address", false)
+        coEvery {
+            getDefaultChosenAddressUseCase(
+                any()
+            )
+        } throws defaultThrowable
+        chooseAddressViewModel.getDefaultChosenAddress(
+            "-6.22119739999998,106.81941940000002",
+            "address",
+            false
+        )
         verify { getDefaultAddressObserver.onChanged(match { it is Fail }) }
     }
 

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.GetChosenAddressParam
@@ -55,7 +54,6 @@ class ManageAddressViewModel @Inject constructor(
     private val getPeopleAddressUseCase: GetAddressCornerUseCase,
     private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
     private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
-    private val chooseAddressRepo: ChooseAddressRepository,
     private val chooseAddressMapper: ChooseAddressMapper,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,

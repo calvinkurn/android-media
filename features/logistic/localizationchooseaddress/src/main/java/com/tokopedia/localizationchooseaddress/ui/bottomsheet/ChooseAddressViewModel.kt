@@ -4,16 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.GetChosenAddressParam
+import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
 import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressListUseCase
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetStateChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressUseCase
@@ -25,12 +26,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChooseAddressViewModel @Inject constructor(
-    private val chooseAddressRepo: ChooseAddressRepository,
     private val chooseAddressMapper: ChooseAddressMapper,
     private val refreshTokonowDataUsecase: RefreshTokonowDataUsecase,
     private val getChosenAddressListUseCase: GetChosenAddressListUseCase,
     private val setStateChosenAddressUseCase: SetStateChosenAddressUseCase,
-    private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase
+    private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase,
+    private val getDefaultChosenAddressUseCase: GetDefaultChosenAddressUseCase
 ) : ViewModel() {
 
     private val _chosenAddressList = MutableLiveData<Result<List<ChosenAddressList>>>()
@@ -83,8 +84,9 @@ class ChooseAddressViewModel @Inject constructor(
 
     fun getDefaultChosenAddress(latLong: String?, source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetDefaultChosenAddress) {
-            val getDefaultChosenAddress =
-                chooseAddressRepo.getDefaultChosenAddress(latLong, source, isTokonow)
+            val getDefaultChosenAddress = getDefaultChosenAddressUseCase(
+                GetDefaultChosenAddressParam(source, latLong, isTokonow)
+            )
             _getDefaultAddress.value =
                 Success(chooseAddressMapper.mapDefaultChosenAddress(getDefaultChosenAddress.response))
         }

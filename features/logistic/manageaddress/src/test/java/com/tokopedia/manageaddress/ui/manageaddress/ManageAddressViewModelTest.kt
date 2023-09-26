@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
@@ -84,7 +83,6 @@ class ManageAddressViewModelTest {
         mockk(relaxed = true)
     private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase = mockk(relaxed = true)
 
-    private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase =
@@ -116,7 +114,6 @@ class ManageAddressViewModelTest {
             getPeopleAddressUseCase,
             deletePeopleAddressUseCase,
             setDefaultPeopleAddressUseCase,
-            chooseAddressRepo,
             chooseAddressMapper,
             validateShareAddressAsReceiverUseCase,
             validateShareAddressAsSenderUseCase,
