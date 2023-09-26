@@ -341,16 +341,16 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun removeAccordionDisabledItem() {
+    fun removeAccordionDisabledItem(cartDataList: ArrayList<Any>) {
         var item: DisabledAccordionHolderData? = null
-        cartDataList.value.forEach {
+        cartDataList.forEach {
             if (it is DisabledAccordionHolderData) {
                 item = it
             }
         }
 
         item?.let {
-            cartDataList.value.remove(it)
+            cartDataList.remove(it)
         }
     }
 
