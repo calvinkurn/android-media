@@ -331,6 +331,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             setColors(Color.rgb(colorProgress, colorProgress, colorProgress))
         }
         binding?.toolbarBg?.alpha = scrollProgress
+        binding?.toolbar?.tpgTitle?.alpha = scrollProgress
     }
 
     // Call this methods if you want to override the CTA & Price widget's theme
