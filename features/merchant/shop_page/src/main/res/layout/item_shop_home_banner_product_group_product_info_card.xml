@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -11,7 +10,8 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgProduct"
         android:layout_width="132dp"
-        android:layout_height="132dp" />
+        android:layout_height="132dp"
+        app:unify_image_corner_radius="12" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgProductName"
@@ -21,11 +21,11 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:minLines="1"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
         app:typographyType="display_3"
-        tools:text="Samsung Galaxy S23 - 512 GB" />
+        tools:text="Samsung Galaxy S23 - 512 GB"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgProductPrice"
@@ -33,22 +33,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:ellipsize="end"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:maxLines="1"
         android:minLines="1"
+        android:visibility="gone"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        tools:text="Rp18.849.000" />
+        tools:text="Rp18.849.000"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/layoutSlashedPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:layout_marginTop="4dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelDiscount"
@@ -74,9 +74,9 @@
         android:id="@+id/layoutRatingAndSoldCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:orientation="horizontal">
+        tools:visibility="visible">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imgStar"
