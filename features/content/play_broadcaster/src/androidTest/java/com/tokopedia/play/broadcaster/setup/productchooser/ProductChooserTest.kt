@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.setup.productchooser
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus

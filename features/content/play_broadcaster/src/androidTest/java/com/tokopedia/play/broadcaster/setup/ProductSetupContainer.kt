@@ -6,8 +6,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.play.broadcaster.helper.BottomSheetContainer
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 
 /**

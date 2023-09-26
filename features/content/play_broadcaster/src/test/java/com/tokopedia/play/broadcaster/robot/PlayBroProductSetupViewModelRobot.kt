@@ -3,11 +3,11 @@ package com.tokopedia.play.broadcaster.robot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
-import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
+import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductSummaryUiState
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserUiState
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface

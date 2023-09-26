@@ -15,9 +15,9 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSummaryViewHolder
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.content.product.picker.sgc.view.viewholder.ProductSummaryViewHolder
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
 import io.mockk.mockk

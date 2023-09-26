@@ -4,7 +4,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.PagingType
 import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.sgc.model.result.PageResultState

@@ -15,10 +15,10 @@ import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProduct
 import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListBodyBinding
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
-import com.tokopedia.play.broadcaster.setup.product.analytic.EtalaseListAnalyticManager
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.analytic.manager.EtalaseListAnalyticManager
+import com.tokopedia.content.product.picker.sgc.view.bottomsheet.EtalaseListBottomSheet
+import com.tokopedia.content.product.picker.sgc.view.viewholder.EtalaseListViewHolder
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk

@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentSetupCoverUploadImageBinding
 import com.tokopedia.play.broadcaster.setup.cover.PlayBroSetupCoverAction
 import com.tokopedia.play.broadcaster.setup.cover.PlayBroSetupCoverViewModel
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel

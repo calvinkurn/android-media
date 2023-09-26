@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.viewmodel.setup.product.filter
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.etalase.SelectedEtalaseModel
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
