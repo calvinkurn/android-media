@@ -1142,7 +1142,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                 if (resultValidateUse != null) {
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoStateWithoutCalculate(resultValidateUse.promoUiModel)
-                    // todo: hit entry point? -> ini pas final validate
                     if (isSuccess) {
                         doCheckout(products, shop, profile, onSuccessCheckout)
                         return@launch
