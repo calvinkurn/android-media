@@ -63,7 +63,7 @@
                 android:id="@+id/imgPromoBackground"
                 android:layout_width="152dp"
                 android:layout_height="74dp"
-                android:contentDescription="@string/promo_voucher_cd_voucher_supergraphic"
+                android:contentDescription="@null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +75,7 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="12dp"
-                android:contentDescription="@string/promo_voucher_cd_voucher_icon"
+                android:contentDescription="@null"
                 app:layout_constraintEnd_toEndOf="@+id/imgPromoBackground"
                 app:layout_constraintTop_toTopOf="parent" />
 

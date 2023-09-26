@@ -56,7 +56,7 @@
         android:layout_height="40dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/promo_usage_ic_voucher_recommendation_applied"
-        android:contentDescription="@string/promo_voucher_cd_recommended_voucher_used"
+        android:contentDescription="@null"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/btnRecommendationUseVoucher"
         app:layout_constraintEnd_toEndOf="parent"
