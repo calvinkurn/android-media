@@ -21,8 +21,8 @@ buildscript {
 }
 
 android {
-    namespace 'com.tokopedia.play.broadcaster'
-    testNamespace 'com.tokopedia.play.broadcaster.test'
+    namespace 'com.tokopedia.content.product.picker'
+    testNamespace 'com.tokopedia.content.product.picker.test'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -61,15 +61,11 @@ android {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.contentAnalytic)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
-    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
-    implementation projectOrAar(rootProject.ext.features.contentProductPicker)
-    implementation project(rootProject.ext.features.mediapickerCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -78,21 +74,18 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
-    implementation projectOrAar(rootProject.ext.libraries.byteplusEffect)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
     implementation rootProject.ext.playServicesDependencies.core
 
@@ -175,10 +168,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'play_broadcaster'
+    artifactId = 'content_product_picker'
     groupId = 'com.tokopedia.content'
     versionName = "0.0.1"
-    artifactName ="play_broadcaster-release"
+    artifactName ="content_product_picker-release"
 }
 
 apply from: '../../../publish_local.gradle'
