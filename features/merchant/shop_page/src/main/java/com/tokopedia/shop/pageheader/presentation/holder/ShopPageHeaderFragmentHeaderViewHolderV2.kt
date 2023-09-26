@@ -485,7 +485,9 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.textHtml.orEmpty()
         val appLink =
             getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.textLink.orEmpty()
-        imageShopBadge?.loadImage(shopBadgeImageUrl)
+        imageShopBadge?.shouldShowWithAction(shopBadgeImageUrl.isNotEmpty()){
+            imageShopBadge?.loadImage(shopBadgeImageUrl)
+        }
         textShopName?.text = MethodChecker.fromHtml(shopName)
         sectionShopBasicInfo?.setOnClickListener {
             listenerHeader?.onClickShopBasicInfoSection(appLink)
