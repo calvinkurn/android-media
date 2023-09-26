@@ -1030,11 +1030,7 @@ class ChatbotFragment2 :
         }
 
         viewModel.typingBlockedState.observe(viewLifecycleOwner) {
-            if (it) {
-                hideReplyBox()
-            } else {
-                enableTyping()
-            }
+            handleIsTypingBlocked(it)
         }
     }
 
@@ -1953,12 +1949,12 @@ class ChatbotFragment2 :
                 SendableUiModel.generateStartTime(),
                 opponentId
             )
-            handleIsTypingBlocked(model)
+            handleIsTypingBlocked(model.isTypingBlocked)
         }
     }
 
-    private fun handleIsTypingBlocked(model: ChatActionSelectionBubbleUiModel) {
-        if (model.isTypingBlocked) {
+    private fun handleIsTypingBlocked(isTypingBlocked: Boolean) {
+        if (isTypingBlocked) {
             hideReplyBox()
         } else {
             enableTyping()

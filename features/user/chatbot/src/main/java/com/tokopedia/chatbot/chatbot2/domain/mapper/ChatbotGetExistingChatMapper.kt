@@ -88,14 +88,12 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         val attachmentId = chatItemPojoByDateByTime.attachment.type.toString()
         if (attachmentId != TYPE_CHAT_BALLOON_ACTION) return false
 
-        val isUserRepliedActionButton = if (index < (chatItemPojoByDate.replies.size - 1)) {
+        return if (index < (chatItemPojoByDate.replies.size - 1)) {
             val nextItem = chatItemPojoByDate.replies[index + 1]
             !nextItem.isOpposite
         } else {
             false
         }
-
-        return isUserRepliedActionButton
     }
 
     override fun mapAttachment(

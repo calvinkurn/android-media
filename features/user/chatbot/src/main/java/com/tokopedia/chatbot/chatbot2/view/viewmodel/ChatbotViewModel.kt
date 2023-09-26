@@ -594,16 +594,8 @@ class ChatbotViewModel @Inject constructor(
                                 reply.attachment.attributes,
                                 ChatActionBalloonSelectionAttachmentAttributes::class.java
                             )
-//                            typingBlockedState = pojoAttribute.isTypingBlockedOnButtonSelect
                             handleTypingBlockState(pojoAttribute.isTypingBlockedOnButtonSelect)
                         }
-//                        TYPE_QUICK_REPLY_SEND -> {
-//                            val pojoAttribute = GsonBuilder().create().fromJson(
-//                                reply.attachment.attributes,
-//                                QuickReplySendAttachmentAttributes::class.java
-//                            )
-//                            handleTypingBlockState(pojoAttribute.isTypingBlocked)
-//                        }
                     }
                 }
             }
@@ -1089,16 +1081,8 @@ class ChatbotViewModel @Inject constructor(
                         chatResponse.attachment?.attributes,
                         ChatActionBalloonSelectionAttachmentAttributes::class.java
                     )
-//                    typingBlockedState = pojoAttribute.isTypingBlockedOnButtonSelect
                     handleTypingBlockState(pojoAttribute.isTypingBlockedOnButtonSelect)
                 }
-//                TYPE_QUICK_REPLY_SEND -> {
-//                    val pojoAttribute = GsonBuilder().create().fromJson(
-//                        chatResponse.attachment?.attributes,
-//                        QuickReplySendAttachmentAttributes::class.java
-//                    )
-//                    handleTypingBlockState(pojoAttribute.isTypingBlocked)
-//                }
             }
         }
     }
