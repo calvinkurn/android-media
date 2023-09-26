@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 
+import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 

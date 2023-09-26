@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.eventbus
+package com.tokopedia.content.common.util.eventbus
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -1,10 +1,10 @@
 package com.tokopedia.play.broadcaster.setup.product.analytic
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject

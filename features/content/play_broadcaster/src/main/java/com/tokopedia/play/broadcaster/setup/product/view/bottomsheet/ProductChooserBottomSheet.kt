@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
@@ -34,7 +35,6 @@ import com.tokopedia.content.product.picker.sgc.model.result.ContentProductPicke
 import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.util.extension.isNetworkError
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound

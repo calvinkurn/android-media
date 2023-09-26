@@ -1,13 +1,13 @@
 package com.tokopedia.play.broadcaster.setup.product.analytic
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.*
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow

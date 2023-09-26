@@ -1,9 +1,8 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
  * Created by kenny.hadisaputra on 28/01/22

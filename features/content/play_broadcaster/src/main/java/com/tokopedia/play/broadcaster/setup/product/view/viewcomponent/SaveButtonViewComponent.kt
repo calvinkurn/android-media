@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 
