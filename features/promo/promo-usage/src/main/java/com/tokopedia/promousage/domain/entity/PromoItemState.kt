@@ -1,6 +1,10 @@
 package com.tokopedia.promousage.domain.entity
 
-sealed class PromoItemState {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+sealed class PromoItemState : Parcelable {
 
     object Loading : PromoItemState()
 

@@ -1,7 +1,10 @@
 package com.tokopedia.promousage.domain.entity
 
+import android.os.Parcelable
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class SecondaryPromoItem(
     override val id: String = "",
     val headerId: String = "",
@@ -24,4 +27,4 @@ data class SecondaryPromoItem(
     val cta: PromoItemCta = PromoItemCta(),
     val couponUrl: String = "",
     val couponType: List<String> = emptyList()
-) : DelegateAdapterItem
+) : Parcelable, DelegateAdapterItem

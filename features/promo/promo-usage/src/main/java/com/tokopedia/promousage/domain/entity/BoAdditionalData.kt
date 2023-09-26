@@ -1,5 +1,9 @@
 package com.tokopedia.promousage.domain.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class BoAdditionalData(
     val code: String = "",
     val uniqueId: String = "",
@@ -12,4 +16,4 @@ data class BoAdditionalData(
     val benefitClass: String = "",
     val boCampaignId: Long = 0,
     val etaText: String = ""
-)
+) : Parcelable

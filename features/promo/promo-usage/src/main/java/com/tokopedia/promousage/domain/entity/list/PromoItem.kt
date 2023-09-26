@@ -10,7 +10,9 @@ import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
 import com.tokopedia.promousage.util.analytics.model.ImpressHolder
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class PromoItem(
     override val id: String = "",
     val headerId: String = "",
