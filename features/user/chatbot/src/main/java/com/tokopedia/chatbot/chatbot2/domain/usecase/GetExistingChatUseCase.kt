@@ -25,10 +25,10 @@ class GetExistingChatUseCase @Inject constructor(
     suspend fun getFirstPageChat(messageId: String): GetExistingChatPojo {
         return withContext(dispatcher.io) {
             val topQuery = generateFirstPageQuery()
-            val params = generateFirstPageParam(messageId)
+            val params = generateFirstPageParam(messageId) // msgId -> 4053344
             val response = getChat(topQuery, params)
-            updateMinReplyTime(response)
-            updateMaxReplyTime(response)
+            updateMinReplyTime(response) // 1695632517075
+            updateMaxReplyTime(response) // 1695632591753
             response
         }
     }
