@@ -114,6 +114,7 @@
 /features/merchant/seller_mvc_creation                  @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_nib                      @tokopedia/android-minionken-dev
 /features/promo/merchant_voucher                        @tokopedia/android-minionken-dev
+/features/merchant/buy_more_get_more                    @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management/                   @tokopedia/android-minionsolo-dev
