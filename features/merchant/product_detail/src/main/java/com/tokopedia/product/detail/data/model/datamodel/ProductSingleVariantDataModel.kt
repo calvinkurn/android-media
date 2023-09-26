@@ -74,6 +74,10 @@ data class ProductSingleVariantDataModel(
         return isChanged
     }
 
+    override fun isLoading(): Boolean {
+        return variantLevelOne == null
+    }
+
     val isThumbnailType get() = thumbnailType == ProductDetailConstant.THUMB_MINI_VARIANT_OPTIONS
 
     fun getComponentNameAsThumbnail(): String = name() + " - thumbnail"

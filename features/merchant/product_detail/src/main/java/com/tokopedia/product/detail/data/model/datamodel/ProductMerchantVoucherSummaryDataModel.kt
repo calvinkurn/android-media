@@ -50,4 +50,8 @@ data class ProductMerchantVoucherSummaryDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
     }
+
+    override fun isLoading(): Boolean {
+        return uiModel.shopId.isEmpty()
+    }
 }

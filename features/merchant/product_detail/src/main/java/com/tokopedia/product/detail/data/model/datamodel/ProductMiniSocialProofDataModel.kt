@@ -46,4 +46,8 @@ data class ProductMiniSocialProofDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
     }
+
+    override fun isLoading(): Boolean {
+        return items.isEmpty()
+    }
 }

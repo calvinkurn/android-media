@@ -312,7 +312,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 it.recommendation = DynamicProductDetailMapper.convertRecomToDataModel(
                     productMediaRecomBasicInfo
                 )
-                it.finishLoading()
             }
         }
     }
@@ -495,7 +494,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         productIdMVC = productId,
                         additionalData = it.merchantVoucherSummary.additionalData
                     )
-                    this.finishLoading()
                 }
             }
 
@@ -587,7 +585,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     }?.impressHolder ?: ImpressHolder()
                 )
             }
-            miniSocialProofMap?.finishLoading()
         }
     }
 
@@ -904,7 +901,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             val variantLvlOne = processedVariant?.firstOrNull()
             productSingleVariant?.title = title
             productSingleVariant?.variantLevelOne = doRetainImpressOfVariantOptions(variantLvlOne)
-            productSingleVariant?.finishLoading()
         }
     }
 
@@ -934,7 +930,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (singleVariant == null) {
             removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
         } else {
-            singleVariant.finishLoading()
             updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
                 mapOfData[ProductDetailConstant.MINI_VARIANT_OPTIONS] =
                     retainImpressOfSingleVariantOptions(newSingleVariant = singleVariant)

@@ -51,6 +51,10 @@ data class ProductMediaDataModel(
         }
     }
 
+    override fun isLoading(): Boolean {
+        return listOfMedia.isEmpty()
+    }
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
