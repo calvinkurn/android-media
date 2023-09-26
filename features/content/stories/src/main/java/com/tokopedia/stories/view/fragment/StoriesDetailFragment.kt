@@ -352,6 +352,7 @@ class StoriesDetailFragment @Inject constructor(
                 TouchEventStories.PAUSE -> {
                     flStoriesNext.hide()
                     flStoriesProduct.hide()
+                    vStoriesPartner.root.hide()
                     showStoriesComponent(false)
                     pauseStories()
                 }
@@ -359,6 +360,7 @@ class StoriesDetailFragment @Inject constructor(
                 TouchEventStories.RESUME -> {
                     flStoriesNext.show()
                     flStoriesProduct.show()
+                    vStoriesPartner.root.show()
                     showStoriesComponent(true)
                     resumeStories()
                 }
@@ -375,6 +377,7 @@ class StoriesDetailFragment @Inject constructor(
                 TouchEventStories.PAUSE -> {
                     flStoriesPrev.hide()
                     flStoriesProduct.hide()
+                    vStoriesPartner.root.hide()
                     showStoriesComponent(false)
                     pauseStories()
                 }
@@ -382,6 +385,7 @@ class StoriesDetailFragment @Inject constructor(
                 TouchEventStories.RESUME -> {
                     flStoriesPrev.show()
                     flStoriesProduct.show()
+                    vStoriesPartner.root.show()
                     showStoriesComponent(true)
                     resumeStories()
                 }
