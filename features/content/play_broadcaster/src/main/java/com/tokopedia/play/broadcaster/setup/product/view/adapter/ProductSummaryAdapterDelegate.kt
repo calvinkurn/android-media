@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.setup.product.view.adapter
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play_common.R as commonR
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSummaryViewHolder
 
 /**
@@ -14,7 +14,7 @@ internal class ProductSummaryAdapterDelegate private constructor() {
     internal class Header : TypedAdapterDelegate<
             ProductSummaryAdapter.Model.Header,
             ProductSummaryAdapter.Model,
-            ProductSummaryViewHolder.Header>(commonR.layout.view_play_empty) {
+            ProductSummaryViewHolder.Header>(contentcommonR.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
             item: ProductSummaryAdapter.Model.Header,
@@ -36,7 +36,7 @@ internal class ProductSummaryAdapterDelegate private constructor() {
     ) : TypedAdapterDelegate<
             ProductSummaryAdapter.Model.Body,
             ProductSummaryAdapter.Model,
-            ProductSummaryViewHolder.Body>(commonR.layout.view_play_empty) {
+            ProductSummaryViewHolder.Body>(contentcommonR.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
             item: ProductSummaryAdapter.Model.Body,
