@@ -26,7 +26,7 @@ internal class StoriesWidgetCoachMark(
 
         coachMark.showCoachMark(
             arrayListOf(
-                CoachMark2Item(view, text, "")
+                CoachMark2Item(view,"", text)
             )
         )
     }
