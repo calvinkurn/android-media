@@ -11,7 +11,6 @@ import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewMode
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 
@@ -27,7 +26,7 @@ fun productSetupViewModel(
     repo: PlayBroadcastRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
-    source: PlayBroPageSource = PlayBroPageSource.Live,
+    isNumerationShown: Boolean = true,
     fetchCommissionProduct: Boolean = false,
 ): PlayBroProductSetupViewModel {
     return PlayBroProductSetupViewModel(
@@ -39,7 +38,7 @@ fun productSetupViewModel(
         repo = repo,
         userSession = userSession,
         dispatchers = dispatchers,
-        source = source,
+        isNumerationShown = isNumerationShown,
         fetchCommissionProduct = fetchCommissionProduct,
     )
 }

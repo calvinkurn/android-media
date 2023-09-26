@@ -9,7 +9,6 @@ import com.tokopedia.play.broadcaster.helper.BottomSheetContainer
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 
 /**
  * Created by kenny.hadisaputra on 02/03/22
@@ -38,13 +37,13 @@ class ProductSetupContainer(
                         maxProduct: Int,
                         productSectionList: List<ProductTagSectionUiModel>,
                         savedStateHandle: SavedStateHandle,
-                        source: PlayBroPageSource,
+                        isNumerationShown: Boolean,
                         isEligibleForPin: Boolean,
                         fetchCommissionProduct: Boolean
                     ): PlayBroProductSetupViewModel {
                         return viewModel(savedStateHandle)
                     }
-                }.create("123", 30, emptyList(), handle, source = PlayBroPageSource.Live,
+                }.create("123", 30, emptyList(), handle, isNumerationShown = true,
                     isEligibleForPin = false,
                     fetchCommissionProduct = false
                 ) as T

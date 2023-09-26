@@ -32,7 +32,6 @@ import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatusUiM
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel

@@ -7,7 +7,6 @@ import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
@@ -83,7 +82,7 @@ class PlaySetupProductSummaryViewModelTest {
     @Test
     fun `when user in live broadcaster, product numeration is shown`() {
         val vm = PlayBroProductSetupViewModelRobot(
-            source = PlayBroPageSource.Live,
+            isNumerationShown = true,
             dispatchers = testDispatcher
         )
         vm.use {
@@ -94,7 +93,7 @@ class PlaySetupProductSummaryViewModelTest {
     @Test
     fun `when user in short video, product numeration is hidden`() {
         val vm = PlayBroProductSetupViewModelRobot(
-            source = PlayBroPageSource.Shorts,
+            isNumerationShown = false,
             dispatchers = testDispatcher
         )
         vm.use {
@@ -105,7 +104,7 @@ class PlaySetupProductSummaryViewModelTest {
     @Test
     fun `when user in unknown video, product numeration is hidden`() {
         val vm = PlayBroProductSetupViewModelRobot(
-            source = PlayBroPageSource.Shorts,
+            isNumerationShown = false,
             dispatchers = testDispatcher
         )
         vm.use {

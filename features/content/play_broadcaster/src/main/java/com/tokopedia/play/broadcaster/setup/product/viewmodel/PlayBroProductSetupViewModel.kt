@@ -21,7 +21,6 @@ import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.sgc.model.etalase.SelectedEtalaseModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
