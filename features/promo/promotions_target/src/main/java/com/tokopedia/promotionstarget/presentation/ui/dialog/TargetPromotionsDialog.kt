@@ -377,7 +377,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         tvSubTitleRight = root.findViewById(R.id.tvSubTitleRight)
 
         try {
-            val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(R.id.close_button_rounded)
+            val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(com.tokopedia.design.R.id.close_button_rounded)
             imageClose.setImageResource(R.drawable.t_promo_close)
         } catch (th: Throwable) {
         }

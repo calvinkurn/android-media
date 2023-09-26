@@ -68,4 +68,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:notificationType="counter_type"
         tools:visibility="visible"/>
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/nav_menu_icon_cta"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="CHEVRON_RIGHT" />
 </LinearLayout>

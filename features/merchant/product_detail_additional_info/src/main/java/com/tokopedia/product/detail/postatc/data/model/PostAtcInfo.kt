@@ -1,22 +1,24 @@
 package com.tokopedia.product.detail.postatc.data.model
 
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
+
 data class PostAtcInfo(
-    val productId: String = "",
+    val addons: Addons? = null,
     val cartId: String = "",
-    val categoryId: String = "",
     val categoryName: String = "",
+    val categoryId: String = "",
+    val condition: String = "",
     val footer: Footer = Footer(),
-    val isFulfillment: Boolean = false,
     val layoutId: String = "",
     val layoutName: String = "",
-    val pageSource: String = "",
-    val selectedAddonsIds: List<String> = emptyList(),
-    val shopId: String = "",
-    val warehouseId: String = "",
-    val quantity: Int = 0,
-    val price: Double = 0.0,
     val originalPrice: Double = 0.0,
-    val condition: String = ""
+    val pageSource: String = "",
+    val price: Double = 0.0,
+    val productId: String = "",
+    val session: String = "",
+    val shopId: String = "",
+    val userLocationRequest: UserLocationRequest = UserLocationRequest()
 ) {
     data class Footer(
         val image: String = "",
@@ -27,6 +29,23 @@ data class PostAtcInfo(
     ) {
         val shouldShow: Boolean
             get() = image.isNotEmpty() && description.isNotEmpty()
+    }
 
+    data class Addons(
+        val deselectedAddonsIds: List<String>,
+        val isFulfillment: Boolean,
+        val selectedAddonsIds: List<String>,
+        val warehouseId: String,
+        val quantity: Int
+    ) {
+        companion object {
+            fun parse(addons: PostAtcParams.Addons) = Addons(
+                deselectedAddonsIds = addons.deselectedAddonsIds,
+                isFulfillment = addons.isFulfillment,
+                selectedAddonsIds = addons.selectedAddonsIds,
+                warehouseId = addons.warehouseId,
+                quantity = addons.quantity
+            )
+        }
     }
 }

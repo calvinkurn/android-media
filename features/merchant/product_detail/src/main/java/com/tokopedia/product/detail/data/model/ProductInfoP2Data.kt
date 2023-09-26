@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
-import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
@@ -136,10 +135,6 @@ data class ProductInfoP2Data(
     @Expose
     var reviewImage: ProductReviewImageListQuery = ProductReviewImageListQuery(),
 
-    @SerializedName("bundleInfo")
-    @Expose
-    var bundleInfoList: List<BundleInfo> = emptyList(),
-
     @SerializedName("rating")
     @Expose
     var rating: ProductRatingCount = ProductRatingCount(),
@@ -219,7 +214,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     helpfulReviews = mostHelpFulReviewData.list,
     imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage),
     alternateCopy = cartRedirection.alternateCopy,
-    bundleInfoMap = bundleInfoList.associateBy { it.productId },
     rating = rating,
     ticker = ticker,
     navBar = navBar,

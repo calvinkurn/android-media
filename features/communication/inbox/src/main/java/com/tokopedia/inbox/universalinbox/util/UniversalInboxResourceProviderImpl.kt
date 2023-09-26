@@ -20,14 +20,6 @@ class UniversalInboxResourceProviderImpl @Inject constructor(
         }
     }
 
-    override fun getSectionChatTitle(): String {
-        return getStringFromResource(R.string.universal_inbox_section_chat)
-    }
-
-    override fun getSectionOthersTitle(): String {
-        return getStringFromResource(R.string.universal_inbox_section_others)
-    }
-
     override fun getMenuChatBuyerTitle(): String {
         return getStringFromResource(R.string.universal_inbox_menu_chat_buyer)
     }

@@ -77,6 +77,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   name
                   product_id
                   product_name
+                  courier_info
                   is_same_day
                   awb
                   awb_upload_proof_text

@@ -23,6 +23,7 @@ object ProductDetailConstant {
     const val PDP_RESULT_PLT_NETWORK_METRICS = "pdp_result_plt_network_metrics"
     const val PDP_RESULT_PLT_RENDER_METRICS = "pdp_result_plt_render_metrics"
     const val PDP_RESULT_TRACE = "pdp_result_trace"
+    const val PDP_RESULT_TRACE_P2_DATA = "pdp_result_trace_p2_data"
 
     // PAYLOADS
     const val PAYLOAD_WISHLIST = 1
@@ -110,6 +111,7 @@ object ProductDetailConstant {
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
     const val RECOM_VERTICAL = "pdp_vertical"
+    const val A_PLUS_IMAGE = "product_detail_media"
 
     // custom info title as component type
     const val CUSTOM_INFO_TITLE = "custom_info_title"
@@ -200,4 +202,6 @@ object ProductDetailConstant {
 
     const val HTTP_PREFIX = "http"
     const val WEBVIEW_URL_PARAM = "url"
+
+    const val A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE = false
 }

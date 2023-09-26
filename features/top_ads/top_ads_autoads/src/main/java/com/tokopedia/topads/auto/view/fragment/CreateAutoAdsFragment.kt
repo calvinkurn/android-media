@@ -66,10 +66,10 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener 
         val tooltipView =
             layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
                 .apply {
-                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_text)
                     tvToolTipText?.text = getString(R.string.tip_title)
 
-                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+                    imgTooltipIcon = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_icon)
                     imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
 
@@ -120,11 +120,11 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener 
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
                 add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc1,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc2,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc3,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet =
                 context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }

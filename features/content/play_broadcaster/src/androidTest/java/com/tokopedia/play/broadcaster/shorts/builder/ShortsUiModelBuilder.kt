@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
 /**
@@ -153,18 +154,25 @@ class ShortsUiModelBuilder {
     }
 
     fun buildTags(
-        size: Int = 3
-    ): Set<PlayTagUiModel> {
-        return mutableSetOf<PlayTagUiModel>().apply {
-            repeat(size) {
-                add(
-                    PlayTagUiModel(
-                        tag = "Tag $it",
-                        isChosen = false,
+        size: Int = 3,
+        minTags: Int = 1,
+        maxTags: Int = 2,
+    ): PlayTagUiModel {
+        return PlayTagUiModel(
+            tags = mutableSetOf<PlayTagItem>().apply {
+                repeat(size) {
+                    add(
+                        PlayTagItem(
+                            tag = "Tag $it",
+                            isChosen = false,
+                            isActive = true,
+                        )
                     )
-                )
-            }
-        }
+                }
+            },
+            minTags = minTags,
+            maxTags = maxTags,
+        )
     }
 
     fun buildLastTaggedProducts(

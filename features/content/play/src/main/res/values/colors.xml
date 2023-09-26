@@ -53,5 +53,7 @@
     <!--Social Proof-->
     <color name="play_dms_text_social_proof">#AD31353B</color>
     <color name="play_dms_rating_social_proof">#FFC400</color>
+    <color name="play_dms_glare_center">#AAffffff</color>
+    <color name="play_dms_glare_end">#00ffffff</color>
 
 </resources>

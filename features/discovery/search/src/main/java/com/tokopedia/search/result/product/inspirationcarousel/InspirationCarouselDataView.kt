@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_DILAYANI_TOKOPEDIA
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -174,12 +175,13 @@ class InspirationCarouselDataView(
                     "variant", "none / other",
                     "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "index", optionPosition.toString(),
+                    "dimension40", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "dimension115", labelGroupDataList.getFormattedPositionName(),
                     "dimension61", filterSortParams,
                     "dimension90", dimension90,
                     "dimension131", externalReference.orNone(),
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
-                    "dimension58", hasFulfillment(labelGroupDataList).toString(),
+                    "dimension58", isFulfillment(),
                 )
             }
 
@@ -196,6 +198,7 @@ class InspirationCarouselDataView(
                     "item_category", "none / other",
                     "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "index", optionPosition.toString(),
+                    "dimension40", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "dimension115", labelGroupDataList.getFormattedPositionName(),
                     "dimension61", filterSortParams,
                     "dimension90", dimension90,
@@ -207,9 +210,13 @@ class InspirationCarouselDataView(
                     "shop_type", "none / other",
                     "variant", "none / other",
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
-                    "dimension58", hasFulfillment(labelGroupDataList).toString(),
+                    "dimension58", isFulfillment(),
                 )
             }
+
+            private fun isFulfillment() =
+                (hasFulfillment(labelGroupDataList)
+                    || inspirationCarouselType == TYPE_DILAYANI_TOKOPEDIA).toString()
 
             fun asSearchComponentTracking(keyword: String): SearchComponentTracking =
                 searchComponentTracking(

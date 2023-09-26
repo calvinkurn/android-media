@@ -58,7 +58,7 @@ class ReferralPhoneNumberVerificationFragment : BaseDaggerFragment() {
         tvPhoneNumber?.setText(transform(userSession.phoneNumber))
         btnActivation = view.findViewById<View>(R.id.btn_activation) as TextView
         ivTokocash = view.findViewById<View>(R.id.img_app_share) as ImageView
-        ImageHandler.loadImage2(ivTokocash, URL_TOKOCASH_SHARE, R.drawable.loading_page)
+        ImageHandler.loadImage2(ivTokocash, URL_TOKOCASH_SHARE, com.tokopedia.design.R.drawable.loading_page)
         setViewListener()
     }
 

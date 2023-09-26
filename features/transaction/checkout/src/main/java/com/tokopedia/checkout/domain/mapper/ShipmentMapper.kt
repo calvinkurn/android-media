@@ -606,7 +606,7 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnProductListData(addOnsDataList: List<AddOnsProduct.AddOnsData>, productQuantity: Int): MutableList<AddOnProductDataItemModel> {
+    private fun mapAddOnProductListData(addOnsDataList: List<AddOnsProduct.AddOnsData>, productQuantity: Int): ArrayList<AddOnProductDataItemModel> {
         val listAddOnDataItem = arrayListOf<AddOnProductDataItemModel>()
         addOnsDataList.forEach { item ->
             listAddOnDataItem.add(
@@ -619,12 +619,12 @@ class ShipmentMapper @Inject constructor() {
                     type = item.type
                     qty = productQuantity
                     uniqueId = item.uniqueId
+                    iconUrl = item.iconUrl
                 }
             )
         }
         return listAddOnDataItem
     }
-
     private fun mapSubtotalAddOn(subtotalAddOns: List<SubtotalAddOn>): List<ShipmentSubtotalAddOnData> {
         val listSubtotal = arrayListOf<ShipmentSubtotalAddOnData>()
 
@@ -979,6 +979,7 @@ class ShipmentMapper @Inject constructor() {
             description = shipmentAddressFormDataResponse.donation.description
             nominal = shipmentAddressFormDataResponse.donation.nominal
             isChecked = shipmentAddressFormDataResponse.isDonationCheckboxStatus
+            iconUrl = shipmentAddressFormDataResponse.donation.iconUrl
         }
     }
 
@@ -1036,9 +1037,11 @@ class ShipmentMapper @Inject constructor() {
             subText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.subText
             tickerText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tickerText
             tooltipText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipText
+            tooltipTitleText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipTitleText
             hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.text
             hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.url
             isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.isShow
+            iconUrl = shipmentAddressFormDataResponse.egoldAttributes.iconUrl
 
             val tmpEgoldTieringModelArrayList: ArrayList<EgoldTieringModel> = arrayListOf()
             shipmentAddressFormDataResponse.egoldAttributes.egoldTieringDataArrayList.forEach {

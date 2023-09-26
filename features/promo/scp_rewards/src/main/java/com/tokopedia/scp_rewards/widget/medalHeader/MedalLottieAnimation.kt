@@ -6,24 +6,22 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.OvershootInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.scale
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.scp_rewards.R
-import com.tokopedia.scp_rewards.common.utils.downloadImage
 import com.tokopedia.scp_rewards.databinding.WidgetMedalLottieAnimationBinding
-import com.tokopedia.scp_rewards_common.EASE_IN_OUT
-import com.tokopedia.scp_rewards_common.OVER_SHOOT
-import com.tokopedia.scp_rewards_common.animateView
-import com.tokopedia.scp_rewards_common.loadLottieFromUrl
-import com.tokopedia.scp_rewards_common.propertyValueHolder
+import com.tokopedia.scp_rewards_common.constants.EASE_IN_OUT
+import com.tokopedia.scp_rewards_common.constants.OVER_SHOOT
+import com.tokopedia.scp_rewards_common.utils.animateView
+import com.tokopedia.scp_rewards_common.utils.downloadImage
+import com.tokopedia.scp_rewards_common.utils.loadLottieFromUrl
+import com.tokopedia.scp_rewards_common.utils.propertyValueHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
 
 private const val SHUTTER_AUTO_CLOSE = "shutter_auto_close"
 private const val SHUTTER_AUTO_OPEN = "shutter_auto_open"
@@ -52,7 +50,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
             downloadImages(data, {
                 loadMedalBadge(data, it)
             }, {
-                binding.lottieView.setImageResource(R.drawable.fallback_badge)
+                binding.lottieView.setImageResource(scp_rewards_commonR.drawable.fallback_badge)
             })
         } catch (ex: Throwable) {
             // For Out of memory exceptions
@@ -99,7 +97,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
                     binding.lottieViewSparks.playAnimation()
                 },
                 onError = {
-                    lottieView.setImageResource(R.drawable.fallback_badge)
+                    lottieView.setImageResource(scp_rewards_commonR.drawable.fallback_badge)
                 },
                 onLottieEnded = {
                     val marker = lottieView.composition?.markers?.find { it.startFrame.toInt() == lottieView.frame }
@@ -228,8 +226,8 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
         }
         animateView(
             arrayOf(
-                propertyValueHolder(View.SCALE_X, from, to),
-                propertyValueHolder(View.SCALE_Y, from, to)
+                propertyValueHolder(SCALE_X, from, to),
+                propertyValueHolder(SCALE_Y, from, to)
             ),
             DURATION,
             interpolatorType

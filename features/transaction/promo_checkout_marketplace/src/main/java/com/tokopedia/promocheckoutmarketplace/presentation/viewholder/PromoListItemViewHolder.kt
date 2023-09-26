@@ -164,10 +164,10 @@ class PromoListItemViewHolder(
             promoLoader2.type = LoaderUnify.TYPE_LINE
             cardPromoItem.cardType = CardUnify.TYPE_BORDER
             cardPromoItem.setCardBackgroundColor(colorBackgroundEnabled)
-            cardPromoItem.setOnClickListener(null)
             promoQuantityIdentifierTop.gone()
             promoQuantityIdentifierBottom.gone()
             textPromoQuantity.gone()
+            promoConstraintWrapper.setOnClickListener(null)
         }
     }
 

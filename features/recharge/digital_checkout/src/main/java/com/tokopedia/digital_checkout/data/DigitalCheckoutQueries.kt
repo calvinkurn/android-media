@@ -101,6 +101,10 @@ object DigitalCheckoutQueries {
             channel_id
             collection_point_id
             collection_point_version
+            collection_data_elements {
+              key
+              value
+            }
           }
         }
     """

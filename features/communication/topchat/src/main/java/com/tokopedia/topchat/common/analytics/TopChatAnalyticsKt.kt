@@ -228,42 +228,6 @@ object TopChatAnalyticsKt {
         )
     }
 
-    fun eventClickReplyTabChatTextAreaLayout(
-        productIds: String,
-        userId: String,
-        shopId: String
-    ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createGeneralEvent(
-                event = Event.CLICK_COMMUNICATION,
-                category = Category.CHAT_DETAIL,
-                action = Action.CLICK_TAB_REPLY,
-                label = "$shopId - $userId - $productIds",
-                trackerId = "37348",
-                businessUnit = COMMUNICATION_MEDIA,
-                currentSite = CURRENT_SITE_TOKOPEDIA
-            )
-        )
-    }
-
-    fun eventClickSRWTabChatTextAreaLayout(
-        productIds: String,
-        userId: String,
-        shopId: String
-    ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createGeneralEvent(
-                event = Event.CLICK_COMMUNICATION,
-                category = Category.CHAT_DETAIL,
-                action = Action.CLICK_TAB_SRW,
-                label = "$shopId - $userId - $productIds",
-                trackerId = "37349",
-                businessUnit = COMMUNICATION_MEDIA,
-                currentSite = CURRENT_SITE_TOKOPEDIA
-            )
-        )
-    }
-
     fun eventClickReplyChatFromNotif() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             createGeneralEvent(
@@ -1252,8 +1216,6 @@ object TopChatAnalyticsKt {
         const val CLICK_LINK_INSIDE_TICKER = "user click link inside ticker"
         const val CLICK_CLOSE_TICKER = "user click close ticker"
         const val VIEW_ON_PRODUCT_THUMBNAIL = "view on product thumbnail"
-        const val CLICK_TAB_REPLY = "click tab tulis pesan"
-        const val CLICK_TAB_SRW = "click tab smart reply"
     }
 
     private const val PRODUCT_INDEX = "0"

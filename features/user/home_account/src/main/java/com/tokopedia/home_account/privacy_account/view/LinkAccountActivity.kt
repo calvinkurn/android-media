@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.home_account.privacy_account.di.DaggerLinkAccountComponent
 import com.tokopedia.home_account.privacy_account.di.LinkAccountComponent
 import com.tokopedia.home_account.privacy_account.di.module.LinkAccountModule
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountActivity : BaseSimpleActivity(), HasComponent<LinkAccountComponent> {
 
     override fun getComponent(): LinkAccountComponent {

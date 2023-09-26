@@ -33,10 +33,9 @@ import org.w3c.dom.Attr
 class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
     companion object {
         private const val ISSUE_ID = "UnsupportedNestColor"
-        private const val BRIEF_DESC = "Deprecated color should not be used."
-        private const val ERROR_MESSAGE =
-            "The color has deprecated. please use NestColor or consultation to your designer."
-        private const val QUICK_FIX_MESSAGE = "\n⚒️ ️Quick Fix:\n@s"
+        private const val BRIEF_DESC = "The color has deprecated."
+        private const val ERROR_MESSAGE = "%s is obsolete please change to %s"
+        private const val EXPLANATION = "$BRIEF_DESC Please use NestColor or consultation to your designer."
         private val ISSUE_PRIORITY = Priority.High
         private val ISSUE_SEVERITY = Severity.ERROR
         private val ISSUE_CATEGORY = Category.CORRECTNESS
@@ -47,7 +46,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         val JAVA_ISSUE = Issue.create(
             id = ISSUE_ID,
             briefDescription = BRIEF_DESC,
-            explanation = ERROR_MESSAGE,
+            explanation = EXPLANATION,
             category = ISSUE_CATEGORY,
             priority = ISSUE_PRIORITY.value,
             severity = ISSUE_SEVERITY,
@@ -60,7 +59,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         val XML_ISSUE = Issue.create(
             id = ISSUE_ID,
             briefDescription = BRIEF_DESC,
-            explanation = ERROR_MESSAGE,
+            explanation = EXPLANATION,
             category = ISSUE_CATEGORY,
             priority = ISSUE_PRIORITY.value,
             severity = ISSUE_SEVERITY,
@@ -142,8 +141,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
             .text(sAttrValue)
             .with(suggestion)
             .build()
-        val quickFixDesc = " ❌: $sAttrValue → ✅: $suggestion"
-        val message = ERROR_MESSAGE + QUICK_FIX_MESSAGE.replace("@s", quickFixDesc)
+        val message = ERROR_MESSAGE.format(sAttrValue, suggestion)
 
         context.report(
             XML_ISSUE,
@@ -273,7 +271,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
 
         for (token in tokens) {
             val colorSuggestion = UnifyComponentsList.unifyToNestColor[token] ?: return null
-            val suggestion = "com.tokopedia.unifyprinciples.R.color.$colorSuggestion"
+            val suggestion = colorSuggestion
             val quickFix = LintFix.create()
                 .replace()
                 .text(token)
@@ -292,14 +290,6 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         }.toList()
     }
 
-    private fun getQuickFixDesc(suggestion: String, sAttrValue: String) =
-        if (suggestion.isBlank()) {
-            ERROR_MESSAGE
-        } else {
-            ERROR_MESSAGE + QUICK_FIX_MESSAGE.replace(
-                "@s",
-                "❌: $sAttrValue → ✅: $suggestion"
-            )
-        }
+    private fun getQuickFixDesc(suggestion: String, sAttrValue: String) = ERROR_MESSAGE.format(sAttrValue, suggestion)
     // endregion JAVA detector
 }

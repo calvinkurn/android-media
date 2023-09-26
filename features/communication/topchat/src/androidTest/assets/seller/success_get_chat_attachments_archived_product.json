@@ -1,0 +1,16 @@
+{
+  "chatAttachments": {
+    "list": [
+      {
+        "id": 827523083,
+        "type": 3,
+        "attributes": "{\"product_id\":1261590628,\"product_profile\":{\"name\":\"\",\"parent_id\":0,\"price\":\"\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/topchat/img/produk-diarsipkan.png\",\"url\":\"\",\"android_url\":\"\",\"ios_url\":\"\",\"is_upcoming_campaign_product\":false,\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":0,\"status\":99,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\",\"stock_info\":{},\"location_stock\":{\"address_id\":0,\"district_id\":0,\"district_name\":\"\",\"district_icon\":\"\",\"district_name_full_text\":\"\",\"postal_code\":\"\",\"latlon\":\"\"}}}",
+        "fallback": {
+          "message": "",
+          "html": "https://www.tokopedia.com/totokaku/shoes-multiple-variant-same-type-one-color-hitam?whid=0"
+        },
+        "isActual": true
+      }
+    ]
+  }
+}

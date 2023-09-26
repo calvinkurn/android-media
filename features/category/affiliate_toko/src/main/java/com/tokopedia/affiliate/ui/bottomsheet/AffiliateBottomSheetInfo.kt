@@ -42,7 +42,7 @@ class AffiliateBottomSheetInfo : BottomSheetUnify() {
             return AffiliateBottomSheetInfo().apply {
                 arguments = Bundle().apply {
                     putLong(TICKER_ID, tickerId)
-                    putSerializable(TICKER_DATA, tickerData)
+                    putParcelable(TICKER_DATA, tickerData)
                 }
             }
         }
@@ -61,9 +61,9 @@ class AffiliateBottomSheetInfo : BottomSheetUnify() {
         arguments?.let {
             tickerId = it.getLong(TICKER_ID)
             tickerData = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                it.getSerializable(TICKER_DATA) as AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData
+                it.getParcelable(TICKER_DATA) as? AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData
             } else {
-                it.getSerializable(
+                it.getParcelable(
                     TICKER_DATA,
                     AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData::class.java
                 )

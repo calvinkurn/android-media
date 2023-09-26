@@ -23,6 +23,8 @@ def isEnableMacrobenchmarkUtil() {
     return "false";
 }
 android {
+    namespace 'com.tokopedia.tkpd'
+    testNamespace 'com.tokopedia.tkpd.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

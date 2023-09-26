@@ -75,6 +75,7 @@ class HomeAccountRobot {
                 afterPengaturanAplikasiPosition
             )
         )
+        waitForIt(1.0f)
         onView(withText(R.string.menu_account_section_title_app_setting)).perform(click())
         onView(withId(R.id.home_account_user_fragment_rv)).perform(
             scrollToPosition<RecyclerView.ViewHolder>(afterPengaturanAplikasiPosition)

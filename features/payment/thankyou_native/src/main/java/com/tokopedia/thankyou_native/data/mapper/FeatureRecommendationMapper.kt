@@ -1,8 +1,10 @@
 package com.tokopedia.thankyou_native.data.mapper
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
@@ -43,8 +45,8 @@ object FeatureRecommendationMapper {
         if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
             engineData.featureEngineItem.forEach { featureEngineItem ->
                 try {
-                    val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)) {
+                    val jsonObject = CommonUtils.fromJson<JsonObject>(featureEngineItem.detail, JsonObject::class.java)
+                    if (jsonObject[KEY_TYPE].asString.equals(TYPE_TOKOMEMBER, true)) {
                         return true
                     }
                 } catch (e: Exception) {

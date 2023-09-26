@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import androidx.core.os.bundleOf
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
@@ -10,6 +10,7 @@ import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
+import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.*
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
@@ -19,7 +20,7 @@ import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
-import com.tokopedia.home.beranda.helper.LazyLoadDynamicChannelHelper
+import com.tokopedia.home.beranda.helper.LazyLoadDataMapper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -38,6 +39,11 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsChannelConfig
+import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsHomeComponentHeader
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsChannelConfig
+import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsHomeComponentHeader
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -49,6 +55,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -138,7 +145,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                         param = it.param,
                                         isOptional = it.isOptional,
                                         content = it.content,
-                                        status = it.status
+                                        status = it.status,
+                                        isShimmer = it.isShimmer,
                                     )
                                 },
                                 isProcessingAtf = true
@@ -150,7 +158,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         isLoadingAtf = true
                     )
                     dynamicChannelPlainResponse.apply {
-                        Log.d("Each merge list size:", ("" + this.list.size))
                         this.isCache = isCache
                         this.flowCompleted = true
                     }
@@ -249,6 +256,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
                         MissionWidgetListDataModel,
                         HomeMissionWidgetData.HomeMissionWidget>(
+                        predicate = { it?.source == MissionWidgetListDataModel.SOURCE_DC },
                         widgetRepository = homeMissionWidgetRepository,
                         bundleParam = {
                             Bundle().apply {
@@ -264,9 +272,11 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         },
                         mapToWidgetData = { visitableFound, data, _ ->
                             val resultList =
-                                LazyLoadDynamicChannelHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
+                                LazyLoadDataMapper.mapMissionWidgetData(data.getHomeMissionWidget.missions)
                             visitableFound.copy(
                                 missionWidgetList = resultList,
+                                header = data.getHomeMissionWidget.header.getAsHomeComponentHeader(),
+                                config = data.getHomeMissionWidget.config.getAsChannelConfig(),
                                 status = MissionWidgetListDataModel.STATUS_SUCCESS
                             )
                         }
@@ -275,6 +285,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
                         TodoWidgetListDataModel,
                         HomeTodoWidgetData.HomeTodoWidget>(
+                        predicate = { it?.source == TodoWidgetListDataModel.SOURCE_DC },
                         widgetRepository = homeTodoWidgetRepository,
                         bundleParam = {
                             Bundle().apply {
@@ -284,7 +295,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 )
                                 putString(
                                     GetTodoWidgetUseCase.PARAM,
-                                    it.channelModel.widgetParam
+                                    it.widgetParam
                                 )
                             }
                         },
@@ -292,13 +303,15 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             visitableFound.copy(status = TodoWidgetListDataModel.STATUS_ERROR)
                         },
                         mapToWidgetData = { visitableFound, data, _ ->
-                            val resultList =
-                                LazyLoadDynamicChannelHelper.convertTodoWidgetDataList(data.getHomeTodoWidget.todos)
+                            val resultList = LazyLoadDataMapper.mapTodoWidgetData(data.getHomeTodoWidget.todos)
                             visitableFound.copy(
                                 todoWidgetList = resultList,
+                                header = data.getHomeTodoWidget.header.getAsHomeComponentHeader(),
+                                config = data.getHomeTodoWidget.config.getAsChannelConfig(),
                                 status = TodoWidgetListDataModel.STATUS_SUCCESS
                             )
-                        }
+                        },
+                        deleteWidgetWhen = { it?.getHomeTodoWidget?.todos?.isEmpty() == true }
                     )
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
@@ -325,9 +338,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         )
                     }
 
-                    getRecommendationWidget(dynamicChannelPlainResponse)
+                    getOldBestSellerData(dynamicChannelPlainResponse)
 
-                    getBestSellerData(dynamicChannelPlainResponse)
+                    getBestSellerRevampData(dynamicChannelPlainResponse)
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                         HomeTopAdsBannerDataModel,
@@ -418,6 +431,22 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             source = ReminderEnum.SALAM
                         )
                         newFindRechargeRecommendationViewModel
+                    }
+
+                    dynamicChannelPlainResponse.getWidgetDataIfExist<
+                        ShopFlashSaleWidgetDataModel,
+                        List<RecommendationWidget>>(
+                        widgetRepository = homeRecommendationRepository,
+                        bundleParam = {
+                            val shopId = it.tabList.firstOrNull { it.isActivated }?.channelGrid?.id.orEmpty()
+                            bundleOf(
+                                HomeRecommendationRepository.PAGE_NAME to it.channelModel.pageName,
+                                HomeRecommendationRepository.QUERY_PARAM to it.channelModel.widgetParam,
+                                HomeRecommendationRepository.SHOP_ID to shopId
+                            )
+                        },
+                    ) { visitableFound, data, position ->
+                        ShopFlashSaleMapper.mapShopFlashSaleItemList(visitableFound, data)
                     }
 
                     emit(
@@ -544,7 +573,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    suspend fun getRecommendationWidget(homeDataModel: HomeDynamicChannelModel) {
+    suspend fun getOldBestSellerData(homeDataModel: HomeDynamicChannelModel) {
         findWidget<BestSellerDataModel>(homeDataModel) { bestSellerDataModel, index ->
             val recomFilterList = getRecommendationFilterChips(
                 bestSellerDataModel.pageName,
@@ -583,7 +612,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getBestSellerData(homeDataModel: HomeDynamicChannelModel) {
+    private suspend fun getBestSellerRevampData(homeDataModel: HomeDynamicChannelModel) {
         findWidget<BestSellerRevampDataModel>(homeDataModel) { bestSellerDataModel, index ->
             val recommendationFilterList = getRecommendationFilterChips(
                 bestSellerDataModel.pageName,
@@ -1098,6 +1127,82 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             }
                             jobList.add(job)
                         }
+                        AtfKey.TYPE_TODO -> {
+                            jobList.add(async {
+                                atfData.apply {
+                                    status = AtfKey.STATUS_LOADING
+                                }
+                                atfData
+                            })
+                            val job = async {
+                                try {
+                                    homeTodoWidgetRepository.getRemoteData(
+                                        Bundle().apply {
+                                            putString(
+                                                GetTodoWidgetUseCase.LOCATION_PARAM,
+                                                homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                            )
+                                            putString(
+                                                GetTodoWidgetUseCase.PARAM,
+                                                atfData.param
+                                            )
+                                        }
+                                    ).let {
+                                        atfData.content = gson.toJson(it.getHomeTodoWidget)
+                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                    }
+                                    homeData.atfData?.isProcessingAtf = false
+                                } catch (e: Exception) {
+                                    atfData.status = AtfKey.STATUS_ERROR
+                                    atfData.errorString = ErrorHandler.getErrorMessage(
+                                        applicationContext,
+                                        MessageErrorException(e.localizedMessage)
+                                    )
+                                }
+                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                    saveToDatabase(homeData)
+                                })
+                                nonTickerResponseFinished = true
+                                atfData
+                            }
+                            jobList.add(job)
+                        }
+                        AtfKey.TYPE_MISSION -> {
+                            jobList.add(async {
+                                atfData.apply {
+                                    status = AtfKey.STATUS_LOADING
+                                }
+                                atfData
+                            })
+                            val job = async {
+                                try {
+                                    homeMissionWidgetRepository.getRemoteData(
+                                        Bundle().apply {
+                                            putString(
+                                                GetTodoWidgetUseCase.LOCATION_PARAM,
+                                                homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                            )
+                                        }
+                                    ).let {
+                                        atfData.content = gson.toJson(it.getHomeMissionWidget)
+                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                    }
+                                    homeData.atfData?.isProcessingAtf = false
+                                } catch (e: Exception) {
+                                    atfData.status = AtfKey.STATUS_ERROR
+                                    atfData.errorString = ErrorHandler.getErrorMessage(
+                                        applicationContext,
+                                        MessageErrorException(e.localizedMessage)
+                                    )
+                                }
+                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                    saveToDatabase(homeData)
+                                })
+                                nonTickerResponseFinished = true
+                                atfData
+                            }
+                            jobList.add(job)
+                        }
                         else -> {
                         }
                     }
@@ -1316,7 +1421,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             param = atfData.param,
                             isOptional = atfData.isOptional,
                             content = atfData.content,
-                            status = atfData.status
+                            status = atfData.status,
+                            isShimmer = atfData.isShimmer
                         )
                     }
                 )

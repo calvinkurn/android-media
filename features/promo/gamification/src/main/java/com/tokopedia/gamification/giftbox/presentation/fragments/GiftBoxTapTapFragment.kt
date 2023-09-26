@@ -39,6 +39,7 @@ import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON_RP_0
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.GO_PAY_COINS
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.OVO
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.REWARD_POINT
 import com.tokopedia.gamification.giftbox.presentation.fragments.BoxState.Companion.CLOSE
@@ -1084,13 +1085,14 @@ annotation class MinuteTimerState {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(COUPON, OVO, REWARD_POINT, COUPON_RP_0)
+@StringDef(COUPON, OVO, REWARD_POINT, COUPON_RP_0, GO_PAY_COINS)
 annotation class BenefitType {
     companion object {
         const val COUPON = "coupon"
         const val OVO = "ovo_points"
         const val REWARD_POINT = "reward_point"
         const val COUPON_RP_0 = "coupon_rp0"
+        const val GO_PAY_COINS = "gopay_coins"
     }
 }
 

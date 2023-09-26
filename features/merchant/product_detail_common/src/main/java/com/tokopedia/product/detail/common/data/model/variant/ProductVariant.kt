@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 
 /**
  * Created by Yehezkiel on 04/05/21
@@ -18,8 +17,6 @@ data class ProductVariant(
     val defaultChild: String = "",
     @SerializedName("maxFinalPrice")
     val maxFinalPrice: Float = 0F,
-    @SerializedName("postATCLayout")
-    val postAtcLayout: PostAtcLayout = PostAtcLayout(),
     @SerializedName(value = "variants", alternate = ["variant"])
     val variants: List<Variant> = listOf(),
     @SerializedName("children")

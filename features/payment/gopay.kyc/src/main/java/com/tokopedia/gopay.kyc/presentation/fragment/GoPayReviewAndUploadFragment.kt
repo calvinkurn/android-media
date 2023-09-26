@@ -88,7 +88,7 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
         val spannableStringTnc = SpannableString(originalText)
 
         val color =
-            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_GN500)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableStringTnc.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 openHelpScreen()

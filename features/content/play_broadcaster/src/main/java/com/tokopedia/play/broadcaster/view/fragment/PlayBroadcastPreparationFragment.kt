@@ -195,6 +195,33 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
         object : RecyclerView.OnScrollListener() {
+
+            var isIdleStateValid = false
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                when (newState) {
+                    RecyclerView.SCROLL_STATE_DRAGGING -> {
+                        isIdleStateValid = true
+                    }
+                    RecyclerView.SCROLL_STATE_IDLE -> {
+                        if (isIdleStateValid) {
+                            isIdleStateValid = false
+
+                            val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
+                            val position = mLayoutManager.getPosition(snappedView)
+
+                            if (position in 0 until parentViewModel.bannerPreparation.size &&
+                                parentViewModel.bannerPreparation[position].type == TYPE_DASHBOARD
+                            ) {
+                                impressPerformanceDashboardBanner(position)
+                            }
+                        }
+                    }
+                }
+            }
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
@@ -691,11 +718,22 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun autoScrollToPerformanceDashBoardBanner() {
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (coachMarkItem.title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
+
+                val autoScrollPosition = if (coachMarkItem.title == getString(R.string.play_bro_banner_shorts_coachmark_title)) {
+                    val shortsEntryPointPosition = adapterBanner.getShortsEntryPointPosition()
+                    if (shortsEntryPointPosition != -1) shortsEntryPointPosition else return
+
+                } else if (coachMarkItem.title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
                     val performanceDashboardPosition = adapterBanner.getPerformanceDashboardPosition()
-                    val autoScrollPosition = if (performanceDashboardPosition != -1) performanceDashboardPosition else return
-                    binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
+                    if (performanceDashboardPosition != -1) {
+                        analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+                        performanceDashboardPosition
+                    } else return
+                } else {
+                    return
                 }
+
+                binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
             }
         })
     }
@@ -965,18 +1003,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prev: List<PlayBroadcastPreparationBannerModel>?,
         curr: List<PlayBroadcastPreparationBannerModel>
     ) {
-        if (prev == null || prev == curr) return
+        if (prev == curr) return
 
         adapterBanner.setItemsAndAnimateChanges(curr)
         if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
         else binding.pcBannerPreparation.setIndicator(0)
 
-        curr.forEachIndexed { index, model ->
-            if (model.type == TYPE_DASHBOARD) {
-                analytic.onViewPerformanceDashboardEntryPointPrepPage(
-                    parentViewModel.authorId,
-                    creativeSlot = index + 1,
-                )
+        if (curr.isNotEmpty()) {
+            val position = mLayoutManager.findFirstCompletelyVisibleItemPosition().coerceIn(0, curr.size-1)
+
+            if (curr[position].type == TYPE_DASHBOARD) {
+                impressPerformanceDashboardBanner(position)
             }
         }
 
@@ -991,8 +1028,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (containsDashboard) {
             val coachMark = getCoachMarkPerformanceDashboardEntryPoint()
             if (coachMark != null) {
-                analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
                 setupCoachMark(coachMark)
+
+                if (coachMarkItems.size == 1 &&
+                    coachMarkItems[0].title == getString(contentCommonR.string.performance_dashboard_coachmark_title)
+                ) {
+                    analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+                }
             }
         }
     }
@@ -1319,6 +1361,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun startBroadcast(ingestUrl: String) {
         broadcaster.start(ingestUrl)
+    }
+
+    private fun impressPerformanceDashboardBanner(position: Int) {
+        analytic.onViewPerformanceDashboardEntryPointPrepPage(
+            parentViewModel.authorId,
+            creativeSlot = position + 1,
+        )
     }
 
     companion object {

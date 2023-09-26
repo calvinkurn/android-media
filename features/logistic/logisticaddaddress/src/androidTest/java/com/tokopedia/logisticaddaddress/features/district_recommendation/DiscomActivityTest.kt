@@ -16,12 +16,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.containsMapOf
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
-import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import org.hamcrest.MatcherAssert.assertThat
@@ -30,6 +29,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.tokopedia.logisticaddaddress.R as logisticaddaddressR
+import com.tokopedia.logisticaddaddress.test.R as logisticaddaddresstestR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -37,7 +39,7 @@ class DiscomActivityTest {
 
     @get:Rule
     val activityRule =
-            IntentsTestRule(DiscomActivity::class.java, false, false)
+        IntentsTestRule(DiscomActivity::class.java, false, false)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -50,7 +52,7 @@ class DiscomActivityTest {
     fun setup() {
         AddAddressInterceptor.resetAllCustomResponse()
         AddAddressInterceptor.setupGraphqlMockResponse(context)
-        logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.district_recommendation_jakarta)
+        logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, logisticaddaddresstestR.raw.district_recommendation_jakarta)
         activityRule.launchActivity(createIntent())
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
@@ -58,23 +60,25 @@ class DiscomActivityTest {
     @Test
     fun givenValidQueryReturnsRequiredResults() {
         val testQuery = "jak"
-        onView(withId(R.id.edit_text_search)).perform(typeText(testQuery), closeSoftKeyboard())
+        onView(withId(logisticaddaddressR.id.search_page_input)).perform(click())
+        onView(withId(unifycomponentsR.id.searchbar_textfield))
+            .perform(click(), replaceText(testQuery), closeSoftKeyboard())
+        Thread.sleep(1000L)
 
-        // Bad, can't implement idling resource on baselistfragment's search delay
-        Thread.sleep(DiscomFragment.DEBOUNCE_DELAY_IN_MILIS)
-
-        onView(withId(R.id.recycler_view))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+        onView(withId(logisticaddaddressR.id.rv_list_district))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
         assertThat(activityRule.activityResult, hasResultCode(Activity.RESULT_OK))
-        assertThat(activityRule.activityResult,
-                hasResultData(hasExtraWithKey(INTENT_DISTRICT_RECOMMENDATION_ADDRESS)))
+        assertThat(
+            activityRule.activityResult,
+            hasResultData(hasExtraWithKey(INTENT_DISTRICT_RECOMMENDATION_ADDRESS))
+        )
 
         val query = mapOf(
-                "event" to "clickShipping",
-                "eventCategory" to "cart change address",
-                "eventAction" to "click checklist kota atau kecamatan pada \\+ address",
-                "eventLabel" to ".*"
+            "event" to "clickShipping",
+            "eventCategory" to "cart change address",
+            "eventAction" to "click checklist kota atau kecamatan pada \\+ address",
+            "eventLabel" to ".*"
         )
         assertThat(cassavaTestRule.getRecent(), containsMapOf(query, CassavaTestRule.MODE_SUBSET))
     }
@@ -85,8 +89,10 @@ class DiscomActivityTest {
     }
 
     private fun createIntent(): Intent {
-        return Intent(InstrumentationRegistry.getInstrumentation().targetContext,
-                DiscomActivity::class.java).also {
+        return Intent(
+            InstrumentationRegistry.getInstrumentation().targetContext,
+            DiscomActivity::class.java
+        ).also {
             it.data = Uri.parse(ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
             it.putExtra(IS_LOCALIZATION, false)
         }

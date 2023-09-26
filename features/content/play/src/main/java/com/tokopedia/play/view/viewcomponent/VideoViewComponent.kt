@@ -105,7 +105,7 @@ class VideoViewComponent(
                     if (videoOrientation.isHorizontal) {
                         if (!screenOrientation.isLandscape) R.color.play_dms_video_background
                         else R.color.play_dms_background
-                    } else R.color.transparent
+                    } else com.tokopedia.universal_sharing.R.color.transparent
                 )
             )
         }

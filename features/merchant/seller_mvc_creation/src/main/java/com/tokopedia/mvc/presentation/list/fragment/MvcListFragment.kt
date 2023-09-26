@@ -364,7 +364,7 @@ class MvcListFragment :
         val voucherEndTime = voucher.finishTime.toDate(
             DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
         )
-        val promoType = PromoType.values().firstOrNull { value -> value.text == voucher.typeFormatted }
+        val promoType = PromoType.values().firstOrNull { value -> value.id == voucher.type }
             ?: PromoType.FREE_SHIPPING
 
         val shareComponentParam = getShareComponentData(
@@ -416,7 +416,7 @@ class MvcListFragment :
         return voucher.let {
             ShareComponentInstanceBuilder.Param(
                 isVoucherProduct = it.isLockToProduct,
-                voucherId = it.id,
+                galadrielVoucherId = it.galadrielVoucherId,
                 isPublic = it.isPublic,
                 voucherCode = it.code,
                 voucherStartDate = voucherStartTime,
@@ -470,7 +470,7 @@ class MvcListFragment :
             onShareOptionsClicked = { shareModel ->
                 handleShareOptionSelection(
                     voucher.isLockToProduct,
-                    shareComponentParam.voucherId,
+                    shareComponentParam.galadrielVoucherId,
                     shareModel,
                     title,
                     description,
@@ -491,7 +491,7 @@ class MvcListFragment :
 
     private fun handleShareOptionSelection(
         isProductVoucher: Boolean,
-        voucherId: Long,
+        galadrielVoucherId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -521,12 +521,13 @@ class MvcListFragment :
 
         val linkerDataGenerator = LinkerDataGenerator()
         val linkerShareData = linkerDataGenerator.generate(
-            voucherId,
+            galadrielVoucherId,
             userSession.shopId,
             shopDomain,
             shareModel,
             title,
-            outgoingDescription
+            outgoingDescription,
+            isProductVoucher
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(

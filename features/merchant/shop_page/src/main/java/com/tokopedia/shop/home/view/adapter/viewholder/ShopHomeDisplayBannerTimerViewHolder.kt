@@ -66,7 +66,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_display_banner_timer
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
-        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
     }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -147,26 +147,17 @@ class ShopHomeDisplayBannerTimerViewHolder(
             textTimeDescription?.text = timeDescription
             textTimeDescription?.show()
             val days = model.data?.timeCounter?.millisecondsToDays().orZero()
-            val dateCampaign = when {
-                isStatusCampaignUpcoming(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.startDate.orEmpty())
-                }
-                isStatusCampaignOngoing(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.endDate.orEmpty())
-                }
-                else -> {
-                    Date()
-                }
-            }
             if (days >= Int.ONE) {
-                setTimerNonUnify(dateCampaign)
+                val formattedDate = getFormattedDate(statusCampaign, model,false)
+                setTimerNonUnify(formattedDate)
             } else {
-                setTimerUnify(dateCampaign, timeCounter, model)
+                val formattedDate = getFormattedDate(statusCampaign, model, true)
+                setTimerUnify(formattedDate, timeCounter, model)
             }
         } else {
             timerUnify?.gone()
             timerMoreThanOneDay?.gone()
-            val endDate = DateHelper.getDateFromString(model.data?.endDate.orEmpty())
+            val endDate = DateHelper.getDateFromString(model.data?.endDate.orEmpty(), null)
             val textTimeDescriptionFinished = MethodChecker.fromHtml(
                 itemView.context.getString(
                     R.string.shop_home_tab_banner_timer_finish_date_format,
@@ -176,6 +167,31 @@ class ShopHomeDisplayBannerTimerViewHolder(
             textTimeDescription?.apply {
                 show()
                 text = textTimeDescriptionFinished
+            }
+        }
+    }
+
+    private fun getFormattedDate(
+        statusCampaign: StatusCampaign?,
+        model: ShopWidgetDisplayBannerTimerUiModel,
+        isUseDefaultTimeZone: Boolean
+    ): Date {
+        val timeZone = if (isUseDefaultTimeZone) {
+            DateHelper.getDefaultTimeZone()
+        } else {
+            null
+        }
+        return when {
+            isStatusCampaignUpcoming(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.startDate.orEmpty(), timeZone)
+            }
+
+            isStatusCampaignOngoing(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.endDate.orEmpty(), timeZone)
+            }
+
+            else -> {
+                Date()
             }
         }
     }
@@ -204,8 +220,8 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private fun setTimerNonUnify(dateCampaign: Date) {
         timerUnify?.gone()
         timerMoreThanOneDay?.apply {
-            text =
-                dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+            val dateFormatted = dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+            text = getString(R.string.shop_widget_date_format_wib, dateFormatted)
             show()
         }
     }
@@ -253,7 +269,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         )
         val defaultCtaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_G500
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
         )
         val defaultInformationIconColor = MethodChecker.getColor(
             itemView.context,

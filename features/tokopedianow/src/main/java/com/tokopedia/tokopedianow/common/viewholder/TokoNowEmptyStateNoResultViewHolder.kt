@@ -10,7 +10,9 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.EXCLUDE_PREFIX
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFilterIfExists
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -100,7 +102,16 @@ class TokoNowEmptyStateNoResultViewHolder(
                     element.activeFilterList.orEmpty(),
                     getString(R.string.tokopedianow_empty_product_filter_price_name)
             )
-            filterList.adapter = Adapter(optionList, tokoNowEmptyStateNoResultListener)
+
+            val newOptionList = if (optionList.any { it.key.startsWith(EXCLUDE_PREFIX) }) {
+                optionList.filter {
+                    it.key != SearchApiConst.SC && it != element.excludeFilter
+                }
+            } else {
+                optionList
+            }
+
+            filterList.adapter = Adapter(newOptionList, tokoNowEmptyStateNoResultListener)
             filterList.layoutManager = layoutManager
 
             val chipSpacing = itemView.context.resources.getDimensionPixelSize(

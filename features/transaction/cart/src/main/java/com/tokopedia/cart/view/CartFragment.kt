@@ -276,6 +276,7 @@ class CartFragment :
     private var isCheckUncheckDirectAction = true
     private var isNavToolbar = false
     private var plusCoachMark: CoachMark2? = null
+    private var availableCartItemImpressionList: MutableSet<CartItemHolderData> = mutableSetOf()
 
     // temporary variable to handle case edit bundle
     // this is useful if there are multiple same bundleId in cart
@@ -1011,7 +1012,10 @@ class CartFragment :
                 viewLifecycleOwner.lifecycle.addObserver(this)
                 setOnBackButtonClickListener(
                     disableDefaultGtmTracker = true,
-                    backButtonClickListener = ::onBackPressed
+                    backButtonClickListener = {
+                        onBackPressed()
+                        sendCartImpressionAnalytic()
+                    }
                 )
                 setIcon(
                     IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
@@ -1401,6 +1405,7 @@ class CartFragment :
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
         cartPageAnalytics.eventClickAtcCartClickProductName(cartItemHolderData.productName)
+        sendCartImpressionAnalytic()
         routeToProductDetailPage(cartItemHolderData.productId)
     }
 
@@ -2138,13 +2143,18 @@ class CartFragment :
         }
     }
 
-    override fun onCartGroupNameClicked(appLink: String) {
+    override fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean) {
+        sendCartImpressionAnalytic()
+        if (!isOWOC && shopId.isNotEmpty()) {
+            cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+        }
         routeToApplink(appLink)
     }
 
     override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+            sendCartImpressionAnalytic()
             if (isTokoNow) {
                 routeToTokoNowHomePage()
             } else {
@@ -3251,6 +3261,7 @@ class CartFragment :
     private fun navigateToShipmentPage() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = true
+        sendCartImpressionAnalytic()
         routeToCheckoutPage()
     }
 
@@ -4561,6 +4572,11 @@ class CartFragment :
             addOnIds.add(it.id)
         }
 
+        val deselectAddOnIds = arrayListOf<String>()
+        cartItemData.addOnsProduct.deselectListData.forEach {
+            deselectAddOnIds.add(it.id)
+        }
+
         val price: Double
         val discountedPrice: Double
         if (cartItemData.campaignId == "0") {
@@ -4577,14 +4593,15 @@ class CartFragment :
             mapOf(
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
             )
         )
 
@@ -4601,15 +4618,34 @@ class CartFragment :
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
-                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(Rp${addOnProductDataResult.aggregatedData.price})</b>"
+                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnProductDataResult.aggregatedData.price, false).removeDecimalSuffix()})</b>"
                 }
 
-                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult.aggregatedData.selectedAddons)
+                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult)
                 onNeedToRecalculate()
             } else {
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }
         }
+    }
+
+    override fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>) {
+        availableCartItemImpressionList.addAll(availableCartItems)
+    }
+
+    private fun sendCartImpressionAnalytic() {
+        val analyticData = arrayListOf<Map<String, Any>>()
+        availableCartItemImpressionList.forEach {
+            val productDataMap = mapOf(
+                ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
+                ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
+                ConstantTransactionAnalytics.Key.ITEM_ID to it.cartId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
+            )
+            analyticData.add(productDataMap)
+        }
+        cartPageAnalytics.sendCartImpressionEvent(analyticData, userSession.userId)
+        availableCartItemImpressionList = mutableSetOf()
     }
 
     override fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String) {

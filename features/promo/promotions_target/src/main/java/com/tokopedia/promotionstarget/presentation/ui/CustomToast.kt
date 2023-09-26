@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.doOnPreDraw
 import com.tokopedia.unifyprinciples.Typography
-
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CustomToast {
 
@@ -21,12 +21,12 @@ class CustomToast {
             return dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT).toFloat()
         }
 
-        fun show(activityContext: Context,
-                 @NonNull text: String,
-                 duration: Int = Toast.LENGTH_LONG,
-                 bg: Int = R.drawable.t_promo_custom_toast_bg
+        fun show(
+            activityContext: Context,
+            @NonNull text: String,
+            duration: Int = Toast.LENGTH_LONG,
+            bg: Int = R.drawable.t_promo_custom_toast_bg
         ) {
-
             val leftPadding = dpToPx(activityContext, 16).toInt()
             val topPadding = dpToPx(activityContext, 8).toInt()
             val topPaddingSingleLine = dpToPx(activityContext, 12).toInt()
@@ -35,7 +35,7 @@ class CustomToast {
             textView.text = text
             textView.setPadding(leftPadding, topPadding, leftPadding, topPadding)
 
-            textView.setTextColor(ContextCompat.getColor(activityContext, R.color.Unify_NN0))
+            textView.setTextColor(ContextCompat.getColor(activityContext, unifyprinciplesR.color.Unify_NN0))
             textView.setBackgroundResource(bg)
             textView.fontType = Typography.BODY_3
             val fm = FrameLayout(activityContext)
@@ -49,7 +49,7 @@ class CustomToast {
             toast.view = fm
             toast.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, leftPadding)
             textView.doOnPreDraw {
-                if(textView.lineCount == 1){
+                if (textView.lineCount == 1) {
                     textView.setPadding(leftPadding, topPaddingSingleLine, leftPadding, topPaddingSingleLine)
                     lp.setMargins(leftPadding, 0, leftPadding, bottomPaddingSingleLine)
                     textView.layoutParams = lp
@@ -58,5 +58,4 @@ class CustomToast {
             toast.show()
         }
     }
-
 }

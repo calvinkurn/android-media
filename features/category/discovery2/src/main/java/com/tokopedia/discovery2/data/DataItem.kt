@@ -34,6 +34,9 @@ data class DataItem(
     @SerializedName("target_component_id")
     var targetComponentId: String? = "",
 
+    @SerializedName("target_component_ids")
+    var targetComponentIds: List<Int> = emptyList(),
+
     @SerializedName("background_image")
     val backgroundImage: String? = "",
 
@@ -114,6 +117,9 @@ data class DataItem(
 
     @SerializedName("action")
     val action: String? = "",
+
+    @SerializedName("move_action")
+    val moveAction: MoveAction? = null,
 
     @SerializedName("notification_title")
     val notificationTitle: String? = "",
@@ -536,6 +542,12 @@ data class DataItem(
 
     @field:SerializedName("target_section_id")
     val targetSectionID: String? = null,
+
+    @field:SerializedName("icon_image_url")
+    val iconImageUrl: String? = null,
+
+    @field:SerializedName("inactive_icon_image_url")
+    val inactiveIconImageUrl: String? = null,
 
     var shopAdsClickURL: String? = "",
 

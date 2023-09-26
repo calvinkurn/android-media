@@ -1,9 +1,11 @@
 package com.tokopedia.chat_common.domain.pojo.attachmentmenu
 
-import com.tokopedia.chat_common.R
+import com.tokopedia.iconunify.IconUnify
 
 class InvoiceMenu : AttachmentMenu(
-        R.drawable.ic_invoice_purple_chat_common, "Invoice", "invoice"
+    icon = IconUnify.LIST_TRANSACTION,
+    title = "Invoice",
+    label = "invoice"
 ) {
 
     override fun onClick(listener: AttachmentMenuListener) {

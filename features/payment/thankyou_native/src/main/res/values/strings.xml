@@ -11,6 +11,7 @@
     <string name="thankyou_rp">Rp %s</string>
     <string name="thankyou_rp_without_space">Rp%s</string>
     <string name="thankyou_discounted_rp">- Rp%s</string>
+    <string name="thankyou_discounted">- %s</string>
     <string name="thank_payment_deadline">Batas Akhir Pembayaran</string>
     <string name="thank_copy">Salin</string>
     <string name="thank_total_amount_label">Total Pembayaran</string>
@@ -134,4 +135,6 @@
     <string name="thank_tokomember_konten_gagal_dimuat">Konten gagal dimuat</string>
     <string name="thank_tokomember_error_desc">Muat ulang dengan klik tombol di samping, ya!</string>
     <string name="thank_you_page_success_illustration">Thank you page success illustration</string>
+    
+    <string name="thanks_va_ticker_description">Tidak disarankan transfer Virtual Account dari bank selain yang dipilih.</string>
 </resources>

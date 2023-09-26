@@ -80,7 +80,9 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
         if (isAllowBell()) {
             Uri ringToneUri = getRingtoneUri();
-            context.grantUriPermission(context.getPackageName(), ringToneUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                context.grantUriPermission(context.getPackageName(), ringToneUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
             builder.setSound(ringToneUri);
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }

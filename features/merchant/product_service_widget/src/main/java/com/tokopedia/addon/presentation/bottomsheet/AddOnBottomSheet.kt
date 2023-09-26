@@ -21,6 +21,7 @@ class AddOnBottomSheet : BottomSheetUnify() {
     private var pageSource: String = ""
     private var cartId: Long = 0L
     private var selectedAddonIds: List<String> = emptyList()
+    private var deselectedAddonIds: List<String> = emptyList()
     private var atcSource: String = ""
     private var addOnWidgetParam: AddOnParam = AddOnParam()
 
@@ -40,6 +41,7 @@ class AddOnBottomSheet : BottomSheetUnify() {
             pageSource,
             cartId,
             selectedAddonIds,
+            deselectedAddonIds,
             atcSource
         ).apply { setOnSuccessSaveAddonListener(::onSaveAddonSuccess) }
         childFragmentManager.beginTransaction()
@@ -69,6 +71,10 @@ class AddOnBottomSheet : BottomSheetUnify() {
 
     fun setSelectedAddonIds(selectedAddonIds: List<String>) {
         this.selectedAddonIds = selectedAddonIds
+    }
+
+    fun setDeselectedAddonIds(deselectedAddonIds: List<String>) {
+        this.deselectedAddonIds = deselectedAddonIds
     }
 
     fun setAtcSource(atcSource: String) {

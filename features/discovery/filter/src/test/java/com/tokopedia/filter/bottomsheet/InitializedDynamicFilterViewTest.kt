@@ -55,8 +55,12 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
         `Then assert sort filter list is null`()
     }
 
-    private fun `Given initialized SortFilterBottomSheetViewModel`(mapParameter: Map<String, String>, dynamicFilterModel: DynamicFilterModel) {
-        sortFilterBottomSheetViewModel.init(mapParameter, dynamicFilterModel)
+    private fun `Given initialized SortFilterBottomSheetViewModel`(
+        mapParameter: Map<String, String>,
+        dynamicFilterModel: DynamicFilterModel,
+        isReimagine: Boolean = false,
+    ) {
+        sortFilterBottomSheetViewModel.init(mapParameter, dynamicFilterModel, isReimagine)
     }
 
     private fun `Then assert sort filter list is null`() {
@@ -488,5 +492,16 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
 
     private fun `When late init dynamic filter model`(dynamicFilterModel: DynamicFilterModel) {
         sortFilterBottomSheetViewModel.lateInitDynamicFilterModel(dynamicFilterModel)
+    }
+
+    @Test
+    fun `onViewCreated with given Dynamic Filter Model and is reimagine does not have sort section`() {
+        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        `Given initialized SortFilterBottomSheetViewModel`(mapOf(), dynamicFilterModel, true)
+
+        `When view created`()
+
+        val sortFilterList: List<Visitable<*>> = this.sortFilterList!!
+        sortFilterList.assertFilters(0, dynamicFilterModel)
     }
 }

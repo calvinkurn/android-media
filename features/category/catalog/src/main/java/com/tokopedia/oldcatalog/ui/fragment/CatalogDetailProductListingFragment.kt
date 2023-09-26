@@ -744,7 +744,7 @@ class CatalogDetailProductListingFragment :
     }
 
     override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
-        return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
+        return view?.findViewById<SwipeToRefresh>(com.tokopedia.baselist.R.id.swipe_refresh_layout)
     }
 
     override fun reloadData() {

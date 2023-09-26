@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
-import com.tokopedia.seller.menu.presentation.viewmodel.SellerSettingViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,9 +21,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SellerMenuViewModel::class)
     internal abstract fun sellerMenuViewModel(viewModel: SellerMenuViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SellerSettingViewModel::class)
-    internal abstract fun provideSellerSettingViewModel(viewModel: SellerSettingViewModel): ViewModel
 }

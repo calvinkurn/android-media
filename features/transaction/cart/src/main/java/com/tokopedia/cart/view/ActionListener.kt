@@ -22,7 +22,7 @@ interface ActionListener {
 
     fun getDefaultCartErrorMessage(): String
 
-    fun onCartGroupNameClicked(appLink: String)
+    fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean)
 
     fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
 
@@ -111,4 +111,6 @@ interface ActionListener {
     fun onViewFreeShippingPlusBadge()
 
     fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData)
+
+    fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>)
 }

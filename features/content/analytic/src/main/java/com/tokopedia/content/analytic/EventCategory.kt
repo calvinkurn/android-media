@@ -5,4 +5,7 @@ package com.tokopedia.content.analytic
  */
 object EventCategory {
     const val groupChatRoom = "groupchat room"
+    const val unifiedFeed = "unified feed"
+
+    const val browseFeed = "feed browse page"
 }

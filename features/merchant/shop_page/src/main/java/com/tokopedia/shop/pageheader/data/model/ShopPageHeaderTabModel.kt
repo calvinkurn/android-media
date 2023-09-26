@@ -10,5 +10,8 @@ data class ShopPageHeaderTabModel(
     val iconUrl: String = "",
     val iconActiveUrl: String = "",
     val isFocus: Boolean = false,
-    val isDefault: Boolean = false
+    val isDefault: Boolean = false,
+    val chipsWording: String = "",
+    val shareWording: String = "",
+    val tabPathUrl: String = ""
 )

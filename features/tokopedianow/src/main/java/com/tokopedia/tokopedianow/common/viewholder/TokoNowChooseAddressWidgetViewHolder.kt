@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE_TRACKING
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowChooseAddressWidgetViewHolder(
         itemView: View,
@@ -40,7 +41,7 @@ class TokoNowChooseAddressWidgetViewHolder(
         setupChooseAddressWidget(element)
     }
 
-    private fun bindChooseAddressWidget() {
+    private fun bindChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         tokoNowView?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
@@ -73,13 +74,17 @@ class TokoNowChooseAddressWidgetViewHolder(
                 override fun isFromTokonowPage(): Boolean {
                     return true
                 }
+
+                override fun onChangeTextColor(): Int {
+                    return unifyprinciplesR.color.Unify_NN950_96
+                }
             })
         }
     }
 
     private fun setupChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         chooseAddressWidget = binding?.chooseAddressWidget
-        bindChooseAddressWidget()
+        bindChooseAddressWidget(element)
         showCoachMark()
         setBackgroundColor(element)
     }

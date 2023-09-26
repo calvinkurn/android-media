@@ -3,13 +3,13 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.Cashback
-import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.common.data.model.product.VariantBasic
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
 
 data class ComponentData(
     //region General data
@@ -90,8 +90,6 @@ data class ComponentData(
     val sizeChart: String = "",
     @SerializedName("maxFinalPrice")
     val maxFinalPrice: Float = 0F,
-    @SerializedName("postATCLayout")
-    val postAtcLayout: PostAtcLayout = PostAtcLayout(),
     @SerializedName("defaultChild")
     val defaultChild: String = "",
     @SerializedName("variants")
@@ -160,7 +158,16 @@ data class ComponentData(
     @SerializedName("text")
     val text: String = "",
     @SerializedName("chevronPos")
-    val chevronPos: String = ""
+    val chevronPos: String = "",
+
+    // region a plus content data
+    @SerializedName("contentMedia")
+    val contentMedia: List<ContentMedia> = listOf(),
+    @SerializedName("show")
+    val show: Boolean = false,
+    @SerializedName("ctaText")
+    val ctaText: String = ""
+    // endregion
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
@@ -216,6 +223,8 @@ data class ComponentData(
             )
         }
     }
+
+    fun requiredForContentMediaToggle() = ctaText.isNotBlank()
 }
 
 data class CategoryCarousel(
@@ -237,3 +246,12 @@ data class VariantCampaign(
     @SerializedName("thematicCampaigns")
     val thematicCampaigns: List<ThematicCampaign> = emptyList()
 )
+
+data class ContentMedia(
+    @SerializedName("url")
+    val url: String,
+    @SerializedName("ratio")
+    val ratio: String
+) {
+    fun valid() = url.isNotBlank() && ratio.validDimensionRatio()
+}

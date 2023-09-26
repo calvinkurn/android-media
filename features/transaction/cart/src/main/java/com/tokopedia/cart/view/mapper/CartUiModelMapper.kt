@@ -44,6 +44,7 @@ import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
@@ -607,6 +608,7 @@ object CartUiModelMapper {
 
     private fun mapCartAddOnData(addOn: AddOn): CartAddOnData {
         val arrayListAddOnProduct = ArrayList<CartAddOnProductData>()
+        val deselectedArrayListAddOnProduct = ArrayList<CartAddOnProductData>()
         addOn.addOnData.forEach {
             val cartAddOnProductData = CartAddOnProductData(
                 id = it.addonId,
@@ -615,7 +617,12 @@ object CartUiModelMapper {
                 type = it.type,
                 price = it.price
             )
-            arrayListAddOnProduct.add(cartAddOnProductData)
+
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || it.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                arrayListAddOnProduct.add(cartAddOnProductData)
+            } else if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                deselectedArrayListAddOnProduct.add(cartAddOnProductData)
+            }
         }
         return CartAddOnData().apply {
             listData = arrayListAddOnProduct
@@ -624,6 +631,7 @@ object CartUiModelMapper {
                 leftIconUrl = addOn.addOnWidget.leftIconUrl,
                 rightIconUrl = addOn.addOnWidget.rightIconUrl
             )
+            deselectListData = deselectedArrayListAddOnProduct
         }
     }
 

@@ -340,7 +340,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setContent(getString(R.string.title_no_result));
+        emptyModel.setContent(getString(com.tokopedia.abstraction.R.string.title_no_result));
         return emptyModel;
     }
 

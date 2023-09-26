@@ -165,7 +165,6 @@ class PlayBroadcastReportFragment @Inject constructor(
                             actionLabel = getString(R.string.play_ok),
                         )
                     }
-
                     PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
                     PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
                     PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()

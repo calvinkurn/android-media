@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -62,6 +63,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.bottomsheet.B
 import com.tokopedia.review.feature.bulk_write_review.presentation.bottomsheet.BulkReviewExpandedTextAreaBottomSheet
 import com.tokopedia.review.feature.bulk_write_review.presentation.dialog.BulkReviewCancelReviewSubmissionDialog
 import com.tokopedia.review.feature.bulk_write_review.presentation.dialog.BulkReviewRemoveReviewItemDialog
+import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewRatingUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewBadRatingCategoryUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewVisitable
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryBottomSheetUiState
@@ -108,7 +110,6 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         private const val GLOBAL_ERROR_MAX_ALPHA = 1f
 
         private const val APP_LINK_PARAM_INVOICE = "invoice"
-        private const val APP_LINK_PARAM_UTM_SOURCE = "utm_source"
     }
 
     @Inject
@@ -347,6 +348,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
     }
 
     private fun initUiState(savedInstanceState: Bundle?) {
+        viewModel.setDefaultReviewItemRating(appLinkHandler.getRating().toIntOrNull() ?: BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING)
         if (savedInstanceState == null) {
             viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
         } else {
@@ -807,11 +809,19 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
 
     private inner class AppLinkHandler {
         fun getInvoiceNumber(): String {
-            return activity?.intent?.data?.getQueryParameter(APP_LINK_PARAM_INVOICE).orEmpty()
+            return getQueryParameter(APP_LINK_PARAM_INVOICE)
         }
 
         fun getUtmSource(): String {
-            return activity?.intent?.data?.getQueryParameter(APP_LINK_PARAM_UTM_SOURCE).orEmpty()
+            return getQueryParameter(DeeplinkMapperMerchant.PARAM_UTM_SOURCE)
+        }
+
+        fun getRating(): String {
+            return getQueryParameter(ApplinkConstInternalMarketplace.CREATE_REVIEW_APP_LINK_PARAM_RATING)
+        }
+
+        private fun getQueryParameter(key: String): String {
+            return activity?.intent?.data?.getQueryParameter(key).orEmpty()
         }
     }
 

@@ -332,6 +332,7 @@ data class PromoInfo(
         const val ICON_DOT = "DOT"
         const val ICON_NONE = "NONE"
         const val ICON_URL = "URL"
+        const val ICON_DT = "DT"
     }
 }
 

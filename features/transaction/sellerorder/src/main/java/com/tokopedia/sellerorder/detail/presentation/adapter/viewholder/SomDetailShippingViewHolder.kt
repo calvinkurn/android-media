@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.sellerorder.R
@@ -57,6 +58,14 @@ class SomDetailShippingViewHolder(
                             text = item.dataObject.shippingName
                         }
                         tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+
+                        val courierInfo = item.dataObject.courierInfo
+                        if (courierInfo.isNotEmpty()) {
+                            tvCourierInfo.text = courierInfo
+                            tvCourierInfo.visible()
+                        } else {
+                            tvCourierInfo.gone()
+                        }
                     } else {
                         tvShippingName.text = item.dataObject.shippingName
                         tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
