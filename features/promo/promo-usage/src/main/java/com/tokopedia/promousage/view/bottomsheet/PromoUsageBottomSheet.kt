@@ -954,7 +954,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                             val itemPosition = getItemPosition(uiAction.clickedPromo.id)
 
                             val isVisibleInCurrentScreen =
-                                itemPosition in (firstVisibleItemPosition + 1) until lastVisibleItemPosition
+                                itemPosition in firstVisibleItemPosition until (lastVisibleItemPosition + 1)
                             val isIdle =
                                 binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
                             if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
