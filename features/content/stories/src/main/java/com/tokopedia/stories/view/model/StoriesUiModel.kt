@@ -7,6 +7,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import com.tokopedia.universal_sharing.view.model.LinkProperties
+import kotlinx.parcelize.IgnoredOnParcel
 
 @Parcelize
 data class StoriesUiModel(
@@ -47,11 +48,11 @@ data class StoriesDetailItem(
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
     val meta: Meta = Meta(),
-    val author: StoryAuthor = StoryAuthor.Unknown,
-    val menus: List<ContentMenuItem> = emptyList(),
+    @IgnoredOnParcel val author: StoryAuthor = StoryAuthor.Unknown,
+    @IgnoredOnParcel  val menus: List<ContentMenuItem> = emptyList(),
     val productCount: String = "",
-    val share: Sharing = Sharing.Empty,
-    val status: StoryStatus = StoryStatus.Unknown,
+    @IgnoredOnParcel val share: Sharing = Sharing.Empty,
+    @IgnoredOnParcel val status: StoryStatus = StoryStatus.Unknown,
     ) : Parcelable {
 
     @Parcelize
@@ -75,18 +76,16 @@ data class StoriesDetailItem(
         PAUSE, RESUME,
     }
 
-    @Parcelize
     data class Sharing(
         val isShareable: Boolean,
         val metadata: @RawValue LinkProperties,
-    ) : Parcelable {
+    ) {
         companion object {
             val Empty get() = Sharing(isShareable = false, metadata = LinkProperties())
         }
     }
 
-    @Parcelize
-    enum class StoryStatus(val value: String) : Parcelable {
+    enum class StoryStatus(val value: String)  {
         Active("ACTIVE"), Removed ("REMOVED"), Unknown("unknown");
 
         companion object {
