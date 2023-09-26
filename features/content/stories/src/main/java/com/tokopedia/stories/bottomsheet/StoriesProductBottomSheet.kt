@@ -91,8 +91,11 @@ class StoriesProductBottomSheet @Inject constructor(
     }
 
     private fun setupView() {
-        binding.rvStoriesProduct.adapter = productAdapter
-        binding.rvStoriesProduct.addOnScrollListener(scrollListener)
+        binding.rvStoriesProduct.apply {
+            adapter = productAdapter
+            addOnScrollListener(scrollListener)
+            isNestedScrollingEnabled = false
+        }
     }
 
     private fun observeUiState() {
