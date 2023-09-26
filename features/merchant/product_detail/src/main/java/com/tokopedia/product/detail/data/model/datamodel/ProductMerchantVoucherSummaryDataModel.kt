@@ -52,6 +52,6 @@ data class ProductMerchantVoucherSummaryDataModel(
     }
 
     override fun isLoading(): Boolean {
-        return uiModel.shopId.isEmpty()
+        return uiModel.animatedInfo.isEmpty()
     }
 }

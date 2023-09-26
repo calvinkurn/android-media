@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -14,7 +16,11 @@ data class FintechWidgetDataModel(
     var isLoggedIn: Boolean = false,
     var shopId: String = "",
     var parentId: String = ""
-): DynamicPdpDataModel {
+) : DynamicPdpDataModel,
+    LoadableComponent by BlocksLoadableComponent(
+        { false },
+        "FintechWidgetDataModel"
+    ) {
 
     override fun type() = type
 
@@ -24,9 +30,11 @@ data class FintechWidgetDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return newData is FintechWidgetDataModel &&
-            (newData.productId == this.productId &&
-                newData.idToPriceUrlMap == this.idToPriceUrlMap &&
-                newData.isLoggedIn == this.isLoggedIn)
+            (
+                newData.productId == this.productId &&
+                    newData.idToPriceUrlMap == this.idToPriceUrlMap &&
+                    newData.isLoggedIn == this.isLoggedIn
+                )
     }
 
     override fun newInstance() = this.copy()
@@ -34,4 +42,8 @@ data class FintechWidgetDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
 
     override val impressHolder = ImpressHolder()
+
+    override fun isLoading(): Boolean {
+        return productId.isEmpty()
+    }
 }
