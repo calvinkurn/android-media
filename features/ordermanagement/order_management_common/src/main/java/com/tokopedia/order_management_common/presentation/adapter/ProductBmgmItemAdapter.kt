@@ -49,7 +49,7 @@ class ProductBmgmItemAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
-            onBindViewHolder(holder, position)
+            super.onBindViewHolder(holder, position, payloads)
         } else {
             payloads.firstOrNull()?.let {
                 if (it is Pair<*, *>) {
@@ -97,7 +97,7 @@ class ProductBmgmItemAdapter(
                 setupAddonSection(it.addOnSummaryUiModel)
                 setupDividerAddonSummary(it)
                 setItemOnClickListener(it)
-                setupBmgmItemButton(model.button, model.isProcessing == true)
+                setupBmgmItemButton(it.button, it.isProcessing == true)
             }
         }
 
