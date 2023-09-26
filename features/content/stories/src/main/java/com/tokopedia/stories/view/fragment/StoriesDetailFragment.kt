@@ -129,6 +129,11 @@ class StoriesDetailFragment @Inject constructor(
     private val isEligiblePage: Boolean
         get() = groupId == viewModel.mGroup.groupId
 
+    private val sharingComponent by lazyThreadSafetyNone {
+        StoriesSharingComponent(rootView = requireView())
+    }
+
+
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
     }
@@ -224,8 +229,7 @@ class StoriesDetailFragment @Inject constructor(
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
                     is StoriesUiEvent.TapSharing -> {
-                        val sheet = StoriesSharingComponent(rootView = requireView())
-                        sheet.setListener(object : StoriesSharingComponent.Listener {
+                        sharingComponent.setListener(object : StoriesSharingComponent.Listener {
                             override fun onDismissEvent(view: StoriesSharingComponent) {
                                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
                                 analytic.onCloseShareSheet(viewModel.storyId)
@@ -236,7 +240,7 @@ class StoriesDetailFragment @Inject constructor(
                             }
                         })
                         analytic.onClickShareIcon(viewModel.storyId)
-                        sheet.show(childFragmentManager, event.metadata, viewModel.userId, viewModel.storyId)
+                        sharingComponent.show(childFragmentManager, event.metadata, viewModel.userId, viewModel.storyId)
                     }
                     is StoriesUiEvent.ShowErrorEvent -> {
                         if (viewModel.isAnyBottomSheetShown) return@collect
