@@ -57,7 +57,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted val maxProduct: Int,
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
-    @Assisted private val source: PlayBroPageSource,
+    @Assisted val isNumerationShown: Boolean,
     @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
     @Assisted("fetchCommissionProduct") private val fetchCommissionProduct: Boolean,
     private val repo: ContentProductPickerSGCRepository,
@@ -72,7 +72,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            source: PlayBroPageSource,
+            isNumerationShown: Boolean,
             @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
             @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean,
         ): PlayBroProductSetupViewModel
@@ -87,9 +87,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val isEligibleForPin: Boolean
         get() = savedStateHandle.isEligibleForPin()
-
-    val isNumerationShown: Boolean
-        get() = source == PlayBroPageSource.Live
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(

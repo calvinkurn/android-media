@@ -211,7 +211,7 @@ class ProductSetupFragment @Inject constructor(
                         mDataSource?.maxProduct().orZero(),
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,
-                        mDataSource?.getPageSource().orUnknown(),
+                        mDataSource?.isNumerationShown().orFalse(),
                         mDataSource?.isEligibleForPin().orTrue(),
                         mDataSource?.fetchCommissionProduct().orFalse(),
                     ) as T
@@ -233,7 +233,7 @@ class ProductSetupFragment @Inject constructor(
         fun getSelectedAccount(): ContentAccountUiModel
         fun creationId(): String
         fun maxProduct(): Int
-        fun getPageSource() : PlayBroPageSource
+        fun isNumerationShown(): Boolean
         fun fetchCommissionProduct(): Boolean
     }
 

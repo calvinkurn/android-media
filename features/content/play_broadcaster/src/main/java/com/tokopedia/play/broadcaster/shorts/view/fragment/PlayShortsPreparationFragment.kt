@@ -190,8 +190,8 @@ class PlayShortsPreparationFragment @Inject constructor(
                         return viewModel.maxProduct
                     }
 
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Shorts
+                    override fun isNumerationShown(): Boolean {
+                        return false
                     }
 
                     override fun fetchCommissionProduct(): Boolean {

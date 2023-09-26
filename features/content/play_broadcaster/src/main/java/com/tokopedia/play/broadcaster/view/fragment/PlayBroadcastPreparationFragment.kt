@@ -303,8 +303,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         return parentViewModel.maxProduct
                     }
 
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Live
+                    override fun isNumerationShown(): Boolean {
+                        return true
                     }
 
                     override fun fetchCommissionProduct(): Boolean {

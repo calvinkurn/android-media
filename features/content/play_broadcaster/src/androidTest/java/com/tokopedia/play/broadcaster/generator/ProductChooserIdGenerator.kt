@@ -115,7 +115,7 @@ class ProductChooserIdGenerator {
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            source: PlayBroPageSource,
+            isNumerationShown: Boolean,
             isEligibleForPin: Boolean,
             fetchCommissionProduct: Boolean
         ): PlayBroProductSetupViewModel {
@@ -128,7 +128,7 @@ class ProductChooserIdGenerator {
                 repo = repo,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
-                source = source,
+                isNumerationShown = isNumerationShown,
                 fetchCommissionProduct = fetchCommissionProduct,
             )
         }
@@ -161,8 +161,8 @@ class ProductChooserIdGenerator {
                             return 30
                         }
 
-                        override fun getPageSource(): PlayBroPageSource {
-                            return PlayBroPageSource.Live
+                        override fun isNumerationShown(): Boolean {
+                            return true
                         }
 
                         override fun fetchCommissionProduct(): Boolean {

@@ -292,8 +292,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         }
                     }
 
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Live
+                    override fun isNumerationShown(): Boolean {
+                        return true
                     }
 
                     override fun fetchCommissionProduct(): Boolean {
