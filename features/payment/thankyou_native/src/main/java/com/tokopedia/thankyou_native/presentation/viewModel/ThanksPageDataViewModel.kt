@@ -1,17 +1,22 @@
 package com.tokopedia.thankyou_native.presentation.viewModel
 
+import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
+import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper
+import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper.mapShopFlashSaleItemList
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.WalletBalance
+import com.tokopedia.thankyou_native.domain.repository.DynamicChannelRepository
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.tokomember.model.MembershipRegister
@@ -21,6 +26,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ThanksPageDataViewModel @Inject constructor(
@@ -33,6 +39,7 @@ class ThanksPageDataViewModel @Inject constructor(
     private val getDefaultAddressUseCase: GetDefaultAddressUseCase,
     private val thankYouTopAdsViewModelUseCase: ThankYouTopAdsViewModelUseCase,
     private val membershipRegisterUseCase: MembershipRegisterUseCase,
+    private val dynamicChannelRepository: DynamicChannelRepository,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -234,6 +241,22 @@ class ThanksPageDataViewModel @Inject constructor(
                 widgetOrder.contains((it as WidgetTag).tag)
             }.sortedBy {
                 widgetOrder.indexOf((it as WidgetTag).tag)
+            }
+        }
+    }
+
+    fun getFlashSaleData() {
+        launch(coroutineContext) {
+            val a = dynamicChannelRepository.getRemoteData(Bundle().apply {
+                putString("groupIDs", "188")
+            })
+
+            a.dynamicHomeChannel.channels.forEachIndexed { index, item ->
+                addBottomContentWidget(
+                    mapShopFlashSaleItemList(ShopFlashSaleMapper.mapShopFlashSaleWidgetDataModel(item, index), arrayListOf(
+                        RecommendationWidget()
+                    ))
+                )
             }
         }
     }
