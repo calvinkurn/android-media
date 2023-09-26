@@ -42,6 +42,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
         private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
         private const val BUNDLE_KEY_COLOR_SCHEME = "color_scheme"
+        private const val CORNER_RADIUS_IMAGE_BANNER = 12
 
         @JvmStatic
         fun newInstance(
@@ -138,6 +139,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         val hasMainBanner = displaySingleColumnComponent != null
         if (hasMainBanner) {
             binding?.imgMainBanner?.visible()
+            binding?.imgMainBanner?.cornerRadius = CORNER_RADIUS_IMAGE_BANNER
 
             val mainBanner = displaySingleColumnComponent?.data?.getOrNull(0)
             val mainBannerImageUrl = mainBanner?.imageUrl.orEmpty()
