@@ -1,8 +1,8 @@
 package com.tokopedia.media.preview.ui.uimodel
 
 import android.content.Context
-import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.preview.ui.player.PickerVideoPlayer
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 class PreviewUiModel(var data: MediaUiModel) {
 

@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.shorts.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -42,6 +43,7 @@ import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -77,9 +79,14 @@ class PlayShortsModule(
 
     @Provides
     @PlayShortsScope
-    fun provideExoPlayer(): ExoPlayer {
+    fun provideExoPlayer(remoteConfig: RemoteConfig): ExoPlayer {
         return SimpleExoPlayer.Builder(activityContext)
-            .setLoadControl(PlayShortsVideoControl())
+            .setLoadControl(
+                if (remoteConfig.getBoolean(RemoteConfigKey.CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL, true)) {
+                    PlayShortsVideoControl()
+                } else {
+                    DefaultLoadControl.Builder().createDefaultLoadControl()
+                })
             .build()
             .apply {
                 repeatMode = Player.REPEAT_MODE_ALL
