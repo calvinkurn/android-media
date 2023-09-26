@@ -19,7 +19,6 @@ object BmgmMiniCartTracker {
     fun sendImpressionMinicartEvent(
         offerId: String,
         warehouseId: String,
-        irisSessionId: String,
         shopId: String,
         userId: String
     ) {
@@ -32,7 +31,6 @@ object BmgmMiniCartTracker {
             .setCustomProperty("trackerId", "46772")
             .setBusinessUnit(BUSINESS_UNIT)
             .setCurrentSite(CURRENT_SITE)
-            .setCustomProperty("sessionIris", irisSessionId)
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -45,7 +43,6 @@ object BmgmMiniCartTracker {
     fun sendClickCloseMinicartEvent(
         offerId: String,
         warehouseId: String,
-        irisSessionId: String,
         shopId: String,
         userId: String
     ) {
@@ -58,7 +55,6 @@ object BmgmMiniCartTracker {
             .setCustomProperty("trackerId", "46773")
             .setBusinessUnit(BUSINESS_UNIT)
             .setCurrentSite(CURRENT_SITE)
-            .setCustomProperty("sessionIris", irisSessionId)
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -71,7 +67,6 @@ object BmgmMiniCartTracker {
     fun sendClickCekKeranjangEvent(
         offerId: String,
         warehouseId: String,
-        irisSessionId: String,
         shopId: String,
         userId: String
     ) {
@@ -84,7 +79,6 @@ object BmgmMiniCartTracker {
             .setCustomProperty("trackerId", "46774")
             .setBusinessUnit(BUSINESS_UNIT)
             .setCurrentSite(CURRENT_SITE)
-            .setCustomProperty("sessionIris", irisSessionId)
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -98,7 +92,6 @@ object BmgmMiniCartTracker {
     fun sendImpressionUpsellingEvent(
         offerId: String,
         warehouseId: String,
-        irisSessionId: String,
         lastOfferMessage: String,
         shopId: String,
         userId: String
@@ -112,7 +105,6 @@ object BmgmMiniCartTracker {
             .setCustomProperty("trackerId", "47206")
             .setBusinessUnit(BUSINESS_UNIT)
             .setCurrentSite(CURRENT_SITE)
-            .setCustomProperty("sessionIris", irisSessionId)
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -125,7 +117,6 @@ object BmgmMiniCartTracker {
     fun sendClickUpSellingEvent(
         offerId: String,
         warehouseId: String,
-        irisSessionId: String,
         lastOfferMessage: String,
         shopId: String,
         userId: String
@@ -139,7 +130,6 @@ object BmgmMiniCartTracker {
             .setCustomProperty("trackerId", "47207")
             .setBusinessUnit(BUSINESS_UNIT)
             .setCurrentSite(CURRENT_SITE)
-            .setCustomProperty("sessionIris", irisSessionId)
             .setShopId(shopId)
             .setUserId(userId)
             .build()
