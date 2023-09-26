@@ -140,6 +140,12 @@ class HeroBannerViewHolder(
                 } else {
                     binding?.bannerIndicator?.pauseAnimation()
                 }
+
+                heroBannerListener?.onHeroBannerImpression(
+                    position,
+                    brandDescriptions,
+                    brandImageUrl
+                )
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -176,11 +182,6 @@ class HeroBannerViewHolder(
         binding?.carouselBanner?.currentItem = bannerAdapter.getFirstPosition()
         binding?.bannerIndicator?.setBannerIndicators(brandImageCount)
         binding?.tfTitleBanner?.setTextColor(element.widgetTextColor.orDefaultColor(itemView.context))
-        heroBannerListener?.onHeroBannerImpression(
-            Int.ZERO,
-            brandDescriptions,
-            brandImageUrl
-        )
     }
 }
 
