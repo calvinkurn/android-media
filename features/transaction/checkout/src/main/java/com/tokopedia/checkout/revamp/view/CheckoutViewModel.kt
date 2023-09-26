@@ -258,7 +258,8 @@ class CheckoutViewModel @Inject constructor(
                     val promo = CheckoutPromoModel(
                         isEnable = !tickerError.isError,
                         promo = saf.cartShipmentAddressFormData.lastApplyData,
-                        isPromoRevamp = isPromoRevamp ?: false
+                        isPromoRevamp = isPromoRevamp ?: false,
+                        isLoading = isPromoRevamp ?: false
                     )
                     if (promo.isEnable && saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
                         PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
