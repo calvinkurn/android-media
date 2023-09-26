@@ -53,7 +53,7 @@ class PlacementImageViewModel @Inject constructor(
                     val resultPath = imageFlattenRepo.saveBitmap(outputPath, bitmap)
 
                     // matrix to model
-                    val asdasd = ImagePlacementModel(
+                    val imagePlacementModel = ImagePlacementModel(
                         path = resultPath,
                         scale = scale,
                         angle = angle,
@@ -61,7 +61,7 @@ class PlacementImageViewModel @Inject constructor(
                         translateY = translateY
                     )
 
-                    _placementModelResult.postValue(asdasd)
+                    _placementModelResult.postValue(imagePlacementModel)
                 } catch (_: Exception) {}
             }
         }
