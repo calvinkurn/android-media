@@ -6,9 +6,9 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdapter
 import com.tokopedia.play.broadcaster.setup.product.view.itemdecoration.EtalaseListItemDecoration
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
-import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
-import com.tokopedia.content.product.picker.model.etalase.EtalaseUiModel
-import com.tokopedia.content.product.picker.model.etalase.SelectedEtalaseModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.sgc.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 

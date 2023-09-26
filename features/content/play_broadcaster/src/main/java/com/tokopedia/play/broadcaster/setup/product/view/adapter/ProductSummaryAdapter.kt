@@ -2,8 +2,8 @@ package com.tokopedia.play.broadcaster.setup.product.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSummaryViewHolder
-import com.tokopedia.content.product.picker.model.campaign.CampaignStatus
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022

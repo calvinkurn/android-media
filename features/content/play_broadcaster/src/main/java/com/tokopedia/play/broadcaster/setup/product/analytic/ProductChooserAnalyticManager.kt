@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.product.analytic
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
@@ -11,7 +11,6 @@ import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +19,7 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 17/02/22
  */
 class ProductChooserAnalyticManager @Inject constructor(
-    private val analytic: PlayBroSetupProductAnalytic,
+    private val analytic: ContentProductPickerSGCAnalytic,
     private val dispatchers: CoroutineDispatchers,
 ) {
 

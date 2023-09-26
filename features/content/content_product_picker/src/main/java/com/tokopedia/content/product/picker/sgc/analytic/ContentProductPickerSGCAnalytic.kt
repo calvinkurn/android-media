@@ -1,11 +1,11 @@
-package com.tokopedia.play.broadcaster.analytic.setup.product
+package com.tokopedia.content.product.picker.sgc.analytic
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 
 /**
- * Created By : Jonathan Darwin on February 04, 2022
+ * Created By : Jonathan Darwin on September 26, 2023
  */
-interface PlayBroSetupProductAnalytic {
+interface ContentProductPickerSGCAnalytic {
 
     fun setSelectedAccount(account: ContentAccountUiModel)
 

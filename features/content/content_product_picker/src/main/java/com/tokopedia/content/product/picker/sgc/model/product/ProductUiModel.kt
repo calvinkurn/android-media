@@ -1,8 +1,8 @@
-package com.tokopedia.content.product.picker.model.product
+package com.tokopedia.content.product.picker.sgc.model.product
 
 import android.os.Parcelable
-import com.tokopedia.content.product.picker.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.content.product.picker.model.ProductPrice
+import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.ProductPrice
 import kotlinx.android.parcel.Parcelize
 
 /**

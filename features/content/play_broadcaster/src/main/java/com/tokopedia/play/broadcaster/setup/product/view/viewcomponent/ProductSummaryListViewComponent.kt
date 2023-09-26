@@ -8,8 +8,8 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSummaryViewHolder
-import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 

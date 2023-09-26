@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.setup.product.view.adapter
 import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 
 /**
  * Created by kenny.hadisaputra on 28/01/22

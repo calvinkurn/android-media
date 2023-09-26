@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.picker.model.paged
+package com.tokopedia.content.product.picker.sgc.model.paged
 
 /**
  * Created by kenny.hadisaputra on 07/02/22

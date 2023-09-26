@@ -1,6 +1,6 @@
-package com.tokopedia.content.product.picker.model.etalase
+package com.tokopedia.content.product.picker.sgc.model.etalase
 
-import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
 
 /**
  * Created by kenny.hadisaputra on 28/01/22

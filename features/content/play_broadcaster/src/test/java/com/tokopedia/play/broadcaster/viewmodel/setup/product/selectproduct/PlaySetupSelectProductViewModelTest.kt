@@ -5,11 +5,11 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
-import com.tokopedia.content.product.picker.model.OriginalPrice
-import com.tokopedia.content.product.picker.model.campaign.CampaignStatus
-import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery

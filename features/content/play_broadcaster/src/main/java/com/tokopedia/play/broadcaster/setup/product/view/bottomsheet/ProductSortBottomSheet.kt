@@ -5,26 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.orUnknown
+import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSortBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortListViewComponent
-import com.tokopedia.content.product.picker.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 02/02/22
  */
 class ProductSortBottomSheet @Inject constructor(
-    private val analytic: PlayBroSetupProductAnalytic,
+    private val analytic: ContentProductPickerSGCAnalytic,
 ) : BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayBroProductSortBinding? = null

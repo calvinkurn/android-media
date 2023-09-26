@@ -8,16 +8,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
+import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
-import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.page.orUnknown
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
@@ -29,7 +29,7 @@ import javax.inject.Inject
 @Suppress("LateinitUsage")
 class ProductSetupFragment @Inject constructor(
     private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory,
-    private val productSetupProductAnalytic: PlayBroSetupProductAnalytic,
+    private val productSetupProductAnalytic: ContentProductPickerSGCAnalytic,
 ) : Fragment(), ViewModelFactoryProvider {
 
     private var mDataSource: DataSource? = null

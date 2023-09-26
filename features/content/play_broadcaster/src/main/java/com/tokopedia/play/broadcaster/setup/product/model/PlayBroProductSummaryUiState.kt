@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.model
 
-import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 
 /**
  * Created By : Jonathan Darwin on February 09, 2022

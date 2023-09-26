@@ -7,10 +7,10 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.contains
 import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
-import com.tokopedia.content.product.picker.model.campaign.CampaignStatus
-import com.tokopedia.content.product.picker.model.campaign.CampaignStatusUiModel
-import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
-import com.tokopedia.content.product.picker.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatusUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.mockk

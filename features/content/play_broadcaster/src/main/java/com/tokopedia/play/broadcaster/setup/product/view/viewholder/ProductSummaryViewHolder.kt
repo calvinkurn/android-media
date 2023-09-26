@@ -16,10 +16,10 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryBodyListBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryHeaderListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
-import com.tokopedia.content.product.picker.model.DiscountedPrice
-import com.tokopedia.content.product.picker.model.OriginalPrice
-import com.tokopedia.content.product.picker.model.campaign.CampaignStatus
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.DiscountedPrice
+import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label

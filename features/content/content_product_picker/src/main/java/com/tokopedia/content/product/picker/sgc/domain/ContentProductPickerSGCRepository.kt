@@ -1,11 +1,11 @@
-package com.tokopedia.content.product.picker.domain
+package com.tokopedia.content.product.picker.sgc.domain
 
-import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
-import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.model.etalase.EtalaseUiModel
-import com.tokopedia.content.product.picker.model.paged.PagedDataUiModel
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
-import com.tokopedia.content.product.picker.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 
 /**
  * Created By : Jonathan Darwin on September 26, 2023

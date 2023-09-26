@@ -5,11 +5,11 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
-import com.tokopedia.content.product.picker.model.OriginalPrice
-import com.tokopedia.content.product.picker.model.campaign.CampaignStatus
-import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.mockk
 import org.junit.Rule

@@ -1,14 +1,14 @@
 package com.tokopedia.play.broadcaster.model.setup.product
 
-import com.tokopedia.content.product.picker.model.OriginalPrice
-import com.tokopedia.content.product.picker.model.ProductPrice
-import com.tokopedia.content.product.picker.model.campaign.CampaignStatus
-import com.tokopedia.content.product.picker.model.campaign.CampaignStatusUiModel
-import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
-import com.tokopedia.content.product.picker.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.model.etalase.EtalaseUiModel
-import com.tokopedia.content.product.picker.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
+import com.tokopedia.content.product.picker.sgc.model.ProductPrice
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatusUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 
 /**
  * Created By : Jonathan Darwin on February 18, 2022

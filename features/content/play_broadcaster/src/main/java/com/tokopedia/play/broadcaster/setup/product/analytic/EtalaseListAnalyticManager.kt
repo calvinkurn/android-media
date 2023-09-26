@@ -1,12 +1,11 @@
 package com.tokopedia.play.broadcaster.setup.product.analytic
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,7 +13,7 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 17/02/22
  */
 class EtalaseListAnalyticManager @Inject constructor(
-    private val analytic: PlayBroSetupProductAnalytic,
+    private val analytic: ContentProductPickerSGCAnalytic,
     private val dispatchers: CoroutineDispatchers,
 ) {
 

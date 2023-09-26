@@ -6,7 +6,7 @@ import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBui
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.ui.model.PagingType
-import com.tokopedia.content.product.picker.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertType

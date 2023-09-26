@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.analytic.setup.product
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY
 import com.tokopedia.track.TrackApp
@@ -14,7 +15,7 @@ import javax.inject.Inject
  */
 class PlayBroSetupProductAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
-) : PlayBroSetupProductAnalytic {
+) : ContentProductPickerSGCAnalytic {
 
     private val shopId = userSession.shopId
 

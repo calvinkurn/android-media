@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.setup.product.model
 
-import com.tokopedia.content.product.picker.model.campaign.CampaignUiModel
-import com.tokopedia.content.product.picker.model.etalase.EtalaseUiModel
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
-import com.tokopedia.content.product.picker.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 
 /**
  * Created by kenny.hadisaputra on 26/01/22

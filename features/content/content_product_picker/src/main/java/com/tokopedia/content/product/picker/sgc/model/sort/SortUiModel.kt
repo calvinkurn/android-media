@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.picker.model.sort
+package com.tokopedia.content.product.picker.sgc.model.sort
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

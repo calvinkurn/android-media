@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.picker.model.campaign
+package com.tokopedia.content.product.picker.sgc.model.campaign
 
 /**
  * Created by kenny.hadisaputra on 28/01/22

@@ -10,9 +10,9 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemLoadingBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductListAdapter
-import com.tokopedia.content.product.picker.model.DiscountedPrice
-import com.tokopedia.content.product.picker.model.OriginalPrice
-import com.tokopedia.content.product.picker.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.sgc.model.DiscountedPrice
+import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
+import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
 
 /**
