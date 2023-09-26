@@ -141,6 +141,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GraphqlClient.setContextData(getApplicationContext());
         GraphqlClient.init(getApplicationContext(), getAuthenticator());
         NetworkClient.init(getApplicationContext());
+        initGotoSDK();
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
