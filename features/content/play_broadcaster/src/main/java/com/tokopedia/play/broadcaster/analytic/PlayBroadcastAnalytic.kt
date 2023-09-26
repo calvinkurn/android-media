@@ -3,11 +3,11 @@ package com.tokopedia.play.broadcaster.analytic
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
-import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
@@ -34,7 +34,7 @@ class PlayBroadcastAnalytic(
     private val setupProductAnalytic: ContentProductPickerSGCAnalytic,
     private val summaryAnalytic: PlayBroadcastSummaryAnalytic,
     private val scheduleAnalytic: PlayBroScheduleAnalytic,
-    private val pinProductAnalytic: PlayBroadcastPinProductAnalytic,
+    private val pinProductAnalytic: ContentPinnedProductAnalytic,
     private val accountAnalytic: PlayBroadcastAccountAnalytic,
     private val shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
     private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
@@ -46,7 +46,7 @@ class PlayBroadcastAnalytic(
     ContentProductPickerSGCAnalytic by setupProductAnalytic,
     PlayBroadcastSummaryAnalytic by summaryAnalytic,
     PlayBroScheduleAnalytic by scheduleAnalytic,
-    PlayBroadcastPinProductAnalytic by pinProductAnalytic,
+    ContentPinnedProductAnalytic by pinProductAnalytic,
     PlayBroadcastAccountAnalytic by accountAnalytic,
     PlayShortsEntryPointAnalytic by shortsEntryPointAnalytic,
     PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic,

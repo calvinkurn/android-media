@@ -16,7 +16,6 @@ import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAn
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
-import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSender
 import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSenderImpl
@@ -58,6 +57,7 @@ import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticS
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSenderImpl
 import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import dagger.Binds
@@ -128,7 +128,7 @@ abstract class PlayShortsBindTestModule {
 
     @Binds
     @PlayShortsScope
-    abstract fun bindPinProductAnalytic(pinProductAnalytic: PlayBroadcastPinProductAnalyticImpl): PlayBroadcastPinProductAnalytic
+    abstract fun bindPinProductAnalytic(pinProductAnalytic: PlayBroadcastPinProductAnalyticImpl): ContentPinnedProductAnalytic
 
     @Binds
     @PlayShortsScope

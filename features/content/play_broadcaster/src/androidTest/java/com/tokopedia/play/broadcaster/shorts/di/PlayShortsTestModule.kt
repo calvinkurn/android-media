@@ -15,6 +15,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
@@ -24,7 +25,6 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
-import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
@@ -130,7 +130,7 @@ class PlayShortsTestModule(
         setupProductAnalytic: ContentProductPickerSGCAnalytic,
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
         scheduleAnalytic: PlayBroScheduleAnalytic,
-        pinProductAnalytic: PlayBroadcastPinProductAnalytic,
+        pinProductAnalytic: ContentPinnedProductAnalytic,
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
         playBroadcastPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,

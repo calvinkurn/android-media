@@ -12,7 +12,6 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Ke
 import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroProductSummaryBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.content.product.picker.R as contentproductpickerR
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
@@ -21,6 +20,8 @@ import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSection
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.sgc.util.productTagSummaryEmpty
 import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
+import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.content.product.picker.sgc.model.exception.PinnedProductException
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
@@ -36,7 +37,8 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 04/02/22
  */
 class ProductSummaryBottomSheet @Inject constructor(
-    private val analytic: PlayBroadcastAnalytic,
+    private val analytic: ContentProductPickerSGCAnalytic,
+    private val pinnedProductAnalytic: ContentPinnedProductAnalytic,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
 ) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
 
@@ -63,12 +65,12 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     override fun onPinClicked(product: ProductUiModel) {
-        analytic.onClickPinProductBottomSheet(product.id)
+        pinnedProductAnalytic.onClickPinProductBottomSheet(product.id)
         viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
     }
 
     override fun onImpressPinnedProduct(product: ProductUiModel) {
-        analytic.onImpressPinProductBottomSheet(product.id)
+        pinnedProductAnalytic.onImpressPinProductBottomSheet(product.id)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -192,10 +194,10 @@ class ProductSummaryBottomSheet @Inject constructor(
                         showLoading(false)
                     }
                     is PlayBroProductChooserEvent.FailPinUnPinProduct -> {
-                        if (event.isPinned) analytic.onImpressFailUnPinProductBottomSheet()
-                        else analytic.onImpressFailPinProductBottomSheet()
+                        if (event.isPinned) pinnedProductAnalytic.onImpressFailUnPinProductBottomSheet()
+                        else pinnedProductAnalytic.onImpressFailPinProductBottomSheet()
                         if (event.throwable is PinnedProductException) {
-                            analytic.onImpressColdDownPinProductSecondEvent(false)
+                            pinnedProductAnalytic.onImpressColdDownPinProductSecondEvent(false)
                             toaster.showToaster(
                                 message = if (event.throwable.message.isEmpty()) getString(contentproductpickerR.string.play_bro_pin_product_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR
