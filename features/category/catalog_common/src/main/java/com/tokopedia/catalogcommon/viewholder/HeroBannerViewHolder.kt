@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HeroBannerViewHolder(
     itemView: View,
@@ -62,7 +63,7 @@ class HeroBannerViewHolder(
 
     private fun BannerIndicator.setupCarouselIndicator() {
         setBannerListener(object : BannerIndicatorListener {
-            override fun onChangePosition(position: Int) {
+            override fun onChangePosition(index: Int, position: Int) {
                 if (isAutosliding) {
                     val imgPosition = position % brandImageCount
                     binding?.carouselBanner?.setCurrentItem(imgPosition.inc(), true)
@@ -92,7 +93,7 @@ class HeroBannerViewHolder(
     }
 
     private fun WidgetItemBannerHeroBinding.renderPremiumBrandData(element: HeroBannerUiModel) {
-        val colorBg = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+        val colorBg = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black)
         tfTitleBannerPremium.text = element.brandTitle
         iuBrandPremium.loadImage(element.brandIconUrl) {
             listener(onSuccess = { bitmap, _ ->
@@ -159,7 +160,7 @@ class HeroBannerViewHolder(
     }
 
     private fun createCardBackground(bitmap: Bitmap): Drawable {
-        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        val cardColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White)
         val radius = if (bitmap.width/bitmap.height <= 1.1) {
             RECTANGULAR_CARD_RADIUS
         } else {
