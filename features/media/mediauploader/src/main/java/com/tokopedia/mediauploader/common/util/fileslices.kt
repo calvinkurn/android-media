@@ -38,6 +38,10 @@ fun File.slice(
     }
 }
 
+fun clearFileSliceStorage() {
+    tempByteArray = arrayOf()
+}
+
 fun ByteArray.trimLastZero(): ByteArray {
     var length = this.size - 1
 

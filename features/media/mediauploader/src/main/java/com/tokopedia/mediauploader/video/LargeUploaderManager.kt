@@ -18,6 +18,7 @@ import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isLessThanHoursOf
 import com.tokopedia.mediauploader.common.util.slice
+import com.tokopedia.mediauploader.common.util.clearFileSliceStorage
 import com.tokopedia.mediauploader.common.util.trimLastZero
 import com.tokopedia.mediauploader.video.data.entity.LargeUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoPolicy
@@ -224,7 +225,11 @@ class LargeUploaderManager @Inject constructor(
 
         withContext(dispatchers.io) {
             if (partUploaded[part] == true) return@withContext
-            if (partUploadProgress > chunkTotal) return@withContext
+            if (partUploadProgress > chunkTotal) {
+                clearFileSliceStorage()
+                return@withContext
+            }
+
             var job: Job? = null
 
             file.slice(part, sizePerChunk, reuseSlot = reuseSlot, slotSize = threadLimit)?.let { (slotIndex, byteArrayToSend) ->
