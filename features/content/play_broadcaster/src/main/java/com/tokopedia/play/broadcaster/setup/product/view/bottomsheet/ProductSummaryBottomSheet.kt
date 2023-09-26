@@ -13,7 +13,6 @@ import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroProduc
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
@@ -22,6 +21,7 @@ import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSection
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.sgc.util.productTagSummaryEmpty
 import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
+import com.tokopedia.content.product.picker.sgc.model.exception.PinnedProductException
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache

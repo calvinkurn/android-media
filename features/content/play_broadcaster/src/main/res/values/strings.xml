@@ -236,9 +236,6 @@
     <string name="play_bro_switch_account_secondary_cta_shop_dialog">Ganti ke Profil Toko</string>
     <string name="play_bro_switch_account_secondary_cta_buyer_dialog">Ganti ke Profil Pembeli</string>
 
-    <!-- Product Picker UGC -->
-    <string name="play_bro_max_selected_product_reached">Kamu udah pilih %d produk.</string>
-
     <!-- Banner -->
     <string name="play_bro_banner_shorts_title">Lebih asik buat video pendek</string>
     <string name="play_bro_banner_shorts_description">Buat video yang menarik &amp; inspiratif, yuk</string>

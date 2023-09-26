@@ -3,6 +3,7 @@
 
     <dimen name="content_product_picker_10_dp">10dp</dimen>
     <dimen name="content_product_picker_12_dp">12dp</dimen>
+    <dimen name="content_product_picker_50_dp">50dp</dimen>
 
     <dimen name="play_product_preview_radius">8dp</dimen>
 

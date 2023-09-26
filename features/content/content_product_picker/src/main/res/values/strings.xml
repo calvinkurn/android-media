@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="content_product_picker_ok">Oke</string>
     <string name="content_product_picker_next">Lanjutkan</string>
     <string name="content_product_picker_cancel">Batal</string>
     <string name="content_product_picker_exit">Keluar</string>
@@ -51,6 +52,9 @@
     <string name="play_bro_product_tag_no_price">Rp -</string>
     <string name="play_bro_product_discount_template">%d%%</string>
     <string name="play_bro_product_tag_stock_empty_pinned">Habis</string>
+
+    <!-- Product Picker UGC -->
+    <string name="play_bro_max_selected_product_reached">Kamu udah pilih %d produk.</string>
 
     <!-- Pin Product -->
     <string name="play_bro_pin">Pin</string>

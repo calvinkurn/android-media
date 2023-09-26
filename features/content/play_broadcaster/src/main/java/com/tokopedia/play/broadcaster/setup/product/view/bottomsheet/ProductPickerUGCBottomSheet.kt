@@ -15,7 +15,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.PriceUnknown
@@ -36,7 +36,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     private val analytic: ContentProductTagAnalytic,
 ) : BaseProductSetupBottomSheet() {
 
-    private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(R.dimen.play_dp_50) ?: 0 }
+    private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(contentproductpickerR.dimen.content_product_picker_50_dp) ?: 0 }
 
     private var _binding: BottomSheetPlayUgcProductPickerBinding? = null
     private val binding: BottomSheetPlayUgcProductPickerBinding
@@ -73,8 +73,8 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
         override fun onMaxSelectedProductReached() {
             toaster.showToaster(
-                message = getString(R.string.play_bro_max_selected_product_reached).format(viewModel.maxProduct),
-                actionLabel = getString(R.string.play_ok),
+                message = getString(contentproductpickerR.string.play_bro_max_selected_product_reached).format(viewModel.maxProduct),
+                actionLabel = getString(contentproductpickerR.string.content_product_picker_ok),
                 actionListener = { toaster.dismissToaster() },
                 bottomMargin = offsetToaster
             )

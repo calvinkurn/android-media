@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.domain.model.addproduct.AddProductTagChannelRequest
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
@@ -14,6 +13,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductsInCampa
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.sgc.model.exception.PinnedProductException
 import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
