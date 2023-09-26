@@ -129,9 +129,9 @@ class MerchantPageViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val params = GetMerchantDataUseCase.createRequestParams(
-                        merchantId = merchantId,
-                        latlong = latlong,
-                        timezone = timezone
+                    merchantId = merchantId,
+                    latlong = latlong,
+                    timezone = timezone
                 )
                 getMerchantDataUseCase.setRequestParams(params = params.parameters)
                 getMerchantDataUseCase.executeOnBackground()
@@ -142,47 +142,49 @@ class MerchantPageViewModel @Inject constructor(
             getMerchantDataResultLiveData.value = Success(result)
             _mvcLiveData.value = getMvcData(result.tokofoodGetMerchantData.topBanner)
         }, onError = {
-            getMerchantDataResultLiveData.value = Fail(it)
-            _mvcLiveData.value = null
-        })
+                getMerchantDataResultLiveData.value = Fail(it)
+                _mvcLiveData.value = null
+            })
     }
 
-    fun getChooseAddress(source: String){
+    fun getChooseAddress(source: String) {
         isAddressManuallyUpdated = true
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
-            _chooseAddress.value = Success(it)
-        },{
-            _chooseAddress.value = Fail(it)
-        }, source)
+        launch {
+            try {
+                _chooseAddress.value = Success(getChooseAddressWarehouseLocUseCase(source))
+            } catch (e: Exception) {
+                _chooseAddress.value = Fail(e)
+            }
+        }
     }
 
     fun mapMerchantProfileToCarouselData(merchantProfile: TokoFoodMerchantProfile): List<CarouselData> {
         // rating
         val ratingData = CarouselData(
-                carouselDataType = CarouselDataType.RATING,
-                title = merchantProfile.totalRatingFmt,
-                information = merchantProfile.ratingFmt
+            carouselDataType = CarouselDataType.RATING,
+            title = merchantProfile.totalRatingFmt,
+            information = merchantProfile.ratingFmt
         )
         // distance
         val distanceData = CarouselData(
-                carouselDataType = CarouselDataType.DISTANCE,
-                title = resourceProvider.getDistanceTitle() ?: "",
-                information = merchantProfile.distanceFmt.content,
-                isWarning = merchantProfile.distanceFmt.isWarning
+            carouselDataType = CarouselDataType.DISTANCE,
+            title = resourceProvider.getDistanceTitle() ?: "",
+            information = merchantProfile.distanceFmt.content,
+            isWarning = merchantProfile.distanceFmt.isWarning
         )
         // estimation
         val estimationData = CarouselData(
-                carouselDataType = CarouselDataType.ETA,
-                title = resourceProvider.getEstimationTitle() ?: "",
-                information = merchantProfile.etaFmt.content,
-                isWarning = merchantProfile.etaFmt.isWarning
+            carouselDataType = CarouselDataType.ETA,
+            title = resourceProvider.getEstimationTitle() ?: "",
+            information = merchantProfile.etaFmt.content,
+            isWarning = merchantProfile.etaFmt.isWarning
         )
         // ops hours
         val opsHoursData = CarouselData(
-                carouselDataType = CarouselDataType.OPS_HOUR,
-                title = resourceProvider.getOpsHoursTitle() ?: "",
-                information = merchantProfile.opsHourFmt.content,
-                isWarning = merchantProfile.opsHourFmt.isWarning
+            carouselDataType = CarouselDataType.OPS_HOUR,
+            title = resourceProvider.getOpsHoursTitle() ?: "",
+            information = merchantProfile.opsHourFmt.content,
+            isWarning = merchantProfile.opsHourFmt.isWarning
         )
         return listOf(ratingData, distanceData, estimationData, opsHoursData)
     }
@@ -199,45 +201,46 @@ class MerchantPageViewModel @Inject constructor(
                 day += DAYS_INCREASE
             }
             MerchantOpsHour(
-                    initial = opsHourDetail.day.firstOrNull(),
-                    day = opsHourDetail.day,
-                    time = opsHourDetail.time,
-                    isWarning = opsHourDetail.isWarning,
-                    isToday = day == today
+                initial = opsHourDetail.day.firstOrNull(),
+                day = opsHourDetail.day,
+                time = opsHourDetail.time,
+                isWarning = opsHourDetail.isWarning,
+                isToday = day == today
             )
         }
     }
 
     fun mapFoodCategoriesToProductListItems(
-            isShopClosed: Boolean,
-            categories: List<TokoFoodCategoryCatalog>): List<ProductListItem> {
+        isShopClosed: Boolean,
+        categories: List<TokoFoodCategoryCatalog>
+    ): List<ProductListItem> {
         val productListItems = mutableListOf<ProductListItem>()
         categories.forEach { category ->
             val categoryHeader = ProductListItem(
-                    listItemType = ProductListItemType.CATEGORY_HEADER,
-                    productCategory = CategoryUiModel(
-                            id = category.id,
-                            key = category.key,
-                            title = category.categoryName
-                    )
+                listItemType = ProductListItemType.CATEGORY_HEADER,
+                productCategory = CategoryUiModel(
+                    id = category.id,
+                    key = category.key,
+                    title = category.categoryName
+                )
             )
             val products = category.catalogs
             val productCards = products.map { product ->
                 ProductListItem(
-                        listItemType = ProductListItemType.PRODUCT_CARD,
-                        productUiModel = ProductUiModel(
-                                id = product.id,
-                                name = product.name,
-                                description = product.description,
-                                imageURL = product.imageURL,
-                                price = product.price,
-                                priceFmt = product.priceFmt,
-                                slashPrice = product.slashPrice,
-                                slashPriceFmt = product.slashPriceFmt,
-                                isOutOfStock = product.isOutOfStock,
-                                isShopClosed = isShopClosed,
-                                customListItems = mapProductVariantsToCustomListItems(product.variants)
-                        )
+                    listItemType = ProductListItemType.PRODUCT_CARD,
+                    productUiModel = ProductUiModel(
+                        id = product.id,
+                        name = product.name,
+                        description = product.description,
+                        imageURL = product.imageURL,
+                        price = product.price,
+                        priceFmt = product.priceFmt,
+                        slashPrice = product.slashPrice,
+                        slashPriceFmt = product.slashPriceFmt,
+                        isOutOfStock = product.isOutOfStock,
+                        isShopClosed = isShopClosed,
+                        customListItems = mapProductVariantsToCustomListItems(product.variants)
+                    )
                 )
             }
             productListItems.add(categoryHeader)
@@ -251,19 +254,19 @@ class MerchantPageViewModel @Inject constructor(
         // add on selections widget
         variants.forEach { variant ->
             customListItems.add(
-                    CustomListItem(
-                            listItemType = CustomListItemType.PRODUCT_ADD_ON,
-                            addOnUiModel = mapVariantToAddOnUiModel(variant)
-                    )
+                CustomListItem(
+                    listItemType = CustomListItemType.PRODUCT_ADD_ON,
+                    addOnUiModel = mapVariantToAddOnUiModel(variant)
+                )
             )
         }
         if (customListItems.isNotEmpty()) {
             // order input widget
             customListItems.add(
-                    CustomListItem(
-                            listItemType = CustomListItemType.ORDER_NOTE_INPUT,
-                            addOnUiModel = null
-                    )
+                CustomListItem(
+                    listItemType = CustomListItemType.ORDER_NOTE_INPUT,
+                    addOnUiModel = null
+                )
             )
         }
         return customListItems.toList()
@@ -271,26 +274,26 @@ class MerchantPageViewModel @Inject constructor(
 
     private fun mapVariantToAddOnUiModel(variant: TokoFoodCatalogVariantDetail): AddOnUiModel {
         return AddOnUiModel(
-                id = variant.id,
-                name = variant.name,
-                isRequired = variant.isRequired,
-                maxQty = variant.maxQty,
-                minQty = variant.minQty,
-                options = mapOptionDetailsToOptionUiModels(variant.minQty, variant.maxQty, variant.options),
-                outOfStockWording = resourceProvider.getOutOfStockWording()
+            id = variant.id,
+            name = variant.name,
+            isRequired = variant.isRequired,
+            maxQty = variant.maxQty,
+            minQty = variant.minQty,
+            options = mapOptionDetailsToOptionUiModels(variant.minQty, variant.maxQty, variant.options),
+            outOfStockWording = resourceProvider.getOutOfStockWording()
         )
     }
 
     private fun mapOptionDetailsToOptionUiModels(minQty: Int, maxQty: Int, optionDetails: List<TokoFoodCatalogVariantOptionDetail>): List<OptionUiModel> {
         return optionDetails.map { optionDetail ->
             OptionUiModel(
-                    isSelected = false,
-                    id = optionDetail.id,
-                    status = optionDetail.status,
-                    name = optionDetail.name,
-                    price = optionDetail.price,
-                    priceFmt = optionDetail.priceFmt,
-                    selectionControlType = getSelectionControlType(minQty, maxQty)
+                isSelected = false,
+                id = optionDetail.id,
+                status = optionDetail.status,
+                name = optionDetail.name,
+                price = optionDetail.price,
+                priceFmt = optionDetail.priceFmt,
+                selectionControlType = getSelectionControlType(minQty, maxQty)
             )
         }
     }
@@ -352,17 +355,17 @@ class MerchantPageViewModel @Inject constructor(
 
     fun mapProductUiModelToAtcRequestParam(shopId: String, productUiModel: ProductUiModel): UpdateParam {
         return TokoFoodMerchantUiModelMapper.mapProductUiModelToAtcRequestParam(
-                shopId = shopId,
-                productUiModels = listOf(productUiModel)
+            shopId = shopId,
+            productUiModels = listOf(productUiModel)
         )
     }
 
     fun mapCustomOrderDetailToAtcRequestParam(shopId: String, productId: String, customOrderDetail: CustomOrderDetail): UpdateParam {
         return TokoFoodMerchantUiModelMapper.mapCustomOrderDetailToAtcRequestParam(
-                shopId = shopId,
-                cartId = customOrderDetail.cartId,
-                productId = productId,
-                customOrderDetails = listOf(customOrderDetail)
+            shopId = shopId,
+            cartId = customOrderDetail.cartId,
+            productId = productId,
+            customOrderDetails = listOf(customOrderDetail)
         )
     }
 
@@ -370,8 +373,8 @@ class MerchantPageViewModel @Inject constructor(
         if (!productUiModel.isCustomizable) return null
         resetMasterData(productUiModel.customListItems)
         return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetail(
-                cartTokoFood = cartTokoFood,
-                productUiModel = productUiModel
+            cartTokoFood = cartTokoFood,
+            productUiModel = productUiModel
         )
     }
 
