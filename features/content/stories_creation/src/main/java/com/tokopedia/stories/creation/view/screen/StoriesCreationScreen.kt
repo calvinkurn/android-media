@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -291,7 +292,9 @@ private fun StoriesCreationAddProductSection(
 
         NestTypography(
             text = stringResource(id = R.string.stories_creation_add_product),
-            textStyle = NestTheme.typography.display2,
+            textStyle = NestTheme.typography.display2.copy(
+                fontWeight = FontWeight.Bold,
+            ),
             modifier = Modifier.constrainAs(label) {
                 top.linkTo(icon.top)
                 bottom.linkTo(icon.bottom)
@@ -302,7 +305,7 @@ private fun StoriesCreationAddProductSection(
         if (selectedProductSize > 0) {
             NestTypography(
                 text = stringResource(id = R.string.stories_creation_selected_product_template, selectedProductSize),
-                textStyle = NestTheme.typography.display2.copy(
+                textStyle = NestTheme.typography.display3.copy(
                     color = colorResource(id = unifycomponentsR.color.Unify_NN600)
                 ),
                 modifier = Modifier.constrainAs(selectedProductText) {
@@ -354,7 +357,9 @@ private fun StoriesCreationShowDurationSection(
 
         NestTypography(
             text = stringResource(id = R.string.stories_creation_show_duration),
-            textStyle = NestTheme.typography.display2,
+            textStyle = NestTheme.typography.display2.copy(
+                fontWeight = FontWeight.Bold,
+            ),
             modifier = Modifier.constrainAs(label) {
                 top.linkTo(icon.top)
                 bottom.linkTo(icon.bottom)
@@ -364,7 +369,7 @@ private fun StoriesCreationShowDurationSection(
 
         NestTypography(
             text = showDuration,
-            textStyle = NestTheme.typography.display2.copy(
+            textStyle = NestTheme.typography.display3.copy(
                 color = colorResource(id = unifycomponentsR.color.Unify_NN600)
             ),
             modifier = Modifier
@@ -382,7 +387,9 @@ private fun StoriesCreationShowDurationSection(
 private fun StoriesCreationScreenPreview() {
     NestTheme {
         Surface {
-            val uiState = StoriesCreationUiState.Empty
+            val uiState = StoriesCreationUiState.Empty.copy(
+                mediaFilePath = "asfk"
+            )
 
             StoriesCreationScreen(
                 uiState = uiState,
