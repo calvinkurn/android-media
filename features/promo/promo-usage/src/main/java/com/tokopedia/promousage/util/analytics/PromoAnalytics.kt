@@ -5,7 +5,7 @@ import androidx.core.os.bundleOf
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
-abstract class PromoAnalytics {
+open class PromoAnalytics {
 
     object EventName {
         const val CLICK_PG = "clickPG"
