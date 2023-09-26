@@ -33,7 +33,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.ComponentName
 import com.tokopedia.user.session.UserSessionInterface
-
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.WidgetStyle
 class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     companion object {
@@ -137,7 +137,10 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         val displaySingleColumnComponentName = displaySingleColumnComponent?.componentName?.id?.lowercase().toString()
 
         val hasMainBanner = displaySingleColumnComponent != null
-        if (hasMainBanner) {
+        val isHorizontalMainBanner = widgetStyle == WidgetStyle.HORIZONTAL.id
+        val showMainBanner = hasMainBanner && isHorizontalMainBanner 
+        
+        if (showMainBanner) {
             binding?.imgMainBanner?.visible()
             binding?.imgMainBanner?.cornerRadius = CORNER_RADIUS_IMAGE_BANNER
 
@@ -168,7 +171,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                 tracker.sendProductCarouselBannerClick(
                     displaySingleColumnComponentId,
                     displaySingleColumnComponentName,
-                    BannerProductGroupUiModel.WidgetStyle.HORIZONTAL.id,
+                    WidgetStyle.HORIZONTAL.id,
                     shopId,
                     userSession.userId
                 )
@@ -197,7 +200,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             tracker.sendProductCarouselBannerClick(
                 verticalBanner.componentId.orZero().toString(),
                 verticalBanner.componentName?.id?.lowercase().toString(),
-                BannerProductGroupUiModel.WidgetStyle.VERTICAL.id,
+                WidgetStyle.VERTICAL.id,
                 shopId,
                 userSession.userId
             )

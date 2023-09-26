@@ -190,15 +190,15 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     private fun TabLayout.Tab?.unselect(model: ShowcaseNavigationUiModel) {
         val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
 
-        val lowEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
-            model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val disabledTextColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
+            model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR)
         } else {
             ContextCompat.getColor(tabTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
 
         tabTitle?.apply {
             setTypeface(Typography.getFontType(context, false, Typography.DISPLAY_3))
-            setTextColor(lowEmphasizeColor)
+            setTextColor(disabledTextColor)
             invalidate()
         }
     }
