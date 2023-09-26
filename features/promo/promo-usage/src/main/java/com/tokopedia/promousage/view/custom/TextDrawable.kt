@@ -10,12 +10,13 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.promousage.R
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class TextDrawable(context: Context, private val text: String) : Drawable() {
     private val paint: Paint = Paint()
 
     init {
-        paint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        paint.color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
         paint.textSize = context.resources.getDimension(R.dimen.promo_usage_cta_use_voucher_code_text_size)
         paint.typeface = Typography.getFontType(context, true, Typography.PARAGRAPH_2)
         paint.isAntiAlias = true
@@ -39,5 +40,4 @@ internal class TextDrawable(context: Context, private val text: String) : Drawab
     override fun getOpacity(): Int {
         return PixelFormat.TRANSLUCENT
     }
-
 }
