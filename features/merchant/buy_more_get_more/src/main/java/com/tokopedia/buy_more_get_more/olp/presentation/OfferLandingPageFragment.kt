@@ -107,6 +107,7 @@ class OfferLandingPageFragment :
         private const val PAGE_SIZE = 10
         private const val PRODUCT_LIST_SPAN_COUNT = 2
         private const val MINI_CART_REFRESH_DELAY = 800L
+        private const val MINI_CART_TOAST_DELAY = 500L
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
@@ -256,8 +257,10 @@ class OfferLandingPageFragment :
             when (atc) {
                 is Success -> {
                     binding?.apply {
-                        miniCartView.showToaster(atc.data.data.message.firstOrNull().orEmpty())
                         miniCartView.refreshAfterAtC()
+                        doOnDelayFinished(MINI_CART_TOAST_DELAY) {
+                            miniCartView.showToaster(atc.data.data.message.firstOrNull().orEmpty())
+                        }
                     }
                     viewModel.processEvent(OlpEvent.GetNotification)
                 }
