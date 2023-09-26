@@ -101,7 +101,9 @@ object CartCalculator {
             }
 
             if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount > 0.0) {
-                totalDiscountBmGmMap[cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount
+                if (!totalDiscountBmGmMap.containsKey(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)) {
+                    totalDiscountBmGmMap[cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount
+                }
             }
         }
 
