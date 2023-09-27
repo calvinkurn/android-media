@@ -11,6 +11,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
@@ -105,18 +106,40 @@ internal class ShopPageHeaderFragmentPagerAdapter(
         ctx?.let {
             textTabName.apply {
                 show()
-                if (active) {
-                    val linkColor = colorSchema.getColorIntValue(
-                        ShopPageColorSchema.ColorSchemaName.NAV_TEXT_ACTIVE
-                    )
-                    setTextColor(linkColor)
-                } else {
-                    val highEmphasizeColor = colorSchema.getColorIntValue(
-                        ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
-                    )
-                    setTextColor(highEmphasizeColor)
+                if(isOverrideTheme) {
+                    setTabNameReimaginedColor(this, active)
+                }else{
+                    setTabNameDefaultColor(this, active)
                 }
                 text = listShopPageTabModel.getOrNull(position)?.tabText.orEmpty()
+            }
+        }
+    }
+
+    private fun setTabNameReimaginedColor(typography: Typography, active: Boolean) {
+        typography.apply {
+            if (active) {
+                val linkColor = colorSchema.getColorIntValue(
+                    ShopPageColorSchema.ColorSchemaName.NAV_TEXT_ACTIVE
+                )
+                setTextColor(linkColor)
+            } else {
+                val highEmphasizeColor = colorSchema.getColorIntValue(
+                    ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+                )
+                setTextColor(highEmphasizeColor)
+            }
+        }
+    }
+
+    private fun setTabNameDefaultColor(typography: Typography, active: Boolean) {
+        typography.apply {
+            if (active) {
+                val linkColor = MethodChecker.getColor(ctxRef.get(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                setTextColor(linkColor)
+            } else {
+                val highEmphasizeColor = MethodChecker.getColor(ctxRef.get(), com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                setTextColor(highEmphasizeColor)
             }
         }
     }

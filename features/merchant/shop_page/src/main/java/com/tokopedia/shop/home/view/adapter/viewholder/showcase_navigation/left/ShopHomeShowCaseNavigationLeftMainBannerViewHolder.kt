@@ -24,7 +24,6 @@ import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
-import com.tokopedia.shop_widget.common.util.WidgetState
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
@@ -190,15 +189,15 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     private fun TabLayout.Tab?.unselect(model: ShowcaseNavigationUiModel) {
         val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
 
-        val lowEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
-            model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val disabledTextColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
+            model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR)
         } else {
             ContextCompat.getColor(tabTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
 
         tabTitle?.apply {
             setTypeface(Typography.getFontType(context, false, Typography.DISPLAY_3))
-            setTextColor(lowEmphasizeColor)
+            setTextColor(disabledTextColor)
             invalidate()
         }
     }

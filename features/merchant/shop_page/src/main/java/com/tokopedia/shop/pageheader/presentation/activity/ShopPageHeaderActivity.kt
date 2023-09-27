@@ -26,9 +26,17 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_RENDER
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_V4
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_ACTIVITY_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE_V3
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE_V4
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE_V3
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE_V4
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE_V3
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE_V4
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
@@ -126,18 +134,33 @@ class ShopPageHeaderActivity :
     }
 
     private fun initPerformanceMonitoring() {
-        performanceMonitoringShop = PageLoadTimePerformanceCallback(
-            SHOP_TRACE_PREPARE,
-            SHOP_TRACE_MIDDLE,
-            SHOP_TRACE_RENDER
-        )
-        performanceMonitoringShop?.startMonitoring(SHOP_TRACE)
-        performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
-        performanceMonitoringShop?.startCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
+        if (ShopUtil.isEnableShopPageReImagined(this)) {
+            performanceMonitoringShop = PageLoadTimePerformanceCallback(
+                SHOP_V4_TRACE_PREPARE,
+                SHOP_V4_TRACE_MIDDLE,
+                SHOP_V4_TRACE_RENDER
+            )
+            performanceMonitoringShop?.startMonitoring(SHOP_TRACE_V4)
+            performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
+            performanceMonitoringShop?.startCustomMetric(SHOP_V4_TRACE_ACTIVITY_PREPARE)
 
-        performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE_V3)
-        performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE_V3)
-        performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE_V3)
+            performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE_V4)
+            performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE_V4)
+            performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE_V4)
+        } else {
+            performanceMonitoringShop = PageLoadTimePerformanceCallback(
+                SHOP_TRACE_PREPARE,
+                SHOP_TRACE_MIDDLE,
+                SHOP_TRACE_RENDER
+            )
+            performanceMonitoringShop?.startMonitoring(SHOP_TRACE)
+            performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
+            performanceMonitoringShop?.startCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
+
+            performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE_V3)
+            performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE_V3)
+            performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE_V3)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

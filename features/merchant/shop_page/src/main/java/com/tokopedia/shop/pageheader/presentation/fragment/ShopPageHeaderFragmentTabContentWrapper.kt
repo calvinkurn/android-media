@@ -710,7 +710,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             }
         }
     }
-
+    
     private fun createCampaignTabFragment(
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {

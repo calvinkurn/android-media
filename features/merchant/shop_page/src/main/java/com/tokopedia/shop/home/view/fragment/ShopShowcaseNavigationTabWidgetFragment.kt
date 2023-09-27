@@ -178,18 +178,18 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
     private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
         val mainShowcaseTextColor = ContextCompat.getColor(context ?: return, R.color.clr_dms_icon_white)
-        val lowEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val highEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
+            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         } else {
             ContextCompat.getColor(context ?: return, unifycomponentsR.color.Unify_NN950)
         }
 
         binding?.apply {
             tpgMainShowcaseTitle.setTextColor(mainShowcaseTextColor)
-            tpgFirstShowcaseTitle.setTextColor(lowEmphasizeColor)
-            tpgSecondShowcaseTitle.setTextColor(lowEmphasizeColor)
-            tpgThirdShowcaseTitle.setTextColor(lowEmphasizeColor)
-            tpgFourthShowcaseTitle.setTextColor(lowEmphasizeColor)
+            tpgFirstShowcaseTitle.setTextColor(highEmphasizeColor)
+            tpgSecondShowcaseTitle.setTextColor(highEmphasizeColor)
+            tpgThirdShowcaseTitle.setTextColor(highEmphasizeColor)
+            tpgFourthShowcaseTitle.setTextColor(highEmphasizeColor)
         }
     }
 }
