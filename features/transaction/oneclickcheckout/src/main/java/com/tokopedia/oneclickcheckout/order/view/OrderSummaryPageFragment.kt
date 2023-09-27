@@ -312,6 +312,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         validateUse: ValidateUsePromoRevampUiModel
     ) {
         viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
+        viewModel.validateUsePromoRevampUiModel = validateUse
         viewModel.validateBboStacking()
         viewModel.updatePromoStateWithoutCalculate(validateUse.promoUiModel, viewModel.orderPromo.value.lastApply)
         viewModel.reloadRates()
