@@ -24,6 +24,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.stories.widget.StoriesWidgetLayout
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.view.widget.LongClickMenu
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -34,6 +35,7 @@ import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.listener.StoriesWidgetListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
@@ -72,6 +74,7 @@ open class TopChatViewStateImpl constructor(
     private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
     private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
     private val headerMenuListener: HeaderMenuListener,
+    private val storiesWidgetListener: StoriesWidgetListener,
     toolbar: Toolbar,
     val analytics: TopChatAnalytics,
     private val userSession: UserSessionInterface
@@ -328,6 +331,7 @@ open class TopChatViewStateImpl constructor(
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         super.updateHeader(chatroomViewModel, onToolbarClicked)
         bindBadge(chatroomViewModel)
+        bindStories(chatroomViewModel)
     }
 
     private fun bindBadge(chatRoom: ChatroomViewModel) {
@@ -335,6 +339,12 @@ open class TopChatViewStateImpl constructor(
         badgeView?.shouldShowWithAction(chatRoom.hasBadge()) {
             badgeView.loadImageWithoutPlaceholder(chatRoom.badgeUrl)
         }
+    }
+
+    private fun bindStories(chatRoom: ChatroomViewModel) {
+        val storiesBorder = toolbar.findViewById<StoriesWidgetLayout>(com.tokopedia.chat_common.R.id.stories_border)
+        val manager = storiesWidgetListener.getStoriesWidgetManager()
+        manager.manage(storiesBorder, chatRoom.headerModel.shopId)
     }
 
     private fun showLastTimeOnline(viewModel: ChatroomViewModel) {

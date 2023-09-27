@@ -40,6 +40,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.stories.widget.StoriesWidgetManager
+import com.tokopedia.stories.widget.domain.StoriesEntrySource
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
@@ -126,6 +129,8 @@ open class ChatListInboxFragment :
     }
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
+
+    private var mStoriesWidgetManager: StoriesWidgetManager? = null
 
     @RoleType
     private var role: Int = RoleType.BUYER
@@ -237,7 +242,13 @@ open class ChatListInboxFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupStoriesWidgetManager()
         setupLifecycleObserver()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mStoriesWidgetManager = null
     }
 
     override fun onScrollToTop() {}
@@ -270,6 +281,13 @@ open class ChatListInboxFragment :
                 stateReport = getOperationalInsightStateReport(visitable.isMaintain)
             )
         }
+    }
+
+    private fun setupStoriesWidgetManager() {
+        mStoriesWidgetManager = StoriesWidgetManager.create(
+            StoriesEntrySource.TopChatList(userSession.shopId),
+            this,
+        ) { setScrollingParent(rv) }
     }
 
     private fun setupLifecycleObserver() {
@@ -662,6 +680,9 @@ open class ChatListInboxFragment :
 
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
+        if (role == RoleType.BUYER) {
+            mStoriesWidgetManager?.updateStories(data.list.map { it.id })
+        }
         fpmStopTrace()
         setIndicatorCurrentActiveChat(currentActiveMessageId)
     }
@@ -950,6 +971,10 @@ open class ChatListInboxFragment :
 
     override fun getSupportChildFragmentManager(): FragmentManager {
         return childFragmentManager
+    }
+
+    override fun getStoriesWidgetManager(): StoriesWidgetManager? {
+        return mStoriesWidgetManager
     }
 
     override fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean) {

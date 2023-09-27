@@ -27,7 +27,7 @@ object ShopPageHeaderMapper {
         feedWhitelistData: Whitelist,
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
     ): ShopPageHeaderP1HeaderData {
-        val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData)
+        val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData, shopInfoGoldData.data.shopId)
         val shopName = getShopHeaderWidgetComponentData<ShopPageHeaderBadgeTextValueComponentUiModel>(
             listShopHeaderWidget,
             SHOP_BASIC_INFO,
@@ -58,7 +58,7 @@ object ShopPageHeaderMapper {
         feedWhitelistData: Whitelist,
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
     ): ShopPageHeaderP1HeaderData {
-        val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData)
+        val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData, shopInfoCoreData.shopCore.shopID)
         val shopName = getShopHeaderWidgetComponentData<ShopPageHeaderBadgeTextValueComponentUiModel>(
             listShopHeaderWidget,
             SHOP_BASIC_INFO,
@@ -98,18 +98,20 @@ object ShopPageHeaderMapper {
 
     private var headerComponentPosition: Int = -1
     private fun mapToShopPageHeaderLayoutUiModel(
-        shopPageHeaderLayoutResponseData: ShopPageHeaderLayoutResponse
+        shopPageHeaderLayoutResponseData: ShopPageHeaderLayoutResponse,
+        shopId: String,
     ): List<ShopPageHeaderWidgetUiModel> {
         return mutableListOf<ShopPageHeaderWidgetUiModel>().apply {
             headerComponentPosition = 0
             shopPageHeaderLayoutResponseData.shopPageGetHeaderLayout.widgets.forEach { widgetResponseData ->
-                add(mapShopHeaderWidget(widgetResponseData))
+                add(mapShopHeaderWidget(widgetResponseData, shopId))
             }
         }
     }
 
     private fun mapShopHeaderWidget(
-        widgetResponseData: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget
+        widgetResponseData: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget,
+        shopId: String,
     ): ShopPageHeaderWidgetUiModel {
         return ShopPageHeaderWidgetUiModel(
             widgetResponseData.widgetID,
@@ -120,7 +122,7 @@ object ShopPageHeaderMapper {
                     if (shouldIncrementHeaderComponentPosition(widgetResponseData, index)) {
                         headerComponentPosition++
                     }
-                    mapShopHeaderComponent(headerComponentPosition, componentResponseData)?.let {
+                    mapShopHeaderComponent(headerComponentPosition, componentResponseData, shopId)?.let {
                         add(it)
                     }
                 }
@@ -141,10 +143,11 @@ object ShopPageHeaderMapper {
 
     private fun mapShopHeaderComponent(
         componentPosition: Int,
-        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component,
+        shopId: String,
     ): BaseShopPageHeaderComponentUiModel? {
         return when (component.type.toLowerCase()) {
-            BaseShopPageHeaderComponentUiModel.ComponentType.IMAGE_ONLY.toLowerCase() -> mapShopHeaderImageOnlyComponent(component)
+            BaseShopPageHeaderComponentUiModel.ComponentType.IMAGE_ONLY.toLowerCase() -> mapShopHeaderImageOnlyComponent(component, shopId)
             BaseShopPageHeaderComponentUiModel.ComponentType.BADGE_TEXT_VALUE.toLowerCase() -> mapShopHeaderBadgeTextValueComponent(component)
             BaseShopPageHeaderComponentUiModel.ComponentType.BUTTON.toLowerCase() -> mapShopHeaderButtonComponent(component)
             BaseShopPageHeaderComponentUiModel.ComponentType.IMAGE_TEXT.toLowerCase() -> mapShopHeaderImageTextComponent(component)
@@ -221,10 +224,12 @@ object ShopPageHeaderMapper {
     }
 
     private fun mapShopHeaderImageOnlyComponent(
-        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component,
+        shopId: String,
     ) = ShopPageHeaderImageOnlyComponentUiModel(
         component.name,
         component.type,
+        shopId,
         component.data.image,
         component.data.imageLink,
         component.data.isBottomSheet

@@ -269,4 +269,8 @@ public class RemoteConfigKey {
     public static final String PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_payment_enable_additional_device_info";
 
     public static final String CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL = "android_content_exoplayer_custom_load_control";
+
+    public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
+
+    public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
 }
