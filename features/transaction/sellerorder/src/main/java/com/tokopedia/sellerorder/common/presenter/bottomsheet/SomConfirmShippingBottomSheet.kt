@@ -4,6 +4,9 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
@@ -16,7 +19,15 @@ import com.tokopedia.sellerorder.common.util.SomConsts.SOM_DROP_OFF_BOTTOM_SHEET
 import com.tokopedia.sellerorder.databinding.PartialInfoLayoutBinding
 
 class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialInfoLayoutBinding>(
-    LAYOUT, true, true, false, true, false, context.getString(R.string.automatic_shipping), context, true
+    LAYOUT,
+    true,
+    true,
+    false,
+    true,
+    false,
+    context.getString(R.string.automatic_shipping),
+    context,
+    true
 ) {
 
     companion object {
@@ -35,7 +46,8 @@ class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialIn
         }
 
         private val LAYOUT = R.layout.partial_info_layout
-        private const val URL_IMAGE_BOTTOM_BACKGROUND = "https://images.tokopedia.net/img/img_bottomsheet_dropoff.png"
+        private const val URL_IMAGE_BOTTOM_BACKGROUND =
+            "https://images.tokopedia.net/img/img_bottomsheet_dropoff.png"
     }
 
     private var bottomSheetAdapter: SomBottomSheetConfirmShippingAdapter? = null
@@ -55,17 +67,53 @@ class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialIn
     fun setList(popUp: PopUp) {
         val listNotes = constructList(popUp)
         bottomSheetAdapter?.updateListInfo(listNotes)
-        binding?.imageBackground?.loadImage(URL_IMAGE_BOTTOM_BACKGROUND)
+        binding?.run {
+            if (listNotes.isNotEmpty()) {
+                imageBackground.loadImage(URL_IMAGE_BOTTOM_BACKGROUND)
+                imageBackground.visible()
+                globalError.gone()
+                rvInfo.visible()
+            } else {
+                imageBackground.gone()
+                rvInfo.gone()
+                globalError.setType(GlobalError.SERVER_ERROR)
+                globalError.visible()
+                globalError.errorAction.gone()
+            }
+        }
     }
 
     private fun constructList(popUp: PopUp): List<ConfirmShippingNotes> {
         val templateParam = popUp.template?.param
         var listNotes = listOf<ConfirmShippingNotes>()
-        // todo ask ka tama how ios handle error here
         templateParam?.apply {
             listNotes = when (popUp.template.code) {
-                SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_1 -> templateFmd(templateParam)
-                SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_2 -> templateFmdNotEligible(templateParam)
+                SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_1 -> {
+                    val learnMoreText = this.learnMoreText?.data.orEmpty()
+                    val learnMoreUrl = this.learnMoreUrl?.data.orEmpty()
+                    val dropOffText = this.dropoffText?.data.orEmpty()
+                    val dropOffUrl = this.dropoffUrl?.data.orEmpty()
+                    if (learnMoreText.isNotEmpty() && learnMoreUrl.isNotEmpty() && dropOffText.isNotEmpty() && dropOffUrl.isNotEmpty()) {
+                        templateFmd(
+                            learnMoreUrl = learnMoreUrl,
+                            learnMoreText = learnMoreText,
+                            dropoffUrl = dropOffUrl,
+                            dropoffText = dropOffText
+                        )
+                    } else {
+                        listOf()
+                    }
+                }
+
+                SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_2 -> {
+                    val dropOffText = this.dropoffText?.data.orEmpty()
+                    val dropOffUrl = this.dropoffUrl?.data.orEmpty()
+                    if (dropOffText.isNotEmpty() && dropOffUrl.isNotEmpty()) {
+                        templateFmdNotEligible(dropOffUrl = dropOffUrl, dropOffText = dropOffText)
+                    } else {
+                        listOf()
+                    }
+                }
                 SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_3 -> templateAutoAwb()
                 else -> listOf()
             }
@@ -74,37 +122,56 @@ class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialIn
         return listNotes
     }
 
-    private fun templateFmd(templateParam: PopUp.Template.Params) = listOf(
+    private fun templateFmd(
+        learnMoreUrl: String,
+        learnMoreText: String,
+        dropoffUrl: String,
+        dropoffText: String
+    ) = listOf(
         ConfirmShippingNotes(
-            noteText = context.resources?.getString(R.string.som_dropoff_template_text_minimal_delivery).orEmpty(),
-            url = templateParam.learnMoreUrl.data,
-            urlText = templateParam.learnMoreText.data
+            noteText = context.resources?.getString(R.string.som_dropoff_template_text_minimal_delivery)
+                .orEmpty(),
+            url = learnMoreUrl,
+            urlText = learnMoreText
         ),
         ConfirmShippingNotes(
-            noteText = context.resources?.getString(R.string.som_dropoff_template_text_print_label_and_delivery).orEmpty()
+            noteText = context.resources?.getString(R.string.som_dropoff_template_text_print_label_and_delivery)
+                .orEmpty()
         ),
         ConfirmShippingNotes(
             context.resources?.getString(R.string.som_dropoff_template_text_cek_gerai).orEmpty(),
-            url = templateParam.dropoffUrl.data,
-            urlText = templateParam.dropoffText.data
+            url = dropoffUrl,
+            urlText = dropoffText
         )
     )
 
-    private fun templateFmdNotEligible(templateParam: PopUp.Template.Params) = listOf(
+    private fun templateFmdNotEligible(dropOffUrl: String, dropOffText: String) = listOf(
         ConfirmShippingNotes(
-            noteText = context.resources?.getString(R.string.som_dropoff_template_text_print_label_and_delivery).orEmpty()
+            noteText = context.resources?.getString(R.string.som_dropoff_template_text_print_label_and_delivery)
+                .orEmpty()
         ),
         ConfirmShippingNotes(
             context.resources?.getString(R.string.som_dropoff_template_text_cek_gerai).orEmpty(),
-            url = templateParam.dropoffUrl.data,
-            urlText = templateParam.dropoffText.data
+            url = dropOffUrl,
+            urlText = dropOffText
         )
     )
 
     private fun templateAutoAwb() = listOf(
-        ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_print_label_only).orEmpty()),
-        ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_no_cost_delivery).orEmpty()),
-        ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_no_manual_input_resi).orEmpty()),
-        ConfirmShippingNotes(context.resources?.getString(R.string.som_dropoff_template_text_auto_confirm).orEmpty())
+        ConfirmShippingNotes(
+            context.resources?.getString(R.string.som_dropoff_template_text_print_label_only)
+                .orEmpty()
+        ),
+        ConfirmShippingNotes(
+            context.resources?.getString(R.string.som_dropoff_template_text_no_cost_delivery)
+                .orEmpty()
+        ),
+        ConfirmShippingNotes(
+            context.resources?.getString(R.string.som_dropoff_template_text_no_manual_input_resi)
+                .orEmpty()
+        ),
+        ConfirmShippingNotes(
+            context.resources?.getString(R.string.som_dropoff_template_text_auto_confirm).orEmpty()
+        )
     )
 }

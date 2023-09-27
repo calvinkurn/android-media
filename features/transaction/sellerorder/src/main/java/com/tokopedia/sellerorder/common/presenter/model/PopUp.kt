@@ -36,26 +36,25 @@ data class PopUp(
         val param: Params? = null
 
     ) {
-        // todo ask ka tama how iOS handle this
         data class Params(
             @SerializedName("lg_fmd_txt_learn_more")
-            val learnMoreText: TypeValue = TypeValue(),
+            val learnMoreText: TypeValue? = null,
 
             @SerializedName("lg_fmd_txt_open_dropoff_maps")
-            val dropoffText: TypeValue = TypeValue(),
+            val dropoffText: TypeValue? = null,
 
             @SerializedName("lg_fmd_url_learn_more")
-            val learnMoreUrl: TypeValue = TypeValue(),
+            val learnMoreUrl: TypeValue? = null,
 
             @SerializedName("lg_fmd_url_open_dropoff_maps")
-            val dropoffUrl: TypeValue = TypeValue()
+            val dropoffUrl: TypeValue? = null
         ) {
             data class TypeValue(
                 @SerializedName("type")
-                val type: String = "",
+                val type: String? = null,
 
                 @SerializedName("data")
-                val data: String = ""
+                val data: String? = null
             )
         }
     }
