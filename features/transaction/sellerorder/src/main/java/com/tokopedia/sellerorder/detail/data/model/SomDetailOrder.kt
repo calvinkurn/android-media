@@ -295,7 +295,7 @@ data class SomDetailOrder(
                 val awbUploadProofText: String = "",
 
                 @SerializedName("ticker_info")
-                val tickerInfo: TickerInfo = TickerInfo()
+                val tickerInfo: TickerInfo? = TickerInfo()
             )
 
             data class BookingInfo(

@@ -313,14 +313,16 @@ class SomDetailShippingViewHolder(
 
                 // drop off maps
                 val tickerInfo = item.dataObject.shipmentTickerInfo
-                setupTicker(
-                    tickerShipment,
-                    shouldShow = item.dataObject.shipmentTickerInfo.text.isNotEmpty(),
-                    description = tickerInfo.formattedText(),
-                    actionUrl = tickerInfo.actionUrl,
-                    type = tickerInfo.type,
-                    onClickUrl = { url -> actionListener?.onDropOffButtonClicked(url) }
-                )
+                tickerInfo?.run {
+                    setupTicker(
+                        tickerShipment,
+                        shouldShow = text.isNotEmpty(),
+                        description = formattedText(),
+                        actionUrl = actionUrl,
+                        type = type,
+                        onClickUrl = { url -> actionListener?.onDropOffButtonClicked(url) }
+                    )
+                }
             }
         }
     }
