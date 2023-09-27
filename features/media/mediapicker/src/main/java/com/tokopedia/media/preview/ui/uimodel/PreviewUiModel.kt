@@ -9,9 +9,8 @@ class PreviewUiModel(var data: MediaUiModel) {
     var mVideoPlayer: PickerVideoPlayer? = null
 
     fun videoPlayer(context: Context): PickerVideoPlayer {
-        return mVideoPlayer?: PickerVideoPlayer(context).also {
+        return mVideoPlayer ?: PickerVideoPlayer(context).also {
             mVideoPlayer = it
         }
     }
-
 }
