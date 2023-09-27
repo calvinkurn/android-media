@@ -2,6 +2,7 @@ package com.tokopedia.order_management_common.presentation.viewholder
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -61,6 +62,7 @@ class BmgmAddOnSummaryViewHolder(
                     R.drawable.om_detail_add_on_dash_divider
                 )
             } catch (t: Throwable) {
+                FirebaseCrashlytics.getInstance().recordException(t)
                 null
             }
             rvAddOn.addItemDecoration(

@@ -33,5 +33,6 @@
     <string name="bmgm_cta_text_error_not_found">Coba lagi</string>
 
     <string name="bmgm_empty_state_product_list_title">Sering dibeli bareng belanjaanmu</string>
+    <string name="bmgm_dari_label">Dari</string>
 
 </resources>

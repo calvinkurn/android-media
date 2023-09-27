@@ -263,11 +263,15 @@ class UniversalInboxFragment @Inject constructor(
 
     private fun toggleLoading(isLoading: Boolean) {
         binding?.inboxLayoutSwipeRefresh?.isRefreshing = isLoading
+        // If not loading but refresh layout is not update (swipe refresh stuck)
+        val shouldNotEnabled = !isLoading &&
+            binding?.inboxLayoutSwipeRefresh?.isRefreshing == true
+        binding?.inboxLayoutSwipeRefresh?.isEnabled = !shouldNotEnabled
     }
 
     private fun updateWidgetMeta(widget: UniversalInboxWidgetMetaUiModel) {
         // Widget has meaning to be shown
-        if (widget.widgetList.isNotEmpty() || widget.isError) {
+        if (widget.widgetList.isNotEmpty() || widget.widgetError.isError) {
             adapter.tryUpdateWidgetMeta(widget)
         } else if (adapter.isWidgetMetaAdded()) { // if widget is exist in the list
             adapter.tryRemoveItemAtPosition(0)

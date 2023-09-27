@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.bmgm.domain.usecase
 
 import android.annotation.SuppressLint
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class GetBmgmMiniCartDataUseCase @Inject constructor(
     private val mapper: BmgmMiniCartDataMapper,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
-    graphqlRepository: GraphqlRepository,
+    @ApplicationContext graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : GqlCoroutineUseCase<MiniCartGqlResponse>(
     GetBmgmMiniCartQuery(),

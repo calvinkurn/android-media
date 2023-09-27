@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -107,6 +108,7 @@ class OfferLandingPageFragment :
         private const val PAGE_SIZE = 10
         private const val PRODUCT_LIST_SPAN_COUNT = 2
         private const val MINI_CART_REFRESH_DELAY = 800L
+        private const val MINI_CART_TOAST_DELAY = 500L
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
@@ -139,7 +141,11 @@ class OfferLandingPageFragment :
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     @Inject
-    lateinit var viewModel: OfferLandingPageViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: OfferLandingPageViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[OfferLandingPageViewModel::class.java]
+    }
 
     private val shopIds by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
     private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
@@ -256,8 +262,10 @@ class OfferLandingPageFragment :
             when (atc) {
                 is Success -> {
                     binding?.apply {
-                        miniCartView.showToaster(atc.data.data.message.firstOrNull().orEmpty())
                         miniCartView.refreshAfterAtC()
+                        doOnDelayFinished(MINI_CART_TOAST_DELAY) {
+                            miniCartView.showToaster(atc.data.data.message.firstOrNull().orEmpty())
+                        }
                     }
                     viewModel.processEvent(OlpEvent.GetNotification)
                 }
@@ -278,7 +286,7 @@ class OfferLandingPageFragment :
             val offer = offerInfoForBuyer?.offerings?.firstOrNull() ?: return@run
             setOnCheckCartClickListener(offer.endDate) { isOfferEnded ->
                 if (isOfferEnded) {
-                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
+                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
                 }
             }
         }
@@ -515,7 +523,7 @@ class OfferLandingPageFragment :
                         )
                     }
 
-                    Status.OFFER_ALREADY_FINISH -> {
+                    Status.OFFER_ENDED -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
                             description = getString(R.string.bmgm_description_error_ended_promo),
@@ -632,7 +640,7 @@ class OfferLandingPageFragment :
                 if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
                     addToCartProduct(product)
                 } else {
-                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
+                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
                 }
             }
         } else {

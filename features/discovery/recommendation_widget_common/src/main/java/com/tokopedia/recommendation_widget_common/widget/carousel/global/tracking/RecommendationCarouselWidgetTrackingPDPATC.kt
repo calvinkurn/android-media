@@ -63,6 +63,7 @@ import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.track.constant.TrackerConstant.BUSINESS_UNIT
 import com.tokopedia.track.constant.TrackerConstant.CURRENT_SITE
 import com.tokopedia.track.constant.TrackerConstant.USERID
@@ -274,7 +275,8 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                 BUSINESS_UNIT, BUSINESS_UNIT_PG,
                 CURRENT_SITE, CURRENT_SITE_MP,
                 PRODUCT_ID, source.anchorProductId,
-                USERID, userId
+                USERID, userId,
+                TrackerConstant.SHOP_ID, source.shopId
             )
         )
     }
