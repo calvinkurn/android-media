@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -140,7 +141,11 @@ class OfferLandingPageFragment :
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     @Inject
-    lateinit var viewModel: OfferLandingPageViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: OfferLandingPageViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[OfferLandingPageViewModel::class.java]
+    }
 
     private val shopIds by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
     private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
@@ -281,7 +286,7 @@ class OfferLandingPageFragment :
             val offer = offerInfoForBuyer?.offerings?.firstOrNull() ?: return@run
             setOnCheckCartClickListener(offer.endDate) { isOfferEnded ->
                 if (isOfferEnded) {
-                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
+                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
                 }
             }
         }
@@ -518,7 +523,7 @@ class OfferLandingPageFragment :
                         )
                     }
 
-                    Status.OFFER_ALREADY_FINISH -> {
+                    Status.OFFER_ENDED -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
                             description = getString(R.string.bmgm_description_error_ended_promo),
@@ -635,7 +640,7 @@ class OfferLandingPageFragment :
                 if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
                     addToCartProduct(product)
                 } else {
-                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
+                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
                 }
             }
         } else {
