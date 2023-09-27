@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -140,7 +141,11 @@ class OfferLandingPageFragment :
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     @Inject
-    lateinit var viewModel: OfferLandingPageViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: OfferLandingPageViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[OfferLandingPageViewModel::class.java]
+    }
 
     private val shopIds by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
     private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
