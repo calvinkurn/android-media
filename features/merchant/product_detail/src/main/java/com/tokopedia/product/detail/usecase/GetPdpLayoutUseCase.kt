@@ -578,7 +578,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
             ProductDetailConstant.PRODUCT_LIST,
             ProductDetailConstant.VIEW_TO_VIEW,
             ProductDetailConstant.PRODUCT_LIST_VERTICAL,
-            ProductDetailConstant.ONGOING_CAMPAIGN,
             ProductDetailConstant.TOP_ADS
         )
     }
