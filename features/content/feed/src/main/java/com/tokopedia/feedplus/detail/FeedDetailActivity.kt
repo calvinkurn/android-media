@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.detail
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -14,13 +15,15 @@ import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment.Companion.T
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment.Companion.ENTRY_POINT_APPLINK
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.util.extension.commit
 import javax.inject.Inject
 
 /**
  * Created by meyta.taliti on 16/05/23.
  */
-class FeedDetailActivity : BaseActivity() {
+class FeedDetailActivity : BaseActivity(), FeedDetailBottomBarActionListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -96,6 +99,21 @@ class FeedDetailActivity : BaseActivity() {
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    override fun setBottomBarAction(
+        @StringRes stringRes: Int,
+        onClickListener: () -> Unit
+    ) {
+        binding.feedDetailBottomBar.text = getString(stringRes)
+        binding.feedDetailBottomBar.setOnClickListener {
+            onClickListener.invoke()
+        }
+        binding.feedDetailBottomBar.show()
+    }
+
+    override fun hideBottomBar() {
+        binding.feedDetailBottomBar.hide()
     }
 
     companion object {

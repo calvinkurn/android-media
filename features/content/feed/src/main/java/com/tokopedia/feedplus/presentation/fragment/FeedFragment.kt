@@ -59,6 +59,7 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
+import com.tokopedia.feedplus.detail.FeedDetailBottomBarActionListener
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
@@ -93,7 +94,6 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -442,8 +442,6 @@ class FeedFragment :
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
-        binding.containerBottomAction.showWithCondition(isCdp)
-
         return binding.root
     }
 
@@ -1948,78 +1946,77 @@ class FeedFragment :
     }
 
     private fun updateBottomActionView(position: Int) {
-        with(binding) {
-            val currentItem =
-                if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position) {
-                    adapter.currentList[position]
-                } else {
-                    null
-                }
-
-            if (currentItem == null || !isCdp) {
-                containerBottomAction.hide()
-                return@with
+        val currentItem =
+            if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position) {
+                adapter.currentList[position]
+            } else {
+                null
             }
 
-            when {
-                currentItem.data is FeedCardImageContentModel && currentItem.data.showComment -> {
-                    val model = currentItem.data
-                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_comment_label)
-                    containerBottomAction.setOnClickListener {
-                        onCommentClick(
-                            trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
-                                model
-                            ),
-                            contentId = model.id,
-                            isPlayContent = false,
-                            rowNumber = position
-                        )
-                    }
-                    containerBottomAction.show()
+        if (currentItem == null || !isCdp) return
+
+        val commentBarActionListener = if (requireActivity() is FeedDetailBottomBarActionListener) {
+            requireActivity() as FeedDetailBottomBarActionListener
+        } else return
+
+        when {
+            currentItem.data is FeedCardImageContentModel && currentItem.data.showComment -> {
+                val model = currentItem.data
+                commentBarActionListener.setBottomBarAction(
+                    feedplusR.string.feed_bottom_action_comment_label
+                ) {
+                    onCommentClick(
+                        trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
+                            model
+                        ),
+                        contentId = model.id,
+                        isPlayContent = false,
+                        rowNumber = position
+                    )
                 }
-                currentItem.data is FeedCardImageContentModel -> {
-                    val model = currentItem.data
-                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_share_label)
-                    containerBottomAction.setOnClickListener {
-                        onSharePostClicked(
-                            data = model.share,
-                            trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
-                                model
-                            )
-                        )
-                    }
-                    containerBottomAction.show()
-                }
-                currentItem.data is FeedCardVideoContentModel && !currentItem.data.isTypeProductHighlight -> {
-                    val model = currentItem.data
-                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_comment_label)
-                    containerBottomAction.setOnClickListener {
-                        onCommentClick(
-                            trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
-                                model
-                            ),
-                            contentId = model.id,
-                            isPlayContent = model.isPlayContent,
-                            rowNumber = position
-                        )
-                    }
-                    containerBottomAction.show()
-                }
-                currentItem.data is FeedCardVideoContentModel -> {
-                    val model = currentItem.data
-                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_share_label)
-                    containerBottomAction.setOnClickListener {
-                        onSharePostClicked(
-                            data = model.share,
-                            trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
-                                model
-                            )
-                        )
-                    }
-                    containerBottomAction.show()
-                }
-                else -> containerBottomAction.hide()
             }
+            currentItem.data is FeedCardImageContentModel -> {
+                val model = currentItem.data
+                commentBarActionListener.setBottomBarAction(
+                    feedplusR.string.feed_bottom_action_share_label
+                ) {
+                    onSharePostClicked(
+                        data = model.share,
+                        trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
+                            model
+                        )
+                    )
+                }
+            }
+            currentItem.data is FeedCardVideoContentModel && !currentItem.data.isTypeProductHighlight -> {
+                val model = currentItem.data
+                commentBarActionListener.setBottomBarAction(
+                    feedplusR.string.feed_bottom_action_comment_label
+                ) {
+                    onCommentClick(
+                        trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
+                            model
+                        ),
+                        contentId = model.id,
+                        isPlayContent = model.isPlayContent,
+                        rowNumber = position
+                    )
+                }
+            }
+            currentItem.data is FeedCardVideoContentModel -> {
+                val model = currentItem.data
+                commentBarActionListener.setBottomBarAction(
+                    feedplusR.string.feed_bottom_action_share_label
+                ) {
+                    onSharePostClicked(
+                        data = model.share,
+                        trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
+                            model
+                        )
+                    )
+                }
+            }
+            else -> commentBarActionListener.hideBottomBar()
         }
     }
 

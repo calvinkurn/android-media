@@ -4,4 +4,10 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="FeedDetailTheme" parent="@style/Theme.White">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="isLightTheme">false</item>
+    </style>
+
 </resources>
