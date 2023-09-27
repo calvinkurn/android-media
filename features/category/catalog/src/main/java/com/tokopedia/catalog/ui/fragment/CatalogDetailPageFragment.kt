@@ -97,6 +97,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
@@ -221,14 +222,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
     }
 
-    override fun onNavigateWidget(anchorTo: String, tabPosition: Int) {
-        CatalogReimagineDetailAnalytics.sendEvent(
-            event = EVENT_VIEW_PG_IRIS,
-            action = EVENT_ACTION_CLICK_NAVIGATION,
-            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = catalogId,
-            trackerId = TRACKER_ID_CLICK_NAVIGATION
-        )
+    override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabs: String?) {
 
         val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
@@ -242,6 +236,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             smoothScroller.targetPosition = anchorToPosition - 2
             layoutManager?.startSmoothScroll(smoothScroller)
         }
+
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_CLICK_NAVIGATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = "$catalogId - item: {${tabs}}",
+            trackerId = TRACKER_ID_CLICK_NAVIGATION
+        )
 
     }
 
@@ -303,15 +305,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     ) {
         val colorBgGradient = MethodChecker.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_44
+            unifyprinciplesR.color.Unify_Static_Black_44
         )
         val colorFontDark = MethodChecker.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            unifyprinciplesR.color.Unify_Static_White
         )
         val colorFontLight = MethodChecker.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            unifyprinciplesR.color.Unify_Static_White
         )
         val colorFont = if (navigationProperties.isDarkMode) colorFontDark else colorFontLight
 
