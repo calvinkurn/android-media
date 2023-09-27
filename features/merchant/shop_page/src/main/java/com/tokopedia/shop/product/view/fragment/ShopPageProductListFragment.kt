@@ -75,17 +75,17 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
-import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -295,7 +295,7 @@ class ShopPageProductListFragment :
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
             it.itemAnimator = null
             recyclerViewTopPadding = it.paddingTop
-            if(ShopUtil.isEnableShopPageReImagined(context)){
+            if (ShopUtil.isEnableShopPageReImagined(context)) {
                 it.isNestedScrollingEnabled = true
             }
         }
@@ -309,7 +309,7 @@ class ShopPageProductListFragment :
                 val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    if(ShopUtil.isEnableShopPageReImagined(context)){
+                    if (ShopUtil.isEnableShopPageReImagined(context)) {
                         (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
                     } else {
                         (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
@@ -622,7 +622,7 @@ class ShopPageProductListFragment :
     }
 
     private fun getSelectedTabName(): String {
-        return if(ShopUtil.isEnableShopPageReImagined(context)){
+        return if (ShopUtil.isEnableShopPageReImagined(context)) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedTabName().orEmpty()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
@@ -897,6 +897,7 @@ class ShopPageProductListFragment :
             deviceWidth = deviceWidth,
             shopTrackType = ShopTrackProductTypeDef.PRODUCT,
             isShowTripleDot = !_isMyShop,
+            isOverrideTheme = isOverrideTheme(),
             shopProductTabInterface = this
         )
     }
@@ -1185,7 +1186,7 @@ class ShopPageProductListFragment :
     }
 
     private fun configStickyHeaderView() {
-        if(isOverrideTheme()) {
+        if (isOverrideTheme()) {
             stickyHeaderView?.setShapeBackgroundColorIntValue(
                 ShopUtil.parseColorFromHexString(getBodyBackgroundHexColor())
             )
@@ -1362,7 +1363,7 @@ class ShopPageProductListFragment :
     }
 
     private fun updateMiniCartWidget() {
-        if(ShopUtil.isEnableShopPageReImagined(context)){
+        if (ShopUtil.isEnableShopPageReImagined(context)) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.updateMiniCartWidget()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.updateMiniCartWidget()
@@ -1382,7 +1383,7 @@ class ShopPageProductListFragment :
     }
 
     private fun getSelectedFragment(): Fragment? {
-        return if(ShopUtil.isEnableShopPageReImagined(context)){
+        return if (ShopUtil.isEnableShopPageReImagined(context)) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedFragmentInstance()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
@@ -1436,7 +1437,7 @@ class ShopPageProductListFragment :
                         onSuccessGetMembershipData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1450,7 +1451,7 @@ class ShopPageProductListFragment :
                         onSuccessGetMerchantVoucherData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1464,7 +1465,7 @@ class ShopPageProductListFragment :
                         onSuccessGetShopProductFeaturedData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1478,7 +1479,7 @@ class ShopPageProductListFragment :
                         onSuccessGetShopProductEtalaseHighlightData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1576,7 +1577,7 @@ class ShopPageProductListFragment :
                         onSuccessGetBottomSheetFilterData(it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1590,7 +1591,7 @@ class ShopPageProductListFragment :
                         onSuccessGetShopProductFilterCount(count = it.data)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1728,7 +1729,7 @@ class ShopPageProductListFragment :
     }
 
     private fun isShopWidgetAlreadyShown(): Boolean {
-        return if(ShopUtil.isEnableShopPageReImagined(context)){
+        return if (ShopUtil.isEnableShopPageReImagined(context)) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.isShopWidgetAlreadyShown() ?: false
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.isShopWidgetAlreadyShown() ?: false
@@ -1940,8 +1941,9 @@ class ShopPageProductListFragment :
     }
 
     override fun scrollToTop(isUserClick: Boolean) {
-        if(isUserClick)
+        if (isUserClick) {
             isClickToScrollToTop = true
+        }
         getRecyclerView(view)?.scrollToPosition(0)
     }
 
@@ -1950,7 +1952,7 @@ class ShopPageProductListFragment :
     }
 
     private fun hideScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined(context)){
+        if (ShopUtil.isEnableShopPageReImagined(context)) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
@@ -1958,7 +1960,7 @@ class ShopPageProductListFragment :
     }
 
     private fun showScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined(context)){
+        if (ShopUtil.isEnableShopPageReImagined(context)) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
@@ -2003,7 +2005,7 @@ class ShopPageProductListFragment :
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
     }
 
-    private fun getShopHeaderBottomViewContainer(): View?{
+    private fun getShopHeaderBottomViewContainer(): View? {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBottomViewContainer()
     }
 }
