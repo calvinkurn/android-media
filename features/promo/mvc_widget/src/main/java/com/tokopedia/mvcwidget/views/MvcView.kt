@@ -21,6 +21,7 @@ import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.user.session.UserSession
 import java.lang.ref.WeakReference
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /*
 * 1. It has internal Padding of 6dp to render its shadows
@@ -149,7 +150,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         imgIconChevron?.setBackgroundColor(
             ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
         )
         mvcBgImg?.setColorFilter(
