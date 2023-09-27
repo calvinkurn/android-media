@@ -27,7 +27,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
-import com.tokopedia.content.product.picker.sgc.view.ProductSetupFragment
+import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction

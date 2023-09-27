@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
-import com.tokopedia.content.product.picker.sgc.view.ProductSetupFragment
+import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductSortBottomSheet

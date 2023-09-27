@@ -46,7 +46,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
-import com.tokopedia.content.product.picker.sgc.view.ProductSetupFragment
+import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.custom.isMenuExists

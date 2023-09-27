@@ -25,7 +25,7 @@ import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeaut
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
-import com.tokopedia.content.product.picker.sgc.view.ProductSetupFragment
+import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent

@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.picker.sgc.view
+package com.tokopedia.content.product.picker
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

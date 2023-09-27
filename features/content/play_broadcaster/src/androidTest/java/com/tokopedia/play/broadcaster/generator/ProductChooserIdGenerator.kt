@@ -20,7 +20,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
 import com.tokopedia.content.product.picker.sgc.analytic.manager.EtalaseListAnalyticManager
 import com.tokopedia.content.product.picker.sgc.analytic.manager.ProductChooserAnalyticManager
-import com.tokopedia.content.product.picker.sgc.view.ProductSetupFragment
+import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductSortBottomSheet
