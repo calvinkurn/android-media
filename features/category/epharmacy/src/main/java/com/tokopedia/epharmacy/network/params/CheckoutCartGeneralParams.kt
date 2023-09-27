@@ -62,13 +62,13 @@ data class CheckoutCartGeneralParams(
                     data class Metadata(
                         @SerializedName("enabler_id")
                         @Expose
-                        val enablerId: String?,
+                        val enablerId: Long?,
                         @SerializedName("epharmacy_group_id")
                         @Expose
                         val epharmacyGroupId: String?,
                         @SerializedName("toko_consultation_id")
                         @Expose
-                        val tokoConsultationId: String?
+                        val tokoConsultationId: Long?
                     )
                 }
             }

@@ -34,11 +34,11 @@ class EPharmacyAtcUseCase @Inject constructor(graphqlRepository: GraphqlReposito
 
     private fun createRequestParams(params: CartGeneralAddToCartInstantParams): Map<String, Any> {
         return mapOf<String, Any>(
-            PARAM_BUSINESS_DATA to params.businessData
+            PARAMS to params
         )
     }
 
     companion object {
-        const val PARAM_BUSINESS_DATA = "business_data"
+        const val PARAMS = "params"
     }
 }

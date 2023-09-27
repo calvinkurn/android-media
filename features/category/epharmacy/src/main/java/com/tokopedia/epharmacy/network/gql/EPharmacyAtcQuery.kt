@@ -26,7 +26,6 @@ object EPharmacyAtcQuery : GqlQueryInterface {
                         product {
                           title
                           total_price_fmt
-                          custom_response
                         }
                       }
                     }
@@ -36,11 +35,16 @@ object EPharmacyAtcQuery : GqlQueryInterface {
                       message
                       custom_response
                       cart_groups {
-                        success
                         carts {
+                          cart_id
+                          success
+                          product_id
+                          quantity
+                          metadata
                           custom_response
+                          shop_id
+                          price
                         }
-                        custom_response
                       }
                     }
                   }

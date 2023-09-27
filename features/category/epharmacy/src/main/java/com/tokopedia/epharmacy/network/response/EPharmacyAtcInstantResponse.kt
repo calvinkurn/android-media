@@ -27,7 +27,10 @@ data class EPharmacyAtcInstantResponse(
             data class BusinessDataList(
                 @SerializedName("business_data")
                 @Expose
-                val businessData: List<BusinessData?>?
+                val businessData: List<BusinessData?>?,
+                @SerializedName("shopping_summary")
+                @Expose
+                val shoppingSummary: BusinessData.ShoppingSummary?
             ) {
                 data class BusinessData(
                     @SerializedName("business_id")
@@ -42,9 +45,6 @@ data class EPharmacyAtcInstantResponse(
                     @SerializedName("message")
                     @Expose
                     val message: String?,
-                    @SerializedName("shopping_summary")
-                    @Expose
-                    val shoppingSummary: ShoppingSummary?,
                     @SerializedName("success")
                     @Expose
                     val success: Int?
@@ -73,9 +73,6 @@ data class EPharmacyAtcInstantResponse(
                             @SerializedName("price")
                             @Expose
                             val price: String?,
-                            @SerializedName("price_fmt")
-                            @Expose
-                            val priceFmt: String?,
                             @SerializedName("product_id")
                             @Expose
                             val productId: String?,
@@ -104,13 +101,13 @@ data class EPharmacyAtcInstantResponse(
                             data class Metadata(
                                 @SerializedName("enabler_id")
                                 @Expose
-                                val enablerId: String?,
+                                val enablerId: Long?,
                                 @SerializedName("epharmacy_group_id")
                                 @Expose
                                 val epharmacyGroupId: String?,
                                 @SerializedName("toko_consultation_id")
                                 @Expose
-                                val tokoConsultationId: String?
+                                val tokoConsultationId: Long?
                             )
                         }
                     }
@@ -140,25 +137,20 @@ data class EPharmacyAtcInstantResponse(
                     }
 
                     data class ShoppingSummary(
-                        @SerializedName("custom_response")
+                        @SerializedName("business_breakdown")
                         @Expose
-                        val customResponse: CustomResponse?,
-                        @SerializedName("product")
-                        @Expose
-                        val product: Product?,
-                        @SerializedName("total_bill")
-                        @Expose
-                        val totalBill: Int?,
-                        @SerializedName("total_bill_fmt")
-                        @Expose
-                        val totalBillFmt: String?
+                        val businessBreakDown: List<BusinessBreakDown>?,
                     ) {
-                        class CustomResponse
+                        data class BusinessBreakDown(
+                            @SerializedName("product")
+                            @Expose
+                            val product: Product?,
+                            @SerializedName("total_bill_fmt")
+                            @Expose
+                            val totalBillFmt: String?
+                        )
 
                         data class Product(
-                            @SerializedName("custom_response")
-                            @Expose
-                            val customResponse: CustomResponse?,
                             @SerializedName("title")
                             @Expose
                             val title: String?,
@@ -174,9 +166,7 @@ data class EPharmacyAtcInstantResponse(
                             @SerializedName("total_quantity")
                             @Expose
                             val totalQuantity: Int?
-                        ) {
-                            class CustomResponse
-                        }
+                        )
                     }
                 }
             }

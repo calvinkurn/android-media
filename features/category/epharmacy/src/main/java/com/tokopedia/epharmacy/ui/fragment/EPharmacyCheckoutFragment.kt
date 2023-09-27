@@ -25,6 +25,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.unifycomponents.Toaster
@@ -36,8 +37,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.epharmacy.network.response.EPharmacyAtcInstantResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.CartGroup.Cart as EPCart
+import com.tokopedia.epharmacy.network.response.EPharmacyAtcInstantResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData as EPATCData
 import com.tokopedia.epharmacy.network.response.EPharmacyAtcInstantResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.ShoppingSummary as EPCheckoutSummary
+import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
@@ -45,8 +47,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     private var ePharmacyData: Group? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
-    private var tConsultationId = String.EMPTY
-    private var enablerId = String.EMPTY
+    private var tConsultationId = 0L
+    private var enablerId = 0L
     private var groupId = String.EMPTY
 
     private var ePharmacyCheckoutParams = EPharmacyCheckoutParams(ePharmacyCheckoutCartGroup = null)
@@ -86,8 +88,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun initArguments() {
         groupId = arguments?.getString(EPHARMACY_GROUP_ID, String.EMPTY).orEmpty()
-        enablerId = arguments?.getString(EPHARMACY_ENABLER_ID, String.EMPTY).orEmpty()
-        tConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, String.EMPTY).orEmpty()
+        enablerId = arguments?.getLong(EPHARMACY_ENABLER_ID).orZero()
+        tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
     }
 
     private fun setUpObservers() {
@@ -160,8 +162,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         cartGeneralAddToCartInstant.cartGeneralAddToCartInstantData?.businessDataList?.businessData?.firstOrNull()?.let { info ->
             setTitle(info.customResponse?.title)
             setCartInfo(info.cartGroups?.firstOrNull()?.carts?.firstOrNull())
-            setSummaryInfo(info.shoppingSummary)
-            setTotalInfo(info.shoppingSummary)
+            setSummaryInfo(cartGeneralAddToCartInstant.cartGeneralAddToCartInstantData.businessDataList.shoppingSummary)
+            setTotalInfo(cartGeneralAddToCartInstant.cartGeneralAddToCartInstantData.businessDataList.shoppingSummary)
         }
     }
 
@@ -171,26 +173,27 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setCartInfo(cart: EPCart?) {
+    private fun setCartInfo(cart: EPATCData.BusinessDataList.BusinessData.CartGroup.Cart?) {
         binding?.epharmacyCheckoutDetailView?.apply {
+            detailProductHeader.hide()
             serviceTypeValue.text = cart?.customResponse?.serviceType
             serviceProviderValue.text = cart?.customResponse?.enablerName
             durationValue.text = cart?.customResponse?.durationMinutes
-            feeValue.text = cart?.priceFmt
         }
     }
 
     private fun setSummaryInfo(summary: EPCheckoutSummary?) {
         binding?.apply {
-            subtotal.text = summary?.product?.title
-            subtotalValue.text = summary?.totalBillFmt
+            subtotalText.text = summary?.businessBreakDown?.firstOrNull()?.product?.title
+            subtotalValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
+            epharmacyCheckoutDetailView.feeValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
         }
     }
 
     private fun setTotalInfo(shoppingSummary: EPharmacyAtcInstantResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.ShoppingSummary?) {
         binding?.qcTotalAmount?.apply {
             setLabelTitle("Total Tagihan")
-            setAmount(shoppingSummary?.product?.totalPriceFmt.orEmpty())
+            setAmount(shoppingSummary?.businessBreakDown?.firstOrNull()?.product?.totalPriceFmt.orEmpty())
             setCtaText("Pilih Pembayaran")
             amountCtaView.setOnClickListener {
                 onSelectPayment()
@@ -261,7 +264,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun onFailCartCheckout() {
-        showToast(TYPE_ERROR, getString(com.tokopedia.epharmacy.R.string.epharmacy_internet_error))
+        showToast(TYPE_ERROR, getString(epharmacyR.string.epharmacy_internet_error))
     }
 
     override fun getScreenName() = EPHARMACY_CHECKOUT_PAGE
@@ -271,9 +274,9 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     companion object {
         @JvmStatic
         fun newInstance(bundle: Bundle): EPharmacyCheckoutFragment {
-            val fragment = EPharmacyCheckoutFragment()
-            fragment.arguments = bundle
-            return fragment
+            return EPharmacyCheckoutFragment().apply {
+                arguments = bundle
+            }
         }
     }
 }

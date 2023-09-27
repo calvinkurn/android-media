@@ -11,7 +11,7 @@ class CartGeneralAddToCartInstantParams(
 ) : GqlParam {
     data class CartGeneralAddToCartInstantRequestBusinessData(
         @SerializedName("business_id")
-        var business_id: String,
+        var businessId: String,
         @SerializedName("product_list")
         var productList: List<CartGeneralAddToCartInstantRequestProductData>
     ) {
@@ -31,9 +31,9 @@ class CartGeneralAddToCartInstantParams(
                 @SerializedName("epharmacy_group_id")
                 var epharmacyGroupId: String,
                 @SerializedName("enabler_id")
-                var enablerId: String,
+                var enablerId: Long,
                 @SerializedName("toko_consultation_id")
-                var tokoConsultationId: String
+                var tConsultationId: Long
             )
         }
     }

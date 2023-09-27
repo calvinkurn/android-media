@@ -69,8 +69,9 @@ val registeredGqlFunctions = mapOf(
     "cart_general_remove_cart" to "cagn",
     "cart_general_promo_list" to "cagn",
     "checkout_cart_general" to "cogn",
-    "rechargeCheckoutV3" to "rcgco"
-)
+    "rechargeCheckoutV3" to "rcgco",
+    "cart_general_add_to_cart_instant" to "cagn",
+    )
 
 fun getAkamaiQuery(query: String): String? {
     return getAkamaiQuery(getQueryListFromQueryString(query))

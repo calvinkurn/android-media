@@ -17,9 +17,6 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
         source: String = EPHARMACY_PPG_SOURCE_PAP
     ) {
         try {
-            this.setTypeClass(EPharmacyPrepareProductsGroupResponse::class.java)
-            // this.setRequestParams(getRequestParams(source))
-            this.setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
             this.setParams()
             this.execute(
                 { result ->
@@ -44,8 +41,9 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
         const val PARAM_SOURCE = "source"
     }
 
-    fun setParams() {
+    private fun setParams() {
         this.setTypeClass(EPharmacyPrepareProductsGroupResponse::class.java)
         this.setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
+        // this.setRequestParams(getRequestParams(source))
     }
 }

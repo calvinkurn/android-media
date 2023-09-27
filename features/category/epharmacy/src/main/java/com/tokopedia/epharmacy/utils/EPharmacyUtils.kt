@@ -22,7 +22,6 @@ import com.tokopedia.epharmacy.network.params.CheckoutCartGeneralParams
 import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
 import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.unifyprinciples.R
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.usecase.BuildConfig
 import java.text.DateFormat
@@ -31,6 +30,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.epharmacy.R as epharmacyR
 
 object EPharmacyUtils {
 
@@ -253,7 +253,7 @@ object EPharmacyUtils {
         )
     }
 
-    fun createAtcParams(groupId: String, enablerId: String, tConsultationId: String, ePharmacyCheckoutParams: EPharmacyCheckoutParams): CartGeneralAddToCartInstantParams {
+    fun createAtcParams(groupId: String, enablerId: Long, tConsultationId: Long, ePharmacyCheckoutParams: EPharmacyCheckoutParams): CartGeneralAddToCartInstantParams {
         return CartGeneralAddToCartInstantParams(
             CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData(
                 ePharmacyCheckoutParams.businessId,
@@ -266,7 +266,7 @@ object EPharmacyUtils {
                             enablerId,
                             tConsultationId
                         ),
-                        enablerId,
+                        enablerId.toString(),
                         ePharmacyCheckoutParams.note
                     )
                 )
@@ -295,7 +295,7 @@ object EPharmacyUtils {
             val openTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.openTime.orEmpty())
             val closeTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.closeTime.orEmpty())
             return context?.resources?.getString(
-                com.tokopedia.epharmacy.R.string.epharmacy_chooser_outside,
+                epharmacyR.string.epharmacy_chooser_outside,
                 getTimeFromDate(openTimeLocal),
                 getTimeFromDate(closeTimeLocal)
             ).orEmpty()
@@ -335,7 +335,7 @@ object EPharmacyUtils {
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
         val color = parseUnifyColorHex(context, colorHex, unifyprinciplesR.color.Unify_NN0)
-        val drawable = MethodChecker.getDrawable(context, R.drawable.ic_ep_order_status_indicator)
+        val drawable = MethodChecker.getDrawable(context, epharmacyR.drawable.ic_ep_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(
             ContextCompat.getColor(
                 context,

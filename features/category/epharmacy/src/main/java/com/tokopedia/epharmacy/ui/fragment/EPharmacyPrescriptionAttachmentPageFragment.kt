@@ -14,6 +14,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_PAP
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_UOH
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
@@ -31,8 +33,11 @@ import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
+import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_IDS
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
 import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
@@ -54,8 +59,10 @@ import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
 import com.tokopedia.epharmacy.utils.openDocument
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -70,6 +77,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup as EG
+import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharmacyListener {
 
@@ -77,6 +85,10 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private var ePharmacyDoneButton: UnifyButton? = null
     private var ePharmacyGlobalError: GlobalError? = null
     private var trackingSentBoolean = false
+
+    private var tConsultationId = 0L
+    private var source = String.EMPTY
+    private var groupIds : Array<String>? = arrayOf()
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -115,10 +127,22 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initArguments()
         setUpObservers()
         initViews(view)
         initData()
         getData()
+    }
+
+    private fun initArguments() {
+        groupIds = arguments?.getStringArray(EPHARMACY_GROUP_IDS)
+        tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
+
+        source = if(!groupIds.isNullOrEmpty()){
+            EPHARMACY_PPG_SOURCE_PAP
+        }else if(!tConsultationId.isZero()) {
+            EPHARMACY_PPG_UOH
+        }else String.EMPTY
     }
 
     private fun setUpObservers() {
@@ -188,7 +212,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 showToast(
                     if (error.showErrorToast) {
                         EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
-                            group?.consultationSource?.id ?: 0L,
+                            group?.consultationSource?.id.orZero(),
                             group?.consultationSource?.enablerName.orEmpty(),
                             FAILED,
                             group?.epharmacyGroupId.orEmpty()
@@ -196,7 +220,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                         TYPE_ERROR
                     } else {
                         EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
-                            group?.consultationSource?.id ?: 0L,
+                            group?.consultationSource?.id.orZero(),
                             group?.consultationSource?.enablerName.orEmpty(),
                             SUCCESS,
                             group?.epharmacyGroupId.orEmpty()
@@ -349,7 +373,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                         false,
                         component.consultationSource?.operatingSchedule?.daily?.openTime,
                         component.consultationSource?.operatingSchedule?.daily?.closeTime,
-                        component.consultationSource?.id ?: 0L,
+                        component.consultationSource?.id.orZero(),
                         component.epharmacyGroupId,
                         component.enablerName
                     )
@@ -396,7 +420,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun onDoneButtonClick(appLink: String?) {
         if (hasAnyError()) {
-            showToast(TYPE_ERROR, context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_local_prescription_not_uploaded_error).orEmpty())
+            showToast(TYPE_ERROR, context?.resources?.getString(epharmacyR.string.epharmacy_local_prescription_not_uploaded_error).orEmpty())
             updateUi()
             return
         }
@@ -597,8 +621,10 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     companion object {
         @JvmStatic
-        fun newInstance(): EPharmacyPrescriptionAttachmentPageFragment {
-            return EPharmacyPrescriptionAttachmentPageFragment()
+        fun newInstance(bundle: Bundle): EPharmacyPrescriptionAttachmentPageFragment {
+            return EPharmacyPrescriptionAttachmentPageFragment().apply {
+                arguments = bundle
+            }
         }
     }
 }

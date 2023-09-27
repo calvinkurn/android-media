@@ -14,25 +14,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/done_button"
-        tools:listitem="@layout/epharmacy_prescription_attachment_view_item"
+        app:layout_constraintBottom_toTopOf="@id/action_buttons"
+        tools:listitem="@layout/epharmacy_order_detail_header"
         tools:itemCount="3"
         />
 
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/done_button"
+    <include
+        android:id="@+id/action_buttons"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        layout="@layout/epharmacy_sticky_buttons"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:enabled="false"
         android:visibility="gone"
-        android:text="@string/epharmacy_lanjut_ke_pengiriman"
         />
 
     <com.tokopedia.unifycomponents.LoaderUnify
