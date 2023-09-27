@@ -1,11 +1,11 @@
-package com.tokopedia.catalog
+package com.tokopedia.oldcatalog
 
 import android.os.Build
-import com.tokopedia.catalog.utils.CatalogUtilsTestCase
-import com.tokopedia.catalog.viewmodel.CatalogComparisonViewModelTest
-import com.tokopedia.catalog.viewmodel.CatalogForYouViewModelTest
-import com.tokopedia.catalog.viewmodel.CatalogProductListingViewModelTest
-import com.tokopedia.catalog.viewmodel.CatalogViewModelTest
+import com.tokopedia.oldcatalog.utils.CatalogUtilsTestCase
+import com.tokopedia.oldcatalog.viewmodel.CatalogComparisonViewModelTest
+import com.tokopedia.oldcatalog.viewmodel.CatalogForYouViewModelTest
+import com.tokopedia.oldcatalog.viewmodel.CatalogProductListingViewModelTest
+import com.tokopedia.oldcatalog.viewmodel.CatalogViewModelTest
 import com.tokopedia.oldcatalog.viewmodel.*
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
