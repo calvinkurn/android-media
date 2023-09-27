@@ -14,7 +14,6 @@ import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.view.fragment.ShopProductTabInterface
 import com.tokopedia.shop.product.view.listener.*
@@ -40,8 +39,7 @@ class ShopProductAdapterTypeFactory(
     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
     private val shopTrackType: Int,
     private val isShowTripleDot: Boolean,
-    private val isOverrideTheme: Boolean,
-    private val shopColorSchema: ShopPageColorSchema,
+    private val isOverrideTheme: Boolean = false,
     private val shopProductTabInterface: ShopProductTabInterface?
 ) : BaseAdapterTypeFactory() {
     private var shopProductAdapter: ShopProductAdapter? = null
