@@ -21,7 +21,7 @@ class CarouselProductCardView: FrameLayout {
 
     private val adapter: Adapter by lazyThreadSafetyNone {
         Adapter(CarouselProductCardTypeFactoryImpl()) {
-            recyclerView?.requestLayout()
+            requestLayout()
         }
     }
 
