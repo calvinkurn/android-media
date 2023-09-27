@@ -8,8 +8,10 @@
         android:id="@+id/loaderUnify"
         android:layout_width="264dp"
         android:layout_height="12dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
 
@@ -24,6 +26,7 @@
         app:layout_constraintEnd_toStartOf="@+id/loaderUnify3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loaderUnify"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -33,6 +36,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/loaderUnify6"
         app:layout_constraintTop_toTopOf="@+id/loaderUnify2"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -44,6 +48,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/loaderUnify3"
         app:layout_constraintTop_toBottomOf="@+id/loaderUnify3"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -54,6 +59,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/loaderUnify7"
         app:layout_constraintTop_toBottomOf="@+id/loaderUnify10"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -65,6 +71,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/loaderUnify5"
         app:layout_constraintTop_toBottomOf="@+id/loaderUnify5"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
 
@@ -74,6 +81,7 @@
         android:layout_height="68dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/loaderUnify3"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -84,6 +92,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/loaderUnify6"
         app:layout_constraintTop_toBottomOf="@+id/loaderUnify6"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -92,6 +101,7 @@
         android:layout_height="68dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/loaderUnify5"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -102,6 +112,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/loaderUnify7"
         app:layout_constraintTop_toBottomOf="@+id/loaderUnify7"
+        app:loader_corner_radius="12dp"
         app:loader_type="rect" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

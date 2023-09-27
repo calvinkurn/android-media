@@ -79,4 +79,9 @@ object ShopPageConstant {
     object RequestParamValue {
         const val PAGE_NAME_SHOP_COMPARISON_WIDGET = "shop_comparison"
     }
+
+    object ShopPageFeatureImprovementType {
+        const val V3_IMPROVEMENT = "V3"      // Faster shop header using more slimmer P1 network call
+        const val V4_REIMAGINED = "V4"       // Shop Page Reimagined
+    }
 }

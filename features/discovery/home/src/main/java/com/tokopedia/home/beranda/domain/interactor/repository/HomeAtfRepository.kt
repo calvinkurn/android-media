@@ -26,8 +26,10 @@ class HomeAtfRepository @Inject constructor(
 
     override suspend fun executeOnBackground(): HomeAtfData {
         graphqlUseCase.clearCache()
-        params.putString(EXPERIMENT, RollenceKey.HOME_COMPONENT_ATF)
-        params.putString(VARIANT, HomeRollenceController.rollenceAtfValue)
+        val listOfExpKey = listOf(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.HOME_LOAD_TIME_KEY).joinToString(EXP_SEPARATOR)
+        val listOfExpValue = listOf(HomeRollenceController.rollenceAtfValue, HomeRollenceController.rollenceLoadTime).joinToString(EXP_SEPARATOR)
+        params.putString(EXPERIMENT, listOfExpKey)
+        params.putString(VARIANT, listOfExpValue)
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }
@@ -43,5 +45,6 @@ class HomeAtfRepository @Inject constructor(
     companion object {
         private const val EXPERIMENT = "experiment"
         private const val VARIANT = "variant"
+        private const val EXP_SEPARATOR = ";"
     }
 }

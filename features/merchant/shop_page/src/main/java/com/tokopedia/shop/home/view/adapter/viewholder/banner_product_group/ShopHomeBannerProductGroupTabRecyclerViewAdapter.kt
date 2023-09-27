@@ -31,6 +31,7 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
         private const val VIEW_TYPE_SHIMMER = 0
         private const val VIEW_TYPE_VERTICAL_BANNER = 1
         private const val VIEW_TYPE_PRODUCT = 2
+        private const val CORNER_RADIUS = 12
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
@@ -122,6 +123,7 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
 
         private fun renderProductImage(product: ProductItemType) {
             binding.imgProduct.loadImage(product.imageUrl)
+            binding.imgProduct.cornerRadius = CORNER_RADIUS
         }
 
         private fun renderProductName(product: ProductItemType) {

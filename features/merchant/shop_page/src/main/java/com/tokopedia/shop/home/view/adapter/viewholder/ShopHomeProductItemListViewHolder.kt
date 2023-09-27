@@ -25,7 +25,7 @@ open class ShopHomeProductItemListViewHolder(
     itemView: View,
     private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?,
     private val isShowTripleDot: Boolean,
-    shopHomeListener: ShopHomeListener
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
     private val viewBinding: ItemShopHomeProductCardListBinding? by viewBinding()
     private var productCard: ProductCardListView? = null
@@ -51,7 +51,8 @@ open class ShopHomeProductItemListViewHolder(
             hasThreeDots = isShowTripleDot,
             shopHomeProductViewModel = shopHomeProductViewModel,
             isWideContent = false,
-            productRating = shopHomeProductViewModel.averageRating
+            productRating = shopHomeProductViewModel.averageRating,
+            forceLightModeColor = shopHomeListener.isOverrideTheme()
         )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)

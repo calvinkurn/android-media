@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.productcard.utils.forceLightRed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -202,6 +203,9 @@ class ShopHomeV4TerlarisAdapter(
             productName3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
             productPrice3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
             productOriginalPrice3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR))
+            labelDiscount1?.forceLightRed()
+            labelDiscount2?.forceLightRed()
+            labelDiscount3?.forceLightRed()
         }
 
         private fun setupImpressionListener(carouselData: List<ShopHomeProductUiModel>) {
