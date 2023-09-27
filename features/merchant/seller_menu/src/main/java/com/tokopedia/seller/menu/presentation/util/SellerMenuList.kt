@@ -7,6 +7,7 @@ import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuDividerUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoLoadingUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuOrderUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuProductUiModel
@@ -14,6 +15,8 @@ import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSectionT
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSettingTitleUiModel
 import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 object SellerMenuList {
 
@@ -26,11 +29,12 @@ object SellerMenuList {
         val buyerInfoMenu = createBuyerInfoMenu()
         val otherInfoMenu = createOtherInfoMenu()
 
+        menuList.add(SellerMenuInfoLoadingUiModel)
         menuList.add(
             SellerMenuSettingTitleUiModel(
                 titleRes = R.string.seller_menu_order_section,
                 ctaRes = R.string.seller_menu_order_cta,
-                dimenRes = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4
+                dimenRes = unifyprinciplesR.dimen.spacing_lvl4
             )
         )
         menuList.add(SellerMenuOrderUiModel())
@@ -40,7 +44,7 @@ object SellerMenuList {
             SellerMenuSettingTitleUiModel(
                 titleRes = R.string.seller_menu_product_section,
                 ctaRes = R.string.seller_menu_product_cta,
-                dimenRes = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4
+                dimenRes = unifyprinciplesR.dimen.spacing_lvl4
             )
         )
         menuList.add(SellerMenuProductUiModel())
@@ -56,24 +60,24 @@ object SellerMenuList {
     private fun createBuyerInfoMenu(): List<SellerMenuComposeItem> {
         return listOf(
             SellerMenuSettingTitleUiModel(
-                titleRes = com.tokopedia.seller.menu.common.R.string.setting_menu_buyer_info,
+                titleRes = sellermenucommonR.string.setting_menu_buyer_info,
                 ctaRes = null,
-                dimenRes = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4
+                dimenRes = unifyprinciplesR.dimen.spacing_lvl4
             ),
             SellerMenuItemUiModel(
-                titleRes = com.tokopedia.seller.menu.common.R.string.setting_menu_review,
+                titleRes = sellermenucommonR.string.setting_menu_review,
                 type = MenuItemType.REVIEW,
                 eventActionSuffix = SettingTrackingConstant.REVIEW,
                 iconUnifyType = IconUnify.STAR
             ),
             SellerMenuItemUiModel(
-                titleRes = com.tokopedia.seller.menu.common.R.string.setting_menu_discussion,
+                titleRes = sellermenucommonR.string.setting_menu_discussion,
                 type = MenuItemType.DISCUSSION,
                 eventActionSuffix = SettingTrackingConstant.DISCUSSION,
                 iconUnifyType = IconUnify.DISCUSSION
             ),
             SellerMenuItemUiModel(
-                titleRes = com.tokopedia.seller.menu.common.R.string.setting_menu_complaint,
+                titleRes = sellermenucommonR.string.setting_menu_complaint,
                 type = MenuItemType.COMPLAIN,
                 eventActionSuffix = SettingTrackingConstant.COMPLAINT,
                 iconUnifyType = IconUnify.PRODUCT_INFO
@@ -88,24 +92,23 @@ object SellerMenuList {
                 titleRes = R.string.setting_menu_other_info
             ),
             SellerMenuItemUiModel(
-                titleRes = com.tokopedia.seller.menu.common.R.string.setting_menu_seller_education_center,
+                titleRes = sellermenucommonR.string.setting_menu_seller_education_center,
                 type = MenuItemType.SELLER_EDU,
                 eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
                 iconUnifyType = IconUnify.SHOP_INFO
             ),
             SellerMenuItemUiModel(
-                titleRes = com.tokopedia.seller.menu.common.R.string.setting_menu_tokopedia_care,
+                titleRes = sellermenucommonR.string.setting_menu_tokopedia_care,
                 type = MenuItemType.TOKOPEDIA_CARE,
                 eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
                 iconUnifyType = IconUnify.CALL_CENTER
             ),
             SellerMenuItemUiModel(
-                titleRes = com.tokopedia.seller.menu.common.R.string.setting_menu_shop_setting,
+                titleRes = sellermenucommonR.string.setting_menu_shop_setting,
                 type = MenuItemType.SHOP_SETTINGS,
                 eventActionSuffix = SettingTrackingConstant.SETTINGS,
                 iconUnifyType = IconUnify.SETTING
             )
         )
     }
-
 }

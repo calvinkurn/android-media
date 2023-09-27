@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -41,6 +42,9 @@ import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestNotification
+import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderType
+import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.components.ticker.NestTicker
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -49,19 +53,23 @@ import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuDividerUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoLoadingUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuOrderUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuProductUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSettingTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIState
+import com.tokopedia.gm.common.R as gmcommonR
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 // TODO: Add alpha to text
 @Composable
 fun SellerMenuContent(
     uiState: SellerMenuUIState
 ) {
-    when(uiState) {
+    when (uiState) {
         is SellerMenuUIState.OnSuccessGetMenuList ->
             SellerMenuSuccessState(uiState.visitableList)
         else -> SellerMenuSuccessState(listOf())
@@ -79,7 +87,7 @@ fun SellerMenuSuccessState(
                 it.itemType
             },
             itemContent = {
-                when(it) {
+                when (it) {
                     is SellerMenuSettingTitleUiModel -> {
                         SellerMenuTitleSection(
                             title = stringResource(id = it.titleRes),
@@ -87,7 +95,6 @@ fun SellerMenuSuccessState(
                                 stringResource(id = res)
                             },
                             onCtaClicked = {
-
                             }
                         )
                     }
@@ -169,6 +176,9 @@ fun SellerMenuSuccessState(
                             title = stringResource(id = it.titleRes)
                         )
                     }
+                    is SellerMenuInfoLoadingUiModel -> {
+                        SellerMenuInfoLoading()
+                    }
                 }
             }
         )
@@ -184,7 +194,53 @@ fun SellerMenuHeader() {
 
 @Composable
 fun SellerMenuInfoLoading() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            val (avatarImage, shopNameLoaderRef, badgeFollowersLoaderRef) = createRefs()
 
+            NestLoader(
+                variant = NestLoaderType.Shimmer(
+                    NestShimmerType.Line
+                ),
+                modifier = Modifier
+                    .height(20.dp)
+                    .constrainAs(shopNameLoaderRef) {
+                        top.linkTo(parent.top)
+                        start.linkTo(badgeFollowersLoaderRef.end)
+                    }
+            )
+
+            NestLoader(
+                variant = NestLoaderType.Shimmer(
+                    NestShimmerType.Line
+                ),
+                modifier = Modifier
+                    .height(16.dp)
+                    .width(96.dp)
+                    .padding(start = 16.dp)
+                    .constrainAs(badgeFollowersLoaderRef) {
+                        top.linkTo(parent.top)
+                        start.linkTo(avatarImage.end)
+                    }
+            )
+
+            SellerMenuShopImage(
+                imageUrl = "",
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .constrainAs(avatarImage) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+            )
+        }
+    }
 }
 
 @Composable
@@ -330,6 +386,8 @@ fun SellerMenuShopImage(
             modifier = Modifier
                 .border(2.dp, NestTheme.colors.NN._50, CircleShape)
                 .clip(CircleShape)
+                .fillMaxWidth()
+                .fillMaxHeight()
         )
     }
 }
@@ -371,7 +429,7 @@ fun SellerMenuShopInfoScore(
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp),
-            painter = painterResource(id = com.tokopedia.unifycomponents.R.drawable.iconunify_chevron_right),
+            painter = painterResource(id = unifycomponentsR.drawable.iconunify_chevron_right),
             contentDescription = "CHEVRON_RIGHT"
         )
     }
@@ -431,7 +489,6 @@ fun SellerMenuTitleSection(
                     }
             )
         }
-
     }
 }
 
@@ -542,7 +599,6 @@ fun SellerMenuItem(
                     }
             )
         }
-
     }
 }
 
@@ -593,7 +649,7 @@ fun SellerMenuProductSection(
         )
 
         Icon(
-            painter = painterResource(id = com.tokopedia.unifycomponents.R.drawable.iconunify_chevron_right),
+            painter = painterResource(id = unifycomponentsR.drawable.iconunify_chevron_right),
             contentDescription = "CHEVRON_RIGHT",
             modifier = Modifier
                 .width(24.dp)
@@ -625,7 +681,9 @@ fun SellerMenuOrderSection(
         val (cardNewOrder, cardReadyToShip) = createRefs()
 
         SellerMenuOrderSectionItem(
-            iconRes = R.drawable.ic_seller_menu_new_order, notificationCount = newOrderCount, sectionTextString = stringResource(id = R.string.seller_menu_new_order),
+            iconRes = R.drawable.ic_seller_menu_new_order,
+            notificationCount = newOrderCount,
+            sectionTextString = stringResource(id = R.string.seller_menu_new_order),
             modifier = Modifier
                 .constrainAs(cardNewOrder) {
                     start.linkTo(parent.start)
@@ -738,7 +796,7 @@ fun SellerMenuStatusRegular(
             val leftGuideline = createGuidelineFromStart(16.dp)
 
             NestTypography(
-                text = stringResource(id = com.tokopedia.seller.menu.common.R.string.regular_merchant),
+                text = stringResource(id = sellermenucommonR.string.regular_merchant),
                 textStyle = NestTheme.typography.heading5.copy(
                     color = NestTheme.colors.NN._950.copy(
                         alpha = 0.96f
@@ -754,7 +812,7 @@ fun SellerMenuStatusRegular(
             )
 
             Image(
-                painter = painterResource(id = com.tokopedia.unifycomponents.R.drawable.iconunify_badge_pm_filled),
+                painter = painterResource(id = unifycomponentsR.drawable.iconunify_badge_pm_filled),
                 contentDescription = "BADGE_PM_FILLED",
                 modifier = Modifier
                     .width(20.dp)
@@ -864,7 +922,7 @@ fun SellerMenuStatusPm() {
             val middleGuideline = createGuidelineFromStart(40.dp)
 
             NestTypography(
-                text = stringResource(id = com.tokopedia.seller.menu.common.R.string.power_merchant_status),
+                text = stringResource(id = sellermenucommonR.string.power_merchant_status),
                 textStyle = NestTheme.typography.heading5.copy(
                     color = NestTheme.colors.NN._950,
                     fontWeight = FontWeight.Bold
@@ -879,7 +937,7 @@ fun SellerMenuStatusPm() {
             )
 
             NestTypography(
-                text = stringResource(id = com.tokopedia.seller.menu.common.R.string.setting_not_active),
+                text = stringResource(id = sellermenucommonR.string.setting_not_active),
                 textStyle = NestTheme.typography.body2.copy(
                     color = NestTheme.colors.RN._500,
                     fontWeight = FontWeight.Bold
@@ -928,7 +986,7 @@ fun SellerMenuStatusOS() {
             val middleGuideline = createGuidelineFromStart(40.dp)
 
             NestTypography(
-                text = stringResource(id = com.tokopedia.seller.menu.common.R.string.official_store),
+                text = stringResource(id = sellermenucommonR.string.official_store),
                 textStyle = NestTheme.typography.heading5.copy(
                     color = NestTheme.colors.NN._950,
                     fontWeight = FontWeight.Bold
@@ -955,7 +1013,7 @@ fun SellerMenuStatusOS() {
             )
 
             Image(
-                painter = painterResource(id = com.tokopedia.gm.common.R.drawable.ic_official_store_product),
+                painter = painterResource(id = gmcommonR.drawable.ic_official_store_product),
                 contentDescription = null,
                 modifier = Modifier
                     .constrainAs(statusImage) {
@@ -973,7 +1031,7 @@ fun SellerMenuStatusOS() {
 @Composable
 fun preview() {
     NestTheme {
-        SellerMenuStatusPm()
+        SellerMenuInfoLoading()
 //        SellerMenuStatusRegular("Transaksi sejak berlangsung", "10/100")
 //        SellerMenuOrderSection(
 //            1,2
