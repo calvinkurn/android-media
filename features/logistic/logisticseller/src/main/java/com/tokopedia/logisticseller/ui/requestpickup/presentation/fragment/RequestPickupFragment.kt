@@ -44,6 +44,7 @@ import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.Requ
 import com.tokopedia.logisticseller.ui.requestpickup.util.DateMapper
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -292,19 +293,16 @@ class RequestPickupFragment :
             }
 
             val dropOffNotes = confirmReqPickupResponse.dataSuccess.dropOffLocation.dropOffNotes
-
-            if (dropOffNotes.text.isNotEmpty() && dropOffNotes.title.isNotEmpty() && dropOffNotes.urlText.isNotEmpty()) {
-                dropoffInfoTitle.text = dropOffNotes.title
-                dropoffInfoText.text = dropOffNotes.text
-                dropoffInfoButton.apply {
-                    text = dropOffNotes.urlText
-                    setOnClickListener {
-                        openWebView(dropOffNotes.urlDetail)
-                    }
-                }
-            } else {
-                cardDropOff.visibility = View.GONE
-            }
+            showDropOffInfo(
+                titleView = dropoffInfoTitle,
+                descriptionView = dropoffInfoText,
+                button = dropoffInfoButton,
+                cardView = cardDropOff,
+                title = dropOffNotes.title,
+                description = dropOffNotes.text,
+                urlDetail = dropOffNotes.urlDetail,
+                urlText = dropOffNotes.urlText
+            )
 
             if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() || confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {
                 val schedulePickupMapper = SchedulePickupMapper()
@@ -400,6 +398,31 @@ class RequestPickupFragment :
                 processReqPickup()
                 observingProcessReqPickup()
             }
+        }
+    }
+
+    fun showDropOffInfo(
+        titleView: Typography,
+        descriptionView: Typography,
+        button: Typography,
+        cardView: CardUnify2,
+        title: String,
+        description: String,
+        urlDetail: String,
+        urlText: String
+    ) {
+        if (title.isNotEmpty() && description.isNotEmpty() && urlText.isNotEmpty()) {
+            titleView.text = title
+            descriptionView.text = description
+            button.apply {
+                text = urlText
+                setOnClickListener {
+                    openWebView(urlDetail)
+                }
+            }
+            cardView.visible()
+        } else {
+            cardView.gone()
         }
     }
 

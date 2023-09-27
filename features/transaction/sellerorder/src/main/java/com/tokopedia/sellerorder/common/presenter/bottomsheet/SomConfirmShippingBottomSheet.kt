@@ -61,6 +61,7 @@ class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialIn
     private fun constructList(popUp: PopUp): List<ConfirmShippingNotes> {
         val templateParam = popUp.template?.param
         var listNotes = listOf<ConfirmShippingNotes>()
+        // todo ask ka tama how ios handle error here
         templateParam?.apply {
             listNotes = when (popUp.template.code) {
                 SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_1 -> templateFmd(templateParam)

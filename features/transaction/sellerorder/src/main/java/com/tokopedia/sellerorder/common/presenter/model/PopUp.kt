@@ -36,6 +36,7 @@ data class PopUp(
         val param: Params? = null
 
     ) {
+        // todo ask ka tama how iOS handle this
         data class Params(
             @SerializedName("lg_fmd_txt_learn_more")
             val learnMoreText: TypeValue = TypeValue(),
