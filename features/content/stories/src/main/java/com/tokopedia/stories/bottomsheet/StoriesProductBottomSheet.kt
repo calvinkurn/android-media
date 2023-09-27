@@ -190,7 +190,7 @@ class StoriesProductBottomSheet @Inject constructor(
         product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
-        handleProductAction(StoriesProductAction.ATC, product)
+        handleProductAction(StoriesProductAction.Atc, product)
     }
 
     override fun onBuyProductButtonClicked(

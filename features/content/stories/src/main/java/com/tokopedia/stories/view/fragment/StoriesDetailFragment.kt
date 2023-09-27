@@ -1,6 +1,5 @@
 package com.tokopedia.stories.view.fragment
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +37,7 @@ import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
-import com.tokopedia.stories.view.animation.StoriesProductNotch
+import com.tokopedia.stories.view.animation.StoriesProductNudge
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -46,7 +45,6 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
-import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.StoriesSharingComponent
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
@@ -104,7 +102,7 @@ class StoriesDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private var variantSheet : AtcVariantBottomSheet? = null
+    private var variantSheet: AtcVariantBottomSheet? = null
 
     private val atcVariantViewModel by lazyThreadSafetyNone {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
@@ -113,18 +111,12 @@ class StoriesDetailFragment @Inject constructor(
     private val groupId: String
         get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
 
-    private val shopId: String
-        get() = arguments?.getString(SHOP_ID).orEmpty()
 
     private val analytic: StoriesAnalytics get() = analyticFactory.create(mParentPage.args)
 
     private val activityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.let { data -> }
-        }
-    }
+    ) {}
 
     private val isEligiblePage: Boolean
         get() = groupId == viewModel.mGroup.groupId
@@ -174,7 +166,7 @@ class StoriesDetailFragment @Inject constructor(
                 renderStoriesGroupHeader(prevState?.storiesMainData, state.storiesMainData)
                 renderStoriesDetail(
                     prevState?.storiesMainData?.groupItems?.get(prevState.storiesMainData.selectedGroupPosition.orZero())?.detail,
-                    state.storiesMainData.groupItems[state.storiesMainData.selectedGroupPosition].detail,
+                    state.storiesMainData.groupItems[state.storiesMainData.selectedGroupPosition].detail
                 )
                 observeBottomSheetStatus(prevState?.bottomSheetStatus, state.bottomSheetStatus)
             }
@@ -248,7 +240,7 @@ class StoriesDetailFragment @Inject constructor(
                     is StoriesUiEvent.ShowInfoEvent -> {
                         if (viewModel.isAnyBottomSheetShown) return@collect
                         val message = getString(event.message)
-                        requireView().showToaster(message = message,)
+                        requireView().showToaster(message = message)
                     }
                     else -> return@collect
                 }
@@ -258,11 +250,13 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderStoriesGroupHeader(
         prevState: StoriesUiModel?,
-        state: StoriesUiModel,
+        state: StoriesUiModel
     ) {
         if (prevState?.groupHeader == state.groupHeader ||
             groupId != state.selectedGroupId
-        ) return
+        ) {
+            return
+        }
 
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
@@ -302,7 +296,8 @@ class StoriesDetailFragment @Inject constructor(
                             override fun failedLoad() {
                                 // TODO add some action when fail load image?
                             }
-                        })
+                        }
+                    )
                 }
             }
 
@@ -317,7 +312,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun observeBottomSheetStatus(
         prevState: Map<BottomSheetType, Boolean>?,
-        state: Map<BottomSheetType, Boolean>,
+        state: Map<BottomSheetType, Boolean>
     ) {
         if (prevState == state) return
         if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
@@ -332,7 +327,7 @@ class StoriesDetailFragment @Inject constructor(
                     StoriesDetailTimer(
                         currentPosition = state.selectedDetailPosition,
                         itemCount = state.detailItems.size,
-                        data = state.detailItems[state.selectedDetailPosition],
+                        data = state.detailItems[state.selectedDetailPosition]
                     ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }
@@ -349,7 +344,6 @@ class StoriesDetailFragment @Inject constructor(
             if (state.author is StoryAuthor.Shop) {
                 ivBadge.setImageUrl(state.author.badgeUrl)
             }
-
             root.setOnClickListener {
                 analytic.sendClickShopNameEvent(buildEventLabel())
                 viewModelAction(StoriesUiAction.Navigate(state.author.appLink))
@@ -433,24 +427,20 @@ class StoriesDetailFragment @Inject constructor(
                 }
                 else -> {}
             }
-
         }
     }
 
     private fun renderNotch(state: StoriesDetailItem) {
         binding.vStoriesProductIcon.root.showWithCondition(viewModel.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
-        with(binding.notchStoriesProduct) {
-            apply {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                setContent {
-                    StoriesProductNotch(state.productCount) {
-                        analytic.sendClickShoppingBagEvent(buildEventLabel())
-                        viewModelAction(StoriesUiAction.OpenProduct)
-                    }
+        with(binding.nudgeStoriesProduct) {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                StoriesProductNudge(state.productCount) {
+                    viewModelAction(StoriesUiAction.OpenProduct)
                 }
-                showWithCondition(viewModel.isProductAvailable)
             }
+            showWithCondition(viewModel.isProductAvailable)
         }
     }
 
@@ -489,8 +479,8 @@ class StoriesDetailFragment @Inject constructor(
                     creativeSlot = position.plus(1).toString(),
                     itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.args.authorId}",
                     itemName = "/ - stories"
-                ),
-            ),
+                )
+            )
         )
     }
 
@@ -503,7 +493,7 @@ class StoriesDetailFragment @Inject constructor(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
-            currentCircle = viewModel.mGroup.groupName,
+            currentCircle = viewModel.mGroup.groupName
         )
     }
 
@@ -512,7 +502,7 @@ class StoriesDetailFragment @Inject constructor(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
-            currentCircle = viewModel.mGroup.groupName,
+            currentCircle = viewModel.mGroup.groupName
         )
     }
 
@@ -525,21 +515,20 @@ class StoriesDetailFragment @Inject constructor(
             ProductVariantBottomSheetParams(
                 pageSource = VariantPageSource.STORIES_PAGESOURCE.source,
                 productId = product.id,
-                shopId = shopId, //is shop id mandatory from applink?
+                shopId = mParentPage.args.authorId,
                 dismissAfterTransaction = false,
-                trackerCdListName = viewModel.storyId,
+                trackerCdListName = viewModel.storyId
             )
         )
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
             variantSheet = AtcVariantBottomSheet()
             variantSheet?.setOnDismissListener { }
-            variantSheet ?: AtcVariantBottomSheet()
-        }
-
-        variantSheet?.setShowListener {
-            variantSheet?.bottomSheetClose?.setOnClickListener {
-                viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
+            variantSheet?.setShowListener {
+                variantSheet?.bottomSheetClose?.setOnClickListener {
+                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
+                }
             }
+            variantSheet ?: AtcVariantBottomSheet()
         }
     }
 
@@ -558,7 +547,7 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        if (action == StoriesProductAction.ATC) analytic.sendClickAtcButtonEvent(eventLabel, listOf(product)) else analytic.sendClickBuyButtonEvent(eventLabel, listOf(product))
+        if (action == StoriesProductAction.Atc) analytic.sendClickAtcButtonEvent(eventLabel, listOf(product)) else analytic.sendClickBuyButtonEvent(eventLabel, listOf(product))
     }
 
     override fun onClickedProduct(
@@ -579,9 +568,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "StoriesDetailFragment"
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
-        const val STORY_GROUP_ID = "StoriesGroupId"
 
         fun getFragment(
             fragmentManager: FragmentManager,

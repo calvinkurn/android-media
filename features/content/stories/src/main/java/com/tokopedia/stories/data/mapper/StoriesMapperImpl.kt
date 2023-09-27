@@ -1,6 +1,5 @@
 package com.tokopedia.stories.data.mapper
 
-import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.IconUnify
@@ -23,6 +22,7 @@ import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.stories.R as storiesR
 
 class StoriesMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :
@@ -30,7 +30,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
 
     override fun mapStoriesInitialData(
         dataGroup: StoriesGroupsResponseModel,
-        dataDetail: StoriesDetailsResponseModel,
+        dataDetail: StoriesDetailsResponseModel
     ): StoriesUiModel {
         val groupsData = dataGroup.data
         if (groupsData == ContentStoriesGroups()) return StoriesUiModel()
@@ -45,7 +45,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     groupId = group.value,
                     image = group.image,
                     groupName = group.name,
-                    isSelected = groupSelectedPos == indexGroupHeader,
+                    isSelected = groupSelectedPos == indexGroupHeader
                 )
             },
             groupItems = groupsItem.mapIndexed { indexGroupItem, group ->
@@ -55,9 +55,11 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     detail = if (groupSelectedPos == indexGroupItem) {
                         mapStoriesDetailRequest(
                             selectedGroupId = group.value,
-                            dataDetail = dataDetail,
+                            dataDetail = dataDetail
                         )
-                    } else StoriesDetail()
+                    } else {
+                        StoriesDetail()
+                    }
                 )
             }
         )
@@ -65,7 +67,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
 
     override fun mapStoriesDetailRequest(
         selectedGroupId: String,
-        dataDetail: StoriesDetailsResponseModel,
+        dataDetail: StoriesDetailsResponseModel
     ): StoriesDetail {
         val detailData = dataDetail.data
         if (detailData == ContentStoriesDetails()) return StoriesDetail()
@@ -83,7 +85,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     content = StoriesItemContent(
                         type = if (stories.media.type == IMAGE.value) IMAGE else VIDEO,
                         data = stories.media.link,
-                        duration = 7 * 1000,
+                        duration = 7 * 1000
                     ),
                     resetValue = -1,
                     isSameContent = false,
@@ -102,8 +104,8 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     productCount = stories.totalProductsFmt.ifEmpty { "0" },
                     meta = Meta(
                         activityTracker = stories.meta.activityTracker,
-                        templateTracker = stories.meta.templateTracker,
-                    ),
+                        templateTracker = stories.meta.templateTracker
+                    )
                 )
             }
         )
@@ -122,7 +124,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     ContentMenuItem(
                         iconUnify = IconUnify.DELETE,
                         name = storiesR.string.stories_delete_story_title,
-                        type = ContentMenuIdentifier.Delete,
+                        type = ContentMenuIdentifier.Delete
                     )
                 )
             }

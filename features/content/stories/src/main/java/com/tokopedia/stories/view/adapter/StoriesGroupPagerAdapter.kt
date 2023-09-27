@@ -15,7 +15,6 @@ class StoriesGroupPagerAdapter(
     private val fragmentManager: FragmentManager,
     private val fragmentActivity: FragmentActivity,
     lifecycle: Lifecycle,
-    private val shopId: String,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private var _groupData: StoriesUiModel = StoriesUiModel()
@@ -45,7 +44,6 @@ class StoriesGroupPagerAdapter(
         ).apply {
             arguments = Bundle().apply {
                 putString(STORIES_GROUP_ID, getCurrentPageGroupId(position))
-                putString(SHOP_ID, shopId)
             }
         }
     }
