@@ -30,7 +30,8 @@ class ShopProductViewHolder(
     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
     private val shopTrackType: Int,
     private val layoutType: Int,
-    private val isShowTripleDot: Boolean
+    private val isShowTripleDot: Boolean,
+    private val isOverrideTheme: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
     private val viewBinding: ItemShopNewproductSmallGridBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
