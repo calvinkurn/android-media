@@ -63,6 +63,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentP
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyBCAGenCheckModel
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
@@ -337,6 +338,17 @@ open class EmoneyPdpFragment :
                     activity?.invalidateOptionsMenu()
                 }
                 is Fail -> {}
+            }
+        }
+
+        emoneyPdpViewModel.bcaGenCheckerResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    renderTickerNFCNotSupportedByGeneration(it.data)
+                }
+                is Fail -> {
+                    //TODO Check if Fail
+                }
             }
         }
     }
@@ -678,6 +690,17 @@ open class EmoneyPdpFragment :
         renderTickerNFCNotSupported()
     }
 
+    private fun renderTickerNFCNotSupportedByGeneration(data: EmoneyBCAGenCheckModel) {
+        if (data.isGenOne) {
+            showTickerNotSupported()
+            showRecentNumberAndPromo()
+            binding.tickerNotSupported.setHtmlDescription(data.message)
+        } else {
+            hideTickerNotSupported()
+            showProducts()
+        }
+    }
+
     private fun renderTickerNFCNotSupported() {
         if (detailPassData.isBCAGenOne) {
             showTickerNotSupported()
@@ -695,8 +718,10 @@ open class EmoneyPdpFragment :
                     override fun onDismiss() {}
                 })
             } else if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
-                hideTickerNotSupported()
-                showProducts()
+                detailPassData.clientNumber?.let {
+                    emoneyPdpViewModel.getBCAGenCheck(it)
+                }
+
             } else {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
