@@ -117,7 +117,6 @@ class ShopHomeCarousellProductViewHolder(
         val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         textViewTitle?.setTextColor(titleColor)
         iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
-
     }
 
     private fun configFestivityColor() {
@@ -152,7 +151,7 @@ class ShopHomeCarousellProductViewHolder(
         shopHomeProductViewModelList: List<ShopHomeProductUiModel>,
         isOverrideWidgetTheme: Boolean
     ) {
-        recyclerView?.findViewById<RecyclerView>(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
+        recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerViewForSingleOrDoubleProductCard?.isNestedScrollingEnabled = false
         initProductCardListener(shopHomeProductViewModelList)
         val listProductCardModel = shopHomeProductViewModelList.map {
