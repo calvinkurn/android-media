@@ -13,6 +13,7 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.NpaLinearLayoutManager
 import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
+import com.tokopedia.home_component.widget.common.carousel.CommonCarouselDiffUtilCallback
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel.Companion.PAYLOAD_ITEM_LIST_CHANGED
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemDecoration
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemTypeFactoryImpl
@@ -50,7 +51,7 @@ class ShopFlashSaleWidgetViewHolder(
     private val itemAdapter by lazy {
         CarouselListAdapter(
             ShopFlashSaleItemTypeFactoryImpl(listener, this),
-            ShopFlashSaleItemDiffUtilCallback()
+            CommonCarouselDiffUtilCallback()
         )
     }
 

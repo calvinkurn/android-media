@@ -25,6 +25,7 @@ import com.tokopedia.order_management_common.databinding.WidgetBmgmProductAddOnD
 import com.tokopedia.order_management_common.util.generateHapticFeedback
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.order_management_common.R as order_management_commonR
 
 class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
     context: Context,
@@ -74,7 +75,7 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
             binding.tvAddOnDescription.layout?.run {
                 val lines = lineCount
                 val hasDescriptionSeeLessText =
-                    text?.contains(context.getString(com.tokopedia.order_management_common.R.string.om_detail_add_on_see_less_description)) == true
+                    text?.contains(context.getString(order_management_commonR.string.om_detail_add_on_see_less_description)) == true
                 val isDescriptionSeeMoreVisible =
                     binding.containerAddOnDescriptionSeeMore.maxHeight > Int.ZERO
                 if (lines == DESCRIPTION_MIN_LINES) {
@@ -129,7 +130,7 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
 
     private fun getFullCopyDescription(): String {
         return context.getString(
-            com.tokopedia.order_management_common.R.string.om_detail_add_on_description_copyable_format,
+            order_management_commonR.string.om_detail_add_on_description_copyable_format,
             receiverName,
             senderName,
             description
@@ -177,7 +178,7 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
         with(binding.tvAddOnDescriptionSeeMore) {
             text = HtmlLinkHelper(
                 binding.root.context,
-                context.getString(com.tokopedia.order_management_common.R.string.om_detail_add_on_see_more_description)
+                context.getString(order_management_commonR.string.om_detail_add_on_see_more_description)
             ).spannedString ?: ""
             setOnClickListener {
                 listener?.onDescriptionSeeMoreClicked()
@@ -204,9 +205,9 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
             HtmlLinkHelper(
                 context,
                 context.getString(
-                    com.tokopedia.order_management_common.R.string.om_detail_add_on_description,
+                    order_management_commonR.string.om_detail_add_on_description,
                     description,
-                    context.getString(com.tokopedia.order_management_common.R.string.om_detail_add_on_see_less_description)
+                    context.getString(order_management_commonR.string.om_detail_add_on_see_less_description)
                 )
             ).spannedString ?: ""
         } else {

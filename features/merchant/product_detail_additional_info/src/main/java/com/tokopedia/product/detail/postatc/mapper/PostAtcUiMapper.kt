@@ -45,7 +45,8 @@ private fun toRecommendationUiModel(
         queryParam = data?.queryParam.orEmpty(),
         warehouseId = postAtcInfo.warehouseInfo.warehouseId,
         productId = postAtcInfo.productId,
-        offerId = data?.offerId.orEmpty()
+        offerId = data?.offerId.orEmpty(),
+        shopId = postAtcInfo.shopId
     )
 }
 

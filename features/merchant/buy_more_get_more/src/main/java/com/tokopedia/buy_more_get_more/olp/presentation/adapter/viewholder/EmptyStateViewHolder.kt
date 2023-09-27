@@ -1,6 +1,5 @@
 package com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder
 
-import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

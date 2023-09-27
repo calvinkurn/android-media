@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
+import com.tokopedia.buy_more_get_more.R
 
 class TncAdapter(val listener: TncListener) : RecyclerView.Adapter<TncAdapter.ViewHolder>() {
     private var data: List<TncUiModel> = emptyList()
@@ -47,6 +48,7 @@ class TncAdapter(val listener: TncListener) : RecyclerView.Adapter<TncAdapter.Vi
             })
 
             with(binding) {
+                bgRoundGreen.setBackgroundResource(R.drawable.bg_round_green)
                 tpgNumber.text = MethodChecker.fromHtml((position + Int.ONE).toString())
                 tpgTnc.setClickableUrlHtml(
                     htmlText = item.tnc,

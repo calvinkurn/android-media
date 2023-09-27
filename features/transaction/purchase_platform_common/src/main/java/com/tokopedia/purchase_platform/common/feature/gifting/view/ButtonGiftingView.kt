@@ -34,7 +34,7 @@ class ButtonGiftingView @JvmOverloads constructor(
             } else {
                 descAddon.visible()
                 descAddon.text = desc
-                titleAddon.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600))
+                descAddon.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600))
             }
             if (rightIconUrl.isEmpty()) {
                 iconRight.setImage(IconUnify.CHEVRON_RIGHT)

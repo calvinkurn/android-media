@@ -564,7 +564,7 @@ open class HomeRevampFragment :
         homeRecyclerView?.setHasFixedSize(true)
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         context?.let {
-            HomeRollenceController.fetchAtfRollenceValue(it)
+            HomeRollenceController.fetchHomeRollenceValue(it)
         }
 
         // show nav toolbar

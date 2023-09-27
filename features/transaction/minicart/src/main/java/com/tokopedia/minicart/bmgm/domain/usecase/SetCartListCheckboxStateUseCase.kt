@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.bmgm.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 @GqlQuery("SetCheckboxStateMutation", SetCartListCheckboxStateUseCase.GQL_QUERY)
 class SetCartListCheckboxStateUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers
+    @ApplicationContext graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers
 ) : GqlCoroutineUseCase<SetCartlistCheckboxGqlResponse>(
     SetCheckboxStateMutation(),
     graphqlRepository,

@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.bmgm.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,7 +16,7 @@ import kotlinx.coroutines.withContext
 
 abstract class GqlCoroutineUseCase<RESPONSE : Any>(
     private val gqlQueryInterface: GqlQueryInterface,
-    private val graphqlRepository: GraphqlRepository,
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
     protected val dispatchers: CoroutineDispatchers
 ) {
 
