@@ -17,11 +17,6 @@ class MultiComponentAdapter(
     private val items: MutableList<MultiComponentTab> = mutableListOf()
     private var widgetType: String = ""
 
-    // For notify multi component widget loading
-    fun setWidgetType(widgetType: String) {
-        this.widgetType = widgetType
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiComponentTabViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.shc_multi_component_view, parent, false)
@@ -34,6 +29,11 @@ class MultiComponentAdapter(
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    // For notify multi component widget loading
+    fun setWidgetType(widgetType: String) {
+        this.widgetType = widgetType
     }
 
     fun updateTabList(tabs: List<MultiComponentTab>) {

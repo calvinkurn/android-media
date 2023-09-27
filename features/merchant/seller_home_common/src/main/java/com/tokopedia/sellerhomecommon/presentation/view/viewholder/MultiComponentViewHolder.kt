@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.const.ShcConst.Payload.UPDATE_MULTI_COMPONENT_DETAIL
+import com.tokopedia.sellerhomecommon.common.const.ShcConst.TAB_PLUS_MULTI_COMPONENT_ID
 import com.tokopedia.sellerhomecommon.databinding.ShcMultiComponentWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
@@ -162,7 +163,7 @@ class MultiComponentViewHolder(
 
         binding.tabsShcMultiComponent.addOnImpressionListener(ImpressHolder()) {
             val plusTabPosition = element.data?.tabs?.indexOfFirst {
-                it.id == "tab_plus"
+                it.id == TAB_PLUS_MULTI_COMPONENT_ID
             } ?: 0
             val firstTabView =
                 binding.tabsShcMultiComponent.tabLayout.getTabAt(plusTabPosition)?.customView
@@ -198,12 +199,12 @@ class MultiComponentViewHolder(
 
     interface Listener {
 
-        fun impressComponentDetailTab()
-        fun clickMultiComponentTab(tabName: String)
-        fun showCoachMarkFirstTab(view: View)
-        fun multiComponentTabSelected(tab: MultiComponentTab)
-        fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String)
-        fun getRvViewPool(): RecyclerView.RecycledViewPool?
+        fun impressComponentDetailTab() = {}
+        fun clickMultiComponentTab(tabName: String) = {}
+        fun showCoachMarkFirstTab(view: View) = {}
+        fun multiComponentTabSelected(tab: MultiComponentTab) = {}
+        fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String) = {}
+        fun getRvViewPool(): RecyclerView.RecycledViewPool? = null
     }
 
 

@@ -20,6 +20,8 @@ object ShcConst {
 
     const val TRAFFIC_INSIGHT_TAG_EXPIRED = 1649606400000
 
+    const val TAB_PLUS_MULTI_COMPONENT_ID = "tab_plus"
+
     object BottomSheet {
         const val TAG_MONTH_PICKER = "MonthPickerBottomSheet"
     }

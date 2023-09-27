@@ -37,7 +37,7 @@ class MultiComponentMapper @Inject constructor(
                             MultiComponentData(
                                 componentType = component.componentType,
                                 dataKey = component.dataKey,
-                                data = mapToWidgetUiModel(component, tabConfig)
+                                data = mapToWidgetUiModel(component, tabConfig, isFromCache)
                             )
                         },
                         isLoaded = false,
@@ -54,14 +54,15 @@ class MultiComponentMapper @Inject constructor(
 
     private fun mapToWidgetUiModel(
         data: MultiComponent,
-        tabConfig: WidgetModel
+        tabConfig: WidgetModel,
+        isFromCache: Boolean
     ): BaseWidgetUiModel<*>? {
         return when (data.componentType.asLowerCase()) {
             WidgetType.PIE_CHART.asLowerCase() -> {
-                mapToPieChartUiModel(data, tabConfig)
+                mapToPieChartUiModel(data, tabConfig, isFromCache)
             }
             WidgetType.MULTI_LINE_GRAPH.asLowerCase() -> {
-                mapToMultiTrendLineUiData(data, tabConfig)
+                mapToMultiTrendLineUiData(data, tabConfig, isFromCache)
             }
             else -> {
                 null
@@ -71,7 +72,8 @@ class MultiComponentMapper @Inject constructor(
 
     private fun mapToPieChartUiModel(
         data: MultiComponent,
-        tabConfig: WidgetModel
+        tabConfig: WidgetModel,
+        isFromCache: Boolean
     ): PieChartWidgetUiModel {
         return PieChartWidgetUiModel(
             id = tabConfig.id.toString(),
@@ -88,7 +90,7 @@ class MultiComponentMapper @Inject constructor(
             data = null,
             isLoaded = false,
             isLoading = true,
-            isFromCache = false,
+            isFromCache = isFromCache,
             emptyState = tabConfig.emptyStateModel.mapToUiModel(),
             useRealtime = tabConfig.useRealtime
         )
@@ -96,7 +98,8 @@ class MultiComponentMapper @Inject constructor(
 
     private fun mapToMultiTrendLineUiData(
         data: MultiComponent,
-        tabConfig: WidgetModel
+        tabConfig: WidgetModel,
+        isFromCache: Boolean
     ): MultiLineGraphWidgetUiModel {
         return MultiLineGraphWidgetUiModel(
             id = tabConfig.id.toString(),
@@ -113,7 +116,7 @@ class MultiComponentMapper @Inject constructor(
             data = null,
             isLoaded = false,
             isLoading = true,
-            isFromCache = false,
+            isFromCache = isFromCache,
             emptyState = tabConfig.emptyStateModel.mapToUiModel(),
             useRealtime = tabConfig.useRealtime,
             isComparePeriodOnly = tabConfig.isComparePeriodOnly

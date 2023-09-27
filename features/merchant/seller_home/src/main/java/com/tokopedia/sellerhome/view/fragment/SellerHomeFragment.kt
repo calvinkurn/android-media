@@ -22,7 +22,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -129,7 +128,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
@@ -892,18 +890,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    override fun impressComponentDetailTab() {
-        // No - op
-    }
-
-    override fun clickMultiComponentTab(tabName: String) {
-        // No - op
-    }
-
-    override fun showCoachMarkFirstTab(view: View) {
-        // No - op
-    }
-
     override fun sendRichListImpressionEvent(eventLabel: String) {
         if (eventLabel.isNotBlank()) {
             SellerHomeTracking.sendImpressionRichListWidgetEligibleEvent(eventLabel)
@@ -942,18 +928,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun setOnPostWidgetRemoveItemClicked(element: PostListWidgetUiModel) {
         showFeedbackLoopOption(element)
         SellerHomeTracking.sendClickWidgetPostDeleteEvent(element.dataKey)
-    }
-
-    override fun multiComponentTabSelected(tab: MultiComponentTab) {
-        // No - op
-    }
-
-    override fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String) {
-        // No - op
-    }
-
-    override fun getRvViewPool(): RecycledViewPool? {
-        return null
     }
 
     fun setNavigationNavigationView(navigationView: View?, otherMenuView: View?) {
