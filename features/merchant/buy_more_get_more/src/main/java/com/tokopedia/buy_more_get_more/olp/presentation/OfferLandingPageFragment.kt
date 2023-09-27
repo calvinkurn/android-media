@@ -63,7 +63,9 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -72,6 +74,7 @@ import com.tokopedia.utils.resources.isDarkMode
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
@@ -221,6 +224,7 @@ class OfferLandingPageFragment :
                     viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
                     viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
                     viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.offerings.firstOrNull()?.endDate.orEmpty()))
+                    viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.offerings.firstOrNull()?.offerTypeId.orZero()))
                     setupTncBottomSheet()
                     fetchMiniCart()
                     setMiniCartOnOfferEnd(offerInfoForBuyer)
@@ -332,7 +336,6 @@ class OfferLandingPageFragment :
                 // get sharing data
                 tracker.sendClickShareButtonEvent(
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
                     currentState.shopData.shopId.toString()
                 )
                 viewModel.processEvent(OlpEvent.GetSharingData)
@@ -794,6 +797,27 @@ class OfferLandingPageFragment :
 
     private fun openShareBottomSheet(sharingData: SharingDataByOfferIdUiModel) {
         UniversalShareBottomSheet.createInstance().apply {
+            tracker.sendViewSharingChannelEvent(
+                currentState.offerIds.toSafeString(),
+                currentState.shopData.shopId.toString()
+            )
+            init(object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    tracker.sendClickSharingChannelEvent(
+                        shareModel.channel.orEmpty(),
+                        currentState.offerIds.toSafeString(),
+                        currentState.shopData.shopId.toString()
+                    )
+                    if (shareModel is ShareModel.CopyLink) {
+                        binding?.miniCartView.showToaster(
+                            message = Constant.copyLinkToastString,
+                            ctaText = Constant.actionBtnTxt
+                        )
+                    }
+                }
+
+                override fun onCloseOptionClicked() { }
+            })
             enableDefaultShareIntent()
             setMetaData(
                 tnTitle = sharingData.offerData.title,
@@ -801,7 +825,7 @@ class OfferLandingPageFragment :
             )
             setLinkProperties(
                 LinkProperties(
-                    linkerType = sharingData.offerData.pageType,
+                    linkerType = Constant.SHARING_UTM,
                     id = currentState.offerIds.toSafeString(),
                     ogTitle = sharingData.offerData.title,
                     ogDescription = sharingData.offerData.description,
@@ -814,9 +838,13 @@ class OfferLandingPageFragment :
                 pageName = Constant.SHARING_PAGE_NAME,
                 userId = userSession.userId.toString(),
                 pageIdConstituents = listOf(
+                    Constant.SHARING_UTM,
+                    userSession.userId,
                     currentState.shopData.shopId.toString(),
                     currentState.offerIds.toSafeString(),
-                    currentState.offerTypeId.toString()
+                    currentState.offerTypeId.toString(),
+                    Date().toString(),
+                    Constant.SHARING_IMAGE_TYPE
                 ),
                 feature = Constant.SHARING_FEATURE
             )
@@ -824,6 +852,12 @@ class OfferLandingPageFragment :
             val shareText = sharingData.offerData.description.replace("%", "%%")
             val shareTextEncodedToHtmlSymbol = TextUtils.htmlEncode(shareText)
             setShareText("${MethodChecker.fromHtml(shareTextEncodedToHtmlSymbol)} %s")
+            setCloseClickListener {
+                tracker.sendClickCloseShareButtonEvent(
+                    currentState.offerIds.toSafeString(),
+                    currentState.shopData.shopId.toString()
+                )
+            }
         }.show(childFragmentManager, this)
     }
 

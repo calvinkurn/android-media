@@ -10,6 +10,10 @@ import javax.inject.Inject
 
 class OlpTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
+    companion object {
+        private const val USER_SHARE_TYPE_GENERAL = "general"
+    }
+
     fun sendOpenScreenEvent(shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_OPEN_SCREEN)
@@ -39,14 +43,59 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
-    fun sendClickShareButtonEvent(offerId: String, warehouseId: String, shopId: String) {
+    fun sendClickShareButtonEvent(offerId: String, shopId: String) {
         Tracker.Builder()
-            .setEvent(TrackerConstant.EVENT_CLICK_PG)
-            .setEventAction("click share button")
-            .setEventCategory(TrackerConstant.EVENT_CATEGORY_OLP_BMGM)
-            .setEventLabel(joinDash(offerId, warehouseId))
-            .setCustomProperty(TrackerConstant.TRACKER_ID, "46754")
-            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
+            .setEvent(TrackerConstant.EVENT_CLICK_COMMUNICATION)
+            .setEventAction("click - share button")
+            .setEventCategory(TrackerConstant.EVENT_CATEGORY_BMSM_PAGE)
+            .setEventLabel(joinDash(USER_SHARE_TYPE_GENERAL, shopId, offerId))
+            .setCustomProperty(TrackerConstant.TRACKER_ID, "46864")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
+            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
+            .setShopId(shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendClickCloseShareButtonEvent(offerId: String, shopId: String) {
+        Tracker.Builder()
+            .setEvent(TrackerConstant.EVENT_CLICK_COMMUNICATION)
+            .setEventAction("click - close share bottom sheet")
+            .setEventCategory(TrackerConstant.EVENT_CATEGORY_BMSM_PAGE)
+            .setEventLabel(joinDash(USER_SHARE_TYPE_GENERAL, shopId, offerId))
+            .setCustomProperty(TrackerConstant.TRACKER_ID, "46865")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
+            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
+            .setShopId(shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendClickSharingChannelEvent(channel: String, offerId: String, shopId: String) {
+        Tracker.Builder()
+            .setEvent(TrackerConstant.EVENT_CLICK_COMMUNICATION)
+            .setEventAction("click - sharing channel")
+            .setEventCategory(TrackerConstant.EVENT_CATEGORY_BMSM_PAGE)
+            .setEventLabel(joinDash(channel, USER_SHARE_TYPE_GENERAL, shopId, offerId))
+            .setCustomProperty(TrackerConstant.TRACKER_ID, "46866")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
+            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
+            .setShopId(shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendViewSharingChannelEvent(offerId: String, shopId: String) {
+        Tracker.Builder()
+            .setEvent(TrackerConstant.EVENT_VIEW_COMMUNICATION_IRIS)
+            .setEventAction("view on sharing channel")
+            .setEventCategory(TrackerConstant.EVENT_CATEGORY_BMSM_PAGE)
+            .setEventLabel(joinDash(USER_SHARE_TYPE_GENERAL, shopId, offerId))
+            .setCustomProperty(TrackerConstant.TRACKER_ID, "46867")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
             .setShopId(shopId)
             .setUserId(userSession.userId)

@@ -108,5 +108,7 @@ data class OfferInfoForBuyerUiModel(
         object GetSharingData : OlpEvent()
 
         data class AddToCart(val product: Product) : OlpEvent()
+
+        data class SetOfferTypeId(val offerTypeId: Long) : OlpEvent()
     }
 }
