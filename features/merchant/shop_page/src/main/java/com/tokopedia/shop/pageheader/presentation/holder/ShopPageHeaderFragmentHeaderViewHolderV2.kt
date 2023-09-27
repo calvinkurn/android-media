@@ -347,8 +347,47 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val isShowShopStaticUsp = shopStaticUspUrl.isNotEmpty()
         sectionShopStatus?.shouldShowWithAction(isShowShopOnlineStatus || isShowShopStaticUsp) {}
         shopStatusSectionDotSeparator?.shouldShowWithAction(isShowShopOnlineStatus && isShowShopStaticUsp) {}
+        imageShopStaticUsp?.shouldShowWithAction(isShowShopStaticUsp) {
+            imageShopStaticUsp?.loadImage(shopStaticUspUrl) {
+                overrideSize(Resize(MAXIMUM_WIDTH_STATIC_USP.toPx(), imageShopStaticUsp?.layoutParams?.height.orZero()))
+            }
+        }
+        val onlineStatusTextPairHtmlColor: Pair<String, String>
+        if (isOverrideTheme) {
+            val textColor = shopHeaderConfig?.colorSchema?.getColorIntValue(
+                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+            ).orZero()
+            val textColorHighEmphasisHex = shopHeaderConfig?.colorSchema?.getColorSchema(
+                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+            )?.value.orEmpty()
+            val textColorLowEmphasisHex = shopHeaderConfig?.colorSchema?.getColorSchema(
+                ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS
+            )?.value.orEmpty()
+            shopStatusSectionDotSeparator?.setTextColor(textColor)
+            onlineStatusTextPairHtmlColor = Pair(textColorHighEmphasisHex, textColorLowEmphasisHex)
+        } else {
+            val textColorHighEmphasisHex = ShopUtil.getColorHexString(
+                context,
+                unifyprinciplesR.color.Unify_NN950
+            )
+            val textColorLowEmphasisHex = ShopUtil.getColorHexString(
+                context,
+                unifyprinciplesR.color.Unify_NN600
+            )
+            onlineStatusTextPairHtmlColor = Pair(textColorHighEmphasisHex, textColorLowEmphasisHex)
+        }
         textShopOnlineDescription?.shouldShowWithAction(isShowShopOnlineStatus) {
             textShopOnlineDescription?.text = MethodChecker.fromHtml(shopStatusText)
+            textShopOnlineDescription?.apply {
+                val adjustedShopStatusText = shopStatusText.replace(
+                    "\$highEmphasis",
+                    onlineStatusTextPairHtmlColor.first
+                ).replace(
+                    "\$lowEmphasis",
+                    onlineStatusTextPairHtmlColor.second
+                )
+                text = MethodChecker.fromHtml(adjustedShopStatusText)
+            }
             imageOnlineIcon?.apply {
                 if (shopOnlineStatusIcon.isNotEmpty()) {
                     show()
@@ -357,28 +396,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                     hide()
                 }
             }
-        }
-        imageShopStaticUsp?.shouldShowWithAction(isShowShopStaticUsp) {
-            imageShopStaticUsp?.loadImage(shopStaticUspUrl) {
-                overrideSize(Resize(MAXIMUM_WIDTH_STATIC_USP.toPx(), imageShopStaticUsp?.layoutParams?.height.orZero()))
-            }
-        }
-        if (isOverrideTheme) {
-            val textColor = shopHeaderConfig?.colorSchema?.getColorIntValue(
-                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
-            ).orZero()
-            textShopOnlineDescription?.setTextColor(textColor)
-            shopStatusSectionDotSeparator?.setTextColor(textColor)
-        } else {
-            // Handle dark mode - last online status
-            val lastOnlineColor = ShopUtil.getColorHexString(context, R.color.clr_dms_31353B)
-            val lastOnlineUnifyColor = ShopUtil.getColorHexString(
-                context,
-                unifyprinciplesR.color.Unify_NN950
-            )
-            val unifiedShopAdditionalInfo =
-                shopStatusText.replace(lastOnlineColor, lastOnlineUnifyColor)
-            textShopOnlineDescription?.text = MethodChecker.fromHtml(unifiedShopAdditionalInfo)
         }
     }
 
