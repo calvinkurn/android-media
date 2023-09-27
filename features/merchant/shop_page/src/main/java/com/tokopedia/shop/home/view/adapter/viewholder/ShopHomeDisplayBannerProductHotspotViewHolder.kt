@@ -28,7 +28,7 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotU
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
-
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeDisplayBannerProductHotspotViewHolder(
     itemView: View,
@@ -103,7 +103,7 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
     private fun configDefaultColor() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         textTitle?.setTextColor(titleColor)
     }
@@ -169,9 +169,9 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
                             y = productHotspot.hotspotCoordinate.y,
                             productImage = productHotspot.imageUrl,
                             productName = productHotspot.name,
-                            productPrice = productHotspot.displayedPrice,
+                            productPrice = productHotspot.displayedPrice
                         )
-                    },
+                    }
                 ),
                 listenerBubbleView = this,
                 ratio = ratio
@@ -216,17 +216,17 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
 
     private fun updateRecyclerViewHeightBasedOnFirstChild() {
         recyclerViewProductHotspot?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                val firstChildHeight = recyclerViewProductHotspot.findViewHolderForAdapterPosition(
-                    Int.ZERO
-                )?.itemView?.height.orZero()
-                val lp = recyclerViewProductHotspot.layoutParams as? ViewGroup.LayoutParams
-                lp?.height = firstChildHeight
-                recyclerViewProductHotspot.layoutParams = lp
-                recyclerViewProductHotspot.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val firstChildHeight = recyclerViewProductHotspot.findViewHolderForAdapterPosition(
+                        Int.ZERO
+                    )?.itemView?.height.orZero()
+                    val lp = recyclerViewProductHotspot.layoutParams as? ViewGroup.LayoutParams
+                    lp?.height = firstChildHeight
+                    recyclerViewProductHotspot.layoutParams = lp
+                    recyclerViewProductHotspot.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun onBubbleViewClicked(
@@ -234,7 +234,7 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
         view: View,
         index: Int
     ) {
-        //value should always be 0 because this one is for when we only have 1 image banner
+        // value should always be 0 because this one is for when we only have 1 image banner
         uiModel?.let {
             it.data.firstOrNull()?.let { bannerItemUiModel ->
                 listener.onClickProductBannerHotspot(
@@ -246,5 +246,4 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
             }
         }
     }
-
 }

@@ -1,8 +1,6 @@
 package com.tokopedia.shop.product.view.widget
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Handler
@@ -14,6 +12,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by tlh on 2017/1/21 :)
@@ -31,7 +30,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
     private var viewHolder: RecyclerView.ViewHolder? = null
-    private var backgroundColorIntValue = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+    private var backgroundColorIntValue = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Background)
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
@@ -85,7 +84,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
                         this@StickySingleHeaderView.adapter = adapter
                         this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
                         staggeredGridLayoutManager =
-                            mRecyclerView?.layoutManager as StaggeredGridLayoutManager?
+                            mRecyclerView?.layoutManager as? StaggeredGridLayoutManager
                     }
                     stickyPosition = adapter?.stickyHeaderPosition.orZero()
                 }

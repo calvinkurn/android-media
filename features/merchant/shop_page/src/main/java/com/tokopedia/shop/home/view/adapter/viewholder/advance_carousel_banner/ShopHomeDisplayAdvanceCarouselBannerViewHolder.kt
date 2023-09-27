@@ -25,6 +25,7 @@ import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     view: View?,
@@ -126,7 +127,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     private fun configDefaultColor() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         textViewTitle?.setTextColor(titleColor)
     }

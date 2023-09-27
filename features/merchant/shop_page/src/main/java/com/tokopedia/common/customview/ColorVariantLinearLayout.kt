@@ -8,16 +8,20 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.common.ColorPallete
 import com.tokopedia.common.setRetainTextColor
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ColorVariantLinearLayout : LinearLayoutCompat {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-        context, attrs, defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     )
 
     fun setColorString(
@@ -51,10 +55,11 @@ class ColorVariantLinearLayout : LinearLayoutCompat {
         moreVariantView.setType(Typography.DISPLAY_3)
 
         moreVariantView.setRetainTextColor(
-            colorPallete, ColorPallete.ColorType.PRIMARY_TEXT,
+            colorPallete,
+            ColorPallete.ColorType.PRIMARY_TEXT,
             ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                unifyprinciplesR.color.Unify_NN600
             )
         )
         val params: LinearLayoutCompat.LayoutParams = LinearLayoutCompat.LayoutParams(
@@ -96,7 +101,7 @@ class ColorVariantLinearLayout : LinearLayoutCompat {
         gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
         gradientDrawable.setStroke(
             strokeWidth,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200),
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200)
         )
         gradientDrawable.setColor(safeParseColor(colorString))
 
@@ -107,9 +112,8 @@ class ColorVariantLinearLayout : LinearLayoutCompat {
         return try {
             Color.parseColor(color)
         } catch (throwable: Throwable) {
-            throwable.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(throwable)
             0
         }
     }
-
 }

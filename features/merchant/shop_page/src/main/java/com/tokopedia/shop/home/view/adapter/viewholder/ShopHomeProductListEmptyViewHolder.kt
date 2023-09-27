@@ -14,6 +14,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductListEmptyUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeProductListEmptyViewHolder(
     val itemView: View,
@@ -58,11 +59,11 @@ class ShopHomeProductListEmptyViewHolder(
     private fun setDefaultColorConfig() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         val descriptionColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+            unifyprinciplesR.color.Unify_NN950_68
         )
         setTextColor(titleColor, descriptionColor)
     }

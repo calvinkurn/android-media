@@ -18,6 +18,7 @@ import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.viewallcard.ViewAllCard
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeDirectPurchasedByEtalaseViewHolder(
     itemView: View,
@@ -83,7 +84,7 @@ class ShopHomeDirectPurchasedByEtalaseViewHolder(
                         buttonAccent = element.header.colorSchema.getColorSchema(
                             ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR
                         )?.value.orEmpty(),
-                        white = ShopUtil.getColorHexString(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
+                        white = ShopUtil.getColorHexString(context, unifyprinciplesR.color.Unify_Static_White),
                         darkGrey = ShopUtil.getColorHexString(context, R.color.dms_static_Unify_NN600_light),
                     )
                 )

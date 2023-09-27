@@ -14,6 +14,8 @@ import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.play.widget.R as playwidgetR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by mzennis on 13/10/20.
@@ -27,7 +29,6 @@ class CarouselPlayWidgetViewHolder(
     private var playWidgetView: PlayWidgetView? = viewBinding?.playWidgetView
     private var headerTitle: Typography? = null
     private var headerCta: Typography? = null
-
 
     override fun bind(element: CarouselPlayWidgetUiModel) {
         setContentSection(element)
@@ -57,8 +58,8 @@ class CarouselPlayWidgetViewHolder(
             )
             headerTitle = customHeaderBinding.tvPlayWidgetTitle
             headerCta = customHeaderBinding.tvPlayWidgetAction
-            customHeaderBinding.tvPlayWidgetTitle.id = com.tokopedia.play.widget.R.id.tv_play_widget_title
-            customHeaderBinding.tvPlayWidgetAction.id = com.tokopedia.play.widget.R.id.tv_play_widget_action
+            customHeaderBinding.tvPlayWidgetTitle.id = playwidgetR.id.tv_play_widget_title
+            customHeaderBinding.tvPlayWidgetAction.id = playwidgetR.id.tv_play_widget_action
             it.setCustomHeader(customHeaderBinding.root)
             playWidgetViewHolder.coordinator.controlWidget(it)
         }
@@ -77,11 +78,11 @@ class CarouselPlayWidgetViewHolder(
     private fun setDefaultColorConfig() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         val ctaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            unifyprinciplesR.color.Unify_GN500
         )
         setHeaderColor(titleColor, ctaColor)
     }

@@ -5,12 +5,13 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
+import com.tokopedia.shop.common.constant.ShopPageConstant.FORMAT_CONVERT_PERCENTAGE_TO_HEX
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant.SHOP_PAGE_POWER_MERCHANT_ACTIVE
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
@@ -93,7 +94,7 @@ object ShopPageHeaderMapper {
             feedUrl = feedWhitelistData.url,
             listShopPageHeaderWidget = listShopHeaderWidget,
             listDynamicTabData = shopPageGetDynamicTabResponse.shopPageGetDynamicTab.tabData,
-            shopHeaderLayoutData = shopPageHeaderLayoutUiModel,
+            shopHeaderLayoutData = shopPageHeaderLayoutUiModel
         )
     }
 
@@ -122,7 +123,7 @@ object ShopPageHeaderMapper {
                 it.data.patternColorType.lowercase(),
                 it.data.listBackgroundColor,
                 mapToListBackgroundObject(it.data.listBackgroundObject),
-                mapToListColorSchema(it.data.listColorSchema, shopPageColorSchemaDefaultConfigColor),
+                mapToListColorSchema(it.data.listColorSchema, shopPageColorSchemaDefaultConfigColor)
             )
         }
     }
@@ -182,7 +183,7 @@ object ShopPageHeaderMapper {
         return if (opacityPercentage in 0 until 100) {
             val decimalOpacity = opacityPercentage / 100.0
             val roundedValue = (decimalOpacity * 255).toInt()
-            String.format("%02X", roundedValue)
+            String.format(FORMAT_CONVERT_PERCENTAGE_TO_HEX, roundedValue)
         } else {
             ""
         }
@@ -192,7 +193,7 @@ object ShopPageHeaderMapper {
         return listBackgroundObject.map {
             ShopPageHeaderLayoutUiModel.Config.BackgroundObject(
                 it.url,
-                it.type,
+                it.type
             )
         }
     }

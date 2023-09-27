@@ -51,13 +51,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.data.model.HomeLayoutData
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
@@ -82,6 +82,7 @@ import com.tokopedia.utils.resources.isDarkMode
 import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragmentTabContentWrapper :
     BaseDaggerFragment(),
@@ -148,9 +149,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var tickerResultData: ShopPageHeaderTickerData? = null
     private var chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener? = null
     private var iconShareId: Int = IconList.ID_SHARE
-    private var shopFollowButtonUiModel: ShopFollowButtonUiModel= ShopFollowButtonUiModel()
+    private var shopFollowButtonUiModel: ShopFollowButtonUiModel = ShopFollowButtonUiModel()
     private var tabFragment: Fragment? = null
-    private var initialShopLayoutData : HomeLayoutData? = null
+    private var initialShopLayoutData: HomeLayoutData? = null
     private var appbarOffsetRatio: Float = 0f
 
     override fun getComponent() = activity?.run {
@@ -223,7 +224,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             refreshLayout?.isEnabled = (verticalOffset == 0)
             val isOverrideTheme = shopHeaderLayoutData.isOverrideTheme
             setNavToolbarScrollColorTransition(verticalOffset)
-            if(isOverrideTheme) {
+            if (isOverrideTheme) {
                 if (appbarOffsetRatio < Int.ONE.toFloat()) {
                     resumeHeaderVideo()
                     setToolbarColorFromHeaderConfig()
@@ -259,18 +260,18 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     private fun setNavToolbarScrollColorTransition(verticalOffset: Int) {
         val bodyBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
-        val endColor = if(shopHeaderLayoutData.isOverrideTheme){
+        val endColor = if (shopHeaderLayoutData.isOverrideTheme) {
             ShopUtil.parseColorFromHexString(bodyBackgroundColor)
         } else {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
         }
         // Calculate the scroll range
         val scrollRange = appBarLayout?.totalScrollRange
         // Calculate the offset ratio (between 0 and 1) based on the scroll position
         appbarOffsetRatio = abs(verticalOffset).toFloat() / (scrollRange?.toFloat() ?: Int.ZERO.toFloat())
-        val blendedColor = blendColors(endColor , appbarOffsetRatio)
+        val blendedColor = blendColors(endColor, appbarOffsetRatio)
         // Set the toolbar background color
-        navToolbar?.background = ColorDrawable  (blendedColor)
+        navToolbar?.background = ColorDrawable(blendedColor)
         navToolbar?.apply {
             val drawable = background
             drawable.alpha = (appbarOffsetRatio * MAX_ALPHA).toInt()
@@ -328,7 +329,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
             tabFragment = it
             val ft: FragmentTransaction = childFragmentManager.beginTransaction()
             ft.replace(
-                viewBinding?.tabFragment?.id.orZero(), it)
+                viewBinding?.tabFragment?.id.orZero(),
+                it
+            )
             ft.commit()
         }
     }
@@ -359,7 +362,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
             val iconBuilder = IconBuilder(
                 builderFlags = IconBuilderFlag(
                     pageSource = NavSource.SHOP
-                ))
+                )
+            )
             iconBuilder.addIcon(iconShareId, disableRouteManager = true) { clickShopShare() }
             iconBuilder.addIcon(IconList.ID_SEARCH, disableRouteManager = true) { clickSearch() }
             iconBuilder.addIcon(IconList.ID_SETTING, disableRouteManager = true) { clickSettingButton() }
@@ -432,7 +436,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 switchToDarkToolbar()
             }
         }
-
     }
 
     private fun getCartCounter(): Int {
@@ -505,13 +508,11 @@ class ShopPageHeaderFragmentTabContentWrapper :
         shopPageHeaderFragmentHeaderViewHolder?.pauseTimerDynamicUspCycle()
     }
 
-
     private fun pauseHeaderVideo() {
-        if(appbarOffsetRatio >= Int.ONE.toFloat()) {
+        if (appbarOffsetRatio >= Int.ONE.toFloat()) {
             shopPageHeaderFragmentHeaderViewHolder?.pauseVideo()
         }
     }
-
 
     private fun renderPageAfterOnViewCreated() {
         if (isLoadInitialData) {
@@ -577,7 +578,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun setupFragmentBackgroundColor() {
-        if(shopHeaderLayoutData.isOverrideTheme){
+        if (shopHeaderLayoutData.isOverrideTheme) {
             val fragmentBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
             viewBinding?.tabFragment?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
         }
@@ -629,7 +630,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
-                        if(initialShopLayoutData != null) {
+                        if (initialShopLayoutData != null) {
                             setListWidgetLayoutData(initialShopLayoutData)
                         }
                     }
@@ -727,7 +728,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
             setListPatternImage(tabData.bgImages)
             setIsDarkTheme(tabData.isDark)
-            if(initialShopLayoutData != null) {
+            if (initialShopLayoutData != null) {
                 setListWidgetLayoutData(initialShopLayoutData)
             }
         }
@@ -745,7 +746,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     ) {
         isShowFeed = shopPageHeaderP1Data.isWhitelist
         createPostUrl = shopPageHeaderP1Data.feedUrl
-        shopPageHeaderDataModel =  ShopPageHeaderDataModel().apply {
+        shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragmentTabContentWrapper.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
             isGoldMerchant = shopPageHeaderP1Data.isGoldMerchant

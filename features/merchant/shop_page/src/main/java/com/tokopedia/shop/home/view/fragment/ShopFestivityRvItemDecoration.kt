@@ -22,6 +22,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopFestivityRvItemDecoration(
     context: Context,
@@ -29,22 +30,24 @@ class ShopFestivityRvItemDecoration(
     isOverrideTheme: Boolean
 ) : RecyclerView.ItemDecoration() {
 
-    companion object{
+    companion object {
         private const val RV_PADDING = 12f
         private const val INT_TWO = 2
     }
     private var backgroundDrawableWhite: Drawable? = null
 
     init {
-        val bgColor = if(isOverrideTheme){
+        val bgColor = if (isOverrideTheme) {
             ShopUtil.parseColorFromHexString(bodyBackgroundHexColor)
-        }else{
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        } else {
+            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
         }
-        (MethodChecker.getDrawable(
-            context,
-            R.drawable.bg_festivity_widget_background_white
-        ) as? GradientDrawable)?.let {
+        (
+            MethodChecker.getDrawable(
+                context,
+                R.drawable.bg_festivity_widget_background_white
+            ) as? GradientDrawable
+            )?.let {
             it.setColor(bgColor)
             backgroundDrawableWhite = it
         }
@@ -104,10 +107,11 @@ class ShopFestivityRvItemDecoration(
             val lastLeftChild = findLastLeftChild(parent)
             val lastRightChild = findLastRightChild(parent)
             val anchoredChild =
-                if (lastLeftChild?.bottom.orZero() < lastRightChild?.bottom.orZero())
+                if (lastLeftChild?.bottom.orZero() < lastRightChild?.bottom.orZero()) {
                     lastLeftChild
-                else
+                } else {
                     lastRightChild
+                }
             anchoredChild?.let {
                 drawWhiteBackgroundToFillGapOnLastProduct(it, parent, canvas)
             }
@@ -147,15 +151,17 @@ class ShopFestivityRvItemDecoration(
 
     private fun drawWhiteBackgroundFromLeftChildToRightChild(child: View, parent: RecyclerView, canvas: Canvas) {
         val top = child.top - child.marginTop
-        val right = if (child.right + parent.paddingRight == parent.right)
+        val right = if (child.right + parent.paddingRight == parent.right) {
             child.right + parent.paddingRight
-        else
+        } else {
             child.right
+        }
         val bottom = child.bottom + child.marginBottom
-        val left = if (child.left - parent.paddingLeft == parent.left)
+        val left = if (child.left - parent.paddingLeft == parent.left) {
             child.left - parent.paddingLeft
-        else
+        } else {
             child.left
+        }
         backgroundDrawableWhite?.setBounds(left, top, right, bottom)
         backgroundDrawableWhite?.draw(canvas)
     }
@@ -164,21 +170,25 @@ class ShopFestivityRvItemDecoration(
         val rvPadding = RV_PADDING.dpToPx()
         val midParent = parent.right / INT_TWO
         val top = child.bottom
-        val right = if (child.left >= midParent)
+        val right = if (child.left >= midParent) {
             child.right + rvPadding
-        else
+        } else {
             child.right
+        }
         val bottom = parent.bottom
-        val left = if (child.left < midParent)
+        val left = if (child.left < midParent) {
             child.left - rvPadding
-        else
+        } else {
             child.left
+        }
         backgroundDrawableWhite?.setBounds(left.toInt(), top, right.toInt(), bottom)
         backgroundDrawableWhite?.draw(canvas)
     }
 
     override fun getItemOffsets(
-        outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
     ) = outRect.set(0, 0, 0, 0)
-
 }

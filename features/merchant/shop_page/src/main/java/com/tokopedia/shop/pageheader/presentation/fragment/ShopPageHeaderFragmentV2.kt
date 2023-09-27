@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -48,9 +49,6 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.applyIconUnifyColor
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -210,8 +208,11 @@ import java.io.File
 import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.seller_migration_common.R as seller_migration_commonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-//TODO need to cleanup tracker class in the future
+// TODO need to cleanup tracker class in the future
 class ShopPageHeaderFragmentV2 :
     BaseDaggerFragment(),
     HasComponent<ShopPageHeaderComponent>,
@@ -400,7 +401,7 @@ class ShopPageHeaderFragmentV2 :
     private var shopPageHeaderP1Data: ShopPageHeaderP1HeaderData? = null
     private var isAlreadyGetShopPageP2Data: Boolean = false
 
-    private val bottomSheetTabNotFound: ShopEtalaseNotFoundBottomSheet by lazy{
+    private val bottomSheetTabNotFound: ShopEtalaseNotFoundBottomSheet by lazy {
         ShopEtalaseNotFoundBottomSheet.createInstance()
     }
 
@@ -431,7 +432,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     private fun configStatusBarAndSetFullScreen() {
-        activity?.window?.decorView?.systemUiVisibility =View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         activity?.window?.statusBarColor = Color.TRANSPARENT
     }
 
@@ -504,9 +505,9 @@ class ShopPageHeaderFragmentV2 :
         scrollToTopButton = viewBinding?.buttonScrollToTop
         miniCart = viewBinding?.miniCart
         //    we can't use viewbinding for the code below, since the layout from abstraction hasn't implement viewbinding
-        errorTextView = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.message_retry)
-        subErrorTextView = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.sub_message_retry)
-        errorButton = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.button_retry)
+        errorTextView = shopPageErrorState?.findViewById(abstractionR.id.message_retry)
+        subErrorTextView = shopPageErrorState?.findViewById(abstractionR.id.sub_message_retry)
+        errorButton = shopPageErrorState?.findViewById(abstractionR.id.button_retry)
         setupBottomSheetSellerMigration(view)
         initAdapter()
         initViewPager()
@@ -560,9 +561,10 @@ class ShopPageHeaderFragmentV2 :
                         ivTabFeedHasPost?.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK)
                     }
                 } catch (e: Throwable) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
                 }
                 tvTitleTabFeedHasPost?.setOnClickLinkSpannable(
-                    getString(com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content),
+                    getString(seller_migration_commonR.string.seller_migration_tab_feed_bottom_sheet_content),
                     ::trackContentFeedBottomSheet
                 ) {
                     val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
@@ -884,7 +886,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun updateFragmentTabContentWrapperTickerData(tickerResultData: ShopPageHeaderTickerData) {
         listShopPageTabModel.forEach {
-            if(it.tabFragment is ShopPageHeaderFragmentTabContentWrapper){
+            if (it.tabFragment is ShopPageHeaderFragmentTabContentWrapper) {
                 it.tabFragment.updateShopTickerData(
                     tickerResultData
                 )
@@ -1064,7 +1066,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     private fun getShopPageP2Data() {
-        if(!isAlreadyGetShopPageP2Data) {
+        if (!isAlreadyGetShopPageP2Data) {
             getShopShareAndOperationalHourStatusData()
             getFollowStatus()
             getSellerPlayWidget()
@@ -1380,40 +1382,40 @@ class ShopPageHeaderFragmentV2 :
             mapOf(
                 ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS to ShopUtil.getColorHexString(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    unifyprinciplesR.color.Unify_NN950
                 ),
                 ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS to ShopUtil.getColorHexString(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 ),
                 ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR to ShopUtil.getColorHexString(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    unifyprinciplesR.color.Unify_NN400
                 ),
                 ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR to ShopUtil.getColorHexString(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 ),
                 ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR to ShopUtil.getColorHexString(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                    unifyprinciplesR.color.Unify_NN900
                 ),
                 ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR to ShopUtil.getColorHexString(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                    unifyprinciplesR.color.Unify_NN900
                 ),
                 ShopPageColorSchema.ColorSchemaName.BG_PRIMARY_COLOR to ShopUtil.getColorHexString(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 ),
                 ShopPageColorSchema.ColorSchemaName.DIVIDER to ShopUtil.getColorHexString(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 ),
                 ShopPageColorSchema.ColorSchemaName.NAV_TEXT_ACTIVE to ShopUtil.getColorHexString(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                ),
+                    unifyprinciplesR.color.Unify_GN500
+                )
             )
         }.orEmpty()
     }
@@ -1442,7 +1444,7 @@ class ShopPageHeaderFragmentV2 :
     private fun updateShareIcon(isAffiliate: Boolean) {
         if (isEnableAffiliateShareIcon() && isAffiliate && !isMyShop) {
             listShopPageTabModel.forEach {
-                if(it.tabFragment is ShopPageHeaderFragmentTabContentWrapper){
+                if (it.tabFragment is ShopPageHeaderFragmentTabContentWrapper) {
                     it.tabFragment.updateShareIcon(IconList.ID_SHARE_AB_TEST)
                 }
             }
@@ -1765,6 +1767,7 @@ class ShopPageHeaderFragmentV2 :
         shopPageTracking?.sendAllTrackingQueue()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupTabs() {
         listShopPageTabModel = (setupTabContentWrapper() as? List<ShopPageHeaderTabModel>) ?: listOf()
         viewPagerAdapterHeader?.setPageTheme(
@@ -1839,12 +1842,12 @@ class ShopPageHeaderFragmentV2 :
     @SuppressLint("ClickableViewAccessibility")
     private fun setupTabPressedEffect(tab: TabLayout.Tab?, position: Int) {
         tab?.view?.let { tabView ->
-            tabView.setOnTouchListener{ v, event ->
-                if(position != getSelectedDynamicTabPosition()) {
-                    when(event.action){
+            tabView.setOnTouchListener { v, event ->
+                if (position != getSelectedDynamicTabPosition()) {
+                    when (event.action) {
                         MotionEvent.ACTION_MOVE -> {
                             (tabView.parent as ViewGroup).requestDisallowInterceptTouchEvent(true)
-                            if(event.x <= Int.ZERO || event.x >= v.width || event.y <= Int.ZERO || event.y >= v.height){
+                            if (event.x <= Int.ZERO || event.x >= v.width || event.y <= Int.ZERO || event.y >= v.height) {
                                 viewPagerAdapterHeader?.handleSelectedTab(tab, false)
                             }
                         }
@@ -1862,7 +1865,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     private fun setTabLayoutBackgroundColor() {
-        if(shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme == true) {
+        if (shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme == true) {
             val fragmentBackgroundColor = getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
             tabLayout?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
         }
@@ -1890,7 +1893,7 @@ class ShopPageHeaderFragmentV2 :
         val initialShopLayoutData = getShopLayoutDataBasedOnSelectedTab()
         when (val selectedFragment = getSelectedFragmentInstance()) {
             is ShopPageHeaderFragmentTabContentWrapper -> {
-                when(selectedFragment.getTabData()?.name.orEmpty()){
+                when (selectedFragment.getTabData()?.name.orEmpty()) {
                     ShopPageHeaderTabName.HOME, ShopPageHeaderTabName.CAMPAIGN -> {
                         selectedFragment.setInitialShopLayoutData(initialShopLayoutData)
                     }
@@ -1943,7 +1946,7 @@ class ShopPageHeaderFragmentV2 :
                     }
                 }
                 selectedPosition = getTabPositionBasedOnTabName(overrideTabName)
-                if (selectedPosition == -1 && listShopPageTabModel.isNotEmpty()){
+                if (selectedPosition == -1 && listShopPageTabModel.isNotEmpty()) {
                     bottomSheetTabNotFound.show(childFragmentManager)
                     selectedPosition = Int.ZERO
                 }
@@ -1974,7 +1977,7 @@ class ShopPageHeaderFragmentV2 :
     private fun setupTabContentWrapper(): List<ShopPageHeaderTabModel> {
         val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         shopPageHeaderDataModel?.listDynamicTabData?.forEach {
-            if(it.name == ShopPageHeaderTabName.FEED && shopPageHeaderP1Data?.isWhitelist != true){
+            if (it.name == ShopPageHeaderTabName.FEED && shopPageHeaderP1Data?.isWhitelist != true) {
                 return@forEach
             }
             val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
@@ -2008,11 +2011,11 @@ class ShopPageHeaderFragmentV2 :
         return listShopPageTabModel
     }
 
-
     private fun getFeedTabFragmentClassName(): Class<*>? {
         return try {
             Class.forName(FEED_SHOP_FRAGMENT)
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             null
         }
     }
@@ -2029,7 +2032,7 @@ class ShopPageHeaderFragmentV2 :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+                        unifyprinciplesR.color.Unify_NN950_68
                     )
                 )
                 text = getString(R.string.shop_page_error_sub_title_get_p1)
@@ -2327,7 +2330,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun setFragmentTabContentWrapperShopName(shopName: String) {
         listShopPageTabModel.forEach {
-            if(it.tabFragment is ShopPageHeaderFragmentTabContentWrapper){
+            if (it.tabFragment is ShopPageHeaderFragmentTabContentWrapper) {
                 it.tabFragment.updateShopName(
                     shopName
                 )
@@ -2705,8 +2708,8 @@ class ShopPageHeaderFragmentV2 :
         val headerLayoutData = shopPageHeaderP1Data?.shopHeaderLayoutData
         val isOverrideTextColor = headerLayoutData?.isOverrideTheme.orFalse()
         return if (isOverrideTextColor) {
-            if(getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            if (getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
+                unifyprinciplesR.color.Unify_Static_White
             } else {
                 R.color.dms_static_Unify_NN950_light
             }
@@ -3058,7 +3061,6 @@ class ShopPageHeaderFragmentV2 :
     }
 
     private fun newUniversalShareBottomSheet(path: String? = null) {
-
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(this@ShopPageHeaderFragmentV2)
 
@@ -3076,13 +3078,12 @@ class ShopPageHeaderFragmentV2 :
             val chips = ArrayList(
                 listShopPageTabModel.mapIndexed { index, shopPageHeaderTabModel ->
                     val isSelected = (index == tabLayout?.selectedTabPosition)
-                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment){
-                        (listShopPageTabModel[index].tabFragment as? ShopPageCampaignFragment)?.
-                        shopCampaignTabAdapter?.getCampaignBanner()?.data?.imageUrl.orEmpty()
-                    }else{
+                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment) {
+                        (listShopPageTabModel[index].tabFragment as? ShopPageCampaignFragment)
+                            ?.shopCampaignTabAdapter?.getCampaignBanner()?.data?.imageUrl.orEmpty()
+                    } else {
                         String.EMPTY
                     }
-
 
                     val shopUrl = Uri.parse(UriUtil.buildUri(shopPageHeaderDataModel?.shopCoreUrl ?: ""))
                         .buildUpon()
@@ -3099,14 +3100,13 @@ class ShopPageHeaderFragmentV2 :
                             id = shopPageHeaderDataModel?.shopId ?: "",
                             deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.SHOP, shopId))
                                 .buildUpon()
-                                .appendQueryParameter(QUERY_TAB,shopPageHeaderTabModel.tabName).toString()
+                                .appendQueryParameter(QUERY_TAB, shopPageHeaderTabModel.tabName).toString()
                         ),
                         index
                     )
-
                 }
             )
-            shopPageTracking?.showChipsInUniversalSharingBottomSheet(chips.joinToString("-"),shopId,userId)
+            shopPageTracking?.showChipsInUniversalSharingBottomSheet(chips.joinToString("-"), shopId, userId)
 
             val targetIndex = Int.ZERO
             chips.swap(tabLayout?.selectedTabPosition.orZero(), targetIndex)
@@ -3305,11 +3305,11 @@ class ShopPageHeaderFragmentV2 :
         }
         universalShareBottomSheet?.enableAffiliateCommission(inputShare)
         universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector)
-        //pageId = shopId-tabName
+        // pageId = shopId-tabName
         universalShareBottomSheet?.setUtmCampaignData(
             SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
             userId.ifEmpty { "0" },
-            shopId+"-${listShopPageTabModel.getOrNull(selectedPosition)?.chipsWording.orEmpty()}",
+            shopId + "-${listShopPageTabModel.getOrNull(selectedPosition)?.chipsWording.orEmpty()}",
             SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
         )
 
@@ -3317,29 +3317,28 @@ class ShopPageHeaderFragmentV2 :
             shopPageTracking?.clickChipsInUniversalSharingBottomSheet(it.title, shopId, userId)
 
             universalShareBottomSheet?.setShareText("${it.shareText} %s")
-            if (it.title == CHIPS_NAME_CAMPAIGN){
+            if (it.title == CHIPS_NAME_CAMPAIGN) {
                 universalShareBottomSheet?.getImageFromMedia(false)
-            }else{
+            } else {
                 universalShareBottomSheet?.setImageGeneratorParam(shopPageParamModel)
                 universalShareBottomSheet?.getImageFromMedia(shopPageParamModel.shopProfileImgUrl.isNotEmpty())
             }
 
-            if (it.title == CHIPS_NAME_TOKO_PAGE){
+            if (it.title == CHIPS_NAME_TOKO_PAGE) {
                 universalShareBottomSheet?.showAffiliateTicker()
-            }else{
+            } else {
                 universalShareBottomSheet?.hideAffiliateTicker()
             }
             universalShareBottomSheet?.setUtmCampaignData(
                 SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
                 userId.ifEmpty { "0" },
-                shopId+"-${it.title}",
+                shopId + "-${it.title}",
                 SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
             )
         }
-
     }
 
-    private fun getPathTab(tabName:String) : String{
+    private fun getPathTab(tabName: String): String {
         return when (tabName) {
             ShopPageHeaderTabName.HOME -> {
                 PATH_HOME
@@ -3363,7 +3362,7 @@ class ShopPageHeaderFragmentV2 :
             ShopPageHeaderTabName.CAMPAIGN -> {
                 PATH_CAMPAIGN
             }
-            else ->{
+            else -> {
                 ""
             }
         }
@@ -3516,7 +3515,7 @@ class ShopPageHeaderFragmentV2 :
         val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
         viewPager?.setCurrentItem(selectedTabPosition, false)
         tabLayout?.getTabAt(selectedTabPosition)?.select()
-        if(isScrollToTop) {
+        if (isScrollToTop) {
             val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
             (selectedFragment as? ShopPageHeaderFragmentTabContentWrapper)?.scrollToTop()
         }

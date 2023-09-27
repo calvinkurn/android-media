@@ -179,7 +179,6 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
 
             if (showProductRating) {
                 binding.tpgRating.text = rating
-                binding.imgStar.setBackgroundResource(R.drawable.ic_shop_home_star_filled)
             }
         }
 

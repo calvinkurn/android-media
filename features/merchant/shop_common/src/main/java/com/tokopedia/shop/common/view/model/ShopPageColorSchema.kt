@@ -9,9 +9,9 @@ import kotlinx.parcelize.RawValue
 @Parcelize
 data class ShopPageColorSchema(
     val listColorSchema: @RawValue List<ColorSchema> = listOf()
-): Parcelable {
+) : Parcelable {
     @Parcelize
-    enum class ColorSchemaName(val value: String) : Parcelable{
+    enum class ColorSchemaName(val value: String) : Parcelable {
         TEXT_HIGH_EMPHASIS("textColorHighEmphasis"),
         TEXT_LOW_EMPHASIS("textColorLowEmphasis"),
         DISABLED_TEXT_COLOR("disabledTextColor"),
@@ -20,14 +20,15 @@ data class ShopPageColorSchema(
         ICON_CTA_LINK_COLOR("iconCtaLinkColor"),
         BG_PRIMARY_COLOR("bgPrimaryColor"),
         DIVIDER("divider"),
-        NAV_TEXT_ACTIVE("navTextActive"),
+        NAV_TEXT_ACTIVE("navTextActive")
     }
+
     @Parcelize
     data class ColorSchema(
         val name: String = "",
         val type: String = "",
         val value: String = ""
-    ): Parcelable
+    ) : Parcelable
 
     fun getColorSchema(colorSchemaName: ColorSchemaName): ColorSchema? {
         return listColorSchema.firstOrNull { it.name == colorSchemaName.value }
@@ -36,10 +37,9 @@ data class ShopPageColorSchema(
     fun getColorIntValue(colorSchemaName: ColorSchemaName): Int {
         return try {
             Color.parseColor(listColorSchema.firstOrNull { it.name == colorSchemaName.value }?.value.orEmpty())
-        } catch (e: Exception) {
-            //TODO need to add default color from unify, but need to pass context on param
+        } catch (_: Exception) {
+            // TODO need to add default color from unify, but need to pass context on param
             Int.ZERO
         }
     }
-
 }

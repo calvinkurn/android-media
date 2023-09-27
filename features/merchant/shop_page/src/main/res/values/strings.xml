@@ -249,4 +249,7 @@
     <string name="shop_page_dot_character">•</string>
     <string name="shop_page_placeholder_discount_percentage">%d%%</string>
     <string name="shop_page_dot_separator">\u2022</string>
+    <string name="shop_showcase_navigation_tab_widget_content_description">imgBackgroundGradient</string>
+    <string name="shop_home_showcase_navigation_top_main_banner_content_description">imgBackgroundGradient</string>
+
 </resources>

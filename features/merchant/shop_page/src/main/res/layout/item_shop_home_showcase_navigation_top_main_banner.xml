@@ -41,6 +41,7 @@
         tools:visibility="visible" />
 
     <ImageView
+        android:contentDescription="@string/shop_home_showcase_navigation_top_main_banner_content_description"
         android:id="@+id/imgBackgroundGradient"
         android:layout_width="0dp"
         android:layout_height="168dp"

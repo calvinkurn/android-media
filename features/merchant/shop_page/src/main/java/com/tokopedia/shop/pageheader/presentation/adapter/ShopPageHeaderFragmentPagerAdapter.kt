@@ -30,6 +30,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUi
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ShopPageHeaderFragmentPagerAdapter(
     private val ctx: Context?,
@@ -43,10 +44,10 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 
     companion object {
         @ColorRes
-        private val ICON_COLOR_LIGHT_ENABLE = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        private val ICON_COLOR_LIGHT_ENABLE = unifyprinciplesR.color.Unify_GN500
 
         @ColorRes
-        private val ICON_COLOR_LIGHT = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+        private val ICON_COLOR_LIGHT = unifyprinciplesR.color.Unify_NN900
     }
 
     fun getTabView(position: Int, selectedPosition: Int): View = ShopPageTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
@@ -106,9 +107,9 @@ internal class ShopPageHeaderFragmentPagerAdapter(
         ctx?.let {
             textTabName.apply {
                 show()
-                if(isOverrideTheme) {
+                if (isOverrideTheme) {
                     setTabNameReimaginedColor(this, active)
-                }else{
+                } else {
                     setTabNameDefaultColor(this, active)
                 }
                 text = listShopPageTabModel.getOrNull(position)?.tabText.orEmpty()
@@ -135,10 +136,10 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     private fun setTabNameDefaultColor(typography: Typography, active: Boolean) {
         typography.apply {
             if (active) {
-                val linkColor = MethodChecker.getColor(ctxRef.get(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                val linkColor = MethodChecker.getColor(ctxRef.get(), unifyprinciplesR.color.Unify_GN500)
                 setTextColor(linkColor)
             } else {
-                val highEmphasizeColor = MethodChecker.getColor(ctxRef.get(), com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                val highEmphasizeColor = MethodChecker.getColor(ctxRef.get(), unifyprinciplesR.color.Unify_NN950)
                 setTextColor(highEmphasizeColor)
             }
         }
@@ -217,9 +218,9 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 iconDataJsonString,
                 ShopPageHeaderTabIconUrlModel::class.java
             ).run {
-                if(isOverrideTheme){
+                if (isOverrideTheme) {
                     configIconColorByBackgroundTheme(lightModeUrl, darkThemeUrl)
-                }else{
+                } else {
                     configIconColorByDeviceTheme(lightModeUrl, darkModeUrl)
                 }
             }
@@ -294,7 +295,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 
     fun getFragmentPosition(classType: Class<*>): Int {
         var fragmentPosition = 0
-        if(ShopUtil.isEnableShopPageReImagined(ctx)) {
+        if (ShopUtil.isEnableShopPageReImagined(ctx)) {
             listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
                 val tabFragmentInsideWrapper = (shopPageTabModel.tabFragment as? ShopPageHeaderFragmentTabContentWrapper)?.getTabFragment()
                 tabFragmentInsideWrapper?.let {
@@ -327,7 +328,6 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 it.tabFragment::class.java == classType
             } != null
         }
-
     }
 
     fun setPageTheme(
