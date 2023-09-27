@@ -38,4 +38,10 @@ object Event {
      */
     const val viewUpcomingIris = "viewUpcomingIris"
     const val clickUpcoming = "clickUpcoming"
+
+    /**
+     * Sharing
+     */
+    const val clickCommunication = "clickCommunication"
+    const val viewCommunicationIris = "viewCommunicationIris"
 }
