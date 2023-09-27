@@ -250,6 +250,11 @@ class StoriesProductBottomSheet @Inject constructor(
         mListener?.onImpressedProduct(getVisibleProducts(), this)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mListener = null
+    }
+
     interface Listener {
         fun onImpressedProduct(products: Map<ContentTaggedProductUiModel, Int>, view: StoriesProductBottomSheet)
         fun onClickedProduct(product: ContentTaggedProductUiModel, position: Int, view: StoriesProductBottomSheet)

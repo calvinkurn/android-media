@@ -1,7 +1,7 @@
 package com.tokopedia.stories.analytics
 
 import com.tokopedia.content.analytic.CurrentSite
-import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,9 +39,9 @@ class StoriesSharingAnalyticsImpl @AssistedInject constructor(
     override fun onClickShareIcon(storyId: String, ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                Key.event to KEY_TRACK_CLICK_COMMUNICATION,
+                Key.event to Event.clickCommunication,
                 Key.eventAction to "click - share button",
-                Key.eventCategory to EventCategory.storiesPage,
+                Key.eventCategory to storiesPage,
                 Key.eventLabel to "$role - $storyId - $shopId",
                 Key.businessUnit to KEY_TRACK_BUSINESS_UNIT_SHARE_EXPERIENCE,
                 Key.currentSite to CurrentSite.tokopediaMarketplace,
@@ -56,9 +56,9 @@ class StoriesSharingAnalyticsImpl @AssistedInject constructor(
     override fun onClickShareOptions(storyId: String, channel: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                Key.event to KEY_TRACK_CLICK_COMMUNICATION,
+                Key.event to Event.clickCommunication,
                 Key.eventAction to "click - sharing channel",
-                Key.eventCategory to EventCategory.storiesPage,
+                Key.eventCategory to storiesPage,
                 Key.eventLabel to "$channel - $role - $storyId - $shopId",
                 Key.businessUnit to KEY_TRACK_BUSINESS_UNIT_SHARE_EXPERIENCE,
                 Key.currentSite to CurrentSite.tokopediaMarketplace,
@@ -73,9 +73,9 @@ class StoriesSharingAnalyticsImpl @AssistedInject constructor(
     override fun onImpressShareSheet(storyId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                Key.event to KEY_TRACK_VIEW_COMMUNICATION_IRIS,
+                Key.event to Event.viewCommunicationIris,
                 Key.eventAction to "view on sharing channel",
-                Key.eventCategory to EventCategory.storiesPage,
+                Key.eventCategory to storiesPage,
                 Key.eventLabel to "$role - $storyId - $shopId",
                 Key.businessUnit to KEY_TRACK_BUSINESS_UNIT_SHARE_EXPERIENCE,
                 Key.currentSite to CurrentSite.tokopediaMarketplace,
@@ -90,9 +90,9 @@ class StoriesSharingAnalyticsImpl @AssistedInject constructor(
     override fun onCloseShareSheet(storyId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                Key.event to KEY_TRACK_CLICK_COMMUNICATION,
+                Key.event to Event.clickCommunication,
                 Key.eventAction to "click - close share bottom sheet",
-                Key.eventCategory to EventCategory.storiesPage,
+                Key.eventCategory to storiesPage,
                 Key.eventLabel to "$role - $storyId - $shopId",
                 Key.businessUnit to KEY_TRACK_BUSINESS_UNIT_SHARE_EXPERIENCE,
                 Key.currentSite to CurrentSite.tokopediaMarketplace,
@@ -105,8 +105,7 @@ class StoriesSharingAnalyticsImpl @AssistedInject constructor(
     }
 
     companion object {
-        internal const val KEY_TRACK_CLICK_COMMUNICATION = "clickCommunication"
-        internal const val KEY_TRACK_VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
         internal const val KEY_TRACK_BUSINESS_UNIT_SHARE_EXPERIENCE = "sharingexperience"
+        internal const val storiesPage = "stories page"
     }
 }

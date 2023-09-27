@@ -34,21 +34,23 @@ data class ContentTaggedProductUiModel(
         val discount: Int,
         val originalFormattedPrice: String,
         val formattedPrice: String,
-        val price: Double
-    ) : Price()
+        override val price: Double
+    ) : Price
 
     data class CampaignPrice(
         val originalFormattedPrice: String,
         val formattedPrice: String,
-        val price: Double
-    ) : Price()
+        override val price: Double
+    ) : Price
 
     data class NormalPrice(
         val formattedPrice: String,
-        val price: Double
-    ) : Price()
+        override val price: Double
+    ) : Price
 
-    sealed class Price
+    sealed interface Price {
+        val price : Double
+    }
 
     val finalPrice: Double
         get() {
