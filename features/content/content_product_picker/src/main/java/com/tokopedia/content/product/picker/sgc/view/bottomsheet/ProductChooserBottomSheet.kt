@@ -13,7 +13,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.content.common.util.throwable.isNetworkError
-import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroProductChooserBinding
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.content.product.picker.R
@@ -36,6 +35,7 @@ import com.tokopedia.content.product.picker.sgc.model.result.ContentProductPicke
 import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
 import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.product.picker.databinding.BottomSheetSgcProductChooserBinding
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
@@ -56,8 +56,8 @@ class ProductChooserBottomSheet @Inject constructor(
     private val router: Router,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
-    private var _binding: BottomSheetPlayBroProductChooserBinding? = null
-    private val binding: BottomSheetPlayBroProductChooserBinding
+    private var _binding: BottomSheetSgcProductChooserBinding? = null
+    private val binding: BottomSheetSgcProductChooserBinding
         get() = _binding!!
 
     private val eventBus by viewLifecycleBound(
@@ -175,7 +175,7 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetPlayBroProductChooserBinding.inflate(
+        _binding = BottomSheetSgcProductChooserBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         clearContentPadding = true

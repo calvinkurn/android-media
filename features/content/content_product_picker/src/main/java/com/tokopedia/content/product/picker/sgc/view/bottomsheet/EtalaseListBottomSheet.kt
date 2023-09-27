@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.content.common.util.eventbus.EventBus
-import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroEtalaseListBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.content.product.picker.R
 import com.tokopedia.content.product.picker.sgc.analytic.manager.EtalaseListAnalyticManager
@@ -18,6 +17,7 @@ import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.ProductListPaging
 import com.tokopedia.content.product.picker.sgc.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.product.picker.databinding.BottomSheetSgcEtalaseListBinding
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -32,8 +32,8 @@ class EtalaseListBottomSheet @Inject constructor(
     private val analyticManager: EtalaseListAnalyticManager,
 ) : BaseProductSetupBottomSheet() {
 
-    private var _binding: BottomSheetPlayBroEtalaseListBinding? = null
-    private val binding: BottomSheetPlayBroEtalaseListBinding
+    private var _binding: BottomSheetSgcEtalaseListBinding? = null
+    private val binding: BottomSheetSgcEtalaseListBinding
         get() = _binding!!
 
     private var mDataSource: DataSource? = null
@@ -84,7 +84,7 @@ class EtalaseListBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetPlayBroEtalaseListBinding.inflate(
+        _binding = BottomSheetSgcEtalaseListBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         setChild(binding.root)

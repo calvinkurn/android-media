@@ -9,7 +9,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key.ProductSummaryCommission
-import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroProductSummaryBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.content.product.picker.R
 import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
@@ -20,6 +19,7 @@ import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSection
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.sgc.util.productTagSummaryEmpty
 import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
+import com.tokopedia.content.product.picker.databinding.BottomSheetSgcProductSummaryBinding
 import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.content.product.picker.sgc.model.exception.PinnedProductException
@@ -44,8 +44,8 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     private var mListener: Listener? = null
 
-    private var _binding: BottomSheetPlayBroProductSummaryBinding? = null
-    private val binding: BottomSheetPlayBroProductSummaryBinding
+    private var _binding: BottomSheetSgcProductSummaryBinding? = null
+    private val binding: BottomSheetSgcProductSummaryBinding
         get() = _binding!!
 
     private val loadingDialogFragment: LoadingDialogFragment
@@ -105,7 +105,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetPlayBroProductSummaryBinding.inflate(
+        _binding = BottomSheetSgcProductSummaryBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         clearContentPadding = true

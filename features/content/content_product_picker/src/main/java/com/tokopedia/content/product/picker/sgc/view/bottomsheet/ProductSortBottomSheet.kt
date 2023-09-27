@@ -6,9 +6,9 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.util.eventbus.EventBus
-import com.tokopedia.content.product.picker.databinding.BottomSheetPlayBroProductSortBinding
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.content.product.picker.R
+import com.tokopedia.content.product.picker.databinding.BottomSheetSgcProductSortBinding
 import com.tokopedia.content.product.picker.sgc.model.SortListModel
 import com.tokopedia.content.product.picker.sgc.view.viewcomponent.SortListViewComponent
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
@@ -24,8 +24,8 @@ class ProductSortBottomSheet @Inject constructor(
     private val analytic: ContentProductPickerSGCAnalytic,
 ) : BottomSheetUnify() {
 
-    private var _binding: BottomSheetPlayBroProductSortBinding? = null
-    private val binding: BottomSheetPlayBroProductSortBinding
+    private var _binding: BottomSheetSgcProductSortBinding? = null
+    private val binding: BottomSheetSgcProductSortBinding
         get() = _binding!!
 
     private val eventBus by viewLifecycleBound(
@@ -70,7 +70,7 @@ class ProductSortBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetPlayBroProductSortBinding.inflate(
+        _binding = BottomSheetSgcProductSortBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         setChild(binding.root)

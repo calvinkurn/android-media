@@ -22,7 +22,7 @@ import com.tokopedia.content.product.picker.sgc.model.PriceUnknown
 import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.content.product.picker.databinding.BottomSheetPlayUgcProductPickerBinding
+import com.tokopedia.content.product.picker.databinding.BottomSheetUgcProductPickerBinding
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest
@@ -38,8 +38,8 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
     private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(R.dimen.content_product_picker_50_dp) ?: 0 }
 
-    private var _binding: BottomSheetPlayUgcProductPickerBinding? = null
-    private val binding: BottomSheetPlayUgcProductPickerBinding
+    private var _binding: BottomSheetUgcProductPickerBinding? = null
+    private val binding: BottomSheetUgcProductPickerBinding
         get() = _binding!!
 
     private val productTagListener = object : ProductTagParentFragment.Listener {
@@ -190,7 +190,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetPlayUgcProductPickerBinding.inflate(
+        _binding = BottomSheetUgcProductPickerBinding.inflate(
             LayoutInflater.from(requireContext())
         )
         clearContentPadding = true
