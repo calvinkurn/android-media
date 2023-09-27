@@ -1,11 +1,10 @@
-package com.tokopedia.oldcatalog.viewmodel
+package com.tokopedia.catalog.viewmodel
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.oldcatalog.CatalogTestUtils
+import com.tokopedia.catalog.CatalogTestUtils
 import com.tokopedia.oldcatalog.model.raw.CatalogProductItem
 import com.tokopedia.oldcatalog.model.raw.CatalogSearchProductResponse
 import com.tokopedia.oldcatalog.model.raw.ProductListResponse
@@ -22,13 +21,13 @@ import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.oldcatalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -94,12 +93,13 @@ class CatalogProductListingViewModelTest {
     fun `Get Catalog Product Response Success List More Than Limit`() {
         val productListResponse = ProductListResponse(CatalogSearchProductResponse.SearchProduct(
             CatalogSearchProductResponse.SearchProductHeader()))
-        val productsList = arrayListOf<CatalogProductItem?>()
+        val productsList = arrayListOf<CatalogProductItem>()
         for(i in 0 until 10 ){
             productsList.add(mockk(relaxed = true))
         }
         productListResponse.searchProduct?.data = CatalogSearchProductResponse.SearchProductData(
-            0,true,"",productsList)
+            0,true,"", productsList
+        )
         viewModel.comparisonCardIsAdded = false
         every { getProductListUseCase.execute(any(), any()) }.answers {
             (secondArg() as Subscriber<ProductListResponse>).onNext(productListResponse)

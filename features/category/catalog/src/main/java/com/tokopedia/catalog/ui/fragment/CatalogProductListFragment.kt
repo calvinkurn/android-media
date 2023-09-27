@@ -47,8 +47,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -66,8 +64,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import com.tokopedia.catalog.R as catalogR
 import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.catalog.R as catalogR
 
 class CatalogProductListFragment :
     BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
@@ -110,25 +108,15 @@ class CatalogProductListFragment :
         SortFilterBottomSheet()
     }
 
-    private val userSession: UserSession by lazy {
-        UserSession(activity)
-    }
+    private var userSession: UserSession? = null
 
-    private val catalogUrl: String by lazy {
-        arguments?.getString(ARG_EXTRA_CATALOG_URL).orEmpty()
-    }
+    private var catalogUrl: String = ""
 
-    private val catalogTitle: String by lazy {
-        arguments?.getString(ARG_EXTRA_CATALOG_TITLE).orEmpty()
-    }
+    private var catalogTitle: String = ""
 
-    private val catalogId: String by lazy {
-        arguments?.getString(ARG_EXTRA_CATALOG_ID).orEmpty()
-    }
+    private var catalogId: String =  ""
 
-    private val productSortingStatus: String by lazy {
-        arguments?.getString(ARG_EXTRA_PRODUCT_SORTING_STATUS).orEmpty()
-    }
+    private var productSortingStatus: String = ""
 
     private val emptyModelFilter: CatalogProductListEmptyModel by lazy {
         CatalogProductListEmptyModel(isFromFilter = true).apply {
@@ -159,6 +147,12 @@ class CatalogProductListFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        userSession = UserSession(activity)
+        catalogUrl = arguments?.getString(ARG_EXTRA_CATALOG_URL).orEmpty()
+        catalogTitle = arguments?.getString(ARG_EXTRA_CATALOG_TITLE).orEmpty()
+        catalogId = arguments?.getString(ARG_EXTRA_CATALOG_ID).orEmpty()
+        productSortingStatus = arguments?.getString(ARG_EXTRA_PRODUCT_SORTING_STATUS).orEmpty()
+
         setupObserver(view)
         initToolbar()
         initChooseAddressWidget()
@@ -242,10 +236,10 @@ class CatalogProductListFragment :
             when (it) {
                 is Success -> {
                     val hasNextPage = it.data.isNotEmpty()
-                    if (hasNextPage){
+                    if (hasNextPage) {
                         products.addAll(it.data)
                         renderList(products, true)
-                    }else{
+                    } else {
                         renderList(emptyList(), false)
                     }
                 }
@@ -460,8 +454,8 @@ class CatalogProductListFragment :
             trackerId = CatalogTrackerConstant.TRACKER_ID_CLICK_ADD_TO_CART_CATALOG_PRODUCT_LIST,
             item = item,
             searchFilterMap = viewModel.searchParametersMap.value,
-            position = adapterPosition+1,
-            userSession.userId,
+            position = adapterPosition + 1,
+            userSession?.userId.orEmpty(),
             catalogUrl
         )
         addToCart(atcModel)
@@ -476,8 +470,8 @@ class CatalogProductListFragment :
             trackerId = CatalogTrackerConstant.TRACKER_ID_CLICK_CATALOG_PRODUCT_LIST,
             item = item,
             searchFilterMap = viewModel.searchParametersMap.value,
-            position = adapterPosition+1,
-            userId = userSession.userId,
+            position = adapterPosition + 1,
+            userId = userSession?.userId.orEmpty(),
             catalogUrl = catalogUrl
         )
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
@@ -492,8 +486,8 @@ class CatalogProductListFragment :
             trackerId = CatalogTrackerConstant.TRACKER_ID_IMPRESSION_PRODUCT,
             item = item,
             searchFilterMap = viewModel.searchParametersMap.value,
-            position = position+1,
-            userId = userSession.userId,
+            position = position + 1,
+            userId = userSession?.userId.orEmpty(),
             catalogUrl = catalogUrl
         )
     }
@@ -759,7 +753,7 @@ class CatalogProductListFragment :
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.refreshNotification()
         }
-        AtcVariantHelper.onActivityResultAtcVariant(context?:return, requestCode, data) {
+        AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
             viewModel.refreshNotification()
         }
     }

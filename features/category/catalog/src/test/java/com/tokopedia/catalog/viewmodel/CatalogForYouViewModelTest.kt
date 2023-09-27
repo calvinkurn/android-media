@@ -15,7 +15,6 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.oldcatalog.viewmodel.CatalogForYouViewModel
-import com.tokopedia.oldcatalog.viewmodel.CatalogViewModelTest
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import junit.framework.Assert.assertEquals

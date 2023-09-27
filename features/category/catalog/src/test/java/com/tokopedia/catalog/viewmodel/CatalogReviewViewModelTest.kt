@@ -3,14 +3,15 @@ package com.tokopedia.oldcatalog.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.oldcatalog.CatalogTestUtils
+import com.tokopedia.catalog.CatalogTestUtils
+import com.tokopedia.catalog.viewmodel.CatalogViewModelTest
 import com.tokopedia.oldcatalog.model.raw.CatalogProductReviewResponse
-import com.tokopedia.catalog.Repository.CatalogAllReviewRepository
 import com.tokopedia.oldcatalog.usecase.detail.CatalogAllReviewUseCase
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.oldcatalog.repository.CatalogAllReviewRepository
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -66,7 +67,8 @@ class CatalogReviewViewModelTest {
 
     @Test
     fun `Get Catalog Review Response Fail`() {
-        val mockGqlResponse: GraphqlResponse  = CatalogViewModelTest.createMockGraphqlResponse(CatalogViewModelTest.getJsonObject("catalog_empty_dummy_response.json"))
+        val mockGqlResponse: GraphqlResponse  = CatalogViewModelTest.createMockGraphqlResponse(
+            CatalogViewModelTest.getJsonObject("catalog_empty_dummy_response.json"))
         runBlocking {
             coEvery { catalogAllReviewRepository.getAllReviews(any(),any(), any()) } returns mockGqlResponse
             viewModel.getAllReviews(CatalogTestUtils.CATALOG_ID,"star","5")

@@ -1,20 +1,20 @@
-package com.tokopedia.oldcatalog.viewmodel
+package com.tokopedia.catalog.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.oldcatalog.CatalogTestUtils
+import com.tokopedia.catalog.CatalogTestUtils
 import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.oldcatalog.model.datamodel.CatalogStaggeredProductModel
 import com.tokopedia.oldcatalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.oldcatalog.model.util.CatalogConstant
-import com.tokopedia.catalog.Repository.CatalogComparisonProductRepository
-import com.tokopedia.catalog.viewmodel.CatalogForYouViewModelTest
 import com.tokopedia.oldcatalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.oldcatalog.repository.CatalogComparisonProductRepository
+import com.tokopedia.oldcatalog.viewmodel.CatalogProductComparisonViewModel
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import junit.framework.Assert.assertEquals
@@ -115,7 +115,8 @@ class CatalogComparisonViewModelTest {
 
     @Test
     fun `Get Catalog Comparison Response Fail`() {
-        val mockGqlResponse: GraphqlResponse  = CatalogViewModelTest.createMockGraphqlResponse(CatalogViewModelTest.getJsonObject("catalog_empty_dummy_response.json"))
+        val mockGqlResponse: GraphqlResponse  =
+            CatalogViewModelTest.createMockGraphqlResponse(CatalogViewModelTest.getJsonObject("catalog_empty_dummy_response.json"))
         runBlocking {
             coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } returns mockGqlResponse
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")

@@ -9,6 +9,7 @@ import com.tokopedia.common_category.model.productModel.BadgesItem
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 import kotlinx.android.parcel.Parcelize
 import java.util.*
+import kotlin.collections.ArrayList
 
 data class CatalogSearchProductResponse(
         @SerializedName("ace_search_product_v4")
@@ -59,19 +60,19 @@ data class CatalogSearchProductResponse(
 
     data class SearchProductData(
 
-            @SerializedName("totalData")
+        @SerializedName("totalData")
             @Expose
-            var totalData: Int = 0,
+        var totalData: Int = 0,
 
-            @SerializedName("isQuerySafe")
+        @SerializedName("isQuerySafe")
             @Expose
-            val isQuerySafe: Boolean = true,
+        val isQuerySafe: Boolean = true,
 
-            @SerializedName("autocompleteApplink")
+        @SerializedName("autocompleteApplink")
             @Expose
-            val autocompleteApplink: String = "",
+        val autocompleteApplink: String = "",
 
-            @SerializedName("products")
+        @SerializedName("products")
             @Expose
             val catalogProductItemList: ArrayList<CatalogProductItem> = ArrayList()
     )
