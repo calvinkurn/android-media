@@ -6,6 +6,7 @@ import android.graphics.PorterDuffColorFilter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.unifycomponents.Label
 
 /**
@@ -21,10 +22,10 @@ data class ColorPallete(
     var secondaryTextColor: String? = null, // 6D7588
     var slashedTextColor: String? = null, // #F94D63 for slash price
     var slashedBackgroundColor: String? = null, // for slash price, background under slashed text
-    var buttonAccent: String? = null, //#00AA5B green for button
+    var buttonAccent: String? = null, // #00AA5B green for button
     var white: String? = null, // #FFFFFF white for background under button, text in button, etc
     var darkGrey: String? = null, // #6D7588 for title text, etx
-    var black: String? = null, // #2E3137 for tinting standard icon, ex: plus button icon
+    var black: String? = null // #2E3137 for tinting standard icon, ex: plus button icon
 ) {
     companion object {
         fun safeParseColor(color: String?): Int? {
@@ -34,6 +35,7 @@ data class ColorPallete(
             return try {
                 Color.parseColor(color)
             } catch (throwable: Throwable) {
+                FirebaseCrashlytics.getInstance().recordException(throwable)
                 null
             }
         }
@@ -64,7 +66,6 @@ data class ColorPallete(
             ColorType.BLACK -> black
         }
     }
-
 }
 
 fun ColorPallete?.getColorInt(colorType: ColorPallete.ColorType): Int? {
