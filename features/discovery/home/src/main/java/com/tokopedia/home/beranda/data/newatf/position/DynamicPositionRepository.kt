@@ -31,7 +31,7 @@ class DynamicPositionRepository @Inject constructor(
 
     private suspend fun getCachedData() {
         val cachedData = AtfDataList(
-            listAtfData = atfDao.getAtfDynamicPosition().map(AtfMapper::mapRemoteToDomainAtfData),
+            listAtfData = atfDao.getAtfDynamicPosition().map(AtfMapper::mapCacheToDomainAtfData),
             isCache = true,
         )
         Log.d("atfflow", "DynamicPositionRepository getCachedData: $cachedData")

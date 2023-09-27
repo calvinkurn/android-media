@@ -60,7 +60,7 @@ object AtfMapper {
         )
     }
 
-    fun mapRemoteToDomainAtfData(
+    fun mapCacheToDomainAtfData(
         data: AtfCacheEntity,
     ): AtfData {
         return AtfData(
@@ -71,6 +71,7 @@ object AtfMapper {
                  component = data.component,
                  param = data.param,
                  isOptional = data.isOptional,
+                 lastUpdate = data.lastUpdate,
             ),
             atfContent = data.getAtfContent(),
             isCache = true,
@@ -97,7 +98,7 @@ object AtfMapper {
         listAtfData.forEachIndexed { index, value ->
             value.atfContent.run {
                 when(this) {
-                    is BannerDataModel -> visitables.add(this.asVisitable(index, value.isCache))
+                    is BannerDataModel -> visitables.add(this.asVisitable(index, value.isCache, value.atfMetadata.lastUpdate))
                     is DynamicHomeIcon -> visitables.add(this.asVisitable(value.atfMetadata.id, index, value.isCache))
                     is Ticker -> this.asVisitable(index, value.isCache)?.let { visitables.add(it) }
 //                    is DynamicHomeChannel -> this.asVisitableList()

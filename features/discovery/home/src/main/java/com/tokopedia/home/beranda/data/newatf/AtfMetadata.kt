@@ -7,4 +7,5 @@ data class AtfMetadata(
     val component: String = "",
     val param: String = "",
     val isOptional: Boolean = false,
+    val lastUpdate: Long = System.currentTimeMillis(),
 )
