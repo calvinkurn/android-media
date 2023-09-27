@@ -97,6 +97,11 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
         mListener = listener
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mListener = null
+    }
+
     interface Listener {
         fun onRemoveStory(view: StoriesThreeDotsBottomSheet)
     }

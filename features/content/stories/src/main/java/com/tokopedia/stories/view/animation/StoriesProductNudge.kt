@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -36,7 +35,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * @author by astidhiyaa on 18/08/23
  */
 @Composable
-fun StoriesProductNotch(productCount: String, onClick: () -> Unit) {
+fun StoriesProductNudge(productCount: String, onClick: () -> Unit) {
     NestTheme {
         val ctx = LocalContext.current
 

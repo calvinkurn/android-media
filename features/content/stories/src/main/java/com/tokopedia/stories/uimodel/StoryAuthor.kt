@@ -5,11 +5,10 @@ package com.tokopedia.stories.uimodel
  */
 sealed class StoryAuthor {
     abstract val id: String
-    abstract val type: AuthorType //TODO() check if its available in common
+    abstract val type: AuthorType
     abstract val thumbnailUrl: String
     abstract val name: String
     abstract val appLink: String
-
 
     data class Shop(
         val shopName: String,
@@ -34,8 +33,7 @@ sealed class StoryAuthor {
         val userId: String,
         val avatarUrl: String,
         override val appLink: String
-    ) :
-        StoryAuthor() {
+    ) : StoryAuthor() {
         override val id: String
             get() = userId
         override val type: AuthorType

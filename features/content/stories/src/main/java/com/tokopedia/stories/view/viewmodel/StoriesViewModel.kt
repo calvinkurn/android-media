@@ -418,7 +418,7 @@ class StoriesViewModel @AssistedInject constructor(
                 )
 
                 if (response) {
-                    if (action == StoriesProductAction.ATC)
+                    if (action == StoriesProductAction.Atc)
                         _storiesEvent.emit(StoriesUiEvent.ProductSuccessEvent(action, R.string.stories_product_atc_success))
                     else _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
                 } else throw MessageErrorException()

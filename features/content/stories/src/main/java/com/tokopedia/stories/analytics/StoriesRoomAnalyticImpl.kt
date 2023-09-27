@@ -193,11 +193,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
                 putInt(Key.itemIndex, it.value + 1)
                 putString(Key.itemId, it.key.id)
                 putString(Key.itemName, it.key.title)
-                putFloat(Key.price, when (val price = it.key.price){
-                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
-                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
-                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
-                })
+                putFloat(Key.price, it.key.price.price.toFloat())
                 putString(Key.itemShopId, args.authorId)
                 putString(Key.itemShopType, args.authorType)
                 putString(Key.dimension40, "/stories-room - product card")

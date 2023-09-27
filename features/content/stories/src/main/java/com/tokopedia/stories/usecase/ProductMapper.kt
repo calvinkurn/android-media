@@ -84,8 +84,7 @@ class ProductMapper @Inject constructor() {
     ): StoriesCampaignUiModel {
         val timeFormat = "yyyy-MM-dd HH:mm"
         return when (campaign.status) {
-            "ongoing" -> StoriesCampaignUiModel.Ongoing(title = campaign.name, endTime = campaign.endTime.toDate(timeFormat))
-            "upcoming" -> StoriesCampaignUiModel.Ongoing(title = campaign.name, endTime = campaign.endTime.toDate(timeFormat))
+            "ongoing", "upcoming" -> StoriesCampaignUiModel.Ongoing(title = campaign.name, endTime = campaign.endTime.toDate(timeFormat))
             else -> StoriesCampaignUiModel.Unknown
         }
     }

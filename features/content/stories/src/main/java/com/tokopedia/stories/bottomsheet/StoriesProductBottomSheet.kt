@@ -201,7 +201,7 @@ class StoriesProductBottomSheet @Inject constructor(
         product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
-        handleProductAction(StoriesProductAction.ATC, product, itemPosition)
+        handleProductAction(StoriesProductAction.Atc, product, itemPosition)
     }
 
     override fun onBuyProductButtonClicked(
@@ -259,6 +259,11 @@ class StoriesProductBottomSheet @Inject constructor(
 
     private fun sendImpression() {
         mListener?.onImpressedProduct(getVisibleProducts(), this)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mListener = null
     }
 
     interface Listener {
