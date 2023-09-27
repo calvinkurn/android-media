@@ -15,10 +15,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeCardDonationViewHolder(
     itemView: View,
@@ -31,9 +31,9 @@ class ShopHomeCardDonationViewHolder(
         itemView.findViewById(R.id.shop_home_card_donation_description)
     private val container: CardUnify2 =
         itemView.findViewById(R.id.shop_home_card_donation_card_container)
-    private var cardBackgroundColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
-    private var descriptionTextColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
-    private var ctaDescriptionTextColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+    private var cardBackgroundColor: Int = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Background)
+    private var descriptionTextColor: Int = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950_96)
+    private var ctaDescriptionTextColor: Int = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_GN500)
     override fun bind(element: ShopHomeCardDonationUiModel) {
         configColorTheme(element)
         container.setCardBackgroundColor(cardBackgroundColor)
@@ -81,7 +81,7 @@ class ShopHomeCardDonationViewHolder(
     private fun configReimaginedColor() {
         cardBackgroundColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            unifyprinciplesR.color.Unify_Static_White
         )
         descriptionTextColor = MethodChecker.getColor(
             itemView.context,
@@ -96,15 +96,15 @@ class ShopHomeCardDonationViewHolder(
     private fun configDefaultColor() {
         cardBackgroundColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background
+            unifyprinciplesR.color.Unify_Background
         )
         descriptionTextColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         ctaDescriptionTextColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            unifyprinciplesR.color.Unify_GN500
         )
     }
 
