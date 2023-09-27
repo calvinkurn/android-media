@@ -639,6 +639,10 @@ class SmartBillsFragment :
     override fun onItemClicked(t: RechargeBillsModel?) {
     }
 
+    override fun onClickMultiCheckout() {
+        //do nothing
+    }
+
     override fun isChecked(position: Int): Boolean {
         return adapter.isChecked(position)
     }
