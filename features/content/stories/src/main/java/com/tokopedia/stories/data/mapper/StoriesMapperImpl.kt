@@ -14,8 +14,8 @@ import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.Meta
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
-import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
-import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Video
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.stories.view.model.StoriesGroupItem
@@ -82,7 +82,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     id = stories.id,
                     event = StoriesDetailItemUiEvent.PAUSE,
                     content = StoriesItemContent(
-                        type = if (stories.media.type == IMAGE.value) IMAGE else VIDEO,
+                        type = if (stories.media.type == Image.value) Image else Video,
                         data = stories.media.link,
                         duration = 7 * 1000
                     ),
