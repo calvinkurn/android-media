@@ -55,7 +55,7 @@ fun mockInitialDataModel(
                                 id = "0",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "data 0",
                                     duration = 7 * 1000,
                                 ),
@@ -70,7 +70,7 @@ fun mockInitialDataModel(
                                 id = "1",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "data 1",
                                     duration = 7 * 1000,
                                 ),
@@ -85,7 +85,7 @@ fun mockInitialDataModel(
                                 id = "2",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "data 2",
                                     duration = 7 * 1000,
                                 ),
@@ -113,7 +113,7 @@ fun mockInitialDataModel(
                                 id = "0",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "data 0",
                                     duration = 7 * 1000,
                                 ),
@@ -128,7 +128,7 @@ fun mockInitialDataModel(
                                 id = "1",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "data 1",
                                     duration = 7 * 1000,
                                 ),
@@ -143,7 +143,7 @@ fun mockInitialDataModel(
                                 id = "2",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "data 2",
                                     duration = 7 * 1000,
                                 ),
@@ -171,7 +171,7 @@ fun mockInitialDataModel(
                                 id = "0",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "data 0",
                                     duration = 7 * 1000,
                                 ),
@@ -186,7 +186,7 @@ fun mockInitialDataModel(
                                 id = "1",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "data 1",
                                     duration = 7 * 1000,
                                 ),
@@ -201,7 +201,7 @@ fun mockInitialDataModel(
                                 id = "2",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "data 2",
                                     duration = 7 * 1000,
                                 ),
@@ -264,7 +264,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                             id = "0",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "data 0",
                                 duration = 7 * 1000,
                             ),
@@ -279,7 +279,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                             id = "1",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "data 1",
                                 duration = 7 * 1000,
                             ),
@@ -294,7 +294,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                             id = "2",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "data 2",
                                 duration = 7 * 1000,
                             ),
@@ -358,7 +358,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                             id = "0",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "data 0",
                                 duration = 7 * 1000,
                             ),
@@ -373,7 +373,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                             id = "1",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "data 1",
                                 duration = 7 * 1000,
                             ),
@@ -388,7 +388,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                             id = "2",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "data 2",
                                 duration = 7 * 1000,
                             ),
@@ -449,7 +449,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                             id = "0",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "data 0",
                                 duration = 7 * 1000,
                             ),
@@ -464,7 +464,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                             id = "1",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "data 1",
                                 duration = 7 * 1000,
                             ),
@@ -479,7 +479,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                             id = "2",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "data 2",
                                 duration = 7 * 1000,
                             ),
