@@ -23,7 +23,7 @@
             tools:visibility="visible" />
 
         <ImageView
-            android:contentDescription="imgBackgroundGradient"
+            android:contentDescription="@string/shop_showcase_navigation_tab_widget_content_description"
             android:id="@+id/imgBackgroundGradient"
             android:layout_width="match_parent"
             android:layout_height="90dp"
