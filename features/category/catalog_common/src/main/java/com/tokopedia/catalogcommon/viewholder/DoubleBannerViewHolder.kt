@@ -12,6 +12,7 @@ import com.tokopedia.catalogcommon.databinding.WidgetItemDoubleBannerImageBindin
 import com.tokopedia.catalogcommon.databinding.WidgetItemDoubleBannerImageContentBinding
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
+import com.tokopedia.kotlin.extensions.view.isEven
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
@@ -31,7 +32,7 @@ class DoubleBannerViewHolder(
     override fun bind(element: DoubleBannerCatalogUiModel) {
         binding?.rvImages?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = DoubleImageAdapter(element.imageUrls.zipWithNext())
+            adapter = DoubleImageAdapter(element.imageUrls.zipWithNext().filterIndexed { index, _ -> index.isEven() })
         }
         doubleBannerListener?.onDoubleBannerImpression()
     }
