@@ -1048,6 +1048,7 @@ class CheckoutViewModel @Inject constructor(
         if (orderModel != null) {
             if (result?.courier != null) {
                 val courierItemData = result.courier
+                orderModel.validationMetadata = order.validationMetadata
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
@@ -1475,7 +1476,11 @@ class CheckoutViewModel @Inject constructor(
                 ordersItem.benefitClass = selectedShipper.benefitClass
                 ordersItem.shippingPrice = selectedShipper.shippingRate.toDouble()
                 ordersItem.etaText = selectedShipper.etaText!!
-                ordersItem.validationMetadata = order.validationMetadata
+                ordersItem.validationMetadata = if (scheduleDeliveryUiModel.isSelected) {
+                    scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+                } else {
+                    ""
+                }
             }
         }
         val newItems = promoProcessor.validateUseLogisticPromo(
