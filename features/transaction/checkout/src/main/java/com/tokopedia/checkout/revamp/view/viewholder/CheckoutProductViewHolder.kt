@@ -478,7 +478,8 @@ class CheckoutProductViewHolder(
                     val bmgmCommonData = CheckoutBmgmMapper.mapBmgmCommonDataModel(
                         product,
                         product.warehouseId.toLongSafely(),
-                        product.shopId
+                        product.shopId,
+                        itemView.context.getString(R.string.bmgm_mini_cart_bottom_sheet_title)
                     )
                     PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, bmgmCommonData)
                     listener.onClickBmgmInfoIcon(product.bmgmOfferId.toString(), product.shopId)
