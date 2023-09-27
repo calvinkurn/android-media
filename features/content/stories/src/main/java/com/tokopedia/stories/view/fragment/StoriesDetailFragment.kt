@@ -112,9 +112,6 @@ class StoriesDetailFragment @Inject constructor(
     private val groupId: String
         get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
 
-    private val shopId: String
-        get() = arguments?.getString(SHOP_ID).orEmpty()
-
     private val activityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -489,7 +486,7 @@ class StoriesDetailFragment @Inject constructor(
             ProductVariantBottomSheetParams(
                 pageSource = VariantPageSource.STORIES_PAGESOURCE.source,
                 productId = product.id,
-                shopId = shopId, // is shop id mandatory from applink?
+                shopId = mParentPage.args.authorId,
                 dismissAfterTransaction = false,
                 trackerCdListName = viewModel.storyId
             )
@@ -514,9 +511,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "StoriesDetailFragment"
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
-        const val STORY_GROUP_ID = "StoriesGroupId"
 
         fun getFragment(
             fragmentManager: FragmentManager,
