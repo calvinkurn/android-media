@@ -281,7 +281,7 @@ class OfferLandingPageFragment :
             val offer = offerInfoForBuyer?.offerings?.firstOrNull() ?: return@run
             setOnCheckCartClickListener(offer.endDate) { isOfferEnded ->
                 if (isOfferEnded) {
-                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
+                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
                 }
             }
         }
@@ -518,7 +518,7 @@ class OfferLandingPageFragment :
                         )
                     }
 
-                    Status.OFFER_ALREADY_FINISH -> {
+                    Status.OFFER_ENDED -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
                             description = getString(R.string.bmgm_description_error_ended_promo),
@@ -635,7 +635,7 @@ class OfferLandingPageFragment :
                 if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
                     addToCartProduct(product)
                 } else {
-                    setViewState(VIEW_ERROR, Status.OFFER_ALREADY_FINISH)
+                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
                 }
             }
         } else {
