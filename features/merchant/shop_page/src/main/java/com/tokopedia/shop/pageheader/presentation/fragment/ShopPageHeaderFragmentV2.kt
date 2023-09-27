@@ -513,7 +513,6 @@ class ShopPageHeaderFragmentV2 :
         initAdapter()
         initViewPager()
         mainLayout?.requestFocus()
-        getScrollToTopButtonInitialMargin()
         if (shopHeaderViewModel?.isUserSessionActive == false) initStickyLogin()
         scrollToTopButton?.apply {
             circleMainMenu.backgroundTintList = ContextCompat.getColorStateList(context, R.color.dms_clr_2E2F36_70)
@@ -592,11 +591,6 @@ class ShopPageHeaderFragmentV2 :
     private fun trackContentFeedBottomSheet() {
         val userSession = UserSession(context)
         SellerMigrationTracking.trackClickShopAccount(userSession.userId.orEmpty())
-    }
-
-    private fun getScrollToTopButtonInitialMargin() {
-        val scrollToTopButtonLayoutParams = (scrollToTopButton?.layoutParams as ViewGroup.MarginLayoutParams)
-        initialScrollToTopButtonMarginBottom = scrollToTopButtonLayoutParams.bottomMargin
     }
 
     private fun observeLiveData(owner: LifecycleOwner) {
@@ -1340,7 +1334,6 @@ class ShopPageHeaderFragmentV2 :
 
             override fun onViewChange(isShowing: Boolean) {
                 updateViewPagerPadding()
-                updateScrollToTopButtonMargin()
             }
         })
 
@@ -2275,28 +2268,6 @@ class ShopPageHeaderFragmentV2 :
         shopPageHeaderDataModel?.shopSnippetUrl?.let {
             shopHeaderViewModel?.saveShopImageToPhoneStorage(context, it)
         }
-    }
-
-    private fun updateScrollToTopButtonMargin() {
-        val scrollToTopButtonLayoutParams = (scrollToTopButton?.layoutParams as ViewGroup.MarginLayoutParams)
-        if (stickyLoginView?.isShowing() == true) {
-            stickyLoginView?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-            val stickyLoginViewHeight = stickyLoginView?.measuredHeight.orZero()
-            scrollToTopButtonLayoutParams.setMargins(
-                scrollToTopButtonLayoutParams.leftMargin,
-                scrollToTopButtonLayoutParams.topMargin,
-                scrollToTopButtonLayoutParams.rightMargin,
-                stickyLoginViewHeight + MARGIN_BOTTOM_STICKY_LOGIN
-            )
-        } else {
-            scrollToTopButtonLayoutParams.setMargins(
-                scrollToTopButtonLayoutParams.leftMargin,
-                scrollToTopButtonLayoutParams.topMargin,
-                scrollToTopButtonLayoutParams.rightMargin,
-                initialScrollToTopButtonMarginBottom + MARGIN_BOTTOM_STICKY_LOGIN
-            )
-        }
-        scrollToTopButton?.layoutParams = scrollToTopButtonLayoutParams
     }
 
     private fun updateViewPagerPadding() {
