@@ -171,7 +171,7 @@ class ShopHomeSliderBannerViewHolder(
     private fun configFestivity() {
         val festivityTextColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            unifyprinciplesR.color.Unify_Static_White
         )
         textViewTitle?.setTextColor(festivityTextColor)
     }
