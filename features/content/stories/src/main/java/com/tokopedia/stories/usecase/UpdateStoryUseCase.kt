@@ -1,5 +1,6 @@
 package com.tokopedia.stories.usecase
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -23,7 +24,9 @@ class UpdateStoryUseCase @Inject constructor(
     }
 
     data class Param(
+        @SerializedName("storyId")
         val storyId: String,
+        @SerializedName("action")
         val action: StoryActionType
     ) {
         fun convertToMap(): Map<String, Any> {
