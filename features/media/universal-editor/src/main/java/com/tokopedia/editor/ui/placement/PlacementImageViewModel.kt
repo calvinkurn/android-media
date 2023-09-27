@@ -24,7 +24,7 @@ class PlacementImageViewModel @Inject constructor(
 
     var initialImageMatrix: FloatArray? = null
 
-    var isLoadingShow = MutableLiveData(false)
+    val isLoadingShow = MutableLiveData(false)
 
     private var _placementModelResult = MutableLiveData<ImagePlacementModel>(null)
     val placementModelResult get() = _placementModelResult

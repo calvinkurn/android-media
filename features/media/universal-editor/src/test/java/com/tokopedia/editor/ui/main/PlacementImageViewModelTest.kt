@@ -9,6 +9,8 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -108,6 +110,7 @@ class PlacementImageViewModelTest {
         viewModel.isShowExitConfirmation(currentMatrixValue).let {
             assertEquals(false, it)
         }
+        assertEquals(initialMatrixValue, viewModel.initialImageMatrix)
     }
 
     @Test
@@ -139,5 +142,33 @@ class PlacementImageViewModelTest {
             assertEquals(resultPath, it.path)
             assertEquals(placementModel.translateY, it.translateY)
         }
+    }
+
+    @Test
+    fun `should catch on flatten exception`() {
+        // Given
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        val resultPath = "dummy_path/result_file.png"
+        val placementModel = ImagePlacementModel(
+            "dummy_path/file_name.png",
+            scale = 1f,
+            angle = 0f,
+            translateX = 100f,
+            translateY = 100f
+        )
+
+        // When
+        every { imageSaveRepository.saveBitmap(any(), any()) }.throws(Exception())
+        viewModel.savePlacementBitmap(
+            resultPath,
+            bitmap,
+            placementModel.translateX,
+            placementModel.translateY,
+            placementModel.scale,
+            placementModel.angle
+        )
+
+        // Then
+        verify { imageSaveRepository.saveBitmap(any(), any()) }
     }
 }
