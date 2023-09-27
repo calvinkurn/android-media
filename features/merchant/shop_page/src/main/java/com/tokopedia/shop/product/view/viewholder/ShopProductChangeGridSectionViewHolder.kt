@@ -80,7 +80,7 @@ class ShopProductChangeGridSectionViewHolder(
             ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
         ).orZero()
         val iconColor = shopProductTabInterface?.getShopPageColorSchema()?.getColorIntValue(
-            ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
         ).orZero()
         labelTotalProduct?.setTextColor(totalProductColor)
         labelTampilan?.setTextColor(labelPreviewColor)

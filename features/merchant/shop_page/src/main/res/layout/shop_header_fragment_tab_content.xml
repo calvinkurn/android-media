@@ -372,11 +372,13 @@
                         </LinearLayout>
 
                         <include
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/section_button"
                             android:id="@+id/widget_play_entry_point"
                             layout="@layout/layout_shop_play_broadcast_sgc"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="invisible" />
+                            android:layout_height="wrap_content" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 

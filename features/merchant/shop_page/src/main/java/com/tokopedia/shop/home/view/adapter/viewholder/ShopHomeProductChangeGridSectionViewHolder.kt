@@ -74,7 +74,7 @@ class ShopHomeProductChangeGridSectionViewHolder(
     private fun configReimaginedColor() {
         val totalProductColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         val labelPreviewColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-        val iconColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        val iconColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         labelTotalProduct?.setTextColor(totalProductColor)
         labelTampilan?.setTextColor(labelPreviewColor)
         ivGridIcon?.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP)
