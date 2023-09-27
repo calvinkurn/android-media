@@ -312,6 +312,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
+        if (position == RecyclerView.NO_POSITION) return
         recyclerView?.post {
             adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
@@ -1219,9 +1220,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                         }
                     }
                 }
-                if (emptySection.isNotEmpty()) {
-                    emptySection.forEach {
-                        val widgetIndex = adapter.data.indexOf(it)
+                if (emptySection.isEmpty()) return@post
+
+                emptySection.forEach {
+                    val widgetIndex = adapter.data.indexOf(it)
+                    if (widgetIndex != RecyclerView.NO_POSITION) {
                         adapter.data.remove(it)
                         adapter.notifyItemRemoved(widgetIndex)
                     }
