@@ -1,8 +1,6 @@
 package com.tokopedia.editor.data.repository
 
-import android.content.Context
 import android.graphics.Bitmap
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.editor.data.model.CanvasSize
 import com.tokopedia.utils.image.ImageProcessingUtil.getTokopediaPhotoPath
 import java.io.File
@@ -24,14 +22,12 @@ interface ImageSaveRepository {
     fun saveBitmap(bitmap: Bitmap, outputPath: String): String
 
     /**
-     * Generate and save scaled bitmap with width and height param without target path.
+     * Generate and save scaled bitmap with width and height param with generated target path.
      */
     fun saveBitmap(bitmap: Bitmap, size: CanvasSize): String
 }
 
-class ImageSaveRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
-) : ImageSaveRepository {
+class ImageSaveRepositoryImpl @Inject constructor() : ImageSaveRepository {
 
     private val compressFormat = Bitmap.CompressFormat.PNG
 

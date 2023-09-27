@@ -31,8 +31,4 @@ class ImageFlattenRepositoryImpl @Inject constructor(
             emit(imageSaveRepository.saveBitmap(flattenBitmap))
         }
     }
-
-    companion object {
-        private const val FILENAME_SUFFIX = "_result.png"
-    }
 }
