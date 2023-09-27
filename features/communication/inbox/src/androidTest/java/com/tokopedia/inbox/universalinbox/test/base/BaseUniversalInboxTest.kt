@@ -27,6 +27,7 @@ import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.stub.di.UniversalInboxFakeActivityComponentFactory
 import com.tokopedia.inbox.universalinbox.stub.di.tokochat.UniversalInboxTokoChatNetworkModuleStub.PORT_NUMBER
 import com.tokopedia.inbox.universalinbox.stub.domain.UniversalInboxGetAllDriverChannelsUseCaseStub
+import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxActivity
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetComponentProvider
@@ -150,6 +151,9 @@ abstract class BaseUniversalInboxTest {
         val intent = Intent(context, UniversalInboxActivity::class.java)
         intentModifier(intent)
         activityScenarioRule.launchActivity(intent)
+        generalRobot {
+            scrollToPosition(0)
+        }
     }
 
     protected fun setABValue(key: String, value: String) {

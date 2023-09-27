@@ -3,6 +3,7 @@ package com.tokopedia.media.preview.ui.player
 import android.content.Context
 import android.net.Uri
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.LoopingMediaSource
@@ -15,6 +16,8 @@ import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL
 
 class PickerVideoPlayer constructor(
     private val context: Context
@@ -24,8 +27,14 @@ class PickerVideoPlayer constructor(
 
     var listener: Listener? = null
 
+    private val remoteConfig = FirebaseRemoteConfigImpl(context)
+
     private val exoPlayer = SimpleExoPlayer
         .Builder(context)
+        .setLoadControl(
+            if (isCustomLoadControl()) PickerVideoLoadControl()
+            else DefaultLoadControl.Builder().createDefaultLoadControl()
+        )
         .build()
 
     private var loopingMediaSource: LoopingMediaSource? = null
@@ -81,6 +90,10 @@ class PickerVideoPlayer constructor(
         return mediaSourceFactory.createMediaSource(uri)
     }
 
+    private fun isCustomLoadControl(): Boolean {
+        return remoteConfig.getBoolean(CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL, true)
+    }
+
     private fun generateMediaSourceFactory(
         uri: Uri,
         dsFactory: DataSource.Factory
@@ -97,5 +110,4 @@ class PickerVideoPlayer constructor(
     interface Listener {
         fun isPlayingOnChanged(isPlaying: Boolean)
     }
-
 }

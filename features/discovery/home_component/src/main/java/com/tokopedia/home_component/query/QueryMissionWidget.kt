@@ -12,6 +12,9 @@ internal object QueryMissionWidget {
     const val MISSION_WIDGET_QUERY_NAME = "MissionWidgetQuery"
     const val MISSION_WIDGET_QUERY = "query getHomeMissionWidget(\$type: String!, \$location: String!) {\n" +
         "  getHomeMissionWidget(type: \$type, location: \$location) {\n" +
+        "    header {\n" +
+        "      title\n" +
+        "    }\n" +
         "    missions {\n" +
         "      id\n" +
         "      title\n" +
@@ -27,6 +30,10 @@ internal object QueryMissionWidget {
         "      isTopads\n" +
         "      isCarousel\n" +
         "      shopID\n" +
+        "    }\n" +
+        "    config {\n" +
+        "      styleParam\n" +
+        "      dividerType\n" +
         "    }\n" +
         "  }\n" +
         "}\n"

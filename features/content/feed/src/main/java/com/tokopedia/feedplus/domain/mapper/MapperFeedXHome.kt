@@ -138,7 +138,7 @@ class MapperFeedXHome @Inject constructor(
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
-            topAdsId = if (isTopAdsPost(card)) card.id else "",
+            topAdsId = if (isTopAdsPost(card)) card.id else ""
         )
     }
 
@@ -235,8 +235,7 @@ class MapperFeedXHome @Inject constructor(
         badgeUrl = author.badgeUrl,
         logoUrl = author.logoUrl,
         appLink = author.applink,
-        encryptedUserId = author.encryptedUserId,
-        isLive = author.isLive
+        encryptedUserId = author.encryptedUserId
     )
 
     private fun transformProduct(product: FeedXProduct): FeedCardProductModel =
@@ -278,7 +277,7 @@ class MapperFeedXHome @Inject constructor(
             cartable = product.cartable,
             isCashback = product.isCashback,
             cashbackFmt = product.cashbackFmt,
-            isAvailable = product.isAvailable,
+            isAvailable = product.isAvailable
         )
 
     private fun transformMedia(media: FeedXMedia): FeedMediaModel =
@@ -341,8 +340,7 @@ class MapperFeedXHome @Inject constructor(
                             badgeUrl = author.badgeUrl,
                             logoUrl = author.logoUrl,
                             appLink = author.applink,
-                            encryptedUserId = author.encryptedUserId,
-                            isLive = author.isLive
+                            encryptedUserId = author.encryptedUserId
                         )
                     },
                     text = item.text

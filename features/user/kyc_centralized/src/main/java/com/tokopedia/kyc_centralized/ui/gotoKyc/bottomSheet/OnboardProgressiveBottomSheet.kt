@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -48,8 +49,10 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     private var binding by autoClearedNullable<LayoutGotoKycOnboardProgressiveBinding>()
 
     private var exhaustedParam = DobChallengeExhaustedParam()
+    private var isLaunchCallback = false
 
     private var dismissDialogWithDataListener: (DobChallengeExhaustedParam) -> Unit = {}
+    private var dismissDialogLaunchCallBackListener: (Unit) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -58,6 +61,10 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
             }
             KYCConstant.ActivityResult.RESULT_FINISH -> {
                 finishWithResult(Activity.RESULT_CANCELED)
+            }
+            KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
+                isLaunchCallback = true
+                dismiss()
             }
         }
     }
@@ -76,6 +83,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private var projectId = ""
     private var source = ""
+    private var callback = ""
     private var encryptedName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +93,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         arguments?.let {
             projectId = it.getString(PROJECT_ID).orEmpty()
             source = it.getString(SOURCE).orEmpty()
+            callback = it.getString(CALLBACK).orEmpty()
             encryptedName = it.getString(ENCRYPTED_NAME).orEmpty()
         }
     }
@@ -122,8 +131,6 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         )
 
         binding?.consentGotoKycProgressive?.load(
-            lifecycleOwner = viewLifecycleOwner,
-            viewModelStoreOwner = this,
             consentCollectionParam = consentParam
         )
 
@@ -132,6 +139,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun initView() {
         setTokopediaCareView()
         binding?.apply {
@@ -176,7 +184,8 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                     setButtonLoading(false)
                     val parameter = GotoKycMainParam(
                         projectId = projectId,
-                        challengeId = it.challengeId
+                        challengeId = it.challengeId,
+                        callback = callback
                     )
                     gotoDobChallenge(parameter)
                 }
@@ -187,7 +196,8 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                         sourcePage = source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
-                        rejectionReason = it.rejectionReason
+                        rejectionReason = it.rejectionReason,
+                        callback = callback
                     )
                     gotoStatusSubmissionPending(parameter)
                 }
@@ -224,6 +234,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun setTokopediaCareView() {
         val message = getString(R.string.goto_kyc_question_ktp_issue)
         val spannable = SpannableString(message)
@@ -272,12 +283,20 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        dismissDialogWithDataListener(exhaustedParam)
+        if (isLaunchCallback) {
+            dismissDialogLaunchCallBackListener(Unit)
+        } else {
+            dismissDialogWithDataListener(exhaustedParam)
+        }
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
             kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
         )
+    }
+
+    fun setOnLaunchCallbackListener(isLaunchCallback: (Unit) -> Unit) {
+        dismissDialogLaunchCallBackListener = isLaunchCallback
     }
 
     fun setOnDismissWithDataListener(exhaustedParam: (DobChallengeExhaustedParam) -> Unit) {
@@ -289,13 +308,15 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
         private const val PROJECT_ID = "project_id"
         private const val SOURCE = "source"
+        private const val CALLBACK = "callBack"
         private const val ENCRYPTED_NAME = "encrypted_name"
 
-        fun newInstance(projectId: String, source: String, encryptedName: String) =
+        fun newInstance(projectId: String, source: String, encryptedName: String, callback: String) =
             OnboardProgressiveBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PROJECT_ID, projectId)
                     putString(SOURCE, source)
+                    putString(CALLBACK, callback)
                     putString(ENCRYPTED_NAME, encryptedName)
                 }
             }

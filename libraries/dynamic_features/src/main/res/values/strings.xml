@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">dynamic_features</string>
     <string name="install_module">Install Module</string>
-    <string name="installing_x">Menginstall %1$s</string>
+    <string name="installing_x">Menginstall</string>
     <string name="downloading">Sedang melakukan proses pengunduhan</string>
     <string name="download">Download</string>
-    <string name="downloading_x">Mendownload %1$s</string>
+    <string name="downloading_x">Mendownload</string>
     <string name="error_for_module">Terjadi kesalahan ketika menginstall module %1$s (%2$d)</string>
     <string name="error_for_module_x">Terjadi kesalahan ketika menginstall module %1$s</string>
     <string name="error_install_df_insufficient_storate">Tempat penyimpanan tidak mencukupi untuk mendownload modul</string>
@@ -29,7 +29,7 @@
     <string name="download_error_module_unavailable_title">Perlu Install ulang aplikasi Tokopedia</string>
     <string name="download_error_module_unavailable_subtitle">Maaf, aplikasi Tokopedia-mu mengalami gangguan. Biar bisa bertransaksi lagi, hapus aplikasi Tokopedia lalu download ulang, ya.</string>
     <string name="feature_download_title">Download Fitur %1$s</string>
-    <string name="feature_download_subtitle">Fitur %s belum tersedia di aplikasimu. Download dan nikmati fiturnya.
+    <string name="feature_download_subtitle">Fitur ini belum tersedia di aplikasimu. Download dan nikmati fiturnya.
 </string>
     <string name="continue_without_install">Lanjut Tanpa Install</string>
     <string name="continue_without_delete_storage">Lanjut Tanpa Menghapus</string>

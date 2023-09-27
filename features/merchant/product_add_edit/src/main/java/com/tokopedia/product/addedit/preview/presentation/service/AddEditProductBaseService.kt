@@ -131,7 +131,6 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel) {
         val imagePathList = filterPathOnly(imageUrlOrPathList)
-        val imagePathListCompressed = compressImages(imagePathList)
         val pathImageCount = imagePathList.size
         val uploadIdList: ArrayList<String> = ArrayList()
         val primaryImagePathOrUrl = imageUrlOrPathList.firstOrNull().orEmpty()
@@ -141,7 +140,7 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
 
         launchCatchError(block = {
             repeat(pathImageCount) { i ->
-                val imageId = uploadImageAndGetId(imagePathListCompressed[i])
+                val imageId = uploadImageAndGetId(imagePathList.getOrNull(i) ?: return@repeat)
                 if (imageId.isNotEmpty()) {
                     notificationManager?.onAddProgress()
                     uploadIdList.add(imageId)
@@ -159,16 +158,6 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
             setUploadProductDataError(cleanErrorMessage(throwable.localizedMessage.orEmpty()))
             logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
         })
-    }
-
-    private fun compressImages(imagePathList: List<String>): List<String> {
-        return imagePathList.map {
-            if (it.endsWith(EXT_JPG) || it.endsWith(EXT_JPEG)) {
-                it // cancel compressing jpeg, image file will bigger if use jpeg as input
-            } else {
-                resizeBitmap(it, DEF_WIDTH, DEF_HEIGHT, true, Bitmap.CompressFormat.WEBP)
-            }
-        }
     }
 
     protected fun getErrorMessage(throwable: Throwable): String {
