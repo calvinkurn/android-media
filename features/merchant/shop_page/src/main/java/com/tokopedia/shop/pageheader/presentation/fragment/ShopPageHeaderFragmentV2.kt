@@ -123,6 +123,7 @@ import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocal
 import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
+import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -512,7 +513,6 @@ class ShopPageHeaderFragmentV2 :
         initAdapter()
         initViewPager()
         mainLayout?.requestFocus()
-        getScrollToTopButtonInitialMargin()
         if (shopHeaderViewModel?.isUserSessionActive == false) initStickyLogin()
         scrollToTopButton?.apply {
             circleMainMenu.backgroundTintList = ContextCompat.getColorStateList(context, R.color.dms_clr_2E2F36_70)
@@ -521,7 +521,7 @@ class ShopPageHeaderFragmentV2 :
                     shopPageTracking?.clickScrollToTop(shopId, userId)
                 }
                 val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
-                (selectedFragment as? ShopPageHeaderFragmentTabContentWrapper)?.let {
+                (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
                     it.scrollToTop()
                 }
             }
@@ -591,11 +591,6 @@ class ShopPageHeaderFragmentV2 :
     private fun trackContentFeedBottomSheet() {
         val userSession = UserSession(context)
         SellerMigrationTracking.trackClickShopAccount(userSession.userId.orEmpty())
-    }
-
-    private fun getScrollToTopButtonInitialMargin() {
-        val scrollToTopButtonLayoutParams = (scrollToTopButton?.layoutParams as ViewGroup.MarginLayoutParams)
-        initialScrollToTopButtonMarginBottom = scrollToTopButtonLayoutParams.bottomMargin
     }
 
     private fun observeLiveData(owner: LifecycleOwner) {
@@ -853,7 +848,7 @@ class ShopPageHeaderFragmentV2 :
     private fun showFollowButtonCoachMarkOnSelectedFragmentTabContentWrapper(
         followStatus: FollowStatus?
     ) {
-        getSelectedFragmentInstance()?.let {
+        getSelectedFragmentWrapperInstance()?.let {
             if (it is ShopPageHeaderFragmentTabContentWrapper) {
                 it.showFollowButtonCoachMark(followStatus)
             }
@@ -877,7 +872,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     private fun refreshSelectedFragmentTickerData() {
-        getSelectedFragmentInstance()?.let {
+        getSelectedFragmentWrapperInstance()?.let {
             if (it is ShopPageHeaderFragmentTabContentWrapper) {
                 it.setupTicker()
             }
@@ -1339,7 +1334,6 @@ class ShopPageHeaderFragmentV2 :
 
             override fun onViewChange(isShowing: Boolean) {
                 updateViewPagerPadding()
-                updateScrollToTopButtonMargin()
             }
         })
 
@@ -1891,7 +1885,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun setShopLayoutDataToSelectedTab() {
         val initialShopLayoutData = getShopLayoutDataBasedOnSelectedTab()
-        when (val selectedFragment = getSelectedFragmentInstance()) {
+        when (val selectedFragment = getSelectedFragmentWrapperInstance()) {
             is ShopPageHeaderFragmentTabContentWrapper -> {
                 when (selectedFragment.getTabData()?.name.orEmpty()) {
                     ShopPageHeaderTabName.HOME, ShopPageHeaderTabName.CAMPAIGN -> {
@@ -2108,7 +2102,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     override fun collapseAppBar() {
-        getSelectedFragmentInstance()?.let {
+        getSelectedFragmentWrapperInstance()?.let {
             (it as? ShopPageHeaderFragmentTabContentWrapper)?.setExpandHeader(false)
         }
     }
@@ -2274,28 +2268,6 @@ class ShopPageHeaderFragmentV2 :
         shopPageHeaderDataModel?.shopSnippetUrl?.let {
             shopHeaderViewModel?.saveShopImageToPhoneStorage(context, it)
         }
-    }
-
-    private fun updateScrollToTopButtonMargin() {
-        val scrollToTopButtonLayoutParams = (scrollToTopButton?.layoutParams as ViewGroup.MarginLayoutParams)
-        if (stickyLoginView?.isShowing() == true) {
-            stickyLoginView?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-            val stickyLoginViewHeight = stickyLoginView?.measuredHeight.orZero()
-            scrollToTopButtonLayoutParams.setMargins(
-                scrollToTopButtonLayoutParams.leftMargin,
-                scrollToTopButtonLayoutParams.topMargin,
-                scrollToTopButtonLayoutParams.rightMargin,
-                stickyLoginViewHeight + MARGIN_BOTTOM_STICKY_LOGIN
-            )
-        } else {
-            scrollToTopButtonLayoutParams.setMargins(
-                scrollToTopButtonLayoutParams.leftMargin,
-                scrollToTopButtonLayoutParams.topMargin,
-                scrollToTopButtonLayoutParams.rightMargin,
-                initialScrollToTopButtonMarginBottom + MARGIN_BOTTOM_STICKY_LOGIN
-            )
-        }
-        scrollToTopButton?.layoutParams = scrollToTopButtonLayoutParams
     }
 
     private fun updateViewPagerPadding() {
@@ -2723,7 +2695,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     fun expandHeader() {
-        getSelectedFragmentInstance()?.let {
+        getSelectedFragmentWrapperInstance()?.let {
             (it as? ShopPageHeaderFragmentTabContentWrapper)?.setExpandHeader(true)
         }
     }
@@ -3418,6 +3390,10 @@ class ShopPageHeaderFragmentV2 :
         return viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
     }
 
+    private fun getSelectedFragmentWrapperInstance(): Fragment? {
+        return viewPagerAdapterHeader?.getSelectedWrapperFragment(viewPager?.currentItem.orZero())
+    }
+
     override fun permissionAction(action: String, label: String) {
         shopPageTracking?.clickUniversalSharingPermission(action, label.replaceFirstChar(Char::titlecase), shopId, userId)
     }
@@ -3517,7 +3493,7 @@ class ShopPageHeaderFragmentV2 :
         tabLayout?.getTabAt(selectedTabPosition)?.select()
         if (isScrollToTop) {
             val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
-            (selectedFragment as? ShopPageHeaderFragmentTabContentWrapper)?.scrollToTop()
+            (selectedFragment as? InterfaceShopPageClickScrollToTop)?.scrollToTop()
         }
     }
 
