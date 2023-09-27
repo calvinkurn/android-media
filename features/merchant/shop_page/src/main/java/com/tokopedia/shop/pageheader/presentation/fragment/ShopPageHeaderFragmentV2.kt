@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -559,6 +560,7 @@ class ShopPageHeaderFragmentV2 :
                         ivTabFeedHasPost?.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK)
                     }
                 } catch (e: Throwable) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
                 }
                 tvTitleTabFeedHasPost?.setOnClickLinkSpannable(
                     getString(seller_migration_commonR.string.seller_migration_tab_feed_bottom_sheet_content),

@@ -46,7 +46,7 @@ object ShopPageConstant {
     const val SHOP_COMPARISON_WIDGET_PAGE_NAME = "shop_comparison"
     const val HACHIKO_VOUCHER_GRAPHQL_API_VERSION = "2.0.0"
     const val LABEL_GROUP_INTEGRITY_POSITION_VALUE = "integrity"
-
+    const val FORMAT_CONVERT_PERCENTAGE_TO_HEX = "%02X"
     object ShopLayoutFeatures {
         const val DIRECT_PURCHASE = "direct_purchase"
     }
