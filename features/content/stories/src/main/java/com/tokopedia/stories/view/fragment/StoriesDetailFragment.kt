@@ -54,6 +54,7 @@ import com.tokopedia.stories.view.utils.loadImage
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.utils.showToaster
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ContentIsLoaded
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextDetail
@@ -67,7 +68,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 
 class StoriesDetailFragment @Inject constructor(
     private val analyticFactory: StoriesAnalytics.Factory,
@@ -124,7 +124,6 @@ class StoriesDetailFragment @Inject constructor(
         StoriesSharingComponent(rootView = requireView())
     }
 
-
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
     }
@@ -133,7 +132,7 @@ class StoriesDetailFragment @Inject constructor(
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
                 is StoriesThreeDotsBottomSheet -> fragment.setListener(this)
-                is StoriesProductBottomSheet ->  fragment.setListener(this)
+                is StoriesProductBottomSheet -> fragment.setListener(this)
             }
         }
         super.onCreate(savedInstanceState)
@@ -192,8 +191,7 @@ class StoriesDetailFragment @Inject constructor(
                         if (event.throwable.isNetworkError) {
                             setNoInternet(true)
                             binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
-                        }
-                        else {
+                        } else {
                             setFailed(true)
                             binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
                         }
@@ -278,7 +276,9 @@ class StoriesDetailFragment @Inject constructor(
             state == StoriesDetail() ||
             state.selectedGroupId != groupId ||
             state.selectedDetailPosition < 0
-        ) return
+        ) {
+            return
+        }
 
         setNoInternet(false)
         setFailed(false)
@@ -315,7 +315,8 @@ class StoriesDetailFragment @Inject constructor(
                                 override fun failedLoad() {
                                     // TODO add some action when fail load image?
                                 }
-                            })
+                            }
+                        )
                     }
                 }
 
@@ -351,7 +352,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun buildEventLabel() : String = "${mParentPage.args.source} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+    private fun buildEventLabel(): String = "${mParentPage.args.source} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -367,7 +368,6 @@ class StoriesDetailFragment @Inject constructor(
             }
         }
     }
-
 
     private fun setupStoriesView() = with(binding) {
         showPageLoading(true)
@@ -400,9 +400,9 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(true)
                     flStoriesNext.show()
                     flStoriesProduct.show()
-                    vStoriesShareIcon.show() //TODO() show with condition
-                    vStoriesKebabIcon.show() //TODO() show with condition
-                    vStoriesProductIcon.root.show() //TODO() show with condition
+                    vStoriesShareIcon.show()
+                    vStoriesKebabIcon.show()
+                    vStoriesProductIcon.root.show()
                     resumeStories()
                 }
                 TouchEventStories.NEXT_PREV -> {
@@ -429,9 +429,9 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(true)
                     flStoriesPrev.show()
                     flStoriesProduct.show()
-                    vStoriesShareIcon.show() //TODO() show with condition
-                    vStoriesKebabIcon.show() //TODO() show with condition
-                    vStoriesProductIcon.root.show() //TODO() show with condition
+                    vStoriesShareIcon.show()
+                    vStoriesKebabIcon.show()
+                    vStoriesProductIcon.root.show()
                     resumeStories()
                 }
                 TouchEventStories.NEXT_PREV -> {
@@ -580,7 +580,7 @@ class StoriesDetailFragment @Inject constructor(
         icCloseLoading.setOnClickListener { activity?.finish() }
     }
 
-    private fun setNoContent (isShow: Boolean) = with(binding.layoutNoContent) {
+    private fun setNoContent(isShow: Boolean) = with(binding.layoutNoContent) {
         root.showWithCondition(isShow)
     }
 
@@ -614,15 +614,16 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun onImpressedProduct(
         product: Map<ContentTaggedProductUiModel, Int>,
-        view: StoriesProductBottomSheet,
+        view: StoriesProductBottomSheet
     ) {
         val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
         analytic?.sendViewProductCardEvent(eventLabel, product)
     }
 
     private fun setupAnalytic() {
-        if (analytic == null && mParentPage.args != StoriesArgsModel())
+        if (analytic == null && mParentPage.args != StoriesArgsModel()) {
             analytic = analyticFactory.create(mParentPage.args)
+        }
     }
 
     companion object {
