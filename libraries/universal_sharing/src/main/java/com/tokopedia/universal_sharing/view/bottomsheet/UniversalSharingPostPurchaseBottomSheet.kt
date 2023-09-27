@@ -160,9 +160,9 @@ class UniversalSharingPostPurchaseBottomSheet :
         throwable: Throwable
     ) {
         val errorType = if (networkUtil.isNetworkAvailable(requireContext())) {
-            UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_NETWORK
-        } else {
             UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_GENERAL
+        } else {
+            UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_NETWORK
         }
         val errorUi = UniversalSharingGlobalErrorUiModel(errorType)
         adapter.updateData(listOf(errorUi))
