@@ -17,8 +17,6 @@
 
     <dimen name="play_bro_toaster_bottom_margin">48dp</dimen>
 
-    <dimen name="play_search_bar_radius">8dp</dimen>
-
     <dimen name="play_change_cover_button_height">146dp</dimen>
 
     <dimen name="play_permit_divider_height">1dp</dimen>

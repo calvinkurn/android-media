@@ -8,7 +8,7 @@
         android:id="@+id/cl_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_play_search_bar"
+        android:background="@drawable/bg_content_product_search_bar"
         app:layout_goneMarginEnd="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,7 @@
             android:lines="1"
             android:textColor="@color/Unify_NN950_68"
             android:textColorHint="@color/Unify_NN950_32"
-            android:textCursorDrawable="@drawable/ic_play_search_cursor"
+            android:textCursorDrawable="@drawable/ic_product_search_cursor"
             android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintBottom_toBottomOf="@id/iv_search"
             app:layout_constraintEnd_toStartOf="@id/iv_clear"
@@ -55,8 +55,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/play_dp_18"
+            android:layout_height="@dimen/play_dp_18"
             android:layout_marginEnd="@dimen/play_dp_12"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/iv_search"

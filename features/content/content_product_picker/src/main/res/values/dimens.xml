@@ -6,6 +6,7 @@
     <dimen name="content_product_picker_50_dp">50dp</dimen>
 
     <dimen name="play_product_preview_radius">8dp</dimen>
+    <dimen name="content_product_search_bar_radius">8dp</dimen>
 
     <!--Etalase & Campaign-->
     <dimen name="play_bro_etalase_list_body_image_size">64dp</dimen>
