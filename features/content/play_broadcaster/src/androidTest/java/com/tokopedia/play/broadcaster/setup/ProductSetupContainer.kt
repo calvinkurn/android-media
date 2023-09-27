@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.play.broadcaster.helper.BottomSheetContainer
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.content.product.picker.sgc.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 
@@ -14,7 +14,7 @@ import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSection
  * Created by kenny.hadisaputra on 02/03/22
  */
 class ProductSetupContainer(
-    private val viewModel: (handle: SavedStateHandle) -> PlayBroProductSetupViewModel = {
+    private val viewModel: (handle: SavedStateHandle) -> ContentProductPickerSGCViewModel = {
         productSetupViewModel(handle = it)
     },
     private val onAttach: (child: Fragment) -> Unit = {},
@@ -31,7 +31,7 @@ class ProductSetupContainer(
                 modelClass: Class<T>,
                 handle: SavedStateHandle,
             ): T {
-                return object : PlayBroProductSetupViewModel.Factory {
+                return object : ContentProductPickerSGCViewModel.Factory {
                     override fun create(
                         creationId: String,
                         maxProduct: Int,
@@ -40,7 +40,7 @@ class ProductSetupContainer(
                         isNumerationShown: Boolean,
                         isEligibleForPin: Boolean,
                         fetchCommissionProduct: Boolean
-                    ): PlayBroProductSetupViewModel {
+                    ): ContentProductPickerSGCViewModel {
                         return viewModel(savedStateHandle)
                     }
                 }.create("123", 30, emptyList(), handle, isNumerationShown = true,

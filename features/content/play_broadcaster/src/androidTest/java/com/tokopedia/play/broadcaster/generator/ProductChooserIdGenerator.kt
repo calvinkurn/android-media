@@ -15,7 +15,6 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
@@ -26,7 +25,7 @@ import com.tokopedia.content.product.picker.sgc.view.bottomsheet.EtalaseListBott
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.content.product.picker.sgc.model.DiscountedPrice
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatusUiModel
@@ -110,7 +109,7 @@ class ProductChooserIdGenerator {
     private val repo = mockk<PlayBroadcastRepository>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    private val mockProductSetupViewModelFactory = object : PlayBroProductSetupViewModel.Factory {
+    private val mockProductSetupViewModelFactory = object : ContentProductPickerSGCViewModel.Factory {
         override fun create(
             creationId: String,
             maxProduct: Int,
@@ -119,8 +118,8 @@ class ProductChooserIdGenerator {
             isNumerationShown: Boolean,
             isEligibleForPin: Boolean,
             fetchCommissionProduct: Boolean
-        ): PlayBroProductSetupViewModel {
-            return PlayBroProductSetupViewModel(
+        ): ContentProductPickerSGCViewModel {
+            return ContentProductPickerSGCViewModel(
                 creationId = creationId,
                 maxProduct = maxProduct,
                 productSectionList = mockProductSections,

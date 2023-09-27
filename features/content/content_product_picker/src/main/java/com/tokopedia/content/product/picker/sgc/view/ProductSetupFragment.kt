@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.content.product.picker.sgc.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductPickerUGCBottomSheet
@@ -26,7 +26,7 @@ import javax.inject.Inject
  */
 @Suppress("LateinitUsage")
 class ProductSetupFragment @Inject constructor(
-    private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory,
+    private val productSetupViewModelFactory: ContentProductPickerSGCViewModel.Factory,
     private val productSetupProductAnalytic: ContentProductPickerSGCAnalytic,
 ) : Fragment(), ViewModelFactoryProvider {
 

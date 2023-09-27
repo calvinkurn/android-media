@@ -22,7 +22,7 @@ import com.tokopedia.content.product.picker.sgc.util.transition.ScaleTransition
 /**
  * Created by jegul on 26/05/20
  */
-class PlaySearchBar : ConstraintLayout {
+class ContentProductSearchBar : ConstraintLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -36,7 +36,7 @@ class PlaySearchBar : ConstraintLayout {
             etSearch.setSelection(etSearch.length())
         }
 
-    private val view: View = View.inflate(context, R.layout.view_play_search_bar, this)
+    private val view: View = View.inflate(context, R.layout.view_content_product_search_bar, this)
     private val clSearch: ConstraintLayout = view.findViewById(R.id.cl_search)
     private val etSearch: EditText = view.findViewById(R.id.et_search)
     private val ivClear: ImageView = view.findViewById(R.id.iv_clear)
@@ -104,7 +104,7 @@ class PlaySearchBar : ConstraintLayout {
                 etSearch.removeTextChangedListener(getTextWatcher())
             }
 
-            mListener?.onEditStateChanged(this@PlaySearchBar, hasFocus)
+            mListener?.onEditStateChanged(this@ContentProductSearchBar, hasFocus)
         }
         etSearch.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -117,14 +117,14 @@ class PlaySearchBar : ConstraintLayout {
 
         etSearch.setOnTouchListener { _, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
-                mListener?.onSearchBarClicked(this@PlaySearchBar)
+                mListener?.onSearchBarClicked(this@ContentProductSearchBar)
             }
             false
         }
 
         ivClear.setOnClickListener {
             clearText()
-            mListener?.onCleared(this@PlaySearchBar)
+            mListener?.onCleared(this@ContentProductSearchBar)
         }
     }
 
@@ -139,7 +139,7 @@ class PlaySearchBar : ConstraintLayout {
     }
 
     private fun doSearch() {
-        mListener?.onSearchButtonClicked(this@PlaySearchBar, etSearch.text.toString())
+        mListener?.onSearchButtonClicked(this@ContentProductSearchBar, etSearch.text.toString())
         etSearch.clearFocus()
     }
 
@@ -181,7 +181,7 @@ class PlaySearchBar : ConstraintLayout {
             mTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     updateClearButton()
-                    mListener?.onNewKeyword(this@PlaySearchBar, etSearch.text.toString())
+                    mListener?.onNewKeyword(this@ContentProductSearchBar, etSearch.text.toString())
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -230,11 +230,11 @@ class PlaySearchBar : ConstraintLayout {
 
     interface Listener {
 
-        fun onSearchBarClicked(view: PlaySearchBar) {}
-        fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {}
-        fun onCanceled(view: PlaySearchBar) {}
-        fun onCleared(view: PlaySearchBar) {}
-        fun onNewKeyword(view: PlaySearchBar, keyword: String)
-        fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {}
+        fun onSearchBarClicked(view: ContentProductSearchBar) {}
+        fun onEditStateChanged(view: ContentProductSearchBar, isEditing: Boolean) {}
+        fun onCanceled(view: ContentProductSearchBar) {}
+        fun onCleared(view: ContentProductSearchBar) {}
+        fun onNewKeyword(view: ContentProductSearchBar, keyword: String)
+        fun onSearchButtonClicked(view: ContentProductSearchBar, keyword: String) {}
     }
 }

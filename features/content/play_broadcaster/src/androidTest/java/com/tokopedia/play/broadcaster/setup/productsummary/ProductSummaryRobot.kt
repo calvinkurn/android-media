@@ -16,7 +16,7 @@ import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
 import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.content.product.picker.sgc.view.viewholder.ProductSummaryViewHolder
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalyticImpl
@@ -30,7 +30,7 @@ import com.tokopedia.empty_state.R as empty_stateR
  * Created by kenny.hadisaputra on 08/03/22
  */
 class ProductSummaryRobot(
-    viewModel: (SavedStateHandle) -> PlayBroProductSetupViewModel = {
+    viewModel: (SavedStateHandle) -> ContentProductPickerSGCViewModel = {
         productSetupViewModel(handle = it)
     },
 ) {

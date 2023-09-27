@@ -7,7 +7,7 @@
     android:background="@drawable/bg_play_product_tag"
     app:rcl_cornerRadius="@dimen/layout_lvl1">
 
-    <com.tokopedia.content.product.picker.sgc.view.custom.PlayBroPinnedView
+    <com.tokopedia.content.product.picker.sgc.view.custom.ContentProductPinnedView
         android:id="@+id/view_pin_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

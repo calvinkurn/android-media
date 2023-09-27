@@ -50,7 +50,7 @@ import kotlin.math.min
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
-class PlayBroProductSetupViewModel @AssistedInject constructor(
+class ContentProductPickerSGCViewModel @AssistedInject constructor(
     /** Can be channelId / shortId */
     @Assisted private val creationId: String,
     @Assisted val maxProduct: Int,
@@ -74,7 +74,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             isNumerationShown: Boolean,
             @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
             @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean,
-        ): PlayBroProductSetupViewModel
+        ): ContentProductPickerSGCViewModel
     }
 
     init {

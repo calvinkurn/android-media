@@ -34,7 +34,7 @@ import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productUGCViewModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
@@ -56,7 +56,7 @@ import com.tokopedia.sortfilter.R as sortfilterR
  */
 class ProductChooserUGCRobot(
     listener: ProductPickerUGCBottomSheet.Listener? = null,
-    viewModel: (SavedStateHandle) -> PlayBroProductSetupViewModel = {
+    viewModel: (SavedStateHandle) -> ContentProductPickerSGCViewModel = {
         productSetupViewModel(handle = it)
     },
     productTagViewModel: (source: String, config: ContentProductTagConfig) -> ProductTagViewModel = { source, config ->

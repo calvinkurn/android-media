@@ -7,7 +7,7 @@ import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChoo
 import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductSummaryUiState
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserUiState
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -32,7 +32,7 @@ internal class PlayBroProductSetupViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
-    private val viewModel = PlayBroProductSetupViewModel(
+    private val viewModel = ContentProductPickerSGCViewModel(
         creationId,
         maxProduct,
         productSectionList,

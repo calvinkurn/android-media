@@ -2,7 +2,7 @@ package com.tokopedia.content.product.picker.sgc.view.bottomsheet
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.content.product.picker.sgc.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -11,13 +11,13 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
  */
 open class BaseProductSetupBottomSheet : BottomSheetUnify() {
 
-    protected lateinit var viewModel: PlayBroProductSetupViewModel
+    protected lateinit var viewModel: ContentProductPickerSGCViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val parentFragment = requireParentFragment()
         viewModel = ViewModelProvider(
             parentFragment, (parentFragment as ViewModelFactoryProvider).getFactory())
-            .get(PlayBroProductSetupViewModel::class.java)
+            .get(ContentProductPickerSGCViewModel::class.java)
         super.onCreate(savedInstanceState)
     }
 }

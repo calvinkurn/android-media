@@ -5,16 +5,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.content.product.picker.databinding.ViewPlayBroPinProductBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.content.product.picker.R
+import com.tokopedia.content.product.picker.databinding.ViewContentPinProductBinding
 
 /**
  * @author by astidhiyaa on 26/07/22
  */
-class PlayBroPinnedView : ConstraintLayout {
+class ContentProductPinnedView : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -23,7 +23,7 @@ class PlayBroPinnedView : ConstraintLayout {
         defStyleAttr
     )
 
-    private val binding = ViewPlayBroPinProductBinding.inflate(
+    private val binding = ViewContentPinProductBinding.inflate(
         LayoutInflater.from(context),
         this,
         true

@@ -1,28 +1,28 @@
 package com.tokopedia.content.product.picker.sgc.view.viewcomponent
 
 import com.tokopedia.content.common.util.eventbus.EventBus
-import com.tokopedia.content.product.picker.sgc.view.custom.PlaySearchBar
+import com.tokopedia.content.product.picker.sgc.view.custom.ContentProductSearchBar
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
  * Created by kenny.hadisaputra on 28/01/22
  */
 class SearchBarViewComponent(
-    private val view: PlaySearchBar,
+    private val view: ContentProductSearchBar,
     eventBus: EventBus<in Event>,
 ) : ViewComponent(view) {
 
     init {
-        view.setListener(object : PlaySearchBar.Listener {
-            override fun onSearchBarClicked(view: PlaySearchBar) {
+        view.setListener(object : ContentProductSearchBar.Listener {
+            override fun onSearchBarClicked(view: ContentProductSearchBar) {
                 eventBus.emit(Event.OnSearchBarClicked)
             }
 
-            override fun onNewKeyword(view: PlaySearchBar, keyword: String) {
+            override fun onNewKeyword(view: ContentProductSearchBar, keyword: String) {
                 eventBus.emit(Event.OnSearched(keyword))
             }
 
-            override fun onCleared(view: PlaySearchBar) {
+            override fun onCleared(view: ContentProductSearchBar) {
                 eventBus.emit(Event.OnSearched(""))
             }
         })

@@ -9,7 +9,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiMod
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -28,8 +28,8 @@ fun productSetupViewModel(
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
     isNumerationShown: Boolean = true,
     fetchCommissionProduct: Boolean = false,
-): PlayBroProductSetupViewModel {
-    return PlayBroProductSetupViewModel(
+): ContentProductPickerSGCViewModel {
+    return ContentProductPickerSGCViewModel(
         creationId = creationId,
         maxProduct = maxProduct,
         productSectionList = productSectionList,
