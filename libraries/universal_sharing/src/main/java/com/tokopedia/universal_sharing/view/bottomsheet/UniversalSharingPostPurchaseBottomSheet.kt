@@ -18,7 +18,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseBottomsheetBinding
-import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
+import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
@@ -83,7 +83,7 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun initInjector() {
-        UniversalSharingComponentFactory.instance.createComponent(
+        ActivityComponentFactory.instance.createActivityComponent(
             requireContext().applicationContext as Application
         ).inject(this)
     }

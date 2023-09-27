@@ -1,4 +1,4 @@
-package com.tokopedia.common.stub
+package com.tokopedia.universal_sharing.stub.data.repository
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy

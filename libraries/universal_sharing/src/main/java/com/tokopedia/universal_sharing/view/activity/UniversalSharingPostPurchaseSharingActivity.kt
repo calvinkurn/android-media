@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
-import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
+import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
@@ -23,7 +23,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
+class UniversalSharingPostPurchaseSharingActivity :
     BaseActivity(),
     UniversalSharingPostPurchaseBottomSheetListener {
 
@@ -40,7 +40,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
     }
 
     private fun initInjector() {
-        UniversalSharingComponentFactory.instance.createComponent(
+        ActivityComponentFactory.instance.createActivityComponent(
             applicationContext as Application
         ).inject(this)
     }
@@ -66,7 +66,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
         if (bottomSheet?.isAdded == false) { // only 1 bottom sheet allowed
             bottomSheet?.show(
                 supportFragmentManager,
-                ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
+                ::UniversalSharingPostPurchaseSharingActivity.name
             )
         }
     }
@@ -87,7 +87,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
         if (!bottomSheetShare.isAdded) { // only 1 bottomsheet allowed
             bottomSheetShare.show(
                 supportFragmentManager,
-                ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
+                ::UniversalSharingPostPurchaseSharingActivity.name
             )
             analytics.onViewSharingChannelBottomSheetSharePostPurchase(
                 userShareType = TYPE_GENERAL,

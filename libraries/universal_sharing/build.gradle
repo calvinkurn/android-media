@@ -24,6 +24,9 @@ android {
             }
         }
     }
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 buildscript {

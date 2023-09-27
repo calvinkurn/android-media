@@ -1,4 +1,4 @@
-package com.tokopedia.universal_sharing
+package com.tokopedia.universal_sharing.test
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
