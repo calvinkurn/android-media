@@ -11,7 +11,8 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListMapper.mapToCarouselPagingGroupProductModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -36,6 +37,11 @@ class ProductCardColumnListViewModel(
     @Inject
     var productCardsUseCase: ProductCardsUseCase? = null
 
+    @JvmField
+    @Inject
+    var userSession: UserSessionInterface? = null
+
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + SupervisorJob()
 
@@ -54,23 +60,19 @@ class ProductCardColumnListViewModel(
     }
 
     private fun setProductList() {
-        val productList = getProductList()
-        if (productList.isNotEmpty()) {
-            _carouselPagingGroupProductModel.postValue(productList.mapToCarouselPagingGroupProductModel())
+        val componentItems = components.getComponentsItem()
+        if (!componentItems.isNullOrEmpty()) {
+            _carouselPagingGroupProductModel.postValue(componentItems.mapToCarouselPagingGroupProductModel())
         } else {
             _errorState.postValue(Unit)
         }
     }
 
-    private fun getProductList(): List<ComponentsItem> {
-        return components.getComponentsItem().orEmpty()
-    }
-
     fun getProduct(position: Int): DataItem?  {
-        return getProductList().getOrNull(position)?.data?.firstOrNull()
+        return components.getComponentItem(position)?.data?.firstOrNull()
     }
 
-    fun getPropertyRows(): Int {
-        return components.properties?.rows.toIntSafely()
+    fun isLoggedIn(): Boolean {
+        return userSession?.isLoggedIn.orFalse()
     }
 }

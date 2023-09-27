@@ -10,10 +10,12 @@ import com.tokopedia.carouselproductcard.paging.CarouselPagingModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingProductCardView
 import com.tokopedia.carouselproductcard.paging.CarouselPagingSelectedGroupModel
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.hide
 
 class ProductCardColumnListViewHolder(
     itemView: View,
@@ -49,6 +51,20 @@ class ProductCardColumnListViewHolder(
                 carouselPagingGroupProductModel.observe(owner) { productList ->
                     initCarouselPaging(productList)
                 }
+
+                errorState.observe(owner) {
+                    carouselPagingProductCard.hide()
+                }
+            }
+        }
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            viewModel?.apply {
+                carouselPagingGroupProductModel.removeObservers(it)
+                errorState.removeObservers(it)
             }
         }
     }
@@ -63,22 +79,40 @@ class ProductCardColumnListViewHolder(
         groupModel: CarouselPagingGroupModel,
         itemPosition: Int
     ) {
-        /* waiting */
+        viewModel?.apply {
+            val product = getProduct(itemPosition)
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                .viewProductsList(
+                    componentsItems = components.getComponentItem(itemPosition) ?: ComponentsItem(),
+                    isLogin = isLoggedIn(),
+                    isFulFillment = components.isFulfillment(product),
+                    warehouseId = components.getWarehouseId(product)
+                )
+        }
     }
 
     override fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
-        RouteManager.route(itemView.context, getProductAppLink(itemPosition))
+        viewModel?.apply {
+            val product = getProduct(itemPosition)
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                .trackProductCardClick(
+                    componentsItems = components.getComponentItem(itemPosition) ?: ComponentsItem(),
+                    isLogin = isLoggedIn(),
+                    isFulFillment = components.isFulfillment(product),
+                    warehouseId = components.getWarehouseId(product)
+                )
+
+            RouteManager.route(itemView.context, product?.applinks)
+        }
     }
 
-    private fun initCarouselPaging(carouselPagingGroupProductModel: CarouselPagingGroupProductModel) {
-        carouselPagingProductCard.setItemPerPage(viewModel?.getPropertyRows().orZero())
+    private fun ProductCardColumnListViewModel.initCarouselPaging(carouselPagingGroupProductModel: CarouselPagingGroupProductModel) {
+        carouselPagingProductCard.setItemPerPage(components.getPropertyRows())
         carouselPagingProductCard.setPagingModel(
             model = CarouselPagingModel(
                 productCardGroupList = listOf(carouselPagingGroupProductModel)
             ),
-            listener = this
+            listener = this@ProductCardColumnListViewHolder
         )
     }
-
-    private fun getProductAppLink(itemPosition: Int): String = viewModel?.getProduct(itemPosition)?.applinks.orEmpty()
 }
