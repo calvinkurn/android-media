@@ -14,6 +14,7 @@ import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
+import com.tokopedia.stories.utils.StoriesPreference
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -49,6 +50,7 @@ class StoriesViewModel @AssistedInject constructor(
     @Assisted private val handle: SavedStateHandle,
     private val repository: StoriesRepository,
     private val userSession: UserSessionInterface,
+    private val sharedPref: StoriesPreference,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -166,6 +168,15 @@ class StoriesViewModel @AssistedInject constructor(
     val userId : String
         get() = userSession.userId.ifEmpty { "0" }
 
+    private fun setupOnboard() {
+        if (!sharedPref.isVisited()) {
+            viewModelScope.launch {
+                _storiesEvent.emit(StoriesUiEvent.OnboardShown(true))
+            }
+            sharedPref.setVisit()
+        }
+    }
+
     fun submitAction(action: StoriesUiAction) {
         when (action) {
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
@@ -220,6 +231,7 @@ class StoriesViewModel @AssistedInject constructor(
         }) { exception ->
             _storiesEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
         }
+        setupOnboard()
     }
 
     private fun handleSelectGroup(position: Int, showAnimation: Boolean) {

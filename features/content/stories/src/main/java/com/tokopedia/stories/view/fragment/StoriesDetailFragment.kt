@@ -358,6 +358,11 @@ class StoriesDetailFragment @Inject constructor(
 
         icClose.setOnClickListener { activity?.finish() }
 
+        binding.icClose.hide()
+        icClose.setOnClickListener {
+            activity?.finish()
+        }
+
         rvStoriesCategory.apply {
             adapter = mAdapter
             layoutManager = mLayoutManager
