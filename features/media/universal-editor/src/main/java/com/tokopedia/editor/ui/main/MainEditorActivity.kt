@@ -11,13 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editor.R
 import com.tokopedia.editor.analytics.main.editor.MainEditorAnalytics
 import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
+import com.tokopedia.editor.ui.dialog.ConfirmationDialog
 import com.tokopedia.editor.ui.main.component.AudioStateUiComponent
 import com.tokopedia.editor.ui.main.component.GlobalLoaderUiComponent
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
@@ -64,6 +64,9 @@ open class MainEditorActivity : AppCompatActivity()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var confirmationDialog: ConfirmationDialog
 
     private var isPageInitialize = false
 
@@ -178,10 +181,13 @@ open class MainEditorActivity : AppCompatActivity()
                         pagerContainer.updateView(it.newSourcePath)
                     }
                     is MainEditorEffect.CloseMainEditorPage -> {
+                        viewModel.onEvent(MainEditorEvent.DisposeRemainingTasks)
                         finish()
                     }
                     is MainEditorEffect.ShowCloseDialogConfirmation -> {
-                        showConfirmationBackDialog()
+                        confirmationDialog.show(this@MainEditorActivity) {
+                            viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
+                        }
                     }
                     is MainEditorEffect.FinishEditorPage -> {
                         navigateBackToPickerAndFinishIntent(it.filePath)
@@ -311,29 +317,6 @@ open class MainEditorActivity : AppCompatActivity()
     private fun defaultActionButtonText(param: UniversalEditorParam): String {
         if (param.proceedButtonText.isNotEmpty()) return param.proceedButtonText
         return getString(R.string.universal_editor_toolbar_action_button)
-    }
-
-    private fun showConfirmationBackDialog() {
-        DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply dialog@{
-            setTitle(getString(R.string.universal_editor_main_confirmation_title))
-            setDescription(getString(R.string.universal_editor_main_confirmation_desc))
-
-            dialogPrimaryCTA.apply {
-                text = getString(R.string.universal_editor_main_confirmation_primary_cta)
-                setOnClickListener {
-                    viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(isSkipConfirmation = true))
-                }
-            }
-
-            dialogSecondaryLongCTA.apply {
-                text = getString(R.string.universal_editor_main_confirmation_secondary_cta)
-                setOnClickListener {
-                    dismiss()
-                }
-            }
-
-            show()
-        }
     }
 
     private fun fragmentProvider(): EditorFragmentProvider {
