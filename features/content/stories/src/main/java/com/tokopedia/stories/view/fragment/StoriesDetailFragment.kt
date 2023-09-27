@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -180,8 +179,7 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        // TODO handle empty data here
-                        showToast("data stories $groupId is empty")
+                        setNoContent(true)
                         showPageLoading(false)
                     }
 
@@ -221,14 +219,14 @@ class StoriesDetailFragment @Inject constructor(
                         sheet.setListener(object : StoriesSharingComponent.Listener {
                             override fun onDismissEvent(view: StoriesSharingComponent) {
                                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
-                                analytic.onCloseShareSheet(viewModel.storyId)
+                                analytic?.onCloseShareSheet(viewModel.storyId)
                             }
 
                             override fun onShareChannel(shareModel: ShareModel) {
-                                analytic.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
+                                analytic?.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
                             }
                         })
-                        analytic.onClickShareIcon(viewModel.storyId)
+                        analytic?.onClickShareIcon(viewModel.storyId)
                         sheet.show(childFragmentManager, event.metadata, viewModel.userId, viewModel.storyId)
                     }
                     is StoriesUiEvent.ShowErrorEvent -> {
@@ -275,10 +273,10 @@ class StoriesDetailFragment @Inject constructor(
         ) return
 
         setNoInternet(false)
+        setFailed(false)
+        setNoContent(state.detailItems.isEmpty())
 
         val currentItem = state.detailItems[state.selectedDetailPosition]
-
-        if (state.detailItems.isEmpty()) { return }
 
         storiesDetailsTimer(state)
         renderAuthor(currentItem)
@@ -501,7 +499,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackImpressionDetail(storiesId: String) {
-        analytic.sendImpressionStoriesContent(storiesId)
+        analytic?.sendImpressionStoriesContent(storiesId)
     }
 
     private fun trackTapPreviousDetail() {
@@ -556,6 +554,10 @@ class StoriesDetailFragment @Inject constructor(
     private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
         root.showWithCondition(isShow)
         icCloseLoading.setOnClickListener { activity?.finish() }
+    }
+
+    private fun setNoContent (isShow: Boolean) = with(binding.layoutNoContent) {
+        root.showWithCondition(isShow)
     }
 
     override fun onDestroyView() {

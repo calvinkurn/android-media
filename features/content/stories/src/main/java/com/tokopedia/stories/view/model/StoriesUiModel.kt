@@ -84,8 +84,7 @@ data class StoriesDetailItem(
         }
     }
 
-    @Parcelize
-    enum class StoryStatus(val value: String) : Parcelable {
+    enum class StoryStatus(val value: String) {
         Active("ACTIVE"), Removed ("REMOVED"), Unknown("unknown");
 
         companion object {
