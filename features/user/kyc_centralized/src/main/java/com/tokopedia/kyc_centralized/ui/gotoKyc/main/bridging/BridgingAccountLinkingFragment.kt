@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -32,6 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycBridgingAccountLinkingBinding
@@ -67,7 +69,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     lateinit var kycSharedPreference: KycSharedPreference
 
     private val startAccountLinkingForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        viewModel.checkAccountLinkingStatus()
+        viewModel.checkAccountLinkingStatus(args.parameter.projectId.toIntSafely())
     }
 
     private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -165,7 +167,8 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     setButtonLoading(false)
                     val parameter = DobChallengeParam(
                         projectId = args.parameter.projectId,
-                        challengeId = it.challengeId
+                        challengeId = it.challengeId,
+                        callback = args.parameter.callback
                     )
                     gotoDobChallenge(parameter)
                 }
@@ -176,7 +179,8 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                         sourcePage = args.parameter.source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
-                        rejectionReason = it.rejectionReason
+                        rejectionReason = it.rejectionReason,
+                        callback = args.parameter.callback
                     )
                     gotoStatusSubmissionPending(parameter)
                 }
@@ -225,6 +229,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         binding?.btnConfirm?.isLoading = isLoading
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun handleProgressiveFlow(encryptedName: String) {
         binding?.apply {
             loader.hide()
@@ -256,6 +261,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun handleNonProgressiveFlow() {
         binding?.apply {
             loader.hide()
@@ -317,6 +323,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun initSpannable() {
         val message = getString(R.string.goto_kyc_question_ktp_issue)
         val indexStar = message.indexOf(getString(R.string.goto_kyc_contact_tokopedia_care))
@@ -371,7 +378,8 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     private fun gotoCaptureKycDocuments() {
         val parameter = CaptureKycDocumentsParam(
             projectId = args.parameter.projectId,
-            source = args.parameter.source
+            source = args.parameter.source,
+            callback = args.parameter.callback
         )
         val toCaptureKycDocuments = BridgingAccountLinkingFragmentDirections.actionBridgingAccountLinkingFragmentToCaptureKycDocumentsFragment(parameter)
         view?.findNavController()?.navigate(toCaptureKycDocuments)
