@@ -1,5 +1,6 @@
 package com.tokopedia.universal_sharing.view.bottomsheet.adapter
 
+import androidx.annotation.VisibleForTesting
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -24,5 +25,10 @@ class UniversalSharingPostPurchaseAdapter(
         } catch (throwable: Throwable) {
             Timber.e(throwable)
         }
+    }
+
+    @VisibleForTesting
+    fun getItem(position: Int): Visitable<in UniversalSharingTypeFactory> {
+        return visitables[position]
     }
 }

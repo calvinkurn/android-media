@@ -14,7 +14,7 @@ import com.tokopedia.universal_sharing.stub.common.hasMediaName
 import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.ChipViewHolder
 import org.hamcrest.CoreMatchers
 
-class UniversalSharingResult {
+object UniversalSharingResult {
 
     fun shouldShowTitleBottomSheet() {
         Espresso.onView(ViewMatchers.withText(R.string.label_to_social_media_text))

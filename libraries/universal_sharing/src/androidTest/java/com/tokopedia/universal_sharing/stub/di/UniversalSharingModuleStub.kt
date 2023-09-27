@@ -3,7 +3,9 @@ package com.tokopedia.universal_sharing.stub.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.universal_sharing.stub.common.NetworkUtilStub
 import com.tokopedia.universal_sharing.stub.common.UserSessionStub
+import com.tokopedia.universal_sharing.util.NetworkUtil
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -23,5 +25,11 @@ class UniversalSharingModuleStub {
         userSessionStub: UserSessionStub
     ): UserSessionInterface {
         return userSessionStub
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideNetworkUtil(): NetworkUtil {
+        return NetworkUtilStub()
     }
 }
