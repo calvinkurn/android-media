@@ -71,6 +71,13 @@ class StoriesProductBottomSheet @Inject constructor(
         }
     }
 
+    private val llManager = object : LinearLayoutManager(context, RecyclerView.VERTICAL, false) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            sendImpression()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -94,6 +101,7 @@ class StoriesProductBottomSheet @Inject constructor(
         binding.rvStoriesProduct.apply {
             adapter = productAdapter
             addOnScrollListener(scrollListener)
+            layoutManager = llManager
             isNestedScrollingEnabled = false
         }
     }
@@ -238,10 +246,9 @@ class StoriesProductBottomSheet @Inject constructor(
 
     private fun getVisibleProducts(): Map<ContentTaggedProductUiModel, Int> {
         val products = productAdapter.getItems()
-        val linearLayoutManager = binding.rvStoriesProduct.layoutManager as? LinearLayoutManager ?: return emptyMap()
         if (products.isNotEmpty()) {
-            val startPosition = linearLayoutManager.findFirstVisibleItemPosition()
-            val endPosition = linearLayoutManager.findLastVisibleItemPosition()
+            val startPosition = llManager.findFirstVisibleItemPosition()
+            val endPosition = llManager.findLastVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) {
                 return (startPosition..endPosition)
                     .associateBy { products[it]  }
