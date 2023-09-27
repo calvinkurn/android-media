@@ -15,6 +15,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert
 import org.junit.Test
+import java.util.*
 
 class CategoryViewCreatedTest : TokoNowCategoryMainViewModelTestFixture() {
 
@@ -92,7 +93,7 @@ class CategoryViewCreatedTest : TokoNowCategoryMainViewModelTestFixture() {
             title = categoryDetail.name,
             url = categoryDetail.url,
             deeplinkParam = "category/l1/$categoryIdL1",
-            utmCampaignList = listOf(String.format("cat%s", 1), categoryIdL1)
+            utmCampaignList = listOf(String.format(Locale.getDefault(), "cat%s", 1), categoryIdL1)
         )
 
         verifyCategoryDetail()
