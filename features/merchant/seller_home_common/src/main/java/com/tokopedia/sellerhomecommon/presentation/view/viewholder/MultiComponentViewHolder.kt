@@ -48,7 +48,7 @@ class MultiComponentViewHolder(
                 binding.vpShcMultiComponent.visible()
                 binding.loaderShcMultiComponent.gone()
                 currentAdapter.setWidgetType(element.widgetType)
-                currentAdapter.updateEmployeeListItems(element.data?.tabs ?: listOf())
+                currentAdapter.updateTabList(element.data?.tabs ?: listOf())
                 binding.vpShcMultiComponent.setPageTransformer { page, position ->
                     updateHeightBasedOnContent(page, binding.vpShcMultiComponent)
                 }
@@ -152,7 +152,7 @@ class MultiComponentViewHolder(
 
         binding.vpShcMultiComponent.isUserInputEnabled = false
         currentAdapter.setWidgetType(element.widgetType)
-        currentAdapter.updateEmployeeListItems(element.data?.tabs ?: listOf())
+        currentAdapter.updateTabList(element.data?.tabs ?: listOf())
 
         // Loading Initial Data, when bind called again from scrolling
         // It will prevent gql call because we are checking if the component is loaded or not

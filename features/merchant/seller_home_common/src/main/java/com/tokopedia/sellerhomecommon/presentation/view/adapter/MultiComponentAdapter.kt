@@ -36,7 +36,7 @@ class MultiComponentAdapter(
         return items.size
     }
 
-    fun updateEmployeeListItems(tabs: List<MultiComponentTab>) {
+    fun updateTabList(tabs: List<MultiComponentTab>) {
         val diffCallback = MultiComponentTabDiffer(items, tabs)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         items.clear()
