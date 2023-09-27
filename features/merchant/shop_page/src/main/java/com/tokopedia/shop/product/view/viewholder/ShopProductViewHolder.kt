@@ -1,7 +1,6 @@
 package com.tokopedia.shop.product.view.viewholder
 
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -63,7 +62,8 @@ class ShopProductViewHolder(
         val productCardModel = ShopPageProductListMapper.mapToProductCardModel(
             shopProductUiModel = shopProductUiModel,
             isWideContent = false,
-            isShowThreeDots = isShowTripleDot
+            isShowThreeDots = isShowTripleDot,
+            isForceLightMode = isOverrideTheme
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
