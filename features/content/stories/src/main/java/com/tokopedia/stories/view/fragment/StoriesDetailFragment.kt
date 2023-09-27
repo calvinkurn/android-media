@@ -601,7 +601,7 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        if (action == StoriesProductAction.ATC) analytic.sendClickAtcButtonEvent(eventLabel, listOf(product), position) else analytic.sendClickBuyButtonEvent(eventLabel, listOf(product), position)
+        if (action == StoriesProductAction.ATC) analytic.sendClickAtcButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name) else analytic.sendClickBuyButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name)
     }
 
     override fun onClickedProduct(

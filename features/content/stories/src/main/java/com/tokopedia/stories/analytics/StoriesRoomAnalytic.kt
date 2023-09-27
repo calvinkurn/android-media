@@ -24,8 +24,8 @@ interface StoriesRoomAnalytic {
     fun sendClickRemoveStoryEvent(eventLabel: String)
     fun sendViewProductCardEvent(eventLabel: String, items: Map<ContentTaggedProductUiModel, Int>)
     fun sendClickProductCardEvent(eventLabel: String, itemList: String, items: List<ContentTaggedProductUiModel>, position: Int)
-    fun sendClickBuyButtonEvent(eventLabel: String, items: List<ContentTaggedProductUiModel>, position: Int)
-    fun sendClickAtcButtonEvent(eventLabel: String, items: List<ContentTaggedProductUiModel>, position: Int)
+    fun sendClickBuyButtonEvent(eventLabel: String, items: List<ContentTaggedProductUiModel>, position: Int, shopName: String)
+    fun sendClickAtcButtonEvent(eventLabel: String, items: List<ContentTaggedProductUiModel>, position: Int, shopName: String)
     fun sendClickTapNextContentEvent(
         storiesId: String,
         creatorType: String,
