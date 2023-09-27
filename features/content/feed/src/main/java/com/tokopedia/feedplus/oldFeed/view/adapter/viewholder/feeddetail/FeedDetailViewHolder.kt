@@ -25,7 +25,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
 import com.tokopedia.content.common.R as contentCommonR
-import com.tokopedia.feedcomponent.R as feedComponentR
 
 /**
  * @author by nisie on 5/18/17.
@@ -58,11 +57,11 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
         intArrayOf(
             MethodChecker.getColor(
                 itemView.context,
-                contentCommonR.color.content_dms_asgc_progress_0_color
+                contentCommonR.color.content_dms_campaign_progress_0_color
             ),
             MethodChecker.getColor(
                 itemView.context,
-                contentCommonR.color.content_dms_asgc_progress_100_color
+                contentCommonR.color.content_dms_campaign_progress_100_color
             )
         )
     }

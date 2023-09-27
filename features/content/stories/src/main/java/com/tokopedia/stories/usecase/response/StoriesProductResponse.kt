@@ -9,7 +9,7 @@ import com.tokopedia.stories.usecase.response.StoriesProductResponse.Data.Campai
  */
 data class StoriesProductResponse(
     @SerializedName("contentStoryProducts")
-    val data: Data
+    val data: Data = Data()
 ) {
     data class Data(
         @SerializedName("products")
