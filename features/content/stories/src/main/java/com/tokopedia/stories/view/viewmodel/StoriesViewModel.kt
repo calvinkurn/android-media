@@ -214,6 +214,8 @@ class StoriesViewModel @AssistedInject constructor(
             _groupPos.value = groupPosition
             _detailPos.value = detailPosition
         }
+
+        viewModelScope.launch { repository.setHasAckStoriesFeature() }
     }
 
     private fun handleSaveInstanceStateData() {
@@ -256,7 +258,10 @@ class StoriesViewModel @AssistedInject constructor(
         when {
             newDetailPosition < mDetailSize -> updateDetailData(position = newDetailPosition)
             newGroupPosition < mGroupSize -> handleSelectGroup(position = newGroupPosition, true)
-            else -> viewModelScope.launch { _storiesEvent.emit(StoriesUiEvent.FinishedAllStories) }
+            else -> viewModelScope.launch {
+                repository.setHasSeenAllStories(args.authorId, args.authorType)
+                _storiesEvent.emit(StoriesUiEvent.FinishedAllStories)
+            }
         }
     }
 

@@ -71,13 +71,15 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
         if (shopIds.isEmpty()) return
 
         viewModelScope.launch {
-            val storiesInfo = repository.getStoriesWidgetInfo(entryPoint, shopIds)
-            _storiesState.update {
-                it.copy(
-                    widgetStates = it.widgetStates + storiesInfo.widgetStates,
-                    coachMarkText = storiesInfo.coachMarkText
-                )
-            }
+            try {
+                val storiesInfo = repository.getStoriesWidgetInfo(entryPoint, shopIds)
+                _storiesState.update {
+                    it.copy(
+                        widgetStates = it.widgetStates + storiesInfo.widgetStates,
+                        coachMarkText = storiesInfo.coachMarkText
+                    )
+                }
+            } catch (_: Exception) {}
         }
     }
 
