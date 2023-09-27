@@ -1427,26 +1427,14 @@ class CheckoutViewModel @Inject constructor(
     ) {
         if (showLoading) {
             pageState.value = CheckoutPageState.Loading
-            listData.value = listData.value.map { model ->
-                when (model) {
-                    is CheckoutOrderModel -> {
-                        return@map model.copy(
-                            shipment = model.shipment.copy(isLoading = true),
-                            isShippingBorderRed = false
-                        )
-                    }
-
-//                    is CheckoutPromoModel -> {
-//                        return@map model.copy(
-//                            isLoading = true
-//                        )
-//                    }
-
-                    else -> {
-                        return@map model
-                    }
-                }
-            }
+            val checkoutItems = listData.value.toMutableList()
+            val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+            checkoutItems[cartPosition] =
+                checkoutOrderModel.copy(
+                    shipment = checkoutOrderModel.shipment.copy(isLoading = true),
+                    isShippingBorderRed = false
+                )
+            listData.value = checkoutItems
         }
         var newItems = promoProcessor.validateUseLogisticPromo(
             validateUsePromoRequest,
