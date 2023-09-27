@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageTncBottomsheetBinding
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
@@ -17,10 +18,11 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
 
     init {
         clearContentPadding = true
-        isDragable = false
+        isDragable = true
         isHideable = true
         showCloseIcon = true
         showHeader = true
+        customPeekHeight = getScreenHeight() - BOTTOM_SHEET_MARGIN_TOP_IN_DP
     }
 
     companion object {
@@ -35,6 +37,8 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
         private const val QUERY_KEY_ID = "id"
         private const val QUERY_KEY_THEME = "theme"
         private const val QUERY_VALUE_THEME_DARK = "dark"
+
+        private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
 
         fun newInstance(
             promoCodesWithTitle: List<String>,

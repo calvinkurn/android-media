@@ -254,24 +254,17 @@ class OrderSummaryPageViewModel @Inject constructor(
                 val isPromoRevamp = orderPromo.value.isPromoRevamp
                 if (isPromoRevamp) {
                     var newOrderPromo = orderPromo.value
-                    withContext(executorDispatchers.main) {
-                        newOrderPromo = newOrderPromo.copy(
-                            lastApply = lastApply,
-                            state = OccButtonState.LOADING
-                        )
-                        orderPromo.value = newOrderPromo
-                    }
-                    val entryPointInfo = promoProcessor.getEntryPointInfo(generatePromoRequest())
-
                     val isAnimateWording = if (oldLastApply != null) {
                         val oldTotalPromoAmount =
                             oldLastApply.additionalInfo.usageSummaries.sumOf { it.amount }
                         val newTotalPromoAmount =
                             lastApply.additionalInfo.usageSummaries.sumOf { it.amount }
-                        newTotalPromoAmount > oldTotalPromoAmount
+                        oldTotalPromoAmount in (1 until newTotalPromoAmount)
                     } else {
                         false
                     }
+                    val entryPointInfo = promoProcessor.getEntryPointInfo(generatePromoRequest())
+
                     withContext(executorDispatchers.main) {
                         val state = if (entryPointInfo.isSuccess) {
                             OccButtonState.NORMAL
@@ -281,6 +274,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                         newOrderPromo = newOrderPromo.copy(
                             isAnimateWording = isAnimateWording,
                             entryPointInfo = entryPointInfo,
+                            lastApply = lastApply,
                             state = state
                         )
                         orderPromo.value = newOrderPromo
@@ -536,7 +530,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                     orderShipment.value = newShipment
                     validateUsePromoRevampUiModel = resultValidateUse
                     globalEvent.value = newEvent
-                    updatePromoState(resultValidateUse.promoUiModel)
+                    updatePromoState(resultValidateUse.promoUiModel, orderPromo.value.lastApply)
                     updateCart()
                     sendViewOspEe()
                     sendPreselectedCourierOption(ratesResult.preselectedSpId)
@@ -552,7 +546,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             if (resultValidateUse != null) {
                 validateUsePromoRevampUiModel = resultValidateUse
                 globalEvent.value = OccGlobalEvent.Normal
-                updatePromoState(resultValidateUse.promoUiModel)
+                updatePromoState(resultValidateUse.promoUiModel, orderPromo.value.lastApply)
                 updateCart()
                 sendViewOspEe()
                 sendPreselectedCourierOption(ratesResult.preselectedSpId)
@@ -719,7 +713,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                         orderShipment.value = newShipment
                     }
                     validateUsePromoRevampUiModel = resultValidateUse
-                    updatePromoState(resultValidateUse.promoUiModel)
+                    updatePromoState(resultValidateUse.promoUiModel, orderPromo.value.lastApply)
                     globalEvent.value = newEvent
                     updateCart()
                     return@launch
@@ -1141,7 +1135,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 val (resultValidateUse, isSuccess, newGlobalEvent) = promoProcessor.finalValidateUse(validateUsePromoRequest, orderCart)
                 if (resultValidateUse != null) {
                     validateUsePromoRevampUiModel = resultValidateUse
-                    updatePromoStateWithoutCalculate(resultValidateUse.promoUiModel)
+                    updatePromoStateWithoutCalculate(resultValidateUse.promoUiModel, orderPromo.value.lastApply)
                     if (isSuccess) {
                         doCheckout(products, shop, profile, onSuccessCheckout)
                         return@launch

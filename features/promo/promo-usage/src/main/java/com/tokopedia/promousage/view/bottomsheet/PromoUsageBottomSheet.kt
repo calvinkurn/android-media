@@ -170,7 +170,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private var binding by autoClearedNullable<PromoUsageBottomsheetBinding>()
     var listener: Listener? = null
     var currentPeekHeight: Int = 0
-    val maxPeekHeight: Int
+    private val maxPeekHeight: Int
         get() = getScreenHeight() - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
 
     private val recyclerViewAdapter by lazy {

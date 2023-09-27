@@ -313,7 +313,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     ) {
         viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
         viewModel.validateBboStacking()
-        viewModel.updatePromoStateWithoutCalculate(validateUse.promoUiModel)
+        viewModel.updatePromoStateWithoutCalculate(validateUse.promoUiModel, viewModel.orderPromo.value.lastApply)
         viewModel.reloadRates()
     }
 
@@ -327,7 +327,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         viewModel.updatePromoStateWithoutCalculate(
             PromoUiModel().apply {
                 titleDescription = clearPromo.successDataModel.defaultEmptyPromoMessage
-            }
+            },
+            viewModel.orderPromo.value.lastApply
         )
         viewModel.autoUnApplyBBO()
         // refresh shipping section and calculate total
