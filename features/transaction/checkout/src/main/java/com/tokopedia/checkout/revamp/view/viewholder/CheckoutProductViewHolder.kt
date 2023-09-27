@@ -40,8 +40,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductRevampBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
+import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductRevampBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -55,6 +55,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CheckoutProductViewHolder(
     private val binding: ItemCheckoutProductBinding,
@@ -163,7 +164,7 @@ class CheckoutProductViewHolder(
         }
 
         renderAddOnProductBundle(product)
-        renderAddOnGiftingProductLevel(product)
+        // TODO: [Hansen] render gifting if needed, don't forget to also hide in hideBundleViews()
     }
 
     private fun hideProductViews() {
@@ -177,6 +178,7 @@ class CheckoutProductViewHolder(
             tvProductAddOnsSectionTitle.isVisible = false
             tvProductAddOnsSeeAll.isVisible = false
             llAddonProductItems.isVisible = false
+            buttonGiftingAddonProduct.isVisible = false
         }
     }
 
@@ -243,7 +245,7 @@ class CheckoutProductViewHolder(
         }
 
         renderAddOnProduct(product)
-        renderAddOnGiftingProductLevel(product)
+        renderAddOnGiftingProduct(product)
     }
 
     private fun hideBundleViews() {
@@ -344,7 +346,6 @@ class CheckoutProductViewHolder(
         hideProductViews()
         hideBundleViews()
         renderGroupInfo(product)
-        renderBMGMGroupInfo(product)
         renderShopInfo(product)
 
         renderProductNameBmgm()
@@ -356,7 +357,7 @@ class CheckoutProductViewHolder(
         renderAdjustableSeparatorMarginBmgm()
 
         renderAddOnBMGM(product)
-        renderAddOnGiftingProductLevel(product)
+        renderAddOnGiftingProductBmgm(product)
     }
 
     private fun hideBMGMViews() {
@@ -370,7 +371,8 @@ class CheckoutProductViewHolder(
             tvProductNotesBmgm.hide()
             tvProductAddOnsSectionTitleBmgm.hide()
             tvProductAddOnsSeeAllBmgm.hide()
-            llAddonBmgmProductItems.hide()
+            llAddonProductItemsBmgm.hide()
+            buttonGiftingAddonProductBmgm.hide()
         }
     }
 
@@ -447,13 +449,14 @@ class CheckoutProductViewHolder(
             binding.ivCheckoutFreeShipping.isVisible = false
             binding.tvCheckoutOrderDescription.isVisible = false
         }
+        renderBMGMGroupInfo(product)
     }
 
     private fun renderBMGMGroupInfo(product: CheckoutProductModel) {
         fun renderBmgmGroupTitle() {
             binding.tvCheckoutBmgmTitle.shouldShowWithAction(product.shouldShowBmgmInfo) {
                 val spannedTitle = SpannableStringBuilder()
-                val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                val color = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_TN500)
                 product.bmgmOfferMessage.forEachIndexed { idx, htmlMessage ->
                     val message = MethodChecker.fromHtml(htmlMessage)
                     if (idx > Int.ZERO) {
@@ -715,9 +718,9 @@ class CheckoutProductViewHolder(
             if (addOnProduct.listAddOnProductData.isEmpty()) {
                 tvProductAddOnsSectionTitleBmgm.gone()
                 tvProductAddOnsSeeAllBmgm.gone()
-                llAddonBmgmProductItems.gone()
+                llAddonProductItemsBmgm.gone()
             } else {
-                llAddonBmgmProductItems.removeAllViews()
+                llAddonProductItemsBmgm.removeAllViews()
                 if (addOnProduct.bottomsheet.isShown) {
                     tvProductAddOnsSectionTitleBmgm.run {
                         text = addOnProduct.title
@@ -738,8 +741,11 @@ class CheckoutProductViewHolder(
                 addOnProduct.listAddOnProductData.forEach { addon ->
                     if (addon.name.isNotEmpty()) {
                         val addOnView =
-                            ItemAddOnProductBinding.inflate(layoutInflater, llAddonBmgmProductItems, false)
+                            ItemAddOnProductBinding.inflate(layoutInflater, llAddonProductItemsBmgm, false)
                         addOnView.apply {
+                            val colorMatrix = ColorMatrix()
+                            colorMatrix.setSaturation(0F)
+                            icCheckoutAddOnsItem.colorFilter = ColorMatrixColorFilter(colorMatrix)
                             icCheckoutAddOnsItem.setImageUrl(addon.iconUrl)
                             tvCheckoutAddOnsItemName.text = SpannableString(addon.name).apply {
                                 setSpan(UnderlineSpan(), 0, addon.name.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
@@ -781,8 +787,8 @@ class CheckoutProductViewHolder(
                                 listener.onClickAddonProductInfoIcon(addon)
                             }
                         }
-                        llAddonBmgmProductItems.addView(addOnView.root)
-                        llAddonBmgmProductItems.visible()
+                        llAddonProductItemsBmgm.addView(addOnView.root)
+                        llAddonProductItemsBmgm.visible()
                         listener.onImpressionAddOnProductService(
                             addon.type,
                             product.productId.toString()
@@ -793,41 +799,85 @@ class CheckoutProductViewHolder(
         }
     }
 
-    private fun renderAddOnGiftingProductLevel(
+    private fun renderAddOnGiftingProduct(
         product: CheckoutProductModel
     ) {
-        val addOns = product.addOnGiftingProductLevelModel
-        if (addOns.status == 0) {
-            binding.buttonGiftingAddonProductLevel.visibility = View.GONE
-        } else {
-            if (addOns.status == 1) {
-                if (addOns.addOnsDataItemModelList.isNotEmpty()) {
-                    binding.buttonGiftingAddonProductLevel.showActive(
+        with(productBinding) {
+            val addOns = product.addOnGiftingProductLevelModel
+            if (addOns.status == 0) {
+                buttonGiftingAddonProduct.visibility = View.GONE
+                buttonGiftingAddonProduct.setOnClickListener { }
+            } else {
+                if (addOns.status == 1) {
+                    if (addOns.addOnsDataItemModelList.isNotEmpty()) {
+                        buttonGiftingAddonProduct.showActive(
+                            addOns.addOnsButtonModel.title,
+                            addOns.addOnsButtonModel.description,
+                            addOns.addOnsButtonModel.rightIconUrl
+                        )
+                    } else {
+                        buttonGiftingAddonProduct.showEmptyState(
+                            addOns.addOnsButtonModel.title,
+                            addOns.addOnsButtonModel.description.ifEmpty { "(opsional)" },
+                            addOns.addOnsButtonModel.rightIconUrl
+                        )
+                    }
+                } else if (addOns.status == 2) {
+                    buttonGiftingAddonProduct.showInactive(
                         addOns.addOnsButtonModel.title,
                         addOns.addOnsButtonModel.description,
                         addOns.addOnsButtonModel.rightIconUrl
                     )
-                } else {
-                    binding.buttonGiftingAddonProductLevel.showEmptyState(
+                }
+                buttonGiftingAddonProduct.setOnClickListener {
+                    listener.onClickAddOnGiftingProductLevel(
+                        product
+                    )
+                }
+                buttonGiftingAddonProduct.visibility = View.VISIBLE
+                listener.onImpressionAddOnGiftingProductLevel(product.productId.toString())
+            }
+        }
+    }
+
+    private fun renderAddOnGiftingProductBmgm(
+        product: CheckoutProductModel
+    ) {
+        with(bmgmBinding) {
+            val addOns = product.addOnGiftingProductLevelModel
+            if (addOns.status == 0) {
+                buttonGiftingAddonProductBmgm.visibility = View.GONE
+                buttonGiftingAddonProductBmgm.setOnClickListener { }
+            } else {
+                if (addOns.status == 1) {
+                    if (addOns.addOnsDataItemModelList.isNotEmpty()) {
+                        buttonGiftingAddonProductBmgm.showActive(
+                            addOns.addOnsButtonModel.title,
+                            addOns.addOnsButtonModel.description,
+                            addOns.addOnsButtonModel.rightIconUrl
+                        )
+                    } else {
+                        buttonGiftingAddonProductBmgm.showEmptyState(
+                            addOns.addOnsButtonModel.title,
+                            addOns.addOnsButtonModel.description.ifEmpty { "(opsional)" },
+                            addOns.addOnsButtonModel.rightIconUrl
+                        )
+                    }
+                } else if (addOns.status == 2) {
+                    buttonGiftingAddonProductBmgm.showInactive(
                         addOns.addOnsButtonModel.title,
-                        addOns.addOnsButtonModel.description.ifEmpty { "(opsional)" },
+                        addOns.addOnsButtonModel.description,
                         addOns.addOnsButtonModel.rightIconUrl
                     )
                 }
-            } else if (addOns.status == 2) {
-                binding.buttonGiftingAddonProductLevel.showInactive(
-                    addOns.addOnsButtonModel.title,
-                    addOns.addOnsButtonModel.description,
-                    addOns.addOnsButtonModel.rightIconUrl
-                )
+                buttonGiftingAddonProductBmgm.setOnClickListener {
+                    listener.onClickAddOnGiftingProductLevel(
+                        product
+                    )
+                }
+                buttonGiftingAddonProductBmgm.visibility = View.VISIBLE
+                listener.onImpressionAddOnGiftingProductLevel(product.productId.toString())
             }
-            binding.buttonGiftingAddonProductLevel.setOnClickListener {
-                listener.onClickAddOnGiftingProductLevel(
-                    product
-                )
-            }
-            binding.buttonGiftingAddonProductLevel.visibility = View.VISIBLE
-            listener.onImpressionAddOnGiftingProductLevel(product.productId.toString())
         }
     }
 
@@ -1019,6 +1069,6 @@ class CheckoutProductViewHolder(
         private const val DEBOUNCE_TIME_ADDON = 500L
 
         private const val EPHARMACY_ICON_SIZE = 12
-        private const val MARGIN_TOP_BMGM_CARD = 12
+        private const val MARGIN_TOP_BMGM_CARD = 24
     }
 }
