@@ -1003,7 +1003,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
             if(isNewAtfMechanism) {
                 launch { homeAtfUseCase.getDynamicPosition() }
-            } else {
+            }
+            else {
                 /**
                  * 2. Get above the fold skeleton
                  */
@@ -1474,7 +1475,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private suspend fun saveToDatabase(homeData: HomeData?, saveAtf: Boolean = false) {
         getHomeRoomDataSource.saveToDatabase(homeData)
-        if (saveAtf) {
+        if (saveAtf && !isNewAtfMechanism) {
             homeData?.atfData?.let {
                 getHomeRoomDataSource.saveCachedAtf(
                     it.dataList.mapIndexed { idx, atfData ->
