@@ -1,9 +1,9 @@
 package com.tokopedia.shop_widget.common.customview
 
-import android.view.LayoutInflater
 import android.content.Context
 import android.graphics.PorterDuff
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
@@ -24,9 +24,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import java.util.Calendar
 import java.util.Date
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-
-class DynamicHeaderCustomView: FrameLayout {
+class DynamicHeaderCustomView : FrameLayout {
 
     private var listener: HeaderCustomViewListener? = null
     private var itemView: View?
@@ -63,7 +63,7 @@ class DynamicHeaderCustomView: FrameLayout {
         tusCountDown = itemView?.findViewById(R.id.tus_count_down)
         tpTitle = itemView?.findViewById(R.id.tp_title)
         tpSubtitle = itemView?.findViewById(R.id.tp_subtitle)
-        tpSeeAll =  itemView?.findViewById(R.id.tp_see_all)
+        tpSeeAll = itemView?.findViewById(R.id.tp_see_all)
         iconCtaChevron = itemView?.findViewById(R.id.icon_cta_chevron)
     }
 
@@ -94,7 +94,7 @@ class DynamicHeaderCustomView: FrameLayout {
             } else {
                 itemView?.context?.getString(R.string.thematic_widget_see_all)
             }
-            tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            tpSeeAll?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
             tpSeeAll?.setOnClickListener {
                 listener?.onSeeAllClick(ctaTextLink)
             }
@@ -148,18 +148,18 @@ class DynamicHeaderCustomView: FrameLayout {
         return statusCampaign.equals(StatusCampaign.ONGOING.statusCampaign, true)
     }
 
-    fun configShopPageFestivityColor(){
-        val festivityTextColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+    fun configShopPageFestivityColor() {
+        val festivityTextColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White)
         tpTitle?.setTextColor(festivityTextColor)
         tpSubtitle?.setTextColor(festivityTextColor)
         iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
         tusCountDown?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
     }
 
-    fun configDefaultColor(){
-        val defaultTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        val defaultSubTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        val defaultCtaColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+    fun configDefaultColor() {
+        val defaultTitleColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
+        val defaultSubTitleColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
+        val defaultCtaColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN900)
         tpTitle?.setTextColor(defaultTitleColor)
         tpSubtitle?.setTextColor(defaultSubTitleColor)
         iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)

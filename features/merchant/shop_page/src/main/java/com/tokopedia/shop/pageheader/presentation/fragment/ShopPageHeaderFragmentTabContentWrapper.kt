@@ -51,13 +51,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.data.model.HomeLayoutData
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
@@ -76,11 +76,13 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderW
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
 import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragmentTabContentWrapper :
     BaseDaggerFragment(),
@@ -102,6 +104,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
         private const val MAX_ALPHA = 255f
+        private const val PADDING_TOP_IN_DP = 8
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragmentTabContentWrapper()
@@ -146,9 +149,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var tickerResultData: ShopPageHeaderTickerData? = null
     private var chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener? = null
     private var iconShareId: Int = IconList.ID_SHARE
-    private var shopFollowButtonUiModel: ShopFollowButtonUiModel= ShopFollowButtonUiModel()
+    private var shopFollowButtonUiModel: ShopFollowButtonUiModel = ShopFollowButtonUiModel()
     private var tabFragment: Fragment? = null
-    private var initialShopLayoutData : HomeLayoutData? = null
+    private var initialShopLayoutData: HomeLayoutData? = null
     private var appbarOffsetRatio: Float = 0f
 
     override fun getComponent() = activity?.run {
@@ -221,7 +224,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             refreshLayout?.isEnabled = (verticalOffset == 0)
             val isOverrideTheme = shopHeaderLayoutData.isOverrideTheme
             setNavToolbarScrollColorTransition(verticalOffset)
-            if(isOverrideTheme) {
+            if (isOverrideTheme) {
                 if (appbarOffsetRatio < Int.ONE.toFloat()) {
                     resumeHeaderVideo()
                     setToolbarColorFromHeaderConfig()
@@ -257,18 +260,18 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     private fun setNavToolbarScrollColorTransition(verticalOffset: Int) {
         val bodyBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
-        val endColor = if(shopHeaderLayoutData.isOverrideTheme){
+        val endColor = if (shopHeaderLayoutData.isOverrideTheme) {
             ShopUtil.parseColorFromHexString(bodyBackgroundColor)
         } else {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
         }
         // Calculate the scroll range
         val scrollRange = appBarLayout?.totalScrollRange
         // Calculate the offset ratio (between 0 and 1) based on the scroll position
         appbarOffsetRatio = abs(verticalOffset).toFloat() / (scrollRange?.toFloat() ?: Int.ZERO.toFloat())
-        val blendedColor = blendColors(endColor , appbarOffsetRatio)
+        val blendedColor = blendColors(endColor, appbarOffsetRatio)
         // Set the toolbar background color
-        navToolbar?.background = ColorDrawable  (blendedColor)
+        navToolbar?.background = ColorDrawable(blendedColor)
         navToolbar?.apply {
             val drawable = background
             drawable.alpha = (appbarOffsetRatio * MAX_ALPHA).toInt()
@@ -326,7 +329,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
             tabFragment = it
             val ft: FragmentTransaction = childFragmentManager.beginTransaction()
             ft.replace(
-                viewBinding?.tabFragment?.id.orZero(), it)
+                viewBinding?.tabFragment?.id.orZero(),
+                it
+            )
             ft.commit()
         }
     }
@@ -357,7 +362,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
             val iconBuilder = IconBuilder(
                 builderFlags = IconBuilderFlag(
                     pageSource = NavSource.SHOP
-                ))
+                )
+            )
             iconBuilder.addIcon(iconShareId, disableRouteManager = true) { clickShopShare() }
             iconBuilder.addIcon(IconList.ID_SEARCH, disableRouteManager = true) { clickSearch() }
             iconBuilder.addIcon(IconList.ID_SETTING, disableRouteManager = true) { clickSettingButton() }
@@ -430,7 +436,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 switchToDarkToolbar()
             }
         }
-
     }
 
     private fun getCartCounter(): Int {
@@ -503,13 +508,11 @@ class ShopPageHeaderFragmentTabContentWrapper :
         shopPageHeaderFragmentHeaderViewHolder?.pauseTimerDynamicUspCycle()
     }
 
-
     private fun pauseHeaderVideo() {
-        if(appbarOffsetRatio >= Int.ONE.toFloat()) {
+        if (appbarOffsetRatio >= Int.ONE.toFloat()) {
             shopPageHeaderFragmentHeaderViewHolder?.pauseVideo()
         }
     }
-
 
     private fun renderPageAfterOnViewCreated() {
         if (isLoadInitialData) {
@@ -575,7 +578,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun setupFragmentBackgroundColor() {
-        if(shopHeaderLayoutData.isOverrideTheme){
+        if (shopHeaderLayoutData.isOverrideTheme) {
             val fragmentBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
             viewBinding?.tabFragment?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
         }
@@ -611,6 +614,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         return tabData?.let {
             when (it.name) {
                 ShopPageHeaderTabName.HOME -> {
+                    applyPaddingTop()
                     ShopPageHomeFragment.createInstance(
                         shopId,
                         shopPageHeaderDataModel?.isOfficial ?: false,
@@ -626,13 +630,14 @@ class ShopPageHeaderFragmentTabContentWrapper :
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
-                        if(initialShopLayoutData != null) {
+                        if (initialShopLayoutData != null) {
                             setListWidgetLayoutData(initialShopLayoutData)
                         }
                     }
                 }
 
                 ShopPageHeaderTabName.PRODUCT -> {
+                    removePaddingTop()
                     val shopPageProductFragment = ShopPageProductListFragment.createInstance(
                         shopId = shopId,
                         shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
@@ -649,6 +654,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 }
 
                 ShopPageHeaderTabName.SHOWCASE -> {
+                    removePaddingTop()
                     val shopShowcaseTabFragment = RouteManager.instantiateFragmentDF(
                         activity as AppCompatActivity,
                         FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH,
@@ -674,6 +680,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 }
 
                 ShopPageHeaderTabName.FEED -> {
+                    removePaddingTop()
                     if (isShowFeed) {
                         val feedFragment = RouteManager.instantiateFragmentDF(
                             activity as AppCompatActivity,
@@ -690,6 +697,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 }
 
                 ShopPageHeaderTabName.REVIEW -> {
+                    removePaddingTop()
                     val reviewTabFragment = RouteManager.instantiateFragmentDF(
                         activity as AppCompatActivity,
                         SHOP_REVIEW_FRAGMENT,
@@ -701,10 +709,12 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 }
 
                 ShopPageHeaderTabName.CAMPAIGN -> {
+                    removePaddingTop()
                     createCampaignTabFragment(it)
                 }
 
                 else -> {
+                    removePaddingTop()
                     null
                 }
             }
@@ -718,7 +728,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
             setListPatternImage(tabData.bgImages)
             setIsDarkTheme(tabData.isDark)
-            if(initialShopLayoutData != null) {
+            if (initialShopLayoutData != null) {
                 setListWidgetLayoutData(initialShopLayoutData)
             }
         }
@@ -736,7 +746,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     ) {
         isShowFeed = shopPageHeaderP1Data.isWhitelist
         createPostUrl = shopPageHeaderP1Data.feedUrl
-        shopPageHeaderDataModel =  ShopPageHeaderDataModel().apply {
+        shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragmentTabContentWrapper.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
             isGoldMerchant = shopPageHeaderP1Data.isGoldMerchant
@@ -841,5 +851,13 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     fun setInitialShopLayoutData(initialShopLayoutData: HomeLayoutData?) {
         this.initialShopLayoutData = initialShopLayoutData
+    }
+    
+    private fun applyPaddingTop() {
+        viewBinding?.tabFragment?.setPadding(0, PADDING_TOP_IN_DP.toPx(), 0, 0)
+    }
+    
+    private fun removePaddingTop() {
+        viewBinding?.tabFragment?.setPadding(0, 0, 0, 0)
     }
 }

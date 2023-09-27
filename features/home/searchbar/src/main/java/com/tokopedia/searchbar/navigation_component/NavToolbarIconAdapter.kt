@@ -29,6 +29,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class NavToolbarIconAdapter(
     private var iconConfig: IconConfig,
@@ -302,7 +303,7 @@ internal class ImageIconHolder(
             navToolbarIconCustomLightColor
         } else {
             val unifyColor = if (itemView.context.isDarkMode()) {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900)
             } else {
                 ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
             }
@@ -318,10 +319,10 @@ internal class ImageIconHolder(
             val unifyColor = if (itemView.context.isDarkMode()) {
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                    unifyprinciplesR.color.Unify_Static_White
                 )
             } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
             }
             unifyColor
         }
@@ -398,7 +399,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
             val drawable = getIconUnifyDrawable(
                 context = context,
                 iconId = iconToolbar.id,
-                assetColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                assetColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
             )
             iconImage.imageDrawable = drawable
         } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {

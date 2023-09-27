@@ -18,6 +18,7 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductChangeGridSectionUiM
 import com.tokopedia.shop.product.view.fragment.ShopProductTabInterface
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -79,7 +80,7 @@ class ShopProductChangeGridSectionViewHolder(
             ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
         ).orZero()
         val iconColor = shopProductTabInterface?.getShopPageColorSchema()?.getColorIntValue(
-            ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
         ).orZero()
         labelTotalProduct?.setTextColor(totalProductColor)
         labelTampilan?.setTextColor(labelPreviewColor)
@@ -87,9 +88,9 @@ class ShopProductChangeGridSectionViewHolder(
     }
 
     private fun configDefaultColor() {
-        val totalProductColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
-        val labelPreviewColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
-        val iconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val totalProductColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950_32)
+        val labelPreviewColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950_96)
+        val iconColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950)
         labelTotalProduct?.setTextColor(totalProductColor)
         labelTampilan?.setTextColor(labelPreviewColor)
         ivGridIcon?.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP)

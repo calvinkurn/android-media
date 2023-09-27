@@ -16,6 +16,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -140,15 +141,16 @@ class ShopProductSortFilterViewHolder(
         chipBackground.setColor(
             MethodChecker.getColor(
                 itemView.context,
-                com.tokopedia.unifycomponents.R.color.chipsunify_background_enable
+                unifycomponentsR.color.chipsunify_background_enable
             )
         )
         chipBackground.setStroke(
             itemView.resources.getDimension(
-                com.tokopedia.unifycomponents.R.dimen.chip_border_width
+                unifycomponentsR.dimen.chip_border_width
             ).toInt(),
             MethodChecker.getColor(
-                itemView.context, com.tokopedia.unifycomponents.R.color.chipsunify_border_enable
+                itemView.context,
+                unifycomponentsR.color.chipsunify_border_enable
             )
         )
         sortFilterWidget?.sortFilterPrefix?.background = chipBackground

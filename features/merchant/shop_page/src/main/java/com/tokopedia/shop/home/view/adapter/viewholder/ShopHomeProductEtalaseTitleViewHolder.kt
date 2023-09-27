@@ -14,6 +14,7 @@ import com.tokopedia.shop.databinding.ItemShopPageHomeProductEtalaseTitleViewBin
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -67,7 +68,7 @@ class ShopHomeProductEtalaseTitleViewHolder(
     private fun setDefaultColorConfig() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         setHeaderColor(titleColor)
     }

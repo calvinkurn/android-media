@@ -79,6 +79,7 @@ import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragmentHeaderViewHolderV2(
     private val viewBinding: ShopHeaderFragmentTabContentBinding?,
@@ -87,10 +88,10 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
     private val context: Context,
     private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener?,
-    private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener?,
+    private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener?
 ) {
 
-    companion object{
+    companion object {
         private const val CYCLE_DURATION = 5000L
         private const val MAXIMUM_WIDTH_STATIC_USP = 100
     }
@@ -138,20 +139,20 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private val buttonFollow: UnifyButton?
         get() = viewBinding?.buttonFollow
     private val widgetPlayRootContainer: View?
-        get() = viewBinding?.widgetPlayRootContainer
+        get() = viewBinding?.widgetPlayEntryPoint?.widgetPlayRootContainer
     private val playSgcWidgetContainer: View?
-        get() = viewBinding?.playSgcWidgetContainer
+        get() = viewBinding?.widgetPlayEntryPoint?.playSgcWidgetContainer
     private val tvStartCreateContentDesc: Typography?
-        get() = viewBinding?.tvStartCreateContentDesc
+        get() = viewBinding?.widgetPlayEntryPoint?.tvStartCreateContentDesc
     private val playSgcBtnStartLive: View?
-        get() = viewBinding?.playSgcBtnStartLive
+        get() = viewBinding?.widgetPlayEntryPoint?.playSgcBtnStartLive
     private val tvStartCreateContent: Typography?
-        get() = viewBinding?.tvStartCreateContent
+        get() = viewBinding?.widgetPlayEntryPoint?.tvStartCreateContent
 
     private var coachMark: CoachMark2? = null
     private val tickerShopStatus: Ticker? = viewBinding?.tickerShopStatus
     private var playVideoWrapper: PlayVideoWrapper? = null
-    private var timer : Timer? = null
+    private var timer: Timer? = null
     private var currentIndexUspDynamicValue: Int = 0
 
     fun setupChooseAddressWidget(isMyShop: Boolean) {
@@ -346,8 +347,47 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val isShowShopStaticUsp = shopStaticUspUrl.isNotEmpty()
         sectionShopStatus?.shouldShowWithAction(isShowShopOnlineStatus || isShowShopStaticUsp) {}
         shopStatusSectionDotSeparator?.shouldShowWithAction(isShowShopOnlineStatus && isShowShopStaticUsp) {}
-        textShopOnlineDescription?.shouldShowWithAction(isShowShopOnlineStatus){
+        imageShopStaticUsp?.shouldShowWithAction(isShowShopStaticUsp) {
+            imageShopStaticUsp?.loadImage(shopStaticUspUrl) {
+                overrideSize(Resize(MAXIMUM_WIDTH_STATIC_USP.toPx(), imageShopStaticUsp?.layoutParams?.height.orZero()))
+            }
+        }
+        val onlineStatusTextPairHtmlColor: Pair<String, String>
+        if (isOverrideTheme) {
+            val textColor = shopHeaderConfig?.colorSchema?.getColorIntValue(
+                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+            ).orZero()
+            val textColorHighEmphasisHex = shopHeaderConfig?.colorSchema?.getColorSchema(
+                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+            )?.value.orEmpty()
+            val textColorLowEmphasisHex = shopHeaderConfig?.colorSchema?.getColorSchema(
+                ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS
+            )?.value.orEmpty()
+            shopStatusSectionDotSeparator?.setTextColor(textColor)
+            onlineStatusTextPairHtmlColor = Pair(textColorHighEmphasisHex, textColorLowEmphasisHex)
+        } else {
+            val textColorHighEmphasisHex = ShopUtil.getColorHexString(
+                context,
+                unifyprinciplesR.color.Unify_NN950
+            )
+            val textColorLowEmphasisHex = ShopUtil.getColorHexString(
+                context,
+                unifyprinciplesR.color.Unify_NN600
+            )
+            onlineStatusTextPairHtmlColor = Pair(textColorHighEmphasisHex, textColorLowEmphasisHex)
+        }
+        textShopOnlineDescription?.shouldShowWithAction(isShowShopOnlineStatus) {
             textShopOnlineDescription?.text = MethodChecker.fromHtml(shopStatusText)
+            textShopOnlineDescription?.apply {
+                val adjustedShopStatusText = shopStatusText.replace(
+                    "\$highEmphasis",
+                    onlineStatusTextPairHtmlColor.first
+                ).replace(
+                    "\$lowEmphasis",
+                    onlineStatusTextPairHtmlColor.second
+                )
+                text = MethodChecker.fromHtml(adjustedShopStatusText)
+            }
             imageOnlineIcon?.apply {
                 if (shopOnlineStatusIcon.isNotEmpty()) {
                     show()
@@ -356,28 +396,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                     hide()
                 }
             }
-        }
-        imageShopStaticUsp?.shouldShowWithAction(isShowShopStaticUsp) {
-            imageShopStaticUsp?.loadImage(shopStaticUspUrl) {
-                overrideSize(Resize(MAXIMUM_WIDTH_STATIC_USP.toPx(), imageShopStaticUsp?.layoutParams?.height.orZero()))
-            }
-        }
-        if(isOverrideTheme){
-            val textColor = shopHeaderConfig?.colorSchema?.getColorIntValue(
-                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
-            ).orZero()
-            textShopOnlineDescription?.setTextColor(textColor)
-            shopStatusSectionDotSeparator?.setTextColor(textColor)
-        } else {
-            // Handle dark mode - last online status
-            val lastOnlineColor = ShopUtil.getColorHexString(context, R.color.clr_dms_31353B)
-            val lastOnlineUnifyColor = ShopUtil.getColorHexString(
-                context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950
-            )
-            val unifiedShopAdditionalInfo =
-                shopStatusText.replace(lastOnlineColor, lastOnlineUnifyColor)
-            textShopOnlineDescription?.text = MethodChecker.fromHtml(unifiedShopAdditionalInfo)
         }
     }
 
@@ -402,7 +420,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val initialUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         val isShowRating = ratingText.isNotEmpty()
         val isShowDynamicUsp = initialUspValue.isNotEmpty()
-        val ratingTextPairHtmlColor : Pair<String, String>
+        val ratingTextPairHtmlColor: Pair<String, String>
         sectionShopPerformance?.shouldShowWithAction(isShowRating || isShowDynamicUsp) {}
         performanceSectionDotSeparator?.shouldShowWithAction(isShowRating && isShowDynamicUsp) {}
         configDynamicUsp(listWidgetShopData)
@@ -422,11 +440,11 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         } else {
             val textColorHighEmphasisHex = ShopUtil.getColorHexString(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                unifyprinciplesR.color.Unify_NN950
             )
             val textColorLowEmphasisHex = ShopUtil.getColorHexString(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                unifyprinciplesR.color.Unify_NN600
             )
             ratingTextPairHtmlColor = Pair(textColorHighEmphasisHex, textColorLowEmphasisHex)
         }
@@ -485,14 +503,14 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.textHtml.orEmpty()
         val appLink =
             getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.textLink.orEmpty()
-        imageShopBadge?.shouldShowWithAction(shopBadgeImageUrl.isNotEmpty()){
+        imageShopBadge?.shouldShowWithAction(shopBadgeImageUrl.isNotEmpty()) {
             imageShopBadge?.loadImage(shopBadgeImageUrl)
         }
         textShopName?.text = MethodChecker.fromHtml(shopName)
         sectionShopBasicInfo?.setOnClickListener {
             listenerHeader?.onClickShopBasicInfoSection(appLink)
         }
-        if(isOverrideTheme){
+        if (isOverrideTheme) {
             val highEmphasisColor = shopHeaderConfig?.colorSchema?.getColorIntValue(
                 ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
             ).orZero()
@@ -513,7 +531,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
         isOverrideTheme: Boolean
     ) {
-        if(isOverrideTheme) {
+        if (isOverrideTheme) {
             val backgroundImage = getBackgroundImage(shopHeaderConfig)
             val backgroundVideo = shopHeaderConfig?.getBackgroundObject(
                 ShopPageHeaderLayoutUiModel.BgObjectType.VIDEO
@@ -567,14 +585,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                     setDrawableLeft(this, model.leftDrawableUrl, model.isNeverFollow)
                 }
                 text = model.textLabel
-            }else{
+            } else {
                 removeCompoundDrawableFollowButton()
                 text = ""
             }
             isLoading = isShowLoading
             setOnClickListener {
-                if (!isLoading)
+                if (!isLoading) {
                     listenerHeader?.onFollowButtonClicked()
+                }
             }
         }
     }
@@ -599,7 +618,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun applyWhiteTintColorToVoucherFollowerImage(voucherFollowerBitmap: Bitmap) {
-        val tintColor = MethodChecker.getColor (context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White) // Replace with your desired tint color
+        val tintColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White) // Replace with your desired tint color
         val canvas = Canvas(voucherFollowerBitmap)
         val paint = Paint()
         val filter = PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN)
@@ -610,7 +629,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private fun removeCompoundDrawableFollowButton() {
         val spannableText = SpannableString(buttonFollow?.text)
         val spanList = spannableText.getSpans(0, spannableText.length, ImageSpan::class.java)
-        if(spanList.isNotEmpty()) {
+        if (spanList.isNotEmpty()) {
             buttonFollow?.setDrawable(null)
         }
     }
@@ -646,7 +665,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     private fun showShopOperationalHourStatusTicker(
         shopOperationalHourStatus: ShopOperationalHourStatus,
-        isMyShop: Boolean = false,
+        isMyShop: Boolean = false
     ) {
         tickerShopStatus?.show()
         tickerShopStatus?.tickerType = if (isMyShop) {
@@ -735,7 +754,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             }
 
             override fun onDismiss() {}
-
         })
 
         // special handling for shop status incubated
@@ -888,7 +906,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         backgroundColorShopHeader?.hide()
         if (playVideoWrapper == null) {
             playVideoWrapper = PlayVideoWrapper.Builder(context).build()
-            playVideoWrapper?.addListener(object: PlayVideoWrapper.Listener {
+            playVideoWrapper?.addListener(object : PlayVideoWrapper.Listener {
                 override fun onVideoPlayerChanged(player: ExoPlayer) {
                     backgroundVideoShopHeader?.player = player
                 }
@@ -903,7 +921,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         }
         playVideoWrapper?.setRepeatMode(true)
         playVideoWrapper?.playUri(
-            uri = Uri.parse(videoUrl),
+            uri = Uri.parse(videoUrl)
         )
         playVideoWrapper?.mute(true)
     }
@@ -924,17 +942,20 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         if (timer == null && listDynamicUspValue.isNotEmpty()) {
             timer = Timer()
-            timer?.scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
-                        currentIndexUspDynamicValue = Int.ZERO
-                    } else {
-                        ++currentIndexUspDynamicValue
+            timer?.scheduleAtFixedRate(
+                object : TimerTask() {
+                    override fun run() {
+                        if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
+                            currentIndexUspDynamicValue = Int.ZERO
+                        } else {
+                            ++currentIndexUspDynamicValue
+                        }
+                        val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
+                        cycleDynamicUspText(currentValue)
                     }
-                    val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
-                    cycleDynamicUspText(currentValue)
-                }
-            }, CYCLE_DURATION, CYCLE_DURATION)
+                },
+                CYCLE_DURATION, CYCLE_DURATION
+            )
         }
     }
 
@@ -959,7 +980,5 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun resumeTimerDynamicUspCycle() {
-
     }
-
 }
