@@ -10,27 +10,22 @@ import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.multiplatform.seller.feedback.data.param.FeedbackParam
 import com.tokopedia.multiplatform.seller.feedback.domain.SubmitFeedbackUseCase
-import com.tokopedia.multiplatform.seller.feedback.domain.model.SubmitFeedbackModel
-import com.tokopedia.sellerfeedback.data.SubmitResult
-import com.tokopedia.sellerfeedback.domain.SubmitGlobalFeedbackUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerfeedback.data.SubmitResultKmp
 import com.tokopedia.sellerfeedback.error.SubmitThrowable
 import com.tokopedia.sellerfeedback.error.UploadThrowable
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
-import com.tokopedia.shared.domain.GetHostPolicyUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.IOException
 import javax.inject.Inject
 
 class SellerFeedbackKmpViewModel @Inject constructor(
-    private val dispatcherProviders: CoroutineDispatchers,
+    dispatcherProviders: CoroutineDispatchers,
     private val uploaderUseCase: UploaderUseCase,
-    private val submitGlobalFeedbackUseCase: SubmitGlobalFeedbackUseCase,
     private val submitFeedbackUseCase: SubmitFeedbackUseCase,
-    private val getHostPolicyUseCase: GetHostPolicyUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProviders.main) {
 
@@ -43,59 +38,13 @@ class SellerFeedbackKmpViewModel @Inject constructor(
     private val feedbackImages = MutableLiveData<List<ImageFeedbackUiModel>>()
     fun getFeedbackImages(): LiveData<List<ImageFeedbackUiModel>> = feedbackImages
 
-    private val submitResult = MutableLiveData<SubmitResult>()
-    fun getSubmitResult(): LiveData<SubmitResult> = submitResult
-
-    private val submitResultKmp = MutableLiveData<Result<SubmitFeedbackModel>>()
-    fun getSubmitResultKmp(): LiveData<Result<SubmitFeedbackModel>> = submitResultKmp
-
-    private val _getHostPolicy = MutableLiveData<Result<String>>()
-    val getHostPolicy: LiveData<Result<String>>
-        get() = _getHostPolicy
+    private val submitResultKmp = MutableLiveData<SubmitResultKmp>()
+    fun getSubmitResultKmp(): LiveData<SubmitResultKmp> = submitResultKmp
 
     fun setImages(images: List<ImageFeedbackUiModel>) {
         feedbackImageList.clear()
         feedbackImageList.addAll(images)
         feedbackImages.value = feedbackImageList
-    }
-
-    fun fetchHostPolicy() {
-        launch {
-            val getHostPolicyResponse = withContext(dispatcherProviders.io) {
-                getHostPolicyUseCase.result("")
-            }
-            _getHostPolicy.value = getHostPolicyResponse
-        }
-    }
-
-    fun submitFeedback(sellerFeedback: SellerFeedback) {
-        launchCatchError(block = {
-            val uploadIds = feedbackImageList.map {
-                uploadImage(it.imageUrl)
-            }
-
-            sellerFeedback.uploadId1 = uploadIds.getOrNull(0)
-            sellerFeedback.uploadId2 = uploadIds.getOrNull(1)
-            sellerFeedback.uploadId3 = uploadIds.getOrNull(2)
-
-            sellerFeedback.shopId = userSession.shopId.toLongOrZero()
-
-            val result = submitGlobalFeedbackUseCase.executeOnBackground()
-
-            val submitGlobalFeedback = result.submitGlobalFeedback
-            if (submitGlobalFeedback.error) {
-                throw SubmitThrowable(submitGlobalFeedback.errorMsg)
-            }
-
-            submitResult.postValue(SubmitResult.Success)
-        }, onError = {
-                val result = when (it) {
-                    is UploadThrowable -> SubmitResult.UploadFail(it)
-                    is SubmitThrowable -> SubmitResult.SubmitFail(it)
-                    else -> SubmitResult.NetworkFail(it)
-                }
-                submitResult.postValue(result)
-            })
     }
 
     fun submitFeedbackKmp(sellerFeedback: SellerFeedback) {
@@ -117,15 +66,42 @@ class SellerFeedbackKmpViewModel @Inject constructor(
 
             val result = submitFeedbackUseCase.execute(submitFeedbackParam)
 
-            submitResultKmp.postValue(result)
+            val submitGlobalFeedbackError = (result as? Result.Failure)
+            throwSubmitFeedbackExceptionIfAny(submitGlobalFeedbackError)
+
+            val submitGlobalFeedback = (result as? Result.Success)?.data
+            if (submitGlobalFeedback?.isError == true) {
+                throw SubmitThrowable(submitGlobalFeedback.errorMessage)
+            }
+
+            submitResultKmp.postValue(SubmitResultKmp.SubmitFeedbackSuccess(submitGlobalFeedback))
         }, onError = {
                 val result = when (it) {
-                    is UploadThrowable -> SubmitResult.UploadFail(it)
-                    is SubmitThrowable -> SubmitResult.SubmitFail(it)
-                    else -> SubmitResult.NetworkFail(it)
+                    is UploadThrowable -> SubmitResultKmp.UploadFail(it)
+                    is SubmitThrowable -> SubmitResultKmp.SubmitFail(it)
+                    else -> SubmitResultKmp.NetworkFail(it)
                 }
-                submitResult.postValue(result)
+                submitResultKmp.postValue(result)
             })
+    }
+
+    private fun throwSubmitFeedbackExceptionIfAny(submitGlobalFeedbackError: Result.Failure?) {
+        when (submitGlobalFeedbackError) {
+            is Result.Failure.HttpFailure -> {
+                throw MessageErrorException(submitGlobalFeedbackError.errorBody)
+            }
+            is Result.Failure.NetworkFailure -> {
+                throw IOException(submitGlobalFeedbackError.exception)
+            }
+
+            is Result.Failure.UnknownFailure -> {
+                throw SubmitThrowable(submitGlobalFeedbackError.exception.localizedMessage.orEmpty())
+            }
+
+            else -> {
+                // no op
+            }
+        }
     }
 
     private suspend fun uploadImage(imagePath: String): String {

@@ -1,12 +1,8 @@
 package com.tokopedia.sellerfeedback.data
 
-import com.tokopedia.multiplatform.seller.feedback.domain.model.SubmitFeedbackModel
-
 sealed class SubmitResult {
 
     object Success : SubmitResult()
-
-    data class SubmitFeedbackSuccess(val submitFeedbackModel: SubmitFeedbackModel?) : SubmitResult()
 
     data class NetworkFail(
         val cause: Throwable

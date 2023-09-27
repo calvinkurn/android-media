@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -28,7 +27,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.gql.Result
 import com.tokopedia.imagepicker.common.GalleryType
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerMultipleSelectionBuilder
@@ -38,13 +36,12 @@ import com.tokopedia.imagepicker.common.ImagePickerTab
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.multiplatform.seller.feedback.domain.model.SubmitFeedbackModel
 import com.tokopedia.seller.active.common.features.sellerfeedback.ScreenshotPreferenceManager
 import com.tokopedia.seller.active.common.features.sellerfeedback.SuccessToasterHelper
 import com.tokopedia.sellerfeedback.BuildConfig
 import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.SellerFeedbackTracking
-import com.tokopedia.sellerfeedback.data.SubmitResult
+import com.tokopedia.sellerfeedback.data.SubmitResultKmp
 import com.tokopedia.sellerfeedback.di.component.DaggerSellerFeedbackComponent
 import com.tokopedia.sellerfeedback.error.SellerFeedbackException
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
@@ -180,7 +177,6 @@ class SellerFeedbackKmpFragment :
         showSettings()
         setDefaultFeedbackResultValue()
         attachScreenshot()
-        viewModel?.fetchHostPolicy()
     }
 
     override fun onRequestPermissionsResult(
@@ -436,21 +432,7 @@ class SellerFeedbackKmpFragment :
     private fun observeViewModel() {
         viewModel?.run {
             getFeedbackImages().observe(viewLifecycleOwner, observerFeedbackImages)
-            getSubmitResult().observe(viewLifecycleOwner, observerSubmitResult)
             getSubmitResultKmp().observe(viewLifecycleOwner, observerSubmitFeedbackKmp)
-            getHostPolicy.observe(viewLifecycleOwner, observerHostPolicy)
-        }
-    }
-
-    private val observerHostPolicy = Observer<Result<String>> {
-        when (it) {
-            is Result.Success -> {
-                Log.d("hostPolicyResponse", it.data)
-            }
-
-            is Result.Failure -> {
-                Log.e("hostPolicyResponseError", it.toString())
-            }
         }
     }
 
@@ -459,46 +441,30 @@ class SellerFeedbackKmpFragment :
         checkButtonSend()
     }
 
-    private val observerSubmitFeedbackKmp = Observer<Result<SubmitFeedbackModel>> {
+    private val observerSubmitFeedbackKmp = Observer<SubmitResultKmp> {
         when (it) {
-            is Result.Success -> {
-                Log.d("submitFeedbackKmpSuccess", it.data.toString())
-            }
-            is Result.Failure -> {
-                Log.d("submitFeedbackKmpFail", it.toString())
-            }
-        }
-    }
-
-    private val observerSubmitResult = Observer<SubmitResult> {
-        when (it) {
-            is SubmitResult.Success -> {
+            is SubmitResultKmp.SubmitFeedbackSuccess -> {
                 setOnSuccessFeedbackSaved()
             }
-
-            is SubmitResult.UploadFail -> {
-                Log.d("submitFeedbackUploadFail", it.cause.stackTraceToString())
+            is SubmitResultKmp.UploadFail -> {
                 logToCrashlytics(it.cause, ERROR_UPLOAD)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_upload))
             }
 
-            is SubmitResult.SubmitFail -> {
-                Log.d("submitFeedbackSubmitFail", it.cause.stackTraceToString())
+            is SubmitResultKmp.SubmitFail -> {
                 logToCrashlytics(it.cause, ERROR_SUBMIT)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_submit))
             }
 
-            is SubmitResult.NetworkFail -> {
-                Log.d("submitFeedbackNetworkFail", it.cause.stackTraceToString())
+            is SubmitResultKmp.NetworkFail -> {
                 logToCrashlytics(it.cause, ERROR_NETWORK)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_network))
             }
-
             else -> {
                 // no op
             }
         }
-        buttonSend?.apply {
+        buttonSend?.run {
             isLoading = false
             isClickable = true
         }

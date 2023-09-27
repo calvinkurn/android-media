@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
+import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.sellerfeedback.di.scope.SellerFeedbackScope
@@ -25,18 +26,20 @@ class SellerFeedbackNetworkModule {
         okHttpRetryPolicy: OkHttpRetryPolicy,
         chuckInterceptor: ChuckerInterceptor,
         debugInterceptor: DebugInterceptor,
-        tkpdAuthInterceptor: TkpdAuthInterceptor
+        tkpdAuthInterceptor: TkpdAuthInterceptor,
+        fingerprintInterceptor: FingerprintInterceptor
     ): OkHttpClient {
         val clientBuilder = OkHttpClient.Builder()
             .addInterceptor(tkpdAuthInterceptor)
-            .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
+            .addInterceptor(fingerprintInterceptor)
             .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
+            .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
             .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
 
-//        if (GlobalConfig.isAllowDebuggingTools()) {
-//            clientBuilder.addInterceptor(debugInterceptor)
-//            clientBuilder.addInterceptor(chuckInterceptor)
-//        }
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            clientBuilder.addInterceptor(debugInterceptor)
+            clientBuilder.addInterceptor(chuckInterceptor)
+        }
 
         return clientBuilder.build()
     }
@@ -68,5 +71,14 @@ class SellerFeedbackNetworkModule {
         userSession: UserSessionInterface
     ): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSession)
+    }
+
+    @Provides
+    @SellerFeedbackScope
+    fun provideFingerprintInterceptor(
+        networkRouter: NetworkRouter,
+        userSession: UserSessionInterface
+    ): FingerprintInterceptor {
+        return FingerprintInterceptor(networkRouter, userSession)
     }
 }
