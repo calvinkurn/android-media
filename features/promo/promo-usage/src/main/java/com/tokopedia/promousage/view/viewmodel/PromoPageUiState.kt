@@ -9,8 +9,8 @@ sealed class PromoPageUiState {
     object Initial : PromoPageUiState()
 
     data class Success(
-        val tickerInfo: PromoPageTickerInfo,
-        val items: List<DelegateAdapterItem>,
+        val tickerInfo: PromoPageTickerInfo = PromoPageTickerInfo(),
+        val items: List<DelegateAdapterItem> = emptyList(),
         val savingInfo: PromoSavingInfo = PromoSavingInfo(),
         val isCalculating: Boolean = false,
         val isReload: Boolean = false

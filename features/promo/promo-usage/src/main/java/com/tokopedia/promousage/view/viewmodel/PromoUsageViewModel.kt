@@ -1,5 +1,6 @@
 package com.tokopedia.promousage.view.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -76,7 +77,9 @@ class PromoUsageViewModel @Inject constructor(
     private var entryPoint: PromoPageEntryPoint = PromoPageEntryPoint.CART_PAGE
     private var defaultErrorMessage: String = ""
     private var initialSelectedPromoCodes: List<String>? = null
-    private var clickedGoPayLaterCicilPromoCode: String? = null
+
+    @VisibleForTesting
+    var clickedGoPayLaterCicilPromoCode: String? = null
 
     private val _promoPageUiState = MutableLiveData<PromoPageUiState>(PromoPageUiState.Initial)
     val promoPageUiState: LiveData<PromoPageUiState>
@@ -227,7 +230,6 @@ class PromoUsageViewModel @Inject constructor(
         if (initialSelectedPromoCodes == null) {
             initialSelectedPromoCodes = items.getSelectedPromoCodes()
         }
-        onSuccess?.invoke(items)
         _promoPageUiState.postValue(
             PromoPageUiState.Success(
                 tickerInfo = tickerInfo,
@@ -236,6 +238,7 @@ class PromoUsageViewModel @Inject constructor(
                 isReload = true
             )
         )
+        onSuccess?.invoke(items)
     }
 
     private fun handleLoadPromoListFailed(throwable: Throwable) {
@@ -404,9 +407,7 @@ class PromoUsageViewModel @Inject constructor(
                     pageState.items
                         .firstOrNull { item ->
                             item is PromoItem &&
-                                item.couponType.firstOrNull { type ->
-                                type == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
-                            } != null
+                                item.couponType.contains(PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL)
                         } as? PromoItem
                 } as? PromoItem
                 if (gopayLaterPromo != null) {
@@ -476,9 +477,11 @@ class PromoUsageViewModel @Inject constructor(
                             )
                         )
 
+                        PromoUsageIdlingResource.increment()
                         if (hasLoadingPromo) {
                             delay(CLASH_ARTIFICIAL_DELAY)
                         }
+                        PromoUsageIdlingResource.decrement()
 
                         // Calculate clash
                         val clashCalculationResult =
