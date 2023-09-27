@@ -50,8 +50,6 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
