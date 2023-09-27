@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.view.View
@@ -33,6 +34,7 @@ class ShopHomeV4TerlarisAdapter(
 
     private var productListData: List<List<ShopHomeProductUiModel>> = listOf()
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(productList: List<List<ShopHomeProductUiModel>>) {
         productListData = productList
         notifyDataSetChanged()
