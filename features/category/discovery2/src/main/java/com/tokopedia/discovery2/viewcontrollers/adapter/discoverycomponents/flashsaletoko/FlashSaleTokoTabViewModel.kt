@@ -49,7 +49,15 @@ class FlashSaleTokoTabViewModel(
 
     fun getTabLiveData(): LiveData<ArrayList<ComponentsItem>> = tabs
 
-    fun onTabClick() {
+    fun onTabClick(selectedFilterValue: String) {
         this.syncData.value = true
+
+        component.data?.forEach {
+            it.isSelected = it.filterValue == selectedFilterValue
+        }
+    }
+
+    fun reInitTabComponentData() {
+        component.reInitComponentItems()
     }
 }
