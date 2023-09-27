@@ -2015,6 +2015,7 @@ class ShopPageHeaderFragmentV2 :
         return try {
             Class.forName(FEED_SHOP_FRAGMENT)
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             null
         }
     }
