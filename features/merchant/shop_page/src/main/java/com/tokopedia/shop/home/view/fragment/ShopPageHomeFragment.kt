@@ -1646,7 +1646,10 @@ open class ShopPageHomeFragment :
             }
         } else {
             view?.let { view ->
-                NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
+                showToastSuccess(
+                    dataModelAtc.message.firstOrNull().orEmpty(),
+                    getString(R.string.shop_page_atc_label_cta)
+                )
             }
         }
     }
@@ -1725,7 +1728,7 @@ open class ShopPageHomeFragment :
             } else {
                 ErrorHandler.getErrorMessage(context, exception)
             }
-            NetworkErrorHelper.showRedCloseSnackbar(view, errorMessage)
+            showErrorToast(errorMessage.orEmpty())
         }
     }
 
@@ -3118,7 +3121,10 @@ open class ShopPageHomeFragment :
                             shopHomeCarousellProductUiModel
                         )
                         view?.let { view ->
-                            NetworkErrorHelper.showGreenCloseSnackbar(view, it.message.first())
+                            showToastSuccess(
+                                it.message.firstOrNull().orEmpty(),
+                                getString(R.string.shop_page_atc_label_cta)
+                            )
                         }
                     },
                     {
@@ -3375,7 +3381,10 @@ open class ShopPageHomeFragment :
                             shopHomeCarousellProductUiModel
                         )
                         view?.let { view ->
-                            NetworkErrorHelper.showGreenCloseSnackbar(view, it.message.first())
+                            showToastSuccess(
+                                it.message.firstOrNull().orEmpty(),
+                                getString(R.string.shop_page_atc_label_cta)
+                            )
                         }
                     },
                     {
