@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.common.ColorPallete
 import com.tokopedia.common.setRetainTextColor
 import com.tokopedia.unifycomponents.toPx
@@ -111,7 +112,7 @@ class ColorVariantLinearLayout : LinearLayoutCompat {
         return try {
             Color.parseColor(color)
         } catch (throwable: Throwable) {
-            throwable.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(throwable)
             0
         }
     }
