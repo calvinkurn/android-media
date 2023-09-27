@@ -16,6 +16,8 @@ import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
@@ -39,6 +41,7 @@ class CatalogToolbar : Toolbar {
     var cartCount: Int = 0
         set(value) {
             field = value
+            notification?.clearAnimation()
             if (value > Int.ZERO) {
                 notification?.run {
                     visible()
@@ -56,7 +59,7 @@ class CatalogToolbar : Toolbar {
 
     private var tpgSubTitle: Typography? = null
     private var iconNotifWraper: FrameLayout? = null
-    private var notification: NotificationUnify? = null
+    var notification: NotificationUnify? = null
     private var backIconWhite = getIconUnifyDrawable(
         context,
         IconUnify.ARROW_BACK,
