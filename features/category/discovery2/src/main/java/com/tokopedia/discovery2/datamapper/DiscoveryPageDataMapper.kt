@@ -429,12 +429,14 @@ class DiscoveryPageDataMapper(
 
             val tabData = data.first()
 
+            val tabIdentifier = generateTabIdentifier(componentsItem, index)
+
             val targetComponentIdList = tabData
                 .targetComponentId
                 ?.split(",")
                 ?.map {
                     if (isDynamicTabs) {
-                        DYNAMIC_COMPONENT_IDENTIFIER + index + it.trim()
+                        DYNAMIC_COMPONENT_IDENTIFIER + tabIdentifier + it.trim()
                     } else {
                         it.trim()
                     }
@@ -446,7 +448,7 @@ class DiscoveryPageDataMapper(
 
             targetComponentIdList.forEach { componentId ->
                 val tabComponent = if (isDynamicTabs) {
-                    handleDynamicTabsComponents(componentId, index, component, tabData.name)
+                    handleDynamicTabsComponents(componentId, tabIdentifier, component, tabData.name)
                 } else {
                     handleAvailableComponents(componentId, component, tabData.name)
                 }
@@ -475,9 +477,22 @@ class DiscoveryPageDataMapper(
         return listComponents
     }
 
+    private fun generateTabIdentifier(
+        componentsItem: ComponentsItem,
+        index: Int
+    ): String {
+        val isFlashSaleToko = componentsItem.name == ComponentNames.FlashSaleTokoTab.componentName
+
+        return if (isFlashSaleToko) {
+            componentsItem.data?.first()?.filterValue ?: index.toString()
+        } else {
+            index.toString()
+        }
+    }
+
     private fun handleDynamicTabsComponents(
         targetedComponentId: String,
-        tabItemIndex: Int,
+        tabItemIndex: String,
         tabComponent: ComponentsItem,
         tabName: String?
     ): ComponentsItem? {

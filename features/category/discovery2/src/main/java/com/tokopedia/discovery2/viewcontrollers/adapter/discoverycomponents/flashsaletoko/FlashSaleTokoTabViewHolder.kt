@@ -50,10 +50,13 @@ class FlashSaleTokoTabViewHolder(
     }
 
     override fun onShopTabClick(element: ShopTabDataModel) {
-        viewModel?.onTabClick()
+        viewModel?.run {
+            onTabClick(element.id)
+            reInitTabComponentData()
+        }
 
         val position = viewModel?.getTabLiveData()?.value
-            ?.indexOfFirst { it.id == element.id } ?: -1
+            ?.indexOfFirst { it.data?.first()?.filterValue == element.id } ?: -1
 
         (fragment as DiscoveryFragment).currentTabPosition = position + 1
     }
