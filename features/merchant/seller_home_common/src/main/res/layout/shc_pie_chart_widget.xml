@@ -7,9 +7,9 @@
     app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerPieChart"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/shc_large_widget_height">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPieChartTitle"
@@ -138,10 +138,11 @@
             android:id="@+id/shcPieChartErrorState"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingTop="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintTop_toTopOf="parent" />
 
         <include

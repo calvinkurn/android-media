@@ -339,13 +339,13 @@ class StatisticViewModel @Inject constructor(
                 components = result.toMutableList(),
                 //Error the whole viewpager when one of the widget is error
                 isError = result.any { it.data?.data == null })
-            _multiComponentTabsData.postValue(mapTab)
+            _multiComponentTabsData.value = mapTab
         }, onError = {
             val updatedTab = tab.copy(
                 isLoaded = true,
                 isError = true
             )
-            _multiComponentTabsData.postValue(updatedTab)
+            _multiComponentTabsData.value = updatedTab
         })
     }
 

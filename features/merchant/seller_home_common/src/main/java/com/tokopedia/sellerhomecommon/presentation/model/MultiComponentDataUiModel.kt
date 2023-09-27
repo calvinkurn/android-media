@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 data class MultiComponentDataUiModel(
     override var dataKey: String = "",
     override var error: String = "",
@@ -21,7 +23,9 @@ data class MultiComponentTab(
     val components: List<MultiComponentData>,
     var isLoaded: Boolean,
     var isError: Boolean,
-)
+) {
+    val impressHolder = ImpressHolder()
+}
 
 data class MultiComponentData(
     val componentType: String,

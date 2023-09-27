@@ -8,11 +8,15 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.WidgetListener
+import com.tokopedia.sellerhomecommon.common.const.ShcConst.Payload.UPDATE_MULTI_COMPONENT_DETAIL
 import com.tokopedia.sellerhomecommon.databinding.ShcMultiComponentWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
@@ -33,14 +37,14 @@ class MultiComponentViewHolder(
             data == null -> setOnLoadingState()
             //only happen when muat ulang clicked
             element.showLoadingState -> setOnLoadingComponentDetail()
-            data.error.isNotBlank() -> setOnErrorState()
+            data.error.isNotBlank() -> setOnErrorState(element)
             else -> setOnSuccessState(element)
         }
     }
 
     override fun bind(element: MultiComponentWidgetUiModel, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
-            if (payloads[0] == 123) {
+            if (payloads[0] == UPDATE_MULTI_COMPONENT_DETAIL) {
                 binding.vpShcMultiComponent.visible()
                 binding.loaderShcMultiComponent.gone()
                 currentAdapter.setWidgetType(element.widgetType)
@@ -72,20 +76,27 @@ class MultiComponentViewHolder(
         binding.tabsShcMultiComponent.gone()
         binding.vpShcMultiComponent.gone()
         binding.tvShcMultiComponent.gone()
+        binding.errorShcMultiComponent.gone()
         binding.loaderShcMultiComponent.visible()
         binding.shimmerShcMultiComponent.root.visible()
     }
 
     private fun setOnLoadingComponentDetail() {
         binding.vpShcMultiComponent.gone()
+        binding.errorShcMultiComponent.gone()
         binding.loaderShcMultiComponent.visible()
     }
 
-    private fun setOnErrorState() {
+    private fun setOnErrorState(element: MultiComponentWidgetUiModel) {
         binding.tvShcMultiComponent.gone()
         binding.shimmerShcMultiComponent.root.gone()
+        binding.loaderShcMultiComponent.gone()
         binding.tabsShcMultiComponent.gone()
         binding.vpShcMultiComponent.gone()
+        binding.errorShcMultiComponent.visible()
+        binding.errorShcMultiComponent.setOnReloadClicked {
+            listener.onReloadWidget(element)
+        }
     }
 
     private fun setOnSuccessState(element: MultiComponentWidgetUiModel) {
@@ -93,6 +104,7 @@ class MultiComponentViewHolder(
         binding.vpShcMultiComponent.visible()
         binding.loaderShcMultiComponent.gone()
         binding.shimmerShcMultiComponent.root.gone()
+        binding.errorShcMultiComponent.gone()
 
         onTabSelectedListener?.let {
             binding.tabsShcMultiComponent.tabLayout.removeOnTabSelectedListener(it)
@@ -113,6 +125,7 @@ class MultiComponentViewHolder(
                     binding.vpShcMultiComponent.currentItem = selectedIndex
                     element.data?.tabs?.getOrNull(selectedIndex)?.let {
                         listener.multiComponentTabSelected(it)
+                        listener.clickMultiComponentTab(it.title)
                     }
                 }
             }
@@ -126,10 +139,6 @@ class MultiComponentViewHolder(
             }
         }
 
-        onTabSelectedListener?.let {
-            binding.tabsShcMultiComponent.tabLayout.addOnTabSelectedListener(it)
-        }
-
         element.data?.tabs?.let { tabs ->
             setTabs(
                 tabs,
@@ -137,9 +146,31 @@ class MultiComponentViewHolder(
             )
         }
 
+        onTabSelectedListener?.let {
+            binding.tabsShcMultiComponent.tabLayout.addOnTabSelectedListener(it)
+        }
+
         binding.vpShcMultiComponent.isUserInputEnabled = false
         currentAdapter.setWidgetType(element.widgetType)
         currentAdapter.updateEmployeeListItems(element.data?.tabs ?: listOf())
+
+        // Loading Initial Data, when bind called again from scrolling
+        // It will prevent gql call because we are checking if the component is loaded or not
+        element.data?.tabs?.getOrNull(element.data?.selectedTabPosition.orZero())?.let {
+            listener.multiComponentTabSelected(it)
+        }
+
+        binding.tabsShcMultiComponent.addOnImpressionListener(ImpressHolder()) {
+            val plusTabPosition = element.data?.tabs?.indexOfFirst {
+                it.id == "tab_plus"
+            } ?: 0
+            val firstTabView =
+                binding.tabsShcMultiComponent.tabLayout.getTabAt(plusTabPosition)?.customView
+
+            firstTabView?.let {
+                listener.showCoachMarkFirstTab(it)
+            }
+        }
     }
 
     private fun selectTabInitialLoad(selectedTabPosition: Int) {
@@ -152,11 +183,12 @@ class MultiComponentViewHolder(
         tabList.forEach {
             binding.tabsShcMultiComponent.addNewTab(it.title)
         }
-        selectTabInitialLoad(selectedTabPosition)
 
         binding.vpShcMultiComponent.run {
             adapter = currentAdapter
         }
+        selectTabInitialLoad(selectedTabPosition)
+
     }
 
     companion object {
@@ -165,6 +197,10 @@ class MultiComponentViewHolder(
     }
 
     interface Listener {
+
+        fun impressComponentDetailTab()
+        fun clickMultiComponentTab(tabName: String)
+        fun showCoachMarkFirstTab(view: View)
         fun multiComponentTabSelected(tab: MultiComponentTab)
         fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String)
         fun getRvViewPool(): RecyclerView.RecycledViewPool?

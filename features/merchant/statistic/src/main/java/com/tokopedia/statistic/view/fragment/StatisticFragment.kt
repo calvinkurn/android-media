@@ -36,6 +36,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
+import com.tokopedia.sellerhomecommon.common.const.ShcConst.Payload.UPDATE_MULTI_COMPONENT_DETAIL
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
@@ -80,6 +81,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.StatisticCoachMarkHelper
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
@@ -146,6 +148,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private val mViewModel: StatisticViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
+    }
+
+    private val coachMarkHelper: StatisticCoachMarkHelper? by lazy {
+        context?.let {
+            StatisticCoachMarkHelper(it)
+        }
     }
 
     private val viewPool: RecycledViewPool by lazy {
@@ -549,6 +557,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (!tab.isLoaded) {
             mViewModel.getMultiComponentDetailTabWidgetData(tab)
         }
+    }
+
+    override fun showCoachMarkFirstTab(view: View) {
+        coachMarkHelper?.showCoachMarkMultiComponent(view)
+    }
+
+    override fun clickMultiComponentTab(tabName: String) {
+        StatisticTracker.sendClickMultiComponentTab(tabName)
+    }
+
+    override fun impressComponentDetailTab() {
+        StatisticTracker.impressClickMultiComponentTab()
     }
 
     override fun getRvViewPool(): RecycledViewPool {
@@ -1091,9 +1111,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             data = data?.copy(
                 tabs = mapWidget
             )
+            showLoadingState = false
         }
 
-        notifyWidgetChangedPayload(test, 123)
+        notifyWidgetChangedPayload(test, UPDATE_MULTI_COMPONENT_DETAIL)
     }
 
     private fun notifyWidgetChangedPayload(widget: BaseWidgetUiModel<*>, payload:Int) {
@@ -1158,7 +1179,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun observeMultiComponentData() {
         mViewModel.multiComponentTabsData.observe(viewLifecycleOwner) { tab ->
-            //todo need to check all multiComponent and update
             adapter.data.filterIsInstance<MultiComponentWidgetUiModel>().find { widget ->
                 widget.data?.tabs?.any {
                     it.id == tab.id

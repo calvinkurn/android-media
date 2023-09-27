@@ -23,4 +23,8 @@ object ShcConst {
     object BottomSheet {
         const val TAG_MONTH_PICKER = "MonthPickerBottomSheet"
     }
+
+    object Payload {
+        const val UPDATE_MULTI_COMPONENT_DETAIL = 123
+    }
 }

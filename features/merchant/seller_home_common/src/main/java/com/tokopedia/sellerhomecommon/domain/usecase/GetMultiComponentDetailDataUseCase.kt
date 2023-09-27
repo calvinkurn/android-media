@@ -1,7 +1,9 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.common.const.WidgetSource
 import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentData
@@ -32,17 +34,23 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
         tab: MultiComponentTab,
         dynamicParameter: ParamCommonWidgetModel
     ): List<MultiComponentData> {
+        val dynamicParameterMultiComponent = dynamicParameter.copy(
+            widgetSource =
+            WidgetSource.MULTI_COMPONENT_WIDGET_SOURCE
+        )
         return withContext(dispatcher.io) {
             val dataDeferred = tab.components.map {
                 async {
-                    val componentData = getComponentDataAsync(it, dynamicParameter)
+                    val componentData = getComponentDataAsync(it, dynamicParameterMultiComponent)
 
                     when (it.data) {
                         is PieChartWidgetUiModel -> {
                             return@async it.copy(
                                 data = it.data.copy(
                                     data = componentData as? PieChartDataUiModel,
-                                    isShowEmpty = componentData?.showWidget == false
+                                    isShowEmpty = (componentData as? PieChartDataUiModel)
+                                        ?.isWidgetEmpty()
+                                        .orFalse()
                                 )
                             )
                         }
@@ -50,7 +58,9 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
                             return@async it.copy(
                                 data = it.data.copy(
                                     data = componentData as? MultiLineGraphDataUiModel,
-                                    isShowEmpty = componentData?.showWidget == false
+                                    isShowEmpty = (componentData as? MultiLineGraphDataUiModel)
+                                        ?.isWidgetEmpty()
+                                        .orFalse()
                                 )
                             )
                         }

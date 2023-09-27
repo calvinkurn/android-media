@@ -892,6 +892,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    override fun impressComponentDetailTab() {
+        // No - op
+    }
+
+    override fun clickMultiComponentTab(tabName: String) {
+        // No - op
+    }
+
+    override fun showCoachMarkFirstTab(view: View) {
+        // No - op
+    }
+
     override fun sendRichListImpressionEvent(eventLabel: String) {
         if (eventLabel.isNotBlank()) {
             SellerHomeTracking.sendImpressionRichListWidgetEligibleEvent(eventLabel)

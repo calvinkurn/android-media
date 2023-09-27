@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder.multicompone
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -53,6 +54,10 @@ class MultiComponentTabViewHolder(
         }
 
         tabAdapter.setData(tab.components.map { it.data })
+
+        itemView.addOnImpressionListener(tab.impressHolder) {
+            listener.impressComponentDetailTab()
+        }
     }
 
     private fun showErrorTab(tab: MultiComponentTab, widgetType: String) = viewBinding?.run {

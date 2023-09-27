@@ -26,7 +26,8 @@ class MultiComponentTabDiffer(
         return oldTab[oldItemPosition].components.hashCode() ==
                 newTab[newItemPosition].components.hashCode() &&
                 oldTab[oldItemPosition].isLoaded == newTab[newItemPosition].isLoaded &&
-                oldTab[oldItemPosition].isError == newTab[newItemPosition].isError
+                oldTab[oldItemPosition].isError == newTab[newItemPosition].isError &&
+                oldTab[oldItemPosition].title == newTab[newItemPosition].title
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
