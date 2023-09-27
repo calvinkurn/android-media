@@ -46,6 +46,7 @@ import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
+import com.tokopedia.campaign.utils.constant.SharingComponentConstant
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
@@ -224,7 +225,6 @@ class OfferLandingPageFragment :
                     viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
                     viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
                     viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.offerings.firstOrNull()?.endDate.orEmpty()))
-                    viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.offerings.firstOrNull()?.offerTypeId.orZero()))
                     setupTncBottomSheet()
                     fetchMiniCart()
                     setMiniCartOnOfferEnd(offerInfoForBuyer)
@@ -823,9 +823,13 @@ class OfferLandingPageFragment :
                 tnTitle = sharingData.offerData.title,
                 tnImage = sharingData.offerData.imageUrl
             )
+            setMinVersion(
+                minVersionAndroid = SharingComponentConstant.MIN_VERSION_ANDROID,
+                minVersioniOS = SharingComponentConstant.MIN_VERSION_IOS
+            )
             setLinkProperties(
                 LinkProperties(
-                    linkerType = Constant.SHARING_UTM,
+                    linkerType = Constant.SHARING_PAGE_NAME,
                     id = currentState.offerIds.toSafeString(),
                     ogTitle = sharingData.offerData.title,
                     ogDescription = sharingData.offerData.description,

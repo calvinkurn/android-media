@@ -581,6 +581,22 @@
             app:typographyType="display_3"
             tools:text="Min. beli 2" />
 
+        <!--bmgm_helper_view to help margin & padding for bmgm products-->
+
+        <View
+            android:id="@+id/bmgm_helper_view_1"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/fl_image_product"
+            app:layout_constraintStart_toEndOf="@id/checkbox_anchor"/>
+
+        <View
+            android:id="@+id/bmgm_helper_view_2"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/qty_editor_product"
+            app:layout_constraintEnd_toEndOf="@id/qty_editor_product"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.DividerUnify
