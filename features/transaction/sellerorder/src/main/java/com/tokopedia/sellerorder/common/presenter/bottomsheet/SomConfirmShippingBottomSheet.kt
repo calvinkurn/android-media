@@ -89,31 +89,21 @@ class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialIn
         templateParam?.apply {
             listNotes = when (popUp.template.code) {
                 SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_1 -> {
-                    val learnMoreText = this.learnMoreText?.data.orEmpty()
-                    val learnMoreUrl = this.learnMoreUrl?.data.orEmpty()
-                    val dropOffText = this.dropoffText?.data.orEmpty()
-                    val dropOffUrl = this.dropoffUrl?.data.orEmpty()
-                    if (learnMoreText.isNotEmpty() && learnMoreUrl.isNotEmpty() && dropOffText.isNotEmpty() && dropOffUrl.isNotEmpty()) {
-                        templateFmd(
-                            learnMoreUrl = learnMoreUrl,
-                            learnMoreText = learnMoreText,
-                            dropoffUrl = dropOffUrl,
-                            dropoffText = dropOffText
-                        )
-                    } else {
-                        listOf()
-                    }
+                    templateFmd(
+                        learnMoreUrl = this.learnMoreUrl?.data.orEmpty(),
+                        learnMoreText = this.learnMoreText?.data.orEmpty(),
+                        dropoffUrl = this.dropoffUrl?.data.orEmpty(),
+                        dropoffText = this.dropoffText?.data.orEmpty()
+                    )
                 }
 
                 SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_2 -> {
-                    val dropOffText = this.dropoffText?.data.orEmpty()
-                    val dropOffUrl = this.dropoffUrl?.data.orEmpty()
-                    if (dropOffText.isNotEmpty() && dropOffUrl.isNotEmpty()) {
-                        templateFmdNotEligible(dropOffUrl = dropOffUrl, dropOffText = dropOffText)
-                    } else {
-                        listOf()
-                    }
+                    templateFmdNotEligible(
+                        dropOffUrl = this.dropoffUrl?.data.orEmpty(),
+                        dropOffText = this.dropoffText?.data.orEmpty()
+                    )
                 }
+
                 SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_3 -> templateAutoAwb()
                 else -> listOf()
             }
