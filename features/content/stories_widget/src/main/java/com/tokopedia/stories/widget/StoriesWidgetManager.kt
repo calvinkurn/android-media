@@ -19,10 +19,12 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
-import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesEntrySource
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.tracking.DefaultTrackingManager
 import com.tokopedia.stories.widget.tracking.TrackingManager
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -32,7 +34,7 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 27/07/23
  */
 class StoriesWidgetManager private constructor(
-    private val entryPoint: StoriesEntryPoint,
+    private val entryPoint: StoriesEntrySource,
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModelStoreOwner: ViewModelStoreOwner,
@@ -50,6 +52,10 @@ class StoriesWidgetManager private constructor(
         override fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesWidgetState) {
             component.router().route(view.context, state.appLink)
             options.trackingManager.clickEntryPoints(entryPoint)
+        }
+
+        override fun onImpressed(view: StoriesWidgetLayout, state: StoriesWidgetState) {
+            options.trackingManager.impressEntryPoints(entryPoint)
         }
     }
 
@@ -255,7 +261,7 @@ class StoriesWidgetManager private constructor(
     companion object {
 
         fun create(
-            entryPoint: StoriesEntryPoint,
+            entryPoint: StoriesEntrySource,
             fragment: Fragment,
             builderOptions: Builder.() -> Unit
         ): StoriesWidgetManager {
@@ -265,7 +271,7 @@ class StoriesWidgetManager private constructor(
         }
 
         fun create(
-            entryPoint: StoriesEntryPoint,
+            entryPoint: StoriesEntrySource,
             activity: AppCompatActivity,
             builderOptions: Builder.() -> Unit
         ): StoriesWidgetManager {
@@ -276,19 +282,19 @@ class StoriesWidgetManager private constructor(
     }
 
     class Builder private constructor(
-        private val entryPoint: StoriesEntryPoint,
+        private val entryPoint: StoriesEntrySource,
         private val context: Context,
         private val lifecycleOwner: LifecycleOwner,
         private val viewModelStoreOwner: ViewModelStoreOwner
     ) {
 
-        constructor(entryPoint: StoriesEntryPoint, fragment: Fragment) : this(
+        constructor(entryPoint: StoriesEntrySource, fragment: Fragment) : this(
             entryPoint,
             fragment.requireContext(),
             fragment.viewLifecycleOwner,
             fragment
         )
-        constructor(entryPoint: StoriesEntryPoint, activity: AppCompatActivity) : this(
+        constructor(entryPoint: StoriesEntrySource, activity: AppCompatActivity) : this(
             entryPoint,
             activity,
             activity,
@@ -297,7 +303,10 @@ class StoriesWidgetManager private constructor(
 
         private var mScrollingParent: View? = null
         private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
-        private var mTrackingManager: TrackingManager = DefaultTrackingManager(entryPoint)
+        private val trackingQueue : TrackingQueue get() = TrackingQueue(context)
+        private val userSession get() =  UserSession(context.applicationContext)
+        private val defaultTrackingManager get() =  DefaultTrackingManager(entryPoint, trackingQueue, userSession)
+        private var mTrackingManager: TrackingManager = defaultTrackingManager
         private var mShowCoachMarkIfApplicable: Boolean = true
 
         fun setScrollingParent(view: View?) = builder {

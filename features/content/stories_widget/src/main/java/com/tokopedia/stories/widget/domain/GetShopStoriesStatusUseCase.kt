@@ -59,7 +59,7 @@ internal class GetShopStoriesStatusUseCase @Inject constructor(
 
         companion object {
             fun create(
-                key: StoriesEntryPoint,
+                key: StoriesEntrySource,
                 authors: List<Author> = emptyList(),
             ) = Request(
                 Data(

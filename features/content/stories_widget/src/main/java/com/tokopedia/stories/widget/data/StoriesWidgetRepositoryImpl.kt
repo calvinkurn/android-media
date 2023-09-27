@@ -10,12 +10,11 @@ import com.tokopedia.stories.internal.StoriesPreferenceUtil
 import com.tokopedia.stories.internal.storage.StoriesSeenStorage
 import com.tokopedia.stories.widget.StoriesStatus
 import com.tokopedia.stories.widget.domain.GetShopStoriesStatusUseCase
-import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesEntrySource
 import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.domain.TimeMillis
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -49,52 +48,40 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getStoriesWidgetInfo(
-        entryPoint: StoriesEntryPoint,
+        entryPoint: StoriesEntrySource,
         shopIds: List<String>
     ): StoriesWidgetInfo = withContext(dispatchers.io) {
         val isEntryPointAllowed = isEntryPointAllowed(entryPoint)
         if (!isEntryPointAllowed) return@withContext StoriesWidgetInfo.Default
 
-        delay(1000)
-        val result = shopIds.map { shopId ->
+        val response = getShopStoriesUseCase(
+            params = GetShopStoriesStatusUseCase.Request.create(
+                entryPoint,
+                shopIds.map {
+                    GetShopStoriesStatusUseCase.Request.Author.create(
+                        it,
+                        GetShopStoriesStatusUseCase.Request.Author.Type.Shop
+                    )
+                }
+            )
+        )
+
+        val result = response.response.data.map {
             StoriesWidgetState(
-                shopId = shopId,
-                status = getStoriesStatus(anyStoryExists = true, hasUnseenStories = true),
-                appLink = "tokopedia://play/12669",
-                updatedAt = TimeMillis.now()
+                shopId = it.id,
+                status = getStoriesStatus(anyStoryExists = it.hasStory, hasUnseenStories = it.isUnseenStoryExist),
+                appLink = it.appLink,
+                updatedAt = TimeMillis.now(),
             )
         }
-//        val response = getShopStoriesUseCase(
-//            params = GetShopStoriesStatusUseCase.Request.create(
-//                key,
-//                shopIds.map {
-//                    GetShopStoriesStatusUseCase.Request.Author.create(
-//                        it,
-//                        GetShopStoriesStatusUseCase.Request.Author.Type.Shop
-//                    )
-//                }
-//            )
-//        )
-
-//        return@withContext response.response.data.map {
-//            ShopStoriesState(
-//                shopId = it.id,
-//                anyStoryExisted = it.hasStory,
-//                hasUnseenStories = it.isUnseenStoryExist,
-//                appLink = it.appLink,
-//            )
-//        }
 
         result.forEach {
             if (it.status != StoriesStatus.AllStoriesSeen) return@forEach
-            storiesSeenStorage.setSeenAllAuthorStories(
-                StoriesSeenStorage.Author.Shop(it.shopId)
-            )
+            storiesSeenStorage.setSeenAllAuthorStories(StoriesSeenStorage.Author.Shop(it.shopId))
         }
-
         return@withContext StoriesWidgetInfo(
             result.associateBy { it.shopId },
-            "Test CoachMark"
+            response.response.meta.coachMark
         )
     }
 
@@ -106,7 +93,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun isEntryPointAllowed(key: StoriesEntryPoint): Boolean {
+    private fun isEntryPointAllowed(key: StoriesEntrySource): Boolean {
         val disabledEntryPoints = getDisabledEntryPoints()
         return !disabledEntryPoints.contains(key.key)
     }

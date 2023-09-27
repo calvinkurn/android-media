@@ -22,7 +22,7 @@ interface ChatListItemListener {
     fun trackDeleteChat(element: ItemChatListPojo)
     fun isTabSeller(): Boolean
     fun getSupportChildFragmentManager(): FragmentManager
-    fun getStoriesWidgetManager(): StoriesWidgetManager
+    fun getStoriesWidgetManager(): StoriesWidgetManager?
     fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean = true)
     fun returnToSellerHome()
     fun onScrollToTop()

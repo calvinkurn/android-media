@@ -3,6 +3,7 @@ package com.tokopedia.stories.widget
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.stories.widget.domain.StoriesEntrySource
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
@@ -24,13 +25,13 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 25/07/23
  */
 internal class StoriesWidgetViewModel @AssistedInject constructor(
-    @Assisted private val entryPoint: StoriesEntryPoint,
+    @Assisted private val entryPoint: StoriesEntrySource,
     private val repository: StoriesWidgetRepository
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(entryPoint: StoriesEntryPoint): StoriesWidgetViewModel
+        fun create(entryPoint: StoriesEntrySource): StoriesWidgetViewModel
     }
 
     private val _storiesState = MutableStateFlow(StoriesWidgetInfo.Default)
