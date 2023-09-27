@@ -139,15 +139,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private val buttonFollow: UnifyButton?
         get() = viewBinding?.buttonFollow
     private val widgetPlayRootContainer: View?
-        get() = viewBinding?.widgetPlayRootContainer
+        get() = viewBinding?.widgetPlayEntryPoint?.widgetPlayRootContainer
     private val playSgcWidgetContainer: View?
-        get() = viewBinding?.playSgcWidgetContainer
+        get() = viewBinding?.widgetPlayEntryPoint?.playSgcWidgetContainer
     private val tvStartCreateContentDesc: Typography?
-        get() = viewBinding?.tvStartCreateContentDesc
+        get() = viewBinding?.widgetPlayEntryPoint?.tvStartCreateContentDesc
     private val playSgcBtnStartLive: View?
-        get() = viewBinding?.playSgcBtnStartLive
+        get() = viewBinding?.widgetPlayEntryPoint?.playSgcBtnStartLive
     private val tvStartCreateContent: Typography?
-        get() = viewBinding?.tvStartCreateContent
+        get() = viewBinding?.widgetPlayEntryPoint?.tvStartCreateContent
 
     private var coachMark: CoachMark2? = null
     private val tickerShopStatus: Ticker? = viewBinding?.tickerShopStatus
