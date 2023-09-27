@@ -46,8 +46,7 @@ object ShopUtilExt {
                 setTextColor(textColor)
                 setBackground(background)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
         }
     }
 
