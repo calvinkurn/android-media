@@ -12,13 +12,14 @@ import com.tokopedia.utils.htmltags.HtmlUtil
 class FilterTabViewHolder(
     view: View?,
     private val listener: Listener
-): AbstractViewHolder<FilterTabWidgetUiModel>(view) {
+) : AbstractViewHolder<FilterTabWidgetUiModel>(view) {
 
     private val binding by lazy { ShcFilterTabWidgetBinding.bind(itemView) }
 
     override fun bind(element: FilterTabWidgetUiModel) {
         with(binding) {
-            val selectedTab = element.filterTabs?.firstOrNull { it.page == element.selectedFilterPage }
+            val selectedTab =
+                element.filterTabs?.firstOrNull { it.page == element.selectedFilterPage }
             selectedTab?.let { tab ->
                 val filterTabMessage = HtmlUtil.fromHtml(element.filterTabMessage)
                 tvFilterTabTitle.text = filterTabMessage
@@ -34,12 +35,13 @@ class FilterTabViewHolder(
         }
     }
 
-    interface Listener: BaseViewHolderListener {
+    interface Listener : BaseViewHolderListener {
         fun onFilterClicked(
             tabs: List<TabModel>?,
             selectedPage: String?,
             title: String
-        )
+        ) {
+        }
     }
 
     companion object {
