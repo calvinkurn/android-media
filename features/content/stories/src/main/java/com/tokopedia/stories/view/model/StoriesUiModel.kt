@@ -6,6 +6,7 @@ import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 
 @Parcelize
 data class StoriesUiModel(
@@ -49,7 +50,8 @@ data class StoriesDetailItem(
     @IgnoredOnParcel val author: StoryAuthor = StoryAuthor.Unknown,
     @IgnoredOnParcel val menus: List<ContentMenuItem> = emptyList(),
     val productCount: String = "",
-) : Parcelable {
+    @IgnoredOnParcel val share: Sharing = Sharing.Empty,
+    ) : Parcelable {
 
     @Parcelize
     data class Meta(
@@ -70,6 +72,15 @@ data class StoriesDetailItem(
 
     enum class StoriesDetailItemUiEvent {
         PAUSE, RESUME,
+    }
+
+    data class Sharing(
+        val isShareable: Boolean,
+        val metadata: LinkProperties,
+    ) {
+        companion object {
+            val Empty get() = Sharing(isShareable = false, metadata = LinkProperties())
+        }
     }
 
 }

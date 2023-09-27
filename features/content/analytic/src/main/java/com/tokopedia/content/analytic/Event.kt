@@ -31,10 +31,17 @@ object Event {
     const val add_to_cart = "add_to_cart"
 
     const val viewItem = "view_item"
+    const val viewItemList = "view_item_list"
 
     /**
      * Upcoming
      */
     const val viewUpcomingIris = "viewUpcomingIris"
     const val clickUpcoming = "clickUpcoming"
+
+    /**
+     * Sharing
+     */
+    const val clickCommunication = "clickCommunication"
+    const val viewCommunicationIris = "viewCommunicationIris"
 }

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.stories.R
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
@@ -116,5 +117,4 @@ class StoriesActivity : BaseActivity() {
         super.onDestroy()
         _binding = null
     }
-
 }

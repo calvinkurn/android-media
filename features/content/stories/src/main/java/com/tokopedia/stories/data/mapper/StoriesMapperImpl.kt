@@ -17,11 +17,11 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesGroupHeader
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.stories.R as storiesR
 
 class StoriesMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :
@@ -90,6 +90,16 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     isSameContent = false,
                     author = buildAuthor(stories.author),
                     menus = buildMenu(stories.interaction, stories.author),
+                    share = StoriesDetailItem.Sharing(
+                        isShareable = stories.interaction.shareable,
+                        metadata = LinkProperties(
+                            ogTitle = stories.meta.shareTitle,
+                            ogImageUrl = stories.meta.shareImage,
+                            ogDescription = stories.meta.shareDescription,
+                            deeplink = stories.appLink,
+                            desktopUrl = stories.webLink,
+                        )
+                    ),
                     productCount = stories.totalProductsFmt.ifEmpty { "0" },
                     meta = Meta(
                         activityTracker = stories.meta.activityTracker,
@@ -109,14 +119,6 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
     ) =
         buildList {
             when {
-                !isOwner(author) && template.reportable -> add(
-                    ContentMenuItem(
-                        iconUnify = IconUnify.WARNING,
-                        name = contentcommonR.string.content_common_menu_report,
-                        type = ContentMenuIdentifier.Report
-                    )
-                )
-
                 isOwner(author) && template.deletable -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.DELETE,

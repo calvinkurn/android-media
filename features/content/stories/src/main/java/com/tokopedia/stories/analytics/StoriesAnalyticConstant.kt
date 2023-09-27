@@ -1,4 +1,4 @@
-package com.tokopedia.stories.analytic
+package com.tokopedia.stories.analytics
 
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.analytic.CurrentSite

@@ -1,9 +1,10 @@
-package com.tokopedia.stories.analytic
+package com.tokopedia.stories.analytics
 
 import android.os.Bundle
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
@@ -184,22 +185,35 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46051
     override fun sendViewProductCardEvent(
         eventLabel: String,
-        items: List<String>,
+        items : Map<ContentTaggedProductUiModel, Int>
     ) {
-        Tracker.Builder()
-            .setEvent("view_item_list")
-            .setEventAction("view - product card")
-            .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(Key.trackerId, "46051")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite(currentSite)
-            .setCustomProperty("item_list", "/stories-room - product card")
-            .setCustomProperty(Key.items, items)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        if (items.isEmpty()) return
+        val listOfProducts = items.map {
+            Bundle().apply {
+                putInt(Key.itemIndex, it.value)
+                putString(Key.itemId, it.key.id)
+                putString(Key.itemName, it.key.title)
+                putFloat(Key.price, it.key.price.price.toFloat())
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopType, args.authorType)
+            }
+        }
+        val eventDataLayer = Bundle().apply {
+            putString(Key.event, Event.viewItemList)
+            putString(Key.eventAction, "view - product card")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, eventLabel)
+            putString(Key.trackerId, "46051")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.items, ArrayList(listOfProducts))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.viewItemList,
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
@@ -207,64 +221,115 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickProductCardEvent(
         eventLabel: String,
         itemList: String,
-        items: List<String>,
+        items: List<ContentTaggedProductUiModel>,
+        position: Int,
     ) {
-        Tracker.Builder()
-            .setEvent(Event.selectContent)
-            .setEventAction("click - product card")
-            .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(Key.trackerId, "46052")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite(currentSite)
-            .setCustomProperty("item_list", itemList)
-            .setCustomProperty(Key.items, items)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        val listOfProducts = items.map {
+            Bundle().apply {
+                putInt(Key.itemIndex, position)
+                putString(Key.itemId, it.id)
+                putString(Key.itemName, it.title)
+                putFloat(Key.price, when (val price = it.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopType, args.authorType)
+            }
+        }
+        val eventDataLayer = Bundle().apply {
+            putString(Key.event, Event.selectContent)
+            putString(Key.eventAction, "click - product card")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, eventLabel)
+            putString(Key.trackerId, "46052")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.items, ArrayList(listOfProducts))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.selectContent,
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46054
     override fun sendClickBuyButtonEvent(
         eventLabel: String,
-        items: List<String>,
+        items: List<ContentTaggedProductUiModel>,
     ) {
-        Tracker.Builder()
-            .setEvent(Event.add_to_cart)
-            .setEventAction("click - buy button")
-            .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(Key.trackerId, "46054")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(Key.items, items)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        val itemList = items.map {
+            Bundle().apply {
+                putString(Key.itemId, it.id)
+                putString(Key.itemName, it.title)
+                putFloat(Key.price, when (val price = it.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopType, args.authorType)
+            }
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(Key.event, Event.add_to_cart)
+            putString(Key.eventAction, "click - buy button")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, eventLabel)
+            putString(Key.trackerId, "46054")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.items, ArrayList(itemList))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.add_to_cart,
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46056
     override fun sendClickAtcButtonEvent(
         eventLabel: String,
-        items: List<String>,
+        items: List<ContentTaggedProductUiModel>,
     ) {
-        Tracker.Builder()
-            .setEvent(Event.add_to_cart)
-            .setEventAction("click - atc button")
-            .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(Key.trackerId, "46056")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(Key.items, items)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        val itemList = items.map {
+            Bundle().apply {
+                putString(Key.itemId, it.id)
+                putString(Key.itemName, it.title)
+                putFloat(Key.price, when (val price = it.price){
+                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                })
+                putString(Key.itemShopId, args.authorId)
+                putString(Key.itemShopType, args.authorType)
+            }
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(Key.event, Event.add_to_cart)
+            putString(Key.eventAction, "click - atc button")
+            putString(Key.eventCategory, STORIES_ROOM_CATEGORIES)
+            putString(Key.eventLabel, eventLabel)
+            putString(Key.trackerId, "46056")
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, currentSite)
+            putString(Key.sessionIris, sessionIris)
+            putString(Key.userId, userId)
+            putParcelableArrayList(Key.items, ArrayList(itemList))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.add_to_cart,
+            eventDataLayer,
+        )
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155

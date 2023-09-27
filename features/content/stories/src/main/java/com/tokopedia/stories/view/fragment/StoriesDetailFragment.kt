@@ -30,8 +30,8 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.showImmediately
-import com.tokopedia.stories.analytic.StoriesAnalytics
-import com.tokopedia.stories.analytic.StoriesEEModel
+import com.tokopedia.stories.analytics.StoriesAnalytics
+import com.tokopedia.stories.analytics.StoriesEEModel
 import com.tokopedia.stories.bottomsheet.StoriesProductBottomSheet
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
@@ -39,6 +39,7 @@ import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.animation.StoriesProductNudge
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
+import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
@@ -46,6 +47,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
+import com.tokopedia.stories.view.utils.StoriesSharingComponent
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
@@ -63,13 +65,15 @@ import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 
 class StoriesDetailFragment @Inject constructor(
     private val analyticFactory: StoriesAnalytics.Factory,
     private val router: Router
-) : TkpdBaseV4Fragment() {
+) : TkpdBaseV4Fragment(), StoriesThreeDotsBottomSheet.Listener, StoriesProductBottomSheet.Listener {
 
     private val mParentPage: StoriesGroupFragment
         get() = (requireParentFragment() as StoriesGroupFragment)
@@ -81,8 +85,6 @@ class StoriesDetailFragment @Inject constructor(
     val viewModelProvider by lazyThreadSafetyNone { mParentPage.viewModelProvider }
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
-
-    private val analytic: StoriesAnalytics get() = analyticFactory.create(mParentPage.args)
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
@@ -110,6 +112,8 @@ class StoriesDetailFragment @Inject constructor(
     private val groupId: String
         get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
 
+    private var analytic: StoriesAnalytics? = null
+
     private val activityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {}
@@ -119,6 +123,16 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            when (fragment) {
+                is StoriesThreeDotsBottomSheet -> fragment.setListener(this)
+                is StoriesProductBottomSheet ->  fragment.setListener(this)
+            }
+        }
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -134,6 +148,7 @@ class StoriesDetailFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupStoriesView()
         setupObserver()
+        setupAnalytic()
     }
 
     override fun onResume() {
@@ -201,6 +216,21 @@ class StoriesDetailFragment @Inject constructor(
                     }
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
+                    is StoriesUiEvent.TapSharing -> {
+                        val sheet = StoriesSharingComponent(rootView = requireView())
+                        sheet.setListener(object : StoriesSharingComponent.Listener {
+                            override fun onDismissEvent(view: StoriesSharingComponent) {
+                                viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
+                                analytic?.onCloseShareSheet(viewModel.storyId)
+                            }
+
+                            override fun onShareChannel(shareModel: ShareModel) {
+                                analytic?.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
+                            }
+                        })
+                        analytic?.onClickShareIcon(viewModel.storyId)
+                        sheet.show(childFragmentManager, event.metadata, viewModel.userId, viewModel.storyId)
+                    }
                     is StoriesUiEvent.ShowErrorEvent -> {
                         if (viewModel.isAnyBottomSheetShown) return@collect
                         requireView().showToaster(
@@ -261,7 +291,7 @@ class StoriesDetailFragment @Inject constructor(
                         listener = object : ImageLoaderStateListener {
                             override fun successLoad() {
                                 contentIsLoaded()
-                                analytic.sendImpressionStoriesContent(currContent.id)
+                                analytic?.sendImpressionStoriesContent(currContent.id)
                             }
 
                             override fun failedLoad() {
@@ -305,6 +335,8 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
+    private fun buildEventLabel() : String = "${mParentPage.args.source} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
             tvPartnerName.text = state.author.name
@@ -313,12 +345,13 @@ class StoriesDetailFragment @Inject constructor(
             if (state.author is StoryAuthor.Shop) {
                 ivBadge.setImageUrl(state.author.badgeUrl)
             }
-
             root.setOnClickListener {
+                analytic?.sendClickShopNameEvent(buildEventLabel())
                 viewModelAction(StoriesUiAction.Navigate(state.author.appLink))
             }
         }
     }
+
 
     private fun setupStoriesView() = with(binding) {
         showPageLoading(true)
@@ -377,9 +410,14 @@ class StoriesDetailFragment @Inject constructor(
             }
         }
         vStoriesKebabIcon.setOnClickListener {
+            analytic?.sendClickThreeDotsEvent(buildEventLabel())
             viewModelAction(StoriesUiAction.OpenKebabMenu)
         }
+        vStoriesShareIcon.setOnClickListener {
+            viewModelAction(StoriesUiAction.TapSharing)
+        }
         vStoriesProductIcon.root.setOnClickListener {
+            analytic?.sendClickShoppingBagEvent(buildEventLabel())
             viewModelAction(StoriesUiAction.OpenProduct)
         }
         flStoriesProduct.onTouchEventStories { event ->
@@ -434,7 +472,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {
-        analytic.sendClickStoryCircleEvent(
+        analytic?.sendClickStoryCircleEvent(
             currentCircle = data.groupName,
             promotions = listOf(
                 StoriesEEModel(
@@ -448,11 +486,11 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackImpressionDetail(storiesId: String) {
-        analytic.sendImpressionStoriesContent(storiesId)
+        analytic?.sendImpressionStoriesContent(storiesId)
     }
 
     private fun trackTapPreviousDetail() {
-        analytic.sendClickTapPreviousContentEvent(
+        analytic?.sendClickTapPreviousContentEvent(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
@@ -461,7 +499,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun trackTapNextDetail() {
-        analytic.sendClickTapNextContentEvent(
+        analytic?.sendClickTapNextContentEvent(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
@@ -483,7 +521,6 @@ class StoriesDetailFragment @Inject constructor(
                 trackerCdListName = viewModel.storyId
             )
         )
-
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
             variantSheet = AtcVariantBottomSheet()
             variantSheet?.setOnDismissListener { }
@@ -499,6 +536,41 @@ class StoriesDetailFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onRemoveStory(view: StoriesThreeDotsBottomSheet) {
+        analytic?.sendClickRemoveStoryEvent(buildEventLabel())
+    }
+
+    override fun onProductActionClicked(
+        action: StoriesProductAction,
+        product: ContentTaggedProductUiModel,
+        view: StoriesProductBottomSheet
+    ) {
+        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(eventLabel, listOf(product)) else analytic?.sendClickBuyButtonEvent(eventLabel, listOf(product))
+    }
+
+    override fun onClickedProduct(
+        product: ContentTaggedProductUiModel,
+        position: Int,
+        view: StoriesProductBottomSheet
+    ) {
+        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        analytic?.sendClickProductCardEvent(eventLabel, "stories-room - ${viewModel.storyId} - product card", listOf(product), position)
+    }
+
+    override fun onImpressedProduct(
+        product: Map<ContentTaggedProductUiModel, Int>,
+        view: StoriesProductBottomSheet,
+    ) {
+        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
+        analytic?.sendViewProductCardEvent(eventLabel, product)
+    }
+
+    private fun setupAnalytic() {
+        if (analytic == null && mParentPage.args != StoriesArgsModel())
+            analytic = analyticFactory.create(mParentPage.args)
     }
 
     companion object {

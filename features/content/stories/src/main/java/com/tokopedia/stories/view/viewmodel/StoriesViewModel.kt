@@ -163,6 +163,9 @@ class StoriesViewModel @AssistedInject constructor(
             )
         }
 
+    val userId : String
+        get() = userSession.userId.ifEmpty { "0" }
+
     fun submitAction(action: StoriesUiAction) {
         when (action) {
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
@@ -174,6 +177,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
+            StoriesUiAction.TapSharing -> handleSharing()
             is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
             StoriesUiAction.OpenProduct -> handleOpenProduct()
@@ -408,6 +412,18 @@ class StoriesViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleSharing() {
+        viewModelScope.launch {
+            val data = mDetail.share
+            _storiesEvent.emit(StoriesUiEvent.TapSharing(data))
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
+                    if (it.key == BottomSheetType.Sharing) true
+                    else it.value
+                }
+            }
+        }
+    }
     private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
         requiredLogin {
             addToCart(product, action)

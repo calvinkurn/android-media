@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
@@ -43,7 +45,8 @@ import kotlin.math.roundToInt
 /**
  * @author by astidhiyaa on 25/07/23
  */
-class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), ContentTaggedProductBottomSheetViewHolder.Listener {
+class StoriesProductBottomSheet @Inject constructor(
+) : BottomSheetUnify(), ContentTaggedProductBottomSheetViewHolder.Listener {
 
     private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider  }
 
@@ -56,6 +59,16 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
 
     private val newHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
+    }
+
+    private var mListener : Listener? = null
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            when (newState) {
+                RecyclerView.SCROLL_STATE_IDLE -> sendImpression()
+            }
+        }
     }
 
     override fun onCreateView(
@@ -79,6 +92,7 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
 
     private fun setupView() {
         binding.rvStoriesProduct.adapter = productAdapter
+        binding.rvStoriesProduct.addOnScrollListener(scrollListener)
     }
 
     private fun observeUiState() {
@@ -168,6 +182,7 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
     }
 
     override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
+        mListener?.onClickedProduct(product, itemPosition, this)
         viewModel.submitAction(StoriesUiAction.Navigate(product.appLink))
     }
 
@@ -189,6 +204,7 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
         type: StoriesProductAction,
         product: ContentTaggedProductUiModel
     ) {
+        mListener?.onProductActionClicked(type, product, this)
         if (product.showGlobalVariant) {
             viewModel.submitAction(StoriesUiAction.ShowVariantSheet(product))
         } else {
@@ -210,6 +226,39 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
     override fun onCancel(dialog: DialogInterface) {
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Product))
         super.onCancel(dialog)
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
+    private fun getVisibleProducts(): Map<ContentTaggedProductUiModel, Int> {
+        val products = productAdapter.getItems()
+        val linearLayoutManager = binding.rvStoriesProduct.layoutManager as? LinearLayoutManager ?: return emptyMap()
+        if (products.isNotEmpty()) {
+            val startPosition = linearLayoutManager.findFirstVisibleItemPosition()
+            val endPosition = linearLayoutManager.findLastVisibleItemPosition()
+            if (startPosition > -1 && endPosition < products.size) {
+                return (startPosition..endPosition)
+                    .associateBy { products[it]  }
+            }
+        }
+        return emptyMap()
+    }
+
+    private fun sendImpression() {
+        mListener?.onImpressedProduct(getVisibleProducts(), this)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mListener = null
+    }
+
+    interface Listener {
+        fun onImpressedProduct(products: Map<ContentTaggedProductUiModel, Int>, view: StoriesProductBottomSheet)
+        fun onClickedProduct(product: ContentTaggedProductUiModel, position: Int, view: StoriesProductBottomSheet)
+        fun onProductActionClicked(action: StoriesProductAction, product: ContentTaggedProductUiModel, view: StoriesProductBottomSheet)
     }
 
     companion object {

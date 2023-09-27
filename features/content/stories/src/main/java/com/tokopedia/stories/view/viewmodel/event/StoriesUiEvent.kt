@@ -2,11 +2,13 @@ package com.tokopedia.stories.view.viewmodel.event
 
 import androidx.annotation.StringRes
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 
 sealed interface StoriesUiEvent {
     data class SelectGroup(val position: Int, val showAnimation: Boolean) : StoriesUiEvent
     object OpenKebab : StoriesUiEvent
+    data class TapSharing (val metadata: StoriesDetailItem.Sharing) : StoriesUiEvent
     object ShowDeleteDialog : StoriesUiEvent
     object OpenProduct : StoriesUiEvent
 
