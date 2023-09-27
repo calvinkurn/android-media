@@ -116,13 +116,20 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextParam.reset()
             }
+            is MainEditorEvent.DisposeRemainingTasks -> {
+                videoFlattenRepository.cancel()
+            }
             is MainEditorEvent.ClickHeaderCloseButton -> {
                 analytics.backPageClick()
 
                 val isPlacementEdited = mainEditorState.value.hasPlacementEdited()
                 val isTextAdded = mainEditorState.value.hasTextAdded
 
-                if ((isPlacementEdited || isTextAdded) && !event.isSkipConfirmation) {
+                val isFlattenOngoing = if (MediaFile(filePath).isVideo()) {
+                    videoFlattenRepository.isFlattenOngoing()
+                } else true
+
+                if ((isPlacementEdited || isTextAdded || isFlattenOngoing) && !event.isSkipConfirmation) {
                     setAction(MainEditorEffect.ShowCloseDialogConfirmation)
                 } else {
                     setAction(MainEditorEffect.CloseMainEditorPage)

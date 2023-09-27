@@ -15,6 +15,7 @@ sealed class MainEditorEvent {
     // Handling State Behavior
     object ManageVideoAudio : MainEditorEvent()
     object ResetActiveInputText : MainEditorEvent()
+    object DisposeRemainingTasks : MainEditorEvent()
     data class HasTextAdded(val isAdded: Boolean) : MainEditorEvent()
     data class GlobalCanvasSize(val width: Int, val height: Int) : MainEditorEvent()
 

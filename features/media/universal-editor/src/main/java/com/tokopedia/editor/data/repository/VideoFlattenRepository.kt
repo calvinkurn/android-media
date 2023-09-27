@@ -9,6 +9,8 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 typealias FlattenParam = VideoFlattenRepositoryImpl.Param
@@ -16,13 +18,19 @@ typealias FlattenParam = VideoFlattenRepositoryImpl.Param
 interface VideoFlattenRepository {
 
     fun flatten(param: FlattenParam): Flow<String>
+    fun isFlattenOngoing(): Boolean
+    fun cancel()
 }
 
 class VideoFlattenRepositoryImpl @Inject constructor(
     private val imageSaveRepository: ImageSaveRepository
 ) : VideoFlattenRepository {
 
+    private var executionId = 0L
+
     override fun flatten(param: FlattenParam): Flow<String> {
+        val startTime = System.currentTimeMillis()
+
         return callbackFlow {
             // this resized ratio will be used both canvas image and video output
             val canvasSize = newRes(param.canvasSize.width, param.canvasSize.height)
@@ -38,8 +46,10 @@ class VideoFlattenRepositoryImpl @Inject constructor(
                 canvasSize
             )
 
-            FFmpeg.executeAsync(command) { _, returnCode ->
+            executionId = FFmpeg.executeAsync(command) { _, returnCode ->
                 if (returnCode == Config.RETURN_CODE_SUCCESS) {
+                    val endTime = System.currentTimeMillis()
+                    Timber.d("flatten-video (name: ${File(param.videoPath).nameWithoutExtension}, size: ${File(param.videoPath).length()} bytes, canvas size: ${param.canvasSize}): start time ($startTime), end time ($endTime), flatten (${endTime-startTime} sec)")
                     trySend(flattenResultFilePath())
                 } else {
                     trySend("")
@@ -48,6 +58,16 @@ class VideoFlattenRepositoryImpl @Inject constructor(
 
             awaitClose { channel.close() }
         }
+    }
+
+    override fun isFlattenOngoing(): Boolean {
+        return FFmpeg.listExecutions().isNotEmpty() && executionId != 0L
+    }
+
+    override fun cancel() {
+        try {
+            FFmpeg.cancel(executionId)
+        } catch (ignored: Throwable) {}
     }
 
     private fun createFfmpegParam(
