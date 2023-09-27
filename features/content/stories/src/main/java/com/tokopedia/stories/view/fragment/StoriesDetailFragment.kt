@@ -1,6 +1,5 @@
 package com.tokopedia.stories.view.fragment
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +37,7 @@ import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
-import com.tokopedia.stories.view.animation.StoriesProductNotch
+import com.tokopedia.stories.view.animation.StoriesProductNudge
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -46,7 +45,6 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
-import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
 import com.tokopedia.stories.view.utils.TouchEventStories
@@ -114,11 +112,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private val activityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.let { data -> }
-        }
-    }
+    ) {}
 
     private val isEligiblePage: Boolean
         get() = groupId == viewModel.mGroup.groupId
@@ -402,16 +396,14 @@ class StoriesDetailFragment @Inject constructor(
     private fun renderNotch(state: StoriesDetailItem) {
         binding.vStoriesProductIcon.root.showWithCondition(viewModel.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
-        with(binding.notchStoriesProduct) {
-            apply {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                setContent {
-                    StoriesProductNotch(state.productCount) {
-                        viewModelAction(StoriesUiAction.OpenProduct)
-                    }
+        with(binding.nudgeStoriesProduct) {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                StoriesProductNudge(state.productCount) {
+                    viewModelAction(StoriesUiAction.OpenProduct)
                 }
-                showWithCondition(viewModel.isProductAvailable)
             }
+            showWithCondition(viewModel.isProductAvailable)
         }
     }
 
@@ -495,13 +487,12 @@ class StoriesDetailFragment @Inject constructor(
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
             variantSheet = AtcVariantBottomSheet()
             variantSheet?.setOnDismissListener { }
-            variantSheet ?: AtcVariantBottomSheet()
-        }
-
-        variantSheet?.setShowListener {
-            variantSheet?.bottomSheetClose?.setOnClickListener {
-                viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
+            variantSheet?.setShowListener {
+                variantSheet?.bottomSheetClose?.setOnClickListener {
+                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
+                }
             }
+            variantSheet ?: AtcVariantBottomSheet()
         }
     }
 

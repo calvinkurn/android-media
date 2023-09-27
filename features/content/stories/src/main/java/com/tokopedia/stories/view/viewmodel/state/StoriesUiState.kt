@@ -9,7 +9,6 @@ data class StoriesUiState(
     val storiesMainData: StoriesUiModel,
     val bottomSheetStatus: Map<BottomSheetType, Boolean>,
     val productSheet: ProductBottomSheetUiState,
-   // val combineState: CombineState,
 ) {
     companion object {
         val Empty
@@ -19,14 +18,6 @@ data class StoriesUiState(
                 productSheet = ProductBottomSheetUiState.Empty,
                 //combineState = CombineState.Empty,
             )
-    }
-
-    data class CombineState(
-        val deleteState: ResultState,
-    ) {
-        companion object {
-            val Empty get() = CombineState(deleteState = ResultState.Loading)
-        }
     }
 }
 

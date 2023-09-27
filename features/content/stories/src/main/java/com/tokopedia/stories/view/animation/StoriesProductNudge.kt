@@ -35,7 +35,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * @author by astidhiyaa on 18/08/23
  */
 @Composable
-fun StoriesProductNotch(productCount: String, onClick: () -> Unit) {
+fun StoriesProductNudge(productCount: String, onClick: () -> Unit) {
     NestTheme {
         val ctx = LocalContext.current
 
@@ -54,7 +54,7 @@ fun StoriesProductNotch(productCount: String, onClick: () -> Unit) {
                     translationY = anim
                     transformOrigin = TransformOrigin.Center
                 }
-                .background(color = colorResource(id = unifyprinciplesR.color.Unify_Static_Black), shape = RoundedCornerShape(20.dp)) //TODO() change color to unify
+                .background(color = colorResource(id = unifyprinciplesR.color.Unify_Static_Black), shape = RoundedCornerShape(20.dp))
                 .padding(4.dp)
                 .clickable { onClick() }
         ) {

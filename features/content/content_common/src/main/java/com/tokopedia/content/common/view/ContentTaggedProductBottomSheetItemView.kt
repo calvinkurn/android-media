@@ -93,11 +93,11 @@ class ContentTaggedProductBottomSheetItemView(
             binding.pbStock.progressBarColor = intArrayOf(
                 ContextCompat.getColor(
                     context,
-                    R.color.content_dms_asgc_progress_0_color
+                    R.color.content_dms_campaign_progress_0_color
                 ),
                 ContextCompat.getColor(
                     context,
-                    R.color.content_dms_asgc_progress_100_color
+                    R.color.content_dms_campaign_progress_100_color
                 )
             )
             binding.tvStock.text = campaign.status.stockLabel
