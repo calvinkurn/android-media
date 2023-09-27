@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.shorts.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -10,8 +11,9 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
@@ -29,9 +31,9 @@ import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnal
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
+import com.tokopedia.play.broadcaster.shorts.util.PlayShortsVideoControl
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
@@ -41,6 +43,7 @@ import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -76,8 +79,14 @@ class PlayShortsModule(
 
     @Provides
     @PlayShortsScope
-    fun provideExoPlayer(): ExoPlayer {
+    fun provideExoPlayer(remoteConfig: RemoteConfig): ExoPlayer {
         return SimpleExoPlayer.Builder(activityContext)
+            .setLoadControl(
+                if (remoteConfig.getBoolean(RemoteConfigKey.CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL, true)) {
+                    PlayShortsVideoControl()
+                } else {
+                    DefaultLoadControl.Builder().createDefaultLoadControl()
+                })
             .build()
             .apply {
                 repeatMode = Player.REPEAT_MODE_ALL
@@ -112,7 +121,7 @@ class PlayShortsModule(
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
         playBroadcastPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
-        beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
+        beautificationAnalytic: PlayBroadcastBeautificationAnalytic
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -127,7 +136,7 @@ class PlayShortsModule(
             accountAnalytic,
             shortsEntryPointAnalytic,
             playBroadcastPerformanceDashboardEntryPointAnalytic,
-            beautificationAnalytic,
+            beautificationAnalytic
         )
     }
 
@@ -170,7 +179,7 @@ class PlayShortsModule(
     @PlayShortsScope
     fun provideBroadcastBeautificationApi(
         builder: Retrofit.Builder,
-        okHttpClient: OkHttpClient,
+        okHttpClient: OkHttpClient
     ): BeautificationAssetApi {
         return builder
             .baseUrl(TokopediaUrl.Companion.getInstance().GQL)
