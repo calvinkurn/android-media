@@ -21,6 +21,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -110,7 +111,7 @@ class ShopHomeMultipleImageColumnViewHolder(
     private fun setDefaultColorConfig() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         setHeaderColor(titleColor)
     }
