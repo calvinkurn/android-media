@@ -108,9 +108,9 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.SHOP_PAGE_SHARED_PREF
 import com.tokopedia.shop.common.constant.ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_ACTIVITY_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopAffiliateData
@@ -598,7 +598,7 @@ class ShopPageHeaderFragmentV2 :
     private fun observeLiveData(owner: LifecycleOwner) {
         shopHeaderViewModel?.shopPageP1Data?.observe(owner) { result ->
             stopMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
-            startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
+            startMonitoringPltCustomMetric(SHOP_V4_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
             when (result) {
                 is Success -> {
                     onSuccessGetShopPageP1Data(result.data)
@@ -650,7 +650,7 @@ class ShopPageHeaderFragmentV2 :
                     onErrorGetShopPageTabData()
                 }
             }
-            stopMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
+            stopMonitoringPltCustomMetric(SHOP_V4_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
             stopMonitoringPerformance()
         }
 
@@ -1104,7 +1104,7 @@ class ShopPageHeaderFragmentV2 :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
-        stopMonitoringPltCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
+        stopMonitoringPltCustomMetric(SHOP_V4_TRACE_ACTIVITY_PREPARE)
         sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_SHARED_PREFERENCE, Context.MODE_PRIVATE)
         shopHeaderViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageHeaderViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
@@ -1347,7 +1347,7 @@ class ShopPageHeaderFragmentV2 :
         hideMiniCartWidget()
         updateCurrentPageLocalCacheModelData()
         startMonitoringPltNetworkRequest()
-        startMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
+        startMonitoringPltCustomMetric(SHOP_V4_TRACE_P1_MIDDLE)
         if (shopId.isEmpty()) {
             shopHeaderViewModel?.getShopIdFromDomain(shopDomain.orEmpty())
         } else {
