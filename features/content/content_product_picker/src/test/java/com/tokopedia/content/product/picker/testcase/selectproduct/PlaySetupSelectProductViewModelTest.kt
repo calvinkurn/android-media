@@ -1,18 +1,16 @@
-package com.tokopedia.play.broadcaster.viewmodel.setup.product.selectproduct
+package com.tokopedia.content.product.picker.testcase.selectproduct
 
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
-import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
+import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
 import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
@@ -27,8 +25,7 @@ class PlaySetupSelectProductViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-    private val mockHydraConfigStore: HydraConfigStore = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
@@ -49,7 +46,7 @@ class PlaySetupSelectProductViewModelTest {
             productSectionList = mockProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -67,13 +64,11 @@ class PlaySetupSelectProductViewModelTest {
 
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
 
-        coEvery { mockHydraConfigStore.getMaxProduct() } returns mockSelectedProducts.size
-
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
             maxProduct = mockSelectedProducts.size,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -97,7 +92,7 @@ class PlaySetupSelectProductViewModelTest {
             productSectionList = mockProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -124,7 +119,7 @@ class PlaySetupSelectProductViewModelTest {
             productSectionList = mockProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -151,7 +146,7 @@ class PlaySetupSelectProductViewModelTest {
             productSectionList = mockInitialProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -186,7 +181,7 @@ class PlaySetupSelectProductViewModelTest {
             productSectionList = mockInitialProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -242,7 +237,7 @@ class PlaySetupSelectProductViewModelTest {
             productSectionList = mockInitialProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -278,7 +273,7 @@ class PlaySetupSelectProductViewModelTest {
             productSectionList = mockInitialProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {

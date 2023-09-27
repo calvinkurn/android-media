@@ -1,12 +1,12 @@
-package com.tokopedia.play.broadcaster.viewmodel.setup.product.saveproduct
+package com.tokopedia.content.product.picker.testcase.saveproduct
 
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.model.UiModelBuilder
-import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
-import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
+import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
+import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
-import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -23,25 +23,25 @@ class PlaySetupSaveProductViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
-    private val uiModelBuilder = UiModelBuilder()
+    private val commonUiModelBuilder = CommonUiModelBuilder()
 
     private val mockProduct = productSetupUiModelBuilder.buildProductUiModel()
     private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
 
     private val mockSelectedProducts = mockProductTagSectionList.flatMap { it.products }
 
-    private val mockException = uiModelBuilder.buildException()
+    private val mockException = commonUiModelBuilder.buildException()
 
     @Test
     fun `when user wants to save products and success, it should trigger event success`() {
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
@@ -64,7 +64,7 @@ class PlaySetupSaveProductViewModelTest {
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
@@ -90,7 +90,7 @@ class PlaySetupSaveProductViewModelTest {
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {

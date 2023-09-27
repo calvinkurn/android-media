@@ -1,10 +1,10 @@
-package com.tokopedia.play.broadcaster.viewmodel.setup.product.campaignEtalase
+package com.tokopedia.content.product.picker.testcase.campaignEtalase
 
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.model.UiModelBuilder
-import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
-import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
-import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
+import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
+import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -20,16 +20,16 @@ internal class PlaySetupCampaignEtalaseViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
-    private val uiModelBuilder = UiModelBuilder()
+    private val commonUiModelBuilder = CommonUiModelBuilder()
 
     private val mockCampaignList = productSetupUiModelBuilder.buildCampaignList()
     private val mockEtalaseList = productSetupUiModelBuilder.buildEtalaseList()
 
-    private val mockException = uiModelBuilder.buildException()
+    private val mockException = commonUiModelBuilder.buildException()
 
     /** Campaign & Etalase */
     @Test
@@ -40,7 +40,7 @@ internal class PlaySetupCampaignEtalaseViewModelTest {
 
         val robot = PlayBroProductSetupViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -59,7 +59,7 @@ internal class PlaySetupCampaignEtalaseViewModelTest {
 
         val robot = PlayBroProductSetupViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {

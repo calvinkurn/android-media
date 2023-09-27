@@ -1,8 +1,8 @@
-package com.tokopedia.play.broadcaster.viewmodel.setup.product.filter
+package com.tokopedia.content.product.picker.testcase.filter
 
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
-import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
+import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.etalase.SelectedEtalaseModel
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
@@ -21,7 +21,7 @@ internal class PlaySetupFilterProductViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
@@ -35,7 +35,7 @@ internal class PlaySetupFilterProductViewModelTest {
 
         val robot = PlayBroProductSetupViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -53,7 +53,7 @@ internal class PlaySetupFilterProductViewModelTest {
 
         val robot = PlayBroProductSetupViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -71,7 +71,7 @@ internal class PlaySetupFilterProductViewModelTest {
 
         val robot = PlayBroProductSetupViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -89,7 +89,7 @@ internal class PlaySetupFilterProductViewModelTest {
 
         val robot = PlayBroProductSetupViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {

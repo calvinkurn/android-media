@@ -1,8 +1,8 @@
-package com.tokopedia.play.broadcaster.robot
+package com.tokopedia.content.product.picker.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
 import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductSummaryUiState
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserUiState
@@ -25,7 +25,7 @@ internal class PlayBroProductSetupViewModelRobot(
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
-    channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
+    repo: ContentProductPickerSGCRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     isNumerationShown: Boolean = true,
     fetchCommissionProduct: Boolean = false,
@@ -40,7 +40,7 @@ internal class PlayBroProductSetupViewModelRobot(
         isNumerationShown,
         fetchCommissionProduct,
         isEligibleForPin,
-        channelRepo,
+        repo,
         userSession,
         dispatchers,
     )

@@ -1,15 +1,15 @@
-package com.tokopedia.play.broadcaster.viewmodel.setup.product.loadproduct
+package com.tokopedia.content.product.picker.testcase.loadproduct
 
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.model.UiModelBuilder
-import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
-import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
+import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
+import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.PagingType
 import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
-import com.tokopedia.play.broadcaster.util.assertEqualTo
-import com.tokopedia.play.broadcaster.util.assertType
+import com.tokopedia.content.product.picker.util.assertEqualTo
+import com.tokopedia.content.product.picker.util.assertType
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -26,18 +26,18 @@ class PlaySetupLoadProductViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
-    private val uiModelBuilder = UiModelBuilder()
+    private val commonUiModelBuilder = CommonUiModelBuilder()
 
     private val mockCampaign = productSetupUiModelBuilder.buildCampaignModel()
 
     private val mockProduct = productSetupUiModelBuilder.buildProductUiModel()
     private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
 
-    private val mockException = uiModelBuilder.buildException()
+    private val mockException = commonUiModelBuilder.buildException()
 
     private val mockCursor = "asdfasdf"
 
@@ -56,7 +56,7 @@ class PlaySetupLoadProductViewModelTest {
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -91,7 +91,7 @@ class PlaySetupLoadProductViewModelTest {
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -136,7 +136,7 @@ class PlaySetupLoadProductViewModelTest {
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
@@ -174,7 +174,7 @@ class PlaySetupLoadProductViewModelTest {
         val robot = PlayBroProductSetupViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            repo = mockRepo
         )
 
         robot.use {
