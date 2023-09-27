@@ -936,6 +936,7 @@ class CheckoutViewModel @Inject constructor(
         if (orderModel != null) {
             if (result?.courier != null) {
                 val courierItemData = result.courier
+                orderModel.validationMetadata = order.validationMetadata
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
@@ -1048,7 +1049,6 @@ class CheckoutViewModel @Inject constructor(
         if (orderModel != null) {
             if (result?.courier != null) {
                 val courierItemData = result.courier
-                orderModel.validationMetadata = order.validationMetadata
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
