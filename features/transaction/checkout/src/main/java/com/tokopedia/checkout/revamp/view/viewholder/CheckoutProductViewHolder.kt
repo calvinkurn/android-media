@@ -40,8 +40,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductRevampBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
+import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductRevampBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -805,7 +805,7 @@ class CheckoutProductViewHolder(
             val addOns = product.addOnGiftingProductLevelModel
             if (addOns.status == 0) {
                 buttonGiftingAddonProduct.visibility = View.GONE
-                buttonGiftingAddonProduct.setOnClickListener {  }
+                buttonGiftingAddonProduct.setOnClickListener { }
             } else {
                 if (addOns.status == 1) {
                     if (addOns.addOnsDataItemModelList.isNotEmpty()) {
@@ -846,7 +846,7 @@ class CheckoutProductViewHolder(
             val addOns = product.addOnGiftingProductLevelModel
             if (addOns.status == 0) {
                 buttonGiftingAddonProductBmgm.visibility = View.GONE
-                buttonGiftingAddonProductBmgm.setOnClickListener {  }
+                buttonGiftingAddonProductBmgm.setOnClickListener { }
             } else {
                 if (addOns.status == 1) {
                     if (addOns.addOnsDataItemModelList.isNotEmpty()) {
@@ -1068,6 +1068,6 @@ class CheckoutProductViewHolder(
         private const val DEBOUNCE_TIME_ADDON = 500L
 
         private const val EPHARMACY_ICON_SIZE = 12
-        private const val MARGIN_TOP_BMGM_CARD = 12
+        private const val MARGIN_TOP_BMGM_CARD = 24
     }
 }
