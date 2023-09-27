@@ -52,6 +52,9 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (child) {
             is PlayWidgetSmallView -> child.setAnalyticListener(null)
             is PlayWidgetMediumView -> child.setAnalyticListener(null)
+            is PlayWidgetLargeView -> child.setAnalyticListener(null)
+            is PlayWidgetJumboView -> child.setAnalyticListener(null)
+            is PlayWidgetCarouselView -> child.setAnalyticListener(null)
         }
         super.onViewRemoved(child)
     }
@@ -111,6 +114,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             is PlayWidgetMediumView -> child.setAnalyticListener(listener)
             is PlayWidgetLargeView -> child.setAnalyticListener(listener)
             is PlayWidgetJumboView -> child.setAnalyticListener(listener)
+            is PlayWidgetCarouselView -> child.setAnalyticListener(listener)
         }
     }
 
@@ -162,6 +166,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             widgetView.show()
             widgetView.setData(model)
             widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetInternalListener(mWidgetInternalListener)
             widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
@@ -174,6 +179,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             widgetView.show()
             widgetView.setData(model)
             widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetInternalListener(mWidgetInternalListener)
             widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
