@@ -104,14 +104,14 @@ class ShopHomeShowCaseNavigationAdapter(
         }
 
         private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
-            val lowEmphasizeColor = if (overrideTheme) {
-                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+            val highEmphasizeColor = if (overrideTheme) {
+                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
             } else {
                 ContextCompat.getColor(binding.tpgBannerTitle.context ?: return, unifycomponentsR.color.Unify_NN950)
             }
 
             binding.apply {
-                tpgBannerTitle.setTextColor(lowEmphasizeColor)
+                tpgBannerTitle.setTextColor(highEmphasizeColor)
             }
         }
     }
