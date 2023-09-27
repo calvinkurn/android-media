@@ -25,6 +25,7 @@ import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListene
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -79,7 +80,7 @@ class ShopProductCarouselViewHolder(
     }
 
     private fun bindShopProductCarousel(shopProductUiModelList: List<ShopProductUiModel>) {
-        recyclerView?.findViewById<RecyclerView>(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
+        recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerView?.bindCarouselProductCardViewGrid(
             productCardModelList = shopProductUiModelList.map {
                 ShopPageProductListMapper.mapToProductCardModel(it, isWideContent = false, isShowThreeDots = false)

@@ -17,6 +17,7 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Rafli Syam on 07/04/2021
@@ -31,9 +32,9 @@ abstract class ShopShowcaseListImageBaseViewHolder(
     var itemShowcaseCampaignLabel: Label? = null
     var itemShowcaseActionButton: View? = null
     var itemSeparatorView: View? = null
-    private var showcaseNameColor: Int = MethodChecker.getColor(itemViewBinding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-    private var showcaseCountColor: Int = MethodChecker.getColor(itemViewBinding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-    private var itemSeparatorColor: Int = MethodChecker.getColor(itemViewBinding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+    private var showcaseNameColor: Int = MethodChecker.getColor(itemViewBinding.root.context, unifyprinciplesR.color.Unify_NN950)
+    private var showcaseCountColor: Int = MethodChecker.getColor(itemViewBinding.root.context, unifyprinciplesR.color.Unify_NN600)
+    private var itemSeparatorColor: Int = MethodChecker.getColor(itemViewBinding.root.context, unifyprinciplesR.color.Unify_NN200)
 
     abstract fun bind(element: Any)
 
@@ -178,15 +179,15 @@ abstract class ShopShowcaseListImageBaseViewHolder(
     private fun configDefaultColor() {
         showcaseNameColor = MethodChecker.getColor(
             itemViewBinding.root.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            unifyprinciplesR.color.Unify_NN950
         )
         showcaseCountColor = MethodChecker.getColor(
             itemViewBinding.root.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            unifyprinciplesR.color.Unify_NN600
         )
         itemSeparatorColor = MethodChecker.getColor(
             itemViewBinding.root.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN200
+            unifyprinciplesR.color.Unify_NN200
         )
     }
 

@@ -17,6 +17,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * author by Rafli Syam on 05/08/2021
@@ -87,7 +88,7 @@ class ShopHomeShowcaseListSliderSmallViewHolder(
     private fun configDefaultColor() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         showcaseItemName?.setTextColor(titleColor)
     }

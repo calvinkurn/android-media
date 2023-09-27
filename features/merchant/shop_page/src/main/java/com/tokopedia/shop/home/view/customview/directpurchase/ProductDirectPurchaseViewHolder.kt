@@ -33,6 +33,10 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.viewallcard.ViewAllCard
 import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_INVERT
 import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_NORMAL
+import com.tokopedia.empty_state.R as empty_stateR
+import com.tokopedia.shop.R as shopR
+import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.viewallcard.R as viewallcardR
 
 
 class ProductDirectPurchaseViewHolder private constructor() {
@@ -96,9 +100,9 @@ class ProductDirectPurchaseViewHolder private constructor() {
                 emptyStateCTAFullWidth = false
                 emptyStateOrientation = EmptyStateUnify.Orientation.VERTICAL
                 emptyStateType = EmptyStateUnify.Type.SECTION
-                findViewById<Typography>(com.tokopedia.empty_state.R.id.empty_state_title_id)?.visibility =
+                findViewById<Typography>(empty_stateR.id.empty_state_title_id)?.visibility =
                     View.GONE
-                (findViewById<Typography>(com.tokopedia.empty_state.R.id.empty_state_description_id) as? TextView)?.setRetainTextColor(
+                (findViewById<Typography>(empty_stateR.id.empty_state_description_id) as? TextView)?.setRetainTextColor(
                     colorPallete,
                     ColorPallete.ColorType.PRIMARY_TEXT
                 )
@@ -112,20 +116,20 @@ class ProductDirectPurchaseViewHolder private constructor() {
         val isAdaptiveLabelDiscount: Boolean,
         private val listener: ProductDirectPurchaseContentVHListener
     ) : RecyclerView.ViewHolder(itemView) {
-        val ivProduct: ImageUnify = itemView.findViewById(com.tokopedia.shop.R.id.iv_product)
-        val addButtonView = itemView.findViewById<CardView>(com.tokopedia.shop.R.id.add_button)
-        val plusImage = itemView.findViewById<AppCompatImageView>(com.tokopedia.shop.R.id.ivplus)
+        val ivProduct: ImageUnify = itemView.findViewById(shopR.id.iv_product)
+        val addButtonView = itemView.findViewById<CardView>(shopR.id.add_button)
+        val plusImage = itemView.findViewById<AppCompatImageView>(shopR.id.ivplus)
         val llColor: ColorVariantLinearLayout =
-            itemView.findViewById(com.tokopedia.shop.R.id.ll_variant_color)
-        val tvProductName = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvProductName)
-        val tvPrice = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvPrice)
-        val labelDiscount = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.labelDiscount)
+            itemView.findViewById(shopR.id.ll_variant_color)
+        val tvProductName = itemView.findViewById<Typography>(shopR.id.tvProductName)
+        val tvPrice = itemView.findViewById<Typography>(shopR.id.tvPrice)
+        val labelDiscount = itemView.findViewById<Typography>(shopR.id.labelDiscount)
         val tvSlashedPrice =
-            itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvSlashedPrice)
-        val iconRating = itemView.findViewById<View>(com.tokopedia.shop.R.id.iconRating)
-        val tvRating = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvRating)
-        val tvSoldCount = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvSoldCount)
-        val tvDotSeparator = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvDotSeparator)
+            itemView.findViewById<Typography>(shopR.id.tvSlashedPrice)
+        val iconRating = itemView.findViewById<View>(shopR.id.iconRating)
+        val tvRating = itemView.findViewById<Typography>(shopR.id.tvRating)
+        val tvSoldCount = itemView.findViewById<Typography>(shopR.id.tvSoldCount)
+        val tvDotSeparator = itemView.findViewById<Typography>(shopR.id.tvDotSeparator)
 
         init {
             tvSlashedPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
@@ -260,7 +264,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
                 return ErrorVH(
                     createEmptyStateView(parent.context, colorPallete).apply {
                         emptyStateImageID.setImage(TokopediaImageUrl.ERROR_NETWORK_IMAGE, 0f)
-                        setPrimaryCTAText(parent.context.getString(com.tokopedia.globalerror.R.string.authErrorAction))
+                        setPrimaryCTAText(parent.context.getString(globalerrorR.string.authErrorAction))
                         setPrimaryCTAClickListener { listener?.onRetryClick() }
                     }
                 )
@@ -269,7 +273,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
 
         fun bind(model: ProductCarouselDirectPurchaseAdapter.Model.Error) {
             if (model.errorMessage.isEmpty()) {
-                emptyStateUnify.setDescription(itemView.context.getString(com.tokopedia.globalerror.R.string.noConnectionDesc))
+                emptyStateUnify.setDescription(itemView.context.getString(globalerrorR.string.noConnectionDesc))
             } else {
                 emptyStateUnify.setDescription(model.errorMessage)
             }
@@ -318,15 +322,15 @@ class ProductDirectPurchaseViewHolder private constructor() {
                         if (cardType == null || cardType != MODE_INVERT) {
                             mode = MODE_NORMAL
                             cardView.cardType = TYPE_BORDER
-                            findViewById<TextView>(com.tokopedia.viewallcard.R.id.view_all_card_description)?.setRetainTextColor(
+                            findViewById<TextView>(viewallcardR.id.view_all_card_description)?.setRetainTextColor(
                                 colorPallete,
                                 ColorPallete.ColorType.PRIMARY_TEXT
                             )
-                            findViewById<TextView>(com.tokopedia.viewallcard.R.id.view_all_card_cta)?.setRetainTextColor(
+                            findViewById<TextView>(viewallcardR.id.view_all_card_cta)?.setRetainTextColor(
                                 colorPallete,
                                 ColorPallete.ColorType.BUTTON_ACCENT
                             )
-                            findViewById<ImageView>(com.tokopedia.viewallcard.R.id.view_all_card_cta_icon)?.setRetainColorFilter(
+                            findViewById<ImageView>(viewallcardR.id.view_all_card_cta_icon)?.setRetainColorFilter(
                                 colorPallete,
                                 ColorPallete.ColorType.BUTTON_ACCENT
                             )

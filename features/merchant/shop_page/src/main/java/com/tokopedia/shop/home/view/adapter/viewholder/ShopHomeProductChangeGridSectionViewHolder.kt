@@ -17,6 +17,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -73,16 +74,16 @@ class ShopHomeProductChangeGridSectionViewHolder(
     private fun configReimaginedColor() {
         val totalProductColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         val labelPreviewColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-        val iconColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        val iconColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         labelTotalProduct?.setTextColor(totalProductColor)
         labelTampilan?.setTextColor(labelPreviewColor)
         ivGridIcon?.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP)
     }
 
     private fun configDefaultColor() {
-        val totalProductColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
-        val labelPreviewColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
-        val iconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val totalProductColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950_32)
+        val labelPreviewColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950_96)
+        val iconColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950)
         labelTotalProduct?.setTextColor(totalProductColor)
         labelTampilan?.setTextColor(labelPreviewColor)
         ivGridIcon?.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP)

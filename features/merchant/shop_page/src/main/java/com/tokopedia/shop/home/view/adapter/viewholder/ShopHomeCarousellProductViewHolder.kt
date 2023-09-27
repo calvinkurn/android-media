@@ -29,8 +29,10 @@ import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-//need to surpress this one, since there are no pii related data defined on this class
+// need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
 class ShopHomeCarousellProductViewHolder(
     itemView: View,
@@ -112,16 +114,15 @@ class ShopHomeCarousellProductViewHolder(
 
     private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
         val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-        val ctaColor  = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
+        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         textViewTitle?.setTextColor(titleColor)
         iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
-
     }
 
     private fun configFestivityColor() {
         val festivityTextColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            unifyprinciplesR.color.Unify_Static_White
         )
         textViewTitle?.setTextColor(festivityTextColor)
         iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
@@ -130,11 +131,11 @@ class ShopHomeCarousellProductViewHolder(
     private fun configDefaultColor() {
         val defaultTitleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            unifyprinciplesR.color.Unify_NN950
         )
         val defaultCtaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN900
+            unifyprinciplesR.color.Unify_NN900
         )
         textViewTitle?.setTextColor(defaultTitleColor)
         iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
@@ -150,7 +151,7 @@ class ShopHomeCarousellProductViewHolder(
         shopHomeProductViewModelList: List<ShopHomeProductUiModel>,
         isOverrideWidgetTheme: Boolean
     ) {
-        recyclerView?.findViewById<RecyclerView>(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
+        recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerViewForSingleOrDoubleProductCard?.isNestedScrollingEnabled = false
         initProductCardListener(shopHomeProductViewModelList)
         val listProductCardModel = shopHomeProductViewModelList.map {

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -23,7 +22,6 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
 import com.tokopedia.shop.home.util.DateHelper
@@ -49,6 +47,9 @@ import kotlinx.coroutines.*
 import java.math.RoundingMode
 import java.util.Calendar
 import java.util.Date
+import com.tokopedia.shop.common.R as shopcommonR
+import com.tokopedia.shop_widget.R as shop_widgetR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -109,8 +110,9 @@ class ShopHomeNplCampaignViewHolder(
         this.model = model
         setHeader(model)
         setTimer(model)
-        if (!GlobalConfig.isSellerApp())
+        if (!GlobalConfig.isSellerApp()) {
             setRemindMe(model)
+        }
         setBannerImage(model)
         setProductCarousel(model)
         setWidgetImpressionListener(model)
@@ -136,7 +138,7 @@ class ShopHomeNplCampaignViewHolder(
         val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
-        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         textTitle?.setTextColor(titleColor)
         textTimeDescription?.setTextColor(subTitleColor)
         iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
@@ -144,12 +146,12 @@ class ShopHomeNplCampaignViewHolder(
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
-            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
         }
     }
 
     private fun configFestivity() {
-        val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        val festivityTextColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White)
         textTitle?.setTextColor(festivityTextColor)
         textTimeDescription?.setTextColor(festivityTextColor)
         iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
@@ -157,15 +159,15 @@ class ShopHomeNplCampaignViewHolder(
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
         timerMoreThanOneDay?.apply {
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_white_rect)
-            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.shop.common.R.color.dms_shop_festivity_timer_text_color))
+            setTextColor(MethodChecker.getColor(itemView.context, shopcommonR.color.dms_shop_festivity_timer_text_color))
         }
     }
 
     private fun configDefaultColor() {
-        val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
-        val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        val defaultTitleColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950)
+        val defaultSubTitleColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950)
+        val defaultCtaColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN900)
+        val defaultInformationIconColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN900)
         textTitle?.setTextColor(defaultTitleColor)
         textTimeDescription?.setTextColor(defaultSubTitleColor)
         iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
@@ -173,14 +175,14 @@ class ShopHomeNplCampaignViewHolder(
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
-            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
         }
     }
 
     private fun setShopReimaginedContainerMargin() {
         containerBackground?.let {
             it.clipToOutline = true
-            it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
+            it.background = MethodChecker.getDrawable(itemView.context, shop_widgetR.drawable.bg_shop_reimagined_rounded)
             (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
             (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
@@ -210,9 +212,11 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun isExclusiveForFollowers(model: ShopHomeNewProductLaunchCampaignUiModel): Boolean {
         val dynamicRoleData = model.data?.firstOrNull()?.dynamicRule?.listDynamicRoleData
-        return (dynamicRoleData?.any {
-            it.ruleID == NPL_RULE_ID_FOLLOWERS_ONLY && it.isActive
-        }).orFalse()
+        return (
+            dynamicRoleData?.any {
+                it.ruleID == NPL_RULE_ID_FOLLOWERS_ONLY && it.isActive
+            }
+            ).orFalse()
     }
 
     private fun setProductCarousel(model: ShopHomeNewProductLaunchCampaignUiModel) {
@@ -233,10 +237,11 @@ class ShopHomeNplCampaignViewHolder(
                     }
                     val clickableBannerAreaWidth = (getScreenWidth() * PADDING_LEFT_PERCENTAGE).toInt()
                     productListCampaignAdapter?.clearAllElements()
-                    if (productList.isNotEmpty())
+                    if (productList.isNotEmpty()) {
                         productListCampaignAdapter?.addElement(
                             ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth)
                         )
+                    }
                     productListCampaignAdapter?.addElement(productList)
                     isNestedScrollingEnabled = false
                     adapter = productListCampaignAdapter
@@ -321,7 +326,7 @@ class ShopHomeNplCampaignViewHolder(
                 val isHideRemindMeTextAfterXSeconds = model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds ?: false
                 if (isHideRemindMeTextAfterXSeconds) {
                     hideRemindMeText(model, it)
-                }else{
+                } else {
                     remindMeText?.show()
                     launchCatchError(block = {
                         delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
@@ -343,10 +348,10 @@ class ShopHomeNplCampaignViewHolder(
     private fun hideRemindMeText(model: ShopHomeNewProductLaunchCampaignUiModel, isRemindMe: Boolean) {
         val totalNotifyWording = model.data?.firstOrNull()?.totalNotifyWording.orEmpty()
         remindMeText?.apply {
-            val colorText = if(isRemindMe){
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            val colorText = if (isRemindMe) {
+                unifyprinciplesR.color.Unify_Background
             } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+                unifyprinciplesR.color.Unify_NN950_68
             }
             val iconRemindMe = if (isRemindMe) {
                 IconUnify.BELL_FILLED

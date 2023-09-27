@@ -78,13 +78,18 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imgStar"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_gravity="center"
             android:visibility="gone"
-            tools:srcCompat="@drawable/ic_shop_home_star_filled"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:icon_color_light_enable="@color/Unify_YN300"
+            app:icon_color_night_enable="@color/Unify_YN300"
+            app:icon_name="STAR_FILLED"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography

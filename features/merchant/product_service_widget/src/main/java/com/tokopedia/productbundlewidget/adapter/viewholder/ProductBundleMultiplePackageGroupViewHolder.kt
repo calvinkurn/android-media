@@ -11,10 +11,11 @@ import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.ItemProductbundleMultipleProductGroupBinding
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductBundleMultiplePackageGroupViewHolder(
     itemView: View
-): RecyclerView.ViewHolder(itemView) {
+) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         @LayoutRes
@@ -42,9 +43,11 @@ class ProductBundleMultiplePackageGroupViewHolder(
 
     private fun isOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
         if (isOverrideWidgetTheme) {
-            viewBinding?.tvBundleProductCount?.setTextColor(ContextCompat.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            viewBinding?.tvBundleProductCount?.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    unifyprinciplesR.color.Unify_Static_White
+                )
             )
         }
     }

@@ -19,6 +19,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * author by Rafli Syam on 05/08/2021
@@ -98,7 +99,7 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
     private fun configDefaultColor() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         tvCarouselTitle?.setTextColor(titleColor)
     }
