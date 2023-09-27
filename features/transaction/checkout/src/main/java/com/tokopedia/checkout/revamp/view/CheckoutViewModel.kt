@@ -607,13 +607,7 @@ class CheckoutViewModel @Inject constructor(
                         fetchEpharmacyData()
                     }
                     if (checkoutItem is CheckoutPromoModel) {
-                        val hasSelectCourierInAnyOrder = listData.value
-                            .any { it is CheckoutOrderModel && it.shipment.courierItemData != null }
-                        if (hasSelectCourierInAnyOrder) {
-                            validatePromo()
-                        } else {
-                            getInitialEntryPointInfo()
-                        }
+                        validatePromo()
                     }
                 }
             }
@@ -742,42 +736,6 @@ class CheckoutViewModel @Inject constructor(
             listData.value = result!!
             pageState.value = CheckoutPageState.EpharmacyCoachMark
             calculateTotal()
-        }
-    }
-
-    private fun getInitialEntryPointInfo() {
-        if (isPromoRevamp == true) {
-            viewModelScope.launch(dispatchers.immediate) {
-                val checkoutModel = listData.value.promo()!!
-                withContext(dispatchers.main) {
-                    val currentListData = listData.value
-                    listData.value = currentListData.map { model ->
-                        if (model is CheckoutPromoModel) {
-                            return@map checkoutModel.copy(
-                                isLoading = true
-                            )
-                        } else {
-                            return@map model
-                        }
-                    }
-                }
-                val entryPointInfo = promoProcessor.getEntryPointInfo(
-                    generateCouponListRecommendationRequest()
-                )
-                withContext(dispatchers.main) {
-                    val currentListData = listData.value
-                    listData.value = currentListData.map { model ->
-                        if (model is CheckoutPromoModel) {
-                            return@map checkoutModel.copy(
-                                entryPointInfo = entryPointInfo,
-                                isLoading = false
-                            )
-                        } else {
-                            return@map model
-                        }
-                    }
-                }
-            }
         }
     }
 
