@@ -14,9 +14,9 @@ class ImageSlidePagerAdapter(private var imageList: List<SliderImageTextUiModel.
 
     companion object{
         private const val SEVENTY_FIVE_PERCENT_TRANSPARANT = 0.75f
+        private const val ADDITIONAL_HEIGHT = 15
 
     }
-    private var currentPosition = -1
 
     override fun getCount(): Int {
         return imageList.size
@@ -48,7 +48,7 @@ class ImageSlidePagerAdapter(private var imageList: List<SliderImageTextUiModel.
 
             val totalHeight = lineHeight * binding.tvDescription.maxLines
 
-            binding.tvDescription.layoutParams.height = totalHeight + 15
+            binding.tvDescription.layoutParams.height = totalHeight + ADDITIONAL_HEIGHT
         }
         container.addView(binding.root, 0)
         return binding.root
