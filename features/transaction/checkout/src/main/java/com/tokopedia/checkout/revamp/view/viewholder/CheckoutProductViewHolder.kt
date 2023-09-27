@@ -164,6 +164,7 @@ class CheckoutProductViewHolder(
         }
 
         renderAddOnProductBundle(product)
+        renderAddOnGiftingProductBundle(product)
         // TODO: [Hansen] render gifting if needed, don't forget to also hide in hideBundleViews()
     }
 
@@ -263,6 +264,7 @@ class CheckoutProductViewHolder(
             tvProductAddOnsSectionTitleBundle.isVisible = false
             tvProductAddOnsSeeAllBundle.isVisible = false
             llAddonProductItemsBundle.isVisible = false
+            buttonGiftingAddonProductBundle.isVisible = false
         }
     }
 
@@ -834,6 +836,47 @@ class CheckoutProductViewHolder(
                     )
                 }
                 buttonGiftingAddonProduct.visibility = View.VISIBLE
+                listener.onImpressionAddOnGiftingProductLevel(product.productId.toString())
+            }
+        }
+    }
+
+    private fun renderAddOnGiftingProductBundle(
+        product: CheckoutProductModel
+    ) {
+        with(bundleBinding) {
+            val addOns = product.addOnGiftingProductLevelModel
+            if (addOns.status == 0) {
+                buttonGiftingAddonProductBundle.visibility = View.GONE
+                buttonGiftingAddonProductBundle.setOnClickListener { }
+            } else {
+                if (addOns.status == 1) {
+                    if (addOns.addOnsDataItemModelList.isNotEmpty()) {
+                        buttonGiftingAddonProductBundle.showActive(
+                            addOns.addOnsButtonModel.title,
+                            addOns.addOnsButtonModel.description,
+                            addOns.addOnsButtonModel.rightIconUrl
+                        )
+                    } else {
+                        buttonGiftingAddonProductBundle.showEmptyState(
+                            addOns.addOnsButtonModel.title,
+                            addOns.addOnsButtonModel.description.ifEmpty { "(opsional)" },
+                            addOns.addOnsButtonModel.rightIconUrl
+                        )
+                    }
+                } else if (addOns.status == 2) {
+                    buttonGiftingAddonProductBundle.showInactive(
+                        addOns.addOnsButtonModel.title,
+                        addOns.addOnsButtonModel.description,
+                        addOns.addOnsButtonModel.rightIconUrl
+                    )
+                }
+                buttonGiftingAddonProductBundle.setOnClickListener {
+                    listener.onClickAddOnGiftingProductLevel(
+                        product
+                    )
+                }
+                buttonGiftingAddonProductBundle.visibility = View.VISIBLE
                 listener.onImpressionAddOnGiftingProductLevel(product.productId.toString())
             }
         }
