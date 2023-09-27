@@ -22,7 +22,6 @@ import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.stories.R as storiesR
 
 class StoriesMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :

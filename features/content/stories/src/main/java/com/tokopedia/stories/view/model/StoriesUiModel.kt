@@ -1,12 +1,12 @@
 package com.tokopedia.stories.view.model
 
-import android.net.LinkProperties
 import android.os.Parcelable
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 
 @Parcelize
 data class StoriesUiModel(
