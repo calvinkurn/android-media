@@ -17,7 +17,7 @@ import com.tokopedia.promousage.util.extension.addOnImpressionListener
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class PromoAccordionItemDelegateAdapter(
+internal class PromoAccordionItemDelegateAdapter(
     private val onClickPromo: (PromoItem) -> Unit,
     private val onImpressionPromo: (PromoItem) -> Unit
 ) : DelegateAdapter<PromoItem, PromoAccordionItemDelegateAdapter.ViewHolder>(

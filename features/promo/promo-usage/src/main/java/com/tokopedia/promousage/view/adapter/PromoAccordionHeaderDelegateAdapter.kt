@@ -8,7 +8,7 @@ import com.tokopedia.promousage.databinding.PromoUsageItemPromoAccordionHeaderBi
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
-class PromoAccordionHeaderDelegateAdapter(
+internal class PromoAccordionHeaderDelegateAdapter(
     private val onVoucherAccordionHeaderClick: (PromoAccordionHeaderItem) -> Unit
 ) : DelegateAdapter<PromoAccordionHeaderItem, PromoAccordionHeaderDelegateAdapter.ViewHolder>(
     PromoAccordionHeaderItem::class.java

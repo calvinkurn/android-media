@@ -5,7 +5,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearprom
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
 import javax.inject.Inject
 
-internal class PromoUsageClearCacheAutoApplyStackMapper @Inject constructor() {
+class PromoUsageClearCacheAutoApplyStackMapper @Inject constructor() {
 
     fun mapClearCacheAutoApplyResponse(
         response: ClearCacheAutoApplyStackResponse

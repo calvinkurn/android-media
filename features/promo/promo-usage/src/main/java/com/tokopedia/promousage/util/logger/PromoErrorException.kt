@@ -3,7 +3,7 @@ package com.tokopedia.promousage.util.logger
 import com.tokopedia.network.constant.ErrorNetMessage
 import java.io.IOException
 
-class PromoErrorException : IOException {
+internal class PromoErrorException : IOException {
 
     private var messageError: String? = null
 

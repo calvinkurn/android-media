@@ -15,7 +15,7 @@ import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 
-class PromoRecommendationDelegateAdapter(
+internal class PromoRecommendationDelegateAdapter(
     private val onClickUsePromoRecommendation: () -> Unit
 ) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
     PromoRecommendationItem::class.java

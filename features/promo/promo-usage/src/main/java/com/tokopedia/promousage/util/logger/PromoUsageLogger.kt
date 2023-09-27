@@ -5,7 +5,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.purchase_platform.common.constant.LoggerConstant
 
-object PromoUsageLogger {
+internal object PromoUsageLogger {
 
     fun logOnErrorLoadPromoUsagePage(
         throwable: Throwable

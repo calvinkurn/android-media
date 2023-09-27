@@ -4,7 +4,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
 
-object IconHelper {
+internal object IconHelper {
 
     fun isCustomIcon(dictionary: String): Boolean {
         return when (dictionary) {

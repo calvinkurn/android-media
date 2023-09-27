@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-class CompositeAdapter(
+internal class CompositeAdapter(
     private val delegates: SparseArray<DelegateAdapter<DelegateAdapterItem, RecyclerView.ViewHolder>>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

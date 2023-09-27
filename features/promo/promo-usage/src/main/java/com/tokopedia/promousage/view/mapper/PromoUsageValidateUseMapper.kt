@@ -20,7 +20,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import javax.inject.Inject
 
-internal class PromoUsageValidateUseMapper @Inject constructor() {
+class PromoUsageValidateUseMapper @Inject constructor() {
 
     fun mapToValidateUseResponse(
         response: ValidateUseResponse
@@ -74,7 +74,7 @@ internal class PromoUsageValidateUseMapper @Inject constructor() {
                                 spId = benefit.spId
                             )
                         },
-                        uniqueId = promoSpId.uniqueId,
+                        uniqueId = promoSpId.uniqueId
                     )
                 },
                 pomlAutoApplied = promo.additionalInfo.pomlAutoApplied
@@ -119,13 +119,13 @@ internal class PromoUsageValidateUseMapper @Inject constructor() {
             tickerInfoUiModel = TickerInfoUiModel(
                 uniqueId = promo.tickerInfo.uniqueId,
                 statusCode = promo.tickerInfo.statusCode,
-                message = promo.tickerInfo.message,
+                message = promo.tickerInfo.message
             ),
             trackingDetailUiModels = promo.trackingDetails.map {
                 TrackingDetailsItemUiModel(
                     promoDetailsTracking = it.promoDetailsTracking,
                     productId = it.productId,
-                    promoCodesTracking = it.promoCodesTracking,
+                    promoCodesTracking = it.promoCodesTracking
                 )
             },
             userGroupMetadata = promo.userGroupMetadata

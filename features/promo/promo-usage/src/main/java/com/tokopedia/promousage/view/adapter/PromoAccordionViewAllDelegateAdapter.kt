@@ -9,7 +9,7 @@ import com.tokopedia.promousage.databinding.PromoUsageItemPromoAccordionViewAllB
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
-class PromoAccordionViewAllDelegateAdapter(
+internal class PromoAccordionViewAllDelegateAdapter(
     private val onViewAllVoucherClick: (PromoAccordionViewAllItem) -> Unit
 ) : DelegateAdapter<PromoAccordionViewAllItem, PromoAccordionViewAllDelegateAdapter.ViewHolder>(
     PromoAccordionViewAllItem::class.java
