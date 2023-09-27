@@ -1,8 +1,6 @@
 package com.tokopedia.stories.view.activity
 
-import android.annotation.SuppressLint
 import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
@@ -12,7 +10,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.stories.R
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
@@ -44,8 +41,6 @@ class StoriesActivity : BaseActivity() {
         get() = _binding!!
 
     private var bundle: Bundle? = null
-    private val shopId: String
-        get() = intent.data?.lastPathSegment.orEmpty()
 
     @Inject
     lateinit var viewModelFactory: StoriesViewModelFactory.Creator
@@ -100,11 +95,13 @@ class StoriesActivity : BaseActivity() {
     private fun setupViews() {
         _binding = ActivityStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (isEnableStoriesRoom()) { openFragment() }
-        else finish()
-        binding.vStoriesOnboarding.root.setOnClickListener {
-            binding.vStoriesOnboarding.root.gone()
+        if (isEnableStoriesRoom()) {
+            binding.vStoriesOnboarding.root.setOnClickListener {
+                binding.vStoriesOnboarding.root.gone()
+            }
+            openFragment()
         }
+        else finish()
     }
 
     private fun isEnableStoriesRoom(): Boolean {
@@ -148,10 +145,5 @@ class StoriesActivity : BaseActivity() {
                 }
             }
         }
-    }
-
-    companion object {
-        private const val SHOP_ID = "shop_id"
-        private const val SHOP_ID_INDEX = 1
     }
 }
