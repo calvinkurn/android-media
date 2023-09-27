@@ -319,12 +319,20 @@ class SomDetailShippingViewHolder(
                     description = tickerInfo.formattedText(),
                     actionUrl = tickerInfo.actionUrl,
                     type = tickerInfo.type,
-                    onClickUrl = { url -> actionListener?.onDropOffButtonClicked(url) })
-                }
+                    onClickUrl = { url -> actionListener?.onDropOffButtonClicked(url) }
+                )
             }
         }
     }
-    private fun setupTicker(ticker: Ticker, shouldShow: Boolean, description: String, actionUrl: String, type: String, onClickUrl: (String) -> Unit) {
+
+    private fun setupTicker(
+        ticker: Ticker,
+        shouldShow: Boolean,
+        description: String,
+        actionUrl: String,
+        type: String,
+        onClickUrl: (String) -> Unit
+    ) {
         ticker.run {
             if (shouldShow) {
                 setHtmlDescription(description)
@@ -348,7 +356,8 @@ class SomDetailShippingViewHolder(
 
     private fun TickerInfo.formattedText(): String {
         return String.format(
-            binding?.root?.context?.getString(sellerorderR.string.som_detail_ticker_description).orEmpty(),
+            binding?.root?.context?.getString(sellerorderR.string.som_detail_ticker_description)
+                .orEmpty(),
             this.text,
             this.actionText
         )
