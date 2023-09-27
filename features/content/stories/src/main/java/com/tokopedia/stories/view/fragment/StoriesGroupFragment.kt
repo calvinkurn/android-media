@@ -74,7 +74,6 @@ class StoriesGroupFragment @Inject constructor(
             childFragmentManager,
             requireActivity(),
             lifecycle,
-            shopId = authorId
         )
     }
 

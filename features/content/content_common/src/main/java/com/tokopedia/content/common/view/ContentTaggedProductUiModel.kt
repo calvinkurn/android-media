@@ -1,9 +1,9 @@
-package com.tokopedia.feed.component.product
+package com.tokopedia.content.common.view
 
 /**
  * Created by meyta.taliti on 11/05/23.
  */
-data class FeedTaggedProductUiModel(
+data class ContentTaggedProductUiModel(
     val id: String,
     val parentID: String,
     val showGlobalVariant: Boolean,
@@ -19,7 +19,11 @@ data class FeedTaggedProductUiModel(
     data class Affiliate(
         val id: String,
         val channel: String
-    )
+    ) {
+        companion object {
+            val Empty get() = Affiliate(id = "", channel = "")
+        }
+    }
 
     data class Shop(
         val id: String,

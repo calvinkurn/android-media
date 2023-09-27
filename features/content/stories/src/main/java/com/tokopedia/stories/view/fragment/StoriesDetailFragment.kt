@@ -4,14 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
+import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -20,12 +27,17 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.stories.analytic.StoriesAnalytics
 import com.tokopedia.stories.analytic.StoriesEEModel
+import com.tokopedia.stories.bottomsheet.StoriesProductBottomSheet
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
+import com.tokopedia.stories.view.animation.StoriesProductNudge
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -39,6 +51,7 @@ import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.utils.loadImage
 import com.tokopedia.stories.view.utils.onTouchEventStories
+import com.tokopedia.stories.view.utils.showToaster
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ContentIsLoaded
@@ -55,6 +68,7 @@ import javax.inject.Inject
 
 class StoriesDetailFragment @Inject constructor(
     private val analyticFactory: StoriesAnalytics.Factory,
+    private val router: Router
 ) : TkpdBaseV4Fragment() {
 
     private val mParentPage: StoriesGroupFragment
@@ -87,8 +101,18 @@ class StoriesDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
+    private var variantSheet: AtcVariantBottomSheet? = null
+
+    private val atcVariantViewModel by lazyThreadSafetyNone {
+        ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
+    }
+
     private val groupId: String
         get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
+
+    private val activityResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {}
 
     private val isEligiblePage: Boolean
         get() = groupId == viewModel.mGroup.groupId
@@ -128,7 +152,7 @@ class StoriesDetailFragment @Inject constructor(
                 renderStoriesGroupHeader(prevState?.storiesMainData, state.storiesMainData)
                 renderStoriesDetail(
                     prevState?.storiesMainData?.groupItems?.get(prevState.storiesMainData.selectedGroupPosition.orZero())?.detail,
-                    state.storiesMainData.groupItems[state.storiesMainData.selectedGroupPosition].detail,
+                    state.storiesMainData.groupItems[state.storiesMainData.selectedGroupPosition].detail
                 )
                 observeBottomSheetStatus(prevState?.bottomSheetStatus, state.bottomSheetStatus)
             }
@@ -147,6 +171,7 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
+                        if (!isEligiblePage) return@collect
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
                             showToast("error detail network ${event.throwable}")
@@ -158,20 +183,36 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     StoriesUiEvent.OpenKebab -> {
-                        if (groupId != viewModel.mGroup.groupId) return@collect
                         StoriesThreeDotsBottomSheet
                             .getOrCreateFragment(
                                 childFragmentManager,
                                 requireActivity().classLoader
-                            )
-                            .show(childFragmentManager)
+                            ).show(childFragmentManager)
                     }
-
-                    is StoriesUiEvent.ShowErrorEvent -> showToaster(
-                        message = event.message.message.orEmpty(),
-                        type = Toaster.TYPE_ERROR
-                    )
-
+                    StoriesUiEvent.OpenProduct -> {
+                        StoriesProductBottomSheet.getOrCreateFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        ).show(childFragmentManager)
+                    }
+                    is StoriesUiEvent.Login -> {
+                        val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
+                        router.route(activityResult, intent)
+                    }
+                    is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
+                    is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
+                    is StoriesUiEvent.ShowErrorEvent -> {
+                        if (viewModel.isAnyBottomSheetShown) return@collect
+                        requireView().showToaster(
+                            message = event.message.message.orEmpty(),
+                            type = Toaster.TYPE_ERROR
+                        )
+                    }
+                    is StoriesUiEvent.ShowInfoEvent -> {
+                        if (viewModel.isAnyBottomSheetShown) return@collect
+                        val message = getString(event.message)
+                        requireView().showToaster(message = message)
+                    }
                     else -> return@collect
                 }
             }
@@ -180,11 +221,13 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderStoriesGroupHeader(
         prevState: StoriesUiModel?,
-        state: StoriesUiModel,
+        state: StoriesUiModel
     ) {
         if (prevState?.groupHeader == state.groupHeader ||
             groupId != state.selectedGroupId
-        ) return
+        ) {
+            return
+        }
 
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
@@ -205,6 +248,7 @@ class StoriesDetailFragment @Inject constructor(
 
         storiesDetailsTimer(state)
         renderAuthor(currentItem)
+        renderNotch(currentItem)
 
         val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
         if (currContent?.isSameContent == true || currContent == null) return
@@ -223,7 +267,8 @@ class StoriesDetailFragment @Inject constructor(
                             override fun failedLoad() {
                                 // TODO add some action when fail load image?
                             }
-                        })
+                        }
+                    )
                 }
             }
 
@@ -238,7 +283,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun observeBottomSheetStatus(
         prevState: Map<BottomSheetType, Boolean>?,
-        state: Map<BottomSheetType, Boolean>,
+        state: Map<BottomSheetType, Boolean>
     ) {
         if (prevState == state) return
         if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
@@ -253,20 +298,27 @@ class StoriesDetailFragment @Inject constructor(
                     StoriesDetailTimer(
                         currentPosition = state.selectedDetailPosition,
                         itemCount = state.detailItems.size,
-                        data = state.detailItems[state.selectedDetailPosition],
+                        data = state.detailItems[state.selectedDetailPosition]
                     ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }
         }
     }
 
-    private fun renderAuthor(state: StoriesDetailItem) = with(binding.vStoriesPartner) {
-        tvPartnerName.text = state.author.name
-        ivIcon.setImageUrl(state.author.thumbnailUrl)
-        btnFollow.gone()
-        if (state.author is StoryAuthor.Shop) ivBadge.setImageUrl(state.author.badgeUrl)
-    }
+    private fun renderAuthor(state: StoriesDetailItem) {
+        with(binding.vStoriesPartner) {
+            tvPartnerName.text = state.author.name
+            ivIcon.setImageUrl(state.author.thumbnailUrl)
+            btnFollow.gone() // purposely hide the follow button in phase 1
+            if (state.author is StoryAuthor.Shop) {
+                ivBadge.setImageUrl(state.author.badgeUrl)
+            }
 
+            root.setOnClickListener {
+                viewModelAction(StoriesUiAction.Navigate(state.author.appLink))
+            }
+        }
+    }
 
     private fun setupStoriesView() = with(binding) {
         showPageLoading(true)
@@ -293,11 +345,12 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(true)
                     resumeStories()
                 }
-
                 TouchEventStories.NEXT_PREV -> {
                     trackTapPreviousDetail()
                     viewModelAction(PreviousDetail)
                 }
+
+                else -> {}
             }
         }
         flStoriesNext.onTouchEventStories { event ->
@@ -315,22 +368,42 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(true)
                     resumeStories()
                 }
-
                 TouchEventStories.NEXT_PREV -> {
                     trackTapNextDetail()
                     viewModelAction(NextDetail)
                 }
+
+                else -> {}
             }
-        }
-        flStoriesProduct.setOnClickListener {
-            showToast("show product bottom sheet")
-            // pause stories when product bottom sheet shown
-            // and resume when product bottom sheet dismissed
-            // pause -> viewModelAction(StoriesUiAction.PauseStories)
-            // resume -> viewModelAction(StoriesUiAction.ResumeStories)
         }
         vStoriesKebabIcon.setOnClickListener {
             viewModelAction(StoriesUiAction.OpenKebabMenu)
+        }
+        vStoriesProductIcon.root.setOnClickListener {
+            viewModelAction(StoriesUiAction.OpenProduct)
+        }
+        flStoriesProduct.onTouchEventStories { event ->
+            when (event) {
+                TouchEventStories.SWIPE_UP -> {
+                    if (!isEligiblePage || !viewModel.isProductAvailable) return@onTouchEventStories
+                    viewModelAction(StoriesUiAction.OpenProduct)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun renderNotch(state: StoriesDetailItem) {
+        binding.vStoriesProductIcon.root.showWithCondition(viewModel.isProductAvailable)
+        binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
+        with(binding.nudgeStoriesProduct) {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                StoriesProductNudge(state.productCount) {
+                    viewModelAction(StoriesUiAction.OpenProduct)
+                }
+            }
+            showWithCondition(viewModel.isProductAvailable)
         }
     }
 
@@ -369,8 +442,8 @@ class StoriesDetailFragment @Inject constructor(
                     creativeSlot = position.plus(1).toString(),
                     itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.args.authorId}",
                     itemName = "/ - stories"
-                ),
-            ),
+                )
+            )
         )
     }
 
@@ -383,7 +456,7 @@ class StoriesDetailFragment @Inject constructor(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
-            currentCircle = viewModel.mGroup.groupName,
+            currentCircle = viewModel.mGroup.groupName
         )
     }
 
@@ -392,23 +465,35 @@ class StoriesDetailFragment @Inject constructor(
             storiesId = viewModel.mDetail.id,
             creatorType = "asgc",
             contentType = viewModel.mDetail.content.type.value,
-            currentCircle = viewModel.mGroup.groupName,
+            currentCircle = viewModel.mGroup.groupName
         )
     }
 
-    private fun showToaster(
-        message: String,
-        type: Int = Toaster.TYPE_NORMAL,
-        actionText: String = "",
-        clickListener: View.OnClickListener = View.OnClickListener {}
-    ) {
-        Toaster.build(
-            requireView(),
-            message,
-            type = type,
-            actionText = actionText,
-            clickListener = clickListener
-        ).show()
+    private fun goTo(appLink: String) {
+        router.route(requireContext(), appLink)
+    }
+
+    private fun openVariantBottomSheet(product: ContentTaggedProductUiModel) {
+        atcVariantViewModel.setAtcBottomSheetParams(
+            ProductVariantBottomSheetParams(
+                pageSource = VariantPageSource.STORIES_PAGESOURCE.source,
+                productId = product.id,
+                shopId = mParentPage.args.authorId,
+                dismissAfterTransaction = false,
+                trackerCdListName = viewModel.storyId
+            )
+        )
+
+        showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
+            variantSheet = AtcVariantBottomSheet()
+            variantSheet?.setOnDismissListener { }
+            variantSheet?.setShowListener {
+                variantSheet?.bottomSheetClose?.setOnClickListener {
+                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
+                }
+            }
+            variantSheet ?: AtcVariantBottomSheet()
+        }
     }
 
     override fun onDestroyView() {
@@ -417,6 +502,8 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     companion object {
+        private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
+
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader

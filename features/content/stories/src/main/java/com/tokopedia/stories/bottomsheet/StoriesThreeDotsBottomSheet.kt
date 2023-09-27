@@ -43,7 +43,7 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
                 val ctx = LocalContext.current
                 LaunchedEffect(Unit) {
                     lifecycleScope.launchWhenStarted {
-                        viewModel.uiEvent.collectLatest { event ->
+                        viewModel.storiesEvent.collectLatest { event ->
                             when (event) {
                                 StoriesUiEvent.ShowDeleteDialog -> {
                                     dismiss()

@@ -4,8 +4,8 @@ import android.os.Parcelable
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class StoriesUiModel(
@@ -46,8 +46,9 @@ data class StoriesDetailItem(
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
     val meta: Meta = Meta(),
-    val author: @RawValue StoryAuthor = StoryAuthor.Unknown,
-    val menus: @RawValue List<ContentMenuItem> = emptyList(),
+    @IgnoredOnParcel val author: StoryAuthor = StoryAuthor.Unknown,
+    @IgnoredOnParcel val menus: List<ContentMenuItem> = emptyList(),
+    val productCount: String = "",
 ) : Parcelable {
 
     @Parcelize
