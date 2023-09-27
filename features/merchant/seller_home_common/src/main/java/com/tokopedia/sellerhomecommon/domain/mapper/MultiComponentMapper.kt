@@ -37,8 +37,6 @@ class MultiComponentMapper @Inject constructor(
                             MultiComponentData(
                                 componentType = component.componentType,
                                 dataKey = component.dataKey,
-                                configuration = component.configuration,
-                                metricParam = component.metricsParam,
                                 data = mapToWidgetUiModel(component, tabConfig)
                             )
                         },

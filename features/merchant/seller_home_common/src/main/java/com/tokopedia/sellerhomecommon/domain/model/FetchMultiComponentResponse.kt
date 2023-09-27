@@ -43,8 +43,6 @@ data class MultiComponent(
     @SerializedName("dataKey")
     val dataKey: String = String.EMPTY,
     @SerializedName("configuration")
-    val configuration: String = String.EMPTY,
-    @SerializedName("metricsParam")
-    val metricsParam: String = String.EMPTY
+    val configuration: String = String.EMPTY
 
 )

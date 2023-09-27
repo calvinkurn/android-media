@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class MultiComponentDataUiModel(
@@ -30,7 +31,9 @@ data class MultiComponentTab(
 data class MultiComponentData(
     val componentType: String,
     val dataKey: String,
-    val configuration: String,
-    val metricParam: String,
     val data: BaseWidgetUiModel<*>?
-)
+) {
+    fun isError(): Boolean {
+        return data == null || data.data?.error?.isNotEmpty().orFalse()
+    }
+}
