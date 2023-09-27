@@ -23,6 +23,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by rizqiaryansa on 2020-02-25.
@@ -155,7 +156,6 @@ class ShopHomeSliderBannerViewHolder(
         }
     }
 
-
     private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
         if (element.header.isOverrideTheme) {
             setReimaginedColorConfig(element.header.colorSchema)
@@ -174,7 +174,7 @@ class ShopHomeSliderBannerViewHolder(
     private fun setDefaultColorConfig() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         )
         setHeaderColor(titleColor)
     }
