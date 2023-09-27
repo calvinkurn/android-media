@@ -238,8 +238,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
                 val address = getAddressUseCase(GET_ADDRESS_SOURCE)
                 addressData.updateAddressData(address)
                 checkAddressData()
-            } catch (e: Exception) {
-                hideLoading(e)
+            } catch (e: Throwable) {
+                hideLoading()
                 showError()
             }
         }
@@ -252,7 +252,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private fun getRecipeTitle() = _recipeInfo.value?.title.orEmpty()
 
-    private fun hideLoading(e: Exception? = null) {
+    private fun hideLoading() {
         layoutItemList.removeLoadingItem()
         _layoutList.postValue(layoutItemList)
     }

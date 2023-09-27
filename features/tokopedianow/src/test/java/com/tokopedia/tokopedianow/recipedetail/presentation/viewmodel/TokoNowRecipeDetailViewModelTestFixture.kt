@@ -153,7 +153,7 @@ open class TokoNowRecipeDetailViewModelTestFixture {
     }
 
     protected fun verifyGetAddressDataUseCaseNotCalled() {
-        coVerify(exactly = 0) { getAddressUseCase(any()) }
+        coVerify(exactly = 0) { getAddressUseCase(GET_ADDRESS_SOURCE) }
     }
 
     protected fun verifyGetRecipeUseCaseCalled(
