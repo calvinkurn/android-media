@@ -1,7 +1,10 @@
 package com.tokopedia.home.beranda.data.datasource.local.entity
 
+import android.annotation.SuppressLint
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.constant.AtfKey
 
 @Entity
