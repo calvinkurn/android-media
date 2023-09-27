@@ -561,7 +561,7 @@ class StoriesDetailFragment @Inject constructor(
             ProductVariantBottomSheetParams(
                 pageSource = VariantPageSource.STORIES_PAGESOURCE.source,
                 productId = product.id,
-                shopId = shopId, //is shop id mandatory from applink?
+                shopId = shopId,
                 dismissAfterTransaction = false,
                 trackerCdListName = viewModel.storyId,
             )
@@ -574,6 +574,10 @@ class StoriesDetailFragment @Inject constructor(
 
         variantSheet?.setShowListener {
             variantSheet?.bottomSheetClose?.setOnClickListener {
+                variantSheet?.dismiss()
+                viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
+            }
+            variantSheet?.setOnDismissListener {
                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
             }
         }
