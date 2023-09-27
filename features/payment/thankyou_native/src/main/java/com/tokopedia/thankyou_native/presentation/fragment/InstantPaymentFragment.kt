@@ -40,7 +40,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 
-
 const val CHARACTER_LOADER_JSON_ZIP_FILE = "thanks_page_instant_anim.zip"
 
 class InstantPaymentFragment : ThankYouBaseFragment() {
@@ -69,7 +68,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun getBannerCarousel(): CarouselUnify? = carouselBanner
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
-        //not required
+        // not required
     }
 
     override fun getTopTickerView(): Ticker? = topTicker
@@ -122,7 +121,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
-
         setUpIllustration()
 
         if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.title.isNullOrBlank()) {
@@ -161,18 +159,19 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
         if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
             tv_payment_method.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
-        } else
+        } else {
             tv_payment_method.text = thanksPageData.gatewayName
+        }
 
-        if (thanksPageData.paymentMethodCount > 0)
+        if (thanksPageData.paymentMethodCount > 0) {
             tvPaymentMethodCount.text = getString(R.string.thank_payment_method_count, thanksPageData.paymentMethodCount)
-        else
+        } else {
             tvPaymentMethodCount.gone()
-
+        }
 
         tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
 
-        if(thanksPageData.thanksSummaryInfo.isNullOrEmpty().not()) {
+        if (thanksPageData.thanksSummaryInfo.isNullOrEmpty().not()) {
             setSummaryData(thanksPageData.thanksSummaryInfo!!)
         }
 
@@ -182,17 +181,16 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         setUpSecondaryButton(thanksPageData)
 
         countDownTimer = object : CountDownTimer(
-//            thanksPageData.customDataOther?.delayDuration?.toLong() ?: 0L,
-            5000L,
+            thanksPageData.customDataOther?.delayDuration?.toLong() ?: 0L,
+//            5000L,
             1000
         ) {
             override fun onTick(millisUntilFinished: Long) {
                 if (context == null) return
 
                 val secondsRemaining = millisUntilFinished / 1000
-//                val spannableString = SpannableString(thanksPageData.customDataMessage?.loaderText + secondsRemaining.toString() + "detik")
-                val spannableString = SpannableString("Kamu akan diarahkan ke sesi chat dengan Dokter dalam $secondsRemaining detik")
-
+                val spannableString = SpannableString(thanksPageData.customDataMessage?.loaderText + secondsRemaining.toString() + "detik")
+//                val spannableString = SpannableString("Kamu akan diarahkan ke sesi chat dengan Dokter dalam $secondsRemaining detik")
 
                 val secondIndex = spannableString.indexOf(secondsRemaining.toString())
                 spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)), secondIndex, secondIndex + secondsRemaining.toString().length, 0)
@@ -203,8 +201,8 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             override fun onFinish() {
                 if (context == null) return
 
-//                RouteManager.route(requireContext(), thanksPageData.customDataAppLink?.autoRedirect)
-                RouteManager.route(requireContext(), "tokopedia://home")
+                RouteManager.route(requireContext(), thanksPageData.customDataAppLink?.autoRedirect)
+//                RouteManager.route(requireContext(), "tokopedia://home")
             }
         }
 
@@ -216,8 +214,9 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             thanksPageData.configFlagData?.shouldHideOrderButton != false
         ) {
             btn_see_transaction_list.setOnClickListener {
-                if (thanksPageData.customDataAppLink == null
-                    || thanksPageData.customDataAppLink.order.isNullOrBlank()) {
+                if (thanksPageData.customDataAppLink == null ||
+                    thanksPageData.customDataAppLink.order.isNullOrBlank()
+                ) {
                     gotoOrderList()
                 } else {
                     gotoOrderList(thanksPageData.customDataAppLink.order)
@@ -248,7 +247,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                     lp.topMargin = 10.toPx()
                     detailText.layoutParams = lp
                     detailText.requestLayout()
-
                 } else {
                     val rowView = inflater.inflate(R.layout.thank_payment_mode_item, null, false)
                     val tvTitle = rowView.findViewById<Typography>(R.id.tvInvoicePaymentModeName)
@@ -257,7 +255,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                     tvValue.text = info.message
                     tvValue.setWeight(Typography.BOLD)
 
-                    val lp  = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                     lp.topMargin = 4.toPx()
                     rowView.layoutParams = lp
                     llSummaryContainer.addView(rowView)
@@ -267,9 +265,10 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     private fun openPaymentDetails(info: ThanksSummaryInfo) {
-        if(info.ctaApplink.isNullOrEmpty() ) {
-            if (info.ctaLink.isNullOrEmpty().not())
+        if (info.ctaApplink.isNullOrEmpty()) {
+            if (info.ctaLink.isNullOrEmpty().not()) {
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, info.ctaLink)
+            }
         } else {
             RouteManager.route(context, info.ctaApplink)
         }
@@ -285,13 +284,15 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     private fun observeViewModel() {
-        checkWhiteListViewModel.whiteListResultLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessFullyRegister()
-                is Fail -> onSingleAuthRegisterFail()
-
+        checkWhiteListViewModel.whiteListResultLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessFullyRegister()
+                    is Fail -> onSingleAuthRegisterFail()
+                }
             }
-        })
+        )
     }
 
     private fun onSingleAuthRegisterFail() {
@@ -309,11 +310,15 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         if (paymentType == CashOnDelivery) {
             return
         }
-        if (::dialogUnify.isInitialized)
+        if (::dialogUnify.isInitialized) {
             dialogUnify.cancel()
-        if (!thanksPageData.whitelistedRBA)
-            dialogUnify = DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
-                    imageType = DialogUnify.NO_IMAGE).apply {
+        }
+        if (!thanksPageData.whitelistedRBA) {
+            dialogUnify = DialogUnify(
+                context = context,
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                imageType = DialogUnify.NO_IMAGE
+            ).apply {
                 setTitle(getString(R.string.thank_single_authentication))
                 setDescription(getString(R.string.thank_enable_single_authentication_easy))
                 setPrimaryCTAText(getString(R.string.thank_activate_it))
@@ -322,11 +327,13 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                 setSecondaryCTAClickListener { dialogUnify.cancel() }
                 show()
             }
+        }
     }
 
     private fun enableSingleAuthentication() {
-        if (::dialogUnify.isInitialized)
+        if (::dialogUnify.isInitialized) {
             dialogUnify.cancel()
+        }
         loadingLayout.visible()
         checkWhiteListViewModel.registerForSingleAuth()
     }
@@ -336,7 +343,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         fun getFragmentInstance(
             bundle: Bundle?,
             thanksPageData: ThanksPageData,
-            isWidgetOrderingEnabled: Boolean,
+            isWidgetOrderingEnabled: Boolean
         ): InstantPaymentFragment = InstantPaymentFragment().apply {
             bundle?.let {
                 arguments = bundle
@@ -345,5 +352,4 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             }
         }
     }
-
 }
