@@ -1,7 +1,10 @@
 package com.tokopedia.minicart.bmgm.domain.usecase
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
@@ -13,6 +16,7 @@ import javax.inject.Inject
  */
 
 class MiniCartLocalCacheUseCases @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val dispatchers: CoroutineDispatchers
 ) {
 
@@ -53,7 +57,9 @@ class MiniCartLocalCacheUseCases @Inject constructor(
         offerEndDate: String,
         showMiniCartFooter: Boolean = true
     ): BmgmCommonDataModel {
+        val bottomSheetTitle = context.getString(R.string.mini_cart_bmgm_bottom_sheet_title)
         return BmgmCommonDataModel(
+            bottomSheetTitle = bottomSheetTitle,
             offerId = model.offerId,
             offerEndDate = offerEndDate,
             warehouseId = warehouseId,

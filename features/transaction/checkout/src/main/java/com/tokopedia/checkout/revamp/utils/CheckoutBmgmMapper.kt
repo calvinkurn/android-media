@@ -10,9 +10,11 @@ object CheckoutBmgmMapper {
     fun mapBmgmCommonDataModel(
         product: CheckoutProductModel,
         warehouseId: Long,
-        shopId: String
+        shopId: String,
+        title: String
     ): BmgmCommonDataModel {
         return BmgmCommonDataModel(
+            bottomSheetTitle = title,
             offerId = product.bmgmOfferId,
             warehouseId = warehouseId,
             shopId = shopId,
