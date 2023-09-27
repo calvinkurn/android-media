@@ -744,33 +744,12 @@ class CheckoutViewModel @Inject constructor(
         oldCheckoutItems: List<CheckoutItem>
     ): List<CheckoutItem> {
         if (isPromoRevamp == true) {
-            withContext(dispatchers.main) {
-                listData.value.promo()?.let {
-                    val currentListData = listData.value
-                    listData.value = currentListData.map { model ->
-                        if (model is CheckoutPromoModel) {
-                            return@map it.copy(
-                                isLoading = true
-                            )
-                        } else {
-                            return@map model
-                        }
-                    }
-                }
-            }
-
             val checkoutModel =
                 checkoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
             val oldCheckoutModel =
                 oldCheckoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
 
             if (checkoutModel != null && oldCheckoutModel != null) {
-                val oldTotalPromoAmount =
-                    oldCheckoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
-                val newTotalPromoAmount =
-                    checkoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
-                val isAnimateWording = newTotalPromoAmount > oldTotalPromoAmount
-
                 val entryPointInfo = promoProcessor
                     .getEntryPointInfo(generateCouponListRecommendationRequest())
                 return checkoutItems.map { model ->
@@ -778,7 +757,10 @@ class CheckoutViewModel @Inject constructor(
                         return@map model.copy(
                             entryPointInfo = entryPointInfo,
                             isLoading = false,
-                            isAnimateWording = isAnimateWording
+                            isAnimateWording = shouldAnimateEntryPointWording(
+                                checkoutModel.promo,
+                                oldCheckoutModel.promo
+                            )
                         )
                     } else {
                         return@map model
@@ -797,6 +779,17 @@ class CheckoutViewModel @Inject constructor(
                 listData.value = newData
             }
         }
+    }
+
+    private fun shouldAnimateEntryPointWording(
+        newLastApply: LastApplyUiModel,
+        oldLastApply: LastApplyUiModel
+    ): Boolean {
+        val oldTotalPromoAmount =
+            oldLastApply.additionalInfo.usageSummaries.sumOf { it.amount }
+        val newTotalPromoAmount =
+            newLastApply.additionalInfo.usageSummaries.sumOf { it.amount }
+        return oldTotalPromoAmount in (1 until newTotalPromoAmount)
     }
 
     fun setPrescriptionIds(prescriptionIds: ArrayList<String>) {
@@ -1443,11 +1436,11 @@ class CheckoutViewModel @Inject constructor(
                         )
                     }
 
-                    is CheckoutPromoModel -> {
-                        return@map model.copy(
-                            isLoading = true
-                        )
-                    }
+//                    is CheckoutPromoModel -> {
+//                        return@map model.copy(
+//                            isLoading = true
+//                        )
+//                    }
 
                     else -> {
                         return@map model
@@ -2157,12 +2150,14 @@ class CheckoutViewModel @Inject constructor(
 
             val list = listData.value.toMutableList()
             val promoUiModel =
-                validateUsePromoRevampUiModel.promoUiModel.copy(voucherOrderUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.filter { !it.isTypeLogistic() })
+                validateUsePromoRevampUiModel.promoUiModel
+                    .copy(voucherOrderUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.filter { !it.isTypeLogistic() })
+            val oldLastApply = list.promo()!!.promo
+            val newLastApply = LastApplyUiMapper
+                .mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
             val newPromo = list.promo()!!.copy(
-                promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
-                    promoUiModel
-                ),
-                isLoading = true
+                promo = newLastApply,
+                isAnimateWording = shouldAnimateEntryPointWording(newLastApply, oldLastApply)
             )
             list[list.size - 4] = newPromo
             listData.value = list
