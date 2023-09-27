@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.showImmediately
@@ -41,8 +42,6 @@ import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
-import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
-import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
@@ -50,7 +49,6 @@ import com.tokopedia.stories.view.utils.StoriesSharingComponent
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_DETAIL
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
-import com.tokopedia.stories.view.utils.loadImage
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.utils.showToaster
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -300,30 +298,20 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderMedia(content: StoriesDetailItem.StoriesItemContent, status: StoriesDetailItem.StoryStatus) {
-        if (status == StoriesDetailItem.StoryStatus.Active) {
-            when (content.type) {
-                IMAGE -> {
-                    binding.layoutStoriesContent.ivStoriesDetailContent.apply {
-                        loadImage(
-                            content.data,
-                            listener = object : ImageLoaderStateListener {
-                                override fun successLoad() {
-                                    contentIsLoaded()
-                                    analytic?.sendImpressionStoriesContent(viewModel.storyId)
-                                }
+        if (status == StoriesDetailItem.StoryStatus.Active
+            && content.type == StoriesDetailItem.StoriesItemContentType.Image) {
+            binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
+                content.data,
+                object : ImageLoaderStateListener {
+                    override fun successLoad() {
+                        contentIsLoaded()
+                        analytic?.sendImpressionStoriesContent(viewModel.storyId)
+                    }
 
-                                override fun failedLoad() {
-                                    // TODO add some action when fail load image?
-                                }
-                            }
-                        )
+                    override fun failedLoad() {
                     }
                 }
-
-                VIDEO -> {
-                    // TODO handle video content here
-                }
-            }
+            )
         }
         binding.layoutNoContent.root.showWithCondition(status != StoriesDetailItem.StoryStatus.Active)
     }
