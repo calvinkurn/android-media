@@ -46,6 +46,7 @@ import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
+import com.tokopedia.campaign.utils.constant.SharingComponentConstant
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
@@ -799,9 +800,13 @@ class OfferLandingPageFragment :
                 tnTitle = sharingData.offerData.title,
                 tnImage = sharingData.offerData.imageUrl
             )
+            setMinVersion(
+                minVersionAndroid = SharingComponentConstant.MIN_VERSION_ANDROID,
+                minVersioniOS = SharingComponentConstant.MIN_VERSION_IOS
+            )
             setLinkProperties(
                 LinkProperties(
-                    linkerType = sharingData.offerData.pageType,
+                    linkerType = Constant.SHARING_PAGE_NAME,
                     id = currentState.offerIds.toSafeString(),
                     ogTitle = sharingData.offerData.title,
                     ogDescription = sharingData.offerData.description,
