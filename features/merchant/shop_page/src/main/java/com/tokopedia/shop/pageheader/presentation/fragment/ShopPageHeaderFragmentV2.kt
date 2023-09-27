@@ -1764,6 +1764,7 @@ class ShopPageHeaderFragmentV2 :
         shopPageTracking?.sendAllTrackingQueue()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupTabs() {
         listShopPageTabModel = (setupTabContentWrapper() as? List<ShopPageHeaderTabModel>) ?: listOf()
         viewPagerAdapterHeader?.setPageTheme(
