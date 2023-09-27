@@ -77,6 +77,7 @@ import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
 import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
 import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
+import com.tokopedia.cartrevamp.view.uimodel.SubTotalState
 import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
@@ -241,6 +242,9 @@ class CartViewModel @Inject constructor(
 
     private val _followShopEvent: MutableLiveData<FollowShopEvent> = MutableLiveData()
     val followShopEvent: LiveData<FollowShopEvent> = _followShopEvent
+
+    private val _subTotalState: MutableLiveData<SubTotalState> = MutableLiveData()
+    val subTotalState: LiveData<SubTotalState> = _subTotalState
 
     private val _tokoNowProductUpdater =
         MutableSharedFlow<Boolean>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -649,7 +653,7 @@ class CartViewModel @Inject constructor(
         subtotalPrice += returnValueMarketplaceProduct.second.second
         subtotalCashback += returnValueMarketplaceProduct.third
 
-        _globalEvent.value = CartGlobalEvent.SubTotalUpdated(
+        _subTotalState.value = SubTotalState(
             subtotalCashback,
             totalItemQty.toString(),
             subtotalPrice,

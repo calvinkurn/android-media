@@ -1271,15 +1271,19 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderActionSimilarProduct(action: Action, data: CartItemHolderData) {
-        binding.textProductUnavailableAction.apply {
-            text = action.message
-            setOnClickListener {
-                if (data.selectedUnavailableActionLink.isNotBlank()) {
-                    actionListener?.onSimilarProductUrlClicked(data)
+        if (data.isBundlingItem) {
+            binding.textProductUnavailableAction.gone()
+        } else {
+            binding.textProductUnavailableAction.apply {
+                text = action.message
+                setOnClickListener {
+                    if (data.selectedUnavailableActionLink.isNotBlank()) {
+                        actionListener?.onSimilarProductUrlClicked(data)
+                    }
                 }
+                actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
+                show()
             }
-            actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
-            show()
         }
     }
 
