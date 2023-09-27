@@ -100,7 +100,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             PlayWidgetType.Large -> addLargeView(state.model)
             PlayWidgetType.Jumbo -> addJumboView(state.model)
             PlayWidgetType.Carousel -> addCarouselView(state.model)
-            else -> {}
+            else -> removeCurrentView()
         }
     }
 
@@ -208,7 +208,9 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
                 addView(widget)
 
                 widget
-            } else firstChild
+            } else {
+                firstChild
+            }
         } catch (e: Exception) {
             null
         }
