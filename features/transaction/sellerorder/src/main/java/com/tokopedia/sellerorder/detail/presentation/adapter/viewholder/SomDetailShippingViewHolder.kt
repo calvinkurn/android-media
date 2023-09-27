@@ -312,34 +312,37 @@ class SomDetailShippingViewHolder(
                 )
 
                 // drop off maps
-                tickerShipment.run {
-                    if (item.dataObject.shipmentTickerInfo.text.isNotEmpty()) {
-                        setupTicker(this, item.dataObject.shipmentTickerInfo)
-                        show()
-                    } else {
-                        gone()
-                    }
+                val tickerInfo = item.dataObject.shipmentTickerInfo
+                setupTicker(
+                    tickerShipment,
+                    shouldShow = item.dataObject.shipmentTickerInfo.text.isNotEmpty(),
+                    description = tickerInfo.formattedText(),
+                    actionUrl = tickerInfo.actionUrl,
+                    type = tickerInfo.type,
+                    onClickUrl = { url -> actionListener?.onDropOffButtonClicked(url) })
                 }
             }
         }
     }
-
-    private fun setupTicker(ticker: Ticker, tickerInfo: TickerInfo) {
-        ticker.apply {
-            val tickerDescription = tickerInfo.formattedText()
-            setHtmlDescription(tickerDescription)
-
-            setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    if (tickerInfo.actionUrl.isNotBlank()) {
-                        actionListener?.onDropOffButtonClicked(tickerInfo.actionUrl)
+    private fun setupTicker(ticker: Ticker, shouldShow: Boolean, description: String, actionUrl: String, type: String, onClickUrl: (String) -> Unit) {
+        ticker.run {
+            if (shouldShow) {
+                setHtmlDescription(description)
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        if (actionUrl.isNotBlank()) {
+                            onClickUrl(actionUrl)
+                        }
                     }
-                }
 
-                override fun onDismiss() {}
-            })
-            tickerType = Utils.mapStringTickerTypeToUnifyTickerType(tickerInfo.type)
-            closeButtonVisibility = View.GONE
+                    override fun onDismiss() {}
+                })
+                tickerType = Utils.mapStringTickerTypeToUnifyTickerType(type)
+                closeButtonVisibility = View.GONE
+                visible()
+            } else {
+                gone()
+            }
         }
     }
 
