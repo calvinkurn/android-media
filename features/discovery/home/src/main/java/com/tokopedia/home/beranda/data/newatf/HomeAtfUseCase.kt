@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import android.util.Log
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerRepository
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelRepository
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconRepository
@@ -9,11 +8,11 @@ import com.tokopedia.home.beranda.data.newatf.ticker.TickerRepository
 import com.tokopedia.home.constant.AtfKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,7 +27,6 @@ class HomeAtfUseCase @Inject constructor(
     val flow: StateFlow<AtfDataList?> = _flow
 
     suspend fun getDynamicPosition() {
-        Log.d("atfflow", "getDynamicPosition: ")
         coroutineScope {
             launch { observeAtfFlow(homepageBannerRepository.flow) }
             launch { observeAtfFlow(dynamicIconRepository.flow) }
@@ -62,7 +60,6 @@ class HomeAtfUseCase @Inject constructor(
 
     private suspend fun updateDynamicPosition(dynamicPosition: AtfDataList) {
         if(flow.value == null) {
-            Log.d("atfflow", "updateDynamicPosition initial: $dynamicPosition")
             _flow.emit(dynamicPosition)
         } else {
             //if from remote, update metadata and source but keep the cached content
@@ -71,11 +68,9 @@ class HomeAtfUseCase @Inject constructor(
                     val copiedContent = dynamicPosition.copyAtfContents(
                         it.map { it.atfContent }
                     )
-                    Log.d("atfflow", "updateDynamicPosition from remote: $copiedContent")
                     _flow.emit(copiedContent)
                 }
             } else {
-                Log.d("atfflow", "updateDynamicPosition from cache: $dynamicPosition")
                 _flow.emit(dynamicPosition)
             }
         }
@@ -109,6 +104,6 @@ class HomeAtfUseCase @Inject constructor(
                     _flow.emit(newModel)
                 }
             }
-        }
+        }.launchIn(CoroutineScope(Dispatchers.Main))
     }
 }
