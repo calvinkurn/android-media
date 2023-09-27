@@ -3,12 +3,15 @@ package com.scp.auth
 import android.app.Application
 import android.content.Context
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import com.gojek.pin.AppInfo
 import com.gojek.pin.DeviceInfo
 import com.gojek.pin.PinConfig
 import com.gojek.pin.PinManager
 import com.gojek.pin.PinNetwork
 import com.gojek.pin.PinProvider
+import com.gojek.pin.validation.ExtVerificationData
+import com.gojek.pin.validation.ExtVerificationUiConfig
 import com.gojek.pin.validation.PinSdkValidationListener
 import com.gojek.pin.validation.PinValidationResults
 import com.scp.auth.verification.VerificationSdk.getCvSdkProvider
@@ -80,6 +83,7 @@ object GotoSdk {
             context = application,
             config = PinConfig(
                 network = PinNetwork(
+                    authBearerProvider = { "" },
                     okHttpClient = OkHttpClient().newBuilder().addInterceptor(
                         Interceptor { chain ->
                             val request = chain.request().newBuilder()
@@ -104,7 +108,9 @@ object GotoSdk {
                     override fun handleOtpError(errorCode: Int, errorMessage: String, coroutineScope: CoroutineScope) {
                     }
 
-                    override fun provideAuthenticationResult(context: Context, callback: (PinValidationResults) -> Unit) {
+                    override fun provideAuthenticationResult(context: AppCompatActivity,
+                        uiConfig: ExtVerificationUiConfig,
+                        data: ExtVerificationData, callback: (PinValidationResults) -> Unit) {
                     }
                 }
             )

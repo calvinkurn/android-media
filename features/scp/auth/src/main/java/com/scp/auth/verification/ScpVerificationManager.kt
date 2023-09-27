@@ -25,7 +25,6 @@ import com.scp.verification.core.domain.common.listener.VerificationListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.keys.R as keysR
 
 class ScpVerificationManager(private val pinManager: PinManager) {
 
@@ -60,7 +59,7 @@ class ScpVerificationManager(private val pinManager: PinManager) {
                         launchContext = activity,
                         param = PinParam(
                             source = source,
-                            clientId = activity.getString(keysR.string.cvsdk_client_id),
+                            clientId = "tokopedia:consumer:android",
                             pinFlowType = PinFlowType.VERIFY,
                             challengeId = challengeId
                         ),
@@ -127,7 +126,7 @@ class ScpVerificationManager(private val pinManager: PinManager) {
         context.startActivity(intent)
     }
 
-    private fun goToChangePIN(context: Context, userId: String) {
+    private fun goToChangePIN(context: Context) {
         val bundle = Bundle()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CHANGE_PIN).apply {
             bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
