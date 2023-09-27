@@ -17,7 +17,7 @@ class EtalaseListItemDecoration(
     context: Context,
 ) : RecyclerView.ItemDecoration() {
 
-    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_bro_etalase_list_divider_height)
+    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.content_product_etalase_list_divider_height)
 
     private val mPaint = Paint().apply {
         color = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN50)

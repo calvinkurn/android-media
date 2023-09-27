@@ -84,7 +84,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/Unify_Background"
-        android:elevation="@dimen/play_bro_product_chooser_btn_container_elevation"
+        android:elevation="@dimen/content_product_chooser_btn_container_elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

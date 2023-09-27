@@ -9,8 +9,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_etalase"
-        android:layout_width="@dimen/play_bro_etalase_list_body_image_size"
-        android:layout_height="@dimen/play_bro_etalase_list_body_image_size"
+        android:layout_width="@dimen/content_product_etalase_list_body_image_size"
+        android:layout_height="@dimen/content_product_etalase_list_body_image_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
