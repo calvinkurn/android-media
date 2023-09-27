@@ -58,6 +58,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -212,7 +213,7 @@ class ShippingEditorFragment :
                     updateData(it.data.shippers)
                     renderTicker(it.data.ticker)
                     checkWhitelabelCoachmarkState()
-                    renderDropOffButton(it.data.dropOffMapsUrl)
+                    renderDropOffButton(binding?.buttonDropOff, it.data.dropOffMapsUrl)
                     updateHeaderTickerData(it.data.tickerHeader)
                 }
 
@@ -292,8 +293,8 @@ class ShippingEditorFragment :
         binding?.globalError?.gone()
     }
 
-    private fun renderDropOffButton(dropOffMapsUrl: String) {
-        binding?.buttonDropOff?.run {
+    private fun renderDropOffButton(button: UnifyButton?, dropOffMapsUrl: String) {
+        button?.run {
             if (dropOffMapsUrl.isNotEmpty()) {
                 setDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION))
                 setOnClickListener {
