@@ -20,7 +20,10 @@ data class UniversalEditorParam(
     val tools: @RawValue Map<MediaType, List<Int>> = defaultToolList(),
 
     // page source
-    var pageSource: PageSource = PageSource.Unknown
+    var pageSource: PageSource = PageSource.Unknown,
+
+    // custom tracker data
+    var trackerExtra: Map<String, String> = mapOf()
 ) : Parcelable {
 
     @IgnoredOnParcel
@@ -46,6 +49,8 @@ data class UniversalEditorParam(
      */
     fun setHeaderTitle(text: String) = apply { headerTitle = text }
     fun setActionButtonText(text: String) = apply { proceedButtonText = text }
+
+    fun setTrackerExtra(value: Map<String, String>) = apply { trackerExtra = value }
 }
 
 internal fun defaultToolList() = mapOf(

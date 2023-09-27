@@ -31,6 +31,7 @@ data class PickerParam(
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
     @SerializedName("previewActionText") private var previewActionText: String = "",
     @SerializedName("editorParam") private var editorParam: EditorParam? = null,
+    @SerializedName("immersiveTrackerData") private var immersiveTrackerData: Map<String, String> = mapOf()
 ) : Parcelable {
 
     // getter
@@ -76,6 +77,8 @@ data class PickerParam(
         }
     }
 
+    fun immersiveTrackerData() = immersiveTrackerData
+
     // setter
     fun pageSource(value: PageSource) = apply { pageSource = value }
     fun subPageSource(value: PageSource) = apply { subPageSource = value }
@@ -108,6 +111,7 @@ data class PickerParam(
     fun multipleSelectionMode() = apply { isMultipleSelection = true }
     fun singleSelectionMode() = apply { isMultipleSelection = false }
     fun previewActionText(value: String) = apply { previewActionText = value }
+    fun immersiveTrackerData(value: Map<String, String>) = apply { immersiveTrackerData = value }
 
     companion object {
         private const val CUSTOM_ACTION_TEXT_LIMIT = 10

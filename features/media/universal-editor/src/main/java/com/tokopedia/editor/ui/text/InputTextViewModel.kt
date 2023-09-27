@@ -3,6 +3,7 @@ package com.tokopedia.editor.ui.text
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.editor.ui.main.EditorParamFetcher
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.provider.ColorProvider
 import com.tokopedia.editor.util.FontAlignment
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 class InputTextViewModel @Inject constructor(
     private val colorProvider: ColorProvider
-): ViewModel() {
+) : ViewModel() {
 
     private val _selectedTextColor = MutableLiveData(-1)
     val selectedTextColor: LiveData<Int> get() = _selectedTextColor
@@ -24,7 +25,8 @@ class InputTextViewModel @Inject constructor(
     private val _backgroundColorSet = MutableLiveData<Pair<Int, Int>?>(null)
     val backgroundColorSet: LiveData<Pair<Int, Int>?> get() = _backgroundColorSet
 
-    private val _selectedFontStyle: MutableLiveData<FontDetail> = MutableLiveData(FontDetail.OPEN_SAUCE_ONE_REGULAR)
+    private val _selectedFontStyle: MutableLiveData<FontDetail> =
+        MutableLiveData(FontDetail.OPEN_SAUCE_ONE_REGULAR)
     val selectedFontStyle: LiveData<FontDetail> get() = _selectedFontStyle
 
     private val _textValue = MutableLiveData("")
@@ -50,7 +52,7 @@ class InputTextViewModel @Inject constructor(
 
     fun updateAlignment(alignmentTarget: FontAlignment) {
         val diff = alignmentTarget.value - FontAlignment.CENTER.value
-        for(i in 0 until diff) {
+        for (i in 0 until diff) {
             increaseAlignment()
         }
     }

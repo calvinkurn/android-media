@@ -383,8 +383,12 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     private fun onEditorIntent(data: PickerResult) {
         if (param.get().isImmersiveEditorEnabled()) {
             // immersive editor
-            val intent = UniversalEditor.intent(this) {
-                setPageSource(param.get().pageSource())
+            val intent = UniversalEditor.
+            intent(this) {
+                param.get().let { pickerParam ->
+                    trackerExtra = pickerParam.immersiveTrackerData()
+                    setPageSource(param.get().pageSource())
+                }
                 filePaths(data.originalPaths)
             }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editor.data.repository.ImageSaveRepository
+import com.tokopedia.editor.ui.main.EditorParamFetcher
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -45,7 +46,14 @@ class PlacementImageViewModel @Inject constructor(
         return !currentMatrix.contentEquals(initialImageMatrix)
     }
 
-    fun savePlacementBitmap(outputPath: String, bitmap: Bitmap, translateX: Float, translateY: Float, scale: Float, angle: Float) {
+    fun savePlacementBitmap(
+        outputPath: String,
+        bitmap: Bitmap,
+        translateX: Float,
+        translateY: Float,
+        scale: Float,
+        angle: Float
+    ) {
         viewModelScope.launch(dispatchers.io) {
             async {
                 // save placement bitmap result
