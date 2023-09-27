@@ -264,11 +264,16 @@ class StatisticViewModel @Inject constructor(
 
     fun getTableWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
-            val result: Success<List<TableDataUiModel>> = Success(
-                withContext(dispatcher.io) {
-                    return@withContext getTableData(dataKeys)
-                }
-            )
+            val result: Success<List<TableDataUiModel>> = Success(withContext(dispatcher.io) {
+                val dynamicParam = ParamTableWidgetModel(
+                    startDate = dynamicParameter.startDate,
+                    endDate = dynamicParameter.endDate,
+                    pageSource = dynamicParameter.pageSource
+                )
+                val param = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
+                getTableDataUseCase.get().params = param
+                return@withContext getTableDataUseCase.get().executeOnBackground()
+            })
             _tableWidgetData.postValue(result)
         }, onError = {
             _tableWidgetData.postValue(Fail(it))
@@ -277,11 +282,11 @@ class StatisticViewModel @Inject constructor(
 
     fun getPieChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<PieChartDataUiModel>> = Success(
-                withContext(dispatcher.io) {
-                    return@withContext getPieChartData(dataKeys)
-                }
-            )
+            val result: Success<List<PieChartDataUiModel>> = Success(withContext(dispatcher.io) {
+                getPieChartDataUseCase.get().params =
+                    GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getPieChartDataUseCase.get().executeOnBackground()
+            })
             _pieChartWidgetData.postValue(result)
         }, onError = {
             _pieChartWidgetData.postValue(Fail(it))
@@ -290,11 +295,11 @@ class StatisticViewModel @Inject constructor(
 
     fun getBarChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<BarChartDataUiModel>> = Success(
-                withContext(dispatcher.io) {
-                    return@withContext getBarChartData(dataKeys)
-                }
-            )
+            val result: Success<List<BarChartDataUiModel>> = Success(withContext(dispatcher.io) {
+                getBarChartDataUseCase.get().params =
+                    GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getBarChartDataUseCase.get().executeOnBackground()
+            })
             _barChartWidgetData.postValue(result)
         }, onError = {
             _barChartWidgetData.postValue(Fail(it))
@@ -332,7 +337,7 @@ class StatisticViewModel @Inject constructor(
     }
 
     fun getMultiComponentDetailTabWidgetData(tab: MultiComponentTab) {
-        launchCatchError(block = {
+        launchCatchError(dispatcher.main, block = {
             val result =
                 getMultiComponentDetailData.get().executeOnBackground(tab, dynamicParameter)
             val mapTab = tab.copy(
@@ -348,28 +353,5 @@ class StatisticViewModel @Inject constructor(
             )
             _multiComponentTabsData.value = updatedTab
         })
-    }
-
-    private suspend fun getBarChartData(dataKeys: List<String>): List<BarChartDataUiModel> {
-        getBarChartDataUseCase.get().params =
-            GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-        return getBarChartDataUseCase.get().executeOnBackground()
-    }
-
-    private suspend fun getTableData(dataKeys: List<TableAndPostDataKey>): List<TableDataUiModel> {
-        val dynamicParam = ParamTableWidgetModel(
-            startDate = dynamicParameter.startDate,
-            endDate = dynamicParameter.endDate,
-            pageSource = dynamicParameter.pageSource
-        )
-        val param = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
-        getTableDataUseCase.get().params = param
-        return getTableDataUseCase.get().executeOnBackground()
-    }
-
-    private suspend fun getPieChartData(dataKeys: List<String>): List<PieChartDataUiModel> {
-        getPieChartDataUseCase.get().params =
-            GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-        return getPieChartDataUseCase.get().executeOnBackground()
     }
 }

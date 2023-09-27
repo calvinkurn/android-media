@@ -34,6 +34,6 @@ data class MultiComponentData(
     val data: BaseWidgetUiModel<*>?
 ) {
     fun isError(): Boolean {
-        return data == null || data.data?.error?.isNotEmpty().orFalse()
+        return data?.data == null || data.data?.error?.isNotEmpty().orFalse()
     }
 }

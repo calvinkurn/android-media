@@ -199,11 +199,11 @@ class MultiComponentViewHolder(
 
     interface Listener {
 
-        fun impressComponentDetailTab() = {}
-        fun clickMultiComponentTab(tabName: String) = {}
-        fun showCoachMarkFirstTab(view: View) = {}
-        fun multiComponentTabSelected(tab: MultiComponentTab) = {}
-        fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String) = {}
+        fun impressComponentDetailTab() {}
+        fun clickMultiComponentTab(tabName: String) {}
+        fun showCoachMarkFirstTab(view: View) {}
+        fun multiComponentTabSelected(tab: MultiComponentTab) {}
+        fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String) {}
         fun getRvViewPool(): RecyclerView.RecycledViewPool? = null
     }
 
