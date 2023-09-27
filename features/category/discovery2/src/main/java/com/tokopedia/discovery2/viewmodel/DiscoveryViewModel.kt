@@ -9,7 +9,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -22,15 +21,15 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.*
 import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
-import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
+import com.tokopedia.discovery2.Constant.PropertyType.ATF_BANNER
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.NavToolbarConfig
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -108,6 +107,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
     private val discoveryAnchorTabLiveData = MutableLiveData<Result<ComponentsItem>>()
+    private val discoveryNavToolbarConfig = MutableLiveData<NavToolbarConfig>()
 
     var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
@@ -142,6 +142,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var isAffiliateInitialized = false
     private var randomUUIDAffiliate: String? = null
     private var bottomTabNavDataComponent : ComponentsItem?  = null
+    private var components: List<ComponentsItem> = listOf()
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -347,6 +348,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
+                        components = it.components
                         setDiscoveryLiveState(it.pageInfo)
                         setPageInfo(it)
                         withContext(Dispatchers.Default) {
@@ -377,6 +379,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
+            setNavToolbarConfigData(pageInfoData)
+        }
+    }
+
+    private fun setNavToolbarConfigData(pageInfoData: PageInfo) {
+        if (discoveryNavToolbarConfig.value == null) {
+            val firstComponent = components.firstOrNull()
+            discoveryNavToolbarConfig.value = NavToolbarConfig(
+                isExtendedLayout = firstComponent != null && firstComponent.name == ComponentNames.SliderBanner.componentName && firstComponent.properties?.type == ATF_BANNER,
+                color = pageInfoData.thematicHeader?.color.orEmpty()
+            )
         }
     }
 
@@ -385,6 +398,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
     fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
     fun getDiscoveryAnchorTabLiveData(): LiveData<Result<ComponentsItem>> = discoveryAnchorTabLiveData
+    fun getDiscoveryNavToolbarConfigLiveData(): LiveData<NavToolbarConfig> = discoveryNavToolbarConfig
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")

@@ -397,8 +397,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
-        val productAdsParam = createProductAdsParam()
-            .generateQueryParams()
+        val productAdsParam = createGetProductAdsParam()
 
         val requestParams = RequestParams.create()
         requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
@@ -418,7 +417,7 @@ abstract class BaseSearchCategoryViewModel(
         return tokonowQueryParam
     }
 
-    protected open fun createProductAdsParam(): GetProductAdsParam = GetProductAdsParam()
+    protected open fun createProductAdsParam(): MutableMap<String?, Any> = mutableMapOf()
 
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         appendDeviceParam(tokonowQueryParam)
@@ -468,6 +467,13 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun appendQueryParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+    }
+
+    private fun createGetProductAdsParam(): Map<String?, Any> {
+        val params = createProductAdsParam().also {
+            it.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+        }
+        return params
     }
 
     protected fun onGetFirstPageSuccess(

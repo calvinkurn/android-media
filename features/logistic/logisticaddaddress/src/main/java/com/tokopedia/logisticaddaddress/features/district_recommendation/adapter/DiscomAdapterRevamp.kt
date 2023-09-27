@@ -7,7 +7,7 @@ import com.tokopedia.logisticaddaddress.databinding.ItemDistrictRecommendationRe
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.district_recommendation.viewholder.DiscomAdapterViewHolder
 
-class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Adapter<DiscomAdapterViewHolder>() {
+class DiscomAdapterRevamp(private var listener: ActionListener) : RecyclerView.Adapter<DiscomAdapterViewHolder>() {
 
     private var districtData = mutableListOf<Address>()
     private var keyword = ""
@@ -46,9 +46,7 @@ class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Ad
         notifyDataSetChanged()
     }
 
-
     interface ActionListener {
         fun onDistrictItemRevampClicked(districtModel: Address)
     }
-
 }

@@ -52,9 +52,11 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
 
     fun initInjector() {
         val component = DaggerFlightHomepageComponent.builder()
-                .flightComponent(FlightComponentInstance
-                        .getFlightComponent(activity?.application as Application))
-                .build()
+            .flightComponent(
+                FlightComponentInstance
+                    .getFlightComponent(activity?.application as Application)
+            )
+            .build()
         component.inject(this)
     }
 
@@ -62,7 +64,6 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
         super.onViewCreated(view, savedInstanceState)
 
         if (::departureCode.isInitialized && ::arrivalCode.isInitialized && classFlight > 0) {
-
             val mapFareParam = hashMapOf<String, Any>()
             mapFareParam[PARAM_DEPARTURE_CODE] = departureCode
             mapFareParam[PARAM_ARRIVAL_CODE] = arrivalCode
@@ -73,19 +74,27 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
                 fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minDate, maxDate)
             }
 
-            fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                it?.let {
-                    calendar?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
+            fareCalendarViewModel.fareFlightCalendarData.observe(
+                viewLifecycleOwner,
+                androidx.lifecycle.Observer {
+                    it?.let {
+                        binding?.calendarUnify?.calendarPickerView?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
+                    }
                 }
-            })
+            )
         }
     }
 
     private fun mapFareFlightToSubtitleCalendar(listFareAttribute: List<FlightFareAttributes>): ArrayList<SubTitle> {
         val subTitleList = arrayListOf<SubTitle>()
         listFareAttribute.map {
-            subTitleList.add(SubTitle(it.dateFare.toDate(DateUtil.YYYY_MM_DD),
-                    it.displayedFare, if (it.isLowestFare) getString(R.string.flight_dms_calendar_lowest_fare_price_color) else ""))
+            subTitleList.add(
+                SubTitle(
+                    it.dateFare.toDate(DateUtil.YYYY_MM_DD),
+                    it.displayedFare,
+                    if (it.isLowestFare) getString(R.string.flight_dms_calendar_lowest_fare_price_color) else ""
+                )
+            )
         }
         return subTitleList
     }
@@ -101,19 +110,23 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
         private const val PARAM_MONTH = "month"
         private const val PARAM_CLASS = "class"
 
-        fun newInstance(minDateString: String, maxDateString: String,
-                        selectedDate: String, departureCode: String, arrivalCode: String,
-                        classFlight: Int): FlightCalendarOneWayWidget =
-                FlightCalendarOneWayWidget().also {
-                    it.arguments = Bundle().apply {
-                        putString(MIN_DATE, minDateString)
-                        putString(MAX_DATE, maxDateString)
-                        putString(SELECTED_DATE, selectedDate)
-                        putString(ARG_DEPARTURE_CODE, departureCode)
-                        putString(ARG_ARRIVAL_CODE, arrivalCode)
-                        putInt(ARG_CLASS, classFlight)
-                    }
+        fun newInstance(
+            minDateString: String,
+            maxDateString: String,
+            selectedDate: String,
+            departureCode: String,
+            arrivalCode: String,
+            classFlight: Int
+        ): FlightCalendarOneWayWidget =
+            FlightCalendarOneWayWidget().also {
+                it.arguments = Bundle().apply {
+                    putString(MIN_DATE, minDateString)
+                    putString(MAX_DATE, maxDateString)
+                    putString(SELECTED_DATE, selectedDate)
+                    putString(ARG_DEPARTURE_CODE, departureCode)
+                    putString(ARG_ARRIVAL_CODE, arrivalCode)
+                    putInt(ARG_CLASS, classFlight)
                 }
+            }
     }
-
 }

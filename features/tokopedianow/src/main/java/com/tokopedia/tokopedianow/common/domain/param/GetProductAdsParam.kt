@@ -22,7 +22,7 @@ data class GetProductAdsParam(
         private const val PARAM_SRC = "src"
         private const val PARAM_ITEM = "item"
         private const val PARAM_PAGE = "page"
-        private const val PARAM_DEP_ID = "dep_id"
+        private const val PARAM_SC = "sc"
         private const val PARAM_USER_WAREHOUSE_ID = "user_warehouseId"
         private const val PARAM_DEVICE = "device"
         private const val PARAM_USER_ID = "userId"
@@ -38,16 +38,15 @@ data class GetProductAdsParam(
         private const val PER_PAGE_ITEM = 20
     }
 
-    fun generateQueryParams(): String {
-        val stringBuilder = StringBuilder()
+    fun generateQueryParams(): MutableMap<String?, Any> {
         val warehouseIds = AddressMapper.mapToWarehouseIds(addressData)
 
-        val params = mutableMapOf<String, Any>().apply {
+        return mutableMapOf<String?, Any>().apply {
             if (query.isNotBlank()) {
                 put(PARAM_QUERY, query)
             }
             if (categoryId.isNotBlank()) {
-                put(PARAM_DEP_ID, categoryId)
+                put(PARAM_SC, categoryId)
             }
             put(PARAM_SRC, src)
             put(PARAM_PAGE, page)
@@ -66,14 +65,5 @@ data class GetProductAdsParam(
                 put(PARAM_USER_ADDRESS_ID, it.address_id)
             }
         }
-
-        for ((key, value) in params) {
-            if (stringBuilder.isNotBlank()) {
-                stringBuilder.append("&")
-            }
-            stringBuilder.append("$key=$value")
-        }
-
-        return stringBuilder.toString()
     }
 }
