@@ -66,6 +66,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.catalog.R as catalogR
+import com.tokopedia.abstraction.R as abstractionR
 
 class CatalogProductListFragment :
     BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
@@ -590,6 +592,7 @@ class CatalogProductListFragment :
         super.onResume()
         updateChooseAddressWidget()
         checkAddressUpdate(false)
+        viewModel.refreshNotification()
     }
 
     private fun fetchUserLatestAddressData() {
@@ -722,10 +725,10 @@ class CatalogProductListFragment :
             }
             Toaster.build(
                 it,
-                getString(com.tokopedia.catalog.R.string.text_message__fail),
+                getString(catalogR.string.text_message__fail),
                 Snackbar.LENGTH_INDEFINITE,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.retry_label),
+                getString(abstractionR.string.retry_label),
                 onClickActionLabel
             ).show()
         }
@@ -754,6 +757,9 @@ class CatalogProductListFragment :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            viewModel.refreshNotification()
+        }
+        AtcVariantHelper.onActivityResultAtcVariant(context?:return, requestCode, data) {
             viewModel.refreshNotification()
         }
     }

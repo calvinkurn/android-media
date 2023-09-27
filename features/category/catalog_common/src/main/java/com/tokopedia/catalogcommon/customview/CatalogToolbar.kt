@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
@@ -55,7 +54,6 @@ class CatalogToolbar : Toolbar {
             refreshViews()
         }
 
-    private var tpgTitle: Typography? = null
     private var tpgSubTitle: Typography? = null
     private var iconNotifWraper: FrameLayout? = null
     private var notification: NotificationUnify? = null
@@ -65,6 +63,7 @@ class CatalogToolbar : Toolbar {
         ContextCompat.getColor(context, Unify_Static_Black)
     )
 
+    var tpgTitle: Typography? = null
     var cartButton: IconUnify? = null
     var moreMenuButton: IconUnify? = null
     var shareButton: IconUnify? = null
