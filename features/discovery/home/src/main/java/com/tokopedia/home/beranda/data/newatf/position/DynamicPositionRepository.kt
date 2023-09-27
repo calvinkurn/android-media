@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.data.newatf.position
 
-import android.util.Log
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.data.newatf.AtfDataList
@@ -34,7 +33,6 @@ class DynamicPositionRepository @Inject constructor(
             listAtfData = atfDao.getAtfDynamicPosition().map(AtfMapper::mapCacheToDomainAtfData),
             isCache = true,
         )
-        Log.d("atfflow", "DynamicPositionRepository getCachedData: $cachedData")
         _flow.emit(cachedData)
     }
 
@@ -45,7 +43,6 @@ class DynamicPositionRepository @Inject constructor(
             isCache = false,
         )
         homeRoomDataSource.saveCachedAtf(listAtf.mapIndexed(AtfMapper::mapRemoteToCache))
-        Log.d("atfflow", "DynamicPositionRepository getRemoteData: $remoteData")
         _flow.emit(remoteData)
     }
 }

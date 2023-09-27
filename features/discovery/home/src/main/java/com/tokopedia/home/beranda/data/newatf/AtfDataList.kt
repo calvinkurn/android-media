@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.data.newatf
 
+import com.tokopedia.home_component.model.AtfContent
+
 data class AtfDataList(
     val listAtfData: List<AtfData>,
     val isCache: Boolean,

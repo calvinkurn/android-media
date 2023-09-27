@@ -13,9 +13,17 @@ abstract class AtfRepository (
 
     abstract suspend fun getData(atfMetadata: AtfMetadata)
 
-    open suspend fun emitAndSaveData(atfData: AtfData) {
-        val atfCacheEntity = AtfMapper.mapRemoteToCache(atfData)
+    open suspend fun emitData(atfData: AtfData) {
         _flow.emit(atfData)
+    }
+
+    open suspend fun saveData(atfData: AtfData) {
+        val atfCacheEntity = AtfMapper.mapRemoteToCache(atfData)
         atfDao.updateAtfData(atfCacheEntity)
+    }
+
+    open suspend fun emitAndSaveData(atfData: AtfData) {
+        emitData(atfData)
+        saveData(atfData)
     }
 }

@@ -3,8 +3,10 @@ package com.tokopedia.home.beranda.data.newatf
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerRepository
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelRepository
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconRepository
+import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetRepository
 import com.tokopedia.home.beranda.data.newatf.position.DynamicPositionRepository
 import com.tokopedia.home.beranda.data.newatf.ticker.TickerRepository
+import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.constant.AtfKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,34 +24,25 @@ class HomeAtfUseCase @Inject constructor(
     private val dynamicIconRepository: DynamicIconRepository,
     private val tickerRepository: TickerRepository,
     private val atfChannelRepository: AtfChannelRepository,
+    private val missionWidgetRepository: MissionWidgetRepository,
+    private val todoWidgetRepository: TodoWidgetRepository,
 ) {
     private var _flow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
     val flow: StateFlow<AtfDataList?> = _flow
 
-    suspend fun getDynamicPosition() {
+    private fun getAtfFlowList(): List<StateFlow<AtfData?>> = listOf(
+        tickerRepository.flow,
+        homepageBannerRepository.flow,
+        dynamicIconRepository.flow,
+        missionWidgetRepository.flow,
+        todoWidgetRepository.flow,
+        atfChannelRepository.flow,
+    )
+
+    suspend fun fetchAtfDataList() {
         coroutineScope {
-            launch { observeAtfFlow(homepageBannerRepository.flow) }
-            launch { observeAtfFlow(dynamicIconRepository.flow) }
-            launch { observeAtfFlow(tickerRepository.flow) }
-            launch { observeAtfFlow(atfChannelRepository.flow) }
-            launch {
-                dynamicPositionRepository.flow.collect { value ->
-                    if(value == null) {
-                        //only fetch dynamic position on first load
-                        launch { dynamicPositionRepository.getData() }
-                    } else {
-                        //if dynamic position remains the same, only update the source
-                        if(flow.value?.hasSamePosition(value.listAtfData) == true) {
-                            launch { updateSourceOnly(value.isCache) }
-                        } else {
-                            //if returns different positions, update the whole position
-                            //and fetch data for each
-                            launch { updateDynamicPosition(value) }
-                            launch { getDataForEach(value) }
-                        }
-                    }
-                }
-            }
+            observeAtfFlow()
+            observeDynamicPositionFlow()
         }
     }
 
@@ -76,7 +69,7 @@ class HomeAtfUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getDataForEach(value: AtfDataList) {
+    private suspend fun getEachAtfComponentData(value: AtfDataList) {
         value.listAtfData.forEach { data ->
             val metadata = data.atfMetadata
             when(metadata.component) {
@@ -84,26 +77,53 @@ class HomeAtfUseCase @Inject constructor(
                 AtfKey.TYPE_ICON -> dynamicIconRepository.getData(metadata)
                 AtfKey.TYPE_TICKER -> tickerRepository.getData(metadata)
                 AtfKey.TYPE_CHANNEL -> atfChannelRepository.getData(metadata)
+                AtfKey.TYPE_MISSION -> missionWidgetRepository.getData(metadata)
+                AtfKey.TYPE_TODO -> todoWidgetRepository.getData(metadata)
             }
         }
     }
 
-    private suspend fun observeAtfFlow(atfFlow: StateFlow<AtfData?>) {
-        flow.combine(atfFlow) { dynamicPos, atfData ->
-            // updating flow with remote atf data should be done after
-            // dynamic position coming from remote to avoid multiple updating data
-            if(dynamicPos != null && !dynamicPos.isCache && atfData != null) {
-                flow.value?.let { currentAtf ->
-                    //first layer should check if dynamic position already from remote
-                    val model = currentAtf.listAtfData.find { it.atfMetadata == atfData?.atfMetadata } ?: return@combine
-                    val index = currentAtf.listAtfData.indexOf(model)
-                    val newList = currentAtf.listAtfData.toMutableList().apply {
-                        set(index, model.copy(atfContent = atfData.atfContent))
+    private fun CoroutineScope.observeAtfFlow() {
+        getAtfFlowList().forEach { stateFlow ->
+            launch {
+                flow.combine(stateFlow) { dynamicPos, atfData ->
+                    // updating flow with remote atf data should be done after
+                    // dynamic position coming from remote to avoid multiple updating data
+                    if(dynamicPos != null && !dynamicPos.isCache && atfData != null) {
+                        flow.value?.let { currentAtf ->
+                            //first layer should check if dynamic position already from remote
+                            val model = currentAtf.listAtfData.find { it.atfMetadata == atfData?.atfMetadata } ?: return@combine
+                            val index = currentAtf.listAtfData.indexOf(model)
+                            val newList = currentAtf.listAtfData.toMutableList().apply {
+                                set(index, model.copy(atfContent = atfData.atfContent))
+                            }
+                            val newModel = currentAtf.copy(listAtfData = newList)
+                            _flow.emit(newModel)
+                        }
                     }
-                    val newModel = currentAtf.copy(listAtfData = newList)
-                    _flow.emit(newModel)
+                }.launchIn(CoroutineScope(Dispatchers.Main))
+            }
+        }
+    }
+
+    private fun CoroutineScope.observeDynamicPositionFlow() {
+        launch {
+            dynamicPositionRepository.flow.collect { value ->
+                if(value == null) {
+                    //only fetch dynamic position on first load
+                    launch { dynamicPositionRepository.getData() }
+                } else {
+                    //if dynamic position remains the same, only update the source
+                    if(flow.value?.hasSamePosition(value.listAtfData) == true) {
+                        launch { updateSourceOnly(value.isCache) }
+                    } else {
+                        //if returns different positions, update the whole position
+                        //and fetch data for each
+                        launch { updateDynamicPosition(value) }
+                        launch { getEachAtfComponentData(value) }
+                    }
                 }
             }
-        }.launchIn(CoroutineScope(Dispatchers.Main))
+        }
     }
 }

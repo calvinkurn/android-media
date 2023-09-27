@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.home.beranda.data.newatf.AtfContent
+import com.tokopedia.home_component.model.AtfContent
 
 /**
  * Created by Lukas on 18/05/2020

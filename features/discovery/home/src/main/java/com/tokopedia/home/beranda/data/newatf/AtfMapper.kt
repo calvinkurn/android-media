@@ -3,14 +3,20 @@ package com.tokopedia.home.beranda.data.newatf
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
+import com.tokopedia.home.beranda.data.newatf.AtfMapper.mapToVisitableList
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper.asVisitable
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper.asVisitable
+import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper.asVisitable
 import com.tokopedia.home.beranda.data.newatf.ticker.TickerMapper.asVisitable
+import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetMapper.asVisitable
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
 import com.tokopedia.home.beranda.domain.model.Ticker
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.constant.AtfKey
+import com.tokopedia.home_component.model.AtfContent
+import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
+import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 
 object AtfMapper {
     fun mapRemoteToDomainAtfData(
@@ -25,6 +31,7 @@ object AtfMapper {
                 component = data.component,
                 param = data.param,
                 isOptional = data.isOptional,
+                isShimmer = data.isShimmer,
             ),
             isCache = false,
         )
@@ -42,6 +49,7 @@ object AtfMapper {
             param = data.param,
             isOptional = data.isOptional,
             status = AtfKey.STATUS_LOADING,
+            isShimmer = data.isShimmer,
         )
     }
 
@@ -57,6 +65,7 @@ object AtfMapper {
             isOptional = atfData.atfMetadata.isOptional,
             content = atfData.getAtfContentAsJson(),
             status = atfData.atfStatus,
+            isShimmer = atfData.atfMetadata.isShimmer,
         )
     }
 
@@ -71,6 +80,7 @@ object AtfMapper {
                  component = data.component,
                  param = data.param,
                  isOptional = data.isOptional,
+                 isShimmer = data.isShimmer,
                  lastUpdate = data.lastUpdate,
             ),
             atfContent = data.getAtfContent(),
@@ -84,6 +94,8 @@ object AtfMapper {
             AtfKey.TYPE_ICON -> content?.getAtfContent<DynamicHomeIcon>()
             AtfKey.TYPE_TICKER -> content?.getAtfContent<Ticker>()
             AtfKey.TYPE_CHANNEL -> content?.getAtfContent<DynamicHomeChannel>()
+            AtfKey.TYPE_MISSION -> content?.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>()
+            AtfKey.TYPE_TODO -> content?.getAtfContent<HomeTodoWidgetData.GetHomeTodoWidget>()
             else -> null
         }
     }
@@ -101,6 +113,8 @@ object AtfMapper {
                     is BannerDataModel -> visitables.add(this.asVisitable(index, value.isCache, value.atfMetadata.lastUpdate))
                     is DynamicHomeIcon -> visitables.add(this.asVisitable(value.atfMetadata.id, index, value.isCache))
                     is Ticker -> this.asVisitable(index, value.isCache)?.let { visitables.add(it) }
+                    is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(this.asVisitable(value.atfMetadata, index))
+                    is HomeTodoWidgetData.GetHomeTodoWidget -> visitables.add(this.asVisitable(value.atfMetadata, index))
 //                    is DynamicHomeChannel -> this.asVisitableList()
                 }
             }

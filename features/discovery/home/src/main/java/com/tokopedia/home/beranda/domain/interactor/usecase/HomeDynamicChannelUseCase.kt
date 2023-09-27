@@ -198,7 +198,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
 
         val atfFlow = homeAtfUseCase.flow.map {
-            Log.d("atfflow", "getNewHomeDataFlow: atfFlow collected")
             HomeDynamicChannelModel(
                 list = it?.mapToVisitableList().orEmpty(),
                 isCache = it?.isCache.orTrue()
@@ -210,10 +209,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
 
         return combine(headerFlow, atfFlow, dynamicChannelFlow) { header, atf, dc ->
-            Log.d("atfflow", "getNewHomeDataFlow: combine" +
-                "\nheader $header" +
-                "\natf $atf" +
-                "\ndc $dc")
             val combinedList = header.list + atf.list + dc.list
             val isCache = atf.isCache || dc.isCache
             HomeDynamicChannelModel(list = combinedList, isCache = isCache)
@@ -271,7 +266,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 /**
                  * Emit cache data
                  */
-                Log.d("atfflow", "getDynamicChannelFlow: $dynamicChannelPlainResponse")
                 emit(dynamicChannelPlainResponse)
             } else {
                 /**
@@ -970,7 +964,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
      *              Because there is no content that we can show, we showing error page
      */
     fun updateHomeData(isNewAtfMechanism: Boolean = false): Flow<Result<Any>> = flow {
-        Log.d("atfflow", "updateHomeData: ")
         coroutineScope {
             /**
              * Remote config to disable pagination by request with param 0
@@ -1002,7 +995,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             launch { homeUserStatusRepository.hitHomeStatusThenIgnoreResponse() }
 
             if(isNewAtfMechanism) {
-                launch { homeAtfUseCase.getDynamicPosition() }
+                launch { homeAtfUseCase.fetchAtfDataList() }
             }
             else {
                 /**

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.beranda.data.newatf.AtfContent
+import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlin.collections.ArrayList
 

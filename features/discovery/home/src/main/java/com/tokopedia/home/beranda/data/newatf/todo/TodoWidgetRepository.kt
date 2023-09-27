@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.data.newatf.ticker
+package com.tokopedia.home.beranda.data.newatf.todo
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -7,27 +7,32 @@ import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.data.newatf.AtfMetadata
 import com.tokopedia.home.beranda.data.newatf.AtfRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
+import com.tokopedia.home_component.usecase.todowidget.GetTodoWidgetUseCase
 import javax.inject.Inject
 
-class TickerRepository @Inject constructor(
-    private val homeTickerRepository: HomeTickerRepository,
+class TodoWidgetRepository @Inject constructor(
+    private val todoWidgetRepository: HomeTodoWidgetRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
     atfDao: AtfDao,
 ): AtfRepository(atfDao) {
 
     @SuppressLint("PII Data Exposure")
     override suspend fun getData(atfMetadata: AtfMetadata) {
-        val tickerParam = Bundle().apply {
+        val iconParam = Bundle().apply {
             putString(
-                HomeTickerRepository.PARAM_LOCATION,
+                GetTodoWidgetUseCase.PARAM,
+                atfMetadata.param
+            )
+            putString(
+                GetTodoWidgetUseCase.LOCATION_PARAM,
                 homeChooseAddressRepository.getRemoteData()
                     ?.convertToLocationParams()
             )
         }
-        val data = homeTickerRepository.getRemoteData(tickerParam)
-        val atfData = AtfData(atfMetadata, data.ticker, isCache = false)
-        emitAndSaveData(atfData)
+        val data = todoWidgetRepository.getRemoteData(iconParam)
+        val atfData = AtfData(atfMetadata, data.getHomeTodoWidget, isCache = false)
+        emitData(atfData)
     }
 }

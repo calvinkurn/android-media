@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.newatf
 
 import com.google.gson.Gson
 import com.tokopedia.home.constant.AtfKey
+import com.tokopedia.home_component.model.AtfContent
 
 data class AtfData(
     val atfMetadata: AtfMetadata,
