@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -180,19 +179,18 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        // TODO handle empty data here
-                        showToast("data stories $groupId is empty")
+                        setNoContent(true)
                         showPageLoading(false)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (!isEligiblePage) return@collect
                         if (event.throwable.isNetworkError) {
-                            // TODO handle error network here
-                            showToast("error detail network ${event.throwable}")
-                        } else {
-                            // TODO handle error fetch here
-                            showToast("error detail content ${event.throwable}")
+                            setNoInternet(true)
+                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
+                        }
+                        else {
+                            setFailed(true)
+                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
                         }
                         showPageLoading(false)
                     }
@@ -274,6 +272,10 @@ class StoriesDetailFragment @Inject constructor(
             state.selectedDetailPosition < 0
         ) return
 
+        setNoInternet(false)
+        setFailed(false)
+        setNoContent(state.detailItems.isEmpty())
+
         val currentItem = state.detailItems[state.selectedDetailPosition]
 
         storiesDetailsTimer(state)
@@ -283,32 +285,38 @@ class StoriesDetailFragment @Inject constructor(
         val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
         if (currContent?.isSameContent == true || currContent == null) return
 
-        when (currContent.content.type) {
-            IMAGE -> {
-                binding.layoutStoriesContent.ivStoriesDetailContent.apply {
-                    loadImage(
-                        currContent.content.data,
-                        listener = object : ImageLoaderStateListener {
-                            override fun successLoad() {
-                                contentIsLoaded()
-                                analytic?.sendImpressionStoriesContent(currContent.id)
-                            }
-
-                            override fun failedLoad() {
-                                // TODO add some action when fail load image?
-                            }
-                        }
-                    )
-                }
-            }
-
-            VIDEO -> {
-                // TODO handle video content here
-            }
-        }
+        renderMedia(currContent.content, currContent.status)
 
         showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currContent.menus.isNotEmpty())
+    }
+
+    private fun renderMedia(content: StoriesDetailItem.StoriesItemContent, status: StoriesDetailItem.StoryStatus) {
+        if (status == StoriesDetailItem.StoryStatus.Active) {
+            when (content.type) {
+                IMAGE -> {
+                    binding.layoutStoriesContent.ivStoriesDetailContent.apply {
+                        loadImage(
+                            content.data,
+                            listener = object : ImageLoaderStateListener {
+                                override fun successLoad() {
+                                    contentIsLoaded()
+                                    analytic?.sendImpressionStoriesContent(viewModel.storyId)
+                                }
+
+                                override fun failedLoad() {
+                                    // TODO add some action when fail load image?
+                                }
+                            })
+                    }
+                }
+
+                VIDEO -> {
+                    // TODO handle video content here
+                }
+            }
+        }
+        binding.layoutNoContent.root.showWithCondition(status != StoriesDetailItem.StoryStatus.Active)
     }
 
     private fun observeBottomSheetStatus(
@@ -536,6 +544,20 @@ class StoriesDetailFragment @Inject constructor(
             }
             variantSheet ?: AtcVariantBottomSheet()
         }
+    }
+
+    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
+        root.showWithCondition(isShow)
+        icCloseLoading.setOnClickListener { activity?.finish() }
+    }
+
+    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
+        root.showWithCondition(isShow)
+        icCloseLoading.setOnClickListener { activity?.finish() }
+    }
+
+    private fun setNoContent (isShow: Boolean) = with(binding.layoutNoContent) {
+        root.showWithCondition(isShow)
     }
 
     override fun onDestroyView() {

@@ -152,18 +152,17 @@ class StoriesGroupFragment @Inject constructor(
                 when (event) {
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     is StoriesUiEvent.ErrorGroupPage -> {
-                        if (event.throwable.isNetworkError) {
-                            // TODO handle error network here
-                            showToast("error group network ${event.throwable}")
-                        } else {
-                            // TODO handle error fetch here
-                            showToast("error group content ${event.throwable}")
-                        }
                         showPageLoading(false)
+                        if (event.throwable.isNetworkError) {
+                            setNoInternet(true)
+                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
+                        } else {
+                            setFailed(true)
+                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
+                        }
                     }
                     StoriesUiEvent.EmptyGroupPage -> {
-                        // TODO handle empty data here
-                        showToast("data group is empty")
+                        setEmptyPage(true)
                         showPageLoading(false)
                     }
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
@@ -182,6 +181,9 @@ class StoriesGroupFragment @Inject constructor(
             state.selectedGroupPosition < 0
         ) return
 
+        setNoInternet(false)
+        setFailed(false)
+
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
         selectGroupPosition(state.selectedGroupPosition, false)
@@ -198,6 +200,29 @@ class StoriesGroupFragment @Inject constructor(
     private fun showPageLoading(isShowLoading: Boolean) = with(binding) {
         layoutGroupLoading.container.showWithCondition(isShowLoading)
         storiesGroupViewPager.showWithCondition(!isShowLoading)
+    }
+
+    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
+        root.showWithCondition(isShow)
+        icCloseLoading.setOnClickListener {
+            activity?.finish()
+        }
+    }
+
+    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
+        root.showWithCondition(isShow)
+        icCloseLoading.setOnClickListener {
+            activity?.finish()
+        }
+    }
+
+    private fun setEmptyPage(isShow: Boolean) = with(binding.layoutNoContent) {
+        root.translationZ = 1f
+        root.showWithCondition(isShow)
+        icCloseLoading.show()
+        icCloseLoading.setOnClickListener {
+            activity?.finish()
+        }
     }
 
     private fun trackImpressionGroup() {

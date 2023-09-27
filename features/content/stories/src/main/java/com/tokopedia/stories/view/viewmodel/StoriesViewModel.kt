@@ -223,13 +223,16 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleMainData(selectedGroup: Int) {
+
         mLatestTrackPosition = -1
         _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
             setInitialData()
             setCachingData()
         }) { exception ->
-            _storiesEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
+            _storiesEvent.emit(StoriesUiEvent.ErrorDetailPage(exception){
+                handleMainData(_groupPos.value)
+            })
         }
         setupOnboard()
     }
@@ -506,6 +509,7 @@ class StoriesViewModel @AssistedInject constructor(
                         mResetValue
                     } else mResetValue,
                     isSameContent = isSameContent,
+                    status = item.status,
                 )
             }
         )
@@ -520,7 +524,9 @@ class StoriesViewModel @AssistedInject constructor(
 
             if (mGroup == StoriesGroupItem()) _storiesEvent.emit(StoriesUiEvent.EmptyGroupPage)
         }) { exception ->
-            _storiesEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
+            _storiesEvent.emit(StoriesUiEvent.ErrorGroupPage(exception){
+                launchRequestInitialData() }
+            )
         }
     }
 

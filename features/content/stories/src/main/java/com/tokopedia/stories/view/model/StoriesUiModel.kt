@@ -51,6 +51,7 @@ data class StoriesDetailItem(
     @IgnoredOnParcel val menus: List<ContentMenuItem> = emptyList(),
     val productCount: String = "",
     @IgnoredOnParcel val share: Sharing = Sharing.Empty,
+    @IgnoredOnParcel val status: StoryStatus = StoryStatus.Unknown,
     ) : Parcelable {
 
     @Parcelize
@@ -83,4 +84,18 @@ data class StoriesDetailItem(
         }
     }
 
+    enum class StoryStatus(val value: String) {
+        Active("ACTIVE"), Removed ("REMOVED"), Unknown("unknown");
+
+        companion object {
+            private val values = StoryStatus.values()
+
+            fun getByValue(value: String): StoryStatus {
+                values.forEach {
+                    if (it.value.equals(value, true)) return it
+                }
+                return Unknown
+            }
+        }
+    }
 }

@@ -103,9 +103,10 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     productCount = stories.totalProductsFmt.ifEmpty { "0" },
                     meta = Meta(
                         activityTracker = stories.meta.activityTracker,
-                        templateTracker = stories.meta.templateTracker
+                        templateTracker = stories.meta.templateTracker,
+                    ),
+                    status = StoriesDetailItem.StoryStatus.getByValue(stories.status),
                     )
-                )
             }
         )
     }

@@ -18,8 +18,8 @@ sealed interface StoriesUiEvent {
     data class ShowVariantSheet(val product: ContentTaggedProductUiModel) : StoriesUiEvent
     data class ShowErrorEvent(val message: Throwable) : StoriesUiEvent
     data class ShowInfoEvent(@StringRes val message: Int) : StoriesUiEvent
-    data class ErrorGroupPage(val throwable: Throwable): StoriesUiEvent
-    data class ErrorDetailPage(val throwable: Throwable): StoriesUiEvent
+    data class ErrorGroupPage(val throwable: Throwable, val onClick: () -> Unit): StoriesUiEvent
+    data class ErrorDetailPage(val throwable: Throwable, val onClick: () -> Unit): StoriesUiEvent
     data class OnboardShown(val needToShow: Boolean) : StoriesUiEvent
 
     data class ErrorFetchCaching(val throwable: Throwable): StoriesUiEvent
