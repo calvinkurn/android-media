@@ -60,6 +60,13 @@ object MenuResult {
         ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 
+    fun assertLabelMenu(position: Int) {
+        onView(
+            withRecyclerView(R.id.inbox_rv)
+                .atPositionOnView(position, R.id.inbox_label_menu)
+        ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+    }
+
     fun assertSellerChatMenu(position: Int) {
         onView(withId(R.id.inbox_rv)).check(
             atPositionCheckInstanceOf(

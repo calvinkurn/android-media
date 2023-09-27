@@ -570,7 +570,7 @@ open class HomeRevampFragment :
         }
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         context?.let {
-            HomeRollenceController.fetchAtfRollenceValue(it)
+            HomeRollenceController.fetchHomeRollenceValue(it)
         }
 
         // show nav toolbar

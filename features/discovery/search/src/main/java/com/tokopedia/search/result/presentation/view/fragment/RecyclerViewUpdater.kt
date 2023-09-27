@@ -51,11 +51,12 @@ class RecyclerViewUpdater @Inject constructor(
         onScrollListenerList: List<RecyclerView.OnScrollListener?>,
         productListTypeFactory: ProductListTypeFactory,
         viewLifecycleOwner: LifecycleOwner,
+        isReimagine : Boolean = false
     ) {
         this.recyclerView = recyclerView
         this.productListAdapter = ProductListAdapter(productListTypeFactory)
 
-        setupRecyclerView(rvLayoutManager, onScrollListenerList)
+        setupRecyclerView(rvLayoutManager, onScrollListenerList, isReimagine)
 
         registerLifecycleObserver(viewLifecycleOwner)
     }
@@ -75,6 +76,7 @@ class RecyclerViewUpdater @Inject constructor(
     private fun setupRecyclerView(
         rvLayoutManager: RecyclerView.LayoutManager?,
         onScrollListenerList: List<RecyclerView.OnScrollListener?>,
+        isReimagine : Boolean
     ) {
         rvLayoutManager ?: return
 
@@ -82,7 +84,8 @@ class RecyclerViewUpdater @Inject constructor(
             layoutManager = rvLayoutManager
             adapter = productListAdapter
             addItemDecoration(ProductItemDecoration(getSpacing(), productListAdapter))
-            addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
+            if(!isReimagine)
+                addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
             addItemDecoration(ProductListViewItemDecoration(context, productListAdapter))
             onScrollListenerList.filterNotNull().forEach(::addOnScrollListener)
         }

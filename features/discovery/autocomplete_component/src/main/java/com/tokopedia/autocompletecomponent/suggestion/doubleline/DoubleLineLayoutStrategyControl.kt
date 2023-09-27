@@ -1,12 +1,12 @@
 package com.tokopedia.autocompletecomponent.suggestion.doubleline
 
 import androidx.appcompat.widget.AppCompatImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
@@ -15,7 +15,7 @@ internal class DoubleLineLayoutStrategyControl : DoubleLineLayoutStrategy {
 
     override fun bindIconTitle(titleImageView: AppCompatImageView, autoCompleteIconTitleReimagine: AppCompatImageView, item: BaseSuggestionDataView) {
         titleImageView.shouldShowWithAction(item.iconTitle.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(titleImageView, item.iconTitle)
+            titleImageView.loadImage(item.iconTitle)
         }
         autoCompleteIconTitleReimagine.hide()
     }
