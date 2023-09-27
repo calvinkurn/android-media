@@ -39,6 +39,7 @@ class ShopProductAdapterTypeFactory(
     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
     private val shopTrackType: Int,
     private val isShowTripleDot: Boolean,
+    private val isOverrideTheme: Boolean = false,
     private val shopProductTabInterface: ShopProductTabInterface?
 ) : BaseAdapterTypeFactory() {
     private var shopProductAdapter: ShopProductAdapter? = null
@@ -162,9 +163,9 @@ class ShopProductAdapterTypeFactory(
                 null
             )
             ShopProductEtalaseHighlightViewHolder.LAYOUT -> return ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener, shopCarouselSeeAllClickedListener)
-            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type, isShowTripleDot)
-            ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
-            ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
+            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type, isShowTripleDot, isOverrideTheme)
+            ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot, isOverrideTheme)
+            ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot, isOverrideTheme)
             MembershipStampProgressViewHolder.LAYOUT -> return MembershipStampProgressViewHolder(parent, membershipStampAdapterListener)
             ShopProductChangeGridSectionViewHolder.LAYOUT -> return ShopProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener, shopProductTabInterface)
             ShopProductSearchResultSuggestionViewHolder.LAYOUT -> return ShopProductSearchResultSuggestionViewHolder(parent, shopProductSearchSuggestionListener)
