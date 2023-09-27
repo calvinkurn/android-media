@@ -155,13 +155,24 @@ class ShopHomeSliderBannerViewHolder(
         }
     }
 
-
     private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
-        if (element.header.isOverrideTheme) {
-            setReimaginedColorConfig(element.header.colorSchema)
+        if (element.isFestivity) {
+            configFestivity()
         } else {
-            setDefaultColorConfig()
+            if (element.header.isOverrideTheme) {
+                setReimaginedColorConfig(element.header.colorSchema)
+            } else {
+                setDefaultColorConfig()
+            }
         }
+    }
+
+    private fun configFestivity() {
+        val festivityTextColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        )
+        textViewTitle?.setTextColor(festivityTextColor)
     }
 
     private fun setReimaginedColorConfig(colorSchema: ShopPageColorSchema) {

@@ -138,7 +138,8 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
         val hasMainBanner = displaySingleColumnComponent != null
         val isHorizontalMainBanner = widgetStyle == WidgetStyle.HORIZONTAL.id
-        val showMainBanner = hasMainBanner && isHorizontalMainBanner 
+        val isUnspecifiedOrientationMainBanner = widgetStyle.isEmpty()
+        val showMainBanner = (hasMainBanner && isHorizontalMainBanner) || (hasMainBanner && isUnspecifiedOrientationMainBanner) 
         
         if (showMainBanner) {
             binding?.imgMainBanner?.visible()
