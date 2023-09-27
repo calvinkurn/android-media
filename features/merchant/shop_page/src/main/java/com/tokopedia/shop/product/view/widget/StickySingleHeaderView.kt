@@ -84,7 +84,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
                         this@StickySingleHeaderView.adapter = adapter
                         this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
                         staggeredGridLayoutManager =
-                            mRecyclerView?.layoutManager as StaggeredGridLayoutManager?
+                            mRecyclerView?.layoutManager as? StaggeredGridLayoutManager
                     }
                     stickyPosition = adapter?.stickyHeaderPosition.orZero()
                 }
