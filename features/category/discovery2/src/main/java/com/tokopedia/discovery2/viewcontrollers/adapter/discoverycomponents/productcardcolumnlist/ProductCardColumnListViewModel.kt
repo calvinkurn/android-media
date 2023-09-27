@@ -21,7 +21,7 @@ import kotlin.coroutines.CoroutineContext
 
 class ProductCardColumnListViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    val componentsItem: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -52,7 +52,7 @@ class ProductCardColumnListViewModel(
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            productCardsUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint, NO_PRODUCT_PER_PAGE)
+            productCardsUseCase?.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, NO_PRODUCT_PER_PAGE)
             setProductList()
         }, onError = {
             _errorState.postValue(Unit)
@@ -60,7 +60,7 @@ class ProductCardColumnListViewModel(
     }
 
     private fun setProductList() {
-        val componentItems = components.getComponentsItem()
+        val componentItems = componentsItem.getComponentsItem()
         if (!componentItems.isNullOrEmpty()) {
             _carouselPagingGroupProductModel.postValue(componentItems.mapToCarouselPagingGroupProductModel())
         } else {
@@ -69,7 +69,7 @@ class ProductCardColumnListViewModel(
     }
 
     fun getProduct(position: Int): DataItem?  {
-        return components.getComponentItem(position)?.data?.firstOrNull()
+        return componentsItem.getComponentItem(position)?.data?.firstOrNull()
     }
 
     fun isLoggedIn(): Boolean {

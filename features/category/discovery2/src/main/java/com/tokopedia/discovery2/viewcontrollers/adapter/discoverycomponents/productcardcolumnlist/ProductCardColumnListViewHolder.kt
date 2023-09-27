@@ -83,10 +83,10 @@ class ProductCardColumnListViewHolder(
             val product = getProduct(itemPosition)
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .viewProductsList(
-                    componentsItems = components.getComponentItem(itemPosition) ?: ComponentsItem(),
+                    componentsItems = componentsItem.getComponentItem(itemPosition) ?: ComponentsItem(),
                     isLogin = isLoggedIn(),
-                    isFulFillment = components.isFulfillment(product),
-                    warehouseId = components.getWarehouseId(product)
+                    isFulFillment = componentsItem.isFulfillment(product),
+                    warehouseId = componentsItem.getWarehouseId(product)
                 )
         }
     }
@@ -96,10 +96,10 @@ class ProductCardColumnListViewHolder(
             val product = getProduct(itemPosition)
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackProductCardClick(
-                    componentsItems = components.getComponentItem(itemPosition) ?: ComponentsItem(),
+                    componentsItems = componentsItem.getComponentItem(itemPosition) ?: ComponentsItem(),
                     isLogin = isLoggedIn(),
-                    isFulFillment = components.isFulfillment(product),
-                    warehouseId = components.getWarehouseId(product)
+                    isFulFillment = componentsItem.isFulfillment(product),
+                    warehouseId = componentsItem.getWarehouseId(product)
                 )
 
             RouteManager.route(itemView.context, product?.applinks)
@@ -107,7 +107,7 @@ class ProductCardColumnListViewHolder(
     }
 
     private fun ProductCardColumnListViewModel.initCarouselPaging(carouselPagingGroupProductModel: CarouselPagingGroupProductModel) {
-        carouselPagingProductCard.setItemPerPage(components.getPropertyRows())
+        carouselPagingProductCard.setItemPerPage(componentsItem.getPropertyRows())
         carouselPagingProductCard.setPagingModel(
             model = CarouselPagingModel(
                 productCardGroupList = listOf(carouselPagingGroupProductModel)

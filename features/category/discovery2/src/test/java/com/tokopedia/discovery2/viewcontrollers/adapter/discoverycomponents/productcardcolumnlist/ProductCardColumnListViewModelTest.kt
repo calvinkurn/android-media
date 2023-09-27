@@ -1,19 +1,12 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist
 
 import android.app.Application
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.firebase.crashlytics.internal.model.CrashlyticsReport.Session.User
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListMapper.mapToCarouselPagingGroupProductModel
-import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,9 +18,9 @@ import io.mockk.mockkConstructor
 import io.mockk.spyk
 import io.mockk.unmockkConstructor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert
@@ -35,25 +28,33 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProductCardColumnListViewModelTest {
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val componentsItem: ComponentsItem = mockk(relaxed = true)
+
     private val productCardsUseCase: ProductCardsUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val componentItemPosition = 99
+    private val componentsItem: ComponentsItem = mockk(relaxed = true)
+
     private val application: Application = mockk()
-    private var viewModel: ProductCardColumnListViewModel =
-        spyk(ProductCardColumnListViewModel(application, componentsItem, componentItemPosition))
-    private var context: Context = mockk()
+    private val position: Int = 99
+
+    private var viewModel: ProductCardColumnListViewModel = spyk(
+            ProductCardColumnListViewModel(
+                application = application,
+                componentsItem = componentsItem,
+                position = position
+            )
+        )
 
     @Before
     fun setup() {
+        Dispatchers.setMain(StandardTestDispatcher())
         MockKAnnotations.init(this)
-        Dispatchers.setMain(TestCoroutineDispatcher())
-
         mockkConstructor(URLParser::class)
-        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        mockUrlParser()
     }
 
     @After
@@ -63,137 +64,204 @@ class ProductCardColumnListViewModelTest {
     }
 
     @Test
-    fun `test 2`() {
-        every { componentsItem.getComponentItem(0) } returns null
-        Assert.assertEquals(null, viewModel.getProduct(0))
+    fun `test for getting specific product`() {
+        val componentId = "12313"
+        val productId = "22222"
+        val productName = "Product Name 1"
 
-        //
-        val dataItem2 = ComponentsItem(
+        // if item is null then expected result should be null as well
+        val item1: ComponentsItem? = null
+        mockComponentItem(item1)
+        item1.verifyValueEquals(
+            expected = viewModel.getProduct(
+                position = position
+            )
+        )
+
+        // if product (data of item) is empty then expected result should be null as well
+        val item2 = ComponentsItem(
             data = listOf(),
-            id = "12313"
+            id = componentId
         )
-        every { componentsItem.getComponentItem(0) } returns dataItem2
-        Assert.assertEquals(null, viewModel.getProduct(0))
+        mockComponentItem(item2)
+        item2.verifyValueEquals(
+            expected = viewModel.getProduct(
+                position = position
+            )
+        )
 
-        //
-        val dataItem = ComponentsItem(
+        // if product (data of item) is null then expected result should be null as well
+        val item3 = ComponentsItem(
             data = null,
-            id = "12313"
+            id = componentId
         )
-        every { componentsItem.getComponentItem(0) } returns dataItem
-        Assert.assertEquals(null, viewModel.getProduct(0))
+        mockComponentItem(item3)
+        item3.verifyValueEquals(
+            expected = viewModel.getProduct(
+                position = position
+            )
+        )
 
-        //
-        val dataItem4 = ComponentsItem(
+        // if product (data of item) is there then expected result should the same
+        val item4 = ComponentsItem(
             data = listOf(
                 DataItem(
-                    id = "22222",
-                    name = "Product Name 1"
+                    id = productId,
+                    name = productName
                 )
             ),
-            id = "12313"
+            id = componentId
         )
 
-        every { componentsItem.getComponentItem(0) } returns dataItem4
-        Assert.assertEquals(dataItem4.data?.firstOrNull(), viewModel.getProduct(0))
+        mockComponentItem(item4)
+        item4.verifyValueEquals(
+            expected = viewModel.getProduct(
+                position = position
+            )
+        )
     }
 
     @Test
-    fun `test again`() {
-        val components2: List<ComponentsItem> = mutableListOf(
+    fun `test the success of getting carousel paging model`() {
+        val componentId = "12313"
+        val productId = "22222"
+        val productName = "Product Name 1"
+
+        val components: List<ComponentsItem> = mutableListOf(
             ComponentsItem(
                 data = listOf(
                     DataItem(
-                        id = "44444",
-                        name = "Product Name 3"
+                        id = productId,
+                        name = productName
                     )
                 ),
-                id = "42133"
+                id = componentId
             )
         )
-        every { componentsItem.getComponentsItem() } returns components2
+
+        mockComponents(components)
 
         viewModel.onAttachToViewHolder()
-
-        viewModel.carouselPagingGroupProductModel.getOrAwaitValue()
 
         viewModel.carouselPagingGroupProductModel
-            .verifyValueEquals(components2.mapToCarouselPagingGroupProductModel())
+            .getOrAwaitValue()
+
+        viewModel.carouselPagingGroupProductModel
+            .verifyValueEquals(
+                expected = components.mapToCarouselPagingGroupProductModel()
+            )
     }
 
     @Test
-    fun `test again 1`() {
+    fun `test the failed of getting carousel paging model when product list is empty`() {
         viewModel.productCardsUseCase = productCardsUseCase
 
-        coEvery {
-            productCardsUseCase.loadFirstPageComponents(any(), any(), any())
-        } returns true
+        mockLoadFirstPageComponents(true)
 
-        val components2: List<ComponentsItem> = listOf()
-
-        every { componentsItem.getComponentsItem() } returns components2
+        mockComponents(listOf())
 
         viewModel.onAttachToViewHolder()
 
-        viewModel.errorState.getOrAwaitValue()
+        viewModel.errorState
+            .getOrAwaitValue()
 
         viewModel.errorState
             .verifyValueEquals(Unit)
     }
 
     @Test
-    fun `test again 5`() {
+    fun `test the failed of getting carousel paging model when product list is null`() {
         viewModel.productCardsUseCase = productCardsUseCase
 
-        coEvery {
-            productCardsUseCase.loadFirstPageComponents(any(), any(), any())
-        } returns true
+        mockLoadFirstPageComponents(true)
 
-        every { componentsItem.getComponentsItem() } returns null
+        mockComponents(null)
 
         viewModel.onAttachToViewHolder()
 
-        viewModel.errorState.getOrAwaitValue()
+        viewModel.errorState
+            .getOrAwaitValue()
 
         viewModel.errorState
             .verifyValueEquals(Unit)
     }
 
     @Test
-    fun `test again 2`() {
+    fun `test the failed of getting carousel paging model when there is a throwable  `() {
         viewModel.productCardsUseCase = productCardsUseCase
 
-        coEvery {
-            productCardsUseCase.loadFirstPageComponents(any(), any(), any())
-        } throws Throwable()
+        mockLoadFirstPageComponents(Throwable())
 
         viewModel.onAttachToViewHolder()
 
-        viewModel.errorState.getOrAwaitValue()
+        viewModel.errorState
+            .getOrAwaitValue()
 
         viewModel.errorState
             .verifyValueEquals(Unit)
     }
 
     @Test
-    fun `test again 3`() {
+    fun `test the value of view model's param`() {
         Assert.assertEquals(application, viewModel.application)
 
-        Assert.assertEquals(componentsItem, viewModel.components)
+        Assert.assertEquals(componentsItem, viewModel.componentsItem)
 
-        Assert.assertEquals(componentItemPosition, viewModel.position)
+        Assert.assertEquals(position, viewModel.position)
     }
 
     @Test
-    fun `login`() {
+    fun `test user session data`() {
+        // by default isLoggedIn() is false, make sure the data is the same as default value
         Assert.assertEquals(false, viewModel.isLoggedIn())
 
         viewModel.userSession = userSession
 
+        val isLoggedIn = true
+
+        mockLogin(isLoggedIn)
+
+        // make sure isLoggedIn from view model is true
+        Assert.assertEquals(isLoggedIn, viewModel.isLoggedIn())
+    }
+
+    private fun mockComponents(components: List<ComponentsItem>?) {
+        coEvery {
+            componentsItem.getComponentsItem()
+        } returns components
+    }
+
+    private fun mockLogin(isLoggedIn: Boolean) {
         every {
             userSession.isLoggedIn
-        } returns true
+        } returns isLoggedIn
+    }
 
-        Assert.assertEquals(true, viewModel.isLoggedIn())
+    private fun mockComponentItem(item: ComponentsItem?) {
+        every {
+            componentsItem.getComponentItem(any())
+        } returns item
+    }
+
+    private fun mockUrlParser() {
+        every {
+            anyConstructed<URLParser>().paramKeyValueMapDecoded
+        } returns hashMapOf()
+    }
+
+    private fun mockLoadFirstPageComponents(isSuccess: Boolean) {
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(any(), any(), any())
+        } returns isSuccess
+    }
+
+    private fun mockLoadFirstPageComponents(throwable: Throwable) {
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(any(), any(), any())
+        } throws throwable
+    }
+
+    private fun ComponentsItem?.verifyValueEquals(expected: Any?) {
+        Assert.assertEquals(this?.data?.firstOrNull(), expected)
     }
 }
