@@ -8,6 +8,7 @@ import com.tokopedia.inbox.databinding.UniversalInboxMenuItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -38,12 +39,17 @@ class UniversalInboxMenuItemViewHolder(
 
     private fun bindCounter(uiModel: UniversalInboxMenuUiModel) {
         val strCounter = UniversalInboxViewUtil.getStringCounter(uiModel.counter)
-        binding?.inboxNotificationIcon?.showWithCondition(strCounter.isNotEmpty())
         binding?.inboxNotificationIcon?.setNotification(
             notif = strCounter,
             notificationType = NotificationUnify.COUNTER_TYPE,
             colorType = NotificationUnify.COLOR_PRIMARY
         )
+        if (strCounter.isBlank()) {
+            binding?.inboxNotificationIcon?.setBackgroundDrawable(null)
+            binding?.inboxNotificationIcon?.gone()
+        } else {
+            binding?.inboxNotificationIcon?.show()
+        }
     }
 
     private fun bindShopInfo(uiModel: UniversalInboxMenuUiModel) {

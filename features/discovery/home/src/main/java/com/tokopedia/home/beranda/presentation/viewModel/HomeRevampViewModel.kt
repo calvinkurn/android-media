@@ -797,7 +797,9 @@ open class HomeRevampViewModel @Inject constructor(
                             removeAt(horizontalPosition)
                         }
                         val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
-                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) { }
+                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) {
+                            updateHomeData(homeDataModel)
+                        }
                     }
                 }
             } catch (_: Exception) { }

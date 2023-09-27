@@ -19,8 +19,7 @@
             android:id="@+id/iv_product_image_bmgm"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            tools:ignore="ContentDescription"
-            tools:src="@color/Unify_G400" />
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 

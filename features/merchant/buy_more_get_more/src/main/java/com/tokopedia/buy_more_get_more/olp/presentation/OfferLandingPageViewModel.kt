@@ -13,7 +13,8 @@ import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerR
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
 import com.tokopedia.buy_more_get_more.olp.data.request.GetSharingDataByOfferIDParam
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
-import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.*
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpUiState
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
@@ -37,7 +38,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
@@ -81,7 +81,7 @@ class OfferLandingPageViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    private val userId: String
+    val userId: String
         get() = userSession.userId
 
     val isLogin: Boolean
@@ -329,8 +329,22 @@ class OfferLandingPageViewModel @Inject constructor(
         }
     }
 
-    fun getPageIdForSharing(): String {
-        return "BMGM-${userSession.userId}-${currentState.shopData.shopId}-${currentState.offerIds.firstOrNull()}-${currentState.offerTypeId}-${Date()}-default"
+    fun addAvailableProductImpression(product: OfferProductListUiModel.Product) {
+        _uiState.update {
+            val list = it.availableProductImpressionList
+            list.add(product)
+            it.copy(
+                availableProductImpressionList = list
+            )
+        }
+    }
+
+    fun clearAvailableProductImpression() {
+        _uiState.update {
+            it.copy(
+                availableProductImpressionList = mutableSetOf()
+            )
+        }
     }
 
     fun getDeeplink(): String {

@@ -101,7 +101,9 @@ object CartCalculator {
             }
 
             if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount > 0.0) {
-                totalDiscountBmGmMap[cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount
+                if (!totalDiscountBmGmMap.containsKey(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)) {
+                    totalDiscountBmGmMap[cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount
+                }
             }
         }
 
@@ -131,27 +133,6 @@ object CartCalculator {
 
         val pricePair = Pair(subtotalBeforeSlashedPrice, subtotalPrice)
         return Triple(totalItemQty, pricePair, subtotalCashback)
-    }
-
-    fun getWholesalePriceProduct(
-        cartItemHolderData: CartItemHolderData,
-        itemQty: Int
-    ): Double {
-        var wholesalePrice = 0.0
-        val wholesalePriceDataList = cartItemHolderData.wholesalePriceData
-        for (wholesalePriceData in wholesalePriceDataList) {
-            if (itemQty >= wholesalePriceData.qtyMin) {
-                wholesalePrice = wholesalePriceData.prdPrc
-                val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    wholesalePriceData.prdPrc,
-                    false
-                ).removeDecimalSuffix()
-                cartItemHolderData.wholesalePriceFormatted = wholesalePriceFormatted
-                cartItemHolderData.wholesalePrice = wholesalePriceData.prdPrc
-                break
-            }
-        }
-        return wholesalePrice
     }
 
     fun calculatePriceWholesaleProduct(

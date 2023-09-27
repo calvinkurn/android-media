@@ -1,6 +1,6 @@
 package com.tokopedia.buy_more_get_more.olp.domain.entity
 
-class SharingDataByOfferIdUiModel(
+data class SharingDataByOfferIdUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
     val offerData: OfferData = OfferData()
 ) {

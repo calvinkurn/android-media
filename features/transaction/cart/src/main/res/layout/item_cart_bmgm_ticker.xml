@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="12dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="4dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_ticker_bg"
@@ -107,8 +107,8 @@
     <View
         android:id="@+id/v_bmgm_separator"
         android:layout_width="2dp"
-        android:layout_height="10dp"
-        android:layout_marginTop="6dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="4dp"
         android:background="@color/Unify_NN100"
         app:layout_constraintTop_toBottomOf="@id/iv_ticker_bg"
         app:layout_constraintStart_toStartOf="parent"

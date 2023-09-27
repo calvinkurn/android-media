@@ -2505,19 +2505,34 @@ open class ShopPageHomeFragment :
                 creativeUrl = displayWidgetItem.imageUrl
             }
         }
-        shopPageHomeTracking.impressionDisplayWidget(
-            false,
-            shopId,
-            shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-            displayWidgetUiModel?.name ?: "",
-            displayWidgetUiModel?.widgetId ?: "",
-            ShopUtil.getActualPositionFromIndex(parentPosition),
-            displayWidgetUiModel?.header?.ratio ?: "",
-            destinationLink,
-            creativeUrl,
-            ShopUtil.getActualPositionFromIndex(adapterPosition),
-            customDimensionShopPage
-        )
+        when (displayWidgetUiModel?.name ?: "") {
+            BMGM_BANNER -> {
+                val applinkUri = Uri.parse(displayWidgetItem.appLink)
+                val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
+                shopPageHomeTracking.impressBmgmBanner(
+                    offerId,
+                    ShopUtil.getActualPositionFromIndex(parentPosition).toString(),
+                    ShopUtil.getActualPositionFromIndex(parentPosition).toString(),
+                    shopId,
+                    userId
+                )
+            }
+            else -> {
+                shopPageHomeTracking.impressionDisplayWidget(
+                    false,
+                    shopId,
+                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
+                    displayWidgetUiModel?.name ?: "",
+                    displayWidgetUiModel?.widgetId ?: "",
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    displayWidgetUiModel?.header?.ratio ?: "",
+                    destinationLink,
+                    creativeUrl,
+                    ShopUtil.getActualPositionFromIndex(adapterPosition),
+                    customDimensionShopPage
+                )
+            }
+        }
     }
 
     override fun onDisplayItemClicked(

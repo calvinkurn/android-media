@@ -2,6 +2,7 @@ package com.tokopedia.buy_more_get_more.olp.domain.entity
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel.Product
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactory
 import com.tokopedia.buy_more_get_more.olp.utils.constant.Constant
@@ -72,7 +73,8 @@ data class OfferInfoForBuyerUiModel(
         val startDate: String = "",
         val endDate: String = "",
         val sortId: String = Constant.DEFAULT_SORT_ID,
-        val sortName: String = Constant.DEFAULT_SORT_NAME
+        val sortName: String = Constant.DEFAULT_SORT_NAME,
+        val availableProductImpressionList: MutableSet<Product> = mutableSetOf()
     )
 
     sealed class OlpEvent {
@@ -105,6 +107,6 @@ data class OfferInfoForBuyerUiModel(
 
         object GetSharingData : OlpEvent()
 
-        data class AddToCart(val product: OfferProductListUiModel.Product) : OlpEvent()
+        data class AddToCart(val product: Product) : OlpEvent()
     }
 }

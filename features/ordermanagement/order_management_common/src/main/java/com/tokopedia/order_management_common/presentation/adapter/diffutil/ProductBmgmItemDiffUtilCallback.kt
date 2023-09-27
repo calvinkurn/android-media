@@ -11,7 +11,7 @@ class ProductBmgmItemDiffUtilCallback(
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldItems.getOrNull(oldItemPosition)
         val newItem = newItems.getOrNull(newItemPosition)
-        return oldItem?.orderDetailId == newItem?.orderDetailId
+        return oldItem?.productId == newItem?.productId
     }
 
     override fun getOldListSize(): Int {
@@ -23,7 +23,9 @@ class ProductBmgmItemDiffUtilCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldItems.getOrNull(oldItemPosition) == newItems.getOrNull(newItemPosition)
+        val oldItem = oldItems.getOrNull(oldItemPosition)
+        val newItem = newItems.getOrNull(newItemPosition)
+        return oldItem == newItem || oldItem?.orderStatusId == newItem?.orderStatusId
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any {
