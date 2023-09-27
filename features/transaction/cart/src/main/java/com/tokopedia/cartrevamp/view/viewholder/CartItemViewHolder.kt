@@ -1391,8 +1391,14 @@ class CartItemViewHolder constructor(
                     !cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider) {
                 binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
                 binding.bmgmHelperView2.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+
+                if (cartItemHolderData.cartBmGmTickerData.isShowBmGmHorizontalDivider) {
+                    binding.bottomDivider.visible()
+                } else {
+                    binding.bottomDivider.gone()
+                }
             } else {
-                if (cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm) {
+                if (cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm || cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider) {
                     layoutParams.bottomMargin =
                             IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
                     binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
@@ -1403,6 +1409,7 @@ class CartItemViewHolder constructor(
                     binding.bmgmHelperView1.gone()
                     binding.bmgmHelperView2.gone()
                 }
+                binding.bottomDivider.gone()
             }
         }
     }

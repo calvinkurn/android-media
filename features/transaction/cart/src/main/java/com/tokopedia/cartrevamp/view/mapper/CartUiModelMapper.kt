@@ -786,12 +786,24 @@ object CartUiModelMapper {
         return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM && !isLastIndexProduct
     }
 
+    private fun checkNeedToShowBmGmHorizontalDivider(cartDetail: CartDetail, productId: String): Boolean {
+        val isLastIndexProduct = if (cartDetail.products.isNotEmpty()) {
+            cartDetail.products[cartDetail.products.size - 1].productId == productId
+        } else {
+            false
+        }
+        return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM
+                && cartDetail.products.size > 1
+                && isLastIndexProduct
+    }
+
     private fun mapCartBmGmTickerData(cartDetail: CartDetail, shopData: CartShopHolderData, productId: String): CartBmGmTickerData {
         return CartBmGmTickerData(
                 bmGmCartInfoData = mapBmGmProductData(cartDetail, shopData),
                 isShowTickerBmGm = checkNeedToShowTickerBmGm(cartDetail, productId),
                 stateTickerBmGm = if (checkNeedToShowTickerBmGm(cartDetail, productId)) CART_BMGM_STATE_TICKER_ACTIVE else CART_BMGM_STATE_TICKER_INACTIVE,
-                isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId)
+                isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId),
+                isShowBmGmHorizontalDivider = checkNeedToShowBmGmHorizontalDivider(cartDetail, productId)
         )
     }
 

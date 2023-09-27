@@ -5,5 +5,6 @@ data class CartBmGmTickerData(
     var isShowTickerBmGm: Boolean = false,
     // 0 = loading, 1 = active, 2 = inactive
     var stateTickerBmGm: Int = -1,
-    var isShowBmGmDivider: Boolean = false
+    var isShowBmGmDivider: Boolean = false,
+    var isShowBmGmHorizontalDivider: Boolean = false
 )
