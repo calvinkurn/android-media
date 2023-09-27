@@ -1,9 +1,11 @@
 package com.tokopedia.feedplus.detail
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -40,11 +42,18 @@ class FeedDetailActivity : BaseActivity(), FeedDetailBottomBarActionListener {
         inject()
         super.onCreate(savedInstanceState)
         _binding = ActivityFeedDetailBinding.inflate(layoutInflater)
+        setupStatusBar()
         setContentView(binding.root)
 
         observeTitleLiveData()
 
         setupView()
+    }
+
+    private fun setupStatusBar() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        // todo: insets
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
