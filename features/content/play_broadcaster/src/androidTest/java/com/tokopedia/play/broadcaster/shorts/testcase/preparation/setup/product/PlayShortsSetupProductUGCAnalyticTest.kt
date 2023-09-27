@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
@@ -42,6 +43,7 @@ class PlayShortsSetupProductUGCAnalyticTest {
     private val mockBroRepo: PlayBroadcastRepository = mockk(relaxed = true)
     private val mockProductTagRepo: ProductTagRepository = mockk(relaxed = true)
     private val mockUgcOnboardingRepo: UGCOnboardingRepository = mockk(relaxed = true)
+    private val mockContentProductPickerSGCRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
 
@@ -69,6 +71,7 @@ class PlayShortsSetupProductUGCAnalyticTest {
                         mockBroRepo = mockBroRepo,
                         mockProductTagRepo = mockProductTagRepo,
                         mockUgcOnboardingRepo = mockUgcOnboardingRepo,
+                        mockContentProductPickerSGCRepo = mockContentProductPickerSGCRepo,
                         mockAccountManager = mockAccountManager,
                         mockUserSession = mockUserSession,
                         mockRouter = mockk(relaxed = true),

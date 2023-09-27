@@ -10,9 +10,9 @@ import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 /**
  * Created by kenny.hadisaputra on 04/02/22
  */
-internal class ProductListAdapterDelegate private constructor() {
+class ProductListAdapterDelegate private constructor() {
 
-    internal class Product(
+    class Product(
         private val onSelected: (ProductUiModel) -> Unit,
     ) : TypedAdapterDelegate<
         ProductListAdapter.Model.Product,
@@ -37,7 +37,7 @@ internal class ProductListAdapterDelegate private constructor() {
         }
     }
 
-    internal class Loading : TypedAdapterDelegate<
+    class Loading : TypedAdapterDelegate<
         ProductListAdapter.Model.Loading,
         ProductListAdapter.Model,
             ProductListViewHolder.Loading>(

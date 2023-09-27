@@ -8,7 +8,7 @@ import com.tokopedia.content.common.producttag.util.preference.ProductTagPrefere
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.sgc.view.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,7 +23,7 @@ fun productSetupViewModel(
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
-    repo: PlayBroadcastRepository = mockk(relaxed = true),
+    repo: ContentProductPickerSGCRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
     isNumerationShown: Boolean = true,

@@ -18,9 +18,9 @@ import com.tokopedia.play_common.view.loadImage
 /**
  * Created by kenny.hadisaputra on 04/02/22
  */
-internal class ProductListViewHolder private constructor() {
+class ProductListViewHolder private constructor() {
 
-    internal class Product(
+    class Product(
         private val binding: ItemProductListBinding,
         private val onSelected: (ProductUiModel) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -90,7 +90,7 @@ internal class ProductListViewHolder private constructor() {
         }
     }
 
-    internal class Loading(
+    class Loading(
         binding: ItemLoadingBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 

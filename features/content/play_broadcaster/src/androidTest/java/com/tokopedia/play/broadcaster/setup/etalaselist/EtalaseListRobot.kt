@@ -10,9 +10,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.databinding.ItemEtalaseListBodyBinding
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
-import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListBodyBinding
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
 import com.tokopedia.content.product.picker.sgc.analytic.manager.EtalaseListAnalyticManager
@@ -24,6 +24,7 @@ import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
+import com.tokopedia.empty_state.R as empty_stateR
 
 /**
  * Created by kenny.hadisaputra on 08/03/22
@@ -36,7 +37,7 @@ class EtalaseListRobot(
 
     private val context = InstrumentationRegistry.getInstrumentation().context
 
-    val scenario = launchFragment(themeResId = com.tokopedia.empty_state.R.style.AppTheme) {
+    val scenario = launchFragment(themeResId = empty_stateR.style.AppTheme) {
         ProductSetupContainer(viewModel) {
             EtalaseListBottomSheet(
                 mockk(relaxed = true),
@@ -57,7 +58,7 @@ class EtalaseListRobot(
 
     fun selectEtalase(position: Int = 0) {
         Espresso.onView(
-            ViewMatchers.withId(R.id.rv_etalase)
+            ViewMatchers.withId(contentproductpickerR.id.rv_etalase)
         ).perform(
             RecyclerViewActions.actionOnHolderItem(
                 etalaseMatcher(), click()
@@ -67,7 +68,7 @@ class EtalaseListRobot(
 
     fun selectCampaign(position: Int = 0) {
         Espresso.onView(
-            ViewMatchers.withId(R.id.rv_etalase)
+            ViewMatchers.withId(contentproductpickerR.id.rv_etalase)
         ).perform(
             RecyclerViewActions.actionOnHolderItem(
                 campaignMatcher(), click()

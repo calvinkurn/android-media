@@ -3,8 +3,8 @@ package com.tokopedia.play.broadcaster.setup.productchooser
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.test.espresso.delay
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 @CassavaTest
 class ProductChooserAnalyticTest {
 
-    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
 
     private val mockSelectedProducts = List(3) {
         ProductUiModel(

@@ -9,9 +9,9 @@ import com.tokopedia.content.product.picker.sgc.view.viewholder.EtalaseListViewH
 /**
  * Created by kenny.hadisaputra on 27/01/22
  */
-internal class EtalaseListAdapterDelegate private constructor() {
+class EtalaseListAdapterDelegate private constructor() {
 
-    internal class Header : TypedAdapterDelegate<
+    class Header : TypedAdapterDelegate<
         EtalaseListAdapter.Model.Header,
         EtalaseListAdapter.Model,
             EtalaseListViewHolder.Header>(contentcommonR.layout.view_cc_empty) {
@@ -31,7 +31,7 @@ internal class EtalaseListAdapterDelegate private constructor() {
         }
     }
 
-    internal class Campaign(
+    class Campaign(
         private val listener: EtalaseListViewHolder.Body.Listener,
     ) : TypedAdapterDelegate<
         EtalaseListAdapter.Model.Campaign,
@@ -53,7 +53,7 @@ internal class EtalaseListAdapterDelegate private constructor() {
         }
     }
 
-    internal class Etalase(
+    class Etalase(
         private val listener: EtalaseListViewHolder.Body.Listener,
     ) : TypedAdapterDelegate<
         EtalaseListAdapter.Model.Etalase,

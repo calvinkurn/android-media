@@ -28,9 +28,9 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * Created By : Jonathan Darwin on February 07, 2022
  */
-internal class ProductSummaryViewHolder private constructor() {
+class ProductSummaryViewHolder private constructor() {
 
-    internal class Header(
+    class Header(
         private val binding: ItemProductSummaryHeaderListBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -67,7 +67,7 @@ internal class ProductSummaryViewHolder private constructor() {
         }
     }
 
-    internal class Body(
+    class Body(
         private val binding: ItemProductSummaryBodyListBinding,
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {

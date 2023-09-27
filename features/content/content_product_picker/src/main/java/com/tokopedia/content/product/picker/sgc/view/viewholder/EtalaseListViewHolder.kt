@@ -17,9 +17,9 @@ import com.tokopedia.unifycomponents.Label
 /**
  * Created by kenny.hadisaputra on 27/01/22
  */
-internal class EtalaseListViewHolder private constructor() {
+class EtalaseListViewHolder private constructor() {
 
-    internal class Header(
+    class Header(
         private val binding: ItemEtalaseListHeaderBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -37,7 +37,7 @@ internal class EtalaseListViewHolder private constructor() {
         }
     }
 
-    internal class Body(
+    class Body(
         internal val binding: ItemEtalaseListBodyBinding,
         private val listener: Listener,
     ) : RecyclerView.ViewHolder(binding.root) {

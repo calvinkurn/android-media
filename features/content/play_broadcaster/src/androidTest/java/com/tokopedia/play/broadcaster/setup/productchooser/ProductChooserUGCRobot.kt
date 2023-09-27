@@ -45,6 +45,11 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.hamcrest.core.AllOf
+import com.tokopedia.empty_state.R as empty_stateR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.filter.R as filterR
+import com.tokopedia.sortfilter.R as sortfilterR
 
 /**
  * Created by kenny.hadisaputra on 16/09/22
@@ -131,7 +136,7 @@ class ProductChooserUGCRobot(
         }
     }
 
-    val scenario = launchFragment(themeResId = com.tokopedia.empty_state.R.style.AppTheme) {
+    val scenario = launchFragment(themeResId = empty_stateR.style.AppTheme) {
         ProductSetupContainer(viewModel, onAttach) {
             when (it) {
                 ProductTagParentFragment::class.java.name -> {
@@ -193,13 +198,13 @@ class ProductChooserUGCRobot(
 
     fun close() {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)
+            ViewMatchers.withId(unifycomponentsR.id.bottom_sheet_close)
         ).perform(ViewActions.click())
     }
 
     fun selectProductSource() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.tv_cc_product_tag_product_source)
+            ViewMatchers.withId(contentcommonR.id.tv_cc_product_tag_product_source)
         ).perform(ViewActions.click())
 
         await(500)
@@ -207,55 +212,55 @@ class ProductChooserUGCRobot(
 
     fun selectProductSourceOptionTokopedia() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_global_search)
+            ViewMatchers.withId(contentcommonR.id.cl_global_search)
         ).perform(ViewActions.click())
     }
 
     fun selectProductSourceOptionLastPurchased() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_last_purchase)
+            ViewMatchers.withId(contentcommonR.id.cl_last_purchase)
         ).perform(ViewActions.click())
     }
 
     fun selectSearchBar() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_search)
+            ViewMatchers.withId(contentcommonR.id.cl_search)
         ).perform(ViewActions.click())
     }
 
     fun typeInSearchBar(query: String) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)
+            ViewMatchers.withId(unifycomponentsR.id.searchbar_textfield)
         ).perform(ViewActions.replaceText(query))
     }
 
     fun selectSearchBarInShopProductPage() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.sb_shop_product)
+            ViewMatchers.withId(contentcommonR.id.sb_shop_product)
         ).perform(ViewActions.click())
     }
 
     fun clickBackButton() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.ic_cc_product_tag_back)
+            ViewMatchers.withId(contentcommonR.id.ic_cc_product_tag_back)
         ).perform(ViewActions.click())
     }
 
     fun clickSaveButton() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.btn_save)
+            ViewMatchers.withId(contentcommonR.id.btn_save)
         ).perform(ViewActions.click())
     }
 
     fun pressImeActionInGlobalSearchBar() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)
+            ViewMatchers.withId(unifycomponentsR.id.searchbar_textfield)
         ).perform(ViewActions.pressImeActionButton())
     }
 
     fun selectProductInLastTaggedProduct(position: Int) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_last_tagged_product)
+            ViewMatchers.withId(contentcommonR.id.rv_last_tagged_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
@@ -266,7 +271,7 @@ class ProductChooserUGCRobot(
 
     fun selectProductInLastPurchasedProduct(position: Int) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_last_purchased_product)
+            ViewMatchers.withId(contentcommonR.id.rv_last_purchased_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
@@ -277,7 +282,7 @@ class ProductChooserUGCRobot(
 
     fun selectProductInGlobalSearchProduct(position: Int) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_global_search_product)
+            ViewMatchers.withId(contentcommonR.id.rv_global_search_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
@@ -288,7 +293,7 @@ class ProductChooserUGCRobot(
 
     fun selectShopInGlobalSearchShop(position: Int) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_global_search_shop)
+            ViewMatchers.withId(contentcommonR.id.rv_global_search_shop)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
@@ -301,7 +306,7 @@ class ProductChooserUGCRobot(
         Espresso.onView(
             AllOf.allOf(
                 ViewMatchers.isDescendantOfA(
-                    ViewMatchers.withId(com.tokopedia.content.common.R.id.tab_layout)
+                    ViewMatchers.withId(contentcommonR.id.tab_layout)
                 ),
                 ViewMatchers.withText("Barang")
             )
@@ -312,7 +317,7 @@ class ProductChooserUGCRobot(
         Espresso.onView(
             AllOf.allOf(
                 ViewMatchers.isDescendantOfA(
-                    ViewMatchers.withId(com.tokopedia.content.common.R.id.tab_layout)
+                    ViewMatchers.withId(contentcommonR.id.tab_layout)
                 ),
                 ViewMatchers.withText("Toko")
             )
@@ -323,10 +328,10 @@ class ProductChooserUGCRobot(
         Espresso.onView(
             AllOf.allOf(
                 ViewMatchers.isDescendantOfA(
-                    ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_global_search_product)
+                    ViewMatchers.withId(contentcommonR.id.cl_global_search_product)
                 ),
                 ViewMatchers.withParent(
-                    ViewMatchers.withId(com.tokopedia.sortfilter.R.id.sort_filter_items)
+                    ViewMatchers.withId(sortfilterR.id.sort_filter_items)
                 ),
                 ViewMatchers.withParentIndex(position)
             )
@@ -337,9 +342,9 @@ class ProductChooserUGCRobot(
         Espresso.onView(
             AllOf.allOf(
                 ViewMatchers.isDescendantOfA(
-                    ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_global_search_product)
+                    ViewMatchers.withId(contentcommonR.id.cl_global_search_product)
                 ),
-                ViewMatchers.withId(com.tokopedia.sortfilter.R.id.sort_filter_prefix)
+                ViewMatchers.withId(sortfilterR.id.sort_filter_prefix)
             )
         ).perform(ViewActions.click())
 
@@ -348,18 +353,18 @@ class ProductChooserUGCRobot(
 
     fun selectFilterInAdvancedFilterBottomSheet(position: Int) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.filter.R.id.optionRecyclerView)
+            ViewMatchers.withId(filterR.id.optionRecyclerView)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
-                clickOnViewChild(com.tokopedia.filter.R.id.sortFilterChipsUnify)
+                clickOnViewChild(filterR.id.sortFilterChipsUnify)
             )
         )
     }
 
     fun selectApplyInAdvancedFilterBottomSheet() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(com.tokopedia.filter.R.id.buttonApplyContainer)
+            ViewMatchers.withId(filterR.id.buttonApplyContainer)
         ).perform(ViewActions.click())
     }
 

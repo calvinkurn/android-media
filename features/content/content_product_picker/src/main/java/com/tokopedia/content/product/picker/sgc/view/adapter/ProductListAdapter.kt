@@ -8,7 +8,7 @@ import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 /**
  * Created by kenny.hadisaputra on 28/01/22
  */
-internal class ProductListAdapter(
+class ProductListAdapter(
     onSelected: (ProductUiModel) -> Unit,
     private val onLoading: () -> Unit,
 ) : BaseDiffUtilAdapter<ProductListAdapter.Model>() {

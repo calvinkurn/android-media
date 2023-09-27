@@ -8,7 +8,7 @@ import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 /**
  * Created By : Jonathan Darwin on February 07, 2022
  */
-internal class ProductSummaryAdapter(
+class ProductSummaryAdapter(
     listener: ProductSummaryViewHolder.Body.Listener
 ) : BaseDiffUtilAdapter<ProductSummaryAdapter.Model>() {
 

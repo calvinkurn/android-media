@@ -8,7 +8,7 @@ import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
 /**
  * Created by kenny.hadisaputra on 27/01/22
  */
-internal class EtalaseListAdapter(
+class EtalaseListAdapter(
     etalaseBodyListener: EtalaseListViewHolder.Body.Listener,
 ) : BaseDiffUtilAdapter<EtalaseListAdapter.Model>() {
 

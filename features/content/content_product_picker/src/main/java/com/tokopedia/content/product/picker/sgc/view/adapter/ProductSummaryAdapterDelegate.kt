@@ -9,9 +9,9 @@ import com.tokopedia.content.product.picker.sgc.view.viewholder.ProductSummaryVi
 /**
  * Created By : Jonathan Darwin on February 07, 2022
  */
-internal class ProductSummaryAdapterDelegate private constructor() {
+class ProductSummaryAdapterDelegate private constructor() {
 
-    internal class Header : TypedAdapterDelegate<
+    class Header : TypedAdapterDelegate<
         ProductSummaryAdapter.Model.Header,
         ProductSummaryAdapter.Model,
             ProductSummaryViewHolder.Header>(contentcommonR.layout.view_cc_empty) {
@@ -31,7 +31,7 @@ internal class ProductSummaryAdapterDelegate private constructor() {
         }
     }
 
-    internal class Body(
+    class Body(
         private val listener: ProductSummaryViewHolder.Body.Listener
     ) : TypedAdapterDelegate<
         ProductSummaryAdapter.Model.Body,

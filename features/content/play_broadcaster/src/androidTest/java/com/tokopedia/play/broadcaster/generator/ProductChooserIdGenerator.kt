@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
 import com.tokopedia.content.product.picker.sgc.analytic.manager.EtalaseListAnalyticManager
@@ -48,6 +49,7 @@ import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
+import com.tokopedia.empty_state.R as empty_stateR
 
 /**
  * Created by kenny.hadisaputra on 23/02/22
@@ -174,6 +176,7 @@ class ProductChooserIdGenerator {
                 ProductSummaryBottomSheet(
                     analytic = mockk(relaxed = true),
                     coachMarkSharedPref = mockk(relaxed = true),
+                    pinnedProductAnalytic = mockk(relaxed = true)
                 )
             },
             ProductChooserBottomSheet::class.java to {
@@ -198,6 +201,7 @@ class ProductChooserIdGenerator {
             },
             ProductSummaryBottomSheet::class.java to {
                 ProductSummaryBottomSheet(
+                    mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
                 )
@@ -253,7 +257,7 @@ class ProductChooserIdGenerator {
     fun productChooserBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = com.tokopedia.empty_state.R.style.AppTheme
+            themeResId = empty_stateR.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -272,13 +276,13 @@ class ProductChooserIdGenerator {
     fun sortFilterBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = com.tokopedia.empty_state.R.style.AppTheme
+            themeResId = empty_stateR.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(isRoot()).perform(waitFor(500))
-        onView(withId(R.id.chips_sort)).perform(click())
+        onView(withId(contentproductpickerR.id.chips_sort)).perform(click())
 
         scenario.onFragment {
             val chooserBottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
@@ -295,13 +299,13 @@ class ProductChooserIdGenerator {
     fun etalaseListBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = com.tokopedia.empty_state.R.style.AppTheme
+            themeResId = empty_stateR.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(isRoot()).perform(waitFor(500))
-        onView(withId(R.id.chips_etalase)).perform(click())
+        onView(withId(contentproductpickerR.id.chips_etalase)).perform(click())
         onView(isRoot()).perform(waitFor(500))
 
         scenario.onFragment {

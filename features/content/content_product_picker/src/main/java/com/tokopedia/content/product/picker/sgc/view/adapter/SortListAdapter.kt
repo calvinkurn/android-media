@@ -13,7 +13,7 @@ import com.tokopedia.content.product.picker.sgc.model.SortListModel
 /**
  * Created by kenny.hadisaputra on 02/02/22
  */
-internal class SortListAdapter(
+class SortListAdapter(
     onSelected: (SortListModel) -> Unit,
 ) : BaseDiffUtilAdapter<SortListModel>() {
 
