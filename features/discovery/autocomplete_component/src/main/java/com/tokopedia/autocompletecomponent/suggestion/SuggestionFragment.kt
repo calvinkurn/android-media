@@ -87,10 +87,10 @@ class SuggestionFragment :
 
     private val suggestionAdapter by lazy {
         val suggestionTypeFactory= SuggestionAdapterTypeFactory(
-        suggestionListener = this,
-        suggestionTopShopListener = this,
-        suggestionChipListener = this,
-        isReimagine = reimagineRollence?.search1InstAuto() != Search1InstAuto.CONTROL
+            suggestionListener = this,
+            suggestionTopShopListener = this,
+            suggestionChipListener = this,
+            isReimagine = reimagineRollence?.search1InstAuto() != Search1InstAuto.CONTROL
         )
         SuggestionAdapter(suggestionTypeFactory)
     }
