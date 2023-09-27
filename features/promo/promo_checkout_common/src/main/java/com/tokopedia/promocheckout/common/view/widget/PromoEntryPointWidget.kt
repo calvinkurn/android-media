@@ -426,7 +426,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             loadingView?.visibility = View.GONE
         }
         activeViewRightIcon?.setOnClickListener {
-            /* no-op */
+            if (activeViewWording?.visibility == View.VISIBLE) {
+                onClickListener.invoke()
+            }
         }
         activeView?.setOnClickListener {
             if (activeViewWording?.visibility == View.VISIBLE) {
