@@ -16,7 +16,6 @@ data class StoriesUiState(
                 storiesMainData = StoriesUiModel(),
                 bottomSheetStatus = BottomSheetStatusDefault,
                 productSheet = ProductBottomSheetUiState.Empty,
-                //combineState = CombineState.Empty,
             )
     }
 }
