@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
@@ -641,7 +642,7 @@ class CartItemViewHolder constructor(
                     ConstraintSet.BOTTOM,
                     ConstraintSet.PARENT_ID,
                     ConstraintSet.BOTTOM,
-                    0
+                        IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
                 )
             } else {
                 if (data.isMultipleBundleProduct) {
@@ -820,6 +821,11 @@ class CartItemViewHolder constructor(
             binding.iuImageProduct.layoutParams.height =
                 80.dpToPx(binding.root.resources.displayMetrics)
         }
+
+        /*if (data.cartBmGmTickerData.isShowBmGmDivider) {
+            val imageProductLayoutParam = binding.iuImageProduct.layoutParams as MarginLayoutParams
+            imageProductLayoutParam.bottomMargin = BOTTOM_DIVIDER_MARGIN_START.dpToPx(binding.root.resources.displayMetrics)
+        }*/
     }
 
     private fun renderProductAddOns(data: CartItemHolderData) {
@@ -1380,8 +1386,24 @@ class CartItemViewHolder constructor(
             }
         } else {
             layoutParamsFlImageProduct.topMargin = 0
-            layoutParams.bottomMargin =
-                PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+
+            if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
+                    !cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider) {
+                binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                binding.bmgmHelperView2.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            } else {
+                if (cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm) {
+                    layoutParams.bottomMargin =
+                            IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
+                    binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    binding.bmgmHelperView2.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                } else {
+                    layoutParams.bottomMargin =
+                            PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    binding.bmgmHelperView1.gone()
+                    binding.bmgmHelperView2.gone()
+                }
+            }
         }
     }
 
