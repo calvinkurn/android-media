@@ -230,13 +230,17 @@ class StoriesDetailFragment @Inject constructor(
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
                     is StoriesUiEvent.TapSharing -> {
                         sharingComponent.setListener(object : StoriesSharingComponent.Listener {
-                            override fun onDismissEvent(view: StoriesSharingComponent) {
+                            override fun onDismissEvent(isFromClick: Boolean, view: StoriesSharingComponent) {
                                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
-                                analytic.onCloseShareSheet(viewModel.storyId)
+                                if (isFromClick) analytic.onCloseShareSheet(viewModel.storyId)
                             }
 
                             override fun onShareChannel(shareModel: ShareModel) {
                                 analytic.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
+                            }
+
+                            override fun onShowSharing(view: StoriesSharingComponent) {
+                                analytic.onImpressShareSheet(viewModel.storyId)
                             }
                         })
                         analytic.onClickShareIcon(viewModel.storyId)

@@ -21,7 +21,7 @@ class StoriesSharingComponent(rootView: View) {
                 }
 
                 override fun onCloseOptionClicked() {
-                    mListener?.onDismissEvent(this@StoriesSharingComponent)
+                    mListener?.onDismissEvent(true, this@StoriesSharingComponent)
                 }
             })
             enableDefaultShareIntent()
@@ -48,7 +48,8 @@ class StoriesSharingComponent(rootView: View) {
             pageId = storyId,
             feature = "share",
         )
-        sharingSheet.setOnDismissListener { mListener?.onDismissEvent(this@StoriesSharingComponent) }
+        sharingSheet.setOnDismissListener { mListener?.onDismissEvent(false, this@StoriesSharingComponent) }
+        sharingSheet.setShowListener { mListener?.onShowSharing(this@StoriesSharingComponent) }
 
         if (sharingSheet.isAdded) return
         sharingSheet.show(fg, TAG)
@@ -59,7 +60,9 @@ class StoriesSharingComponent(rootView: View) {
     }
 
     interface Listener {
-        fun onDismissEvent(view: StoriesSharingComponent)
+        fun onDismissEvent(isFromClick: Boolean, view: StoriesSharingComponent)
         fun onShareChannel(shareModel: ShareModel)
+
+        fun onShowSharing(view: StoriesSharingComponent)
     }
 }
