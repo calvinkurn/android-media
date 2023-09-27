@@ -139,7 +139,6 @@ import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.CATEGORY_ID
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
-import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
@@ -306,6 +305,7 @@ open class HomeRevampFragment :
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
+        private const val DEFAULT_BLOCK_SIZE = 6
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -436,13 +436,11 @@ open class HomeRevampFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
         fragmentCreatedForFirstTime = true
         context?.run {
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         }
         startToTransitionOffset = 1f.toDpInt()
-        getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
 
     protected open fun initHomePageFlows(): Boolean {
@@ -999,9 +997,6 @@ open class HomeRevampFragment :
     }
 
     override fun onResume() {
-        if (getHomeViewModel().isFirstLoad) {
-            getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
-        }
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
@@ -1011,7 +1006,6 @@ open class HomeRevampFragment :
             activityStateListener!!.onResume()
         }
         if (getHomeViewModel().isFirstLoad) {
-            getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
         }
 
@@ -1152,9 +1146,6 @@ open class HomeRevampFragment :
             viewLifecycleOwner,
             Observer { data: Event<Boolean> ->
                 val isRequestNetwork = data.peekContent()
-                if (isRequestNetwork && getPageLoadTimeCallback() != null) {
-                    getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
-                }
             }
         )
     }
@@ -1319,9 +1310,6 @@ open class HomeRevampFragment :
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if (data.isNotEmpty()) {
-            if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
-                finishPageLoadTime(isCache)
-            }
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
 
@@ -1332,15 +1320,16 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            performanceTrace?.setBlock(data.take(6))
+            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE) >= 0) {
+                layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE
+            } else {
+                DEFAULT_BLOCK_SIZE
+            }
+
+            performanceTrace?.setBlock(data.take(takeLimit))
+
             adapter?.submitList(data)
         }
-    }
-
-    private fun finishPageLoadTime(isCache: Boolean) {
-        getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
-        getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-        setOnRecyclerViewLayoutReady(isCache)
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
@@ -1474,7 +1463,7 @@ open class HomeRevampFragment :
             CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
-            ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
+            ShopFlashSaleWidgetCallback(this, getHomeViewModel())
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2485,13 +2474,6 @@ open class HomeRevampFragment :
         }
     }
 
-    private fun getPageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
-        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface != null) {
-            pageLoadTimeCallback = homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
-        }
-        return pageLoadTimeCallback
-    }
-
     override fun onDetach() {
         if (this::viewModel.isInitialized) {
             this.viewModel.get().onCleared()
@@ -2504,9 +2486,6 @@ open class HomeRevampFragment :
             initInjectorHome()
         }
         val viewmodel = viewModel.get()
-        if (getPageLoadTimeCallback() != null) {
-            getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
-        }
         return viewmodel
     }
 
