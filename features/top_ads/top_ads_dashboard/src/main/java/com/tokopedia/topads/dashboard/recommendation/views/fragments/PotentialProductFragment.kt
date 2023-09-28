@@ -147,6 +147,7 @@ class PotentialProductFragment : BaseDaggerFragment() {
                         updateSelectedItemsCount(list.size)
                     } else {
                         RouteManager.route(activity, "${ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL}?${TopAdsDashboardConstant.QUERY_PARAM_TAB}=$CONST_3")
+                        activity?.finish()
                     }
                 }
                 is TopadsProductListState.Fail -> {
