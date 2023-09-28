@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.common.utils.MiniCartUtils
@@ -92,7 +91,6 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         binding = BottomSheetBmgmMiniCartDetailBinding.inflate(inflater).apply {
             footerBinding = ViewBmgmMiniCartSubTotalBinding.bind(root)
             setChild(root)
-            setTitle(getString(R.string.mini_cart_bmgm_bottom_sheet_title))
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -136,6 +134,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         setupCartEntryPoint()
         setOnCloseClicked()
         sendImpressionTracker()
+        setTitle(data.bottomSheetTitle)
     }
 
     private fun observeCartCheckedListState() {
