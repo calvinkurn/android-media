@@ -78,6 +78,9 @@ class StoriesProductBottomSheet @Inject constructor(
         }
     }
 
+    //ids of impressed products
+    private val impressedProducts = mutableSetOf<String>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -227,6 +230,8 @@ class StoriesProductBottomSheet @Inject constructor(
     fun show(fg: FragmentManager) {
         if (isAdded) return
         super.show(fg, StoriesThreeDotsBottomSheet.TAG)
+
+        impressedProducts.clear()
     }
 
     override fun dismiss() {
@@ -258,7 +263,13 @@ class StoriesProductBottomSheet @Inject constructor(
     }
 
     private fun sendImpression() {
-        mListener?.onImpressedProduct(getVisibleProducts(), this)
+        val finalProducts = getVisibleProducts().filterNot {
+            impressedProducts.contains(it.key.id)
+        }
+        mListener?.onImpressedProduct(finalProducts, this)
+        finalProducts.forEach {
+            impressedProducts.add(it.key.id)
+        }
     }
 
     override fun onDestroyView() {
