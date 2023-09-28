@@ -74,6 +74,7 @@ data class OfferInfoForBuyerUiModel(
         val endDate: String = "",
         val sortId: String = Constant.DEFAULT_SORT_ID,
         val sortName: String = Constant.DEFAULT_SORT_NAME,
+        val sharingData: SharingDataByOfferIdUiModel = SharingDataByOfferIdUiModel(),
         val availableProductImpressionList: MutableSet<Product> = mutableSetOf()
     )
 
@@ -108,5 +109,9 @@ data class OfferInfoForBuyerUiModel(
         object GetSharingData : OlpEvent()
 
         data class AddToCart(val product: Product) : OlpEvent()
+
+        data class SetOfferTypeId(val offerTypeId: Long) : OlpEvent()
+
+        data class SetSharingData(val sharingData: SharingDataByOfferIdUiModel) : OlpEvent()
     }
 }
