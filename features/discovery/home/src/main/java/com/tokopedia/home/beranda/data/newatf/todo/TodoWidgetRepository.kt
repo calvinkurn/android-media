@@ -6,12 +6,14 @@ import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.data.newatf.AtfMetadata
 import com.tokopedia.home.beranda.data.newatf.AtfRepository
+import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.usecase.todowidget.GetTodoWidgetUseCase
 import javax.inject.Inject
 
+@HomeScope
 class TodoWidgetRepository @Inject constructor(
     private val todoWidgetRepository: HomeTodoWidgetRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,

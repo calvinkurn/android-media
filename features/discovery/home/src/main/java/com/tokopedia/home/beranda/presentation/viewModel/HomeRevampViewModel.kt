@@ -15,6 +15,7 @@ import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
+import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -69,6 +70,7 @@ import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -102,6 +104,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>,
     private val homeRateLimit: RateLimiter<String>,
     private val homeRemoteConfigController: HomeRemoteConfigController,
+    private val homeAtfUseCase: HomeAtfUseCase,
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -291,10 +294,10 @@ open class HomeRevampViewModel @Inject constructor(
 
     @FlowPreview
     private fun initFlow() {
+        Log.d("atfflow", "1. ViewModel - initFlow")
         homeFlowStarted = true
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
-                Log.d("atfflow", "initFlow: ")
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     currentTopAdsBannerPage = homeNewDataModel.topadsPage
@@ -317,6 +320,10 @@ open class HomeRevampViewModel @Inject constructor(
             _updateNetworkLiveData.postValue(Result.error(error = Throwable(), data = null))
             HomeServerLogger.warning_error_cancelled_flow(it)
             homeFlowDataCancelled = true
+        }
+        launch(coroutineContext) {
+            Log.d("atfflow", "2. ViewModel - initFlow: homeAtfUseCase.fetchAtfDataList()")
+            homeAtfUseCase.fetchAtfDataList()
         }
     }
 

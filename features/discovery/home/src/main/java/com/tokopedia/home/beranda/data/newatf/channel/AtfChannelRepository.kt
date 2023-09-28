@@ -6,11 +6,13 @@ import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.data.newatf.AtfMetadata
 import com.tokopedia.home.beranda.data.newatf.AtfRepository
+import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeDynamicChannelsRepository
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import javax.inject.Inject
 
+@HomeScope
 class AtfChannelRepository @Inject constructor(
     private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,

@@ -81,10 +81,10 @@ object AtfMapper {
                  param = data.param,
                  isOptional = data.isOptional,
                  isShimmer = data.isShimmer,
-                 lastUpdate = data.lastUpdate,
             ),
             atfContent = data.getAtfContent(),
             isCache = true,
+            lastUpdate = data.lastUpdate,
         )
     }
 
@@ -110,7 +110,7 @@ object AtfMapper {
         listAtfData.forEachIndexed { index, value ->
             value.atfContent.run {
                 when(this) {
-                    is BannerDataModel -> visitables.add(this.asVisitable(index, value.isCache, value.atfMetadata.lastUpdate))
+                    is BannerDataModel -> visitables.add(this.asVisitable(index, value.isCache, value.lastUpdate))
                     is DynamicHomeIcon -> visitables.add(this.asVisitable(value.atfMetadata.id, index, value.isCache))
                     is Ticker -> this.asVisitable(index, value.isCache)?.let { visitables.add(it) }
                     is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(this.asVisitable(value.atfMetadata, index))

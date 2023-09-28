@@ -1,15 +1,10 @@
 package com.tokopedia.home.beranda.data.newatf.ticker
 
-import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
-import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
 import com.tokopedia.home.beranda.domain.model.Ticker
 import com.tokopedia.home.beranda.domain.model.Tickers
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
-import com.tokopedia.home_component.model.DynamicIconComponent
-import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 
 object TickerMapper {
     private const val LAYOUT_FLOATING = "floating"
@@ -27,19 +22,15 @@ object TickerMapper {
                 tickers.filter { it.layout != LAYOUT_FLOATING }.let {
                     if (it.isNotEmpty()) {
                         val a = TickerDataModel(tickers = mappingTickerFromServer(it))
-                        Log.d("atfflow", "Ticker asVisitable: 1a $a")
                         a
                     } else {
-                        Log.d("atfflow", "Ticker asVisitable: 1b ")
                         null
                     }
                 }
             } else {
-                Log.d("atfflow", "Ticker asVisitable: 2")
                 null
             }
         } else {
-            Log.d("atfflow", "Ticker asVisitable: 3")
             null
         }
     }

@@ -198,6 +198,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
 
         val atfFlow = homeAtfUseCase.flow.map {
+            Log.d("atfflow", "homeAtfUseCase.flow ${homeAtfUseCase.flow} : $it")
             HomeDynamicChannelModel(
                 list = it?.mapToVisitableList().orEmpty(),
                 isCache = it?.isCache.orTrue()
@@ -211,6 +212,15 @@ class HomeDynamicChannelUseCase @Inject constructor(
         return combine(headerFlow, atfFlow, dynamicChannelFlow) { header, atf, dc ->
             val combinedList = header.list + atf.list + dc.list
             val isCache = atf.isCache || dc.isCache
+//            Log.d(
+//                "atfflow",
+//                "================================================================================================================================================================\n" +
+//                "RESULT:\n" +
+//                "Header: ${header.list}\n" +
+//                "ATF   : ${atf.list}\n" +
+//                "DC    : ${dc.list}\n" +
+//                "================================================================================================================================================================"
+//            )
             HomeDynamicChannelModel(list = combinedList, isCache = isCache)
         }
     }
@@ -995,7 +1005,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             launch { homeUserStatusRepository.hitHomeStatusThenIgnoreResponse() }
 
             if(isNewAtfMechanism) {
-                launch { homeAtfUseCase.fetchAtfDataList() }
+                launch { homeAtfUseCase.refreshData() }
             }
             else {
                 /**

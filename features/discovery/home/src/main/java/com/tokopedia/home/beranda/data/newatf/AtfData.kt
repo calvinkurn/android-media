@@ -9,6 +9,7 @@ data class AtfData(
     val atfContent: AtfContent? = null,
     val atfStatus: Int = AtfKey.STATUS_LOADING,
     val isCache: Boolean = true,
+    val lastUpdate: Long = System.currentTimeMillis(),
 ) {
     fun getAtfContentAsJson(): String {
         return Gson().toJson(atfContent)

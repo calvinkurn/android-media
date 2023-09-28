@@ -8,5 +8,4 @@ data class AtfMetadata(
     val param: String = "",
     val isOptional: Boolean = false,
     val isShimmer: Boolean = true,
-    val lastUpdate: Long = System.currentTimeMillis(),
 )
