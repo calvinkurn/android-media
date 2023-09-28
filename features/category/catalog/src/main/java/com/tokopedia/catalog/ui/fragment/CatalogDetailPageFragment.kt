@@ -222,7 +222,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
     }
 
-    override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabs: String?) {
+    override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
 
         val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
@@ -241,7 +241,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             event = EVENT_VIEW_PG_IRIS,
             action = EVENT_ACTION_CLICK_NAVIGATION,
             category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = "$catalogId - item: {${tabs}}",
+            labels = "$catalogId - item: {${tabTitle}}",
             trackerId = TRACKER_ID_CLICK_NAVIGATION
         )
 

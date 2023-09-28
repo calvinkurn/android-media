@@ -42,7 +42,6 @@ class StickyTabNavigationViewHolder(
         widgetBackgroundColor: Int
     ) {
         binding?.run {
-            val allTabs = element?.content?.map { it.title }?.joinToString(",")
             element?.content?.forEach {
                 catalogTabsUnify.addNewTab(it.title)
             }
@@ -63,7 +62,7 @@ class StickyTabNavigationViewHolder(
                         listener?.onNavigateWidget(
                             element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(),
                             element?.currentSelectTab.orZero(),
-                            allTabs
+                            element?.content?.getOrNull(tab?.position.orZero())?.title.orEmpty()
                         )
                     }
                 }
@@ -86,7 +85,7 @@ class StickyTabNavigationViewHolder(
 
 interface StickyNavigationListener {
 
-    fun onNavigateWidget(anchorTo: String, tabPosition: Int, eligbleNames: String?)
+    fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?)
 
     fun onStickyNavigationImpression()
 
