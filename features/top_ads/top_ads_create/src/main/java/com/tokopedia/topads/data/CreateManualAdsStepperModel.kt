@@ -2,6 +2,8 @@ package com.tokopedia.topads.data
 
 import com.tokopedia.abstraction.base.view.model.StepperModel
 import com.tokopedia.topads.common.data.response.KeywordDataItem
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
+import com.tokopedia.topads.view.adapter.product.viewmodel.ProductViewModel
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -28,5 +30,8 @@ open class CreateManualAdsStepperModel(
     var autoBidState: String = "auto_bid",
     var selectedNonPromo: MutableList<String> = mutableListOf(),
     var recomPrediction: Int = 0,
-    var searchPrediction: Int = 0
+    var searchPrediction: Int = 0,
+    var productList: MutableList<TopAdsProductModel> = mutableListOf(),
+    var productListPromo: MutableList<TopAdsProductModel> = mutableListOf(),
+    var productListNonPromo: MutableList<TopAdsProductModel> = mutableListOf()
 ) : StepperModel

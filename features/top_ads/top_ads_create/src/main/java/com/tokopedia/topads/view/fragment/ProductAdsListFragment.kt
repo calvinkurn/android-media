@@ -330,8 +330,12 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         if (promoted?.chipType == ChipsUnify.TYPE_SELECTED) {
             stepperModel?.selectedPromo = getSelectedProduct()
             stepperModel?.adIdsPromo = getSelectedProductAdId()
+            stepperModel?.productListPromo = productListAdapter.getSelectedItems().toMutableList()
             stepperModel?.selectedNonPromo?.let {
                 stepperModel?.selectedProductIds = (getSelectedProduct() + it).toMutableList()
+            }
+            stepperModel?.productListNonPromo?.let {
+                stepperModel?.productList = (productListAdapter.getSelectedItems() + it).toMutableList()
             }
             stepperModel?.adIdsNonPromo?.let {
                 stepperModel?.adIds = ((getSelectedProductAdId() + it).toMutableList())
@@ -339,8 +343,12 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         } else {
             stepperModel?.selectedNonPromo = getSelectedProduct()
             stepperModel?.adIdsNonPromo = getSelectedProductAdId()
+            stepperModel?.productListNonPromo = productListAdapter.getSelectedItems().toMutableList()
             stepperModel?.selectedPromo?.let {
                 stepperModel?.selectedProductIds = (getSelectedProduct() + it).toMutableList()
+            }
+            stepperModel?.productListPromo?.let {
+                stepperModel?.productList = (productListAdapter.getSelectedItems() + it).toMutableList()
             }
             stepperModel?.adIdsPromo?.let {
                 stepperModel?.adIds = ((getSelectedProductAdId() + it).toMutableList())

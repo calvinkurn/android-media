@@ -41,6 +41,8 @@ import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
+import com.tokopedia.topads.view.sheet.CreateKeywordListBottomSheet
+import com.tokopedia.topads.view.sheet.CreateProductListBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -98,7 +100,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
                 "Produk",
                 String.format("%d produk", stepperModel?.selectedProductIds?.count()),
                 isItemClickable = true
-            ) {},
+            ) { openProductListBottomSheet() },
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_SEARCH,
                 "Iklan di Pencarian",
@@ -112,7 +114,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
                     stepperModel?.maxBid.toString()),
                 isManualAdBid = true,
                 isItemClickable = true
-            ) {},
+            ) {openKeywordListBottomSheet()},
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_RECOMMENDATION,
                 "Iklan di Rekomendasi",
@@ -159,6 +161,19 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
 //                createProductAdGroup()
 //            },
         )
+    }
+
+    private fun openKeywordListBottomSheet() {
+        stepperModel?.selectedKeywordStage?.let {
+            CreateKeywordListBottomSheet.newInstance(it).show(childFragmentManager)
+        }
+    }
+
+    private fun openProductListBottomSheet() {
+
+        stepperModel?.productList?.let {
+            CreateProductListBottomSheet.newInstance(it).show(childFragmentManager)
+        }
     }
 
     private fun editGroupName() {
@@ -318,7 +333,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
                 "Produk",
                 String.format("%d produk", stepperModel?.selectedProductIds?.count()),
                 isItemClickable = true
-            ) {},
+            ) {openProductListBottomSheet()},
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_SEARCH,
                 "Iklan di Pencarian",

@@ -32,6 +32,20 @@
         app:typographyType="display_3"
         tools:text="Celana Chino Diskon Lebaran Trendi Merah Muda Diskon Obral" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_name_secondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/product_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="display_2"
+        tools:text="secondary product name" />
+
     <include
         android:id="@+id/ratingLayout"
         layout="@layout/topads_create_layout_rating"

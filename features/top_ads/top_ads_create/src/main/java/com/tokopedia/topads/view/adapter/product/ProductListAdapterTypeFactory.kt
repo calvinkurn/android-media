@@ -2,6 +2,7 @@ package com.tokopedia.topads.view.adapter.product
 
 import android.view.View
 import com.tokopedia.topads.view.adapter.product.viewholder.ProductViewHolder
+import com.tokopedia.topads.view.adapter.product.viewmodel.KeyWordItemViewModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyViewModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductShimmerViewModel
@@ -12,6 +13,8 @@ import com.tokopedia.topads.view.adapter.product.viewmodel.ProductShimmerViewMod
 interface ProductListAdapterTypeFactory {
 
     fun type(model: ProductItemViewModel): Int
+
+    fun type(model: KeyWordItemViewModel): Int
 
     fun type(model: ProductEmptyViewModel): Int
 
