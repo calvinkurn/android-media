@@ -3,6 +3,7 @@ package com.tokopedia.stories.robot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.stories.data.repository.StoriesRepository
+import com.tokopedia.stories.utils.StoriesPreference
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
@@ -11,6 +12,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -23,6 +25,8 @@ internal class StoriesViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     args: StoriesArgsModel = StoriesArgsModel(),
     private val handle: SavedStateHandle = SavedStateHandle(),
+    private val userSession: UserSessionInterface = mockk(relaxed = true),
+    private val sharedPref: StoriesPreference = mockk(relaxed = true),
     repository: StoriesRepository = mockk(relaxed = true),
 ) : Closeable {
 
@@ -30,6 +34,8 @@ internal class StoriesViewModelRobot(
         args = args,
         handle = handle,
         repository = repository,
+        userSession = userSession,
+        sharedPref = sharedPref,
     )
 
     fun getViewModel() = viewModel

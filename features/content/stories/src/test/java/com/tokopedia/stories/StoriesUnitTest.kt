@@ -187,6 +187,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open stories from entry point and fail fetch initial data`() {
+        //assert instance
         val expectedThrowable = Throwable("fail fetch")
 
         coEvery { mockRepository.getStoriesInitialData(any()) } throws expectedThrowable
@@ -196,7 +197,7 @@ class StoriesUnitTest {
                 robot.initialDataTestCase()
             }
 
-            event.last().assertEqualTo(StoriesUiEvent.ErrorGroupPage(expectedThrowable))
+            event.last().assertEqualTo(StoriesUiEvent.ErrorGroupPage(expectedThrowable){})
         }
     }
 
@@ -259,6 +260,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open stories and success fetch main data but empty`() {
+        //mock not the first time
         val selectedGroup = 0
         val expectedData = mockInitialDataModel(isCached = false)
 
@@ -282,6 +284,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open stories and fail fetch main data`() {
+        //mock not the first time
         val selectedGroup = 0
         val expectedData = mockInitialDataModel(isCached = false)
         val expectedThrowable = Throwable("fail fetch")
@@ -300,7 +303,7 @@ class StoriesUnitTest {
             }
 
             state.first.storiesMainData.groupItems[selectedGroup].detail.assertEqualTo(StoriesDetail())
-            state.second.last().assertEqualTo(StoriesUiEvent.ErrorDetailPage(expectedThrowable))
+            state.second.last().assertEqualTo(StoriesUiEvent.ErrorDetailPage(expectedThrowable){})
         }
     }
 
