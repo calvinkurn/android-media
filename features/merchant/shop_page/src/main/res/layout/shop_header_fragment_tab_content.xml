@@ -19,6 +19,7 @@
             android:background="@color/transparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:fitsSystemWindows="false">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout

@@ -516,6 +516,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     private fun renderPageAfterOnViewCreated() {
         if (isLoadInitialData) {
+            appBarLayout?.show()
             setStatusBarColor(getShopHeaderConfig()?.patternColorType.orEmpty())
             setupToolbar()
             setupAppBarLayout()
