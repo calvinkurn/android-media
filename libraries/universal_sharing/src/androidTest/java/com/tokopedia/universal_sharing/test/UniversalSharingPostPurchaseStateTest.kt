@@ -1,9 +1,6 @@
 package com.tokopedia.universal_sharing.test
 
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
-import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
-import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseProductModel
-import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseShopModel
 import com.tokopedia.universal_sharing.stub.common.NetworkUtilStub
 import com.tokopedia.universal_sharing.test.base.BaseUniversalSharingPostPurchaseBottomSheetTest
 import com.tokopedia.universal_sharing.test.robot.postPurchaseRobot
@@ -17,26 +14,7 @@ class UniversalSharingPostPurchaseStateTest :
     @Test
     fun show_shop_and_product_list() {
         postPurchaseRobot {
-            launchActivity {
-                val model = UniversalSharingPostPurchaseModel(
-                    shopList = listOf(
-                        UniversalSharingPostPurchaseShopModel(
-                            shopName = "Samsung Official Store",
-                            shopType = "official_store",
-                            productList = listOf(
-                                UniversalSharingPostPurchaseProductModel(
-                                    orderId = "12341234",
-                                    productId = "123123123",
-                                    productName = "Samsung Galaxy A54 5G 8/256GB - Awesome Graphite",
-                                    productPrice = "1.000.000",
-                                    imageUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png"
-                                )
-                            )
-                        )
-                    )
-                )
-                it.putExtra(ApplinkConstInternalCommunication.PRODUCT_LIST_DATA, model)
-            }
+            launchActivity()
         }.validate {
             assertShopItemAt(0)
             assertShopNameAt(0, "Samsung Official Store")
@@ -49,7 +27,9 @@ class UniversalSharingPostPurchaseStateTest :
     @Test
     fun show_global_error() {
         postPurchaseRobot {
-            launchActivity()
+            launchActivity {
+                it.removeExtra(ApplinkConstInternalCommunication.PRODUCT_LIST_DATA)
+            }
         }.validate {
             assertGlobalErrorType(
                 0,
@@ -60,9 +40,11 @@ class UniversalSharingPostPurchaseStateTest :
 
     @Test
     fun show_network_error() {
+        (networkUtil as NetworkUtilStub).isConnectedToNetwork = false
         postPurchaseRobot {
-            (networkUtil as NetworkUtilStub).isConnectedToNetwork = false
-            launchActivity()
+            launchActivity {
+                it.removeExtra(ApplinkConstInternalCommunication.PRODUCT_LIST_DATA)
+            }
         }.validate {
             assertGlobalErrorType(
                 0,

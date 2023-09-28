@@ -4,9 +4,14 @@ import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
+import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
+import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseProductModel
+import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseShopModel
 import com.tokopedia.universal_sharing.stub.common.ActivityScenarioTestRule
 import com.tokopedia.universal_sharing.stub.common.NetworkUtilStub
+import com.tokopedia.universal_sharing.stub.data.response.GqlResponseStub
 import com.tokopedia.universal_sharing.stub.di.FakeActivityComponentFactory
 import com.tokopedia.universal_sharing.util.NetworkUtil
 import com.tokopedia.universal_sharing.view.activity.UniversalSharingPostPurchaseSharingActivity
@@ -32,6 +37,7 @@ abstract class BaseUniversalSharingPostPurchaseBottomSheetTest {
     @Before
     open fun beforeTest() {
         Intents.init()
+        GqlResponseStub.reset()
         setupDaggerComponent()
         (networkUtil as NetworkUtilStub).isConnectedToNetwork = true
     }
@@ -51,6 +57,24 @@ abstract class BaseUniversalSharingPostPurchaseBottomSheetTest {
         intentModifier: (Intent) -> Unit = {}
     ) {
         val intent = Intent(context, UniversalSharingPostPurchaseSharingActivity::class.java)
+        val model = UniversalSharingPostPurchaseModel(
+            shopList = listOf(
+                UniversalSharingPostPurchaseShopModel(
+                    shopName = "Samsung Official Store",
+                    shopType = "official_store",
+                    productList = listOf(
+                        UniversalSharingPostPurchaseProductModel(
+                            orderId = "12341234",
+                            productId = "123123123",
+                            productName = "Samsung Galaxy A54 5G 8/256GB - Awesome Graphite",
+                            productPrice = "1.000.000",
+                            imageUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png"
+                        )
+                    )
+                )
+            )
+        )
+        intent.putExtra(ApplinkConstInternalCommunication.PRODUCT_LIST_DATA, model)
         intentModifier(intent)
         activityScenarioRule.launchActivity(intent)
     }

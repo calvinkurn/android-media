@@ -8,6 +8,8 @@ import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import com.tokopedia.universal_sharing.model.ImageGeneratorModel
 import com.tokopedia.universal_sharing.model.ImagePolicyResponse
+import com.tokopedia.universal_sharing.stub.data.response.GqlResponseStub
+import com.tokopedia.universal_sharing.stub.data.response.ResponseStub
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.test.R as universal_sharingtestR
 
@@ -35,9 +37,21 @@ class FakeGraphqlRepository : GraphqlRepository {
                 return GqlMockUtil.createSuccessResponse<ImagePolicyResponse>(universal_sharingtestR.raw.imagenerator_policy)
             }
 
+            GqlResponseStub.productV3Response.query -> {
+                shouldThrow(GqlResponseStub.productV3Response)
+                return GqlMockUtil.createSuccessResponse(
+                    GqlResponseStub.productV3Response.responseObject
+                )
+            }
             else -> {
                 throw Exception("request empty")
             }
+        }
+    }
+
+    private fun shouldThrow(response: ResponseStub<*>) {
+        if (response.error != null) {
+            throw response.error!!
         }
     }
 
