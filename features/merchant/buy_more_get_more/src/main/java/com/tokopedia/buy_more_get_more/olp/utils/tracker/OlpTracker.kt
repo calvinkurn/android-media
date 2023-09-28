@@ -208,12 +208,12 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
-    fun sendClickFilterButtonEvent(offerId: String, warehouseId: String, shopId: String) {
+    fun sendClickFilterButtonEvent(offerId: String, warehouseId: String, shopId: String, offerName: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
             .setEventAction("click filter")
             .setEventCategory(TrackerConstant.EVENT_CATEGORY_OLP_BMGM)
-            .setEventLabel(joinDash(offerId, warehouseId))
+            .setEventLabel(joinDash(offerId, warehouseId, offerName))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "46762")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
