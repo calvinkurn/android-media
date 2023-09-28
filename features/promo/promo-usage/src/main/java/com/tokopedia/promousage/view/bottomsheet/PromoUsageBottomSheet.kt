@@ -87,6 +87,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
@@ -256,9 +258,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         setupObservers()
         val promoRequest: PromoRequest? = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST)
         val chosenAddress: ChosenAddress? = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS)
-        viewModel.setEntryPoint(entryPoint)
-        val defaultErrorMessage = context?.getString(R.string.promo_usage_global_error_promo) ?: ""
-        viewModel.setDefaultErrorMessage(defaultErrorMessage)
         viewModel.reloadPromoList(
             promoRequest = promoRequest,
             chosenAddress = chosenAddress
@@ -292,7 +291,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             viewModel.onClosePromoPage(
                 entryPoint = entryPoint,
                 validateUsePromoRequest = validateUsePromoRequest,
-                boPromoCodes = boPromoCodes
+                boPromoCodes = boPromoCodes,
+                isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+                    RemoteConfigInstance.getInstance().abTestPlatform
+                ).isRevamp()
             )
         }
         binding?.clTickerInfo?.gone()
@@ -321,7 +323,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         viewModel.onClickBuy(
                             entryPoint = entryPoint,
                             validateUsePromoRequest = validateUsePromoRequest,
-                            boPromoCodes = boPromoCodes
+                            boPromoCodes = boPromoCodes,
+                            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+                                RemoteConfigInstance.getInstance().abTestPlatform
+                            ).isRevamp()
                         )
                     }
                 }
@@ -339,7 +344,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         viewModel.onClickBackToCheckout(
                             entryPoint = entryPoint,
                             validateUsePromoRequest = validateUsePromoRequest,
-                            boPromoCodes = boPromoCodes
+                            boPromoCodes = boPromoCodes,
+                            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+                                RemoteConfigInstance.getInstance().abTestPlatform
+                            ).isRevamp()
                         )
                     }
                 }

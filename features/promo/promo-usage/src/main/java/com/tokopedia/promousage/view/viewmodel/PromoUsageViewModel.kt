@@ -48,8 +48,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
@@ -74,8 +72,6 @@ class PromoUsageViewModel @Inject constructor(
         private const val CLASH_ARTIFICIAL_DELAY = 1_000L
     }
 
-    private var entryPoint: PromoPageEntryPoint = PromoPageEntryPoint.CART_PAGE
-    private var defaultErrorMessage: String = ""
     private var initialSelectedPromoCodes: List<String>? = null
 
     @VisibleForTesting
@@ -120,14 +116,6 @@ class PromoUsageViewModel @Inject constructor(
     private val _clickTncUiAction = MutableLiveData<ClickTncUiAction>()
     val clickTncUiAction: LiveData<ClickTncUiAction>
         get() = _clickTncUiAction
-
-    fun setEntryPoint(entryPoint: PromoPageEntryPoint) {
-        this.entryPoint = entryPoint
-    }
-
-    fun setDefaultErrorMessage(errorMessage: String) {
-        this.defaultErrorMessage = errorMessage
-    }
 
     fun loadPromoList(
         promoRequest: PromoRequest? = null,
@@ -441,7 +429,7 @@ class PromoUsageViewModel @Inject constructor(
                         )
 
                         // Show artificial loading for MVC promo
-                        var hasLoadingPromo = false
+                        var needToShowLoading = false
                         var updatedItems = pageState.items
                             .map { item ->
                                 if (item is PromoRecommendationItem) {
@@ -454,8 +442,8 @@ class PromoUsageViewModel @Inject constructor(
                                             item.state is PromoItemState.Ineligible ||
                                             item.state is PromoItemState.Selected
                                     if (!isClickedItem && isMvcPromo && !isDisabledOrIneligibleOrSelected) {
-                                        if (!hasLoadingPromo) {
-                                            hasLoadingPromo = true
+                                        if (!needToShowLoading) {
+                                            needToShowLoading = true
                                         }
                                         return@map item.copy(
                                             state = PromoItemState.Loading
@@ -472,16 +460,16 @@ class PromoUsageViewModel @Inject constructor(
                         _promoPageUiState.postValue(
                             pageState.copy(
                                 items = updatedItems,
-                                isCalculating = true,
+                                isCalculating = needToShowLoading,
                                 isReload = false
                             )
                         )
 
-                        PromoUsageIdlingResource.increment()
-                        if (hasLoadingPromo) {
+                        if (needToShowLoading) {
+                            PromoUsageIdlingResource.increment()
                             delay(CLASH_ARTIFICIAL_DELAY)
+                            PromoUsageIdlingResource.decrement()
                         }
-                        PromoUsageIdlingResource.decrement()
 
                         // Calculate clash
                         val clashCalculationResult =
@@ -1036,7 +1024,8 @@ class PromoUsageViewModel @Inject constructor(
     fun onClickBuy(
         entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,
-        boPromoCodes: List<String>
+        boPromoCodes: List<String>,
+        isCartCheckoutRevamp: Boolean
     ) {
         _promoPageUiState.ifSuccess { pageState ->
             if (isChangedFromInitialState()) {
@@ -1046,6 +1035,7 @@ class PromoUsageViewModel @Inject constructor(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
                         boPromoCodes = boPromoCodes,
+                        isCartCheckoutRevamp = isCartCheckoutRevamp,
                         onSuccess = { entryPoint, validateUse, lastValidateUseRequest, appliedPromos ->
                             _applyPromoUiAction.postValue(
                                 ApplyPromoUiAction.SuccessWithApplyPromo(
@@ -1095,6 +1085,7 @@ class PromoUsageViewModel @Inject constructor(
         entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>,
+        isCartCheckoutRevamp: Boolean,
         onSuccess: ((entryPoint: PromoPageEntryPoint, validateUse: ValidateUsePromoRevampUiModel, lastValidateUseRequest: ValidateUsePromoRequest, appliedPromos: List<PromoItem>) -> Unit)? = null,
         onFailed: ((throwable: Throwable) -> Unit)? = null
     ) {
@@ -1113,9 +1104,7 @@ class PromoUsageViewModel @Inject constructor(
             )
             newValidateUseRequest = newValidateUseRequest.copy(
                 skipApply = 0,
-                isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-                    RemoteConfigInstance.getInstance().abTestPlatform
-                ).isRevamp()
+                isCartCheckoutRevamp = isCartCheckoutRevamp
             )
 
             val param = ValidateUsePromoUsageParam.create(
@@ -1193,12 +1182,8 @@ class PromoUsageViewModel @Inject constructor(
         throwable: Throwable,
         onFailed: ((throwable: Throwable) -> Unit)? = null
     ) {
-        onFailed?.invoke(throwable) ?: run {
-            PromoUsageLogger.logOnErrorApplyPromo(throwable)
-            _applyPromoUiAction.postValue(
-                ApplyPromoUiAction.Failed(throwable, false)
-            )
-        }
+        PromoUsageLogger.logOnErrorApplyPromo(throwable)
+        onFailed?.invoke(throwable)
     }
 
     private fun handleApplyPromoSuccess(
@@ -1761,7 +1746,8 @@ class PromoUsageViewModel @Inject constructor(
     fun onClickBackToCheckout(
         entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,
-        boPromoCodes: List<String>
+        boPromoCodes: List<String>,
+        isCartCheckoutRevamp: Boolean
     ) {
         _promoPageUiState.ifSuccess { pageState ->
             if (isChangedFromInitialState()) {
@@ -1771,6 +1757,7 @@ class PromoUsageViewModel @Inject constructor(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
                         boPromoCodes = boPromoCodes,
+                        isCartCheckoutRevamp = isCartCheckoutRevamp,
                         onSuccess = { entryPoint, validateUse, lastValidateUseRequest, appliedPromos ->
                             _applyPromoUiAction.postValue(
                                 ApplyPromoUiAction.SuccessWithApplyPromo(
@@ -1852,7 +1839,8 @@ class PromoUsageViewModel @Inject constructor(
     fun onClosePromoPage(
         entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,
-        boPromoCodes: List<String>
+        boPromoCodes: List<String>,
+        isCartCheckoutRevamp: Boolean
     ) {
         _promoPageUiState.ifSuccess { pageState ->
             if (isChangedFromInitialState()) {
@@ -1863,6 +1851,7 @@ class PromoUsageViewModel @Inject constructor(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
                         boPromoCodes = boPromoCodes,
+                        isCartCheckoutRevamp = isCartCheckoutRevamp,
                         onSuccess = { entryPoint, validateUse, lastValidateUseRequest, appliedPromos ->
                             _closePromoPageUiAction.postValue(
                                 ClosePromoPageUiAction.SuccessWithApplyPromo(

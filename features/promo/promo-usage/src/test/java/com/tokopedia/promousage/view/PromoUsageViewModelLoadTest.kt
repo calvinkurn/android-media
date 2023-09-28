@@ -71,7 +71,7 @@ class PromoUsageViewModelLoadTest : BasePromoUsageViewModelTest() {
         // given
         val promoRequest = PromoRequest()
         val chosenAddress = ChosenAddress()
-        val attemptedPromoCode = "CODE3"
+        val attemptedPromoCode = "CODEATTEMPT"
 
         val response = GetPromoListRecommendationResponse(
             GetPromoListRecommendationResponseData(
@@ -103,7 +103,7 @@ class PromoUsageViewModelLoadTest : BasePromoUsageViewModelTest() {
                             coupons = listOf(
                                 Coupon(
                                     id = "3",
-                                    code = attemptedPromoCode,
+                                    code = "CODEATTEMPT",
                                     isGroupHeader = true,
                                     isAttempted = true
                                 )

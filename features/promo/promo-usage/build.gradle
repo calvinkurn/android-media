@@ -68,6 +68,7 @@ dependencies {
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
