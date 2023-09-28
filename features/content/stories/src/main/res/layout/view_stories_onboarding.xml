@@ -66,7 +66,7 @@
         app:layout_constraintTop_toBottomOf="@+id/loader_circle_1"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_url="@string/stories_onboard_tap_anim" />
+         />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_stories_onboard_category"
@@ -100,8 +100,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_url="@string/stories_onboard_tap_anim" />
+        app:lottie_loop="true" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_stories_onboard_next"
@@ -125,8 +124,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_url="@string/stories_onboard_swipe_anim" />
+        app:lottie_loop="true" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_stories_onboard_open_product"

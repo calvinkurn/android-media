@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.stories.databinding.ViewStoriesOnboardingBinding
+import com.tokopedia.stories.R
 
 /**
  * @author by astidhiyaa on 28/08/23
@@ -25,8 +26,13 @@ class StoriesOnboardView : ConstraintLayout {
     )
 
     init {
+        binding.lottieSwipeProduct.setAnimationFromUrl(context.getString(R.string.stories_onboard_swipe_anim))
         binding.lottieSwipeProduct.setFailureListener {  }
+
+        binding.lottieTapNext.setAnimationFromUrl(context.getString(R.string.stories_onboard_tap_anim))
         binding.lottieTapNext.setFailureListener {  }
+
+        binding.lottieTapMoveCategory.setAnimationFromUrl(context.getString(R.string.stories_onboard_tap_anim))
         binding.lottieTapMoveCategory.setFailureListener {  }
     }
 }
