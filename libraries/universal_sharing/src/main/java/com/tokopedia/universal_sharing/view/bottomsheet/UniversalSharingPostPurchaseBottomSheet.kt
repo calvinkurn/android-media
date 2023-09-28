@@ -199,7 +199,7 @@ class UniversalSharingPostPurchaseBottomSheet :
         shopName: String,
         productData: UniversalSharingPostPurchaseProductResponse
     ) {
-        if (productData.status == "ACTIVE" || productData.stock > 0) {
+        if (productData.status == "ACTIVE" && productData.stock > 0) {
             listener?.onOpenShareBottomSheet(
                 orderId = orderId,
                 shopName = shopName,
