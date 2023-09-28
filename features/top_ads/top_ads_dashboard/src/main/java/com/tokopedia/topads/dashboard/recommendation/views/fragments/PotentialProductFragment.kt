@@ -8,12 +8,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsPotentialProductBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import javax.inject.Inject
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_SELECTED_ITEMS_COUNT
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
@@ -135,10 +139,15 @@ class PotentialProductFragment : BaseDaggerFragment() {
         viewModel?.productItemsLiveData?.observe(viewLifecycleOwner) {
             when (it) {
                 is TopadsProductListState.Success -> {
-                    showProductsList()
-                    productListAdapter.submitList(it.data)
-                    val list = it.data.filter { (it as? ProductItemUiModel)?.isSelected ?: false }
-                    updateSelectedItemsCount(list.size)
+                    if(it.data.isNotEmpty()) {
+                        showProductsList()
+                        productListAdapter.submitList(it.data)
+                        val list =
+                            it.data.filter { (it as? ProductItemUiModel)?.isSelected ?: false }
+                        updateSelectedItemsCount(list.size)
+                    } else {
+                        RouteManager.route(activity, "${ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL}?${TopAdsDashboardConstant.QUERY_PARAM_TAB}=$CONST_3")
+                    }
                 }
                 is TopadsProductListState.Fail -> {
                     showEmptyState()
