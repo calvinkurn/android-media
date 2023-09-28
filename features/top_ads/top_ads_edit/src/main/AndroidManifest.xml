@@ -5,9 +5,6 @@
     <application>
         <activity
             android:name=".view.activity.EditAdGroupActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.activity.EditFormAdActivity"
             android:exported="false"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan">

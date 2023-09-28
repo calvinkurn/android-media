@@ -10,6 +10,8 @@ import com.tokopedia.topads.edit.view.fragment.edit.*
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment
 import com.tokopedia.topads.edit.view.fragment.select.NegKeywordAdsListFragment
 import com.tokopedia.topads.edit.view.fragment.select.ProductAdsListFragment
+import com.tokopedia.topads.edit.view.sheet.EditAdGroupDailyBudgetBottomSheet
+import com.tokopedia.topads.edit.view.sheet.EditAdGroupRecommendationBidBottomSheet
 import dagger.Component
 
 /**
@@ -33,5 +35,7 @@ interface TopAdsEditComponent {
 
     fun inject(editAdGroupFragment: EditAdGroupActivity)
     fun inject(editAdGroupFragment: EditAdGroupFragment)
+    fun inject(editAdGroupRecommendationBidBottomSheet: EditAdGroupRecommendationBidBottomSheet)
+    fun inject(editAdGroupDailyBudgetBottomSheet: EditAdGroupDailyBudgetBottomSheet)
 }
 

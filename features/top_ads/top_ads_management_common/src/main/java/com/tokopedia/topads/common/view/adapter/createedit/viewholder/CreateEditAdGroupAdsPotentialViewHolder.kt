@@ -1,8 +1,10 @@
 package com.tokopedia.topads.common.view.adapter.createedit.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.databinding.TopadsCreateEditItemAdsPotentialAdGroupBinding
 import com.tokopedia.topads.common.databinding.TopadsCreateEditItemAdsPotentialWidgetAdGroupBinding
 import com.tokopedia.topads.common.R
@@ -16,7 +18,7 @@ class CreateEditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsCre
         viewBinding.editAdItemAdsPotentialTitle.text = element.title
         viewBinding.editAdItemAdsPotentialFooter.text = element.footer
 
-        when(element.state){
+        when (element.state) {
             CreateEditAdGroupItemState.ERROR -> setContentError()
             CreateEditAdGroupItemState.LOADED -> setContentLoaded(element.listWidget)
             CreateEditAdGroupItemState.LOADING -> setContentLoading()
@@ -29,14 +31,16 @@ class CreateEditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsCre
         viewBinding.groupShimmer.hide()
         viewBinding.groupWidget.show()
         viewBinding.btnLoadMorePotential.hide()
-        when(list.size){
+        when (list.size) {
             1 -> {
                 setDataPotentialWidget(viewBinding.potentialWidget1, list[0])
             }
+
             2 -> {
                 setDataPotentialWidget(viewBinding.potentialWidget1, list[0])
                 setDataPotentialWidget(viewBinding.potentialWidget2, list[1])
             }
+
             3 -> {
                 setDataPotentialWidget(viewBinding.potentialWidget1, list[0])
                 setDataPotentialWidget(viewBinding.potentialWidget2, list[1])
@@ -50,6 +54,7 @@ class CreateEditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsCre
         viewBinding.groupWidget.hide()
         viewBinding.btnLoadMorePotential.hide()
     }
+
     private fun setContentError() {
         viewBinding.groupShimmer.hide()
         viewBinding.groupWidget.hide()
@@ -64,6 +69,9 @@ class CreateEditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsCre
         potentialWidget.editAdItemWidgetAdsPotentialTitle.text = model.title
         potentialWidget.editAdItemWidgetAdsPotentialRetention.text = String.format("%sx/minggu", model.retention)
         potentialWidget.editAdItemWidgetAdsPotentialPercentage.text = model.percentage
+        if (model.percentage.toIntOrZero() <= Int.ZERO) {
+            potentialWidget.editAdItemWidgetAdsPotentialPercentage.hide()
+        }
     }
 
     companion object {

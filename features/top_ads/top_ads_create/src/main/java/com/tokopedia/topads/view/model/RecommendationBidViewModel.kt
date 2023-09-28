@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topads.data.ImpressionPredictionResponse
-import com.tokopedia.topads.domain.usecase.TopAdsImpressionPredictionBrowseUseCase
+import com.tokopedia.topads.common.data.response.ImpressionPredictionResponse
+import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionBrowseUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject

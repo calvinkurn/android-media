@@ -27,6 +27,8 @@ import com.tokopedia.topads.edit.utils.Constants.RESULT_IMAGE
 import com.tokopedia.topads.edit.utils.Constants.RESULT_NAME
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PRICE
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PROUCT
+import com.tokopedia.topads.edit.view.activity.EditAdGroupActivity
+import com.tokopedia.topads.edit.view.activity.OnProductAction
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.activity.SelectProductActivity
 import com.tokopedia.topads.edit.view.adapter.edit_product.EditProductListAdapter
@@ -35,8 +37,10 @@ import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProduct
 import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProductItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
 private const val PRODUCT_EDIT_NAME = "android.topads_edit"
@@ -46,8 +50,10 @@ class EditProductFragment : BaseDaggerFragment() {
     private var productCount: Typography? = null
     private var addImage: ImageUnify? = null
     private var addProduct: Typography? = null
+    private var ctaDeleteProduct: UnifyButton? = null
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
+    private var onProductAction: OnProductAction? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -102,6 +108,7 @@ class EditProductFragment : BaseDaggerFragment() {
         productCount = view.findViewById(R.id.product_count)
         addImage = view.findViewById(R.id.add_image)
         addProduct = view.findViewById(R.id.add_product)
+        ctaDeleteProduct = view.findViewById(R.id.cta_delete_product)
         setAdapter()
         return view
     }
@@ -196,6 +203,12 @@ class EditProductFragment : BaseDaggerFragment() {
             intent.putStringArrayListExtra(EXISTING_IDS, adapter.getCurrentIds())
             startActivityForResult(intent, 1)
         }
+        ctaDeleteProduct?.setOnClickListener {
+            onProductAction = activity as? EditAdGroupActivity
+            onProductAction?.onAction(sendData())
+            val fragmentManager = requireActivity().supportFragmentManager
+            fragmentManager.popBackStack()
+        }
     }
 
     private fun onProductListDeleted(pos: Int) {
@@ -210,12 +223,11 @@ class EditProductFragment : BaseDaggerFragment() {
             buttonStateCallback?.setButtonState()
             adapter.notifyDataSetChanged()
         }
-        sharedViewModel.setProductIds(getProductIds())
 
     }
 
     private fun updateItemCount() {
-        productCount?.text = String.format(getString(com.tokopedia.topads.common.R.string.product_count), totalCount)
+        productCount?.text = String.format(getString(topadscommonR.string.product_count), totalCount)
     }
 
     private fun setVisibilityOperation(visiblity: Int) {
@@ -234,7 +246,6 @@ class EditProductFragment : BaseDaggerFragment() {
                     data?.getStringArrayListExtra(RESULT_PROUCT),
                     data?.getStringArrayListExtra(RESULT_NAME),
                     data?.getStringArrayListExtra(RESULT_IMAGE))
-                sharedViewModel.setProductIds(getProductIds())
             }
         }
     }

@@ -304,4 +304,8 @@
     <string name="top_ads_create_edit_ad_group_name_bottom_sheet_title">Ubah nama grup</string>
     <string name="top_ads_create_edit_ad_group_name_bottom_sheet_label">Nama grup iklan</string>
     <string name="top_ads_create_edit_ad_group_name_bottom_sheet_cta">Ubah Nama</string>
+    <string name="topads_commom_recommended_bid_apply">Disarankan Rp%d. Terapkan</string>
+    <string name="top_ads_common_text_info_search_bid"><![CDATA[Iklan di Pencarian adalah iklan yang tampil di halaman Pencarian calon pembeli <strong><span style="color:#00AA5B">Pelajari</span></strong>]]></string>
+    <string name="toapds_common_tooltip_text">Untuk menjaga iklanmu tetap aktif.</string>
+
 </resources>

@@ -1,19 +1,18 @@
-package com.tokopedia.topads.domain.usecase
+package com.tokopedia.topads.common.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.data.ImpressionPredictionResponse
+import com.tokopedia.topads.common.data.response.ImpressionPredictionResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-
-private const val IMPRESSION_PREDICTION_QUERY_SEARCH = """query umpGetImpressionPredictionSearch(${'$'}productIDs: [String]!, ${'$'}initialBid: Float, ${'$'}finalBid: Float!, ${'$'}dailyBudget: Float, ${'$'}source: String!) {
-  umpGetImpressionPredictionSearch(productIDs: ${'$'}productIDs, initialBid: ${'$'}initialBid, finalBid: ${'$'}finalBid, dailyBudget: ${'$'}dailyBudget, source: ${'$'}source) {
+private const val IMPRESSION_PREDICTION_QUERY_BROWSE = """query umpGetImpressionPredictionBrowse(${'$'}productIDs: [String]!, ${'$'}initialBid: Float, ${'$'}finalBid: Float!, ${'$'}dailyBudget: Float, ${'$'}source: String!) {
+  umpGetImpressionPredictionBrowse(productIDs: ${'$'}productIDs, initialBid: ${'$'}initialBid, finalBid: ${'$'}finalBid, dailyBudget: ${'$'}dailyBudget, source: ${'$'}source) {
     data {
       impression {
         oldImpression
@@ -27,12 +26,12 @@ private const val IMPRESSION_PREDICTION_QUERY_SEARCH = """query umpGetImpression
   }
 }"""
 
-@GqlQuery("ImpressionPredictionQuerySearch", IMPRESSION_PREDICTION_QUERY_SEARCH)
-class TopAdsImpressionPredictionSearchUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
+@GqlQuery("ImpressionPredictionQueryBrowse", IMPRESSION_PREDICTION_QUERY_BROWSE)
+class TopAdsImpressionPredictionBrowseUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<ImpressionPredictionResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(IMPRESSION_PREDICTION_QUERY_SEARCH)
+        setGraphqlQuery(IMPRESSION_PREDICTION_QUERY_BROWSE)
         setTypeClass(ImpressionPredictionResponse::class.java)
     }
 

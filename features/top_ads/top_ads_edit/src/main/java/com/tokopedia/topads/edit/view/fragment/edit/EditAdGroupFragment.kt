@@ -5,14 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.SUGGESTION_BID_SETTINGS
 import com.tokopedia.topads.common.data.model.CountDataItem
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.databinding.TopadsEditFragmentEditAdGroupBinding
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -29,17 +39,40 @@ import com.tokopedia.topads.common.view.sheet.CreateEditAdGroupNameBottomSheet
 import com.tokopedia.topads.edit.view.sheet.EditAdGroupRecommendationBidBottomSheet
 import com.tokopedia.topads.edit.view.sheet.EditAdGroupSettingModeBottomSheet
 import com.tokopedia.topads.common.view.adapter.createedit.decorator.CustomDividerItemDecoration
+import com.tokopedia.topads.edit.utils.Constants.BID_TYPE
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
+import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
+import com.tokopedia.topads.edit.utils.Utils
 import com.tokopedia.topads.edit.viewmodel.EditAdGroupViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.text.DecimalFormat
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 class EditAdGroupFragment : BaseDaggerFragment() {
 
+    private var editedDailyBudget = "0"
+    private var performanceData: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel> = mutableListOf()
+    private var editedRecomBid: String = ""
+    private var bidSuggestion: String = "0"
     private var binding by autoClearedNullable<TopadsEditFragmentEditAdGroupBinding>()
     private val createEditAdGroupAdapter by lazy {
         CreateEditAdGroupAdapter(CreateEditAdGroupTypeFactory())
     }
+    private val productListIds by lazy { mutableListOf<String>() }
+    private val priceBids: MutableList<Float?> by lazy { mutableListOf() }
+    private var isBidAutomatic: Boolean = false
+
+    private var dataProduct = Bundle()
+    private var dataKeyword = HashMap<String, Any?>()
+    private var dataGroup = HashMap<String, Any?>()
+    private var groupName: String? = null
+    private val strategies: ArrayList<String> = arrayListOf()
+    private var bidSettingsListManual: MutableList<TopAdsBidSettingsModel> = mutableListOf()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -54,9 +87,9 @@ class EditAdGroupFragment : BaseDaggerFragment() {
     private var groupInfoResponse: GroupInfoResponse.TopAdsGetPromoGroup.Data? = null
     private var countDataItemsResponse: List<CountDataItem>? = null
 
-    //    private var groupId: String = "0"
-    private var groupId: String = "24270188"
-//    private var groupId: String = "24270187"
+    private var groupId: String = ""
+
+    private var settingChangeType: CreateEditAdGroupItemTag? = null
 
     private fun getList(context: Context): MutableList<Visitable<*>> {
         return mutableListOf(
@@ -69,7 +102,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
                 CreateEditAdGroupItemTag.PRODUCT,
                 requireActivity().getString(R.string.edit_ad_item_title_product),
                 hasDivider = true
-            ) { },
+            ) { openProductFragment() },
             CreateEditAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.SETTING_MODE,
                 requireActivity().getString(R.string.edit_ad_item_title_mode)
@@ -77,7 +110,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             CreateEditAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_SEARCH,
                 requireActivity().getString(R.string.edit_ad_item_title_ads_search)
-            ) { },
+            ) { openSearchBidFragment() },
             CreateEditAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_RECOMMENDATION,
                 requireActivity().getString(R.string.edit_ad_item_title_ads_recommendation)
@@ -98,6 +131,44 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun openSearchBidFragment() {
+        activity?.supportFragmentManager?.beginTransaction()?.apply {
+            replace(R.id.parent_view, getSearchFragment()).commit()
+            addToBackStack(null)
+        }
+    }
+
+    private fun getSearchFragment(): Fragment {
+        val bidSettingsList: MutableList<TopAdsBidSettingsModel> = mutableListOf()
+        groupInfoResponse?.bidSettings?.forEach {
+            val topAdsBidSettingsModel = TopAdsBidSettingsModel()
+            topAdsBidSettingsModel.bidType = it.bidType
+            topAdsBidSettingsModel.priceBid = it.priceBid
+            bidSettingsList.add(topAdsBidSettingsModel)
+        }
+        val bundle = Bundle(arguments).apply {
+            putStringArrayList("productIdList", ArrayList(productListIds))
+            putString("groupId", groupId)
+            putString("isAutoBid", Utils.getGroupStrategy(isBidAutomatic))
+            putParcelableArrayList("bidList", ArrayList(bidSettingsList))
+
+        }
+        return BaseEditKeywordFragment.newInstance(bundle)
+    }
+
+    private fun openProductFragment() {
+        activity?.supportFragmentManager?.beginTransaction()?.apply {
+            replace(R.id.parent_view, getFragment()).commit()
+            addToBackStack(null)
+        }
+    }
+
+    private fun getFragment(): Fragment {
+        val fragment = EditProductFragment()
+        fragment.arguments = this.arguments
+        return fragment
+    }
+
     override fun getScreenName(): String = String.EMPTY
 
     override fun initInjector() {
@@ -115,7 +186,6 @@ class EditAdGroupFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = createEditAdGroupAdapter
@@ -123,25 +193,153 @@ class EditAdGroupFragment : BaseDaggerFragment() {
                 createEditAdGroupAdapter.updateList(getList(it))
             }
         }
-
         arguments?.getString(Constants.GROUP_ID)?.let {
             groupId = it
         }
 
         viewModel.getGroupInfo(groupId, this::onSuccessGroupInfo)
-//        viewModel.getTotalAdsAndKeywordsCount(groupId, this::onSuccessTotalAdsAndKeywordsCount)
+        viewModel.getTotalAdsAndKeywordsCount(groupId)
+        fetchProductData()
+        observeLiveData()
+        groupInfoResponse?.strategies?.let { isBidAutomatic = checkBidIsAutomatic(it) }
+
+
     }
-    //TODO fix onSuccessGroupInfo and onSuccessTotalAdsAndKeywordsCount,
-    // since response succession coming in near time, there's possibility it causing IllegalStateException
+
+    private fun fetchProductData() {
+        viewModel.getAds(1,
+            arguments?.getString(Constants.GROUP_ID),
+            "android.topads_edit")
+    }
+
+    private fun onSuccessGetAds(dataItems: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>) {
+
+        dataProduct.putParcelableArrayList(Constants.ADDED_PRODUCTS, toArrayList(dataItems))
+        productListIds.clear()
+        productListIds.addAll(dataItems.map { it.itemID })
+        viewModel.getPerformanceData(productListIds, priceBids, 0f)
+        viewModel.getProductBid(productListIds)
+    }
+
+    private fun toArrayList(dataItems: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>): ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> {
+        val list: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> =
+            arrayListOf()
+        dataItems.forEach {
+            list.add(it)
+        }
+        return list
+    }
+
+    private fun observeLiveData() {
+
+        viewModel.adsData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessGetAds(it.data.topadsGetListProductsOfGroup.data)
+                }
+
+                else -> {}
+            }
+        }
+
+        viewModel.adsKeywordCount.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessTotalAdsAndKeywordsCount(it.data.data)
+                }
+
+                else -> {}
+            }
+        }
+
+        viewModel.performanceData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessSearchPerformanceData(it.data)
+                }
+
+                else -> {}
+            }
+        }
+
+        viewModel.bidProductData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessBidSuggestion(it.data.topAdsGetBidSuggestionByProductIDs.bidData.bidSuggestion)
+                }
+
+                else -> {}
+            }
+        }
+
+    }
+
+    private fun onSuccessBidSuggestion(bidSuggestion: Int) {
+        this.bidSuggestion = bidSuggestion.toString().removeCommaRawString()
+        bidSettingsListManual = mutableListOf(TopAdsBidSettingsModel(
+            ParamObject.PRODUCT_SEARCH, bidSuggestion.toFloat()),
+            TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE, bidSuggestion.toFloat()))
+    }
+
+    private fun onSuccessKeyword(keywordsItems: List<GetKeywordResponse.KeywordsItem>, s: String) {
+        val totalKeywords = keywordsItems.count().toString()
+        context?.let { it1 ->
+            val list = createEditAdGroupAdapter.list
+            list.add(3, CreateEditAdGroupItemUiModel(
+                CreateEditAdGroupItemTag.ADS_SEARCH,
+                requireActivity().getString(R.string.edit_ad_item_title_ads_search),
+                subtitle = requireActivity().getString(
+                    R.string.ads_search_item_template,
+                    formatFloatWithSeparators(bidSuggestion.toFloat()),
+                    totalKeywords
+                )
+
+            ) { openSearchBidFragment() })
+            list.add(4, CreateEditAdGroupItemUiModel(
+                CreateEditAdGroupItemTag.ADS_RECOMMENDATION,
+                requireActivity().getString(R.string.edit_ad_item_title_ads_recommendation),
+                subtitle = formatFloatWithSeparators(bidSuggestion.toFloat())
+            ) { openAdGroupRecommendationBidBottomSheet() })
+            list.add(CreateEditAdGroupItemAdsPotentialUiModel(
+                CreateEditAdGroupItemTag.POTENTIAL_PERFORMANCE,
+                requireActivity().getString(R.string.edit_ad_item_title_potential_performance),
+                it1.getString(R.string.footer_potential_widget_edit_ad_group_text),
+                "",
+                potentialWidgetList,
+                state = CreateEditAdGroupItemState.LOADING
+            ))
+
+            createEditAdGroupAdapter.updateList(list.toMutableList())
+            createEditAdGroupAdapter.updatePotentialWidget(performanceData)
+        }
+    }
+
+    private fun onSuccessSearchPerformanceData(data: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel>) {
+        this.performanceData = data
+        createEditAdGroupAdapter.updatePotentialWidget(data)
+    }
+
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
-        val isBidAutomatic = checkBidIsAutomatic(data.strategies)
+
+        isBidAutomatic = checkBidIsAutomatic(data.strategies)
         groupInfoResponse = data
+        dataGroup = getGroupData()
+
+        val bidSettingsList: MutableList<TopAdsBidSettingsModel> = mutableListOf()
+        data.bidSettings.forEach {
+            val topAdsBidSettingsModel = TopAdsBidSettingsModel()
+            topAdsBidSettingsModel.bidType = it.bidType
+            topAdsBidSettingsModel.priceBid = it.priceBid
+            bidSettingsList.add(topAdsBidSettingsModel)
+        }
+
         createEditAdGroupAdapter.apply {
             updateValue(CreateEditAdGroupItemTag.NAME, data.groupName)
             updateValue(CreateEditAdGroupItemTag.SETTING_MODE, getSettingModeText(isBidAutomatic))
             if (isBidAutomatic) {
                 removeItem(CreateEditAdGroupItemTag.ADS_SEARCH)
                 removeItem(CreateEditAdGroupItemTag.ADS_RECOMMENDATION)
+                removeItem(CreateEditAdGroupItemTag.POTENTIAL_PERFORMANCE)
             } else {
                 updateAdsSearchItem()
                 updateValue(
@@ -150,26 +348,52 @@ class EditAdGroupFragment : BaseDaggerFragment() {
                 )
             }
             updateValue(CreateEditAdGroupItemTag.DAILY_BUDGET, data.dailyBudget.toString())
+
         }
-
-
+        priceBids.addAll(data.bidSettings.map { it.priceBid })
         setDividerOnRecyclerView()
     }
 
-    private fun updateAdsSearchItem() {
-        val totalKeywords = countDataItemsResponse?.get(0)?.totalKeywords
-        val priceBid = groupInfoResponse?.bidSettings?.let {
-            getPriceBid(it, BID_SETTINGS_TYPE_SEARCH)
+    private fun getGroupData(): HashMap<String, Any?> {
+        val dataMap = HashMap<String, Any?>()
+        try {
+            dataMap[ParamObject.ACTION_TYPE] = ParamObject.ACTION_EDIT
+            dataMap[ParamObject.GROUP_NAME] = groupInfoResponse?.groupName
+            dataMap[Constants.DAILY_BUDGET] = groupInfoResponse?.dailyBudget
+            dataMap[ParamObject.GROUPID] = groupId
+            dataMap[Constants.NAME_EDIT] = groupInfoResponse?.groupName != groupName
+        } catch (_: NumberFormatException) {
         }
-        if (totalKeywords != null && priceBid != null) {
-            createEditAdGroupAdapter.updateValue(
-                CreateEditAdGroupItemTag.ADS_SEARCH,
-                requireActivity().getString(
-                    R.string.ads_search_item_template,
-                    priceBid,
-                    totalKeywords.toString()
+        return dataMap
+    }
+
+    private fun updateAdsSearchItem() {
+        if (!isBidAutomatic) {
+            val totalKeywords = countDataItemsResponse?.get(0)?.totalKeywords
+            val priceBid = groupInfoResponse?.bidSettings?.let {
+                getPriceBid(it, BID_SETTINGS_TYPE_SEARCH)
+            }
+            if (totalKeywords != null && priceBid != null) {
+                createEditAdGroupAdapter.updateValue(
+                    CreateEditAdGroupItemTag.ADS_SEARCH,
+                    requireActivity().getString(
+                        R.string.ads_search_item_template,
+                        getPriceBidSearch(),
+                        getSearchKeywords()
+                    )
                 )
-            )
+            }
+        }
+
+    }
+
+    private fun getSearchKeywords(): String {
+        return countDataItemsResponse?.get(0)?.totalKeywords.toString()
+    }
+
+    private fun getPriceBidSearch(): String? {
+        return groupInfoResponse?.bidSettings?.let {
+            getPriceBid(it, BID_SETTINGS_TYPE_SEARCH)
         }
     }
 
@@ -205,7 +429,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
     }
 
     private fun getProductText(groupTotal: Int): String {
-        return getString(R.string.selected_product, groupTotal)
+        return String.format(getString(R.string.selected_product), groupTotal)
     }
 
     private fun getPriceBid(
@@ -227,24 +451,183 @@ class EditAdGroupFragment : BaseDaggerFragment() {
     private fun openAdGroupNameBottomSheet() {
         groupInfoResponse?.let {
             CreateEditAdGroupNameBottomSheet.newInstance(it.groupName, groupId)
-                .show(parentFragmentManager){}
+                .show(parentFragmentManager) { groupName ->
+                    viewModel.validateGroup(groupName, ::onValidateNameSuccess)
+                }
         }
+    }
+
+    private fun onValidateNameSuccess(topAdsGroupValidateNameV2: ResponseGroupValidateName.TopAdsGroupValidateNameV2) {
+        autoFillGroupName(topAdsGroupValidateNameV2.data.groupName)
+    }
+
+    private fun autoFillGroupName(groupName: String) {
+        dataKeyword.clear()
+        dataProduct.clear()
+        this.groupName = groupName
+        dataGroup[ParamObject.GROUP_NAME] = groupName
+        dataGroup[Constants.NAME_EDIT] = groupInfoResponse?.groupName != groupName
+        submitEditGroup(CreateEditAdGroupItemTag.NAME)
+
+    }
+
+    private fun submitEditGroup(settingChangeType: CreateEditAdGroupItemTag) {
+        this.settingChangeType = settingChangeType
+        viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup,
+            ::onSuccessGroupEdited, ::onErrorEdit)
+
+    }
+
+    private fun onErrorEdit(errorMessage: String?) {
+        Toaster.build(requireView(), errorMessage
+            ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+    }
+
+    private fun onSuccessGroupEdited() {
+        when (settingChangeType) {
+            CreateEditAdGroupItemTag.SETTING_MODE -> {
+                if (!isBidAutomatic) {
+                    viewModel.getAdKeyword(groupId.toIntOrZero(), "", this::onSuccessKeyword)
+                    createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.SETTING_MODE, "Iklan diatur manual")
+                    showToast("Pengaturan iklanmu berhasil diubah ke manual.")
+                } else {
+                    createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.SETTING_MODE, "Iklan diatur sistem Topads")
+                    createEditAdGroupAdapter.removeItem(CreateEditAdGroupItemTag.ADS_SEARCH)
+                    createEditAdGroupAdapter.removeItem(CreateEditAdGroupItemTag.ADS_RECOMMENDATION)
+                    createEditAdGroupAdapter.removeItem(CreateEditAdGroupItemTag.POTENTIAL_PERFORMANCE)
+                    showToast("Pengaturan iklanmu berhasil diubah ke sistem TopAds. Kamu cukup atur anggaran harian, ya.")
+                }
+
+            }
+
+            CreateEditAdGroupItemTag.NAME -> {
+                groupName?.let { createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.NAME, it) }
+                showToast("Nama grup iklan berhasil diubah.")
+            }
+
+            CreateEditAdGroupItemTag.PRODUCT -> {
+                val addedCount = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(Constants.ADDED_PRODUCTS)?.size
+                    ?: 0
+                val deleteCount = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(Constants.DELETED_PRODUCTS)?.size
+                    ?: 0
+                val count = productListIds.size + addedCount - deleteCount
+                createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.PRODUCT, getProductText(count))
+                showToast("Produk berhasil disimpan.")
+            }
+
+            CreateEditAdGroupItemTag.ADS_SEARCH -> {
+                val added = (dataKeyword[POSITIVE_CREATE] as? ArrayList<*>)?.size ?: 0
+                val deleted = (dataKeyword[POSITIVE_DELETE] as? ArrayList<*>)?.size ?: 0
+                val count = (countDataItemsResponse?.get(0)?.totalKeywords ?: 0) + added - deleted
+                createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.ADS_SEARCH,
+                    requireActivity().getString(R.string.ads_search_item_template,
+                        getPriceBidSearch(),
+                        count.toString()))
+                showToast("Pengaturan Iklan di Pencarian berhasil diterapkan.")
+            }
+
+
+            CreateEditAdGroupItemTag.ADS_RECOMMENDATION -> {
+                createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.ADS_RECOMMENDATION, editedRecomBid)
+                showToast("Biaya Iklan di Rekomendasi berhasil diterapkan.")
+            }
+
+            CreateEditAdGroupItemTag.DAILY_BUDGET -> {
+                editedDailyBudget = dataGroup[Constants.DAILY_BUDGET].toString()
+                dataGroup[Constants.DAILY_BUDGET]?.let { createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.DAILY_BUDGET, it.toString()) }
+                showToast("Perubahan anggaran harian berhasil diterapkan.")
+            }
+
+            else -> {}
+        }
+
+    }
+
+    private fun showToast(msg: String) {
+        Toaster.build(requireView(), msg
+            ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
     }
 
     private fun openAdGroupSettingModeBottomSheet() {
         groupInfoResponse?.let {
-            val isBidAutomatic = checkBidIsAutomatic(it.strategies)
             EditAdGroupSettingModeBottomSheet.newInstance(isBidAutomatic)
-                .show(parentFragmentManager)
+                .show(parentFragmentManager) { isAutomatic ->
+                    isBidAutomatic = isAutomatic
+                    if (isAutomatic) {
+                        dataKeyword.clear()
+                        strategies.add("auto_bid")
+                        dataGroup[STRATEGIES] = strategies
+                        submitEditGroup(CreateEditAdGroupItemTag.SETTING_MODE)
+                    } else {
+                        dataGroup[BID_TYPE] = bidSettingsListManual
+                        dataKeyword[SUGGESTION_BID_SETTINGS] = bidSettingsListManual
+                        dataGroup[STRATEGIES] = mutableListOf<String>()
+                        submitEditGroup(CreateEditAdGroupItemTag.SETTING_MODE)
+                    }
+                }
         }
+
     }
 
     private fun openAdGroupRecommendationBidBottomSheet() {
-        EditAdGroupRecommendationBidBottomSheet.newInstance().show(parentFragmentManager)
+        EditAdGroupRecommendationBidBottomSheet.newInstance(groupInfoResponse?.bidSettings?.getOrNull(CONST_1)?.priceBid, productListIds).show(parentFragmentManager) {
+            dataKeyword.clear()
+            dataProduct.clear()
+            this.editedRecomBid = it
+            val bidTypeData: ArrayList<TopAdsBidSettingsModel> = arrayListOf()
+            bidTypeData.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, groupInfoResponse?.bidSettings?.firstOrNull()?.priceBid))
+            bidTypeData.add(
+                TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE, it.removeCommaRawString().toFloat())
+            )
+            dataKeyword[Constants.BID_TYPE] = bidTypeData
+            submitEditGroup(CreateEditAdGroupItemTag.ADS_RECOMMENDATION)
+
+        }
     }
 
     private fun openAdGroupDailyBudgetBottomSheet() {
-        EditAdGroupDailyBudgetBottomSheet.newInstance().show(parentFragmentManager)
+        val searchBidInitial = groupInfoResponse?.bidSettings?.getOrNull(0)?.priceBid ?: 0f
+        val searchBid = if (searchBidInitial == 0f) bidSuggestion.toFloatOrZero() else searchBidInitial
+        val browseBid = if (editedRecomBid.isEmpty()) {
+            groupInfoResponse?.bidSettings?.getOrNull(1)?.priceBid ?: 0f
+        } else editedRecomBid.toFloatOrZero()
+        val suggestedDailyBudget = if (browseBid > searchBid) browseBid * 40 else searchBid * 40
+        val formattedBudget = CurrencyFormatHelper.convertToRupiah(suggestedDailyBudget.toInt().toString())
+        val dailyBudget: String = if (editedDailyBudget == "0") groupInfoResponse?.dailyBudget?.toInt().toString() else editedDailyBudget.removeCommaRawString()
+        val formattedDailyBudget = CurrencyFormatHelper.convertToRupiah(dailyBudget)
+        formattedDailyBudget.let {
+            EditAdGroupDailyBudgetBottomSheet.newInstance(it, formattedBudget, productListIds, priceBids).show(parentFragmentManager) { dailyBudget, isToggleOn ->
+                if (isToggleOn)
+                    dataGroup[Constants.DAILY_BUDGET] = dailyBudget
+                else
+                    dataGroup[Constants.DAILY_BUDGET] = "0"
+                submitEditGroup(CreateEditAdGroupItemTag.DAILY_BUDGET)
+            }
+        }
+
+    }
+
+    fun sendData(items: Bundle) {
+        dataProduct.clear()
+        dataKeyword.clear()
+        dataProduct = items
+        val bidTypeData: ArrayList<TopAdsBidSettingsModel> = arrayListOf()
+        bidTypeData.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, groupInfoResponse?.bidSettings?.firstOrNull()?.priceBid))
+        bidTypeData.add(
+            TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE,
+                if (editedRecomBid.isEmpty()) groupInfoResponse?.bidSettings?.getOrNull(1)?.priceBid
+                else editedRecomBid.toFloatOrZero())
+        )
+        dataGroup[BID_TYPE] = bidTypeData
+        dataKeyword[SUGGESTION_BID_SETTINGS] = bidSettingsListManual
+        dataGroup[STRATEGIES] = mutableListOf<String>()
+        submitEditGroup(CreateEditAdGroupItemTag.PRODUCT)
+
+    }
+
+    fun sendKeywordData(data: HashMap<String, Any?>) {
+        dataKeyword = data
+        submitEditGroup(CreateEditAdGroupItemTag.ADS_SEARCH)
     }
 
     companion object {
@@ -256,21 +639,9 @@ class EditAdGroupFragment : BaseDaggerFragment() {
 
         private val potentialWidgetList: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel> =
             mutableListOf(
-                CreateEditAdGroupItemAdsPotentialWidgetUiModel(
-                    "Di Pencarian",
-                    "400x/minggu",
-                    "+12% meningkat"
-                ),
-                CreateEditAdGroupItemAdsPotentialWidgetUiModel(
-                    "Di Rekomendasi",
-                    "400x/minggu",
-                    "+12% meningkat"
-                ),
-                CreateEditAdGroupItemAdsPotentialWidgetUiModel(
-                    "Total Tampil",
-                    "800x/minggu",
-                    "+12% meningkat"
-                )
+                CreateEditAdGroupItemAdsPotentialWidgetUiModel(),
+                CreateEditAdGroupItemAdsPotentialWidgetUiModel(),
+                CreateEditAdGroupItemAdsPotentialWidgetUiModel()
             )
 
         fun formatFloatWithSeparators(value: Float?): String {

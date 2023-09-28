@@ -66,15 +66,12 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
 import com.tokopedia.topads.edit.view.sheet.ChooseKeyBottomSheet
-import com.tokopedia.topads.common.view.sheet.InfoBottomSheet
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 /**
  * Created by Pika on 12/4/20.
@@ -109,24 +106,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
-    private lateinit var budgetInput: TextFieldUnify
-    private lateinit var budgetInputRekomendasi: TextFieldUnify
     private lateinit var selectedKeyword: Typography
-    private lateinit var selected_Keyword: Typography
-    private lateinit var biayaRekomendasi: Typography
-    private lateinit var biayaPencerian: Typography
-    private lateinit var minSuggestedBidPencerian: Typography
-    private lateinit var minSuggestedBidRekomendasi: Typography
-    private lateinit var info1: ImageUnify
-    private lateinit var info2: ImageUnify
-    private lateinit var div: View
     private var receivedRecom = false
     private var receivedKeywords = false
     private var productId: MutableList<String> = mutableListOf()
 
     private var userID: String = ""
     private lateinit var addKeyword: Typography
-    private lateinit var ticker: Ticker
     private var minBid = "0"
     private var maxBid = "0"
     private var suggestBidPerClick = "0"
@@ -141,9 +127,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         viewModelProvider.get(KeywordAdsViewModel::class.java)
     }
 
-    private val sharedViewModel by lazy {
-        ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel::class.java)
-    }
     private var groupId = 0
     private var productIds = ""
 
@@ -173,29 +156,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            context?.resources?.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
+            context?.resources?.getLayout(topadscommonR.layout.topads_create_fragment_budget_list),
             container,
             false
         )
-        recyclerView = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
-        addKeyword = view.findViewById(com.tokopedia.topads.common.R.id.addKeyword)
-        ticker = view.findViewById(com.tokopedia.topads.common.R.id.ticker)
-        budgetInput = view.findViewById(com.tokopedia.topads.common.R.id.budget)
-        budgetInputRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.budgetRekomendasi)
-        selectedKeyword = view.findViewById(com.tokopedia.topads.common.R.id.selectedKeyword)
-        selected_Keyword = view.findViewById(com.tokopedia.topads.common.R.id.selected_keyword)
-        biayaRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.biaya_rekomendasi)
-        biayaPencerian = view.findViewById(com.tokopedia.topads.common.R.id.biaya_pencarian)
-        info1 = view.findViewById(com.tokopedia.topads.common.R.id.info1)
-        info2 = view.findViewById(com.tokopedia.topads.common.R.id.info2)
-        div = view.findViewById(com.tokopedia.topads.common.R.id.div)
-        minSuggestedBidPencerian = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_pencerian)
-        minSuggestedBidRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_rekomendasi)
-
-        biayaRekomendasi.visibility = View.VISIBLE
-        budgetInputRekomendasi.visibility = View.VISIBLE
-        biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
-
+        recyclerView = view.findViewById(topadscommonR.id.bid_list)
+        addKeyword = view.findViewById(topadscommonR.id.addKeyword)
+        selectedKeyword = view.findViewById(topadscommonR.id.selectedKeyword)
         setAdapter()
         return view
     }
@@ -226,9 +193,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, {
-            productIds = it.joinToString(",")
-            productId = it
+        arguments?.getStringArrayList("productIdList").let{
+            productIds = it?.joinToString(",")?:""
+            productId = it?.toMutableList()?: mutableListOf()
             if (productIds.isNotEmpty() && recommendedKeywords?.isEmpty() == true)
                 viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
             if (productIds.isNotEmpty()) {
@@ -236,13 +203,15 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
             getBidForKeywords()
 
-        })
-        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
-            if(it.isEmpty() && productIds.isNotEmpty()) {
+        }
+
+        arguments?.getString("isAutoBid").let {
+            if(it?.isEmpty()== true && productIds.isNotEmpty()) {
                 getLatestBid()
                 viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
             }
-        })
+        }
+
     }
 
     private fun getBidForKeywords() {
@@ -270,110 +239,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             suggestBidPerClick = it.suggestionBid
             minBid = it.minBid
             maxBid = it.maxBid
-        }
-        observeBidSettings()
-        checkForbidValidity(getCurrentBid())
-        checkForRekommendedBid(getCurrentRekommendedBid())
-    }
-
-    private fun getCurrentBid(): Int {
-        return if (budgetInput.textFieldInput.text.toString().removeCommaRawString().isNotEmpty())
-            budgetInput.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
-        else
-            0
-    }
-
-    private fun getCurrentRekommendedBid(): Int {
-        return if (budgetInputRekomendasi.textFieldInput.text.toString().removeCommaRawString().isNotEmpty())
-            budgetInputRekomendasi.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
-        else
-            0
-    }
-
-    private fun checkForbidValidity(result: Int) {
-        when {
-            minBid == "0" || maxBid == "0" -> {
-                return
-            }
-            result < minBid.toDouble() -> {
-                minSuggestedBidPencerian.visibility = View.GONE
-                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.min_bid_error_new), minBid, true, false)
-                actionEnable(false)
-            }
-            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
-                minSuggestedBidPencerian.visibility = View.VISIBLE
-                setMessageErrorField("", "", false, false)
-                actionEnable(true)
-            }
-            result > maxBid.toDouble() -> {
-                minSuggestedBidPencerian.visibility = View.GONE
-                actionEnable(false)
-                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.max_bid_error_new), maxBid, true, false)
-            }
-            result % (Constants.MULTIPLY_CONST.toIntOrZero()) != 0 -> {
-                minSuggestedBidPencerian.visibility = View.GONE
-                actionEnable(false)
-                setMessageErrorField(
-                    getString(com.tokopedia.topads.common.R.string.topads_common_50_multiply_error),
-                    Constants.MULTIPLY_CONST,
-                    true,
-                    false
-                )
-            }
-            else -> {
-                minSuggestedBidPencerian.visibility = View.GONE
-                actionEnable(true)
-                setMessageErrorField(
-                    getString(com.tokopedia.topads.common.R.string.recommendated_bid_message_new),
-                    suggestBidPerClick,
-                    false,
-                    false
-                )
-            }
-        }
-    }
-
-
-    private fun checkForRekommendedBid(result: Int) {
-        when {
-            minBid == "0" || maxBid == "0" -> {
-                return
-            }
-            result < minBid.toDouble() -> {
-                minSuggestedBidRekomendasi.visibility = View.GONE
-                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.min_bid_error_new), minBid, true, true)
-                actionEnable(false)
-            }
-            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble() && budgetInputRekomendasi.visibility == View.VISIBLE) -> {
-                minSuggestedBidRekomendasi.visibility = View.VISIBLE
-                setMessageErrorField("", "", false, true)
-                actionEnable(true)
-            }
-            result > maxBid.toDouble() -> {
-                minSuggestedBidRekomendasi.visibility = View.GONE
-                actionEnable(false)
-                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.max_bid_error_new), maxBid, true, true)
-            }
-            result % (Constants.MULTIPLY_CONST.toIntOrZero()) != 0 -> {
-                minSuggestedBidRekomendasi.visibility = View.GONE
-                actionEnable(false)
-                setMessageErrorField(
-                    getString(com.tokopedia.topads.common.R.string.topads_common_50_multiply_error),
-                    Constants.MULTIPLY_CONST,
-                    true,
-                    true
-                )
-            }
-            else -> {
-                minSuggestedBidRekomendasi.visibility = View.GONE
-                actionEnable(true)
-                setMessageErrorField(
-                    getString(com.tokopedia.topads.common.R.string.recommendated_bid_message_new),
-                    suggestBidPerClick,
-                    false,
-                    true
-                )
-            }
         }
     }
 
@@ -414,24 +279,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
 
             adapter.notifyItemChanged(pos)
-        }
-    }
-
-    private fun actionEnable(isEnable: Boolean) {
-        var isValid = !budgetInput.isTextFieldError
-        if (budgetInputRekomendasi.isVisible) {
-            isValid = isValid && (!budgetInputRekomendasi.isTextFieldError)
-        }
-        callBack.buttonDisable(isValid)
-    }
-
-    private fun setMessageErrorField(error: String, bid: String, bool: Boolean, forRekommendedBid: Boolean) {
-        if(!forRekommendedBid) {
-            budgetInput.setError(bool)
-            budgetInput.setMessage(String.format(error, bid))
-        } else {
-            budgetInputRekomendasi.setError(bool)
-            budgetInputRekomendasi.setMessage(String.format(error, bid))
         }
     }
 
@@ -482,14 +329,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun setCount() {
         selectedKeyword.text =
-            String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_keyword), adapter.items.count())
+            String.format(getString(topadscommonR.string.topads_common_selected_keyword), adapter.items.count())
     }
 
     private fun mapToModelManual(selected: GetKeywordResponse.KeywordsItem): KeySharedModel {
         return KeySharedModel(
             selected.tag,
             "-1",
-            getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_unknown),
+            getString(topadscommonR.string.topads_common_keyword_competition_unknown),
             selected.priceBid,
             minSuggestKeyword,
             selected.source,
@@ -624,12 +471,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         setCount()
         adapter.getBidData(initialBudget, isnewlyAddded)
-        ticker.gone()
         updateString()
         view?.let {
             Toaster.build(
                 it,
-                getString(com.tokopedia.topads.common.R.string.topads_keyword_common_del_toaster),
+                getString(topadscommonR.string.topads_keyword_common_del_toaster),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL
             ).show()
@@ -649,19 +495,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
         userID = UserSession(view.context).userId
         registerObservers()
-
-        info1.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
-        info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
-        info1.setOnClickListener {
-            InfoBottomSheet(
-                InfoBottomSheet.TYPE_DASAR
-            ).show(childFragmentManager)
-        }
-        info2.setOnClickListener {
-            InfoBottomSheet(
-                InfoBottomSheet.TYPE_KATA_KUNCI
-            ).show(childFragmentManager)
-        }
         addKeyword.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                 CLICK_TAMBAH_KATA_KUNCI,
@@ -673,95 +506,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             )
             onAddKeyword()
         }
-
-        budgetInput.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus) {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
-                    CLICK_DAILY_BUDGET_BOX, "")
-            }
-        }
-        budgetInput.textFieldInput.addTextChangedListener(object :
-            NumberTextWatcher(budgetInput.textFieldInput, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                val result = number.toInt()
-                sharedViewModel.setDailyBudget(result)
-                checkForbidValidity(result)
-            }
-        })
-
-
-        budgetInputRekomendasi.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
-                CLICK_DAILY_BUDGET_REKOMENDASI_BOX, "")
-        }
-        budgetInputRekomendasi.textFieldInput.addTextChangedListener(object :
-            NumberTextWatcher(budgetInputRekomendasi.textFieldInput, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                val result = number.toInt()
-                sharedViewModel.setRekomendedBudget(result)
-                checkForRekommendedBid(result)
-            }
-        })
     }
-
-    private fun updateTextFields() {
-        if(budgetInput.textFieldInput.text.isEmpty()) {
-            budgetInput.setError(true)
-            budgetInput.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
-        }
-        if(budgetInputRekomendasi.textFieldInput.text.isEmpty()) {
-            budgetInputRekomendasi.setError(true)
-            budgetInputRekomendasi.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
-        }
-    }
-
-
-    private fun updateBudgetInputTf(value: String, isBidManual: Boolean) {
-        if (isBidManual)
-            budgetInput.textFieldInput.setText(value)
-    }
-
-    private fun updateBudgetRekomendasiTf(value: String, isBidManual: Boolean) {
-        if (isBidManual)
-            budgetInputRekomendasi.textFieldInput.setText(value)
-    }
-
-    private fun observeBidSettings() {
-        val isBidManual = !((parentFragment as? BaseEditKeywordFragment)?.isBidAutomatic ?: false)
-        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, { list ->
-            list.forEach {
-                when {
-                    it.bidType.equals(PRODUCT_SEARCH) -> {
-                        updateBudgetInputTf(
-                            value = (it.priceBid?.toInt() ?: suggestBidPerClick).toString(),
-                            isBidManual = isBidManual
-                        )
-                    }
-                    it.bidType.equals(PRODUCT_BROWSE) -> {
-                        updateBudgetRekomendasiTf(
-                            value = (it.priceBid?.toInt() ?: suggestBidPerClick).toString(),
-                            isBidManual = isBidManual
-                        )
-                    }
-                    it.bidType.equals(PRODUCT_AUTO_SEARCH) -> {
-                        updateBudgetInputTf(suggestBidPerClick, isBidManual)
-                    }
-                    it.bidType.equals(PRODUCT_AUTO_BROWSE) -> {
-                        updateBudgetRekomendasiTf(suggestBidPerClick, isBidManual)
-                    }
-                }
-            }
-            updateTextFields()
-        })
-    }
-
     private fun registerObservers() {
-        sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
-            groupId = it
+        arguments?.getString("groupId").let{
+            groupId = it.toIntOrZero()
             viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
-        })
+        }
     }
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
@@ -781,7 +531,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             if (existingKeyword?.isEmpty() == true) {
                 setEmptyView()
             } else {
-                ticker.visibility = View.GONE
                 checkForCommonData()
                 setVisibilityOperation(View.VISIBLE)
             }
@@ -800,10 +549,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun setVisibilityOperation(visibility: Int) {
         addKeyword.visibility = visibility
-        ticker.visibility = View.GONE
-        selected_Keyword.visibility = visibility
-        info2.visibility = visibility
-        div.visibility = visibility
         selectedKeyword.visibility = visibility
     }
 
@@ -815,7 +560,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 if (selectedData?.size != 0) {
                     updateKeywords(selectedData)
                     setCount()
-                    ticker.visibility = View.GONE
                 }
             }
         }
@@ -877,10 +621,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
         }
         bidTypeData?.clear()
-        bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, getCurrentBid().toFloat()))
-        bidTypeData?.add(
-            TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentRekommendedBid().toFloat())
-        )
         bundle.putParcelableArrayList(BID_TYPE, bidTypeData)
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)
@@ -891,5 +631,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     interface ButtonAction {
         fun buttonDisable(enable: Boolean)
+    }
+
+    companion object {
+
+        fun newInstance(bundle: Bundle?): EditKeywordsFragment {
+            val fragment = EditKeywordsFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

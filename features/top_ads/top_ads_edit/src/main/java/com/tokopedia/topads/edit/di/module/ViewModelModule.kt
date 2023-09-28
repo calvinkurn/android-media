@@ -41,4 +41,5 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(EditAdGroupViewModel::class)
     internal abstract fun provideEditAdGroupViewModel(viewModel: EditAdGroupViewModel): ViewModel
+
 }

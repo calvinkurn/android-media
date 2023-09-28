@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:text="@string/top_ads_create_text_info_search_bid"
+                        android:text="@string/top_ads_common_text_info_search_bid"
                         android:textColor="@color/Unify_NN950"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

@@ -6,7 +6,6 @@ import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItem
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemState
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemTag
-import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemUiModel
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditItemUiModel
 
 class CreateEditAdGroupAdapter(
@@ -30,7 +29,7 @@ class CreateEditAdGroupAdapter(
     }
 
     fun updateValue(desiredTag: CreateEditAdGroupItemTag, value: String) {
-        val itemToUpdate =
+        val itemToUpdate: CreateEditItemUiModel =
             list.find { it is CreateEditItemUiModel && it.itemTag() == desiredTag } as CreateEditItemUiModel
 
         val indexOfUpdate = list.indexOf(itemToUpdate)
@@ -40,7 +39,7 @@ class CreateEditAdGroupAdapter(
 
     fun removeItem(desiredTag: CreateEditAdGroupItemTag) {
         val itemToRemove =
-            list.find { it is CreateEditAdGroupItemUiModel && it.tag == desiredTag } as CreateEditAdGroupItemUiModel
+            list.find { it is CreateEditItemUiModel && it.itemTag() == desiredTag } as CreateEditItemUiModel
         val positionToRemove = list.indexOf(itemToRemove)
         if (positionToRemove >= 0) {
             list.removeAt(positionToRemove)

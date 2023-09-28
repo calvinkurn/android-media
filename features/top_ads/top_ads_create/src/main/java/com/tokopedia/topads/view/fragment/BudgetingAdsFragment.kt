@@ -465,7 +465,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         info2.setOnClickListener {
             InfoBottomSheet.newInstance().show(childFragmentManager, 1)
         }
-        txtInfo.text = MethodChecker.fromHtml(getString(R.string.top_ads_create_text_info_search_bid))
+        txtInfo.text = MethodChecker.fromHtml(getString(topadscommonR.string.top_ads_common_text_info_search_bid))
         setClicksOnViews()
 
 //        tipButton.visibility = View.VISIBLE

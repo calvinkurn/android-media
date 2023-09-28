@@ -1,6 +1,8 @@
 package com.tokopedia.topads.edit.view.model
 
 import android.os.Bundle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -11,14 +13,19 @@ import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetBidSuggestionByProductIDsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
 import com.tokopedia.topads.edit.usecase.GetAdsUseCase
 import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
 import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSearchUseCase
+import com.tokopedia.usecase.coroutines.Result
 import java.util.*
 import javax.inject.Inject
 
@@ -30,7 +37,7 @@ private const val KEYWORD_STATUS_KEY1 = 1
 private const val KEYWORD_STATUS_KEY2 = 3
 
 class EditFormDefaultViewModel @Inject constructor(
-    dispatcher: CoroutineDispatcher,
+    private val dispatcher: CoroutineDispatchers,
     private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
     private val bidInfoUseCase: BidInfoUseCase,
     private val bidInfoDefaultUseCase: BidInfoUseCase,
@@ -41,7 +48,13 @@ class EditFormDefaultViewModel @Inject constructor(
     private val getAdInfoUseCase: TopAdsGetPromoUseCase,
     private val userSession: UserSessionInterface,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
-) : BaseViewModel(dispatcher) {
+    private val topAdsGetBidSuggestionByProductIDsUseCase: TopAdsGetBidSuggestionByProductIDsUseCase,
+    private val topAdsImpressionPredictionUseCase: TopAdsImpressionPredictionSearchUseCase,
+) : BaseViewModel(dispatcher.main) {
+
+    private val _performanceData = MutableLiveData<Result<ImpressionPredictionResponse>>()
+    val performanceData: LiveData<Result<ImpressionPredictionResponse>>
+        get() = _performanceData
 
     fun validateGroup(
         groupName: String,
@@ -69,6 +82,18 @@ class EditFormDefaultViewModel @Inject constructor(
             { throwable ->
                 throwable.printStackTrace()
             })
+    }
+
+    fun getSuggestedBid(
+        productIds: List<String>,
+        onSuccess: (TopAdsGetBidSuggestionResponse) -> Unit,
+    ) {
+        launchCatchError(dispatcher.main, block = {
+            val data = topAdsGetBidSuggestionByProductIDsUseCase.invoke("adbidinsight.test", productIds)
+            if (data is Success){
+                onSuccess(data.data)
+            }
+        }, {})
     }
 
     fun editSingleAd(adId: String, priceBid: Float, priceDaily: Float) {
@@ -190,6 +215,18 @@ class EditFormDefaultViewModel @Inject constructor(
         )
     }
 
+    fun getPerformanceData(productIds: List<String>,
+                           finalBid: Float,
+                           initialBid: Float,
+                           dailyBudget: Float) {
+        launchCatchError(dispatcher.main, {
+            val data = topAdsImpressionPredictionUseCase.invoke("test", productIds, finalBid, initialBid, dailyBudget)
+            _performanceData.value = data
+        }, {
+            _performanceData.value = Fail(it)
+        })
+    }
+
     public override fun onCleared() {
         super.onCleared()
         validGroupUseCase.cancelJobs()
@@ -201,5 +238,7 @@ class EditFormDefaultViewModel @Inject constructor(
         editSingleAdUseCase.cancelJobs()
         getAdInfoUseCase.cancelJobs()
     }
+
+
 }
 

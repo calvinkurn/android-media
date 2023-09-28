@@ -40,7 +40,7 @@
         android:id="@+id/text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:unify_text_field_input_type="text"
+        app:unify_text_field_input_type="number"
         app:unify_text_field_label="@string/top_ads_edit_ad_group_daily_budget_bottom_sheet_label"
         app:unify_text_field_prepend_text="Rp."
         app:unify_text_field_append_text="per hari"
@@ -74,7 +74,7 @@
                 android:id="@+id/amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="400x"
+                android:text="0x"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/icon"
                 app:layout_constraintBottom_toBottomOf="@id/icon"
@@ -103,6 +103,7 @@
                 android:id="@+id/percentage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:text="13% meningkat"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/icon"
@@ -111,7 +112,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/edit_ad_group_name_cta"
+            android:id="@+id/edit_ad_group_nam_cta"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

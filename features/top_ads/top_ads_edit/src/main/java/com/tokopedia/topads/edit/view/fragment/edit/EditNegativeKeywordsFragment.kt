@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
@@ -39,6 +40,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 /**
  * Created by Pika on 12/4/20.
@@ -62,9 +64,6 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
     private var groupId = 0
-    private val sharedViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
-    }
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -193,7 +192,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         updateItemCount()
         view?.let {
             Toaster.build(it,
-                getString(com.tokopedia.topads.common.R.string.topads_neg_keyword_common_del_toaster),
+                getString(topadscommonR.string.topads_neg_keyword_common_del_toaster),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
         }
@@ -223,14 +222,14 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.getGroupId().observe(viewLifecycleOwner, Observer {
-            groupId = it
+        arguments?.getString("groupId").let {
+            groupId = it.toIntOrZero()
             adapter.items.clear()
             viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
-        })
+        }
 
         addImage?.setImageDrawable(AppCompatResources.getDrawable(view.context,
-            com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
+            topadscommonR.drawable.topads_plus_add_keyword))
         addKeyword?.setOnClickListener {
             onAddKeyword()
         }
@@ -290,6 +289,15 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_DELETED, deletedKeywords)
         bundle.putParcelableArrayList(NEGATIVE_KEYWORD_ALL, list)
         return bundle
+    }
+
+    companion object {
+
+        fun newInstance(bundle: Bundle?): EditNegativeKeywordsFragment {
+            val fragment = EditNegativeKeywordsFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
 }

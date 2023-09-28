@@ -13,10 +13,10 @@ import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.SuggestionKeywordUseCase
-import com.tokopedia.topads.data.ImpressionPredictionResponse
+import com.tokopedia.topads.common.data.response.ImpressionPredictionResponse
 import com.tokopedia.topads.data.TopAdsGetBidSuggestionResponse
 import com.tokopedia.topads.domain.usecase.TopAdsGetBidSuggestionByProductIDsUseCase
-import com.tokopedia.topads.domain.usecase.TopAdsImpressionPredictionBrowseUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSearchUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ class BudgetingAdsViewModel @Inject constructor(
     private val bidInfoUseCase: BidInfoUseCase,
     private val bidInfoUseCaseDefault: BidInfoUseCase,
     private val topAdsGetBidSuggestionByProductIDsUseCase: TopAdsGetBidSuggestionByProductIDsUseCase,
-    private val topAdsImpressionPredictionUseCase: TopAdsImpressionPredictionBrowseUseCase,
+    private val topAdsImpressionPredictionUseCase: TopAdsImpressionPredictionSearchUseCase,
     private val suggestionKeywordUseCase: SuggestionKeywordUseCase) : BaseViewModel(dispatcher.main) {
 
 
