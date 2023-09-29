@@ -260,19 +260,39 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
-    fun sendClickAtcEvent(offerId: String, warehouseId: String, shopId: String) {
-        Tracker.Builder()
-            .setEvent(TrackerConstant.EVENT_ADD_TO_CART)
-            .setEventAction("click atc")
-            .setEventCategory(TrackerConstant.EVENT_CATEGORY_OLP_BMGM)
-            .setEventLabel(joinDash(offerId, warehouseId))
-            .setCustomProperty(TrackerConstant.TRACKER_ID, "46775")
-            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
-            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
-            .setShopId(shopId)
-            .setUserId(userSession.userId)
-            .build()
-            .send()
+    fun sendClickAtcEvent(
+        offerId: String,
+        warehouseId: String,
+        shopId: String,
+        items: List<Map<String, Any>>
+    ) {
+        val bundle = bundleOf(
+            TrackerConstant.EVENT to TrackerConstant.EVENT_ADD_TO_CART,
+            TrackerConstant.EVENT_ACTION to "click atc",
+            TrackerConstant.EVENT_CATEGORY to TrackerConstant.EVENT_CATEGORY_OLP_BMGM,
+            TrackerConstant.EVENT_LABEL to joinDash(offerId, warehouseId),
+            TrackerConstant.TRACKER_ID to "46775",
+            TrackerConstant.BUSINESS_UNIT to TrackerConstant.BUSINESS_UNIT_OLP_BMGM,
+            TrackerConstant.CURRENT_SITE to TrackerConstant.CURRENT_SITE_OLP_BMGM,
+            TrackerConstant.ITEMS to items,
+            TrackerConstant.SHOP_ID to shopId,
+            TrackerConstant.USER_ID to userSession.userId
+        )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackerConstant.EVENT_ADD_TO_CART, bundle)
+//        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackerConstant.EVENT_VIEW_ITEM_LIST, bundle)
+//        Tracker.Builder()
+//            .setEvent(TrackerConstant.EVENT_ADD_TO_CART)
+//            .setEventAction("click atc")
+//            .setEventCategory(TrackerConstant.EVENT_CATEGORY_OLP_BMGM)
+//            .setEventLabel(joinDash(offerId, warehouseId))
+//            .setCustomProperty(TrackerConstant.TRACKER_ID, "46775")
+//            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
+//            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
+//            .setShopId(shopId)
+//            .setUserId(userSession.userId)
+//            .build()
+//            .send()
     }
 
     fun sendImpressVariantEvent(offerId: String, warehouseId: String, shopId: String) {
