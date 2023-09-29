@@ -96,14 +96,10 @@ object ProductAdsMapper {
 
     fun MutableList<Visitable<*>>.findAdsProductCarousel(
         productId: String
-    ): ProductCardCompactCarouselItemUiModel? {
-        var product: ProductCardCompactCarouselItemUiModel? = null
-        filterIsInstance<TokoNowAdsCarouselUiModel>().forEach { carousel ->
-            carousel.items.firstOrNull { it.getProductId() == productId }?.let {
-                product = it
-            }
-        }
-        return product
+    ): ProductCardCompactCarouselItemUiModel {
+        return filterIsInstance<TokoNowAdsCarouselUiModel>().first { carousel ->
+            carousel.items.firstOrNull { it.getProductId() == productId } != null
+        }.items.first { it.getProductId() == productId }
     }
 
     fun MutableList<Visitable<*>>.updateProductAdsQuantity(

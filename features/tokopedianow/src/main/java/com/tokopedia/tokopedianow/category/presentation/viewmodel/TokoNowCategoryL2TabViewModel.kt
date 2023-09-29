@@ -745,7 +745,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         product: ProductCardCompactUiModel,
         quantity: Int
     ) {
-        visitableList.findAdsProductCarousel(product.productId)?.let { item ->
+        visitableList.findAdsProductCarousel(product.productId).let { item ->
             val trackerModel = CategoryAtcTrackerModel(
                 index = item.position,
                 categoryIdL1 = categoryIdL1,
@@ -766,7 +766,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         product: ProductCardCompactUiModel,
         quantity: Int
     ) {
-        visitableList.findProductCardItem(product.productId)?.let { item ->
+        visitableList.findProductCardItem(product.productId).let { item ->
             val trackerModel = CategoryAtcTrackerModel(
                 index = item.position,
                 categoryIdL1 = categoryIdL1,

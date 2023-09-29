@@ -133,8 +133,8 @@ object CategoryL2TabMapper {
         }
     }
 
-    fun MutableList<Visitable<*>>.findProductCardItem(productId: String): ProductItemDataView? {
-        return filterIsInstance<ProductItemDataView>().find {
+    fun MutableList<Visitable<*>>.findProductCardItem(productId: String): ProductItemDataView {
+        return filterIsInstance<ProductItemDataView>().first {
             it.productCardModel.productId == productId
         }
     }
@@ -148,15 +148,6 @@ object CategoryL2TabMapper {
         }
         updateProductCardItems(cartProductIds, miniCartData, hasBlockedAddToCart)
         updateProductAdsQuantity(cartProductIds, miniCartData, hasBlockedAddToCart)
-    }
-
-    fun MutableList<Visitable<*>>.updateAllProductQuantity(
-        productId: String,
-        quantity: Int,
-        hasBlockedAddToCart: Boolean
-    ) {
-        updateProductCardItems(productId, quantity, hasBlockedAddToCart)
-        updateProductAdsQuantity(productId, quantity, hasBlockedAddToCart)
     }
 
     fun MutableList<Visitable<*>>.addLoadMoreLoading() {
