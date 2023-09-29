@@ -293,7 +293,7 @@ class CatalogProductListFragment :
         }
 
         viewModel.textToaster.observe(viewLifecycleOwner) {
-            Toaster.build(view, it).show()
+            if (it != null) Toaster.build(view, it).show()
         }
 
         viewModel.totalCartItem.observe(viewLifecycleOwner) {

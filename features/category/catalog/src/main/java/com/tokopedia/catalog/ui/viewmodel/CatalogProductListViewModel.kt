@@ -64,8 +64,8 @@ class CatalogProductListViewModel @Inject constructor(
     val errorsToaster: LiveData<Throwable>
         get() = _errorsToaster
 
-    private val _textToaster = MutableLiveData<String>()
-    val textToaster: LiveData<String>
+    private val _textToaster = MutableLiveData<String?>()
+    val textToaster: LiveData<String?>
         get() = _textToaster
 
     private val _totalCartItem = MutableLiveData<Int>()
