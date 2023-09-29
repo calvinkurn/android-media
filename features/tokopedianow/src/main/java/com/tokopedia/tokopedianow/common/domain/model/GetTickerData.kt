@@ -7,4 +7,9 @@ data class GetTickerData(
     val tickerList: List<TickerData> = emptyList(),
     val oosTickerList: List<TickerData> = emptyList(),
     val oosCategoryIds: List<String> = emptyList()
-)
+) {
+
+    fun isTickerEmpty(): Boolean {
+        return tickerList.isEmpty() && oosTickerList.isEmpty()
+    }
+}
