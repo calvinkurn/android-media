@@ -54,7 +54,7 @@ import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -394,15 +394,15 @@ class OfferLandingPageFragment :
         )
         viewModel.processEvent(
             OlpEvent.SetInitialUiState(
-                offerIds = listOf(offerId.toLongSafely()),
-                shopIds = shopIds.toLongSafely(),
+                offerIds = listOf(offerId.toLongOrZero()),
+                shopIds = shopIds.toLongOrZero(),
                 productIds = if (productIds.isNotEmpty()) {
-                    productIds.split(",").map { it.toLongSafely() }
+                    productIds.split(",").map { it.toLongOrZero() }
                 } else {
                     emptyList()
                 },
                 warehouseIds = if (warehouseIds.isNotEmpty()) {
-                    warehouseIds.split(",").map { it.toLongSafely() }
+                    warehouseIds.split(",").map { it.toLongOrZero() }
                 } else {
                     emptyList()
                 },
