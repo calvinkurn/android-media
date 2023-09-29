@@ -23,7 +23,7 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
     override fun getAuthConfigs(): VerificationAuthConfig {
         return VerificationAuthConfig(
             clientID = "tokopedia:consumer:android",
-            clientSecret = "yWC10xOFVYRuHstKPGIhIwgPM7BuBV"
+            clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g"
         )
     }
 

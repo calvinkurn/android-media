@@ -129,7 +129,6 @@ object GotoSdk {
 class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
         val uniqueId = FingerprintModelGenerator.getFCMId(context)
-        println("sdkTrack:unique_id: $uniqueId")
         return LSdkAppConfig(
             environment = LSdkEnvironment.DEV,
             isLogsEnabled = false,
