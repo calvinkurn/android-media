@@ -3,7 +3,6 @@ package com.tokopedia.stories.robot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.stories.data.repository.StoriesRepository
-import com.tokopedia.stories.utils.StoriesPreference
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
@@ -26,16 +25,14 @@ internal class StoriesViewModelRobot(
     args: StoriesArgsModel = StoriesArgsModel(),
     private val handle: SavedStateHandle = SavedStateHandle(),
     private val userSession: UserSessionInterface = mockk(relaxed = true),
-    private val sharedPref: StoriesPreference = mockk(relaxed = true),
-    repository: StoriesRepository = mockk(relaxed = true),
+    repository: StoriesRepository = mockk(relaxed = true)
 ) : Closeable {
 
     private val viewModel = StoriesViewModel(
         args = args,
         handle = handle,
         repository = repository,
-        userSession = userSession,
-        sharedPref = sharedPref,
+        userSession = userSession
     )
 
     fun getViewModel() = viewModel
@@ -105,7 +102,7 @@ internal class StoriesViewModelRobot(
     fun entryPointTestCaseUsingSavedState(
         mainData: StoriesUiModel,
         selectedGroup: Int = 0,
-        selectedDetail: Int = 0,
+        selectedDetail: Int = 0
     ) {
         handle[StoriesViewModel.SAVED_INSTANCE_STORIES_MAIN_DATA] = mainData
         handle[StoriesViewModel.SAVED_INSTANCE_STORIES_GROUP_POSITION] = selectedGroup
@@ -187,5 +184,4 @@ internal class StoriesViewModelRobot(
     override fun close() {
         cancelRemainingTasks()
     }
-
 }

@@ -49,14 +49,13 @@ class StoriesUnitTest {
     )
     private val handle: SavedStateHandle = SavedStateHandle()
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
-    private val mockSharedPref : StoriesPreference = mockk(relaxed = true)
+    private val mockSharedPref: StoriesPreference = mockk(relaxed = true)
 
     private fun getStoriesRobot() = StoriesViewModelRobot(
         dispatchers = testDispatcher,
         args = args,
         handle = handle,
-        repository = mockRepository,
-        sharedPref = mockSharedPref,
+        repository = mockRepository
     )
 
     @Test
@@ -201,7 +200,7 @@ class StoriesUnitTest {
                 robot.initialDataTestCase()
             }
 
-            event.last().assertType<StoriesUiEvent.ErrorGroupPage> {  }
+            event.last().assertType<StoriesUiEvent.ErrorGroupPage> { }
         }
     }
 
@@ -218,7 +217,7 @@ class StoriesUnitTest {
                 robot.entryPointTestCaseUsingSavedState(
                     mainData = expectedData,
                     selectedGroup = selectedGroup,
-                    selectedDetail = selectedDetail,
+                    selectedDetail = selectedDetail
                 )
 
                 val actualGroup = robot.getViewModel().mGroup
@@ -311,7 +310,7 @@ class StoriesUnitTest {
             }
 
             state.first.storiesMainData.groupItems[selectedGroup].detail.assertEqualTo(StoriesDetail())
-            state.second.last().assertType<StoriesUiEvent.ErrorDetailPage> {  }
+            state.second.last().assertType<StoriesUiEvent.ErrorDetailPage> { }
         }
     }
 
@@ -677,5 +676,4 @@ class StoriesUnitTest {
             actualImpression.assertEqualTo(expectedData.groupHeader.first())
         }
     }
-
 }
