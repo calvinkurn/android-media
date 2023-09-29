@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.di.getSubComponent
@@ -23,7 +22,12 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import java.util.Calendar
+import java.util.Date
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -41,6 +45,8 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private var mixLeftBannerBG: ImageView = itemView.findViewById(R.id.banner_background_image)
     private var mixLeftBannerCard: CardView = itemView.findViewById(R.id.parallax_image_card)
     private var backgroundImage: ImageView = itemView.findViewById(R.id.background_image)
+    private var shimmerSaleTimer: LoaderUnify = itemView.findViewById(R.id.shimmer_timer_shop_flash_sale)
+    private var saleTimer: TimerUnifySingle = itemView.findViewById(R.id.timer_shop_flash_sale)
 
     init {
         linearLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT
@@ -155,6 +161,9 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 setupMixLeft(item)
                 mDiscoveryRecycleAdapter.setDataList(item)
             }
+            mProductCarouselComponentViewModel?.getSaleEndDate()?.observe(lifecycle) { endTime ->
+                renderTimer(endTime)
+            }
             mProductCarouselComponentViewModel?.syncData?.observe(lifecycle) { sync ->
                 if (sync) {
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
@@ -175,6 +184,19 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                     }
                 }
             }
+        }
+    }
+
+    private fun renderTimer(endSale: Date?) {
+        shimmerSaleTimer.invisible()
+
+        if (endSale == null) return
+
+        saleTimer.apply {
+            val parsedCalendar: Calendar = Calendar.getInstance()
+            parsedCalendar.time = endSale
+            targetDate = parsedCalendar
+            show()
         }
     }
 
@@ -245,6 +267,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             mProductCarouselComponentViewModel?.getProductCardHeaderData()?.removeObservers(it)
             mProductCarouselComponentViewModel?.atcFailed?.removeObservers(it)
             mProductCarouselComponentViewModel?.getMixLeftData()?.removeObservers(it)
+            mProductCarouselComponentViewModel?.getSaleEndDate()?.removeObservers(it)
         }
     }
 
@@ -253,12 +276,16 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
         list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
         mDiscoveryRecycleAdapter.setDataList(list)
+
+        shimmerSaleTimer.show()
+        saleTimer.invisible()
     }
 
     private fun handleErrorState() {
         addShimmer()
         mDiscoveryRecycleAdapter.notifyDataSetChanged()
         mixLeftBannerCard.hide()
+        shimmerSaleTimer.invisible()
         if (mHeaderView.childCount > 0) {
             mHeaderView.removeAllViews()
         }
