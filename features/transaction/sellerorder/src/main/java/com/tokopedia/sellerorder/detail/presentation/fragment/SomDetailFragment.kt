@@ -144,6 +144,7 @@ import java.net.URLDecoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**x
  * Created by fwidjaja on 2019-09-30.
@@ -692,9 +693,9 @@ open class SomDetailFragment :
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 setColor(ContextCompat.getColor(context, android.R.color.transparent))
-                cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
+                cornerRadius = resources.getDimension(unifycomponentsR.dimen.button_corner_radius)
                 setStroke(
-                    resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width),
+                    resources.getDimensionPixelSize(unifycomponentsR.dimen.button_stroke_width),
                     ContextCompat.getColor(context, R.color._dms_secondary_button_stroke_color)
                 )
             }
