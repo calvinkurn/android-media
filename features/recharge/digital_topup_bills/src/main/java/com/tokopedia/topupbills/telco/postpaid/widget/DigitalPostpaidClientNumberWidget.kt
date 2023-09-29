@@ -3,6 +3,7 @@ package com.tokopedia.topupbills.telco.postpaid.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.AttrRes
+import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.constant.showMultiCheckoutButton
 import com.tokopedia.kotlin.extensions.view.show
@@ -71,6 +72,7 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
                 postpaidListener.mainButtonClick()
             } , {
                 postpaidListener.secondaryButtonClick()
-            })
+            }, CoachMark2(context)
+        )
     }
 }

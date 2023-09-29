@@ -35,6 +35,7 @@ class EmoneyPdpBottomCheckoutWidget @JvmOverloads constructor(@NotNull context: 
         }
 
     private val binding : WidgetEmoneyPdpCheckoutViewBinding
+    private val coachMark2 = CoachMark2(context)
     
     init {
         binding = WidgetEmoneyPdpCheckoutViewBinding.inflate(LayoutInflater.from(context), this, true)
@@ -47,9 +48,19 @@ class EmoneyPdpBottomCheckoutWidget @JvmOverloads constructor(@NotNull context: 
     fun setVisibilityLayout(show: Boolean) {
         if (show) {
             binding.emoneyPdpCheckoutViewLayout.show()
+            showCoachMark()
         } else {
             binding.emoneyPdpCheckoutViewLayout.hide()
+            hideCoachMark()
         }
+    }
+
+    fun showCoachMark() {
+        coachMark2.container?.show()
+    }
+
+    fun hideCoachMark() {
+        coachMark2.container?.hide()
     }
 
     fun setTotalPrice(price: String) {
@@ -62,7 +73,8 @@ class EmoneyPdpBottomCheckoutWidget @JvmOverloads constructor(@NotNull context: 
                 listener?.onClickNextBuyButton()
             } , {
                 listener?.onClickMultiCheckoutButton()
-            })
+            }, coachMark2
+        )
     }
 
     interface ActionListener {

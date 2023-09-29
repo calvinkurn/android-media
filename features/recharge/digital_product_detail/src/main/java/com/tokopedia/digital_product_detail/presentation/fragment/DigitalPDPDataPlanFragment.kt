@@ -1028,12 +1028,14 @@ class DigitalPDPDataPlanFragment :
         binding?.let {
             it.rechargePdpPaketDataBuyWidget.show()
             it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this, viewModel.multiCheckoutButtons)
+            it.rechargePdpPaketDataBuyWidget.showCoachMark()
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
             it.rechargePdpPaketDataBuyWidget.hide()
+            it.rechargePdpPaketDataBuyWidget.hideCoachMark()
         }
     }
 

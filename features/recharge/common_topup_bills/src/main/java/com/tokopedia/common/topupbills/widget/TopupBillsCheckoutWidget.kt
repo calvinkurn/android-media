@@ -34,7 +34,7 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(
     FrameLayout(context, attrs, defStyleAttr) {
 
     private val binding = ViewTopupBillsCheckoutBinding.inflate(LayoutInflater.from(context), this, true)
-
+    private val coachMark2 = CoachMark2(context)
     var listener: ActionListener? = null
         set(value) {
             field = value
@@ -66,8 +66,10 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(
     fun setVisibilityLayout(show: Boolean) {
         if (show) {
             binding.buyLayout.show()
+            coachMark2.container?.show()
         } else {
             binding.buyLayout.hide()
+            coachMark2.container?.hide()
         }
     }
 
@@ -84,7 +86,7 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(
             listener?.onClickNextBuyButton()
         }, {
             listener?.onClickMultiCheckout()
-        })
+        }, coachMark2)
     }
 
     interface ActionListener {

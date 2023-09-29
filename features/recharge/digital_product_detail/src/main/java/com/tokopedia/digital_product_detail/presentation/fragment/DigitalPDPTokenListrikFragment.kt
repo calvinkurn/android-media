@@ -554,12 +554,14 @@ class DigitalPDPTokenListrikFragment :
         binding?.let {
             it.rechargePdpTokenListrikBuyWidget.show()
             it.rechargePdpTokenListrikBuyWidget.renderBuyWidget(denomGrid, this, listOf()) // set empty field to token listrik flow
+            it.rechargePdpTokenListrikBuyWidget.showCoachMark()
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
             it.rechargePdpTokenListrikBuyWidget.hide()
+            it.rechargePdpTokenListrikBuyWidget.hideCoachMark()
         }
     }
 

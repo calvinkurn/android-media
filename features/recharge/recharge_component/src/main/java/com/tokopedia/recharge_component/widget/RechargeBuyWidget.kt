@@ -34,6 +34,7 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
 
     private var rechargeBuyWidgetBinding = WidgetRechargeBuyWidgetBinding.inflate(LayoutInflater.from(context), this, true)
 
+    private var coachMark2 = CoachMark2(context)
     fun renderBuyWidget(denom: DenomData, listener: RechargeBuyWidgetListener, multiCheckoutButtons: List<MultiCheckoutButtons>){
 
         with(rechargeBuyWidgetBinding){
@@ -79,7 +80,15 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                 listener.onClickedButtonLanjutkan(denom)
             }, {
                 listener.onClickedButtonMultiCheckout(denom)
-            })
+            }, coachMark2)
         }
+    }
+
+    fun showCoachMark() {
+        coachMark2.container?.show()
+    }
+
+    fun hideCoachMark() {
+        coachMark2.container?.hide()
     }
 }

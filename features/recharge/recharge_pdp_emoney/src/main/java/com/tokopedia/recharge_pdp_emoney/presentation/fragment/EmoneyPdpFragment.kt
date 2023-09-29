@@ -680,6 +680,7 @@ open class EmoneyPdpFragment :
         issuerId = prefix.key
         binding.emoneyPdpProductWidget.showShimmering()
         binding.emoneyBuyWidgetLayout.hide()
+        binding.emoneyBuyWidget.hideCoachMark()
         emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntSafely(), prefix.key)
     }
 
@@ -709,6 +710,7 @@ open class EmoneyPdpFragment :
                 ?: 0
         )
         binding.emoneyBuyWidgetLayout.hide()
+        binding.emoneyBuyWidget.hideCoachMark()
     }
 
     override fun onClickProduct(product: CatalogProduct, position: Int) {

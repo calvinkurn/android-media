@@ -770,12 +770,14 @@ class DigitalPDPPulsaFragment :
         binding?.let {
             it.rechargePdpPulsaBuyWidget.show()
             it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this, viewModel.multiCheckoutButtons)
+            it.rechargePdpPulsaBuyWidget.showCoachMark()
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.hide()
+            it.rechargePdpPulsaBuyWidget.hideCoachMark()
         }
     }
 
