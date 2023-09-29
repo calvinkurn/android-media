@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
-        android:maxLength="30"
+        android:maxEms="13"
         android:maxLines="1"
         android:ellipsize="end"
         app:layout_constraintBottom_toTopOf="@+id/tf_description"
