@@ -38,8 +38,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
-import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -57,6 +55,7 @@ class CheckoutPromoProcessor @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
+    var isCartCheckoutRevamp: Boolean = false
     var bboPromoCodes: List<String> = emptyList()
     internal var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
 
@@ -170,9 +169,7 @@ class CheckoutPromoProcessor @Inject constructor(
             globalPromoCodes.addAll(lastApplyUiModel.codes)
         }
         promoRequest.codes = globalPromoCodes
-        promoRequest.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-            RemoteConfigInstance.getInstance().abTestPlatform
-        ).isRevamp()
+        promoRequest.isCartCheckoutRevamp = isCartCheckoutRevamp
         return promoRequest
     }
 
@@ -251,9 +248,7 @@ class CheckoutPromoProcessor @Inject constructor(
         validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
         validateUsePromoRequest.skipApply = 0
-        validateUsePromoRequest.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-            RemoteConfigInstance.getInstance().abTestPlatform
-        ).isRevamp()
+        validateUsePromoRequest.isCartCheckoutRevamp = isCartCheckoutRevamp
         if (isTradeIn) {
             validateUsePromoRequest.isTradeIn = 1
             validateUsePromoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0

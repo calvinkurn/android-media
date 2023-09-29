@@ -166,6 +166,8 @@ class CheckoutViewModel @Inject constructor(
 
     private var isPromoRevamp: Boolean? = null
 
+    var isCartCheckoutRevamp: Boolean = false
+
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
         EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
@@ -176,6 +178,7 @@ class CheckoutViewModel @Inject constructor(
         skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHigher: Boolean
     ) {
+        promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         viewModelScope.launch(dispatchers.io) {
             withContext(dispatchers.main) {
                 pageState.value = CheckoutPageState.Loading
