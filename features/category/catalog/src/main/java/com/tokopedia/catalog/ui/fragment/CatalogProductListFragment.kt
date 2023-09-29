@@ -446,7 +446,7 @@ class CatalogProductListFragment :
         item: CatalogProductItem,
         adapterPosition: Int
     ) {
-        CatalogReimagineDetailAnalytics.sendEvent(
+        CatalogReimagineDetailAnalytics.sendEventAtc(
             event = CatalogTrackerConstant.EVENT_NAME_PRODUCT_CLICK,
             eventAction = CatalogTrackerConstant.EVENT_ACTION_CLICK_ADD_TO_CART,
             eventCategory = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,

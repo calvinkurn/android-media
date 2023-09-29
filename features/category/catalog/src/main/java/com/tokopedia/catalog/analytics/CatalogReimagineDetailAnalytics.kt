@@ -4,12 +4,11 @@ package com.tokopedia.catalog.analytics
 import android.os.Bundle
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.BUSINESS_UNITS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.CURRENT_SITE
-import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMAGE_BANNER_IMPRESSION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_BUSINESS_UNIT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_CREATIVE_NAME
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_CREATIVE_SLOT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_CURRENT_SITE
-import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_DIMENSION61
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_DIMENSION52
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ECOMMERCE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT_ACTION
@@ -108,6 +107,60 @@ object CatalogReimagineDetailAnalytics {
         }
     }
 
+
+    fun sendEventAtc(
+        event: String,
+        eventAction: String,
+        eventCategory: String,
+        catalogId: String,
+        trackerId: String = "",
+        item: CatalogProductItem,
+        searchFilterMap: HashMap<String, String>?,
+        position: Int,
+        userId: String,
+        catalogUrl: String
+    ) {
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        productMap[KEY_ITEM_BRAND] = CatalogDetailAnalytics.KEYS.NONE_OTHER
+        productMap[KEY_ITEM_CATEGORY] = item.categoryId.toString()
+        productMap[KEY_ITEM_ID] = item.id
+        productMap[CatalogDetailAnalytics.KEYS.LIST] =
+            CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
+        productMap[KEY_ITEM_NAME] = item.name
+        productMap[KEY_DIMENSION52] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
+        productMap[KEY_INDEX] = position
+        productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
+            CurrencyFormatHelper.convertRupiahToInt(item.priceString).toString()
+        ).toString()
+        productMap[KEY_ITEM_VARIANT] = CatalogDetailAnalytics.KEYS.NONE_OTHER
+        list.add(productMap)
+
+        val eCommerce = mapOf(
+            CatalogDetailAnalytics.KEYS.CLICK to mapOf(
+                CatalogDetailAnalytics.KEYS.ACTION_FIELD to mapOf(
+                    CatalogDetailAnalytics.KEYS.LIST to CatalogDetailAnalytics.getCatalogTrackingUrl(
+                        getCatalogTrackingUrl(catalogUrl)
+                    )
+                ),
+                CatalogDetailAnalytics.KEYS.PRODUCTS to list
+            )
+        )
+
+        val map = HashMap<String, Any>()
+        map[KEY_EVENT] = event
+        map[KEY_EVENT_CATEGORY] = eventCategory
+        map[KEY_EVENT_ACTION] = eventAction
+        map[KEY_EVENT_LABEL] = getCatalogEventLabel(catalogId)
+        map[KEY_TRACKER_ID] = trackerId
+        map[KEY_BUSINESS_UNIT] = BUSINESS_UNITS
+        map[KEY_CURRENT_SITE] = CURRENT_SITE
+        map[KEY_ITEM_LIST] = getCatalogTrackingUrl(catalogUrl)
+        map[KEY_ECOMMERCE] = eCommerce
+        map[KEY_USER_ID] = userId
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
     fun sendEvent(
         event: String,
         eventAction: String,
@@ -128,7 +181,7 @@ object CatalogReimagineDetailAnalytics {
         productMap[CatalogDetailAnalytics.KEYS.LIST] =
             CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
         productMap[KEY_ITEM_NAME] = item.name
-        productMap[KEY_DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
+        productMap[KEY_DIMENSION52] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
         productMap[KEY_INDEX] = position
         productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
             CurrencyFormatHelper.convertRupiahToInt(item.priceString).toString()
@@ -177,6 +230,7 @@ object CatalogReimagineDetailAnalytics {
         val productMap = HashMap<String, Any>()
         productMap[KEY_ITEM_BRAND] = CatalogDetailAnalytics.KEYS.NONE_OTHER
         productMap[KEY_ITEM_CATEGORY] = item.categoryId.toString()
+        productMap[KEY_DIMENSION52] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
         productMap[KEY_ITEM_ID] = item.id
         productMap[CatalogDetailAnalytics.KEYS.LIST] =
             CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)

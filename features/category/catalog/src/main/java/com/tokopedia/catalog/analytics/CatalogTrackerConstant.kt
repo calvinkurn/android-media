@@ -12,6 +12,7 @@ object CatalogTrackerConstant {
     const val KEY_ITEMS = "items"
     const val KEY_DIMENSION40 = "dimension40"
     const val KEY_DIMENSION61 = "dimension61"
+    const val KEY_DIMENSION52 = "dimension52"
     const val KEY_INDEX = "index"
     const val KEY_ITEM_BRAND = "item_brand"
     const val KEY_ITEM_CATEGORY = "item_category"
