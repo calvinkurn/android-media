@@ -7,8 +7,8 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.scp_rewards_common.utils.ViewUtil.rotate
 import com.tokopedia.scp_rewards_touchpoints.R
-import com.tokopedia.scp_rewards_touchpoints.common.util.ViewUtil.rotate
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterData
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx

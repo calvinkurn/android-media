@@ -4,43 +4,45 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.Resources
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.databinding.FragmentShipmentDurationChoiceBinding
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent
-import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule
+import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationAnalyticState
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationListState
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.logisticcart.utils.RatesParamHelper.generateRatesParam
+import com.tokopedia.network.utils.ErrorHandler.Companion.getErrorMessage
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
+import com.tokopedia.logisticcart.R as logisticcartR
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
  */
-class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurationAdapterListener {
+class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
+    BottomSheetUnify() {
 
-    private var pbLoading: LoaderUnify? = null
-    private var llNetworkErrorView: LinearLayout? = null
-    private var llContent: LinearLayout? = null
-    private var rvDuration: RecyclerView? = null
-    private var bundle: Bundle? = null
+    private var binding by autoCleared<FragmentShipmentDurationChoiceBinding>()
 
-    private var activity: Activity? = null
-    private var bottomSheet: BottomSheetUnify? = null
     private var shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener? = null
 
     private var chooseCourierTracePerformance: PerformanceMonitoring? = null
@@ -49,187 +51,154 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     private var isDisableOrderPrioritas = false
     private var isOcc = false
     private var mCartPosition = -1
-
+    private var ratesParam: RatesParam? = null
+    private var selectedSpId: Int = 0
+    private var selectedServiceId: Int = 0
+    private var isRatesTradeInApi: Boolean = false
     private var mRecipientAddress: RecipientAddressModel? = null
-
-    @JvmField
-    @Inject
-    var presenter: ShippingDurationContract.Presenter? = null
 
     @JvmField
     @Inject
     var shippingDurationAdapter: ShippingDurationAdapter? = null
 
-    private var mIsCorner = false
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    fun show(
-        activity: Activity,
-        fragmentManager: FragmentManager,
-        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
-        shipmentDetailData: ShipmentDetailData,
-        selectedServiceId: Int,
-        shopShipmentList: List<ShopShipment>,
-        recipientAddressModel: RecipientAddressModel? = null,
-        cartPosition: Int,
-        codHistory: Int = -1,
-        isLeasing: Boolean = false,
-        pslCode: String = "",
-        products: ArrayList<Product>,
-        cartString: String,
-        isDisableOrderPrioritas: Boolean,
-        isTradeInDropOff: Boolean = false,
-        isFulFillment: Boolean = false,
-        preOrderTime: Int = -1,
-        mvc: String = "",
-        cartData: String,
-        isOcc: Boolean,
-        warehouseId: String
-    ) {
-        this.activity = activity
-        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
-        initData(
-            shipmentDetailData, selectedServiceId, shopShipmentList, recipientAddressModel,
-            cartPosition, codHistory, isLeasing, pslCode, products, cartString,
-            isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc, cartData,
-            warehouseId
-        )
-        initBottomSheet(activity)
-        initView(activity)
-        this.isOcc = isOcc
-        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
+    private val viewModel: ShippingDurationViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[ShippingDurationViewModel::class.java]
     }
 
-    private fun initBottomSheet(activity: Activity) {
-        bottomSheet = BottomSheetUnify()
-        bottomSheet?.showCloseIcon = true
-        bottomSheet?.setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
-        bottomSheet?.clearContentPadding = true
-        bottomSheet?.customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-        bottomSheet?.isDragable = true
-        bottomSheet?.isHideable = true
-        bottomSheet?.setShowListener {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initializeInjector()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initBottomSheet()
+        initObserver()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initObserver() {
+        viewModel.loading.observe(viewLifecycleOwner) {
+            if (it) showLoading() else hideLoading()
+        }
+
+        viewModel.shipmentData.observe(viewLifecycleOwner) {
+            stopTrace()
+            when (it) {
+                is ShippingDurationListState.ShowList -> {
+                    showData(it.list)
+                }
+
+                is ShippingDurationListState.NoShipmentAvailable -> {
+                    showNoCourierAvailable(it.message)
+                }
+
+                is ShippingDurationListState.RatesError -> {
+                    showErrorPage(it.e)
+                }
+            }
+        }
+
+        viewModel.chosenDuration.observe(viewLifecycleOwner) {
+            when (it) {
+                is ChooseShippingDurationState.NormalShipping -> {
+                    onShippingDurationAndRecommendCourierChosen(
+                        it.shippingCourierUiModelList,
+                        it.courierData,
+                        it.cartPosition,
+                        it.selectedServiceId,
+                        it.serviceData,
+                        it.flagNeedToSetPinpoint
+                    )
+                }
+
+                is ChooseShippingDurationState.FreeShipping -> {
+                    onLogisticPromoChosen(
+                        it.shippingCourierViewModelList,
+                        it.courierData,
+                        it.serviceData,
+                        it.needToSetPinpoint,
+                        it.data.promoCode,
+                        it.data.serviceId,
+                        it.data
+                    )
+                }
+
+                is ChooseShippingDurationState.CourierNotAvailable -> {
+                    showPromoCourierNotAvailable()
+                }
+            }
+        }
+
+        viewModel.shipmentAnalytic.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShippingDurationAnalyticState.AnalyticCourierPromo -> {
+                    sendAnalyticCourierPromo(it.shippingDurationUiModelList)
+                }
+
+                is ShippingDurationAnalyticState.AnalyticPromoLogistic -> {
+                    sendAnalyticPromoLogistic(it.promoViewModelList)
+                }
+            }
+        }
+    }
+
+    private fun getRates() {
+        ratesParam?.let {
+            viewModel.loadDuration(
+                selectedSpId = selectedSpId,
+                selectedServiceId = selectedServiceId,
+                ratesParam = it,
+                isRatesTradeInApi = isRatesTradeInApi,
+                isOcc = isOcc
+            )
+        }
+    }
+
+    private fun initBottomSheet() {
+        showCloseIcon = true
+        context?.run {
+            setTitle(getString(logisticcartR.string.title_bottomsheet_shipment_duration))
+        }
+
+        clearContentPadding = true
+        customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+        isDragable = false
+        isHideable = true
+
+        setShowListener {
             chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE)
-            presenter?.attachView(this)
-            loadData()
+            getRates()
         }
-        bottomSheet?.setOnDismissListener {
-            presenter?.detachView()
+        setOnDismissListener {
         }
-        bottomSheet?.setCloseClickListener {
+        setCloseClickListener {
             shippingDurationBottomsheetListener?.onShippingDurationButtonCloseClicked()
-            bottomSheet?.dismiss()
+            dismiss()
         }
-    }
-
-    private fun initData(
-        shipmentDetailData: ShipmentDetailData,
-        selectedServiceId: Int,
-        shopShipmentList: List<ShopShipment>,
-        recipientAddressModel: RecipientAddressModel?,
-        cartPosition: Int,
-        codHistory: Int,
-        isLeasing: Boolean,
-        pslCode: String,
-        products: ArrayList<Product>,
-        cartString: String,
-        isDisableOrderPrioritas: Boolean,
-        isTradeInDropOff: Boolean,
-        isFulFillment: Boolean,
-        preOrderTime: Int,
-        mvc: String,
-        cartData: String,
-        warehouseId: String
-    ) {
-        bundle = Bundle().apply {
-            putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
-            putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, ArrayList(shopShipmentList))
-            putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
-            putInt(ARGUMENT_CART_POSITION, cartPosition)
-            putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId)
-            putInt(ARGUMENT_COD_HISTORY, codHistory)
-            putBoolean(ARGUMENT_IS_LEASING, isLeasing)
-            putString(ARGUMENT_PSL_CODE, pslCode)
-            putParcelableArrayList(ARGUMENT_PRODUCTS, products)
-            putString(ARGUMENT_CART_STRING, cartString)
-            putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas)
-            putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff)
-            putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
-            putInt(ARGUMENT_PO_TIME, preOrderTime)
-            putString(ARGUMENT_MVC, mvc)
-            putString(ARGUMENT_CART_DATA, cartData)
-            putString(ARGUMENT_WAREHOUSE_ID, warehouseId)
-        }
+        initView()
     }
 
     private fun initializeInjector() {
-        val baseMainApplication = activity!!.application as BaseMainApplication
+        val baseMainApplication = activity?.application as BaseMainApplication
         val component = DaggerShippingDurationComponent.builder()
             .baseAppComponent(baseMainApplication.baseAppComponent)
-            .shippingDurationModule(ShippingDurationModule())
             .build()
         component.inject(this)
     }
 
     @SuppressLint("InflateParams")
-    private fun initView(activity: Activity) {
-        val inflater = activity.layoutInflater
-        val view = inflater.inflate(R.layout.fragment_shipment_duration_choice, null)
-        pbLoading = view.findViewById(R.id.pb_loading)
-        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
-        llContent = view.findViewById(R.id.ll_content)
-        rvDuration = view.findViewById(R.id.rv_duration)
-        bottomSheet!!.setChild(view)
-        initializeInjector()
-    }
-
-    private fun loadData() {
-        bundle?.let {
-            mRecipientAddress = it.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
-            mCartPosition = it.getInt(ARGUMENT_CART_POSITION)
-            val selectedServiceId = it.getInt(ARGUMENT_SELECTED_SERVICE_ID)
-            val codHistory = it.getInt(ARGUMENT_COD_HISTORY)
-            mRecipientAddress?.let { recipientAddressModel ->
-                mIsCorner = recipientAddressModel.isCornerAddress
-            }
-            val isDisableCourierPromo = it.getBoolean(ARGUMENT_DISABLE_PROMO_COURIER)
-            setupRecyclerView(mCartPosition)
-            val shipmentDetailData: ShipmentDetailData =
-                it.getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA)!!
-            val shopShipments: List<ShopShipment> =
-                it.getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST)!!
-            val isLeasing = it.getBoolean(ARGUMENT_IS_LEASING)
-            val pslCode = it.getString(ARGUMENT_PSL_CODE, "")
-            val products: ArrayList<Product> = it.getParcelableArrayList(ARGUMENT_PRODUCTS)!!
-            val cartString = it.getString(ARGUMENT_CART_STRING, "")
-            isDisableOrderPrioritas = it.getBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS)
-            val isTradeInDropOff = it.getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF)
-            val mvc = it.getString(ARGUMENT_MVC, "")
-            val isFulfillment = it.getBoolean(ARGUMENT_IS_FULFILLMENT)
-            val preOrderTime = it.getInt(ARGUMENT_PO_TIME)
-            val cartData = it.getString(ARGUMENT_CART_DATA, "")
-            val warehouseId = it.getString(ARGUMENT_WAREHOUSE_ID, "")
-
-            presenter?.loadCourierRecommendation(
-                shipmentDetailData = shipmentDetailData,
-                selectedServiceId = selectedServiceId,
-                shopShipmentList = shopShipments,
-                codHistory = codHistory,
-                isCorner = mIsCorner,
-                isLeasing = isLeasing,
-                pslCode = pslCode,
-                products = products,
-                cartString = cartString,
-                isTradeInDropOff = isTradeInDropOff,
-                recipientAddressModel = mRecipientAddress,
-                isFulfillment = isFulfillment,
-                preOrderTime = preOrderTime,
-                mvc = mvc,
-                cartData = cartData,
-                isOcc = isOcc,
-                isDisableCourierPromo = isDisableCourierPromo,
-                warehouseId = warehouseId
-            )
-        }
+    private fun initView() {
+        binding =
+            FragmentShipmentDurationChoiceBinding.inflate(LayoutInflater.from(context), null, false)
+        setupRecyclerView(mCartPosition)
+        setChild(binding.root)
     }
 
     private fun setupRecyclerView(cartPosition: Int) {
@@ -240,38 +209,46 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             LinearLayoutManager.VERTICAL,
             false
         )
-        rvDuration?.layoutManager = linearLayoutManager
-        rvDuration?.adapter = shippingDurationAdapter
+        binding.rvDuration.layoutManager = linearLayoutManager
+        binding.rvDuration.adapter = shippingDurationAdapter
     }
 
     /*
     Section: Shipping Duration View
      */
 
-    override fun showLoading() {
-        llContent?.visibility = View.GONE
-        llNetworkErrorView?.visibility = View.GONE
-        pbLoading?.visibility = View.VISIBLE
+    private fun showLoading() {
+        binding.llContent.visibility = View.GONE
+        binding.llNetworkErrorView.visibility = View.GONE
+        binding.pbLoading.visibility = View.VISIBLE
     }
 
-    override fun hideLoading() {
-        pbLoading?.visibility = View.GONE
-        llNetworkErrorView?.visibility = View.GONE
-        llContent?.visibility = View.VISIBLE
+    private fun hideLoading() {
+        binding.pbLoading.visibility = View.GONE
+        binding.llNetworkErrorView.visibility = View.GONE
+        binding.llContent.visibility = View.VISIBLE
     }
 
-    override fun showErrorPage(message: String) {
-        pbLoading?.visibility = View.GONE
-        llContent?.visibility = View.GONE
-        llNetworkErrorView?.visibility = View.VISIBLE
-        NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) { loadData() }
+    private fun showErrorPage(message: String) {
+        binding.pbLoading.visibility = View.GONE
+        binding.llContent.visibility = View.GONE
+        binding.llNetworkErrorView.visibility = View.VISIBLE
+        NetworkErrorHelper.showEmptyState(
+            activity,
+            binding.llNetworkErrorView,
+            message
+        ) { getRates() }
     }
 
-    override fun showData(uiModelList: MutableList<RatesViewModelType>) {
+    private fun showErrorPage(error: Throwable) {
+        showErrorPage(getErrorMessage(activity, error))
+    }
+
+    private fun showData(uiModelList: MutableList<RatesViewModelType>) {
         shippingDurationAdapter?.setShippingDurationViewModels(uiModelList, isDisableOrderPrioritas)
     }
 
-    override fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>) {
+    private fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>) {
         for (shippingDurationUiModel in shippingDurationUiModelList) {
             shippingDurationBottomsheetListener?.onShowDurationListWithCourierPromo(
                 shippingDurationUiModel.serviceData.isPromo == 1,
@@ -280,27 +257,25 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
     }
 
-    override fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>) {
+    private fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>) {
         shippingDurationBottomsheetListener?.onShowLogisticPromo(promoViewModelList)
     }
 
-    override fun showNoCourierAvailable(message: String?) {
-        shippingDurationBottomsheetListener?.onNoCourierAvailable(message)
-        bottomSheet?.dismiss()
+    private fun showNoCourierAvailable(message: String?) {
+        shippingDurationBottomsheetListener?.onNoCourierAvailable(
+            message ?: context?.getString(logisticcartR.string.label_no_courier_bottomsheet_message)
+        )
+        dismiss()
     }
 
-    override fun stopTrace() {
+    private fun stopTrace() {
         if (!isChooseCourierTraceStopped) {
             chooseCourierTracePerformance?.stopTrace()
             isChooseCourierTraceStopped = true
         }
     }
 
-    override fun getActivity(): Activity {
-        return activity!!
-    }
-
-    override fun onShippingDurationAndRecommendCourierChosen(
+    private fun onShippingDurationAndRecommendCourierChosen(
         shippingCourierUiModelList: List<ShippingCourierUiModel>,
         courierData: ShippingCourierUiModel?,
         cartPosition: Int,
@@ -316,14 +291,14 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                     mRecipientAddress, cartPosition, selectedServiceId, serviceData,
                     flagNeedToSetPinpoint, isDurationClick = true, isClearPromo = true
                 )
-                bottomSheet?.dismiss()
+                dismiss()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    override fun onLogisticPromoChosen(
+    private fun onLogisticPromoChosen(
         shippingCourierViewModelList: List<ShippingCourierUiModel>,
         courierData: ShippingCourierUiModel,
         serviceData: ServiceData,
@@ -341,12 +316,12 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        bottomSheet?.dismiss()
+        dismiss()
     }
 
-    override fun showPromoCourierNotAvailable() {
+    private fun showPromoCourierNotAvailable() {
         activity?.let {
-            showErrorPage(it.getString(R.string.logistic_promo_serviceid_mismatch_message))
+            showErrorPage(it.getString(logisticcartR.string.logistic_promo_serviceid_mismatch_message))
         }
     }
 
@@ -359,32 +334,98 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         cartPosition: Int,
         serviceData: ServiceData
     ) {
-        presenter?.onChooseDuration(shippingCourierUiModelList, cartPosition, serviceData, isOcc)
+        viewModel.onChooseDuration(shippingCourierUiModelList, cartPosition, serviceData, isOcc)
     }
 
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-        presenter?.onLogisticPromoClicked(data)
+        viewModel.onLogisticPromoClicked(data)
     }
 
     companion object {
-        private const val ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA"
-        private const val ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST"
-        private const val ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION"
-        private const val ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL"
-        private const val ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID"
-        private const val ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY"
-        private const val ARGUMENT_DISABLE_PROMO_COURIER = "ARGUMENT_DISABLE_PROMO_COURIER"
-        private const val ARGUMENT_IS_LEASING = "ARGUMENT_IS_LEASING"
-        private const val ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE"
-        private const val ARGUMENT_PRODUCTS = "ARGUMENT_PRODUCTS"
-        private const val ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING"
-        private const val ARGUMENT_DISABLE_ORDER_PRIORITAS = "ARGUMENT_DISABLE_ORDER_PRIORITAS"
-        private const val ARGUMENT_IS_TRADE_IN_DROP_OFF = "ARGUMENT_IS_TRADE_IN_DROP_OFF"
-        private const val ARGUMENT_MVC = "ARGUMENT_MVC"
-        private const val ARGUMENT_CART_DATA = "ARGUMENT_CART_DATA"
-        private const val ARGUMENT_IS_FULFILLMENT = "ARGUMENT_IS_FULFILLMENT"
-        private const val ARGUMENT_PO_TIME = "ARGUMENT_PO_TIME"
-        private const val ARGUMENT_WAREHOUSE_ID = "ARGUMENT_WAREHOUSE_ID"
         private const val CHOOSE_COURIER_TRACE = "mp_choose_courier"
+        private const val TAG = "Shipping Duration Bottom Sheet"
+
+        fun show(
+            fragmentManager: FragmentManager,
+            shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
+            ratesParam: RatesParam,
+            selectedSpId: Int,
+            selectedServiceId: Int,
+            isRatesTradeInApi: Boolean,
+            isDisableOrderPrioritas: Boolean,
+            recipientAddressModel: RecipientAddressModel?,
+            cartPosition: Int,
+            isOcc: Boolean
+        ) {
+            val bottomSheet = ShippingDurationBottomsheet()
+            bottomSheet.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
+            bottomSheet.isDisableOrderPrioritas = isDisableOrderPrioritas
+            bottomSheet.mRecipientAddress = recipientAddressModel
+            bottomSheet.mCartPosition = cartPosition
+            bottomSheet.isOcc = isOcc
+            bottomSheet.ratesParam = ratesParam
+            bottomSheet.selectedSpId = selectedSpId
+            bottomSheet.selectedServiceId = selectedServiceId
+            bottomSheet.isRatesTradeInApi = isRatesTradeInApi
+            fragmentManager.apply {
+                bottomSheet.show(this, TAG)
+            }
+        }
+
+        fun show(
+            activity: Activity,
+            fragmentManager: FragmentManager,
+            shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
+            shipmentDetailData: ShipmentDetailData,
+            selectedServiceId: Int,
+            shopShipmentList: List<ShopShipment>,
+            recipientAddressModel: RecipientAddressModel? = null,
+            cartPosition: Int,
+            codHistory: Int = -1,
+            isLeasing: Boolean = false,
+            pslCode: String = "",
+            products: ArrayList<Product>,
+            cartString: String,
+            isDisableOrderPrioritas: Boolean,
+            isTradeInDropOff: Boolean = false,
+            isFulFillment: Boolean = false,
+            preOrderTime: Int = -1,
+            mvc: String = "",
+            cartData: String,
+            isOcc: Boolean,
+            warehouseId: String
+        ) {
+            var selectedSpId = 0
+            shipmentDetailData.selectedCourier?.let { selectedCourier ->
+                selectedSpId = selectedCourier.shipperProductId
+            }
+            val ratesParam = generateRatesParam(
+                shipmentDetailData,
+                shopShipmentList,
+                recipientAddressModel,
+                codHistory,
+                isLeasing,
+                pslCode,
+                products,
+                cartString,
+                isTradeInDropOff,
+                mvc,
+                cartData,
+                isOcc,
+                warehouseId
+            )
+            show(
+                fragmentManager,
+                shippingDurationBottomsheetListener,
+                ratesParam,
+                selectedSpId,
+                selectedServiceId,
+                isTradeInDropOff,
+                isDisableOrderPrioritas,
+                recipientAddressModel,
+                cartPosition,
+                isOcc
+            )
+        }
     }
 }

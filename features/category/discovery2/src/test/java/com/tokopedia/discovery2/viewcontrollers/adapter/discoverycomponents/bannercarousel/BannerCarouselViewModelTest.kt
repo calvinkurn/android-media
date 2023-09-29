@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -220,11 +221,11 @@ class BannerCarouselViewModelTest {
     fun `test for carousel Banner List aka init viewModel when componentsItem data is not null`() {
         mockkObject(DiscoveryDataMapper)
         every { componentsItem.data } returns dataList
-        every { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any()) } returns ArrayList()
+        every { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any(), properties = any()) } returns ArrayList()
 
         assert(viewModel.getComponentData().value == list)
 
-        verify { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any()) }
+        verify { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any(), properties = any()) }
         unmockkObject(DiscoveryDataMapper)
     }
 

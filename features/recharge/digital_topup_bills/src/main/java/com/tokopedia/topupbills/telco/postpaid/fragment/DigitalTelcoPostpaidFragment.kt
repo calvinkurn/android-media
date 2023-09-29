@@ -50,7 +50,6 @@ import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -284,7 +283,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
-        return telco_buy_widget
+        return buyWidget
     }
 
     override fun initAddToCartViewModel() {

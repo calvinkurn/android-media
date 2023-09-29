@@ -4,7 +4,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -22,6 +21,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TabsUnify
 
@@ -41,11 +41,14 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private var tabsViewModel: TabsViewModel? = null
     private var selectedTab: TabLayout.Tab? = null
     private var isParentUnifyTab: Boolean = true
+    private val scrollToCurrentTabPositionHandler = Handler(Looper.getMainLooper())
+    private var scrollToCurrentTabPositionRunnable: Runnable? = null
 
     private val tabsHandler = Handler(Looper.getMainLooper())
     private val tabsRunnable = Runnable {
         tabsHolder.show()
     }
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
         tabsViewModel?.let {
@@ -87,6 +90,10 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                         }
                     }
                 }
+                scrollToCurrentTabPosition(
+                    selectedPosition = selectedPosition,
+                    isFromCategory = tabsViewModel.isFromCategory()
+                )
                 tabsHolder.viewTreeObserver
                     .addOnGlobalLayoutListener {
                         fragment.activity?.let { _ ->
@@ -180,21 +187,29 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             }
 
             tabsViewModel.getTabMargin().observe(fragment.viewLifecycleOwner) {
-                if (it) {
-                    val params = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    params.setMargins(0, 0, 0, 16)
-                    tabsHolder.layoutParams = params
-                } else {
-                    val params = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    params.setMargins(0, 0, 0, 0)
-                    tabsHolder.layoutParams = params
+                if (!tabsViewModel.isFromCategory()) {
+                    if (it) {
+                        tabsHolder.setMargin(0, 0, 0, 16)
+                    }
                 }
+            }
+        }
+    }
+
+    private fun scrollToCurrentTabPosition(
+        selectedPosition: Int,
+        isFromCategory: Boolean
+    ) {
+        if (!isFromCategory) {
+            scrollToCurrentTabPositionRunnable = Runnable {
+                tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+            }
+            scrollToCurrentTabPositionRunnable?.apply {
+                scrollToCurrentTabPositionHandler.removeCallbacks(this)
+                scrollToCurrentTabPositionHandler.postDelayed(
+                    this,
+                    DELAY_400
+                )
             }
         }
     }
@@ -234,6 +249,10 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsHolder.tabLayout.removeOnTabSelectedListener(this)
         tabsViewModel?.getColorTabComponentLiveData()?.removeObservers(fragment.viewLifecycleOwner)
         tabsHandler.removeCallbacks(tabsRunnable)
+        scrollToCurrentTabPositionRunnable?.apply {
+            scrollToCurrentTabPositionHandler.removeCallbacks(this)
+            scrollToCurrentTabPositionRunnable = null
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {

@@ -3,6 +3,7 @@ package com.tokopedia.affiliate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.TokopediaUrl
 import java.util.Locale
 
 const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
@@ -65,8 +66,7 @@ const val WITHDRAWAL_APPLINK_STAGING =
 const val WITHDRAWAL_APPLINK_PROD =
     "tokopedia://webview?titlebar=false&url=https://affiliate.tokopedia.com/portal/withdrawal"
 
-const val APP_LINK_DESTINATION =
-    "https://1002-staging-feature.tokopedia.com/portal/withdrawal?module=affiliate"
+val APP_LINK_DESTINATION = "${TokopediaUrl.getInstance().AFFILIATE}/portal/withdrawal"
 
 const val QUERY_CONST = "titlebar=false"
 
@@ -214,6 +214,8 @@ const val PAGE_TYPE_PDP = "pdp"
 const val PAGE_TYPE_SHOP = "shop"
 
 const val PAGE_TYPE_CAMPAIGN = "campaign"
+
+const val PAGE_TYPE_WISHLIST = "wishlist"
 
 const val PAGE_EDUCATION_EVENT = "education_event"
 const val PAGE_EDUCATION_ARTICLE = "education_article"

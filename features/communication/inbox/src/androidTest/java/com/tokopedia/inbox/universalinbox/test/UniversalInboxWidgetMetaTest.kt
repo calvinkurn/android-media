@@ -22,7 +22,7 @@ class UniversalInboxWidgetMetaTest : BaseUniversalInboxTest() {
     fun should_show_widget_based_on_response() {
         // Given
         GqlResponseStub.widgetMetaResponse.editAndGetResponseObject { response ->
-            response.chatInboxWidgetMeta.metaData.forEach {
+            response.chatInboxMenu.widgetMenu.forEach {
                 it.isDynamic = true
             }
         }
@@ -43,7 +43,7 @@ class UniversalInboxWidgetMetaTest : BaseUniversalInboxTest() {
             response.allCounter.othersUnread.helpUnread = 0
         }
         GqlResponseStub.widgetMetaResponse.editAndGetResponseObject { response ->
-            response.chatInboxWidgetMeta.metaData.forEach {
+            response.chatInboxMenu.widgetMenu.forEach {
                 if (it.type == CHATBOT_TYPE) {
                     it.isDynamic = false
                 }
@@ -62,7 +62,7 @@ class UniversalInboxWidgetMetaTest : BaseUniversalInboxTest() {
     fun should_not_show_widget_when_empty() {
         // Given
         GqlResponseStub.widgetMetaResponse.editAndGetResponseObject { response ->
-            response.chatInboxWidgetMeta.metaData = listOf()
+            response.chatInboxMenu.widgetMenu = listOf()
         }
 
         // When
@@ -79,7 +79,7 @@ class UniversalInboxWidgetMetaTest : BaseUniversalInboxTest() {
             response.allCounter.othersUnread.helpUnread = 5
         }
         GqlResponseStub.widgetMetaResponse.editAndGetResponseObject { response ->
-            response.chatInboxWidgetMeta.metaData.forEach {
+            response.chatInboxMenu.widgetMenu.forEach {
                 it.isDynamic = true
             }
         }
@@ -105,7 +105,7 @@ class UniversalInboxWidgetMetaTest : BaseUniversalInboxTest() {
             response.allCounter.othersUnread.helpUnread = 100
         }
         GqlResponseStub.widgetMetaResponse.editAndGetResponseObject { response ->
-            response.chatInboxWidgetMeta.metaData.forEach {
+            response.chatInboxMenu.widgetMenu.forEach {
                 it.isDynamic = true
             }
         }
@@ -132,7 +132,7 @@ class UniversalInboxWidgetMetaTest : BaseUniversalInboxTest() {
             response.allCounter.othersUnread.helpUnread = 0
         }
         GqlResponseStub.widgetMetaResponse.editAndGetResponseObject { response ->
-            response.chatInboxWidgetMeta.metaData.forEach {
+            response.chatInboxMenu.widgetMenu.forEach {
                 it.isDynamic = true
             }
         }

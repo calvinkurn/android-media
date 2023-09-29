@@ -22,8 +22,8 @@ import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.laku6.tradeinsdk.api.Laku6TradeIn
-import com.laku6.tradeinsdk.api.Laku6TradeIn.TradeInListener
+import com.laku6.tradeinsdk.api.TradeInApiService
+import com.laku6.tradeinsdk.api.TradeInListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -49,6 +49,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.moneyin.R as moneyinR
 
 open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), TradeInListener {
     private var mTvPriceElligible: Typography? = null
@@ -92,19 +94,33 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                 val cekFungsi = MoneyInGTMConstants.CEK_FUNGSI_MONEY_IN
                 val cekFisikResult = MoneyInGTMConstants.CEK_FISIK_RESULT_MONEY_IN
                 if (MoneyInGTMConstants.CEK_FISIK == page) {
-                    if (MoneyInGTMConstants.CLICK_SALIN == action || MoneyInGTMConstants.CLICK_SOCIAL_SHARE == action) sendGeneralEvent(clickEvent,
-                            cekFisik, action, value)
+                    if (MoneyInGTMConstants.CLICK_SALIN == action || MoneyInGTMConstants.CLICK_SOCIAL_SHARE == action) {
+                        sendGeneralEvent(
+                            clickEvent,
+                            cekFisik,
+                            action,
+                            value
+                        )
+                    }
                 } else if (MoneyInGTMConstants.CEK_FUNGSI_TRADE_IN == page) {
-                    sendGeneralEvent(clickEvent,
-                            cekFungsi, action, value)
+                    sendGeneralEvent(
+                        clickEvent,
+                        cekFungsi,
+                        action,
+                        value
+                    )
                 } else if (MoneyInGTMConstants.CEK_FISIK_RESULT_TRADE_IN == page) {
-                    sendGeneralEvent(viewEvent,
-                            cekFisikResult, action, value)
+                    sendGeneralEvent(
+                        viewEvent,
+                        cekFisikResult,
+                        action,
+                        value
+                    )
                 }
             }
         }
     }
-    private lateinit var laku6TradeIn: Laku6TradeIn
+    private var tradeInApiService: TradeInApiService? = null
 
     override fun initInject() {
         component.inject(this)
@@ -124,7 +140,8 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
         editTextImei = findViewById(R.id.edit_text_imei)
         typographyImeiDescription = findViewById(R.id.typography_imei_description)
         typographyImeiHelp = findViewById(R.id.typography_imei_help)
-        mTvModelName?.text = StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString()
+        mTvModelName?.text =
+            StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString()
         closeButtonText = R.string.tradein_return
         notElligibleText = R.string.not_elligible_money_in
         category = MoneyInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE
@@ -138,7 +155,8 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
 
     private fun setTradeInParams() {
         if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
-            moneyInHomeViewModel.tradeInParams = intent.getParcelableExtra(TradeInParams::class.java.simpleName) ?: TradeInParams()
+            moneyInHomeViewModel.tradeInParams =
+                intent.getParcelableExtra(TradeInParams::class.java.simpleName) ?: TradeInParams()
         }
     }
 
@@ -153,7 +171,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        moneyInHomeViewModel.homeResultData.observe(this, { homeResult: HomeResult ->
+        moneyInHomeViewModel.homeResultData.observe(this) { homeResult: HomeResult ->
             if (!homeResult.isSuccess) {
                 mTvInitialPrice?.text = homeResult.displayMessage
                 mTvPriceElligible?.text = getString(notElligibleText)
@@ -166,7 +184,14 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                 }
             } else {
                 val state = homeResult.priceStatus
-                productName = if (moneyInHomeViewModel.tradeInParams.productName != null) moneyInHomeViewModel.tradeInParams.productName?.toLowerCase(Locale.getDefault()).toString() else ""
+                productName =
+                    if (moneyInHomeViewModel.tradeInParams.productName != null) {
+                        moneyInHomeViewModel.tradeInParams.productName?.toLowerCase(
+                            Locale.getDefault()
+                        ).toString()
+                    } else {
+                        ""
+                    }
                 when (state) {
                     PriceState.DIAGNOSED_INVALID -> {
                         tvIndicateive?.visibility = View.GONE
@@ -180,6 +205,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                         mTvInitialPrice?.text = homeResult.displayMessage
                         viewMoneyInPriceGTM(homeResult.displayMessage)
                     }
+
                     PriceState.DIAGNOSED_VALID -> {
                         tvIndicateive?.visibility = View.GONE
                         mTvModelName?.text = homeResult.deviceDisplayName
@@ -188,6 +214,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                         mTvGoToProductDetails?.setOnClickListener { goToHargaFinal(homeResult.deviceDisplayName) }
                         goToHargaFinal(homeResult.deviceDisplayName)
                     }
+
                     PriceState.NOT_DIAGNOSED -> {
                         mTvInitialPrice?.text = homeResult.displayMessage
                         mTvGoToProductDetails?.text = getString(R.string.text_check_functionality)
@@ -196,59 +223,90 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                                 when {
                                     editTextImei?.text?.length == 15 -> {
                                         showProgressBar()
-                                        laku6TradeIn.checkImeiValidation(this, editTextImei?.text.toString())
+                                        tradeInApiService?.checkImeiValidation(
+                                            this,
+                                            editTextImei?.text.toString()
+                                        )
                                     }
+
                                     editTextImei?.text.isNullOrEmpty() -> {
-                                        typographyImeiDescription?.text = getString(R.string.enter_the_imei_number_text)
-                                        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+                                        typographyImeiDescription?.text =
+                                            getString(R.string.enter_the_imei_number_text)
+                                        typographyImeiDescription?.setTextColor(
+                                            MethodChecker.getColor(
+                                                this,
+                                                unifyprinciplesR.color.Unify_RN500
+                                            )
+                                        )
                                     }
+
                                     else -> {
-                                        typographyImeiDescription?.text = getString(R.string.wrong_imei_string)
-                                        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+                                        typographyImeiDescription?.text =
+                                            getString(R.string.wrong_imei_string)
+                                        typographyImeiDescription?.setTextColor(
+                                            MethodChecker.getColor(
+                                                this,
+                                                unifyprinciplesR.color.Unify_RN500
+                                            )
+                                        )
                                     }
                                 }
                             } else {
-                                laku6TradeIn.startGUITest()
+                                tradeInApiService?.startGUITest()
                             }
-                            sendGeneralEvent(clickEvent,
-                                    category,
-                                    MoneyInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
-                                    "")
+                            sendGeneralEvent(
+                                clickEvent,
+                                category,
+                                MoneyInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
+                                ""
+                            )
                         }
                         if (inputImei) {
-                            laku6TradeIn.startGUITest()
+                            tradeInApiService?.startGUITest()
                             return@observe
                         }
                         viewMoneyInPriceGTM(homeResult.deviceDisplayName + " - " + homeResult.displayMessage)
                     }
+
                     PriceState.MONEYIN_ERROR -> {
                         mTvPriceElligible?.text = homeResult.displayMessage
-                        showMessageWithAction(homeResult.displayMessage,
-                                getString(R.string.tradein_return)) { this.finish() }
+                        showMessageWithAction(
+                            homeResult.displayMessage,
+                            getString(R.string.tradein_return)
+                        ) { this.finish() }
                         errorDialogGTMLabel = homeResult.displayMessage
                     }
+
                     else -> {
                     }
                 }
             }
-        })
-        moneyInHomeViewModel.askUserLogin.observe(this, { userLoginStatus: Int? ->
+        }
+        moneyInHomeViewModel.askUserLogin.observe(this) { userLoginStatus: Int? ->
             if (userLoginStatus != null && userLoginStatus == MoneyinConstants.LOGIN_REQUIRED) {
-                navigateToActivityRequest(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST)
+                navigateToActivityRequest(
+                    RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                    LOGIN_REQUEST
+                )
             } else {
                 showPermissionDialog()
             }
-        })
-        moneyInHomeViewModel.imeiStateLiveData.observe(this, { showImei: Boolean ->
+        }
+        moneyInHomeViewModel.imeiStateLiveData.observe(this) { showImei: Boolean ->
             if (showImei) {
                 imeiView?.visibility = View.VISIBLE
             } else {
                 imeiView?.visibility = View.GONE
             }
-        })
+        }
     }
 
-    private fun showDialogFragment(titleText: String?, bodyText: String?, positiveButton: String?, negativeButton: String?) {
+    private fun showDialogFragment(
+        titleText: String?,
+        bodyText: String?,
+        positiveButton: String?,
+        negativeButton: String?
+    ) {
         val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(titleText ?: "")
             setDescription(bodyText ?: "")
@@ -267,55 +325,84 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
     }
 
     private fun sendGoToProductDetailGTM() {
-        sendGeneralEvent(clickEvent,
-                category,
-                MoneyInGTMConstants.ACTION_KEMBALI_KE_DETAIL_PRODUK,
-                "")
+        sendGeneralEvent(
+            clickEvent,
+            category,
+            MoneyInGTMConstants.ACTION_KEMBALI_KE_DETAIL_PRODUK,
+            ""
+        )
     }
 
     private fun viewMoneyInPriceGTM(label: String) {
-        sendGeneralEvent(viewEvent,
-                category,
-                MoneyInGTMConstants.VIEW_PRICE_RANGE_PAGE,
-                label)
+        sendGeneralEvent(
+            viewEvent,
+            category,
+            MoneyInGTMConstants.VIEW_PRICE_RANGE_PAGE,
+            label
+        )
     }
 
     private fun goToHargaFinal(deviceDisplayName: String?) {
         val finalPriceIntent = Intent(this, FinalPriceActivity::class.java)
         val params = moneyInHomeViewModel.tradeInParams
         finalPriceIntent.putExtra(TradeInParams::class.java.simpleName, params)
-        if (deviceDisplayName != null) finalPriceIntent.putExtra(FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE, deviceDisplayName.toLowerCase(Locale.getDefault()))
+        if (deviceDisplayName != null) {
+            finalPriceIntent.putExtra(
+                FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE,
+                deviceDisplayName.toLowerCase(Locale.getDefault())
+            )
+        }
         finalPriceIntent.putExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, MONEYIN)
-        navigateToActivityRequest(finalPriceIntent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE)
+        navigateToActivityRequest(
+            finalPriceIntent,
+            ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE
+        )
     }
 
     private fun getPriceFromSDK(context: Context) {
         var campaignId = MoneyinConstants.CAMPAIGN_ID_PROD
-        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = MoneyinConstants.CAMPAIGN_ID_STAGING
-        laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                TokopediaUrl.getInstance().TYPE == Env.STAGING, TEST_TYPE)
-        laku6TradeIn.setTokopediaTestType(TEST_TYPE)
+        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            campaignId =
+                MoneyinConstants.CAMPAIGN_ID_STAGING
+        }
+        tradeInApiService = TradeInApiService.getInstance(
+            context,
+            campaignId,
+            TokopediaUrl.getInstance().TYPE == Env.STAGING,
+            TEST_TYPE
+        )
+        tradeInApiService?.setTokopediaTestType(TEST_TYPE)
         requestPermission()
     }
 
     private fun requestPermission() {
-        if (!laku6TradeIn.permissionGranted()) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO,
-                    Manifest.permission.READ_MEDIA_AUDIO,
-                    Manifest.permission.CAMERA),
-                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
-            }else{
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA),
-                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
+        if (tradeInApiService?.ispermissionGranted() == false) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_MEDIA_IMAGES,
+                        Manifest.permission.READ_MEDIA_VIDEO,
+                        Manifest.permission.READ_MEDIA_AUDIO,
+                        Manifest.permission.CAMERA
+                    ),
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
+                )
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA
+                    ),
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
+                )
             }
         } else {
-            moneyInHomeViewModel.getMaxPrice(laku6TradeIn)
+            tradeInApiService?.let { moneyInHomeViewModel.getMaxPrice(it) }
         }
     }
 
@@ -348,7 +435,12 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
         return null
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
             if (grantResults.isNotEmpty() && permissions.size == grantResults.size) {
                 for (i in permissions.indices) {
@@ -359,9 +451,15 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                             sendGoToProductDetailGTM()
                             finish()
                         }
-                        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
-                            showMessageWithAction(getString(R.string.tradein_permission_setting),
-                                    getString(com.tokopedia.abstraction.R.string.title_ok)) {
+                        if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                                this,
+                                permissions[i]
+                            )
+                        ) {
+                            showMessageWithAction(
+                                getString(R.string.tradein_permission_setting),
+                                getString(moneyinR.string.money_in_title_ok)
+                            ) {
                                 val intent = Intent()
                                 intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                                 intent.addCategory(Intent.CATEGORY_DEFAULT)
@@ -369,17 +467,21 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                                 this.startActivityForResult(intent, APP_SETTINGS)
                             }
                         } else {
-                            showMessageWithAction(getString(R.string.tradein_requires_permission_for_diagnostic),
-                                    getString(com.tokopedia.abstraction.R.string.title_ok)) { requestPermission() }
+                            showMessageWithAction(
+                                getString(R.string.tradein_requires_permission_for_diagnostic),
+                                getString(moneyinR.string.money_in_title_ok)
+                            ) { requestPermission() }
                         }
                         return
                     }
                 }
                 showProgressBar()
-                moneyInHomeViewModel.getMaxPrice(laku6TradeIn)
+                tradeInApiService?.let { moneyInHomeViewModel.getMaxPrice(it) }
             } else {
-                showMessageWithAction(getString(R.string.tradein_requires_permission_for_diagnostic),
-                        getString(com.tokopedia.abstraction.R.string.title_ok)) { requestPermission() }
+                showMessageWithAction(
+                    getString(R.string.tradein_requires_permission_for_diagnostic),
+                    getString(moneyinR.string.money_in_title_ok)
+                ) { requestPermission() }
             }
         }
     }
@@ -389,13 +491,17 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
         if (intent.getBooleanExtra(TradeInParams.PARAM_PERMISSION_GIVEN, false)) {
             clickAccept()
         } else {
-            showDialogFragment(getString(R.string.tradein_text_request_access),
-                    getString(R.string.tradein_text_permission_description), getString(R.string.money_in_beri_akses), getString(R.string.money_in_kembali))
+            showDialogFragment(
+                getString(R.string.tradein_text_request_access),
+                getString(R.string.tradein_text_permission_description),
+                getString(R.string.money_in_beri_akses),
+                getString(R.string.money_in_kembali)
+            )
         }
     }
 
     private fun showDeviceNotElligiblePopup(messageStringId: Int) {
-        val greenColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        val greenColor = resources.getColor(unifyprinciplesR.color.Unify_GN500)
         val foregroundColorSpan = ForegroundColorSpan(greenColor)
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -436,15 +542,19 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
         if (isShowingPermissionPopup) {
             isShowingPermissionPopup = false
             getPriceFromSDK(this)
-            sendGeneralEvent(clickEvent,
-                    category,
-                    MoneyInGTMConstants.ACTION_CLICK_SETUJU_BUTTON,
-                    MoneyInGTMConstants.BERI_IZIN_PENG_HP)
+            sendGeneralEvent(
+                clickEvent,
+                category,
+                MoneyInGTMConstants.ACTION_CLICK_SETUJU_BUTTON,
+                MoneyInGTMConstants.BERI_IZIN_PENG_HP
+            )
         } else {
-            sendGeneralEvent(clickEvent,
-                    category,
-                    MoneyInGTMConstants.ACTION_CLICK_KEMBALI_BUTTON,
-                    errorDialogGTMLabel)
+            sendGeneralEvent(
+                clickEvent,
+                category,
+                MoneyInGTMConstants.ACTION_CLICK_KEMBALI_BUTTON,
+                errorDialogGTMLabel
+            )
             finish()
         }
     }
@@ -456,10 +566,12 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
             mTvInitialPrice?.text = ""
             mTvGoToProductDetails?.setText(R.string.money_in_request_permission)
             mTvGoToProductDetails?.setOnClickListener { showPermissionDialog() }
-            sendGeneralEvent(clickEvent,
-                    category,
-                    MoneyInGTMConstants.ACTION_CLICK_BATAL_BUTTON,
-                    MoneyInGTMConstants.BERI_IZIN_PENG_HP)
+            sendGeneralEvent(
+                clickEvent,
+                category,
+                MoneyInGTMConstants.ACTION_CLICK_BATAL_BUTTON,
+                MoneyInGTMConstants.BERI_IZIN_PENG_HP
+            )
         }
     }
 
@@ -470,7 +582,12 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
         TradeInUtils.setImeiNumber(this, editTextImei?.text.toString())
         getPriceFromSDK(this)
         typographyImeiDescription?.text = getString(R.string.enter_the_imei_number_text)
-        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+        typographyImeiDescription?.setTextColor(
+            MethodChecker.getColor(
+                this,
+                unifyprinciplesR.color.Unify_NN950_68
+            )
+        )
     }
 
     override fun onError(error: JSONObject) {
@@ -482,7 +599,12 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
             e.printStackTrace()
         }
         typographyImeiDescription?.text = errorMessage
-        typographyImeiDescription?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+        typographyImeiDescription?.setTextColor(
+            MethodChecker.getColor(
+                this,
+                unifyprinciplesR.color.Unify_RN500
+            )
+        )
     }
 
     companion object {
