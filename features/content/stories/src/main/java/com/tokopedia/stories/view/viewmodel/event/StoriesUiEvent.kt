@@ -20,7 +20,6 @@ sealed interface StoriesUiEvent {
     data class ShowInfoEvent(@StringRes val message: Int) : StoriesUiEvent
     data class ErrorGroupPage(val throwable: Throwable, val onClick: () -> Unit): StoriesUiEvent
     data class ErrorDetailPage(val throwable: Throwable, val onClick: () -> Unit): StoriesUiEvent
-    data class OnboardShown(val needToShow: Boolean) : StoriesUiEvent
 
     data class ErrorFetchCaching(val throwable: Throwable): StoriesUiEvent
     data class ErrorSetTracking(val throwable: Throwable): StoriesUiEvent
