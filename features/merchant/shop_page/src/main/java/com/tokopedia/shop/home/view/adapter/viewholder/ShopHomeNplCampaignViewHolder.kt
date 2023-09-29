@@ -126,9 +126,12 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun handleRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
         //If campaign is ongoing, hide Remind Me bell
-        val campaignStatus = model.data?.firstOrNull()?.statusCampaign.orEmpty().lowercase()
-        if (campaignStatus == StatusCampaign.ONGOING.statusCampaign) {
-            hideAllRemindMeLayout()
+        
+        if (GlobalConfig.isSellerApp()) {
+            val campaignStatus = model.data?.firstOrNull()?.statusCampaign.orEmpty().lowercase()
+            if (campaignStatus == StatusCampaign.ONGOING.statusCampaign) {
+                hideAllRemindMeLayout()
+            }
         }
     }
 
