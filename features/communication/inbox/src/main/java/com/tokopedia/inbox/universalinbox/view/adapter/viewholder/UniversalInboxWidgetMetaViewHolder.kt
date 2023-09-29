@@ -3,9 +3,9 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.inbox.databinding.UniversalInboxWidgetMetaItemBinding
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.databinding.UniversalInboxWidgetMetaItemBinding
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxWidgetAdapter
 import com.tokopedia.inbox.universalinbox.view.customview.UniversalInboxWidgetLayoutManager
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
@@ -17,18 +17,18 @@ import com.tokopedia.utils.view.binding.viewBinding
 class UniversalInboxWidgetMetaViewHolder(
     itemView: View,
     private val listener: UniversalInboxWidgetListener
-): BaseViewHolder(itemView) {
+) : AbstractViewHolder<UniversalInboxWidgetMetaUiModel>(itemView) {
 
     private val context = itemView.context
     private val binding: UniversalInboxWidgetMetaItemBinding? by viewBinding()
     private var adapter: UniversalInboxWidgetAdapter? = null
 
-    fun bind(uiModel: UniversalInboxWidgetMetaUiModel) {
+    override fun bind(uiModel: UniversalInboxWidgetMetaUiModel) {
         if (uiModel.widgetList.isNotEmpty()) {
             bindWidgetList(uiModel)
         } else {
-            if (uiModel.isError) {
-                bindWidgetLocalLoad()
+            if (uiModel.widgetError.isError) {
+                bindWidgetLocalLoad(uiModel)
             } else {
                 binding?.inboxLocalLoadWidgetMeta?.hide()
             }
@@ -49,11 +49,12 @@ class UniversalInboxWidgetMetaViewHolder(
         binding?.inboxLocalLoadWidgetMeta?.hide()
     }
 
-    private fun bindWidgetLocalLoad() {
+    private fun bindWidgetLocalLoad(uiModel: UniversalInboxWidgetMetaUiModel) {
         binding?.inboxLocalLoadWidgetMeta?.apply {
-            progressState = false
+            progressState = uiModel.widgetError.isLocalLoadLoading
             refreshBtn?.setOnClickListener {
                 progressState = true
+                uiModel.widgetError.isLocalLoadLoading = true
                 listener.onRefreshWidgetMeta()
             }
             show()

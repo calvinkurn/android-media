@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class TokoFoodHomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class TokoFoodHomeFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
     }
 
@@ -26,9 +26,10 @@ class TokoFoodHomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.basicRecyclerviewInteraction(
+        MacroInteration.basicFlingInteraction(
             MacroIntent.TokoFood.PACKAGE_NAME,
-            MacroIntent.TokoFood.RV_RESOURCE_ID
+            MacroIntent.TokoFood.RV_RESOURCE_ID,
+            flingSpeed = 3000
         )
     }
 

@@ -26,7 +26,6 @@ import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
 import com.tokopedia.productcard.utils.rollenceRemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -420,6 +419,63 @@ data class ProductCardModel (
             getLabelBestSeller() != null -> getLabelBestSeller()
             else -> getLabelGimmick()
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is ProductCardModel
+            && this.productImageUrl == other.productImageUrl
+            && this.isWishlisted == other.isWishlisted
+            && this.isWishlistVisible == other.isWishlistVisible
+            && this.labelPromo == other.labelPromo
+            && this.shopImageUrl == other.shopImageUrl
+            && this.shopName == other.shopName
+            && this.productName == other.productName
+            && this.discountPercentage == other.discountPercentage
+            && this.slashedPrice == other.slashedPrice
+            && this.priceRange == other.priceRange
+            && this.formattedPrice == other.formattedPrice
+            && this.shopBadgeList == other.shopBadgeList
+            && this.shopLocation == other.shopLocation
+            && this.ratingCount == other.ratingCount
+            && this.reviewCount == other.reviewCount
+            && this.labelCredibility == other.labelCredibility
+            && this.labelOffers == other.labelOffers
+            && this.freeOngkir == other.freeOngkir
+            && this.isTopAds == other.isTopAds
+            && this.ratingString == other.ratingString
+            && this.hasThreeDots == other.hasThreeDots
+            && this.labelGroupList == other.labelGroupList
+            && this.hasDeleteProductButton == other.hasDeleteProductButton
+            && this.hasAddToCartButton == other.hasAddToCartButton
+            && this.hasRemoveFromWishlistButton == other.hasRemoveFromWishlistButton
+            && this.pdpViewCount == other.pdpViewCount
+            && this.stockBarLabel == other.stockBarLabel
+            && this.stockBarLabelColor == other.stockBarLabelColor
+            && this.stockBarPercentage == other.stockBarPercentage
+            && this.isOutOfStock == other.isOutOfStock
+            && this.addToCardText == other.addToCardText
+            && this.shopRating == other.shopRating
+            && this.isShopRatingYellow == other.isShopRatingYellow
+            && this.countSoldRating == other.countSoldRating
+            && this.hasNotifyMeButton == other.hasNotifyMeButton
+            && this.labelGroupVariantList == other.labelGroupVariantList
+            && this.addToCartButtonType == other.addToCartButtonType
+            && this.isWideContent == other.isWideContent
+            && this.variant == other.variant
+            && this.nonVariant == other.nonVariant
+            && this.hasSimilarProductButton == other.hasSimilarProductButton
+            && this.hasButtonThreeDotsWishlist == other.hasButtonThreeDotsWishlist
+            && this.hasAddToCartWishlist == other.hasAddToCartWishlist
+            && this.hasSimilarProductWishlist == other.hasSimilarProductWishlist
+            && this.customVideoURL == other.customVideoURL
+            && this.cardInteraction == other.cardInteraction
+            && this.productListType == other.productListType
+            && this.isPortrait == other.isPortrait
+            && this.seeOtherProductText == other.seeOtherProductText
+            && this.isTopStockBar == other.isTopStockBar
+            && this.cardType == other.cardType
+            && this.animateOnPress == other.animateOnPress
+            && this.pageSource == other.pageSource
     }
 
     enum class ProductListType {

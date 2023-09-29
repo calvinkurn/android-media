@@ -13,7 +13,9 @@
         app:typographyType="heading_5"
         android:textColor="@color/Unify_NN950_96"
         android:text="@string/reason_cancel"
-        tools:text="@string/reason_cancel"
+        tools:text="Ingin Mengubah Pesanan Ingin Mengubah Pesanan Ingin Mengubah Pesanan Ingin Mengubah Pesanan "
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@id/ic_green_check"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -30,7 +32,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <View
         android:id="@+id/divider"

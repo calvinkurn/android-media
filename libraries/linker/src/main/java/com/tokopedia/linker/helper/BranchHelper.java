@@ -37,6 +37,9 @@ import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
 import timber.log.Timber;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class BranchHelper {
     static Gson gson = new Gson();
@@ -279,6 +282,25 @@ public class BranchHelper {
             BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
                     .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
                     .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, new JSONArray(searchItems).toString());
+            branchEvent.logEvent(context);
+            saveBranchEvent(branchEvent);
+        }
+    }
+
+    public static void sendSubscribePlusEvent(PaymentData branchIOPayment, Context context, UserData userData){
+        if(context != null){
+            String dateFormatTemplate = "dd/MM/yyyy";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatTemplate, new Locale("in", "ID"));
+            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+
+            BranchEvent branchEvent = new BranchEvent(LinkerConstants.EVENT_GOTO_PLUS_SUBSCRIBE)
+                    .addCustomDataProperty(LinkerConstants.KEY_PAYMENT, branchIOPayment.getPaymentId())
+                    .addCustomDataProperty(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType())
+                    .addCustomDataProperty(LinkerConstants.KEY_USERID, userData.getUserId())
+                    .addCustomDataProperty(LinkerConstants.KEY_CLIENT_TIME_STAMP, currentDateTime)
+                    .addCustomDataProperty(LinkerConstants.KEY_AMOUNT, branchIOPayment.revenue)
+                    .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
+                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
             branchEvent.logEvent(context);
             saveBranchEvent(branchEvent);
         }

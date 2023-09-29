@@ -23,7 +23,7 @@ class CheckoutAnalyticsTest {
     var activityRule = object : IntentsTestRule<ShipmentActivity>(ShipmentActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
         }
     }
 

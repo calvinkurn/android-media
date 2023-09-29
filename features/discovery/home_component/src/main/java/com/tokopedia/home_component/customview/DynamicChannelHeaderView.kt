@@ -6,17 +6,14 @@ import android.graphics.Color
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.header.HeaderLayoutStrategy
-import com.tokopedia.home_component.customview.header.HeaderLayoutStrategyFactory
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.convertDpToPixel
@@ -25,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
+import com.tokopedia.home_component_header.R as home_component_headerR
 
 @Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView")
 class DynamicChannelHeaderView : FrameLayout {
@@ -47,10 +45,10 @@ class DynamicChannelHeaderView : FrameLayout {
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
-            val attributes: TypedArray = context.obtainStyledAttributes(attrs, com.tokopedia.home_component_header.R.styleable.HomeChannelHeaderView)
+            val attributes: TypedArray = context.obtainStyledAttributes(attrs, home_component_headerR.styleable.HomeChannelHeaderView)
         try {
-            headerColorMode = attributes.getInt(com.tokopedia.home_component_header.R.styleable.HomeChannelHeaderView_color_mode, COLOR_MODE_NORMAL)
-            headerCtaMode = attributes.getInt(com.tokopedia.home_component_header.R.styleable.HomeChannelHeaderView_cta_mode, CTA_MODE_SEE_ALL)
+            headerColorMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_color_mode, COLOR_MODE_NORMAL)
+            headerCtaMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_cta_mode, CTA_MODE_SEE_ALL)
         } finally {
             attributes.recycle()
         }
@@ -75,18 +73,20 @@ class DynamicChannelHeaderView : FrameLayout {
     }
 
     private fun init(layoutStrategy: HeaderLayoutStrategy) {
-        inflate(context, layoutStrategy.getLayout(), this).also {
-            channelHeaderContainer = findViewById(com.tokopedia.home_component_header.R.id.channel_title_container)
+        if(channelHeaderContainer == null) {
+            inflate(context, layoutStrategy.getLayout(), this).also {
+                channelHeaderContainer = findViewById(home_component_headerR.id.channel_title_container)
+            }
         }
     }
 
     private fun handleHeaderComponent(channel: ChannelModel) {
-        val stubChannelTitle: View? = findViewById(com.tokopedia.home_component_header.R.id.channel_title)
-        val stubCountDownView: View? = findViewById(com.tokopedia.home_component_header.R.id.count_down)
-        val stubSeeAllButton: View? = findViewById(com.tokopedia.home_component_header.R.id.see_all_button)
-        val stubSeeAllButtonUnify: View? = findViewById(com.tokopedia.home_component_header.R.id.see_all_button_unify)
-        val stubChannelSubtitle: View? = findViewById(com.tokopedia.home_component_header.R.id.channel_subtitle)
-        val stubCtaButton: View? = findViewById(com.tokopedia.home_component_header.R.id.cta_button)
+        val stubChannelTitle: View? = findViewById(home_component_headerR.id.channel_title)
+        val stubCountDownView: View? = findViewById(home_component_headerR.id.count_down)
+        val stubSeeAllButton: View? = findViewById(home_component_headerR.id.see_all_button)
+        val stubSeeAllButtonUnify: View? = findViewById(home_component_headerR.id.see_all_button_unify)
+        val stubChannelSubtitle: View? = findViewById(home_component_headerR.id.channel_subtitle)
+        val stubCtaButton: View? = findViewById(home_component_headerR.id.cta_button)
         channelHeaderContainer?.let { channelHeaderContainer ->
             handleTitle(channel.channelHeader.name, channelHeaderContainer, stubChannelTitle, channel)
             handleSubtitle(channel.channelHeader.subtitle, stubChannelSubtitle, channel)
