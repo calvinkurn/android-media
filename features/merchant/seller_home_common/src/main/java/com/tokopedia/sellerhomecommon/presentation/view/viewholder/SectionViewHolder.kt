@@ -52,17 +52,16 @@ class SectionViewHolder(
     private fun setupTooltip(element: SectionWidgetUiModel) {
         with(binding) {
             element.tooltip?.let { tooltip ->
-                tvSectionTitle.clearUnifyDrawableEnd()
-                tvSectionSubTitle.clearUnifyDrawableEnd()
-
                 val shouldShowTooltip =
                     tooltip.shouldShow && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
-
-                if (!shouldShowTooltip) return
+                if (!shouldShowTooltip) {
+                    tvSectionTitle.clearUnifyDrawableEnd()
+                    return
+                }
 
                 val tooltipAnchor = when {
-                    element.title.isNotBlank() -> tvSectionTitle
-                    element.subtitle.isNotBlank() -> tvSectionSubTitle
+                    tvSectionTitle.isVisible -> tvSectionTitle
+                    tvSectionSubTitle.isVisible -> tvSectionSubTitle
                     else -> return
                 }
 

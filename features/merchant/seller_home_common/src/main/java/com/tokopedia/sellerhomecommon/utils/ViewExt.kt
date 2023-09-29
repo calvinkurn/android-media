@@ -8,7 +8,6 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 18/10/20
@@ -18,7 +17,7 @@ internal const val DP_16 = 16
 
 fun TextView.setUnifyDrawableEnd(
     iconId: Int,
-    colorIcon: Int = context.getResColor(unifyprinciplesR.color.Unify_NN600),
+    colorIcon: Int = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600),
     width: Float = context.dpToPx(DP_16),
     height: Float = context.dpToPx(DP_16)
 ) {
