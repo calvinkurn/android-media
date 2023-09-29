@@ -74,7 +74,6 @@ import com.tokopedia.utils.resources.isDarkMode
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
@@ -661,13 +660,15 @@ class OfferLandingPageFragment :
         }
     }
 
-    override fun onProductCardClicked(productId: Long, productUrl: String) {
+    override fun onProductCardClicked(product: OfferProductListUiModel.Product) {
         tracker.sendClickProductCardEvent(
             currentState.offerIds.toSafeString(),
             currentState.warehouseIds.toSafeString(),
-            currentState.shopData.shopId.toString()
+            currentState.shopData.shopId.toString(),
+            OlpTrackerUtil.generateProductCardImpressionAnalytics(mutableSetOf(product)),
+            currentState.sortName
         )
-        redirectToPDP(productId, productUrl)
+        redirectToPDP(product.productUrl)
     }
 
     override fun onProductImpressed(product: OfferProductListUiModel.Product, position: Int) {
@@ -714,7 +715,8 @@ class OfferLandingPageFragment :
             offerId = currentState.offerIds.toSafeString(),
             warehouseId = currentState.warehouseIds.toSafeString(),
             shopId = currentState.shopData.shopId.toString(),
-            items = analyticsData
+            items = analyticsData,
+            currentState.sortName
         )
         viewModel.clearAvailableProductImpression()
     }
@@ -789,7 +791,7 @@ class OfferLandingPageFragment :
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId.toString())
     }
 
-    private fun redirectToPDP(productId: Long, productUrl: String) {
+    private fun redirectToPDP(productUrl: String) {
         sendProductImpressionTracker()
         RouteManager.route(context, productUrl)
     }
