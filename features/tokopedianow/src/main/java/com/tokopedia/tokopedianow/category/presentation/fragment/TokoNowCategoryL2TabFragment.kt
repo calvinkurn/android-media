@@ -620,7 +620,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 title: String,
                 product: ProductCardCompactCarouselItemUiModel
             ) {
-                viewModel.createProductDetailAppLink(
+                viewModel.routeToProductDetailPage(
                     product.getProductId(),
                     product.appLink
                 )
@@ -680,7 +680,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
             override fun onProductClick(productItemDataView: ProductItemDataView) {
                 val productId = productItemDataView.productCardModel.productId
-                viewModel.createProductDetailAppLink(productId)
+                viewModel.routeToProductDetailPage(productId)
                 analytic.trackProductClick(data.categoryIdL2, productItemDataView)
             }
 

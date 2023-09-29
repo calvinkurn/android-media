@@ -225,17 +225,15 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
-    fun createProductDetailAppLink(productId: String, appLink: String = "") {
-        launch {
-            val uri = appLink.ifEmpty {
-                UriUtil.buildUri(
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    productId
-                )
-            }
-            val affiliateLink = createAffiliateLink(uri)
-            _routeAppLinkLiveData.postValue(affiliateLink)
+    fun routeToProductDetailPage(productId: String, appLink: String = "") {
+        val uri = appLink.ifEmpty {
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productId
+            )
         }
+        val affiliateLink = createAffiliateLink(uri)
+        _routeAppLinkLiveData.postValue(affiliateLink)
     }
 
     fun onOpenFilterPage() {
