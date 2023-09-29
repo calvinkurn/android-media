@@ -9,10 +9,10 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.tokopedianow.category.mapper.CategoryL2TabMapper.addProductCardItems
+import com.tokopedia.tokopedianow.category.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
-import com.tokopedia.tokopedianow.category.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
@@ -22,7 +22,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiMod
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.ProductAdsMapper
 import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L2
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -120,8 +119,6 @@ class TokoNowCategoryL2TabViewModelTestFilter : TokoNowCategoryL2TabViewModelTes
             ),
             tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE
         )
-
-        val feedbackWidget = TokoNowFeedbackWidgetUiModel(isDivider = true)
 
         val expectedVisitableList = mutableListOf(
             quickFilter,
@@ -336,8 +333,9 @@ class TokoNowCategoryL2TabViewModelTestFilter : TokoNowCategoryL2TabViewModelTes
     @Test
     fun `given applyQuickFilter when onRemoveFilter should call get product use case without selected filter option params`() {
         val queryParams = createGetProductQueryParams(categoryIdL1, categoryIdL2)
-        val option = Option(key = "pmin", value = "5000")
-        val filter = Filter(options = listOf(option))
+        val pMinOption = Option(key = "pmin", value = "2000")
+        val pMaxOption = Option(key = "pmax", value = "2000")
+        val filter = Filter(options = listOf(pMinOption, pMaxOption))
 
         val data = CategoryL2TabData(
             categoryIdL1 = categoryIdL1,
@@ -345,8 +343,12 @@ class TokoNowCategoryL2TabViewModelTestFilter : TokoNowCategoryL2TabViewModelTes
         )
 
         viewModel.onViewCreated(data)
-        viewModel.applyQuickFilter(filter, option)
-        viewModel.onRemoveFilter(option)
+
+        viewModel.applyQuickFilter(filter, pMinOption)
+        viewModel.applyQuickFilter(filter, pMaxOption)
+
+        viewModel.onRemoveFilter(pMinOption)
+        viewModel.onRemoveFilter(pMaxOption)
 
         verifyGetProductUseCaseCalled(queryParams)
     }
@@ -435,6 +437,26 @@ class TokoNowCategoryL2TabViewModelTestFilter : TokoNowCategoryL2TabViewModelTes
         viewModel.applyQuickFilter(filter, option)
 
         val queryParams = createGetProductQueryParams(categoryIdL1, categoryIdL2)
+
+        verifyGetProductUseCaseCalled(queryParams)
+    }
+
+    @Test
+    fun `given filter option when applyQuickFilter twice should call get product use case`() {
+        val option = Option(key = "sc", value = "1257")
+        val filter = Filter(options = listOf(option))
+
+        val data = CategoryL2TabData(
+            categoryIdL1 = categoryIdL1,
+            categoryIdL2 = categoryIdL2
+        )
+
+        viewModel.onViewCreated(data)
+        viewModel.applyQuickFilter(filter, option)
+        viewModel.applyQuickFilter(filter, option)
+
+        val queryParams = createGetProductQueryParams(categoryIdL1, categoryIdL2)
+        queryParams["sc"] = "1257"
 
         verifyGetProductUseCaseCalled(queryParams)
     }

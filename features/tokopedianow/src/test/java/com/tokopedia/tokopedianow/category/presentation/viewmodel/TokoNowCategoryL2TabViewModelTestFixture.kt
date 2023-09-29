@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
@@ -27,10 +28,12 @@ import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.AddressMapper
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFeedbackFieldToggleUseCase
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetProductCountUseCase
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetSortFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -40,10 +43,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 
+@OptIn(ExperimentalCoroutinesApi::class)
 open class TokoNowCategoryL2TabViewModelTestFixture {
 
     @get:Rule
@@ -74,13 +79,10 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
     protected val userId = "1941"
     protected val shopId = 10525L
     protected val warehouseId = 1125L
-    protected val uniqueId = "someUniqueId"
 
     protected val categoryTitle = "Bahan Makanan"
     protected val categoryIdL1 = "12556"
     protected val categoryIdL2 = "12557"
-
-    protected val queryParams = mapOf<String, String>()
 
     protected val requestParamsSlot = slot<RequestParams>()
     protected val requestParams by lazy { requestParamsSlot.captured }
@@ -101,13 +103,6 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         postal_code = "1660"
     )
 
-    protected val supportedLayoutTypes = listOf(
-        "featured-product",
-        "product-list-filter",
-        "static-text",
-        "product-list-infinite-scroll"
-    )
-
     protected val getProductResponse = "category/ace-search-product-1-aneka-sayuran.json"
         .jsonToObject<AceSearchProductModel>()
     protected val getProductAdsResponse = "category/get_product_ads_response.json"
@@ -123,6 +118,8 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
     protected val getCategoryListResponse = "category/get_category_list_response.json"
         .jsonToObject<CategoryListResponse>()
 
+    private val uniqueId = "someUniqueId"
+    private val queryParams = mapOf<String, String>()
     private val tickerPage = GetTargetedTickerUseCase.CATEGORY_L2
 
     @Before
@@ -174,30 +171,39 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         onGetWarehouseId_thenReturn(warehouseId)
         onGetAddressData_thenReturn(localCacheModel)
         onGetWarehousesData_thenReturn(warehouses)
+        onGetIsUserLoggedIn_thenReturn(false)
     }
 
-    protected fun onGetUserId_thenReturn(userId: String) {
+    private fun onGetUserId_thenReturn(userId: String) {
         every { userSession.userId } returns userId
+    }
+
+    private fun onGetShopId_thenReturn(shopId: Long) {
+        every { addressData.getShopId() } returns shopId
+    }
+
+    private fun onGetWarehousesData_thenReturn(warehouses: List<WarehouseData>) {
+        every { addressData.getWarehousesData() } returns warehouses
     }
 
     protected fun onGetIsUserLoggedIn_thenReturn(isLoggedIn: Boolean) {
         every { userSession.isLoggedIn } returns isLoggedIn
     }
 
-    protected fun onGetShopId_thenReturn(shopId: Long) {
-        every { addressData.getShopId() } returns shopId
+    protected fun onGetShopId_throwsError() {
+        every { addressData.getShopId() } throws NullPointerException()
     }
 
     protected fun onGetWarehouseId_thenReturn(warehouseId: Long) {
         every { addressData.getWarehouseId() } returns warehouseId
     }
 
-    protected fun onGetWarehousesData_thenReturn(warehouses: List<WarehouseData>) {
-        every { addressData.getWarehousesData() } returns warehouses
-    }
-
     protected fun onGetAddressData_thenReturn(data: LocalCacheModel) {
         every { addressData.getAddressData() } returns data
+    }
+
+    protected fun onGetWarehouseId_throwsError() {
+        every { addressData.getWarehouseId() } throws NullPointerException()
     }
 
     protected fun onGetProductList(
@@ -216,6 +222,10 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         thenReturn: ProductAdsResponse
     ) {
         coEvery { getProductAdsUseCase.execute(withQueryParams) } returns thenReturn
+    }
+
+    protected fun onGetProductAds_throwsError() {
+        coEvery { getProductAdsUseCase.execute(any()) } throws NullPointerException()
     }
 
     protected fun onGetQuickFilter_thenReturn(
@@ -253,6 +263,14 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         coEvery { getCategoryListUseCase.execute(warehouses, 1) } returns response
     }
 
+    protected fun onGetFeedbackToggle_thenReturn(response: GetFeedbackFieldModel.Data) {
+        coEvery { getFeedbackToggleUseCase.execute() } returns response
+    }
+
+    protected fun onGetCategoryList_throwsError() {
+        coEvery { getCategoryListUseCase.execute(warehouses, 1) } throws NullPointerException()
+    }
+
     protected fun onGetProductCount_thenReturn(productCount: String) {
         coEvery {
             getProductCountUseCase.execute(any(), any(), capture(requestParamsSlot))
@@ -277,7 +295,6 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         }
     }
 
-
     protected fun onUpdateCartItem_thenReturn(response: UpdateCartV2Data) {
         coEvery {
             updateCartUseCase.execute(any(), any())
@@ -298,16 +315,28 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         every { affiliateService.createAffiliateLink(any()) } returns affiliateLink
     }
 
+    protected fun setVisitableList(visitableList: List<Visitable<*>>?) {
+        viewModel.mockPrivateField("visitableList", visitableList)
+    }
+
+    private fun verifyGetProductAdsUseCaseCalled(queryParams: Map<String?, Any>) {
+        coVerify { getProductAdsUseCase.execute(queryParams) }
+    }
+
     protected fun verifyGetProductUseCaseCalled(queryParams: Map<String?, Any?>) {
         coVerify { getCategoryProductUseCase.execute(queryParams) }
+    }
+
+    protected fun verifyGetProductUseCaseCalledTwice() {
+        coVerify(exactly = 2) { getCategoryProductUseCase.execute(any()) }
     }
 
     protected fun verifyGetProductUseCaseNotCalled() {
         coVerify(exactly = 0) { getCategoryProductUseCase.execute(any()) }
     }
 
-    protected fun verifyGetProductAdsUseCaseCalled(queryParams: Map<String?, Any>) {
-        coVerify { getProductAdsUseCase.execute(queryParams) }
+    protected fun verifyGetCategoryListUseCaseNotCalled() {
+        coVerify(exactly = 0) { getCategoryListUseCase.execute(warehouses, 1) }
     }
 
     protected fun verifyGetSortFilterUseCaseCalled(
@@ -329,19 +358,27 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
     }
 
     protected fun verifyAddToCartUseCaseCalled() {
-        coVerify { addToCartUseCase.execute(any(), any())  }
+        coVerify { addToCartUseCase.execute(any(), any()) }
     }
 
     protected fun verifyUpdateCartUseCaseCalled() {
-        coVerify { updateCartUseCase.execute(any(), any())  }
+        coVerify { updateCartUseCase.execute(any(), any()) }
     }
 
     protected fun verifyDeleteCartUseCaseCalled() {
-        coVerify { deleteCartUseCase.execute(any(), any())  }
+        coVerify { deleteCartUseCase.execute(any(), any()) }
     }
 
     protected fun verifyCreateAffiliateLinkCalled(withUri: String) {
         verify { affiliateService.createAffiliateLink(withUri) }
+    }
+
+    protected fun verifyGetMiniCartUseCaseCalled() {
+        coVerify { getMiniCartUseCase.executeOnBackground() }
+    }
+
+    protected fun verifyGetMiniCartUseCaseNotCalled() {
+        coVerify(exactly = 0) { getMiniCartUseCase.executeOnBackground() }
     }
 
     protected fun verifyRequestQueryParams(
@@ -421,7 +458,17 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         }
     }
 
-    protected fun createGetCategoryFilterQueryParams(): Map<String?, Any?> {
+    protected fun createGetProductCountRequestParams(mapParameter: Map<String, String>): RequestParams {
+        val getProductCountParams = createRequestQueryParams(rows = 0, page = null)
+        getProductCountParams.putAll(FilterHelper.createParamsWithoutExcludes(mapParameter))
+
+        val getProductCountRequestParams = RequestParams.create()
+        getProductCountRequestParams.putAll(getProductCountParams)
+
+        return getProductCountRequestParams
+    }
+
+    private fun createGetCategoryFilterQueryParams(): Map<String?, Any?> {
         val mapParameter = mutableMapOf<String, String>()
         val categoryFilterQueryParams = mutableMapOf<String?, Any?>()
 
@@ -436,16 +483,6 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
 
         categoryFilterQueryParams.putAll(filterParams)
         return categoryFilterQueryParams
-    }
-
-    protected fun createGetProductCountRequestParams(mapParameter: Map<String, String>): RequestParams {
-        val getProductCountParams = createRequestQueryParams(rows = 0, page = null)
-        getProductCountParams.putAll(FilterHelper.createParamsWithoutExcludes(mapParameter))
-
-        val getProductCountRequestParams = RequestParams.create()
-        getProductCountRequestParams.putAll(getProductCountParams)
-
-        return getProductCountRequestParams
     }
 
     private fun createFilterParams(source: String): MutableMap<String, String> {

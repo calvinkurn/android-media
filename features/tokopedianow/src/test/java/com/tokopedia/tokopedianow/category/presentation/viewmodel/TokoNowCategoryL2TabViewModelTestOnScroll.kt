@@ -40,6 +40,28 @@ class TokoNowCategoryL2TabViewModelTestOnScroll: TokoNowCategoryL2TabViewModelTe
     }
 
     @Test
+    fun `given isAllProductShown true when onScroll should call get product use case twice`() {
+        val searchData = getProductResponse.searchProduct.data.copy(productList = emptyList())
+        val searchProduct = getProductResponse.searchProduct.copy(data = searchData)
+        val emptyProductResponse = getProductResponse.copy(searchProduct)
+
+        val data = CategoryL2TabData(
+            title = categoryTitle,
+            categoryIdL1 = categoryIdL1,
+            categoryIdL2 = categoryIdL2
+        )
+
+        viewModel.onViewCreated(data)
+
+        onGetProductList(thenReturn = emptyProductResponse)
+
+        viewModel.onScroll(true)
+        viewModel.onScroll(true)
+
+        verifyGetProductUseCaseCalledTwice()
+    }
+
+    @Test
     fun `given atTheBottomOfThePage false when onScroll should not call get product use case`() {
         val atTheBottomOfThePage = false
 
