@@ -28,6 +28,7 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
@@ -48,6 +49,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageBottomsheetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
+import com.tokopedia.promousage.di.PromoUsageModule
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
@@ -96,7 +98,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.ConnectException
@@ -165,6 +166,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     @Inject
     lateinit var promoUsageAnalytics: PromoUsageAnalytics
 
+    @Inject
+    lateinit var dispatchers: CoroutineDispatchers
+
     private val viewModel: PromoUsageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PromoUsageViewModel::class.java]
     }
@@ -201,10 +205,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupDependencyInjection() {
         activity?.let {
-            val baseAppComponent = it.application
-            if (baseAppComponent is BaseMainApplication) {
+            val application = it.application
+            if (application is BaseMainApplication) {
                 DaggerPromoUsageComponent.builder()
-                    .baseAppComponent(baseAppComponent.baseAppComponent)
+                    .baseAppComponent(application.baseAppComponent)
+                    .promoUsageModule(PromoUsageModule())
                     .build()
                     .inject(this)
             }
@@ -396,7 +401,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun adjustDummyBackground(items: List<DelegateAdapterItem>) {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(dispatchers.main).launch {
             delay(100L)
             val promoRecommendation = items.getRecommendationItem()
             if (promoRecommendation != null) {
