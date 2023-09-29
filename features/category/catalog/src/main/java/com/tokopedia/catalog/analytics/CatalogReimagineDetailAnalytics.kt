@@ -8,7 +8,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_BUSINESS_UNIT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_CREATIVE_NAME
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_CREATIVE_SLOT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_CURRENT_SITE
-import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_DIMENSION52
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_DIMENSION61
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_ECOMMERCE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_EVENT_ACTION
@@ -122,18 +122,16 @@ object CatalogReimagineDetailAnalytics {
     ) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
-        productMap[KEY_ITEM_BRAND] = CatalogDetailAnalytics.KEYS.NONE_OTHER
         productMap[KEY_ITEM_CATEGORY] = item.categoryId.toString()
         productMap[KEY_ITEM_ID] = item.id
         productMap[CatalogDetailAnalytics.KEYS.LIST] =
             CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
         productMap[KEY_ITEM_NAME] = item.name
-        productMap[KEY_DIMENSION52] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
+        productMap[KEY_DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
         productMap[KEY_INDEX] = position
         productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
             CurrencyFormatHelper.convertRupiahToInt(item.priceString).toString()
         ).toString()
-        productMap[KEY_ITEM_VARIANT] = CatalogDetailAnalytics.KEYS.NONE_OTHER
         list.add(productMap)
 
         val eCommerce = mapOf(
@@ -175,18 +173,16 @@ object CatalogReimagineDetailAnalytics {
     ) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
-        productMap[KEY_ITEM_BRAND] = CatalogDetailAnalytics.KEYS.NONE_OTHER
         productMap[KEY_ITEM_CATEGORY] = item.categoryId.toString()
         productMap[KEY_ITEM_ID] = item.id
         productMap[CatalogDetailAnalytics.KEYS.LIST] =
             CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
         productMap[KEY_ITEM_NAME] = item.name
-        productMap[KEY_DIMENSION52] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
+        productMap[KEY_DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
         productMap[KEY_INDEX] = position
         productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
             CurrencyFormatHelper.convertRupiahToInt(item.priceString).toString()
         ).toString()
-        productMap[KEY_ITEM_VARIANT] = CatalogDetailAnalytics.KEYS.NONE_OTHER
         list.add(productMap)
 
         val eCommerce = mapOf(
@@ -228,9 +224,8 @@ object CatalogReimagineDetailAnalytics {
     ) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
-        productMap[KEY_ITEM_BRAND] = CatalogDetailAnalytics.KEYS.NONE_OTHER
         productMap[KEY_ITEM_CATEGORY] = item.categoryId.toString()
-        productMap[KEY_DIMENSION52] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
+        productMap[KEY_DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
         productMap[KEY_ITEM_ID] = item.id
         productMap[CatalogDetailAnalytics.KEYS.LIST] =
             CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
@@ -239,7 +234,6 @@ object CatalogReimagineDetailAnalytics {
         productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
             CurrencyFormatHelper.convertRupiahToInt(item.priceString).toString()
         ).toString()
-        productMap[KEY_ITEM_VARIANT] = CatalogDetailAnalytics.KEYS.NONE_OTHER
         list.add(productMap)
 
         val eCommerce = mapOf(
