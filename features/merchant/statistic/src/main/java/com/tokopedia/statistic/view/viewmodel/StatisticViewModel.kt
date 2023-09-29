@@ -39,7 +39,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.withContext
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -152,9 +152,9 @@ class StatisticViewModel @Inject constructor(
                     GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getCardDataUseCase.get().executeOnBackground()
             })
-            _cardWidgetData.value = result
+            _cardWidgetData.postValue(result)
         }, onError = {
-            _cardWidgetData.value = Fail(it)
+            _cardWidgetData.postValue(Fail(it))
         })
     }
 
