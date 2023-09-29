@@ -3,6 +3,7 @@ package com.tokopedia.catalogcommon.util
 import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 fun Int?.orDefaultColor(context: Context,default: Int = unifyprinciplesR.color.Unify_N150_20): Int {
@@ -15,6 +16,7 @@ fun String.stringHexColorParseToInt(alphaPercentage:Int = 100): Int {
         val alphaValue: Int = (alphaPercentage * 255) / 100
         Color.argb(alphaValue, Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue))
     }catch (e:Exception){
+        FirebaseCrashlytics.getInstance().recordException(e)
         Color.TRANSPARENT
     }
 }
@@ -24,6 +26,7 @@ fun Int.alphaColor(alphaPercentage:Int = 100): Int {
         val alphaValue: Int = (alphaPercentage * 255) / 100
         Color.argb(alphaValue, Color.red(this), Color.green(this), Color.blue(this))
     }catch (e:Exception){
+        FirebaseCrashlytics.getInstance().recordException(e)
         Color.TRANSPARENT
     }
 }

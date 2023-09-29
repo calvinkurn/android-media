@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlin.math.roundToInt
@@ -163,6 +164,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         try {
             super.onLayout(changed, left, top, right, bottom)
         } catch (e: IndexOutOfBoundsException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 }
