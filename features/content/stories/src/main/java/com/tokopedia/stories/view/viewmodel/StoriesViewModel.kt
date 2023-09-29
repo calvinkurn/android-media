@@ -270,7 +270,7 @@ class StoriesViewModel @AssistedInject constructor(
         val newGroupPosition = mGroupPos.plus(1)
         val newDetailPosition = mDetailPos.plus(1)
 
-        if (isLastStories(newGroupPosition, newDetailPosition)) {
+        if (isNextPositionLastStories(newGroupPosition, newDetailPosition)) {
             viewModelScope.launch {
                 repository.setHasSeenAllStories(args.authorId, args.authorType)
             }
@@ -624,8 +624,8 @@ class StoriesViewModel @AssistedInject constructor(
         }
     }
 
-    private fun isLastStories(groupPos: Int, detailPos: Int): Boolean {
-        return groupPos == mGroupSize && detailPos == mDetailSize - 1
+    private fun isNextPositionLastStories(nextGroupPos: Int, nextDetailPos: Int): Boolean {
+        return nextGroupPos == mGroupSize && nextDetailPos == mDetailSize - 1
     }
 
     companion object {
