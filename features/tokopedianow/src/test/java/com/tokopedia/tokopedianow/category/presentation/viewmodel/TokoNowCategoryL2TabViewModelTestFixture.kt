@@ -207,6 +207,10 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         coEvery { getCategoryProductUseCase.execute(withQueryParams) } returns thenReturn
     }
 
+    protected fun onGetProductList_throwsError() {
+        coEvery { getCategoryProductUseCase.execute(any()) } throws NullPointerException()
+    }
+
     protected fun onGetProductAds(
         withQueryParams: Map<String?, Any> = createGetProductAdsParams(categoryIdL2),
         thenReturn: ProductAdsResponse
@@ -296,6 +300,10 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
 
     protected fun verifyGetProductUseCaseCalled(queryParams: Map<String?, Any?>) {
         coVerify { getCategoryProductUseCase.execute(queryParams) }
+    }
+
+    protected fun verifyGetProductUseCaseNotCalled() {
+        coVerify(exactly = 0) { getCategoryProductUseCase.execute(any()) }
     }
 
     protected fun verifyGetProductAdsUseCaseCalled(queryParams: Map<String?, Any>) {
