@@ -476,7 +476,7 @@ class ShopPageHeaderFragment :
         ShopEtalaseNotFoundBottomSheet.createInstance()
     }
 
-    private val storiesManager by storiesManager(StoriesEntrySource.ShopPage(shopId)) {
+    private val storiesManager by storiesManager({ StoriesEntrySource.ShopPage(shopId) }) {
         setScrollingParent(viewBindingShopContentLayout?.appBarLayout?.parent as? View)
         setAnimationStrategy(com.tokopedia.stories.widget.OneTimeAnimationStrategy())
     }

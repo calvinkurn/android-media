@@ -14,7 +14,7 @@ class StoriesWidgetSampleActivity : BaseActivity() {
         ActivityStoriesWidgetSampleBinding.inflate(layoutInflater)
     }
 
-    private val storiesManager by activityStoriesManager(StoriesEntrySource.ShopPage("12"))
+    private val storiesManager by activityStoriesManager({ StoriesEntrySource.ShopPage("12") })
 
     private val adapter by lazy {
         StoriesWidgetSampleAdapter(storiesManager)

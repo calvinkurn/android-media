@@ -37,10 +37,6 @@ class StoriesWidgetLayout @JvmOverloads constructor(
             if (mState.status == StoriesStatus.NoStories) return@setOnClickListener
             mListener?.onClickedWhenHasStories(this, mState)
         }
-
-        addImpressionListener(ImpressHolder()) {
-            mListener?.onImpressed(this, mState)
-        }
     }
 
     private var mState by Delegates.observable(StoriesWidgetState.Default) { _, _, newProp ->
@@ -83,6 +79,10 @@ class StoriesWidgetLayout @JvmOverloads constructor(
 
     fun setState(onUpdate: (StoriesWidgetState) -> StoriesWidgetState) {
         mState = onUpdate(mState)
+
+        addImpressionListener(ImpressHolder()) {
+            mListener?.onImpressed(this, mState)
+        }
         invalidate()
     }
 

@@ -22,21 +22,21 @@ class StoriesWidgetDelegate<LO : LifecycleOwner>(
 }
 
 fun activityStoriesManager(
-    key: StoriesEntrySource,
+    key: () -> StoriesEntrySource,
     builderOptions: StoriesWidgetManager.Builder.() -> Unit = {},
 ): StoriesWidgetDelegate<AppCompatActivity> {
     return StoriesWidgetDelegate(
         lifecycleBound(
-            { StoriesWidgetManager.create(key, it, builderOptions) }
+            { StoriesWidgetManager.create(key(), it, builderOptions) }
         )
     )
 }
 
 fun storiesManager(
-    key: StoriesEntrySource,
+    key: () -> StoriesEntrySource,
     builderOptions: StoriesWidgetManager.Builder.() -> Unit = {},
 ) = StoriesWidgetDelegate(
     viewLifecycleBound(
-        { StoriesWidgetManager.create(key, it, builderOptions) }
+        { StoriesWidgetManager.create(key(), it, builderOptions) }
     )
 )

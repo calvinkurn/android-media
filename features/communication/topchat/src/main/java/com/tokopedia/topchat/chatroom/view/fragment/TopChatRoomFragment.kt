@@ -316,7 +316,7 @@ open class TopChatRoomFragment :
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
 
-    private val mStoriesWidgetManager by storiesManager(StoriesEntrySource.TopChatRoom(getCommonShopId()))
+    private val mStoriesWidgetManager by storiesManager({ StoriesEntrySource.TopChatRoom(getCommonShopId()) })
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view_chatroom
     override fun getAnalytic(): TopChatAnalytics = analytics

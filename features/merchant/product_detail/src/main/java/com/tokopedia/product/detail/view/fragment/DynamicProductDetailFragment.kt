@@ -577,7 +577,9 @@ open class DynamicProductDetailFragment :
 
     private val compositeSubscription by lazy { CompositeSubscription() }
 
-    private val mStoriesWidgetManager by storiesManager(StoriesEntrySource.ProductDetail(productId.orEmpty())) {
+    private val mStoriesWidgetManager by storiesManager(
+        { StoriesEntrySource.ProductDetail(productId.orEmpty()) }
+    ) {
         setScrollingParent(binding?.rvPdp)
         setAnimationStrategy(NoAnimateAnimationStrategy())
         setShowCoachMarkIfApplicable(false)

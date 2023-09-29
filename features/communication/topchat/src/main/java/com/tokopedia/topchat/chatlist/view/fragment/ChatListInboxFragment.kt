@@ -130,7 +130,11 @@ open class ChatListInboxFragment :
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
-    private var mStoriesWidgetManager: StoriesWidgetManager? = null
+    private val mStoriesWidgetManager by storiesManager(
+        { StoriesEntrySource.TopChatList(userSession.shopId) }
+    ) {
+        setScrollingParent(rv)
+    }
 
     @RoleType
     private var role: Int = RoleType.BUYER
@@ -242,13 +246,7 @@ open class ChatListInboxFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupStoriesWidgetManager()
         setupLifecycleObserver()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mStoriesWidgetManager = null
     }
 
     override fun onScrollToTop() {}
@@ -281,13 +279,6 @@ open class ChatListInboxFragment :
                 stateReport = getOperationalInsightStateReport(visitable.isMaintain)
             )
         }
-    }
-
-    private fun setupStoriesWidgetManager() {
-        mStoriesWidgetManager = StoriesWidgetManager.create(
-            StoriesEntrySource.TopChatList(userSession.shopId),
-            this,
-        ) { setScrollingParent(rv) }
     }
 
     private fun setupLifecycleObserver() {
