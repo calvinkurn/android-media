@@ -69,23 +69,26 @@ object CategoryL2TabMapper {
         categoryIdL2: String,
         tickerData: GetTickerData?
     ) {
-        if(tickerData == null) return
-        val tickerList = tickerData.tickerList
-        val oosTickerList = tickerData.oosTickerList
-        val oosCategoryIds = tickerData.oosCategoryIds
+        if(tickerData != null && !tickerData.isTickerEmpty()) {
+            val tickerList = tickerData.tickerList
+            val oosTickerList = tickerData.oosTickerList
+            val oosCategoryIds = tickerData.oosCategoryIds
 
-        if(oosTickerList.isNotEmpty() && oosCategoryIds.contains(categoryIdL2)) {
-            add(TokoNowTickerUiModel(
-                id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
-                tickers = oosTickerList,
-                hasOutOfStockTicker = true
-            ))
+            if(oosTickerList.isNotEmpty() && oosCategoryIds.contains(categoryIdL2)) {
+                add(TokoNowTickerUiModel(
+                    id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
+                    tickers = oosTickerList,
+                    hasOutOfStockTicker = true
+                ))
+            } else {
+                add(TokoNowTickerUiModel(
+                    id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
+                    tickers = tickerList,
+                    hasOutOfStockTicker = false
+                ))
+            }
         } else {
-            add(TokoNowTickerUiModel(
-                id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
-                tickers = tickerList,
-                hasOutOfStockTicker = false
-            ))
+            removeFirst { it is TokoNowTickerUiModel }
         }
     }
 
