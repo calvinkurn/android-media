@@ -68,9 +68,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
-import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
 import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.Job
@@ -133,6 +131,8 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     private var hasSentViewOspEe = false
 
+    var isCartCheckoutRevamp: Boolean = false
+
     fun getShopId(): String {
         return orderCart.shop.shopId
     }
@@ -158,12 +158,11 @@ class OrderSummaryPageViewModel @Inject constructor(
         gatewayCode: String = "",
         tenor: Int = 0
     ) {
+        promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
-            val isCartReimagine = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
             globalEvent.value = OccGlobalEvent.Normal
-            val result = cartProcessor.getOccCart(source, gatewayCode, tenor, isCartReimagine)
-            val isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
+            val result = cartProcessor.getOccCart(source, gatewayCode, tenor, isCartCheckoutRevamp)
             val isPromoRevamp = PromoUsageRollenceManager().isRevamp(result.orderPromo.lastApply.userGroupMetadata)
             addressState.value = result.addressState
             orderCart = result.orderCart
@@ -283,7 +282,8 @@ class OrderSummaryPageViewModel @Inject constructor(
                     withContext(executorDispatchers.main) {
                         orderPromo.value = orderPromo.value.copy(
                             lastApply = lastApply,
-                            state = OccButtonState.NORMAL
+                            state = OccButtonState.NORMAL,
+                            isDisabled = false
                         )
                     }
                 }

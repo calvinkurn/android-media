@@ -169,8 +169,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -183,6 +185,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.inject.Named
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Listener {
 
@@ -484,7 +487,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
             activity?.window?.decorView?.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
             )
         }
@@ -505,6 +508,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
+        viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).isRevamp()
+
         observeAddressState()
 
         observeOrderShop()
