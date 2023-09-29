@@ -122,6 +122,7 @@
             android:layout_marginRight="16dp"
             android:letterSpacing="0"
             android:textAlignment="center"
+            app:typographyWeight="bold"
             android:textColor="@color/dms_clr_AAB4C8_25"
             android:textSize="64sp"
             app:layout_constraintLeft_toRightOf="@+id/container_product_info_1"
@@ -244,6 +245,7 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="16dp"
                 android:textSize="64sp"
+                app:typographyWeight="bold"
                 android:letterSpacing="0"
                 android:textAlignment="center"
                 android:textColor="@color/dms_clr_AAB4C8_25"
@@ -366,6 +368,7 @@
                 android:layout_marginRight="16dp"
                 android:textSize="64sp"
                 android:letterSpacing="0"
+                app:typographyWeight="bold"
                 android:layout_gravity="right"
                 android:textColor="@color/dms_clr_AAB4C8_25"
                 tools:text="3" />
