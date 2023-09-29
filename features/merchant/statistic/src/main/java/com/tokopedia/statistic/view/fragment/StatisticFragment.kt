@@ -1207,27 +1207,25 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun removeEmptySection() {
         recyclerView?.post {
-            runCatching {
-                val widgetGroups: Map<String, List<BaseWidgetUiModel<*>>> =
-                    adapter.data.groupBy { it.sectionId }
-                val emptySection = mutableListOf<SectionWidgetUiModel>()
-                adapter.data.forEach { widget ->
-                    (widget as? SectionWidgetUiModel)?.let { section ->
-                        val sectionWidgetId = section.id
-                        val isSectionEmpty = widgetGroups[sectionWidgetId].isNullOrEmpty()
-                        if (isSectionEmpty && sectionWidgetId != INVALID_SECTION_WIDGET_ID) {
-                            emptySection.add(section)
-                        }
+            val widgetGroups: Map<String, List<BaseWidgetUiModel<*>>> =
+                adapter.data.groupBy { it.sectionId }
+            val emptySection = mutableListOf<SectionWidgetUiModel>()
+            adapter.data.forEach { widget ->
+                (widget as? SectionWidgetUiModel)?.let { section ->
+                    val sectionWidgetId = section.id
+                    val isSectionEmpty = widgetGroups[sectionWidgetId].isNullOrEmpty()
+                    if (isSectionEmpty && sectionWidgetId != INVALID_SECTION_WIDGET_ID) {
+                        emptySection.add(section)
                     }
                 }
-                if (emptySection.isEmpty()) return@post
+            }
+            if (emptySection.isEmpty()) return@post
 
                 emptySection.forEach {
                     val widgetIndex = adapter.data.indexOf(it)
                     if (widgetIndex != RecyclerView.NO_POSITION) {
-                        adapter.data.remove(it)
-                        adapter.notifyItemRemoved(widgetIndex)
-                    }
+                    adapter.data.remove(it)
+                    adapter.notifyItemRemoved(widgetIndex)
                 }
             }
         }
