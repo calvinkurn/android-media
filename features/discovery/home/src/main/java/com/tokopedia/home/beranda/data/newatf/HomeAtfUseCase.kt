@@ -93,7 +93,7 @@ class HomeAtfUseCase @Inject constructor(
                 Log.d("atfflow", "5. HomeAtfUseCase : observeDynamicPositionFlow $value")
                 if(value != null) {
                     if(value.isDataReady()) {
-                        emitAndSave(value)
+                        launch { emitAndSave(value) }
                         Log.d("atfflow", "5. HomeAtfUseCase : observeDynamicPositionFlow emit $value")
                     }
                     if(value.needToFetchComponents) {
@@ -110,6 +110,7 @@ class HomeAtfUseCase @Inject constructor(
      * To emit latest ATF data and save it to cache
      */
     private suspend fun emitAndSave(value: AtfDataList) {
+        Log.d("atfflow", "emitAndSave: ${value.listAtfData.map { it.atfContent }}")
         _flow.emit(value)
         dynamicPositionRepository.saveLatestAtf(value)
     }
@@ -179,19 +180,21 @@ class HomeAtfUseCase @Inject constructor(
      * Cons: could be heavier to when mapping
      */
     private fun CoroutineScope.observeAtfComponentFlow() {
-        val allFlows: List<Flow<Any?>> = listOf(dynamicPositionRepository.flow) + atfFlows
-        Log.d("atfflow", "observeAtfComponentFlow: ${atfFlows.joinToString(",") { it.toString() }}")
-        combine(allFlows) { list ->
-            val dynamicPos = list[0] as? AtfDataList
-            val listAtfData = list.drop(1) as List<AtfData?>
-            Log.d("atfflow", "7. HomeAtfUseCase : observeAtfComponentFlow: dynamic pos $dynamicPos\n" +
-                "${listAtfData.joinToString("\n"){ it.toString() }}")
-            if(dynamicPos != null && !dynamicPos.isCache) {
-                val latest = dynamicPos.updateAtfContents(listAtfData)
-                _flow.emit(latest)
-                Log.d("atfflow", "7. HomeAtfUseCase : observeAtfComponentFlow: emit $latest")
-            }
-        }.launchIn(this)
+        launch {
+            val allFlows: List<Flow<Any?>> = listOf(dynamicPositionRepository.flow) + atfFlows
+            Log.d("atfflow", "observeAtfComponentFlow: ${atfFlows.joinToString(",") { it.toString() }}")
+            combine(allFlows) { list ->
+                val dynamicPos = list[0] as? AtfDataList
+                val listAtfData = list.drop(1) as List<AtfData?>
+                Log.d("atfflow", "7. HomeAtfUseCase : observeAtfComponentFlow: dynamic pos $dynamicPos\n" +
+                    "${listAtfData.joinToString("\n"){ it.toString() }}")
+                if(dynamicPos != null && dynamicPos.status == AtfDataList.STATUS_SUCCESS && dynamicPos.listAtfData.isNotEmpty() && !dynamicPos.isCache) {
+                    val latest = dynamicPos.updateAtfContents(listAtfData)
+                    launch { emitAndSave(latest) }
+                    Log.d("atfflow", "7. HomeAtfUseCase : observeAtfComponentFlow: emit $latest")
+                }
+            }.launchIn(this)
+        }
     }
 
     /**
@@ -199,18 +202,17 @@ class HomeAtfUseCase @Inject constructor(
      */
     private suspend fun getEachAtfComponentData(value: AtfDataList) {
         Log.d("atfflow", "6. HomeAtfUseCase - getEachAtfComponentData: ")
-        value.listAtfData.forEach { data ->
-            coroutineScope {
-                // launch new job for each components to run in parallel because getData is a suspend function
-                launch(homeDispatcher.io) {
+        coroutineScope {
+            launch {
+                value.listAtfData.forEach { data ->
                     val metadata = data.atfMetadata
                     when(metadata.component) {
-                        AtfKey.TYPE_BANNER -> homepageBannerRepository.getData(metadata)
-                        AtfKey.TYPE_ICON -> dynamicIconRepository.getData(metadata)
-                        AtfKey.TYPE_TICKER -> tickerRepository.getData(metadata)
-                        AtfKey.TYPE_CHANNEL -> atfChannelRepository.getData(metadata)
-                        AtfKey.TYPE_MISSION -> missionWidgetRepository.getData(metadata)
-                        AtfKey.TYPE_TODO -> todoWidgetRepository.getData(metadata)
+                        AtfKey.TYPE_BANNER -> launch { homepageBannerRepository.getData(metadata) }
+                        AtfKey.TYPE_ICON -> launch { dynamicIconRepository.getData(metadata) }
+                        AtfKey.TYPE_TICKER -> launch { tickerRepository.getData(metadata) }
+                        AtfKey.TYPE_CHANNEL -> launch { atfChannelRepository.getData(metadata) }
+                        AtfKey.TYPE_MISSION -> launch { missionWidgetRepository.getData(metadata) }
+                        AtfKey.TYPE_TODO -> launch { todoWidgetRepository.getData(metadata) }
                     }
                 }
             }

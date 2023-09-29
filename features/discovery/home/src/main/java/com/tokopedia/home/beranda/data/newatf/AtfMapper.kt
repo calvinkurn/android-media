@@ -61,6 +61,7 @@ object AtfMapper {
         data: AtfData,
     ): AtfCacheEntity {
         return AtfCacheEntity(
+            id = data.atfMetadata.id,
             position = data.atfMetadata.position,
             name = data.atfMetadata.name,
             component = data.atfMetadata.component,

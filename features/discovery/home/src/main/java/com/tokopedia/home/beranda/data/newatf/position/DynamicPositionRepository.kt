@@ -37,7 +37,7 @@ class DynamicPositionRepository @Inject constructor(
      *      - If cached position == remote position:
      *          - Merged the two by inserting cached ATF content to remote position
      *          - Expose the combined flow to collector
-     *      = If different, then expose remote dynamic position (without content)
+     *      - If different, then expose remote dynamic position (without content)
      */
     val flow: Flow<AtfDataList?> = combine(cacheFlow, remoteFlow) { cache, remote ->
         if(cache != null && remote != null) {
@@ -101,6 +101,9 @@ class DynamicPositionRepository @Inject constructor(
      * Save complete ATF list to cache
      */
     suspend fun saveLatestAtf(value: AtfDataList) {
-        atfDao.saveLatestAtf(value.listAtfData.map(AtfMapper::mapDomainToCacheEntity))
+        Log.d("atfflow", "saveLatestAtf: value $value")
+        val a = value.listAtfData.map(AtfMapper::mapDomainToCacheEntity)
+        atfDao.saveLatestAtf(a)
+        Log.d("atfflow", "saveLatestAtf: $a")
     }
 }

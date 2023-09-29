@@ -187,18 +187,20 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
     @FlowPreview
     @ExperimentalCoroutinesApi
     fun getNewHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
         val headerFlow = homeHeaderUseCase.flow.map {
-            homeHeaderUseCase.updateBalanceWidget()
             HomeDynamicChannelModel(
                 list = listOf(it)
             )
         }
+        coroutineScope.launch { homeHeaderUseCase.updateBalanceWidget() }
 
         val atfFlow = homeAtfUseCase.flow.map {
-            Log.d("atfflow", "homeAtfUseCase.flow: $it")
+            Log.d("atfflow", "COMBINE FLOW: ATF: $it")
             HomeDynamicChannelModel(
                 list = it?.mapToVisitableList().orEmpty(),
                 isCache = it?.isCache.orTrue()
@@ -207,7 +209,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
         val dynamicChannelFlow = getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
             getDynamicChannelFlow(it, true)
-        }
+        }.onStart { emit(HomeDynamicChannelModel(isCache = true)) }
 
         return combine(headerFlow, atfFlow, dynamicChannelFlow) { header, atf, dc ->
             val combinedList = header.list + atf.list + dc.list
@@ -216,7 +218,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 "atfflow",
                 "================================================================================================================================================================\n" +
                 "RESULT:\n" +
-                "Header: ${header.list.joinToString(", ") { it::class.java.simpleName }}\n" +
                 "ATF   : ${atf.list.joinToString(", ") { it::class.java.simpleName }}\n" +
                 "DC    : ${dc.list.joinToString(", ") { it::class.java.simpleName }}\n" +
                 "================================================================================================================================================================"

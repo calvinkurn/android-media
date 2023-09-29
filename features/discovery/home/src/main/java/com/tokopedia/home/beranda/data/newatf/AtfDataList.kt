@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.newatf
 
+import android.util.Log
 import com.tokopedia.home.constant.AtfKey
 
 data class AtfDataList(
@@ -57,11 +58,14 @@ data class AtfDataList(
 //                newList[index] = data
 //            }
 //        }
+        Log.d("atfflow", "updateAtfContents: $listAtfData\n${newDataList}")
 
         val newList = listAtfData.map { currentData ->
-            newDataList.find { it?.atfMetadata == currentData.atfMetadata }
-                ?: currentData
+            newDataList.find { it?.atfMetadata == currentData.atfMetadata }?.takeIf {
+                it.atfContent != null
+            } ?: currentData
         }
+        Log.d("atfflow", "updateAtfContents: result $newList")
 
         return this.copy(listAtfData = newList)
     }
@@ -75,7 +79,7 @@ data class AtfDataList(
 //    }
 
     fun isDataReady(): Boolean {
-        return (this.status == STATUS_SUCCESS &&
+        return (this.status == STATUS_SUCCESS && this.listAtfData.isNotEmpty() &&
             this.listAtfData.all { it.atfStatus != AtfKey.STATUS_LOADING })
     }
 }
