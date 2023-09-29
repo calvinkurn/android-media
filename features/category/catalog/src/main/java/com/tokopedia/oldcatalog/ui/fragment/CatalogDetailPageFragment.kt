@@ -134,7 +134,9 @@ class CatalogDetailPageFragment :
     private var mProductsCountText: Typography? = null
     private var mToTopLayout: LinearLayout ? = null
 
-    private lateinit var userSession: UserSession
+    private val userSession: UserSession by lazy {
+        UserSession(activity)
+    }
 
     private val catalogAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { CatalogDetailAdapterFactoryImpl(this) }
 
@@ -187,7 +189,6 @@ class CatalogDetailPageFragment :
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
         activity?.let { observer ->
-            userSession = UserSession(observer)
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
             catalogDetailPageViewModel.getProductCatalog(catalogId, comparisonCatalogId, userSession.userId, CatalogConstant.DEVICE)
