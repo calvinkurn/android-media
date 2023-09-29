@@ -103,8 +103,8 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK(relaxed = true)
     lateinit var getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase
 
-    @MockK(relaxed = true)
-    lateinit var getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper
+    private var getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper =
+        PromoUsageGetPromoListRecommendationMapper()
 
     @MockK(relaxed = true)
     lateinit var chosenAddressRequestHelper: ChosenAddressRequestHelper
