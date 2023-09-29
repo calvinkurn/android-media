@@ -499,12 +499,12 @@ class StoriesViewModel @AssistedInject constructor(
                     if (it == mGroupItem) {
                         it.copy(
                             detail = it.detail.copy(
-//                                detailItems = it.detail.detailItems.filterNot { item ->
-//                                    item.id == storyId
-//                                },
                                 detailItems = it.detail.detailItems.map { item ->
-                                    if (item.id == storyId) item.copy(status = StoriesDetailItem.StoryStatus.Removed)
-                                    else item
+                                    if (item.id == storyId) {
+                                        item.copy(status = StoriesDetailItem.StoryStatus.Removed)
+                                    } else {
+                                        item
+                                    }
                                 }
                             )
                         )
