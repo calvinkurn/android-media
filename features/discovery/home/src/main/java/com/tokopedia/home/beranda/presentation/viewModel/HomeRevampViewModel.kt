@@ -70,7 +70,6 @@ import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -104,7 +103,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>,
     private val homeRateLimit: RateLimiter<String>,
     private val homeRemoteConfigController: HomeRemoteConfigController,
-    private val homeAtfUseCase: HomeAtfUseCase,
+    private val homeAtfUseCase: HomeAtfUseCase
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -169,9 +168,11 @@ open class HomeRevampViewModel @Inject constructor(
     var isFirstLoad = true
 
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
-        return if(homeRemoteConfigController.isUsingNewAtf()) {
+        return if (homeRemoteConfigController.isUsingNewAtf()) {
             homeUseCase.get().getNewHomeDataFlow().flowOn(homeDispatcher.get().io)
-        } else homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
+        } else {
+            homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
+        }
     }
 
     var getHomeDataJob: Job? = null
@@ -304,6 +305,15 @@ open class HomeRevampViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
                 Log.d("atfflow", "initFlow: 1")
+                if (homeNewDataModel?.isAtfError == true) {
+                    _updateNetworkLiveData.postValue(
+                        Result.errorGeneral(
+                            error = Throwable("Atf is error"),
+                            data = null
+                        )
+                    )
+                    HomeServerLogger.warning_error_flow(Throwable("Atf is error"))
+                }
                 if (homeNewDataModel?.isCache == false) {
                     Log.d("atfflow", "initFlow: 2")
                     _isRequestNetworkLiveData.postValue(Event(false))
@@ -408,7 +418,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun getRecommendationWidget(
         selectedChipProduct: BestSellerChipProductDataModel,
         currentDataModel: BestSellerRevampDataModel,
-        scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION,
+        scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION
     ) {
         if (selectedChipProduct.productModelList.isNotEmpty()) return
 
@@ -420,7 +430,7 @@ open class HomeRevampViewModel @Inject constructor(
                         visitable = homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
                             currentBestSellerDataModel = currentDataModel,
                             selectedFilterChip = selectedChipProduct.chip,
-                            scrollDirection = scrollDirection,
+                            scrollDirection = scrollDirection
                         ),
                         visitableToChange = currentDataModel,
                         position = index

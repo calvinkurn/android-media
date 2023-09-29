@@ -24,7 +24,7 @@ data class AtfDataList(
 
     fun copyAtfContentsFrom(atfDataList: AtfDataList): AtfDataList {
         val atfContents = atfDataList.listAtfData.map { it.atfContent }
-        if(atfContents.size != listAtfData.size) return this
+        if (atfContents.size != listAtfData.size) return this
         val newDynamicPosition = listAtfData.zip(atfContents) { data, atfContent ->
             data.copy(atfContent = atfContent)
         }
@@ -58,7 +58,7 @@ data class AtfDataList(
 //                newList[index] = data
 //            }
 //        }
-        Log.d("atfflow", "updateAtfContents: $listAtfData\n${newDataList}")
+        Log.d("atfflow", "updateAtfContents: $listAtfData\n$newDataList")
 
         val newList = listAtfData.map { currentData ->
             newDataList.find { it?.atfMetadata == currentData.atfMetadata }?.takeIf {
@@ -79,7 +79,13 @@ data class AtfDataList(
 //    }
 
     fun isDataReady(): Boolean {
-        return (this.status == STATUS_SUCCESS && this.listAtfData.isNotEmpty() &&
-            this.listAtfData.all { it.atfStatus != AtfKey.STATUS_LOADING })
+        return (
+            this.status == STATUS_SUCCESS && this.listAtfData.isNotEmpty() &&
+                this.listAtfData.all { it.atfStatus != AtfKey.STATUS_LOADING }
+            )
+    }
+
+    fun isDataError(): Boolean {
+        return (this.status == STATUS_ERROR)
     }
 }

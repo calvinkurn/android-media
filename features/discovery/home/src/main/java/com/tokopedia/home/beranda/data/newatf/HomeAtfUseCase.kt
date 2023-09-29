@@ -16,12 +16,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,7 +31,7 @@ class HomeAtfUseCase @Inject constructor(
     private val tickerRepository: TickerRepository,
     private val atfChannelRepository: AtfChannelRepository,
     private val missionWidgetRepository: MissionWidgetRepository,
-    private val todoWidgetRepository: TodoWidgetRepository,
+    private val todoWidgetRepository: TodoWidgetRepository
 ) {
     var job: Job? = null
 
@@ -48,7 +45,7 @@ class HomeAtfUseCase @Inject constructor(
         dynamicIconRepository.flow,
         missionWidgetRepository.flow,
         todoWidgetRepository.flow,
-        atfChannelRepository.flow,
+        atfChannelRepository.flow
     )
 
     /**
@@ -57,7 +54,7 @@ class HomeAtfUseCase @Inject constructor(
     suspend fun fetchAtfDataList() {
         Log.d("atfflow", "3. HomeAtfUseCase - fetchAtfDataList")
         coroutineScope {
-            //only fetch dynamic position on first load
+            // only fetch dynamic position on first load
             job = launch(homeDispatcher.io) {
                 dynamicPositionRepository.getData()
             }
@@ -69,16 +66,13 @@ class HomeAtfUseCase @Inject constructor(
     /**
      * Refresh ATF data (remote only)
      */
-    suspend fun refreshData() {
+    suspend fun refreshData(): Boolean {
         Log.d("atfflow", "refreshData: ")
         coroutineScope {
-            if(job?.isActive != true) {
-                Log.d("atfflow", "refreshData: should not be called unless job is done")
-                job = launch(homeDispatcher.io) {
-                    dynamicPositionRepository.getRemoteData()
-                }
-            }
+            Log.d("atfflow", "refreshData: should not be called unless job is done")
+            return@coroutineScope dynamicPositionRepository.getRemoteData()
         }
+        return false
     }
 
     /**
@@ -91,15 +85,18 @@ class HomeAtfUseCase @Inject constructor(
         launch(homeDispatcher.io) {
             dynamicPositionRepository.flow.collect { value ->
                 Log.d("atfflow", "5. HomeAtfUseCase : observeDynamicPositionFlow $value")
-                if(value != null) {
-                    if(value.isDataReady()) {
+                if (value != null) {
+                    if (value.isDataReady()) {
                         launch { emitAndSave(value) }
                         Log.d("atfflow", "5. HomeAtfUseCase : observeDynamicPositionFlow emit $value")
                     }
-                    if(value.needToFetchComponents) {
+                    if (value.needToFetchComponents) {
                         launch(homeDispatcher.io) {
                             getEachAtfComponentData(value)
                         }
+                    }
+                    if (value.isDataError()) {
+                        launch { _flow.emit(value) }
                     }
                 }
             }
@@ -186,9 +183,12 @@ class HomeAtfUseCase @Inject constructor(
             combine(allFlows) { list ->
                 val dynamicPos = list[0] as? AtfDataList
                 val listAtfData = list.drop(1) as List<AtfData?>
-                Log.d("atfflow", "7. HomeAtfUseCase : observeAtfComponentFlow: dynamic pos $dynamicPos\n" +
-                    "${listAtfData.joinToString("\n"){ it.toString() }}")
-                if(dynamicPos != null && dynamicPos.status == AtfDataList.STATUS_SUCCESS && dynamicPos.listAtfData.isNotEmpty() && !dynamicPos.isCache) {
+                Log.d(
+                    "atfflow",
+                    "7. HomeAtfUseCase : observeAtfComponentFlow: dynamic pos $dynamicPos\n" +
+                        "${listAtfData.joinToString("\n"){ it.toString() }}"
+                )
+                if (dynamicPos != null && dynamicPos.status == AtfDataList.STATUS_SUCCESS && dynamicPos.listAtfData.isNotEmpty() && !dynamicPos.isCache) {
                     val latest = dynamicPos.updateAtfContents(listAtfData)
                     launch { emitAndSave(latest) }
                     Log.d("atfflow", "7. HomeAtfUseCase : observeAtfComponentFlow: emit $latest")
@@ -206,7 +206,7 @@ class HomeAtfUseCase @Inject constructor(
             launch {
                 value.listAtfData.forEach { data ->
                     val metadata = data.atfMetadata
-                    when(metadata.component) {
+                    when (metadata.component) {
                         AtfKey.TYPE_BANNER -> launch { homepageBannerRepository.getData(metadata) }
                         AtfKey.TYPE_ICON -> launch { dynamicIconRepository.getData(metadata) }
                         AtfKey.TYPE_TICKER -> launch { tickerRepository.getData(metadata) }
@@ -273,13 +273,13 @@ class HomeAtfUseCase @Inject constructor(
 //                    }
 //                }
 //                val needToFetchComponents = !currentAtfList?.positionEquals(newDynamicPosition?.listAtfData).orFalse()
-////                if(needToFetchComponents) {
-////                    launch { getEachAtfComponentData(it) }
-////                }
+// //                if(needToFetchComponents) {
+// //                    launch { getEachAtfComponentData(it) }
+// //                }
 //            }
 //            newDynamicPosition?.let {
 //                _flow.emit(newDynamicPosition)
-////                Log.d("atfflow", "5. HomeAtfUseCase - combineAtfFlows. RESULT: need to fetch all: $needToFetchComponents | new data: $newData")
+// //                Log.d("atfflow", "5. HomeAtfUseCase - combineAtfFlows. RESULT: need to fetch all: $needToFetchComponents | new data: $newData")
 //            }
 //        }.launchIn(this)
 //    }
@@ -319,7 +319,7 @@ class HomeAtfUseCase @Inject constructor(
 //                        //if returns different positions, update the whole position
 //                        //and fetch data for each
 //                        launch { updateDynamicPosition(value) }
-////                        launch { getEachAtfComponentData(value) }
+// //                        launch { getEachAtfComponentData(value) }
 //                    }
 //                }
 //            }
@@ -350,26 +350,26 @@ class HomeAtfUseCase @Inject constructor(
 //            }
 //        }
 //
-////        launch {
-////            val allFlows: List<StateFlow<Any?>> = listOf(flow) + atfFlows
-////            combine(allFlows) { list ->
-////                val dynamicPos = list[0] as? AtfDataList
-////                val listAtfData = list.drop(1) as List<AtfData?>
-////                val hasAllAtfComplete = listAtfData.all { it == null || it.atfContent != null }
-////                if(dynamicPos != null && !dynamicPos.isCache && hasAllAtfComplete) {
-////                    dynamicPos.let { currentAtf ->
-////                        val newList = currentAtf.listAtfData.toMutableList()
-////                        listAtfData.forEach { atfData ->
-////                            val model = currentAtf.listAtfData.find { it.atfMetadata == atfData?.atfMetadata } ?: return@combine
-////                            val index = currentAtf.listAtfData.indexOf(model)
-////                            newList[index] = model.copy(atfContent = atfData?.atfContent)
-////                        }
-////                        val newModel = currentAtf.copy(listAtfData = newList)
-////                        _flow.emit(newModel)
-////                    }
-////                }
-////            }.launchIn(this)
-////        }
+// //        launch {
+// //            val allFlows: List<StateFlow<Any?>> = listOf(flow) + atfFlows
+// //            combine(allFlows) { list ->
+// //                val dynamicPos = list[0] as? AtfDataList
+// //                val listAtfData = list.drop(1) as List<AtfData?>
+// //                val hasAllAtfComplete = listAtfData.all { it == null || it.atfContent != null }
+// //                if(dynamicPos != null && !dynamicPos.isCache && hasAllAtfComplete) {
+// //                    dynamicPos.let { currentAtf ->
+// //                        val newList = currentAtf.listAtfData.toMutableList()
+// //                        listAtfData.forEach { atfData ->
+// //                            val model = currentAtf.listAtfData.find { it.atfMetadata == atfData?.atfMetadata } ?: return@combine
+// //                            val index = currentAtf.listAtfData.indexOf(model)
+// //                            newList[index] = model.copy(atfContent = atfData?.atfContent)
+// //                        }
+// //                        val newModel = currentAtf.copy(listAtfData = newList)
+// //                        _flow.emit(newModel)
+// //                    }
+// //                }
+// //            }.launchIn(this)
+// //        }
 //    }
 //
 //    private fun CoroutineScope.combineAtfFlows() {
@@ -426,61 +426,61 @@ class HomeAtfUseCase @Inject constructor(
 //                }
 //            }
 //
-////            flow.value?.let { currentAtfList ->
-////                if(newDynamicPosition != null) {
-////                    // if remote comes earlier than cache
-////                    if(!currentAtfList.isCache && newDynamicPosition.isCache) {
-////                        currentAtfList
-////                    } else {
-////                        val isSamePosition = currentAtfList.positionEquals(newDynamicPosition.listAtfData)
-////                        // if remote has the same position as cache,
-////                        // then set isDifferentPosition to false to avoid re-fetching data for each atf components
-////                        // if remote has different position as cache,
-////                        // set isDifferentPosition to true to re-fetch data for each atf components
-////                        newAtfList = if(isSamePosition) {
-////                            currentAtfList.copy(
-////                                isCache = false,
-////                                isLatestData = true,
-////                            )
-////                        } else {
-////                            currentAtfList.updateMetaData(
-////                                isCache = false,
-////                                isLatestData = false,
-////                                listAtfMetadata = newDynamicPosition.listAtfData.map { it.atfMetadata },
-////                            )
-////                        }
-////                        _flow.emit(newAtfList)
-////                        return@combine
-////                    }
-////                }
-////            }
+// //            flow.value?.let { currentAtfList ->
+// //                if(newDynamicPosition != null) {
+// //                    // if remote comes earlier than cache
+// //                    if(!currentAtfList.isCache && newDynamicPosition.isCache) {
+// //                        currentAtfList
+// //                    } else {
+// //                        val isSamePosition = currentAtfList.positionEquals(newDynamicPosition.listAtfData)
+// //                        // if remote has the same position as cache,
+// //                        // then set isDifferentPosition to false to avoid re-fetching data for each atf components
+// //                        // if remote has different position as cache,
+// //                        // set isDifferentPosition to true to re-fetch data for each atf components
+// //                        newAtfList = if(isSamePosition) {
+// //                            currentAtfList.copy(
+// //                                isCache = false,
+// //                                isLatestData = true,
+// //                            )
+// //                        } else {
+// //                            currentAtfList.updateMetaData(
+// //                                isCache = false,
+// //                                isLatestData = false,
+// //                                listAtfMetadata = newDynamicPosition.listAtfData.map { it.atfMetadata },
+// //                            )
+// //                        }
+// //                        _flow.emit(newAtfList)
+// //                        return@combine
+// //                    }
+// //                }
+// //            }
 //
-////            if(value != null) {
-////                //if dynamic position remains the same, only update the source
-////                if(flow.value?.hasSamePosition(value.listAtfData) == true) {
-////                    launch { updateSourceOnly(value.isCache) }
-////                } else {
-////                    //if returns different positions, update the whole position
-////                    //and fetch data for each
-////                    launch { updateDynamicPosition(value) }
-//////                        launch { getEachAtfComponentData(value) }
-////                }
-////            }
+// //            if(value != null) {
+// //                //if dynamic position remains the same, only update the source
+// //                if(flow.value?.hasSamePosition(value.listAtfData) == true) {
+// //                    launch { updateSourceOnly(value.isCache) }
+// //                } else {
+// //                    //if returns different positions, update the whole position
+// //                    //and fetch data for each
+// //                    launch { updateDynamicPosition(value) }
+// ////                        launch { getEachAtfComponentData(value) }
+// //                }
+// //            }
 //
 //
-////            val hasAllAtfComplete = listAtfData.all { it == null || it.atfContent != null }
-////            if(dynamicPos != null && !dynamicPos.isCache && hasAllAtfComplete) {
-////                dynamicPos.let { currentAtf ->
-////                    val newList = currentAtf.listAtfData.toMutableList()
-////                    listAtfData.forEach { atfData ->
-////                        val model = currentAtf.listAtfData.find { it.atfMetadata == atfData?.atfMetadata } ?: return@combine
-////                        val index = currentAtf.listAtfData.indexOf(model)
-////                        newList[index] = model.copy(atfContent = atfData?.atfContent)
-////                    }
-////                    val newModel = currentAtf.copy(listAtfData = newList)
-////                    _flow.emit(newModel)
-////                }
-////            }
+// //            val hasAllAtfComplete = listAtfData.all { it == null || it.atfContent != null }
+// //            if(dynamicPos != null && !dynamicPos.isCache && hasAllAtfComplete) {
+// //                dynamicPos.let { currentAtf ->
+// //                    val newList = currentAtf.listAtfData.toMutableList()
+// //                    listAtfData.forEach { atfData ->
+// //                        val model = currentAtf.listAtfData.find { it.atfMetadata == atfData?.atfMetadata } ?: return@combine
+// //                        val index = currentAtf.listAtfData.indexOf(model)
+// //                        newList[index] = model.copy(atfContent = atfData?.atfContent)
+// //                    }
+// //                    val newModel = currentAtf.copy(listAtfData = newList)
+// //                    _flow.emit(newModel)
+// //                }
+// //            }
 //        }.launchIn(this)
 //    }
 //
