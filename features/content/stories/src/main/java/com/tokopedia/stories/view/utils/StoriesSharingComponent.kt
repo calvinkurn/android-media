@@ -13,7 +13,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 class StoriesSharingComponent(rootView: View) {
     private var mListener: Listener? = null
 
-    private val sharingSheet =
+    private val universalShareBottomSheet =
         UniversalShareBottomSheet.createInstance(rootView).apply {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -37,22 +37,28 @@ class StoriesSharingComponent(rootView: View) {
         userId: String,
         storyId: String
     ) {
-        sharingSheet.setMetaData(
-            tnImage = data.metadata.ogImageUrl,
-            tnTitle = data.metadata.ogTitle,
-        )
-        sharingSheet.setLinkProperties(data.metadata)
-        sharingSheet.setUtmCampaignData(
-            pageName = "Story",
-            userId = userId,
-            pageId = storyId,
-            feature = "share",
-        )
-        sharingSheet.setOnDismissListener { mListener?.onDismissEvent(false, this@StoriesSharingComponent) }
-        sharingSheet.setShowListener { mListener?.onShowSharing(this@StoriesSharingComponent) }
+        universalShareBottomSheet.apply {
+            setMetaData(
+                tnImage = data.metadata.ogImageUrl,
+                tnTitle = data.metadata.ogTitle
+            )
+            setLinkProperties(data.metadata)
+            setUtmCampaignData(
+                pageName = "Story",
+                userId = userId,
+                pageId = storyId,
+                feature = "share"
+            )
+            setShareText(getShareDescription(data.metadata.ogDescription))
+            setOnDismissListener { mListener?.onDismissEvent(false, this@StoriesSharingComponent) }
+            setShowListener { mListener?.onShowSharing(this@StoriesSharingComponent) }
+            if (isAdded) return@apply
+            show(fg, TAG)
+        }
+    }
 
-        if (sharingSheet.isAdded) return
-        sharingSheet.show(fg, TAG)
+    private fun getShareDescription(str: String): String {
+        return "$str %s"
     }
 
     companion object {
