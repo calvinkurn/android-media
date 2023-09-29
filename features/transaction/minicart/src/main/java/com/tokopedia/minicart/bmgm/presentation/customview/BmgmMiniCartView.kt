@@ -62,7 +62,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private var param = BmgmParamModel()
     private var shopIds = listOf<Long>()
-    private var messageIndex = Int.ZERO
     private var latestOfferMessage = ""
 
     private var binding: ViewBmgmMiniCartWidgetBinding? = null
@@ -74,7 +73,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             owner, viewModelFactory
         )[BmgmMiniCartViewModel::class.java]
     }
-    private var hasVisited = false
     private var offerEndDate = ""
     private var onOfferEndedCallback: ((isOfferEnded: Boolean) -> Unit)? = null
 
