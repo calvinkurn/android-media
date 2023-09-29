@@ -237,6 +237,112 @@ object ShopFlashSaleMapper {
     }
 }
 
+fun DynamicHomeChannel.Channels.mapChannelToComponent(verticalPosition: Int): ChannelModel {
+    return ChannelModel(
+        id = this.id,
+        groupId = this.groupId,
+        type = this.type,
+        layout = this.layout,
+        verticalPosition = verticalPosition,
+        channelHeader = ChannelHeader(
+            this.header.id,
+            this.header.name,
+            this.header.subtitle,
+            this.header.expiredTime,
+            this.header.serverTimeUnix,
+            this.header.applink,
+            this.header.url,
+            this.header.backColor,
+            this.header.backImage,
+            this.header.textColor
+        ),
+        channelBanner = ChannelBanner(
+            id = this.banner.id,
+            title = this.banner.title,
+            description = this.banner.description,
+            backColor = this.banner.backColor,
+            url = this.banner.url,
+            applink = this.banner.applink,
+            textColor = this.banner.textColor,
+            imageUrl = this.banner.imageUrl,
+            attribution = this.banner.attribution,
+            cta = ChannelCtaData(
+                this.banner.cta.type,
+                this.banner.cta.mode,
+                this.banner.cta.text,
+                this.banner.cta.couponCode
+            ),
+            gradientColor = this.banner.gradientColor
+        ),
+        channelConfig = ChannelConfig(
+            this.layout,
+            this.showPromoBadge,
+            this.hasCloseButton,
+            ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(this.header.serverTimeUnix),
+            this.timestamp,
+            this.isAutoRefreshAfterExpired
+        ),
+        trackingAttributionModel = TrackingAttributionModel(
+            galaxyAttribution = this.galaxyAttribution,
+            persona = this.persona,
+            brandId = this.brandId,
+            categoryPersona = this.categoryPersona,
+            categoryId = this.categoryID,
+            persoType = this.persoType,
+            campaignCode = this.campaignCode,
+            homeAttribution = this.homeAttribution,
+            bannerId = this.banner.id,
+            headerName = this.header.name,
+            channelId = this.id,
+            parentPosition = (verticalPosition + 1).toString(),
+        ),
+        channelGrids = this.grids.mapIndexed { index, it ->
+            ChannelGrid(
+                id = it.id,
+                warehouseId = it.warehouseId,
+                minOrder = it.minOrder,
+                price = it.price,
+                imageUrl = it.imageUrl,
+                name = it.name,
+                applink = it.applink,
+                url = it.url,
+                discount = it.discount,
+                slashedPrice = it.slashedPrice,
+                label = it.label,
+                soldPercentage = it.soldPercentage,
+                attribution = it.attribution,
+                impression = it.impression,
+                cashback = it.cashback,
+                productClickUrl = it.productClickUrl,
+                isTopads = it.isTopads,
+                productViewCountFormatted = it.productViewCountFormatted,
+                isOutOfStock = it.isOutOfStock,
+                isFreeOngkirActive = it.freeOngkir.isActive,
+                freeOngkirImageUrl = it.freeOngkir.imageUrl,
+                shopId = it.shop.shopId,
+                hasBuyButton = it.hasBuyButton,
+                labelGroup = it.labelGroup.map { label ->
+                    LabelGroup(
+                        title = label.title,
+                        position = label.position,
+                        type = label.type
+                    )
+                },
+                rating = it.rating,
+                ratingFloat = it.ratingFloat,
+                countReview = it.countReview,
+                backColor = it.backColor,
+                benefit = ChannelBenefit(
+                    it.benefit.type,
+                    it.benefit.value
+                ),
+                textColor = it.textColor,
+                position = index
+            )
+        }
+    )
+}
+
 fun DynamicHomeChannel.Header.mapToHomeComponentHeader() = com.tokopedia.home_component_header.model.ChannelHeader(
     id,
     name,

@@ -6,12 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper.mapShopFlashSaleItemList
+import com.tokopedia.thankyou_native.data.mapper.mapChannelToComponent
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -253,9 +255,12 @@ class ThanksPageDataViewModel @Inject constructor(
 
             a.dynamicHomeChannel.channels.forEachIndexed { index, item ->
                 addBottomContentWidget(
-                    mapShopFlashSaleItemList(ShopFlashSaleMapper.mapShopFlashSaleWidgetDataModel(item, index), arrayListOf(
-                        RecommendationWidget()
-                    ))
+//                    mapShopFlashSaleItemList(ShopFlashSaleMapper.mapShopFlashSaleWidgetDataModel(item, index), arrayListOf(
+//                        RecommendationWidget()
+//                    ))
+                    MixTopDataModel(
+                        item.mapChannelToComponent(index)
+                    )
                 )
             }
         }

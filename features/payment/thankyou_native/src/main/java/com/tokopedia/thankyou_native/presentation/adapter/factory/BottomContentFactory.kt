@@ -5,6 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetViewHolder
@@ -30,6 +34,7 @@ class BottomContentFactory(
             HeadlineAdsItemViewHolder.LAYOUT_ID -> return HeadlineAdsItemViewHolder(parent)
             BannerItemViewHolder.LAYOUT_ID -> return BannerItemViewHolder(parent, bannerListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> return ShopFlashSaleWidgetViewHolder(parent, shopFlashSaleWidgetListener)
+            MixTopComponentViewHolder.LAYOUT -> return MixTopComponentViewHolder(parent, null, null)
         }
         return super.createViewHolder(parent, type)
     }
@@ -60,5 +65,9 @@ class BottomContentFactory(
 
     override fun type(flashSaleWidgetModel: ShopFlashSaleWidgetDataModel): Int {
         return ShopFlashSaleWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(mixTopDataModel: MixTopDataModel): Int {
+        return MixTopComponentViewHolder.LAYOUT
     }
 }
