@@ -206,6 +206,10 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       color
                       type
                     }
+                    template {
+                        code
+                        params 
+                      }
                   }
                 }
                 online_booking {
