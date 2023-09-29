@@ -92,7 +92,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
                     this@StickySingleHeaderView.adapter = adapter
                     this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
                     stickyPosition = this@StickySingleHeaderView.adapter?.stickyHeaderPosition ?: 0
-                    linearLayoutManager = mRecyclerView?.layoutManager as LinearLayoutManager?
+                    linearLayoutManager = mRecyclerView?.layoutManager as? LinearLayoutManager
                 }
             }
 
