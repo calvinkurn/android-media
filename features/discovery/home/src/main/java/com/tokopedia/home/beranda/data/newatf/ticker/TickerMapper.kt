@@ -6,6 +6,9 @@ import com.tokopedia.home.beranda.domain.model.Tickers
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 
+/**
+ * Created by Frenzel
+ */
 object TickerMapper {
     private const val LAYOUT_FLOATING = "floating"
     private const val BE_TICKER_ANNOUNCEMENT = 0
@@ -14,7 +17,6 @@ object TickerMapper {
     private const val BE_TICKER_ERROR = 3
 
     fun Ticker.asVisitable(
-        index: Int,
         isCache: Boolean
     ): Visitable<*>? {
         return if (!isCache) {

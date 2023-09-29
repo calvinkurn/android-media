@@ -4,6 +4,9 @@ import com.google.gson.Gson
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.AtfContent
 
+/**
+ * Created by Frenzel
+ */
 data class AtfData(
     val atfMetadata: AtfMetadata,
     val atfContent: AtfContent? = null,

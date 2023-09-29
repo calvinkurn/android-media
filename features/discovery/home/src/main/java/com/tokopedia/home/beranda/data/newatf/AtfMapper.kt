@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
@@ -18,6 +17,9 @@ import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 
+/**
+ * Created by Frenzel
+ */
 object AtfMapper {
     fun mapRemoteToDomainAtfData(
         position: Int,
@@ -41,14 +43,14 @@ object AtfMapper {
         data: AtfCacheEntity,
     ): AtfData {
         return AtfData(
-             atfMetadata = AtfMetadata(
-                 id = data.id,
-                 position = data.position,
-                 name = data.name,
-                 component = data.component,
-                 param = data.param,
-                 isOptional = data.isOptional,
-                 isShimmer = data.isShimmer,
+            atfMetadata = AtfMetadata(
+                id = data.id,
+                position = data.position,
+                name = data.name,
+                component = data.component,
+                param = data.param,
+                isOptional = data.isOptional,
+                isShimmer = data.isShimmer,
             ),
             atfContent = data.getAtfContent(),
             atfStatus = data.status,
@@ -97,8 +99,8 @@ object AtfMapper {
             value.atfContent.run {
                 when(this) {
                     is BannerDataModel -> visitables.add(this.asVisitable(index, value))
-                    is DynamicHomeIcon -> visitables.add(this.asVisitable(index, value))
-                    is Ticker -> this.asVisitable(index, value.isCache)?.let { visitables.add(it) }
+                    is DynamicHomeIcon -> visitables.add(this.asVisitable(value))
+                    is Ticker -> this.asVisitable(value.isCache)?.let { visitables.add(it) }
                     is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(this.asVisitable(index, value))
                     is HomeTodoWidgetData.GetHomeTodoWidget -> visitables.add(this.asVisitable(index, value))
                 }

@@ -1,5 +1,8 @@
 package com.tokopedia.home.beranda.data.newatf
 
+/**
+ * Created by Frenzel
+ */
 data class AtfMetadata(
     val id: Int = 0,
     val position: Int = 0,

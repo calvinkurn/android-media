@@ -15,12 +15,15 @@ import com.tokopedia.home_component.usecase.todowidget.GetTodoWidgetUseCase
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 import javax.inject.Inject
 
+/**
+ * Created by Frenzel
+ */
 @HomeScope
 class TodoWidgetRepository @Inject constructor(
     private val todoWidgetRepository: HomeTodoWidgetRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
     atfDao: AtfDao,
-): AtfRepository(atfDao) {
+): AtfRepository() {
 
     @SuppressLint("PII Data Exposure")
     override suspend fun getData(atfMetadata: AtfMetadata) {

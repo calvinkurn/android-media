@@ -13,6 +13,9 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import java.util.concurrent.TimeUnit
 
+/**
+ * Created by Frenzel
+ */
 object HomepageBannerMapper {
     private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - slider banner - banner - %s"
     private const val VALUE_BANNER_DEFAULT = ""

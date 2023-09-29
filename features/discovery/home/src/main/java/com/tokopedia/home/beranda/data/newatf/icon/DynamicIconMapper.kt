@@ -8,10 +8,12 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 
+/**
+ * Created by Frenzel
+ */
 object DynamicIconMapper {
 
     fun DynamicHomeIcon.asVisitable(
-        index: Int,
         atfData: AtfData,
     ): Visitable<*> {
         return if(atfData.atfStatus == AtfKey.STATUS_ERROR) {

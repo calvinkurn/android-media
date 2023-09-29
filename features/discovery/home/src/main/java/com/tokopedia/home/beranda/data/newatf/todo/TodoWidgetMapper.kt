@@ -19,6 +19,9 @@ import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsChannelCon
 import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsHomeComponentHeader
 import com.tokopedia.unifycomponents.CardUnify2
 
+/**
+ * Created by Frenzel
+ */
 object TodoWidgetMapper {
 
     fun HomeTodoWidgetData.GetHomeTodoWidget.asVisitable(

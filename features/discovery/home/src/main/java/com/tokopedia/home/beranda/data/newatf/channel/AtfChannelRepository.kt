@@ -19,7 +19,7 @@ class AtfChannelRepository @Inject constructor(
     private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
     atfDao: AtfDao,
-): AtfRepository(atfDao) {
+): AtfRepository() {
 
     @SuppressLint("PII Data Exposure")
     override suspend fun getData(atfMetadata: AtfMetadata) {

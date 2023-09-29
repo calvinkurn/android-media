@@ -6,6 +6,9 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import javax.inject.Inject
 
+/**
+ * Created by Frenzel
+ */
 class AtfChannelMapper @Inject constructor(
     private val dynamicChannelDataMapper: HomeDynamicChannelDataMapper,
 ) {

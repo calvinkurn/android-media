@@ -1,8 +1,10 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import android.util.Log
 import com.tokopedia.home.constant.AtfKey
 
+/**
+ * Created by Frenzel
+ */
 data class AtfDataList(
     val listAtfData: List<AtfData>,
     val isCache: Boolean,
@@ -35,51 +37,25 @@ data class AtfDataList(
         )
     }
 
-//
-//    fun updateMetaData(
-//        isCache: Boolean = this.isCache,
-//        isLatestData: Boolean = this.isLatestData,
-//        listAtfMetadata: List<AtfMetadata> = this.listAtfData.map { it.atfMetadata }
-//    ): AtfDataList {
-//        return this.copy(
-//            isCache = isCache,
-//            isLatestData = isLatestData,
-//            listAtfData = this.listAtfData.zip(listAtfMetadata) { data, atfMetadata ->
-//                data.copy(atfMetadata = atfMetadata)
-//            }
-//        )
-//    }
-
     fun updateAtfContents(newDataList: List<AtfData?>): AtfDataList {
-//        val newList = listAtfData.toMutableList()
-//        newAtfData.forEach { data ->
-//            data?.let {
-//                val index = newList.indexOfFirst { it.atfMetadata == data.atfMetadata }
-//                newList[index] = data
-//            }
-//        }
-        Log.d("atfflow", "updateAtfContents: $listAtfData\n${newDataList}")
-
         val newList = listAtfData.map { currentData ->
             newDataList.find { it?.atfMetadata == currentData.atfMetadata }?.takeIf {
                 it.atfContent != null
             } ?: currentData
         }
-        Log.d("atfflow", "updateAtfContents: result $newList")
-
         return this.copy(listAtfData = newList)
     }
-//
-//    fun areNewDataMatches(newAtfData: List<AtfData?>): Boolean {
-//        return this.listAtfData.all { current ->
-//            newAtfData.any { new ->
-//                current.atfMetadata == new?.atfMetadata
-//            }
-//        }
-//    }
+
+    fun isPositionReady(): Boolean {
+        return this.status == STATUS_SUCCESS
+            && this.listAtfData.isNotEmpty()
+            && !this.isCache
+    }
 
     fun isDataReady(): Boolean {
-        return (this.status == STATUS_SUCCESS && this.listAtfData.isNotEmpty() &&
-            this.listAtfData.all { it.atfStatus != AtfKey.STATUS_LOADING })
+        return this.status == STATUS_SUCCESS
+            && this.listAtfData.isNotEmpty()
+            && this.listAtfData.all { it.atfStatus != AtfKey.STATUS_LOADING }
+
     }
 }
