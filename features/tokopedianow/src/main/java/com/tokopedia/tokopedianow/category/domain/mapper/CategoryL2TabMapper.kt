@@ -65,33 +65,6 @@ object CategoryL2TabMapper {
         }
     }
 
-    private fun MutableList<Visitable<*>>.addTicker(
-        categoryIdL2: String,
-        tickerData: GetTickerData?
-    ) {
-        if(tickerData != null && !tickerData.isTickerEmpty()) {
-            val tickerList = tickerData.tickerList
-            val oosTickerList = tickerData.oosTickerList
-            val oosCategoryIds = tickerData.oosCategoryIds
-
-            if(oosTickerList.isNotEmpty() && oosCategoryIds.contains(categoryIdL2)) {
-                add(TokoNowTickerUiModel(
-                    id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
-                    tickers = oosTickerList,
-                    hasOutOfStockTicker = true
-                ))
-            } else {
-                add(TokoNowTickerUiModel(
-                    id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
-                    tickers = tickerList,
-                    hasOutOfStockTicker = false
-                ))
-            }
-        } else {
-            removeFirst { it is TokoNowTickerUiModel }
-        }
-    }
-
     fun MutableList<Visitable<*>>.mapToQuickFilter(
         quickFilterUiModel: CategoryQuickFilterUiModel
     ) {
@@ -218,6 +191,45 @@ object CategoryL2TabMapper {
             tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE
         )
         add(recommendationUiModel)
+    }
+
+    fun createMapParameter(queryParams: MutableMap<String?, Any?>): Map<String, String> {
+        val mapParameter = mutableMapOf<String, String>()
+
+        queryParams.forEach {
+            it.key?.let { key ->
+                mapParameter[key] = it.value.toString()
+            }
+        }
+
+        return mapParameter
+    }
+
+    private fun MutableList<Visitable<*>>.addTicker(
+        categoryIdL2: String,
+        tickerData: GetTickerData?
+    ) {
+        if(tickerData != null && !tickerData.isTickerEmpty()) {
+            val tickerList = tickerData.tickerList
+            val oosTickerList = tickerData.oosTickerList
+            val oosCategoryIds = tickerData.oosCategoryIds
+
+            if(oosTickerList.isNotEmpty() && oosCategoryIds.contains(categoryIdL2)) {
+                add(TokoNowTickerUiModel(
+                    id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
+                    tickers = oosTickerList,
+                    hasOutOfStockTicker = true
+                ))
+            } else {
+                add(TokoNowTickerUiModel(
+                    id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
+                    tickers = tickerList,
+                    hasOutOfStockTicker = false
+                ))
+            }
+        } else {
+            removeFirst { it is TokoNowTickerUiModel }
+        }
     }
 
     private fun MutableList<Visitable<*>>.addQuickFilter(

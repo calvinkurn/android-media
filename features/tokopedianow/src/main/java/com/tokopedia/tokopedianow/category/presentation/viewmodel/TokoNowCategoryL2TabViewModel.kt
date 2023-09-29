@@ -33,6 +33,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.add
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductRecommendation
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.createMapParameter
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.findItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.findProductCardItem
@@ -568,14 +569,11 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     }
 
     private fun createCategoryFilterQueryParams(): Map<String?, Any?> {
-        val mapParameter = mutableMapOf<String, String>()
+        val queryParams = createRequestQueryParams(
+            source = CATEGORY_TOKONOW_DIRECTORY
+        )
+        val mapParameter = createMapParameter(queryParams)
         val categoryFilterQueryParams = mutableMapOf<String?, Any?>()
-
-        createRequestQueryParams(source = CATEGORY_TOKONOW_DIRECTORY).forEach {
-            it.key?.let { key ->
-                mapParameter[key] = it.value.toString()
-            }
-        }
 
         val filterParams = FilterHelper
             .createParamsWithoutExcludes(mapParameter)
@@ -690,7 +688,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     }
 
     private fun findExcludedFilter(quickFilter: CategoryQuickFilterUiModel) {
-        for (filterItem in quickFilter.itemList) {
+        quickFilter.itemList.forEach { filterItem ->
             val options = filterItem.filter.options
             if (options.count() == 1) return
 
