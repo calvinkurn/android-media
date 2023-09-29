@@ -1305,6 +1305,7 @@ class RechargeGeneralFragment :
 
     override fun onLoadingAtc(showLoading: Boolean) {
         binding?.rechargeGeneralEnquiryButton?.isLoading = showLoading
+        binding?.rechargeGeneralSecondaryButton?.isLoading = showLoading
     }
 
     override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>) {
