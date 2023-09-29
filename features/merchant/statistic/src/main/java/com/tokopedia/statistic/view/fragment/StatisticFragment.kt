@@ -35,6 +35,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
+import com.tokopedia.sellerhomecommon.domain.model.TabModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
@@ -45,6 +46,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.FilterTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
@@ -58,6 +60,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FilterTabBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -518,6 +521,27 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         statisticPage?.let {
             StatisticTracker.sendShowTableTableFilterClickEvent(it, element)
         }
+    }
+
+    override fun onFilterClicked(tabs: List<TabModel>?, selectedPage: String?, title: String) {
+        FilterTabBottomSheet.createInstance(
+            title = title,
+            uiModels = tabs?.map {
+                FilterTabUiModel(
+                    tabName = it.tabName,
+                    tabKey = it.page,
+                    isSelected = it.page == selectedPage
+                )
+            }.orEmpty()
+        ).apply {
+            setFilterTabSelectListener {
+                statisticPage?.run {
+                    pageSource = it.tabKey
+                    tickerPageName = it.tabKey
+                }
+                reloadPage()
+            }
+        }.show(childFragmentManager)
     }
 
     fun setSelectedWidget(widget: String) {
