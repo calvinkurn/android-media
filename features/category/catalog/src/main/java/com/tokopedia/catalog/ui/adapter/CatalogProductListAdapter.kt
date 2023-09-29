@@ -1,9 +1,9 @@
 package com.tokopedia.catalog.ui.adapter
 
+import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.kotlin.extensions.view.ZERO
 
 class CatalogProductListAdapter(
     baseListAdapterTypeFactory: CatalogProductListAdapterFactoryImpl
@@ -50,17 +50,11 @@ class CatalogProductListAdapter(
         submitList(emptyList())
     }
 
-
+    @SuppressLint("NotifyDataSetChanged") // will improve this using diffutil
     private fun submitList(items: List<Visitable<*>>) {
-        try {
-            visitables.clear()
-            notifyItemRangeRemoved(Int.ZERO, visitables.count())
-            visitables.addAll(items)
-            notifyItemRangeInserted(Int.ZERO, visitables.count())
-        } catch (e: Exception) {
-            //
-        }
-
+        visitables.clear()
+        visitables.addAll(items)
+        notifyDataSetChanged()
     }
 
     private fun getItems(): MutableList<Visitable<*>> {
