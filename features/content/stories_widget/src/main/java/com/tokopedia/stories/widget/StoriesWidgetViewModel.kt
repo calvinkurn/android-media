@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.stories.widget.domain.StoriesEntrySource
-import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
