@@ -343,6 +343,7 @@ class OfferLandingPageFragment :
             shareButton?.setOnClickListener {
                 // get sharing data
                 tracker.sendClickShareButtonEvent(
+                    currentState.offerTypeId.toString(),
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
                     currentState.shopData.shopId.toString()
                 )
@@ -812,12 +813,14 @@ class OfferLandingPageFragment :
     private fun openShareBottomSheet() {
         UniversalShareBottomSheet.createInstance().apply {
             tracker.sendViewSharingChannelEvent(
+                currentState.offerTypeId.toString(),
                 currentState.offerIds.toSafeString(),
                 currentState.shopData.shopId.toString()
             )
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     tracker.sendClickSharingChannelEvent(
+                        currentState.offerTypeId.toString(),
                         shareModel.channel.orEmpty(),
                         currentState.offerIds.toSafeString(),
                         currentState.shopData.shopId.toString()
@@ -832,6 +835,7 @@ class OfferLandingPageFragment :
 
                 override fun onCloseOptionClicked() {
                     tracker.sendClickCloseShareButtonEvent(
+                        currentState.offerTypeId.toString(),
                         currentState.offerIds.toSafeString(),
                         currentState.shopData.shopId.toString()
                     )
