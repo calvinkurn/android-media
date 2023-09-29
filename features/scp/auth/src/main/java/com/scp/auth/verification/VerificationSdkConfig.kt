@@ -28,11 +28,12 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
     }
 
     private fun getEnvironment(): VerificationEnvironment {
-        return if (GlobalConfig.DEBUG) {
-            VerificationEnvironment.INTEGRATION
-        } else {
-            VerificationEnvironment.PROD
-        }
+        return VerificationEnvironment.DEV
+//        return if (GlobalConfig.DEBUG) {
+//            VerificationEnvironment.INTEGRATION
+//        } else {
+//            VerificationEnvironment.PROD
+//        }
     }
 
     private fun isLogEnabled(): Boolean = GlobalConfig.isAllowDebuggingTools()
