@@ -39,7 +39,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -52,9 +51,6 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
             PrivacyAccountViewModel::class.java
         )
     }
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     @Inject
     lateinit var homeAccountAnalytics: HomeAccountAnalytics
