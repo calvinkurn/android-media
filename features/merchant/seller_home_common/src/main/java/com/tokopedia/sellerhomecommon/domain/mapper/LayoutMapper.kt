@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -57,7 +56,6 @@ class LayoutMapper @Inject constructor(
         private const val DOUBLE_DOTS_CALENDAR_TITLE = ":"
 
         private const val TAB_TAG = "{tab}"
-        private const val INVALID_SECTION_WIDGET_ID = "0"
     }
 
     override fun mapRemoteDataToUiData(
@@ -127,13 +125,11 @@ class LayoutMapper @Inject constructor(
             WidgetType.MULTI_LINE_GRAPH.asLowerCase() -> {
                 mapToMultiLineGraphWidget(widget, isFromCache)
             }
-
             WidgetType.ANNOUNCEMENT.asLowerCase() -> mapToAnnouncementWidget(widget, isFromCache)
             WidgetType.RECOMMENDATION.asLowerCase() -> mapToRecommendationWidget(
                 widget,
                 isFromCache
             )
-
             WidgetType.MILESTONE.asLowerCase() -> mapToMilestoneWidget(widget, isFromCache)
             WidgetType.CALENDAR.asLowerCase() -> mapToCalendarWidget(widget, isFromCache)
             WidgetType.UNIFICATION.asLowerCase() -> mapToUnificationWidget(widget, isFromCache)
@@ -145,7 +141,6 @@ class LayoutMapper @Inject constructor(
                     mapToSectionWidget(widget, isFromCache)
                 }
             }
-
             else -> null
         }
     }
@@ -661,39 +656,7 @@ class LayoutMapper @Inject constructor(
                 }
             }
         }
-        return removeEmptySection(mappedList)
-    }
-
-    /**
-     * Remove the empty section widget :
-     * in case, we have a section widget without child or
-     * there is a section with invalid widget type (not yet registered).
-     * So, it should be removed to avoid stacked section widget.
-     * */
-    private fun removeEmptySection(widgetList: ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>): ArrayList<BaseWidgetUiModel<out BaseDataUiModel>> {
-        val widgetGroups: Map<String, List<BaseWidgetUiModel<*>>> = widgetList.groupBy {
-            it.sectionId
-        }
-        val emptySection = mutableListOf<SectionWidgetUiModel>()
-        widgetList.forEach { widget ->
-            (widget as? SectionWidgetUiModel)?.let { section ->
-                val sectionWidgetId = section.id
-                val isSectionEmpty = widgetGroups[sectionWidgetId].isNullOrEmpty()
-                if (isSectionEmpty && sectionWidgetId != INVALID_SECTION_WIDGET_ID) {
-                    emptySection.add(section)
-                }
-            }
-        }
-        if (emptySection.isEmpty()) return widgetList
-
-        emptySection.forEach {
-            val sectionIndex = widgetList.indexOf(it)
-            if (sectionIndex != RecyclerView.NO_POSITION) {
-                widgetList.remove(it)
-            }
-        }
-
-        return widgetList
+        return mappedList
     }
 
     private fun getReplacementText(tabTitle: String, tabName: String): String {
