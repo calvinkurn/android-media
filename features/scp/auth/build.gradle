@@ -41,6 +41,7 @@ dependencies {
     api rootProject.ext.miscDependencies.gotoCvSdk
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
 
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.unifyDependencies.principles
