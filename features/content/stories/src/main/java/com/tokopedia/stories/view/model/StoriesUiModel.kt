@@ -3,10 +3,10 @@ package com.tokopedia.stories.view.model
 import android.os.Parcelable
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.stories.uimodel.StoryAuthor
-import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.IMAGE
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import com.tokopedia.universal_sharing.view.model.LinkProperties
 
 @Parcelize
 data class StoriesUiModel(
@@ -62,13 +62,13 @@ data class StoriesDetailItem(
 
     @Parcelize
     data class StoriesItemContent(
-        val type: StoriesItemContentType = IMAGE,
+        val type: StoriesItemContentType = Image,
         val data: String = "",
         val duration: Int = -1,
     ) : Parcelable
 
     enum class StoriesItemContentType(val value: String) {
-        IMAGE("image"), VIDEO("video")
+        Image("image"), Video("video")
     }
 
     enum class StoriesDetailItemUiEvent {
@@ -85,7 +85,7 @@ data class StoriesDetailItem(
     }
 
     enum class StoryStatus(val value: String) {
-        Active("ACTIVE"), Removed ("REMOVED"), Unknown("unknown");
+        Active("ACTIVE"), Removed("REMOVED"), Unknown("unknown");
 
         companion object {
             private val values = StoryStatus.values()

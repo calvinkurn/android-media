@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * @author by astidhiyaa on 08/08/23
  */
 data class UpdateStoryResponse(
-    @SerializedName("contentStoryUpdateStory")
+    @SerializedName("contentCreatorStoryUpdateStory")
     val storyId: StoryId = StoryId(),
 ) {
 

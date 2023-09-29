@@ -11,6 +11,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -23,13 +24,15 @@ internal class StoriesViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     args: StoriesArgsModel = StoriesArgsModel(),
     private val handle: SavedStateHandle = SavedStateHandle(),
-    repository: StoriesRepository = mockk(relaxed = true),
+    private val userSession: UserSessionInterface = mockk(relaxed = true),
+    repository: StoriesRepository = mockk(relaxed = true)
 ) : Closeable {
 
     private val viewModel = StoriesViewModel(
         args = args,
         handle = handle,
         repository = repository,
+        userSession = userSession
     )
 
     fun getViewModel() = viewModel
@@ -99,7 +102,7 @@ internal class StoriesViewModelRobot(
     fun entryPointTestCaseUsingSavedState(
         mainData: StoriesUiModel,
         selectedGroup: Int = 0,
-        selectedDetail: Int = 0,
+        selectedDetail: Int = 0
     ) {
         handle[StoriesViewModel.SAVED_INSTANCE_STORIES_MAIN_DATA] = mainData
         handle[StoriesViewModel.SAVED_INSTANCE_STORIES_GROUP_POSITION] = selectedGroup
@@ -181,5 +184,4 @@ internal class StoriesViewModelRobot(
     override fun close() {
         cancelRemainingTasks()
     }
-
 }

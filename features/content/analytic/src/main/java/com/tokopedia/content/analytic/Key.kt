@@ -46,4 +46,7 @@ object Key {
     const val itemShopName = "shop_name"
     const val itemShopType = "shop_type"
     const val itemIndex = "index"
+    const val itemList = "item_list"
+
+    const val dimension40 = "dimension40"
 }

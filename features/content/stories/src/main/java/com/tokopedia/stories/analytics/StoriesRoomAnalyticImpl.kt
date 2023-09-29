@@ -190,12 +190,13 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         if (items.isEmpty()) return
         val listOfProducts = items.map {
             Bundle().apply {
-                putInt(Key.itemIndex, it.value)
+                putInt(Key.itemIndex, it.value + 1)
                 putString(Key.itemId, it.key.id)
                 putString(Key.itemName, it.key.title)
                 putFloat(Key.price, it.key.price.price.toFloat())
                 putString(Key.itemShopId, args.authorId)
                 putString(Key.itemShopType, args.authorType)
+                putString(Key.dimension40, "/stories-room - product card")
             }
         }
         val eventDataLayer = Bundle().apply {
@@ -208,6 +209,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             putString(Key.currentSite, currentSite)
             putString(Key.sessionIris, sessionIris)
             putString(Key.userId, userId)
+            putString(Key.itemList, "/stories-room - product card")
             putParcelableArrayList(Key.items, ArrayList(listOfProducts))
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -226,7 +228,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     ) {
         val listOfProducts = items.map {
             Bundle().apply {
-                putInt(Key.itemIndex, position)
+                putInt(Key.itemIndex, position + 1)
                 putString(Key.itemId, it.id)
                 putString(Key.itemName, it.title)
                 putFloat(Key.price, when (val price = it.price){
@@ -236,6 +238,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
                 })
                 putString(Key.itemShopId, args.authorId)
                 putString(Key.itemShopType, args.authorType)
+                putString(Key.dimension40, itemList)
             }
         }
         val eventDataLayer = Bundle().apply {
@@ -248,6 +251,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             putString(Key.currentSite, currentSite)
             putString(Key.sessionIris, sessionIris)
             putString(Key.userId, userId)
+            putString(Key.itemList, itemList)
             putParcelableArrayList(Key.items, ArrayList(listOfProducts))
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -261,9 +265,12 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickBuyButtonEvent(
         eventLabel: String,
         items: List<ContentTaggedProductUiModel>,
+        position: Int,
+        shopName: String,
     ) {
         val itemList = items.map {
             Bundle().apply {
+                putInt(Key.itemIndex, position + 1)
                 putString(Key.itemId, it.id)
                 putString(Key.itemName, it.title)
                 putFloat(Key.price, when (val price = it.price){
@@ -273,6 +280,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
                 })
                 putString(Key.itemShopId, args.authorId)
                 putString(Key.itemShopType, args.authorType)
+                putString(Key.itemShopName, shopName)
             }
         }
 
@@ -299,9 +307,12 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickAtcButtonEvent(
         eventLabel: String,
         items: List<ContentTaggedProductUiModel>,
+        position: Int,
+        shopName: String
     ) {
         val itemList = items.map {
             Bundle().apply {
+                putInt(Key.itemIndex, position + 1)
                 putString(Key.itemId, it.id)
                 putString(Key.itemName, it.title)
                 putFloat(Key.price, when (val price = it.price){
@@ -311,6 +322,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
                 })
                 putString(Key.itemShopId, args.authorId)
                 putString(Key.itemShopType, args.authorType)
+                putString(Key.itemShopName, shopName)
             }
         }
 
