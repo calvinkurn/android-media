@@ -351,7 +351,7 @@ object ApplinkConstInternalUserPlatform {
      * @param : [GROUP_ID] data type Int
      * */
     const val GROUP_ID = "groupId"
-    const val CONSENT_WITHDRAWAL_NEW = "$NEW_INTERNAL_USER/consent/withdrawal/new?$GROUP_ID={groupId}"
+    const val CONSENT_WITHDRAWAL = "$NEW_INTERNAL_USER/consent/withdrawal?$GROUP_ID={groupId}"
 
     /**
      * com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
