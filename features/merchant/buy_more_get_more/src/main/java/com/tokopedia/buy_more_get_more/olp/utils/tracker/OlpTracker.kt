@@ -49,12 +49,12 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4201
     // Tracker ID: 46864
-    fun sendClickShareButtonEvent(offerId: String, shopId: String) {
+    fun sendClickShareButtonEvent(offerTypeId: String, offerId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_COMMUNICATION)
             .setEventAction("click - share button")
             .setEventCategory(TrackerConstant.EVENT_CATEGORY_BMSM_PAGE)
-            .setEventLabel(joinDash(USER_SHARE_TYPE_GENERAL, shopId, offerId))
+            .setEventLabel(joinDash(USER_SHARE_TYPE_GENERAL, offerTypeId, shopId, offerId))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "46864")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
@@ -66,12 +66,12 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4201
     // Tracker ID: 46865
-    fun sendClickCloseShareButtonEvent(offerId: String, shopId: String) {
+    fun sendClickCloseShareButtonEvent(offerTypeId: String, offerId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_COMMUNICATION)
             .setEventAction("click - close share bottom sheet")
             .setEventCategory(TrackerConstant.EVENT_CATEGORY_BMSM_PAGE)
-            .setEventLabel(joinDash(USER_SHARE_TYPE_GENERAL, shopId, offerId))
+            .setEventLabel(joinDash(USER_SHARE_TYPE_GENERAL, offerTypeId, shopId, offerId))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "46865")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
@@ -83,12 +83,12 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4201
     // Tracker ID: 46866
-    fun sendClickSharingChannelEvent(channel: String, offerId: String, shopId: String) {
+    fun sendClickSharingChannelEvent(offerTypeId: String, channel: String, offerId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_COMMUNICATION)
             .setEventAction("click - sharing channel")
             .setEventCategory(TrackerConstant.EVENT_CATEGORY_BMSM_PAGE)
-            .setEventLabel(joinDash(channel, USER_SHARE_TYPE_GENERAL, shopId, offerId))
+            .setEventLabel(joinDash(channel, USER_SHARE_TYPE_GENERAL, offerTypeId, shopId, offerId))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "46866")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
@@ -100,12 +100,12 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4201
     // Tracker ID: 46867
-    fun sendViewSharingChannelEvent(offerId: String, shopId: String) {
+    fun sendViewSharingChannelEvent(offerTypeId: String, offerId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_VIEW_COMMUNICATION_IRIS)
             .setEventAction("view on sharing channel")
             .setEventCategory(TrackerConstant.EVENT_CATEGORY_BMSM_PAGE)
-            .setEventLabel(joinDash(USER_SHARE_TYPE_GENERAL, shopId, offerId))
+            .setEventLabel(joinDash(USER_SHARE_TYPE_GENERAL, offerTypeId, shopId, offerId))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "46867")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
