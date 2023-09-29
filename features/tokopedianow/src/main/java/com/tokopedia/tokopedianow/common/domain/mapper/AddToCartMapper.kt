@@ -17,7 +17,7 @@ object AddToCartMapper {
         miniCartData: MiniCartSimplifiedData,
         updateProductQuantity: (String, Int) -> Unit
     ) {
-        if (parentProductId != DEFAULT_PRODUCT_PARENT_ID) {
+        if (parentProductId.isValidProductId()) {
             val totalQuantity = miniCartData.miniCartItems
                 .getMiniCartItemParentProduct(parentProductId)?.totalQuantity.orZero()
             if (totalQuantity == DEFAULT_PRODUCT_QUANTITY) {
@@ -33,13 +33,17 @@ object AddToCartMapper {
     fun MiniCartSimplifiedData?.getAddToCartQuantity(productId: String): Int {
         return this?.run {
             val miniCartItem = miniCartItems.getMiniCartItemProduct(productId)
-            val productParentId = miniCartItem?.productParentId ?: DEFAULT_PRODUCT_PARENT_ID
+            val productParentId = miniCartItem?.productParentId.orEmpty()
 
-            return if (productParentId != DEFAULT_PRODUCT_PARENT_ID) {
+            return if (productParentId.isValidProductId()) {
                 miniCartItems.getMiniCartItemParentProduct(productParentId)?.totalQuantity.orZero()
             } else {
                 miniCartItem?.quantity.orZero()
             }
         } ?: HomeLayoutMapper.DEFAULT_QUANTITY
+    }
+
+    private fun String?.isValidProductId(): Boolean {
+        return this?.isNotEmpty() == true && this != DEFAULT_PRODUCT_PARENT_ID
     }
 }
