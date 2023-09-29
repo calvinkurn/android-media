@@ -36,8 +36,10 @@ class CartItemAdapter {
         fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String)
         fun sendRemoveCartFromSubtractButtonAnalytic(cartItemHolderData: CartItemHolderData)
         fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>)
-        fun onBmGmChevronRightClicked(offerLandingPageLink: String)
+        fun onBmGmChevronRightClicked(offerLandingPageLink: String, offerId: Long, widgetCaption: String, shopId: String)
         fun onBmGmTickerReloadClicked()
         fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean)
+
+        fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String)
     }
 }
