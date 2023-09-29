@@ -3,6 +3,7 @@ package com.tokopedia.catalog.ui.adapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 class CatalogProductListAdapter(
     baseListAdapterTypeFactory: CatalogProductListAdapterFactoryImpl
@@ -51,9 +52,15 @@ class CatalogProductListAdapter(
 
 
     private fun submitList(items: List<Visitable<*>>) {
-        visitables.clear()
-        visitables.addAll(items)
-        notifyDataSetChanged()
+        try {
+            visitables.clear()
+            notifyItemRangeRemoved(Int.ZERO, visitables.count())
+            visitables.addAll(items)
+            notifyItemRangeInserted(Int.ZERO, visitables.count())
+        } catch (e: Exception) {
+            //
+        }
+
     }
 
     private fun getItems(): MutableList<Visitable<*>> {

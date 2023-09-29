@@ -3,6 +3,8 @@ package com.tokopedia.catalogcommon.uimodel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
+import com.tokopedia.catalogcommon.R as catalogcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 data class ExpertReviewUiModel(
     override var idWidget: String = "",
@@ -30,13 +32,13 @@ data class ExpertReviewUiModel(
         val textReviewColor: Int,
         val textTitleColor: Int,
         val textSubTitleColor: Int,
-        val backgroundColor: Int = com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light,
+        val backgroundColor: Int = catalogcommonR.drawable.bg_rounded_border_light,
         val styleIconPlay: StyleIconPlay = StyleIconPlay()
     )
 
     data class StyleIconPlay(
-        val iconColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
-        val background: Int = com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark
+        val iconColor: Int = unifyprinciplesR.color.Unify_Static_White,
+        val background: Int = catalogcommonR.drawable.bg_circle_border_dark
     )
 
     companion object {
@@ -55,19 +57,19 @@ data class ExpertReviewUiModel(
                     textSubTitleColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
                     backgroundColor = colorMapping(
                         dummyDarkMode,
-                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark,
-                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light
+                        catalogcommonR.drawable.bg_rounded_border_dark,
+                        catalogcommonR.drawable.bg_rounded_border_light
                     ),
                     styleIconPlay = StyleIconPlay(
                         iconColor = colorMapping(
                             dummyDarkMode,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                            unifyprinciplesR.color.Unify_Static_White,
+                            unifyprinciplesR.color.Unify_Static_Black
                         ),
                         background = colorMapping(
                             dummyDarkMode,
-                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark,
-                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_light,
+                            catalogcommonR.drawable.bg_circle_border_dark,
+                            catalogcommonR.drawable.bg_circle_border_light,
                         )
                     )
                 ),
@@ -82,19 +84,19 @@ data class ExpertReviewUiModel(
                     textSubTitleColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
                     backgroundColor = colorMapping(
                         dummyDarkMode,
-                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark,
-                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light
+                        catalogcommonR.drawable.bg_rounded_border_dark,
+                        catalogcommonR.drawable.bg_rounded_border_light
                     ),
                     styleIconPlay = StyleIconPlay(
                         iconColor = colorMapping(
                             dummyDarkMode,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                            unifyprinciplesR.color.Unify_Static_White,
+                            unifyprinciplesR.color.Unify_Static_Black
                         ),
                         background = colorMapping(
                             dummyDarkMode,
-                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark,
-                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_light,
+                            catalogcommonR.drawable.bg_circle_border_dark,
+                            catalogcommonR.drawable.bg_circle_border_light,
                         )
                     )
                 ),
@@ -109,19 +111,19 @@ data class ExpertReviewUiModel(
                     textSubTitleColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
                     backgroundColor = colorMapping(
                         dummyDarkMode,
-                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark,
-                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light
+                        catalogcommonR.drawable.bg_rounded_border_dark,
+                        catalogcommonR.drawable.bg_rounded_border_light
                     ),
                     styleIconPlay = StyleIconPlay(
                         iconColor = colorMapping(
                             dummyDarkMode,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                            unifyprinciplesR.color.Unify_Static_White,
+                            unifyprinciplesR.color.Unify_Static_Black
                         ),
                         background = colorMapping(
                             dummyDarkMode,
-                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark,
-                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_light,
+                            catalogcommonR.drawable.bg_circle_border_dark,
+                            catalogcommonR.drawable.bg_circle_border_light,
                         )
                     )
                 )
