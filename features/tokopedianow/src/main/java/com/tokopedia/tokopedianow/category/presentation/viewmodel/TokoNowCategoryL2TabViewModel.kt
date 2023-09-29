@@ -79,7 +79,6 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TokoNowCategoryL2TabViewModel @Inject constructor(
@@ -215,14 +214,12 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
 
     fun updateWishlistStatus(productId: String, hasBeenWishlist: Boolean) {
-        launch {
-            val index = visitableList.updateProductItem(
-                productId = productId,
-                hasBeenWishlist = hasBeenWishlist
-            )
-            trackClickWishlistButton(index, productId)
-            updateVisitableListLiveData()
-        }
+        val index = visitableList.updateProductItem(
+            productId = productId,
+            hasBeenWishlist = hasBeenWishlist
+        )
+        trackClickWishlistButton(index, productId)
+        updateVisitableListLiveData()
     }
 
     fun routeToProductDetailPage(productId: String, appLink: String = "") {
