@@ -46,6 +46,9 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import javax.inject.Inject
+import com.tokopedia.catalogcommon.R as catalogcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class CatalogDetailUiMapper @Inject constructor(
     @ApplicationContext private val context: Context
@@ -111,9 +114,9 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun mapToPriceCtaProperties(remoteModel: CatalogResponseData.CatalogGetDetailModular): PriceCtaProperties {
         val bgColor = remoteModel.globalStyle?.secondaryColor
         val textColorRes = if (remoteModel.globalStyle?.darkMode == true) {
-            com.tokopedia.unifycomponents.R.color.Unify_Static_White
+            unifycomponentsR.color.Unify_Static_White
         } else {
-            com.tokopedia.unifycomponents.R.color.Unify_Static_Black
+            unifycomponentsR.color.Unify_Static_Black
         }
         return remoteModel.layouts?.firstOrNull {
             it.type == WidgetTypes.CATALOG_CTA_PRICE.type
@@ -166,7 +169,9 @@ class CatalogDetailUiMapper @Inject constructor(
         }
     }
 
-    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner(darkMode: Boolean) =
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner(
+        darkMode: Boolean
+    ) =
         HeroBannerUiModel(
             isPremium = data?.style?.isPremium.orFalse(),
             brandTitle = data?.hero?.name.orEmpty(),
@@ -259,7 +264,11 @@ class CatalogDetailUiMapper @Inject constructor(
                     textTitle = it.title,
                     textDescription = it.desc,
                     textHighlightColor = colorMapping(isDarkMode, DARK_COLOR_01, LIGHT_COLOR_01),
-                    textTitleColor = colorMapping(isDarkMode, DARK_COLOR_IMAGE_TEXT, LIGHT_COLOR_IMAGE_TEXT),
+                    textTitleColor = colorMapping(
+                        isDarkMode,
+                        DARK_COLOR_IMAGE_TEXT,
+                        LIGHT_COLOR_IMAGE_TEXT
+                    ),
                     textDescriptionColor = colorMapping(isDarkMode, DARK_COLOR_01, LIGHT_COLOR_01)
                 )
             }
@@ -350,19 +359,19 @@ class CatalogDetailUiMapper @Inject constructor(
                     textSubTitleColor = getTextColor(isDarkMode),
                     backgroundColor = colorMapping(
                         isDarkMode,
-                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark,
-                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light
+                        catalogcommonR.drawable.bg_rounded_border_dark,
+                        catalogcommonR.drawable.bg_rounded_border_light
                     ),
                     styleIconPlay = ExpertReviewUiModel.StyleIconPlay(
                         iconColor = colorMapping(
                             isDarkMode,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                            unifyprinciplesR.color.Unify_Static_White,
+                            unifyprinciplesR.color.Unify_Static_Black
                         ),
                         background = colorMapping(
                             isDarkMode,
-                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark,
-                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_light,
+                            catalogcommonR.drawable.bg_circle_border_dark,
+                            catalogcommonR.drawable.bg_circle_border_light,
                         )
                     )
                 )
@@ -401,9 +410,9 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun getTextColor(darkMode: Boolean): Int {
         val textColorRes = if (darkMode) {
-            com.tokopedia.unifycomponents.R.color.Unify_Static_White
+            unifycomponentsR.color.Unify_Static_White
         } else {
-            com.tokopedia.unifycomponents.R.color.Unify_Static_Black
+            unifycomponentsR.color.Unify_Static_Black
         }
         return MethodChecker.getColor(context, textColorRes)
     }

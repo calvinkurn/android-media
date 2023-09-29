@@ -771,6 +771,13 @@ class CatalogProductListFragment :
                 }
             }
             toolbar.setNavigationOnClickListener {
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+                    action = CatalogTrackerConstant.EVENT_ACTION_CLICK_BACK_BUTTON,
+                    category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+                    labels = catalogId,
+                    trackerId = CatalogTrackerConstant.TRACKER_ID_BACK_BUTTON_CATALOG_PRODUCT_LIST
+                )
                 activity?.finish()
             }
         }
