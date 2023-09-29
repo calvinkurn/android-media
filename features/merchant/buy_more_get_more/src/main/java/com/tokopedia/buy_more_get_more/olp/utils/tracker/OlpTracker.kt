@@ -280,19 +280,6 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
         )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackerConstant.EVENT_ADD_TO_CART, bundle)
-//        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackerConstant.EVENT_VIEW_ITEM_LIST, bundle)
-//        Tracker.Builder()
-//            .setEvent(TrackerConstant.EVENT_ADD_TO_CART)
-//            .setEventAction("click atc")
-//            .setEventCategory(TrackerConstant.EVENT_CATEGORY_OLP_BMGM)
-//            .setEventLabel(joinDash(offerId, warehouseId))
-//            .setCustomProperty(TrackerConstant.TRACKER_ID, "46775")
-//            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
-//            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
-//            .setShopId(shopId)
-//            .setUserId(userSession.userId)
-//            .build()
-//            .send()
     }
 
     fun sendImpressVariantEvent(offerId: String, warehouseId: String, shopId: String) {
