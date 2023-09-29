@@ -675,10 +675,12 @@ class OfferLandingPageFragment :
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
+        val analyticsData = OlpTrackerUtil.generateAtcNonVariantAnalytics(product, currentState.shopData)
         tracker.sendClickAtcEvent(
             currentState.offerIds.toSafeString(),
             currentState.warehouseIds.toSafeString(),
-            currentState.shopData.shopId.toString()
+            currentState.shopData.shopId.toString(),
+            analyticsData
         )
         viewModel.processEvent(OlpEvent.AddToCart(product))
     }
