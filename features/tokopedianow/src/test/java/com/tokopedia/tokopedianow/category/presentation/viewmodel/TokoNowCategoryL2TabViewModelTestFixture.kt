@@ -1,7 +1,10 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -168,6 +171,10 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
 
     protected fun onGetUserId_thenReturn(userId: String) {
         every { userSession.userId } returns userId
+    }
+
+    protected fun onGetIsUserLoggedIn_thenReturn(isLoggedIn: Boolean) {
+        every { userSession.isLoggedIn } returns isLoggedIn
     }
 
     protected fun onGetShopId_thenReturn(shopId: Long) {
