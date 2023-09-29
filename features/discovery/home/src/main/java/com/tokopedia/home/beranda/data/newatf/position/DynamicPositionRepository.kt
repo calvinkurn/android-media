@@ -7,15 +7,11 @@ import com.tokopedia.home.beranda.data.newatf.AtfDataList
 import com.tokopedia.home.beranda.data.newatf.AtfMapper
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,27 +21,14 @@ class DynamicPositionRepository @Inject constructor(
     private val atfDao: AtfDao,
     private val atfDataRepository: HomeAtfRepository,
 ) {
-    companion object {
-        private const val FLOW_TIMEOUT_MILLIS = 5000L
-    }
-
-    private val coroutineScope = CoroutineScope(homeDispatcher.io)
 
     private val _cacheFlow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
     private val cacheFlow: StateFlow<AtfDataList?>
-        get() = _cacheFlow.stateIn(
-            coroutineScope,
-            SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
-            null
-        )
+        get() = _cacheFlow
 
     private val _remoteFlow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
     private val remoteFlow: StateFlow<AtfDataList?>
-        get() = _remoteFlow.stateIn(
-            coroutineScope,
-            SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
-            null
-        )
+        get() = _remoteFlow
 
     /**
      * A mediated flow originated from cache & remote source.
@@ -56,17 +39,13 @@ class DynamicPositionRepository @Inject constructor(
      *          - Expose the combined flow to collector
      *      = If different, then expose remote dynamic position (without content)
      */
-    val flow: StateFlow<AtfDataList?> = combine(cacheFlow, remoteFlow) { cache, remote ->
+    val flow: Flow<AtfDataList?> = combine(cacheFlow, remoteFlow) { cache, remote ->
         if(cache != null && remote != null) {
             if(remote.positionEquals(cache))
                 remote.copyAtfContentsFrom(cache)
             else remote
         } else cache
-    }.stateIn(
-        coroutineScope,
-        SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
-        null
-    )
+    }
 
     /**
      * Get cached and remote data in parallel

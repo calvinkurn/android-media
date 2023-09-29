@@ -36,20 +36,11 @@ class HomeAtfUseCase @Inject constructor(
     private val missionWidgetRepository: MissionWidgetRepository,
     private val todoWidgetRepository: TodoWidgetRepository,
 ) {
-    companion object {
-        private const val FLOW_TIMEOUT_MILLIS = 5000L
-    }
-
-    private val coroutineScope = CoroutineScope(homeDispatcher.io)
     var job: Job? = null
 
-    private var _flow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
+    private val _flow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
     val flow: StateFlow<AtfDataList?>
-        get() = _flow.stateIn(
-            coroutineScope,
-            SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
-            null
-        )
+        get() = _flow
 
     private val atfFlows: List<StateFlow<AtfData?>> = listOf(
         tickerRepository.flow,
@@ -135,7 +126,7 @@ class HomeAtfUseCase @Inject constructor(
 //                    // updating flow with remote atf data should be done after
 //                    // dynamic position coming from remote to avoid multiple updating data
 //                    if(dynamicPos != null && !dynamicPos.isCache && atfData != null) {
-//                        flow.value?.let { currentAtf ->
+//                        dynamicPos.let { currentAtf ->
 //                            val index = currentAtf.listAtfData.indexOfFirst { it.atfMetadata == atfData.atfMetadata }
 //                            if(index != -1) {
 //                                try {
@@ -169,7 +160,7 @@ class HomeAtfUseCase @Inject constructor(
 //            val listAtfData = list.drop(1) as List<AtfData?>
 //            val hasAllAtfComplete = listAtfData.all { it == null || it.atfContent != null }
 //            if(dynamicPos != null && !dynamicPos.isCache && hasAllAtfComplete) {
-//                flow.value?.let { currentAtf ->
+//                dynamicPos.let { currentAtf ->
 //                    val newList = currentAtf.listAtfData.toMutableList()
 //                    listAtfData.forEach { atfData ->
 //                        val model = currentAtf.listAtfData.find { it.atfMetadata == atfData?.atfMetadata } ?: return@combine
@@ -189,13 +180,16 @@ class HomeAtfUseCase @Inject constructor(
      */
     private fun CoroutineScope.observeAtfComponentFlow() {
         val allFlows: List<Flow<Any?>> = listOf(dynamicPositionRepository.flow) + atfFlows
+        Log.d("atfflow", "observeAtfComponentFlow: ${atfFlows.joinToString(",") { it.toString() }}")
         combine(allFlows) { list ->
             val dynamicPos = list[0] as? AtfDataList
             val listAtfData = list.drop(1) as List<AtfData?>
+            Log.d("atfflow", "7. HomeAtfUseCase : observeAtfComponentFlow: dynamic pos $dynamicPos\n" +
+                "${listAtfData.joinToString("\n"){ it.toString() }}")
             if(dynamicPos != null && !dynamicPos.isCache) {
-                flow.value?.let { currentAtf ->
-                    _flow.emit(currentAtf.updateAtfContents(listAtfData))
-                }
+                val latest = dynamicPos.updateAtfContents(listAtfData)
+                _flow.emit(latest)
+                Log.d("atfflow", "7. HomeAtfUseCase : observeAtfComponentFlow: emit $latest")
             }
         }.launchIn(this)
     }
