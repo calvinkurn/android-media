@@ -485,7 +485,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         updateVisitableListLiveData()
     }
 
-    private fun getAdsProductListAsync(item: TokoNowAdsCarouselUiModel): Deferred<Unit?> {
+    private fun getAdsProductListAsync(item: TokoNowAdsCarouselUiModel): Deferred<Any?> {
         return asyncCatchError(block = {
             val params = createProductAdsParam()
             val response = getProductAdsUseCase.execute(params)
@@ -503,6 +503,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
             updateVisitableListLiveData()
         }) {
+            visitableList.remove(item)
         }
     }
 
