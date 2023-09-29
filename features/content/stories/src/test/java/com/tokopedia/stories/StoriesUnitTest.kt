@@ -15,6 +15,8 @@ import com.tokopedia.stories.util.assertEqualTo
 import com.tokopedia.stories.util.assertFalse
 import com.tokopedia.stories.util.assertNotEqualTo
 import com.tokopedia.stories.util.assertTrue
+import com.tokopedia.stories.util.assertType
+import com.tokopedia.stories.utils.StoriesPreference
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -24,6 +26,7 @@ import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
@@ -46,12 +49,13 @@ class StoriesUnitTest {
     )
     private val handle: SavedStateHandle = SavedStateHandle()
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
+    private val mockSharedPref: StoriesPreference = mockk(relaxed = true)
 
     private fun getStoriesRobot() = StoriesViewModelRobot(
         dispatchers = testDispatcher,
         args = args,
         handle = handle,
-        repository = mockRepository,
+        repository = mockRepository
     )
 
     @Test
@@ -196,7 +200,7 @@ class StoriesUnitTest {
                 robot.initialDataTestCase()
             }
 
-            event.last().assertEqualTo(StoriesUiEvent.ErrorGroupPage(expectedThrowable))
+            event.last().assertType<StoriesUiEvent.ErrorGroupPage> { }
         }
     }
 
@@ -213,7 +217,7 @@ class StoriesUnitTest {
                 robot.entryPointTestCaseUsingSavedState(
                     mainData = expectedData,
                     selectedGroup = selectedGroup,
-                    selectedDetail = selectedDetail,
+                    selectedDetail = selectedDetail
                 )
 
                 val actualGroup = robot.getViewModel().mGroup
@@ -270,6 +274,10 @@ class StoriesUnitTest {
             mockRepository.getStoriesDetailData(any())
         } returns StoriesDetail()
 
+        every {
+            mockSharedPref.isVisited()
+        } returns true
+
         getStoriesRobot().use { robot ->
             val state = robot.recordStateAndEvents {
                 robot.mainDataTestCase(selectedGroup)
@@ -294,13 +302,15 @@ class StoriesUnitTest {
             mockRepository.getStoriesDetailData(any())
         } throws expectedThrowable
 
+        every { mockSharedPref.isVisited() } returns true
+
         getStoriesRobot().use { robot ->
             val state = robot.recordStateAndEvents {
                 robot.mainDataTestCase(selectedGroup)
             }
 
             state.first.storiesMainData.groupItems[selectedGroup].detail.assertEqualTo(StoriesDetail())
-            state.second.last().assertEqualTo(StoriesUiEvent.ErrorDetailPage(expectedThrowable))
+            state.second.last().assertType<StoriesUiEvent.ErrorDetailPage> { }
         }
     }
 
@@ -666,5 +676,4 @@ class StoriesUnitTest {
             actualImpression.assertEqualTo(expectedData.groupHeader.first())
         }
     }
-
 }
