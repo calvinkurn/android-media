@@ -25,7 +25,9 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.util.Date
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 const val PRODUCT_PER_PAGE = 10
@@ -37,6 +39,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
     private val productLoadError: MutableLiveData<Boolean> = MutableLiveData()
     private val mixLeftData: MutableLiveData<MixLeft> = MutableLiveData()
+    private val saleEndDate: MutableLiveData<Date> = MutableLiveData()
     private val _atcFailed = SingleLiveEvent<Int>()
     private var isLoading = false
     private val mixLeftComponentsItem: ComponentsItem by lazy { ComponentsItem() }
@@ -51,6 +54,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun getProductLoadState(): LiveData<Boolean> = productLoadError
     fun getMixLeftData(): LiveData<MixLeft> = mixLeftData
     val atcFailed: LiveData<Int> = _atcFailed
+
+    fun getSaleEndDate(): LiveData<Date> = saleEndDate
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -104,6 +109,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             productCardsUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
             components.shouldRefreshComponent = null
             setProductsList()
+            setTimer()
         }, onError = {
                 components.noOfPagesLoaded = 1
                 components.verticalProductFailState = true
@@ -129,6 +135,11 @@ class ProductCardCarouselViewModel(val application: Application, val components:
                 productLoadError.value = true
             }
         }
+    }
+
+    private fun setTimer() {
+        val endTime = components.compAdditionalInfo?.timer?.endTime
+        saleEndDate.postValue(Utils.parseData(endTime))
     }
 
     private suspend fun reSyncProductCardHeight(list: java.util.ArrayList<ComponentsItem>) {
