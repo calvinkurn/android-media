@@ -227,7 +227,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
         offerId: String,
         warehouseId: String,
         shopId: String,
-        items: List<Map<String, Any>>
+        items: List<Map<String, Any>>,
+        sortName: String
     ) {
         val bundle = bundleOf(
             TrackerConstant.EVENT to TrackerConstant.EVENT_VIEW_ITEM_LIST,
@@ -237,7 +238,7 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             TrackerConstant.TRACKER_ID to "46768",
             TrackerConstant.BUSINESS_UNIT to TrackerConstant.BUSINESS_UNIT_OLP_BMGM,
             TrackerConstant.CURRENT_SITE to TrackerConstant.CURRENT_SITE_OLP_BMGM,
-            TrackerConstant.ITEM_LIST to "",
+            TrackerConstant.ITEM_LIST to joinDash("/olpbmsm", sortName),
             TrackerConstant.ITEMS to items,
             TrackerConstant.SHOP_ID to shopId,
             TrackerConstant.USER_ID to userSession.userId
@@ -245,19 +246,27 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackerConstant.EVENT_VIEW_ITEM_LIST, bundle)
     }
 
-    fun sendClickProductCardEvent(offerId: String, warehouseId: String, shopId: String) {
-        Tracker.Builder()
-            .setEvent(TrackerConstant.EVENT_SELECT_CONTENT)
-            .setEventAction("click product card")
-            .setEventCategory(TrackerConstant.EVENT_CATEGORY_OLP_BMGM)
-            .setEventLabel(joinDash(offerId, warehouseId))
-            .setCustomProperty(TrackerConstant.TRACKER_ID, "46769")
-            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
-            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
-            .setShopId(shopId)
-            .setUserId(userSession.userId)
-            .build()
-            .send()
+    fun sendClickProductCardEvent(
+        offerId: String,
+        warehouseId: String,
+        shopId: String,
+        items: List<Map<String, Any>>,
+        sortName: String
+    ) {
+        val bundle = bundleOf(
+            TrackerConstant.EVENT to TrackerConstant.EVENT_SELECT_CONTENT,
+            TrackerConstant.EVENT_ACTION to "click product card",
+            TrackerConstant.EVENT_CATEGORY to TrackerConstant.EVENT_CATEGORY_OLP_BMGM,
+            TrackerConstant.EVENT_LABEL to joinDash(offerId, warehouseId),
+            TrackerConstant.TRACKER_ID to "46769",
+            TrackerConstant.BUSINESS_UNIT to TrackerConstant.BUSINESS_UNIT_OLP_BMGM,
+            TrackerConstant.CURRENT_SITE to TrackerConstant.CURRENT_SITE_OLP_BMGM,
+            TrackerConstant.ITEM_LIST to joinDash("/olpbmsm", sortName),
+            TrackerConstant.ITEMS to items,
+            TrackerConstant.SHOP_ID to shopId,
+            TrackerConstant.USER_ID to userSession.userId
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackerConstant.EVENT_SELECT_CONTENT, bundle)
     }
 
     fun sendClickAtcEvent(
