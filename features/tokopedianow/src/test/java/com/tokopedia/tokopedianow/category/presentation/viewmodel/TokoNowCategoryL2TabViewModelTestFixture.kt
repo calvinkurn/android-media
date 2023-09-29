@@ -32,11 +32,15 @@ import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetProductCountU
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetSortFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 
@@ -77,6 +81,9 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
     protected val categoryIdL2 = "12557"
 
     protected val queryParams = mapOf<String, String>()
+
+    protected val requestParamsSlot = slot<RequestParams>()
+    protected val requestParams by lazy { requestParamsSlot.captured }
 
     protected val warehouses = listOf(
         WarehouseData("151245", "fc"),
@@ -193,17 +200,23 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         every { addressData.getAddressData() } returns data
     }
 
-    protected fun onGetProduct_thenReturn(response: AceSearchProductModel) {
-        val queryParams = createGetProductQueryParams(categoryIdL1, categoryIdL2)
-        coEvery { getCategoryProductUseCase.execute(queryParams) } returns response
+    protected fun onGetProductList(
+        withQueryParams: Map<String?, Any?> = createGetProductQueryParams(categoryIdL1, categoryIdL2),
+        thenReturn: AceSearchProductModel
+    ) {
+        coEvery { getCategoryProductUseCase.execute(withQueryParams) } returns thenReturn
     }
 
-    protected fun onGetProductAds_thenReturn(response: ProductAdsResponse) {
-        val queryParams = createGetProductAdsParams(categoryIdL2)
-        coEvery { getProductAdsUseCase.execute(queryParams) } returns response
+    protected fun onGetProductAds(
+        withQueryParams: Map<String?, Any> = createGetProductAdsParams(categoryIdL2),
+        thenReturn: ProductAdsResponse
+    ) {
+        coEvery { getProductAdsUseCase.execute(withQueryParams) } returns thenReturn
     }
 
-    protected fun onGetQuickFilter_thenReturn(response: DynamicFilterModel) {
+    protected fun onGetQuickFilter_thenReturn(
+        response: DynamicFilterModel
+    ) {
         val queryParams = createRequestQueryParams(
             source = "quick_filter_tokonow_directory"
         )
@@ -213,6 +226,17 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
     protected fun onGetCategoryFilter_thenReturn(response: DynamicFilterModel) {
         val queryParams = createGetCategoryFilterQueryParams()
         coEvery { getSortFilterUseCase.execute(queryParams) } returns response
+    }
+
+    protected fun onGetSortFilterFilter(
+        withQueryParams: Map<String?, Any?> = createRequestQueryParams(),
+        thenReturn: DynamicFilterModel
+    ) {
+        coEvery { getSortFilterUseCase.execute(withQueryParams) } returns thenReturn
+    }
+
+    protected fun onGetSortFilterFilter_throwsError() {
+        coEvery { getSortFilterUseCase.execute(any()) } throws NullPointerException()
     }
 
     protected fun onGetTicker_thenReturn(warehouseId: Long, response: GetTargetedTickerResponse) {
@@ -225,6 +249,51 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         coEvery { getCategoryListUseCase.execute(warehouses, 1) } returns response
     }
 
+    protected fun onGetProductCount_thenReturn(productCount: String) {
+        coEvery {
+            getProductCountUseCase.execute(any(), any(), capture(requestParamsSlot))
+        } answers {
+            firstArg<(String) -> Unit>().invoke(productCount)
+        }
+    }
+
+    protected fun onGetProductCount_throwsError() {
+        coEvery {
+            getProductCountUseCase.execute(any(), any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(NullPointerException())
+        }
+    }
+
+    protected fun onAddToCart_thenReturn(response: AddToCartDataModel) {
+        coEvery {
+            addToCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(AddToCartDataModel) -> Unit>().invoke(response)
+        }
+    }
+
+
+    protected fun onUpdateCartItem_thenReturn(response: UpdateCartV2Data) {
+        coEvery {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(response)
+        }
+    }
+
+    protected fun onDeleteCartItem_thenReturn(response: RemoveFromCartData) {
+        coEvery {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(response)
+        }
+    }
+
+    protected fun onCreateAffiliateLink_thenReturn(affiliateLink: String) {
+        every { affiliateService.createAffiliateLink(any()) } returns affiliateLink
+    }
+
     protected fun verifyGetProductUseCaseCalled(queryParams: Map<String?, Any?>) {
         coVerify { getCategoryProductUseCase.execute(queryParams) }
     }
@@ -233,11 +302,61 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         coVerify { getProductAdsUseCase.execute(queryParams) }
     }
 
-    protected fun verifyGetSortFilterUseCaseCalled(queryParams: Map<String?, Any?>) {
-        coVerify { getSortFilterUseCase.execute(queryParams) }
+    protected fun verifyGetSortFilterUseCaseCalled(
+        queryParams: Map<String?, Any?> = createRequestQueryParams(),
+        times: Int = 1
+    ) {
+        coVerify(exactly = times) { getSortFilterUseCase.execute(queryParams) }
     }
 
-    protected fun createGetProductQueryParams(srpPageId: String, sc: String): Map<String?, Any?> {
+    protected fun verifyGetProductCountUseCaseCalled(expectedRequestParams: RequestParams) {
+        val actualParams = requestParams.parameters
+        val expectedParams = expectedRequestParams.parameters
+
+        expectedParams.forEach {
+            val actualParam = actualParams[it.key]
+            val expectedParam = expectedParams[it.key]
+            assertEquals(expectedParam, actualParam)
+        }
+    }
+
+    protected fun verifyAddToCartUseCaseCalled() {
+        coVerify { addToCartUseCase.execute(any(), any())  }
+    }
+
+    protected fun verifyUpdateCartUseCaseCalled() {
+        coVerify { updateCartUseCase.execute(any(), any())  }
+    }
+
+    protected fun verifyDeleteCartUseCaseCalled() {
+        coVerify { deleteCartUseCase.execute(any(), any())  }
+    }
+
+    protected fun verifyCreateAffiliateLinkCalled(withUri: String) {
+        verify { affiliateService.createAffiliateLink(withUri) }
+    }
+
+    protected fun verifyRequestQueryParams(
+        expectedGetProductQueryParams: Map<String?, Any?> = createGetProductQueryParams(categoryIdL1, categoryIdL2),
+        expectedGetProductAdsQueryParams: Map<String?, Any> = createGetProductAdsParams(categoryIdL2)
+    ) {
+        verifyGetProductUseCaseCalled(expectedGetProductQueryParams)
+        verifyGetProductAdsUseCaseCalled(expectedGetProductAdsQueryParams)
+        verifySortFilterQueryParams()
+    }
+
+    protected fun verifySortFilterQueryParams() {
+        val expectedGetQuickFilterQueryParams = createRequestQueryParams(
+            source = "quick_filter_tokonow_directory"
+        )
+
+        val expectedGetCategoryFilterQueryParams = createGetCategoryFilterQueryParams()
+
+        verifyGetSortFilterUseCaseCalled(expectedGetQuickFilterQueryParams)
+        verifyGetSortFilterUseCaseCalled(expectedGetCategoryFilterQueryParams)
+    }
+
+    protected fun createGetProductQueryParams(srpPageId: String, sc: String): MutableMap<String?, Any?> {
         return mutableMapOf<String?, Any?>().apply {
             put("user_cityId", localCacheModel.city_id)
             put("user_addressId", localCacheModel.address_id)
@@ -309,6 +428,16 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
 
         categoryFilterQueryParams.putAll(filterParams)
         return categoryFilterQueryParams
+    }
+
+    protected fun createGetProductCountRequestParams(mapParameter: Map<String, String>): RequestParams {
+        val getProductCountParams = createRequestQueryParams(rows = 0, page = null)
+        getProductCountParams.putAll(FilterHelper.createParamsWithoutExcludes(mapParameter))
+
+        val getProductCountRequestParams = RequestParams.create()
+        getProductCountRequestParams.putAll(getProductCountParams)
+
+        return getProductCountRequestParams
     }
 
     private fun createFilterParams(source: String): MutableMap<String, String> {

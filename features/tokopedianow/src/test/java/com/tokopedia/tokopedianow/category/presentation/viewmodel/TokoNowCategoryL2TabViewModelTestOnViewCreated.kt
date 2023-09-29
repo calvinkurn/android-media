@@ -27,8 +27,8 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
 
     @Test
     fun `given product list not empty when call onViewCrated should update visitable list with first page items`() {
-        onGetProduct_thenReturn(getProductResponse)
-        onGetProductAds_thenReturn(getProductAdsResponse)
+        onGetProductList(thenReturn = getProductResponse)
+        onGetProductAds(thenReturn = getProductAdsResponse)
 
         onGetQuickFilter_thenReturn(getQuickFilterResponse)
         onGetCategoryFilter_thenReturn(getCategoryFilterResponse)
@@ -97,7 +97,7 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
         val emptyProductResponse = getProductResponse.copy(searchProduct)
         val violation = searchData.violation
 
-        onGetProduct_thenReturn(emptyProductResponse)
+        onGetProductList(thenReturn = emptyProductResponse)
         onGetQuickFilter_thenReturn(getQuickFilterResponse)
         onGetCategoryFilter_thenReturn(getCategoryFilterResponse)
         onGetCategoryList_thenReturn(getCategoryListResponse)
@@ -178,25 +178,5 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
 
         viewModel.visitableListLiveData
             .verifyValueEquals(expectedVisitableList)
-    }
-
-    private fun verifyRequestQueryParams() {
-        val expectedGetProductQueryParams = createGetProductQueryParams(categoryIdL1, categoryIdL2)
-        val expectedGetProductAdsQueryParams = createGetProductAdsParams(categoryIdL2)
-
-        verifyGetProductUseCaseCalled(expectedGetProductQueryParams)
-        verifyGetProductAdsUseCaseCalled(expectedGetProductAdsQueryParams)
-        verifySortFilterQueryParams()
-    }
-
-    private fun verifySortFilterQueryParams() {
-        val expectedGetQuickFilterQueryParams = createRequestQueryParams(
-            source = "quick_filter_tokonow_directory"
-        )
-
-        val expectedGetCategoryFilterQueryParams = createGetCategoryFilterQueryParams()
-
-        verifyGetSortFilterUseCaseCalled(expectedGetQuickFilterQueryParams)
-        verifyGetSortFilterUseCaseCalled(expectedGetCategoryFilterQueryParams)
     }
 }
