@@ -17,7 +17,6 @@ import com.scp.login.core.domain.contracts.configs.LSdkUiConfig
 import com.scp.login.core.domain.contracts.listener.LSdkClientFlowListener
 import com.scp.login.core.domain.contracts.listener.LSdkLoginFlowListener
 import com.scp.verification.core.domain.common.entities.Failure
-import com.scp.verification.core.domain.common.listener.ForgetContext
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
@@ -130,7 +129,7 @@ class ScpAuthActivity : BaseActivity() {
                 }
 
                 override fun onForgetClicked(forgetType: String) {
-                    goToForgetScreen(forgetType)
+//                    goToForgetScreen(forgetType)
                 }
 
                 override fun onTermsServicesClicked() {
@@ -179,16 +178,16 @@ class ScpAuthActivity : BaseActivity() {
         )
     }
 
-    private fun goToForgetScreen(type: String) {
-        when (type) {
-            ForgetContext.FORGET_PASSWORD.name -> {
-                goToForgotPassword(this)
-            }
-            ForgetContext.FORGET_TOKO_PIN.name -> {
-                goToChangePIN(this)
-            }
-        }
-    }
+//    private fun goToForgetScreen(type: String) {
+//        when (type) {
+//            ForgetContext.FORGET_PASSWORD.name -> {
+//                goToForgotPassword(this)
+//            }
+//            ForgetContext.FORGET_TOKO_PIN.name -> {
+//                goToChangePIN(this)
+//            }
+//        }
+//    }
 
     private fun submitIntegrityApi() {
         if (firebaseRemoteConfig.getBoolean(IntegrityApiConstant.LOGIN_CONFIG)) {

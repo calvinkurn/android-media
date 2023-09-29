@@ -16,8 +16,6 @@ import com.scp.auth.utils.goToForgotPassword
 import com.scp.verification.core.data.network.entities.CVError
 import com.scp.verification.core.domain.common.entities.VerificationData
 import com.scp.verification.core.domain.common.entities.config.VerificationUiConfig
-import com.scp.verification.core.domain.common.listener.ForgetContext
-import com.scp.verification.core.domain.common.listener.ForgetListener
 import com.scp.verification.core.domain.common.listener.OnSuccessValidation
 import com.scp.verification.core.domain.common.listener.PinListener
 import com.scp.verification.core.domain.common.listener.VerificationListener
@@ -95,20 +93,20 @@ class ScpVerificationManager(private val pinManager: PinManager) {
                 }
             },
             additionalHeaders = TkpdAdditionalHeaders(activity),
-            forgetListener = getForgetListener()
+//            forgetListener = getForgetListener()
         )
     }
 
-    private fun getForgetListener() = object : ForgetListener {
-        override fun openForgetFlow(type: ForgetContext, activity: FragmentActivity) {
-            when (type) {
-                ForgetContext.FORGET_PASSWORD -> {
-                    goToForgotPassword(activity)
-                }
-                ForgetContext.FORGET_TOKO_PIN -> {
-                    goToChangePIN(activity)
-                }
-            }
-        }
-    }
+//    private fun getForgetListener() = object : ForgetListener {
+//        override fun openForgetFlow(type: ForgetContext, activity: FragmentActivity) {
+//            when (type) {
+//                ForgetContext.FORGET_PASSWORD -> {
+//                    goToForgotPassword(activity)
+//                }
+//                ForgetContext.FORGET_TOKO_PIN -> {
+//                    goToChangePIN(activity)
+//                }
+//            }
+//        }
+//    }
 }
