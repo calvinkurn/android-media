@@ -9,8 +9,10 @@ import com.tokopedia.home.beranda.data.newatf.AtfRepository
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
+import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import javax.inject.Inject
 
 @HomeScope
@@ -22,15 +24,24 @@ class MissionWidgetRepository @Inject constructor(
 
     @SuppressLint("PII Data Exposure")
     override suspend fun getData(atfMetadata: AtfMetadata) {
-        val iconParam = Bundle().apply {
+        val missionParam = Bundle().apply {
             putString(
                 GetMissionWidget.BANNER_LOCATION_PARAM,
                 homeChooseAddressRepository.getRemoteData()
                     ?.convertToLocationParams()
             )
         }
-        val data = missionWidgetRepository.getRemoteData(iconParam)
-        val atfData = AtfData(atfMetadata, data.getHomeMissionWidget, isCache = false)
-        emitAndSaveData(atfData)
+        val (data, status) = try {
+            missionWidgetRepository.getRemoteData(missionParam).getHomeMissionWidget to AtfKey.STATUS_SUCCESS
+        } catch (_: Exception) {
+            HomeMissionWidgetData.GetHomeMissionWidget() to AtfKey.STATUS_ERROR
+        }
+        val atfData = AtfData(
+            atfMetadata = atfMetadata,
+            atfContent = data,
+            atfStatus = status,
+            isCache = false,
+        )
+        emitData(atfData)
     }
 }

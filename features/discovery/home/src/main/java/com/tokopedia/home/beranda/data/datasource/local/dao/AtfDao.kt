@@ -12,6 +12,14 @@ abstract class AtfDao {
     @Query("DELETE FROM AtfCacheEntity")
     abstract suspend fun deleteAtfTable()
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun save(items: List<AtfCacheEntity>)
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun updateAtfData(atfCacheEntity: AtfCacheEntity)
+
+    suspend fun saveLatestAtf(items: List<AtfCacheEntity>) {
+        deleteAtfTable()
+        save(items)
+    }
 }

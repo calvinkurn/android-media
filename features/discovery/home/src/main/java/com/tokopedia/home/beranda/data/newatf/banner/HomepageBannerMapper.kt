@@ -1,7 +1,10 @@
 package com.tokopedia.home.beranda.data.newatf.banner
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.beranda.data.newatf.AtfData
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelOneModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -18,14 +21,15 @@ object HomepageBannerMapper {
 
     fun com.tokopedia.home.beranda.domain.model.banner.BannerDataModel.asVisitable(
         index: Int,
-        isCache: Boolean,
-        lastUpdate: Long,
+        atfData: AtfData,
     ): Visitable<*> {
-        val isExpired = System.currentTimeMillis() - lastUpdate > BANNER_EXPIRY_IN_MILLIS
-        return if (HomeRollenceController.isUsingAtf2Variant()) {
-            mapToAtf2Banner(index, isCache, isExpired)
+        val isExpired = System.currentTimeMillis() - atfData.lastUpdate > BANNER_EXPIRY_IN_MILLIS
+        return if (atfData.atfStatus == AtfKey.STATUS_ERROR) {
+            ErrorStateChannelOneModel()
+        } else if (HomeRollenceController.isUsingAtf2Variant()) {
+            mapToAtf2Banner(index, atfData.isCache, isExpired)
         } else {
-            mapToOldBanner(index, isCache, isExpired)
+            mapToOldBanner(index, atfData.isCache, isExpired)
         }
     }
 

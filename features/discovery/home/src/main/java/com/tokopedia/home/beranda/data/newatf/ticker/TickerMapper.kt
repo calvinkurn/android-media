@@ -21,8 +21,7 @@ object TickerMapper {
             if (!HomeRevampFragment.HIDE_TICKER) {
                 tickers.filter { it.layout != LAYOUT_FLOATING }.let {
                     if (it.isNotEmpty()) {
-                        val a = TickerDataModel(tickers = mappingTickerFromServer(it))
-                        a
+                        TickerDataModel(tickers = mappingTickerFromServer(it))
                     } else {
                         null
                     }

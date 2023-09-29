@@ -9,6 +9,8 @@ import com.tokopedia.home.beranda.data.newatf.AtfRepository
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeIconRepository
+import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import javax.inject.Inject
 
@@ -32,8 +34,17 @@ class DynamicIconRepository @Inject constructor(
                     ?.convertToLocationParams()
             )
         }
-        val data = homeIconRepository.getRemoteData(iconParam)
-        val atfData = AtfData(atfMetadata, data.dynamicHomeIcon, isCache = false)
-        emitAndSaveData(atfData)
+        val (data, status) = try {
+            homeIconRepository.getRemoteData(iconParam).dynamicHomeIcon to AtfKey.STATUS_SUCCESS
+        } catch (_: Exception) {
+            DynamicHomeIcon() to AtfKey.STATUS_ERROR
+        }
+        val atfData = AtfData(
+            atfMetadata = atfMetadata,
+            atfContent = data,
+            atfStatus = status,
+            isCache = false,
+        )
+        emitData(atfData)
     }
 }

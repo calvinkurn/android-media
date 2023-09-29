@@ -9,6 +9,8 @@ import com.tokopedia.home.beranda.data.newatf.AtfRepository
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomePageBannerRepository
+import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import javax.inject.Inject
 
@@ -32,8 +34,17 @@ class HomepageBannerRepository @Inject constructor(
                     ?.convertToLocationParams()
             )
         }
-        val data = homePageBannerRepository.getRemoteData(bannerParam)
-        val atfData = AtfData(atfMetadata, data.banner, isCache = false)
-        emitAndSaveData(atfData)
+        val (data, status) = try {
+            homePageBannerRepository.getRemoteData(bannerParam).banner to AtfKey.STATUS_SUCCESS
+        } catch (_: Exception) {
+            BannerDataModel() to AtfKey.STATUS_ERROR
+        }
+        val atfData = AtfData(
+            atfMetadata = atfMetadata,
+            atfContent = data,
+            atfStatus = status,
+            isCache = false,
+        )
+        emitData(atfData)
     }
 }

@@ -9,6 +9,8 @@ import com.tokopedia.home.beranda.data.newatf.AtfRepository
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeDynamicChannelsRepository
+import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import javax.inject.Inject
 
@@ -32,8 +34,17 @@ class AtfChannelRepository @Inject constructor(
                     ?.convertToLocationParams()
             )
         }
-        val data = homeDynamicChannelsRepository.getRemoteData(dcParam)
-        val atfData = AtfData(atfMetadata, data.dynamicHomeChannel, isCache = false)
-        emitAndSaveData(atfData)
+        val (data, status) = try {
+            homeDynamicChannelsRepository.getRemoteData(dcParam).dynamicHomeChannel to AtfKey.STATUS_SUCCESS
+        } catch (_: Exception) {
+            DynamicHomeIcon() to AtfKey.STATUS_ERROR
+        }
+        val atfData = AtfData(
+            atfMetadata = atfMetadata,
+            atfContent = data,
+            atfStatus = status,
+            isCache = false,
+        )
+        emitData(atfData)
     }
 }

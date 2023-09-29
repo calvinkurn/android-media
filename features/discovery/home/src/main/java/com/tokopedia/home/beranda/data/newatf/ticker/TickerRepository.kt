@@ -9,6 +9,8 @@ import com.tokopedia.home.beranda.data.newatf.AtfRepository
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
+import com.tokopedia.home.beranda.domain.model.Ticker
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import javax.inject.Inject
 
@@ -28,8 +30,17 @@ class TickerRepository @Inject constructor(
                     ?.convertToLocationParams()
             )
         }
-        val data = homeTickerRepository.getRemoteData(tickerParam)
-        val atfData = AtfData(atfMetadata, data.ticker, isCache = false)
-        emitAndSaveData(atfData)
+        val (data, status) = try {
+            homeTickerRepository.getRemoteData(tickerParam).ticker to AtfKey.STATUS_SUCCESS
+        } catch (_: Exception) {
+            Ticker() to AtfKey.STATUS_ERROR
+        }
+        val atfData = AtfData(
+            atfMetadata = atfMetadata,
+            atfContent = data,
+            atfStatus = status,
+            isCache = false,
+        )
+        emitData(atfData)
     }
 }
