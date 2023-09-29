@@ -14,6 +14,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
         private const val USER_SHARE_TYPE_GENERAL = "general"
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4201
+    // Tracker ID: 46752
     fun sendOpenScreenEvent(shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_OPEN_SCREEN)
@@ -28,6 +30,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46753
     fun sendClickBackButtonEvent(offerId: String, warehouseId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
@@ -43,6 +47,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4201
+    // Tracker ID: 46864
     fun sendClickShareButtonEvent(offerId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_COMMUNICATION)
@@ -58,6 +64,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4201
+    // Tracker ID: 46865
     fun sendClickCloseShareButtonEvent(offerId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_COMMUNICATION)
@@ -73,6 +81,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4201
+    // Tracker ID: 46866
     fun sendClickSharingChannelEvent(channel: String, offerId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_COMMUNICATION)
@@ -88,6 +98,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4201
+    // Tracker ID: 46867
     fun sendViewSharingChannelEvent(offerId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_VIEW_COMMUNICATION_IRIS)
@@ -103,6 +115,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46755
     fun sendClickShopCtaButtonEvent(offerId: String, warehouseId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
@@ -118,6 +132,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46756
     fun sendClickKeranjangButtonEvent(offerId: String, warehouseId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
@@ -133,6 +149,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46757
     fun sendClickBurgerButtonEvent(offerId: String, warehouseId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
@@ -148,6 +166,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46758
     fun sendClickSnkButtonEvent(offerId: String, warehouseId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
@@ -163,6 +183,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46759
     fun sendImpressSnkEvent(offerId: String, warehouseId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_VIEW_PG_IRIS)
@@ -178,6 +200,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46760
     fun sendClickCloseSnkButtonEvent(offerId: String, warehouseId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
@@ -193,6 +217,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46761
     fun sendClickFilterDropdownButtonEvent(offerId: String, warehouseId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
@@ -208,6 +234,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46762
     fun sendClickFilterButtonEvent(offerId: String, warehouseId: String, shopId: String, offerName: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
@@ -223,6 +251,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .send()
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46768
     fun sendImpressProductCardEvent(
         offerId: String,
         warehouseId: String,
@@ -246,6 +276,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackerConstant.EVENT_VIEW_ITEM_LIST, bundle)
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46769
     fun sendClickProductCardEvent(
         offerId: String,
         warehouseId: String,
@@ -269,6 +301,8 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackerConstant.EVENT_SELECT_CONTENT, bundle)
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46775
     fun sendClickAtcEvent(
         offerId: String,
         warehouseId: String,
@@ -287,25 +321,11 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             TrackerConstant.SHOP_ID to shopId,
             TrackerConstant.USER_ID to userSession.userId
         )
-
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackerConstant.EVENT_ADD_TO_CART, bundle)
     }
 
-    fun sendImpressVariantEvent(offerId: String, warehouseId: String, shopId: String) {
-        Tracker.Builder()
-            .setEvent(TrackerConstant.EVENT_VIEW_PG_IRIS)
-            .setEventAction("impression variant")
-            .setEventCategory("${TrackerConstant.EVENT_CATEGORY_OLP_BMGM} - variant")
-            .setEventLabel(joinDash(offerId, warehouseId))
-            .setCustomProperty(TrackerConstant.TRACKER_ID, "46776")
-            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
-            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
-            .setShopId(shopId)
-            .setUserId(userSession.userId)
-            .build()
-            .send()
-    }
-
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4164
+    // Tracker ID: 46777
     fun sendClickCloseVariantEvent(offerId: String, warehouseId: String, shopId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_CLICK_PG)
@@ -313,21 +333,6 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .setEventCategory("${TrackerConstant.EVENT_CATEGORY_OLP_BMGM} - variant")
             .setEventLabel(joinDash(offerId, warehouseId))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "46777")
-            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
-            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
-            .setShopId(shopId)
-            .setUserId(userSession.userId)
-            .build()
-            .send()
-    }
-
-    fun sendClickChipsVariantEvent(offerId: String, warehouseId: String, shopId: String) {
-        Tracker.Builder()
-            .setEvent(TrackerConstant.EVENT_CLICK_PG)
-            .setEventAction("click variant chip")
-            .setEventCategory("${TrackerConstant.EVENT_CATEGORY_OLP_BMGM} - variant")
-            .setEventLabel(joinDash(offerId, warehouseId))
-            .setCustomProperty(TrackerConstant.TRACKER_ID, "46778")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
             .setShopId(shopId)
