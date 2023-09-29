@@ -615,7 +615,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
         return tabData?.let {
             when (it.name) {
                 ShopPageHeaderTabName.HOME -> {
-                    applyPaddingTop()
                     ShopPageHomeFragment.createInstance(
                         shopId,
                         shopPageHeaderDataModel?.isOfficial ?: false,
