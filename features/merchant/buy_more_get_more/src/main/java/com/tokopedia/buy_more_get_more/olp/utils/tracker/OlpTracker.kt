@@ -238,7 +238,7 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             TrackerConstant.TRACKER_ID to "46768",
             TrackerConstant.BUSINESS_UNIT to TrackerConstant.BUSINESS_UNIT_OLP_BMGM,
             TrackerConstant.CURRENT_SITE to TrackerConstant.CURRENT_SITE_OLP_BMGM,
-            TrackerConstant.ITEM_LIST to joinDash("/olpbmsm", sortName),
+            TrackerConstant.ITEM_LIST to joinDash("/bmsm_olp", sortName),
             TrackerConstant.ITEMS to items,
             TrackerConstant.SHOP_ID to shopId,
             TrackerConstant.USER_ID to userSession.userId
@@ -261,7 +261,7 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             TrackerConstant.TRACKER_ID to "46769",
             TrackerConstant.BUSINESS_UNIT to TrackerConstant.BUSINESS_UNIT_OLP_BMGM,
             TrackerConstant.CURRENT_SITE to TrackerConstant.CURRENT_SITE_OLP_BMGM,
-            TrackerConstant.ITEM_LIST to joinDash("/olpbmsm", sortName),
+            TrackerConstant.ITEM_LIST to joinDash("/bmsm_olp", sortName),
             TrackerConstant.ITEMS to items,
             TrackerConstant.SHOP_ID to shopId,
             TrackerConstant.USER_ID to userSession.userId
