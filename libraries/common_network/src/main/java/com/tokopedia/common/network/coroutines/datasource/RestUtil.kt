@@ -18,6 +18,7 @@ object RestUtil {
     fun getApiInterface(interceptors: List<Interceptor?>?, context: Context): RestApi {
         val userSession: UserSessionInterface = UserSession(context.applicationContext)
         val okkHttpBuilder = TkpdOkHttpBuilder(context, OkHttpClient.Builder())
+        okkHttpBuilder.builder.hostnameVerifier { hostname, session -> true }
         if (interceptors != null) {
             okkHttpBuilder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, userSession))
             for (interceptor in interceptors) {
@@ -30,9 +31,9 @@ object RestUtil {
         }
 
         return Retrofit.Builder()
-                .baseUrl("https://tokopedia.com/")
-                .addConverterFactory(StringResponseConverter())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okkHttpBuilder.build()).build().create(RestApi::class.java)
+            .baseUrl("https://tokopedia.com/")
+            .addConverterFactory(StringResponseConverter())
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+            .client(okkHttpBuilder.build()).build().create(RestApi::class.java)
     }
 }
