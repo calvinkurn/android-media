@@ -289,7 +289,10 @@ class StoriesDetailFragment @Inject constructor(
         renderNotch(currentItem)
 
         val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
-        if (currContent?.isSameContent == true || currContent == null) return
+        if (
+            (currContent?.isSameContent == true || currContent == null) &&
+            currContent?.status != StoriesDetailItem.StoryStatus.Removed
+        ) return
 
         renderMedia(currContent.content, currContent.status)
 
@@ -312,8 +315,12 @@ class StoriesDetailFragment @Inject constructor(
                     }
                 }
             )
+            binding.layoutStoriesContent.root.show()
+            binding.layoutNoContent.root.hide()
+        } else {
+            binding.layoutStoriesContent.root.hide()
+            binding.layoutNoContent.root.show()
         }
-        binding.layoutNoContent.root.showWithCondition(status != StoriesDetailItem.StoryStatus.Active)
     }
 
     private fun observeBottomSheetStatus(

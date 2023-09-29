@@ -48,7 +48,6 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
                         viewModel.storiesEvent.collectLatest { event ->
                             when (event) {
                                 StoriesUiEvent.ShowDeleteDialog -> {
-                                    dismiss()
                                     ctx.showDialog(
                                         title = getString(storiesR.string.stories_delete_story_title),
                                         description = getString(storiesR.string.stories_delete_story_description),
@@ -56,6 +55,7 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
                                         secondaryCTAText = getString(contentcommonR.string.card_dialog_title_cancel),
                                         primaryAction = {
                                             viewModel.submitAction(StoriesUiAction.DeleteStory)
+                                            dismiss()
                                         }
                                     )
                                 }

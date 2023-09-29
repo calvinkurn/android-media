@@ -24,7 +24,7 @@ class UpdateStoryUseCase @Inject constructor(
     }
 
     data class Param(
-        @SerializedName("storyId")
+        @SerializedName("storyID")
         val storyId: String,
         @SerializedName("action")
         val action: StoryActionType
@@ -42,8 +42,8 @@ class UpdateStoryUseCase @Inject constructor(
         private const val STATUS_PARAM = "status"
 
         private const val QUERY = """
-            mutation contentCreatorStoryUpdateStory(${'$'}storyId: String!, ${'$'}status: Int!) {
-              contentCreatorStoryUpdateStory(req: {$STORY_ID_PARAM: ${'$'}storyId, $STATUS_PARAM: ${'$'}status}) {
+            mutation contentCreatorStoryUpdateStory(${'$'}storyID: String!, ${'$'}status: Int!) {
+              contentCreatorStoryUpdateStory(req: {$STORY_ID_PARAM: ${'$'}storyID, $STATUS_PARAM: ${'$'}status}) {
                 storyID
               }
             }
