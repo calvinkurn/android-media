@@ -13,5 +13,4 @@ class PreviewUiModel(var data: MediaUiModel) {
             mVideoPlayer = it
         }
     }
-
 }
