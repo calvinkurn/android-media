@@ -79,6 +79,7 @@ object ConstantTransactionAnalytics {
         const val SELECT_CONTENT = "select_content"
         const val REMOVE_FROM_CART_V2 = "remove_from_cart"
         const val CLICK_PG = "clickPG"
+        const val VIEW_PG_IRIS = "viewPGIris"
     }
 
     object EventCategory {
@@ -418,8 +419,10 @@ object ConstantTransactionAnalytics {
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "click button - to delete cart"
         const val IMPRESSION_CART = "impression cart"
 
-        // BMGM Checkout
+        // BMGM
         const val CLICK_SNK_BMGM = "click snk bmgm"
+        const val CLICK_BMGM_RECOMMENDATION = "click bmgm recommendation"
+        const val IMPRESSION_BMGM_RECOMMENDATION = "impression bmgm recommendation"
     }
 
     object EventLabel {
@@ -577,5 +580,7 @@ object ConstantTransactionAnalytics {
 
         // BMGM
         const val CLICK_SNK_BMGM = "46781"
+        const val CLICK_BMGM_RECOMMENDATION = "47209"
+        const val VIEW_BMGM_RECOMMENDATION = "47208"
     }
 }

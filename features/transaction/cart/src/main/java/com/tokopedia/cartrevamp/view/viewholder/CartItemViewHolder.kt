@@ -642,7 +642,7 @@ class CartItemViewHolder constructor(
                     ConstraintSet.BOTTOM,
                     ConstraintSet.PARENT_ID,
                     ConstraintSet.BOTTOM,
-                        IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
+                    IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
                 )
             } else {
                 if (data.isMultipleBundleProduct) {
@@ -1388,7 +1388,8 @@ class CartItemViewHolder constructor(
             layoutParamsFlImageProduct.topMargin = 0
 
             if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
-                    !cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider) {
+                !cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider
+            ) {
                 binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
                 binding.bmgmHelperView2.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
 
@@ -1400,12 +1401,12 @@ class CartItemViewHolder constructor(
             } else {
                 if (cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm || cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider) {
                     layoutParams.bottomMargin =
-                            IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
+                        IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
                     binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
                     binding.bmgmHelperView2.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
                 } else {
                     layoutParams.bottomMargin =
-                            PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                        PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
                     binding.bmgmHelperView1.gone()
                     binding.bmgmHelperView2.gone()
                 }
@@ -1444,8 +1445,19 @@ class CartItemViewHolder constructor(
                     binding.itemCartBmgm.bmgmWidgetView.urlLeftIcon = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerIcon
                     binding.itemCartBmgm.bmgmWidgetView.offerId = data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
-                        actionListener?.onBmGmChevronRightClicked(data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerLandingPageLink)
+                        actionListener?.onBmGmChevronRightClicked(
+                            data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerLandingPageLink,
+                            data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
+                            data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(" • "),
+                            data.shopHolderData.shopId
+                        )
                     }
+
+                    actionListener?.onCartViewBmGmTicker(
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
+                        data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage.joinToString(" • "),
+                        data.shopHolderData.shopId
+                    )
                 }
                 2 -> {
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.INACTIVE
