@@ -464,7 +464,14 @@ class StoriesViewModel @AssistedInject constructor(
             if (response) {
                 //Remove story~
                 val newList = _storiesMainData.value.groupItems.map {
-                    if (it == mGroupItem) it.copy(detail = it.detail.copy(detailItems = it.detail.detailItems.filterNot { item -> item.id == storyId }))
+                    if (it == mGroupItem) {
+                        it.copy(
+                            detail = it.detail.copy(
+                                detailItems = it.detail.detailItems.map {
+                                        item -> if (item.id == storyId) item.copy(status = StoriesDetailItem.StoryStatus.Removed) else item
+                                }),
+                        )
+                    }
                     else it
                 }
                 _storiesMainData.update {
