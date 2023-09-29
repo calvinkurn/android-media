@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit
 
 data class CalendarWidgetUiModel(
     override val id: String,
-    override val sectionId: String,
     override val widgetType: String,
     override val title: String,
     override val subtitle: String,

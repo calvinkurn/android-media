@@ -9,7 +9,6 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
 data class TableWidgetUiModel(
     override val id: String,
-    override val sectionId: String,
     override val widgetType: String,
     override val title: String,
     override val subtitle: String,

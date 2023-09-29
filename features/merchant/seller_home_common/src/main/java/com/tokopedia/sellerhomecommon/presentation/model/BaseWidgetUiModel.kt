@@ -11,7 +11,6 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
 interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactory> {
     val id: String
-    val sectionId: String
     val widgetType: String
     val title: String
     val subtitle: String

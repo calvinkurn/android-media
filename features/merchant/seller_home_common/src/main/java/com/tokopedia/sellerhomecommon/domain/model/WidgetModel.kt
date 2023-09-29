@@ -9,9 +9,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class WidgetModel(
     @SerializedName("ID")
-    val id: Long = 0,
-    @SerializedName("sectionID")
-    val sectionId: Long = 0,
+    val id: Long?,
     @SerializedName("applink")
     val appLink: String?,
     @SerializedName("ctaText")
