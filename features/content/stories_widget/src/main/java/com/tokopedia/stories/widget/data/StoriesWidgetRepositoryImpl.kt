@@ -10,7 +10,7 @@ import com.tokopedia.stories.internal.StoriesPreferenceUtil
 import com.tokopedia.stories.internal.storage.StoriesSeenStorage
 import com.tokopedia.stories.widget.StoriesStatus
 import com.tokopedia.stories.widget.domain.GetShopStoriesStatusUseCase
-import com.tokopedia.stories.widget.domain.StoriesEntrySource
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
@@ -48,7 +48,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getStoriesWidgetInfo(
-        entryPoint: StoriesEntrySource,
+        entryPoint: StoriesEntryPoint,
         shopIds: List<String>
     ): StoriesWidgetInfo = withContext(dispatchers.io) {
         val isEntryPointAllowed = isEntryPointAllowed(entryPoint)
@@ -93,7 +93,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun isEntryPointAllowed(key: StoriesEntrySource): Boolean {
+    private fun isEntryPointAllowed(key: StoriesEntryPoint): Boolean {
         val disabledEntryPoints = getDisabledEntryPoints()
         return !disabledEntryPoints.contains(key.key)
     }

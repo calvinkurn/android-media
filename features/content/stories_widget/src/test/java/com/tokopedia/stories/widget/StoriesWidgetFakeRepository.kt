@@ -1,7 +1,7 @@
 package com.tokopedia.stories.widget
 
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.stories.widget.domain.StoriesEntrySource
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
@@ -11,7 +11,7 @@ import com.tokopedia.stories.widget.domain.TimeMillis
  * Created by kenny.hadisaputra on 24/08/23
  */
 class StoriesWidgetFakeRepository(
-    private val forbiddenEntryPoints: List<StoriesEntrySource> = emptyList(),
+    private val forbiddenEntryPoints: List<StoriesEntryPoint> = emptyList(),
     initialHasSeenCoachMark: Boolean = false,
     private val coachMarkText: String = ""
 ) : StoriesWidgetRepository {
@@ -34,7 +34,7 @@ class StoriesWidgetFakeRepository(
     }
 
     override suspend fun getStoriesWidgetInfo(
-        entryPoint: StoriesEntrySource,
+        entryPoint: StoriesEntryPoint,
         shopIds: List<String>
     ): StoriesWidgetInfo {
         if (forbiddenEntryPoints.contains(entryPoint)) return StoriesWidgetInfo.Default

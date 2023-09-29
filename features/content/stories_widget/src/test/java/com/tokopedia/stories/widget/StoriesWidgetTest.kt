@@ -1,6 +1,6 @@
 package com.tokopedia.stories.widget
 
-import com.tokopedia.stories.widget.domain.StoriesEntrySource
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.unit.test.rule.StandardTestRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,7 +44,7 @@ class StoriesWidgetTest {
         val repo = StoriesWidgetFakeRepository()
         repo.setStoriesWidgetState(shopStoriesStates)
 
-        val viewModel = StoriesWidgetViewModel(StoriesEntrySource.ShopPage("1"), repo)
+        val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(emptyList()))
         advanceUntilIdle()
 
@@ -64,11 +64,11 @@ class StoriesWidgetTest {
             )
         }
         val repo = StoriesWidgetFakeRepository(
-            forbiddenEntryPoints = listOf(StoriesEntrySource.ProductDetail("1"))
+            forbiddenEntryPoints = listOf(StoriesEntryPoint.ProductDetail)
         )
         repo.setStoriesWidgetState(shopStoriesStates)
 
-        val shopEPViewModel = StoriesWidgetViewModel(StoriesEntrySource.ShopPage("1"), repo)
+        val shopEPViewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         val shopFlowHelper = shopEPViewModel.stories.createHelper(this)
         shopFlowHelper.run {
             shopEPViewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
@@ -78,7 +78,7 @@ class StoriesWidgetTest {
                 .containsExactly(*shopStoriesStates.toTypedArray())
         }
 
-        val pdpEPViewModel = StoriesWidgetViewModel(StoriesEntrySource.ProductDetail("1"), repo)
+        val pdpEPViewModel = StoriesWidgetViewModel(StoriesEntryPoint.ProductDetail, repo)
         val pdpFlowHelper = pdpEPViewModel.stories.createHelper(this)
         pdpFlowHelper.run {
             pdpEPViewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
@@ -99,7 +99,7 @@ class StoriesWidgetTest {
         val repo = StoriesWidgetFakeRepository()
         repo.setStoriesWidgetState(shopStoriesStates)
 
-        val viewModel = StoriesWidgetViewModel(StoriesEntrySource.ShopPage("1"), repo)
+        val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
         advanceUntilIdle()
 
@@ -140,7 +140,7 @@ class StoriesWidgetTest {
         repo.setStoriesWidgetState(shopStoriesStates)
         repo.setSeenStatus("1", true)
 
-        val viewModel = StoriesWidgetViewModel(StoriesEntrySource.ShopPage("1"), repo)
+        val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
         advanceUntilIdle()
 
@@ -206,7 +206,7 @@ class StoriesWidgetTest {
             )
             repo.setStoriesWidgetState(shopStoriesStates)
 
-            val viewModel = StoriesWidgetViewModel(StoriesEntrySource.ShopPage("1"), repo)
+            val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
             viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
             viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
             advanceUntilIdle()
@@ -239,7 +239,7 @@ class StoriesWidgetTest {
             )
             repo.setStoriesWidgetState(shopStoriesStates)
 
-            val viewModel = StoriesWidgetViewModel(StoriesEntrySource.ShopPage("1"), repo)
+            val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
             viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
             viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
             advanceUntilIdle()
@@ -269,7 +269,7 @@ class StoriesWidgetTest {
             )
             repo.setStoriesWidgetState(shopStoriesStates)
 
-            val viewModel = StoriesWidgetViewModel(StoriesEntrySource.ShopPage("1"), repo)
+            val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
             viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
             viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
             advanceUntilIdle()
@@ -299,7 +299,7 @@ class StoriesWidgetTest {
             )
             repo.setStoriesWidgetState(shopStoriesStates)
 
-            val viewModel = StoriesWidgetViewModel(StoriesEntrySource.ShopPage("1"), repo)
+            val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
             viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
             viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
             advanceUntilIdle()
@@ -327,7 +327,7 @@ class StoriesWidgetTest {
         )
         repo.setStoriesWidgetState(shopStoriesStates)
 
-        val viewModel = StoriesWidgetViewModel(StoriesEntrySource.ShopPage("1"), repo)
+        val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
         viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
         advanceUntilIdle()

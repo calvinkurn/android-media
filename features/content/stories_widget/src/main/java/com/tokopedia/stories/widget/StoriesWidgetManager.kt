@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
+import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -19,7 +20,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
-import com.tokopedia.stories.widget.domain.StoriesEntrySource
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.tracking.DefaultTrackingManager
 import com.tokopedia.stories.widget.tracking.TrackingManager
@@ -34,7 +35,7 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 27/07/23
  */
 class StoriesWidgetManager private constructor(
-    private val entryPoint: StoriesEntrySource,
+    private val entryPoint: StoriesEntryPoint,
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModelStoreOwner: ViewModelStoreOwner,
@@ -51,11 +52,11 @@ class StoriesWidgetManager private constructor(
     private val storiesViewListener = object : StoriesWidgetLayout.Listener {
         override fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesWidgetState) {
             component.router().route(view.context, state.appLink)
-            options.trackingManager.clickEntryPoints(entryPoint)
+            options.trackingManager.clickEntryPoints(state)
         }
 
         override fun onImpressed(view: StoriesWidgetLayout, state: StoriesWidgetState) {
-            options.trackingManager.impressEntryPoints(entryPoint)
+            options.trackingManager.impressEntryPoints(state)
         }
     }
 
@@ -78,6 +79,21 @@ class StoriesWidgetManager private constructor(
 
     private var mShopIdCoachMarked: String? = null
 
+    private val coachMarkScrollingListener = object : ViewTreeObserver.OnScrollChangedListener {
+        override fun onScrollChanged() {
+            val scrollBounds = Rect()
+            options.scrollingParent?.getHitRect(scrollBounds)
+
+            val shopId = mShopIdCoachMarked ?: return
+            val storiesLayout = getViewByShopId(shopId) ?: return
+            if (storiesLayout.getLocalVisibleRect(scrollBounds)) {
+                requestShowCoachMark()
+            } else {
+                hideCoachMark()
+            }
+        }
+    }
+
     init {
         lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -87,6 +103,10 @@ class StoriesWidgetManager private constructor(
                     }
                     Lifecycle.Event.ON_RESUME -> {
                         getViewModel().onIntent(StoriesWidgetIntent.GetLatestStoriesStatus)
+                    }
+                    Lifecycle.Event.ON_DESTROY -> {
+                        options.scrollingParent?.viewTreeObserver
+                            ?.removeOnScrollChangedListener(coachMarkScrollingListener)
                     }
                     else -> {}
                 }
@@ -145,6 +165,9 @@ class StoriesWidgetManager private constructor(
     }
 
     fun updateStories(shopIds: List<String>) {
+        if (options.trackingManager is DefaultTrackingManager) {
+            options.trackingManager.resetImpression()
+        }
         getViewModel().onIntent(
             StoriesWidgetIntent.GetStoriesStatus(shopIds)
         )
@@ -185,18 +208,7 @@ class StoriesWidgetManager private constructor(
 
     private fun observeScrollingView(view: View) {
         val vto = view.viewTreeObserver
-        vto.addOnScrollChangedListener {
-            val scrollBounds = Rect()
-            view.getHitRect(scrollBounds)
-
-            val shopId = mShopIdCoachMarked ?: return@addOnScrollChangedListener
-            val storiesLayout = getViewByShopId(shopId) ?: return@addOnScrollChangedListener
-            if (storiesLayout.getLocalVisibleRect(scrollBounds)) {
-                requestShowCoachMark()
-            } else {
-                hideCoachMark()
-            }
-        }
+        vto.addOnScrollChangedListener(coachMarkScrollingListener)
     }
 
     private fun StoriesWidgetLayout.onAttached(shopId: String) {
@@ -261,7 +273,7 @@ class StoriesWidgetManager private constructor(
     companion object {
 
         fun create(
-            entryPoint: StoriesEntrySource,
+            entryPoint: StoriesEntryPoint,
             fragment: Fragment,
             builderOptions: Builder.() -> Unit
         ): StoriesWidgetManager {
@@ -271,7 +283,7 @@ class StoriesWidgetManager private constructor(
         }
 
         fun create(
-            entryPoint: StoriesEntrySource,
+            entryPoint: StoriesEntryPoint,
             activity: AppCompatActivity,
             builderOptions: Builder.() -> Unit
         ): StoriesWidgetManager {
@@ -282,19 +294,19 @@ class StoriesWidgetManager private constructor(
     }
 
     class Builder private constructor(
-        private val entryPoint: StoriesEntrySource,
+        private val entryPoint: StoriesEntryPoint,
         private val context: Context,
         private val lifecycleOwner: LifecycleOwner,
         private val viewModelStoreOwner: ViewModelStoreOwner
     ) {
 
-        constructor(entryPoint: StoriesEntrySource, fragment: Fragment) : this(
+        constructor(entryPoint: StoriesEntryPoint, fragment: Fragment) : this(
             entryPoint,
             fragment.requireContext(),
             fragment.viewLifecycleOwner,
             fragment
         )
-        constructor(entryPoint: StoriesEntrySource, activity: AppCompatActivity) : this(
+        constructor(entryPoint: StoriesEntryPoint, activity: AppCompatActivity) : this(
             entryPoint,
             activity,
             activity,
@@ -305,7 +317,12 @@ class StoriesWidgetManager private constructor(
         private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
         private val trackingQueue = TrackingQueue(context)
         private val userSession = UserSession(context.applicationContext)
-        private val defaultTrackingManager = DefaultTrackingManager(entryPoint, trackingQueue, userSession)
+        private val defaultTrackingManager = DefaultTrackingManager(
+            entryPoint,
+            lifecycleOwner,
+            trackingQueue,
+            userSession
+        )
         private var mTrackingManager: TrackingManager = defaultTrackingManager
         private var mShowCoachMarkIfApplicable: Boolean = true
 
