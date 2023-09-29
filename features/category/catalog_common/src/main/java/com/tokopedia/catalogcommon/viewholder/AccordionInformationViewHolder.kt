@@ -16,6 +16,7 @@ import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.accordion.R as accordionR
 
 class AccordionInformationViewHolder(
     itemView: View,
@@ -62,7 +63,7 @@ class AccordionInformationViewHolder(
                 PorterDuff.Mode.SRC_IN
             )
             binding?.accordion?.get(index)
-                ?.findViewById<Typography>(com.tokopedia.accordion.R.id.accordion_title)
+                ?.findViewById<Typography>(accordionR.id.accordion_title)
                 ?.setTextColor(item.textTitleColor.orDefaultColor(itemView.context))
         }
 
