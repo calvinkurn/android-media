@@ -206,7 +206,6 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
-        Log.d("atfflow", "initFlow: 4 $homeNewDynamicChannelModel")
         this.homeDataModel = homeNewDynamicChannelModel
         _homeLiveDynamicChannel.postValue(homeDataModel)
         _resetNestedScrolling.postValue(Event(true))
@@ -295,17 +294,13 @@ open class HomeRevampViewModel @Inject constructor(
 
     @FlowPreview
     private fun initFlow() {
-        Log.d("atfflow", "1. ViewModel - initFlow")
         homeFlowStarted = true
         launch(homeDispatcher.get().io) {
-            Log.d("atfflow", "2. ViewModel - initFlow: homeAtfUseCase.fetchAtfDataList()")
             homeAtfUseCase.fetchAtfDataList()
         }
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
-                Log.d("atfflow", "initFlow: 1")
                 if (homeNewDataModel?.isCache == false) {
-                    Log.d("atfflow", "initFlow: 2")
                     _isRequestNetworkLiveData.postValue(Event(false))
                     currentTopAdsBannerPage = homeNewDataModel.topadsPage
                     onRefreshState = false
@@ -315,7 +310,6 @@ open class HomeRevampViewModel @Inject constructor(
                     updateHomeData(homeNewDataModel)
                     _trackingLiveData.postValue(Event(homeNewDataModel.list.filterIsInstance<HomeVisitable>()))
                 } else if (homeNewDataModel?.list?.size ?: 0 > 0) {
-                    Log.d("atfflow", "initFlow: 3")
                     homeNewDataModel?.let {
                         updateHomeData(it)
                     }
