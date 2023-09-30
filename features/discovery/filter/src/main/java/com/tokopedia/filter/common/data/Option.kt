@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Option(@SerializedName("name")
+class Option(@SerializedName("name")
              @Expose
              var name: String = "",
 

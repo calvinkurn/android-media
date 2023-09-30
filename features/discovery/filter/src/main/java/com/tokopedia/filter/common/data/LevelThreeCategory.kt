@@ -7,7 +7,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class LevelThreeCategory(@SerializedName("name")
+class LevelThreeCategory(@SerializedName("name")
                          @Expose
                          var name: String = "",
 
