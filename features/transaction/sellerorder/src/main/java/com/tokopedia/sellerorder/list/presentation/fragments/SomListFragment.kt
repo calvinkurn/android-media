@@ -74,6 +74,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickup
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReturnToShipper
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
+import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
@@ -140,7 +141,6 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListOrderWrapperUiM
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
 import com.tokopedia.sellerorder.list.presentation.util.SomListCoachMarkManager
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
-import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -659,6 +659,14 @@ open class SomListFragment :
         }
     }
 
+    override fun onConfirmShippingAutoButtonClicked(popUp: PopUp?) {
+        popUp?.apply {
+            if (!popUp.template?.code.isNullOrBlank()) {
+                SomConfirmShippingBottomSheet.show(context, view, popUp)
+            }
+        }
+    }
+
     override fun onAcceptOrderButtonClicked(
         actionName: String,
         orderId: String,
@@ -777,6 +785,7 @@ open class SomListFragment :
                     SomAnalytics.eventClickBulkPrintAwb(userSession.userId)
                 }
             }
+
             KEY_REQUEST_PICKUP -> {
                 showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
                 viewModel.bulkRequestPickup(getSelectedOrderIds())
@@ -1931,10 +1940,8 @@ open class SomListFragment :
                         }
                 }
                 data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP) -> {
-                    data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(
-                        SomConsts.RESULT_PROCESS_REQ_PICKUP
-                    )?.let { resultProcessReqPickup ->
-                        handleRequestPickUpResult(resultProcessReqPickup.listMessage.firstOrNull())
+                    data.getStringExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)?.let { message ->
+                        handleRequestPickUpResult(message)
                     }
                 }
                 data.hasExtra(SomConsts.RESULT_REJECT_ORDER) -> {
@@ -1976,10 +1983,9 @@ open class SomListFragment :
 
     private fun handleSomRequestPickUpActivityResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(SomConsts.RESULT_PROCESS_REQ_PICKUP)
-                ?.let { resultProcessReqPickup ->
-                    handleRequestPickUpResult(resultProcessReqPickup.listMessage.firstOrNull())
-                }
+            data.getStringExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)?.let { message ->
+                handleRequestPickUpResult(message)
+            }
         }
     }
 
@@ -2286,7 +2292,7 @@ open class SomListFragment :
     private fun getOldEmptyState(
         isTopAdsActive: Boolean
     ): SomListEmptyStateUiModel {
-        val isSellerApp = GlobalConfig.isSellerApp()
+        val isSellerApp = true
         val isNewOrderFilterSelected =
             somListOrderStatusFilterTab?.isNewOrderFilterSelected() == true
         val isNonStatusOrderFilterApplied = somListSortFilterTab?.isNonStatusOrderFilterApplied(
