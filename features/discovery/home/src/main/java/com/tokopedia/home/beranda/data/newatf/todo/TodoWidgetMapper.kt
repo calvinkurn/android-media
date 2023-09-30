@@ -30,7 +30,13 @@ class TodoWidgetMapper @Inject constructor() {
         index: Int,
         atfData: AtfData,
     ): Visitable<*> {
-        return if(atfData.atfStatus == AtfKey.STATUS_ERROR) {
+        return if(atfData.isCache) {
+            TodoWidgetListDataModel(
+                status = TodoWidgetListDataModel.STATUS_LOADING,
+                showShimmering = atfData.atfMetadata.isShimmer,
+                source = TodoWidgetListDataModel.SOURCE_ATF,
+            )
+        } else if(atfData.atfStatus == AtfKey.STATUS_ERROR) {
             TodoWidgetListDataModel(
                 id = atfData.atfMetadata.id.toString(),
                 widgetParam = atfData.atfMetadata.param,
