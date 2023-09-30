@@ -23,8 +23,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 
-abstract class BaseCategoryViewModel(
-    private val getProductAdsUseCase: GetProductAdsUseCase,
+open class BaseCategoryViewModel(
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     private val addressData: TokoNowLocalAddress,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
@@ -78,11 +77,13 @@ abstract class BaseCategoryViewModel(
     var currentCategoryId = String.EMPTY
     var queryParamMap: HashMap<String, String>? = hashMapOf()
 
-    protected abstract val tickerPage: String
+    protected open val tickerPage: String = ""
 
-    protected abstract suspend fun loadFirstPage(
+    protected open suspend fun loadFirstPage(
         tickerData: GetTickerData
-    )
+    ) {
+
+    }
 
     protected open suspend fun loadNextPage() {
 
